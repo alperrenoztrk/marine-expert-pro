@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Maritime color palette */
+    --background: 210 20% 98%;
+    --foreground: 210 12% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 12% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 12% 16%;
+
+    --primary: 214 84% 42%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 214 84% 60%;
+    --primary-dark: 214 84% 28%;
+
+    --secondary: 204 39% 41%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 94%;
+    --muted-foreground: 210 12% 45%;
+
+    --accent: 183 84% 39%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 15%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 214 84% 42%;
+
+    --radius: 0.75rem;
+
+    /* Maritime gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-deep: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-dark)));
+    --gradient-surface: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
+    
+    /* Shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(var(--primary) / 0.1);
+    --shadow-card: 0 4px 16px -2px hsl(var(--primary) / 0.08);
+    --shadow-button: 0 2px 8px -1px hsl(var(--primary) / 0.15);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 210 20% 8%;
+    --foreground: 210 20% 92%;
+
+    --card: 210 20% 12%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 210 20% 12%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 214 84% 60%;
+    --primary-foreground: 210 20% 8%;
+    --primary-light: 214 84% 70%;
+    --primary-dark: 214 84% 40%;
+
+    --secondary: 204 39% 51%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 16%;
+    --muted-foreground: 210 12% 65%;
+
+    --accent: 183 84% 49%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 15%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 210 20% 20%;
+    --input: 210 20% 20%;
+    --ring: 214 84% 60%;
+
+    /* Dark mode gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-deep: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-dark)));
+    --gradient-surface: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
+    
+    /* Dark shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(var(--primary) / 0.2);
+    --shadow-card: 0 4px 16px -2px hsl(var(--primary) / 0.15);
+    --shadow-button: 0 2px 8px -1px hsl(var(--primary) / 0.2);
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    
+    /* Optimize touch targets for mobile */
+    button {
+      min-height: 44px;
+    }
+    
+    input, select, textarea {
+      min-height: 44px;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Better spacing for mobile cards */
+    .card {
+      margin-bottom: 1rem;
+    }
+    
+    /* Optimize tab navigation for mobile */
+    [role="tablist"] {
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+    
+    /* Better text sizing for mobile */
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.125rem; }
+  }
+
+  /* Safe area handling for mobile */
+  @supports (padding: max(0px)) {
+    .safe-area-inset {
+      padding-top: max(1rem, env(safe-area-inset-top));
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+  }
+  
+  /* Improved touch scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Better focus states for mobile */
+  @media (max-width: 768px) {
+    input:focus, 
+    button:focus, 
+    select:focus, 
+    textarea:focus {
+      outline: 2px solid hsl(var(--primary));
+      outline-offset: 2px;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
