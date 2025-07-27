@@ -1,61 +1,47 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { translateText } from '@/utils/translator';
 
-interface LanguageContextType {
-  currentLanguage: string;
-  setLanguage: (langCode: string) => Promise<void>;
-  isTranslating: boolean;
-  translateElement: (text: string) => Promise<string>;
-}
-
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
 export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    // Fallback hook when context is not available
-    const [currentLanguage, setCurrentLanguage] = useState('tr');
-    const [isTranslating, setIsTranslating] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('tr');
+  const [isTranslating, setIsTranslating] = useState(false);
 
-    const setLanguage = async (langCode: string) => {
-      setIsTranslating(true);
-      try {
-        setCurrentLanguage(langCode);
-        localStorage.setItem('maritime-calculator-language', langCode);
-        
-        // Translate all text elements on the page
-        if (langCode !== 'tr') {
-          await translatePageContent(langCode);
-        } else {
-          // Reload page to restore original Turkish content
-          window.location.reload();
-        }
-      } finally {
-        setIsTranslating(false);
+  const setLanguage = async (langCode: string) => {
+    setIsTranslating(true);
+    try {
+      setCurrentLanguage(langCode);
+      localStorage.setItem('maritime-calculator-language', langCode);
+      
+      // Translate all text elements on the page
+      if (langCode !== 'tr') {
+        await translatePageContent(langCode);
+      } else {
+        // Reload page to restore original Turkish content
+        window.location.reload();
       }
-    };
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
-    const translateElement = async (text: string): Promise<string> => {
-      if (currentLanguage === 'tr') return text;
-      return await translateText(text, 'tr', currentLanguage);
-    };
+  const translateElement = async (text: string): Promise<string> => {
+    if (currentLanguage === 'tr') return text;
+    return await translateText(text, 'tr', currentLanguage);
+  };
 
-    // Load saved language on mount
-    useEffect(() => {
-      const savedLang = localStorage.getItem('maritime-calculator-language');
-      if (savedLang && savedLang !== 'tr') {
-        setCurrentLanguage(savedLang);
-      }
-    }, []);
+  // Load saved language on mount
+  useEffect(() => {
+    const savedLang = localStorage.getItem('maritime-calculator-language');
+    if (savedLang && savedLang !== 'tr') {
+      setCurrentLanguage(savedLang);
+    }
+  }, []);
 
-    return {
-      currentLanguage,
-      setLanguage,
-      isTranslating,
-      translateElement
-    };
-  }
-  return context;
+  return {
+    currentLanguage,
+    setLanguage,
+    isTranslating,
+    translateElement
+  };
 };
 
 // Sayfa içeriğini çevir
@@ -101,14 +87,3 @@ async function translatePageContent(targetLang: string) {
     }
   }
 }
-
-// Translation Provider Component
-export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const languageHook = useLanguage();
-  
-  return (
-    <LanguageContext.Provider value={languageHook}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
