@@ -12,6 +12,7 @@ import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
 import { useAdManager } from "@/hooks/useAdManager";
 import { AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
+import { WorkingAIAssistant } from "@/components/WorkingAIAssistant";
 
 const Formulas = () => {
   const [question, setQuestion] = useState("");
@@ -202,19 +203,22 @@ Detaylı formüller ve örneklerle yanıtlayacağım.`;
         </div>
       )}
 
-      {/* AI Soru-Cevap Bölümü - Mobil optimize */}
+      {/* Çalışan AI Asistanı */}
+      <WorkingAIAssistant />
+
+      {/* Orijinal AI Soru-Cevap Bölümü (Backup) - Mobil optimize */}
       <div className="space-y-3 sm:space-y-4">
-        <Card className="shadow-[var(--shadow-card)]">
+        <Card className="shadow-[var(--shadow-card)] opacity-50">
           <CardHeader className="pb-3 sm:pb-4">
             <div className="flex items-center gap-2 sm:gap-3">
               <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
               <CardTitle className="text-base sm:text-lg leading-tight" data-translatable>
-                Maritime AI Asistanı
+                Maritime AI Asistanı (Backup - Gemini API Gerekli)
               </CardTitle>
             </div>
             <CardDescription className="text-xs sm:text-sm leading-relaxed px-1">
               <span data-translatable>
-                Denizcilik hesaplamaları, stabilite, trim, navigasyon ve tüm maritime konularda sorularınızı sorun
+                Bu bölüm Gemini API anahtarı gerektirir. Yukarıdaki çalışan AI asistanını kullanın.
               </span>
             </CardDescription>
           </CardHeader>
