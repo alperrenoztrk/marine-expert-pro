@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History } from "lucide-react";
+import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History, Calculator } from "lucide-react";
 import maritimeHero from "@/assets/maritime-hero.jpg";
 import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
@@ -13,82 +13,109 @@ import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
+import { TestCalculation } from "@/components/TestCalculation";
 
 // Import all calculation components with error boundary
 const StabilityCalculations = React.lazy(() => 
-  import("@/components/calculations/StabilityCalculations").catch(() => ({ 
+  import("@/components/calculations/StabilityCalculations").then(module => ({
+    default: module.StabilityCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const NavigationCalculations = React.lazy(() => 
-  import("@/components/calculations/NavigationCalculations").catch(() => ({ 
+  import("@/components/calculations/NavigationCalculations").then(module => ({
+    default: module.NavigationCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const HydrodynamicsCalculations = React.lazy(() => 
-  import("@/components/calculations/HydrodynamicsCalculations").catch(() => ({ 
+  import("@/components/calculations/HydrodynamicsCalculations").then(module => ({
+    default: module.HydrodynamicsCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const EngineCalculations = React.lazy(() => 
-  import("@/components/calculations/EngineCalculations").catch(() => ({ 
+  import("@/components/calculations/EngineCalculations").then(module => ({
+    default: module.EngineCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const CargoCalculations = React.lazy(() => 
-  import("@/components/calculations/CargoCalculations").catch(() => ({ 
+  import("@/components/calculations/CargoCalculations").then(module => ({
+    default: module.CargoCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const BallastCalculations = React.lazy(() => 
-  import("@/components/calculations/BallastCalculations").catch(() => ({ 
+  import("@/components/calculations/BallastCalculations").then(module => ({
+    default: module.BallastCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const TrimCalculations = React.lazy(() => 
-  import("@/components/calculations/TrimCalculations").catch(() => ({ 
+  import("@/components/calculations/TrimCalculations").then(module => ({
+    default: module.TrimCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const StructuralCalculations = React.lazy(() => 
-  import("@/components/calculations/StructuralCalculations").catch(() => ({ 
+  import("@/components/calculations/StructuralCalculations").then(module => ({
+    default: module.StructuralCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const SafetyCalculations = React.lazy(() => 
-  import("@/components/calculations/SafetyCalculations").catch(() => ({ 
+  import("@/components/calculations/SafetyCalculations").then(module => ({
+    default: module.SafetyCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const EmissionCalculations = React.lazy(() => 
-  import("@/components/calculations/EmissionCalculations").catch(() => ({ 
+  import("@/components/calculations/EmissionCalculations").then(module => ({
+    default: module.EmissionCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const WeatherCalculations = React.lazy(() => 
-  import("@/components/calculations/WeatherCalculations").catch(() => ({ 
+  import("@/components/calculations/WeatherCalculations").then(module => ({
+    default: module.WeatherCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const EconomicCalculations = React.lazy(() => 
-  import("@/components/calculations/EconomicCalculations").catch(() => ({ 
+  import("@/components/calculations/EconomicCalculations").then(module => ({
+    default: module.EconomicCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
 
 const SpecialShipCalculations = React.lazy(() => 
-  import("@/components/calculations/SpecialShipCalculations").catch(() => ({ 
+  import("@/components/calculations/SpecialShipCalculations").then(module => ({
+    default: module.SpecialShipCalculations
+  })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
 );
@@ -253,6 +280,13 @@ const Index = () => {
       description: "Tanker, konteyner, yolcu gemisi özel hesaplamaları",
       icon: Ship,
       component: SpecialShipCalculations
+    },
+    {
+      id: "test",
+      title: "Test Hesaplama",
+      description: "Basit deplasman hesaplaması - test için",
+      icon: Calculator,
+      component: TestCalculation
     }
   ];
 
