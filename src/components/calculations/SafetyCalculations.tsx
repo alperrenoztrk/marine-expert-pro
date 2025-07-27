@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Anchor, Shield, AlertTriangle, CheckCircle, LifeBuoy, Flame, Droplets, Users } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface SafetyData {
   // Ship Dimensions
@@ -136,7 +136,7 @@ export const SafetyCalculations = () => {
   });
 
   const [result, setResult] = useState<SafetyResult | null>(null);
-  const { toast } = useToast();
+  
 
   // Anchoring calculations
   const calculateAnchoring = () => {

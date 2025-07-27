@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface NavigationData {
   // Position coordinates
@@ -140,7 +140,6 @@ export const NavigationCalculations = () => {
   });
 
   const [result, setResult] = useState<NavigationResult | null>(null);
-  const { toast } = useToast();
 
   // Utility functions for calculations
   const toRadians = (degrees: number) => degrees * Math.PI / 180;
@@ -470,16 +469,9 @@ export const NavigationCalculations = () => {
       };
 
       setResult(calculatedResult);
-      toast({
-        title: "Hesaplama Tamamlandı",
-        description: "Tüm navigasyon hesaplamaları başarıyla tamamlandı.",
-      });
+      toast.success("Navigasyon hesaplamaları tamamlandı!");
     } catch (error) {
-      toast({
-        title: "Hata",
-        description: "Hesaplama sırasında bir hata oluştu.",
-        variant: "destructive",
-      });
+      toast.error("Hesaplama sırasında bir hata oluştu.");
     }
   };
 

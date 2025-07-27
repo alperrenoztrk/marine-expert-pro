@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Settings, Fuel, Gauge, Activity, Zap, AlertTriangle, CheckCircle, TrendingUp, BarChart3 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface EngineData {
   // Main Engine Parameters
@@ -145,7 +145,7 @@ export const EngineCalculations = () => {
   });
 
   const [result, setResult] = useState<EngineResult | null>(null);
-  const { toast } = useToast();
+  
 
   // SFOC calculation based on load
   const calculateSFOC = (load: number): number => {

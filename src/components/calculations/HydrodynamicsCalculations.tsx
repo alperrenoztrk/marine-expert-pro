@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Waves, TrendingUp, BarChart3, Activity, AlertTriangle, CheckCircle, Target } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface HydrodynamicsData {
   // Ship Principal Dimensions
@@ -123,7 +123,7 @@ export const HydrodynamicsCalculations = () => {
   });
 
   const [result, setResult] = useState<HydrodynamicsResult | null>(null);
-  const { toast } = useToast();
+  
 
   const g = 9.81; // Gravity acceleration
   const rho = 1025; // Seawater density (kg/m³)

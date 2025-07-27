@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, AlertTriangle, CheckCircle, TrendingUp, BarChart3, Waves, Target } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface StabilityData {
   // Ship Parameters
@@ -104,7 +104,6 @@ interface DamageStability {
 }
 
 export const StabilityCalculations = () => {
-  const { toast } = useToast();
   
   const [stabilityData, setStabilityData] = useState<Partial<StabilityData>>({
     CWP: 0.85,
@@ -317,11 +316,7 @@ export const StabilityCalculations = () => {
   const calculateStability = () => {
     if (!stabilityData.L || !stabilityData.B || !stabilityData.T || !stabilityData.CB || 
         !stabilityData.displacement || !stabilityData.KG || !stabilityData.KM) {
-      toast({
-        title: "Eksik Veri",
-        description: "Lütfen tüm gerekli değerleri girin.",
-        variant: "destructive"
-      });
+      toast.error("Lütfen tüm gerekli değerleri girin.");
       return;
     }
 
@@ -410,11 +405,7 @@ export const StabilityCalculations = () => {
     
     setResult(result);
     
-    toast({
-      title: "Kapsamlı Stabilite Analizi Tamamlandı",
-      description: `Durum: ${status.toUpperCase()} - GM: ${GM_corrected.toFixed(3)}m - Karakter: ${shipCharacteristic.toUpperCase()}`,
-      variant: status === 'dangerous' ? "destructive" : "default"
-    });
+    toast.success(`Stabilite Analizi Tamamlandı! GM: ${GM_corrected.toFixed(3)}m - Durum: ${status.toUpperCase()}`);
   };
 
   // Enhanced Damage Stability Calculation - SOLAS Chapter II-1, Part B-1
@@ -461,11 +452,7 @@ export const StabilityCalculations = () => {
     
     setDamageResult(damageResult);
     
-    toast({
-      title: "Hasar Stabilitesi Analizi",
-      description: `Durum: ${survivalStatus.toUpperCase()} - Yeni GM: ${newGM.toFixed(3)}m - Yatma: ${heelAngle.toFixed(1)}°`,
-      variant: survivalStatus === 'lost' ? "destructive" : survivalStatus === 'marginal' ? "default" : "default"
-    });
+    toast.success(`Hasar Stabilitesi Analizi Tamamlandı! Durum: ${survivalStatus.toUpperCase()} - Yeni GM: ${newGM.toFixed(3)}m`);
   };
 
   const getStatusColor = (status: string) => {
