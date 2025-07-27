@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, TrendingUp, AlertTriangle, CheckCircle, Activity } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface TrimData {
   // Ship Parameters
@@ -49,6 +49,7 @@ interface DisplacementData {
 }
 
 export const TrimCalculations = () => {
+  const { toast } = useToast();
   
   
   const [trimData, setTrimData] = useState<Partial<TrimData>>({});

@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Droplets, ArrowUpDown, AlertTriangle, CheckCircle, FlaskConical } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface BallastTank {
   name: string;
@@ -54,6 +54,7 @@ interface BWMCCompliance {
 }
 
 export const BallastCalculations = () => {
+  const { toast } = useToast();
   
   
   const [ballastTanks, setBallastTanks] = useState<BallastTank[]>([

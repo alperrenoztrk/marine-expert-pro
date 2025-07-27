@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Waves, TrendingUp, BarChart3, Activity, AlertTriangle, CheckCircle, Target } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface HydrodynamicsData {
   // Ship Principal Dimensions
@@ -111,6 +111,7 @@ interface HydrodynamicsResult {
 }
 
 export const HydrodynamicsCalculations = () => {
+  const { toast } = useToast();
   const [data, setData] = useState<HydrodynamicsData>({
     shipLength: 180, shipBeam: 32, shipDraft: 12, displacement: 25000,
     blockCoefficient: 0.82, prismaticCoefficient: 0.85, wateplaneCoefficient: 0.88,

@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Building, BarChart3, AlertTriangle, CheckCircle, Zap } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface StructuralData {
   // Ship dimensions
@@ -57,6 +57,7 @@ interface ShearBendingPoint {
 }
 
 export const StructuralCalculations = () => {
+  const { toast } = useToast();
   
   
   const [structuralData, setStructuralData] = useState<Partial<StructuralData>>({

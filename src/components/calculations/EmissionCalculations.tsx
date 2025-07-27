@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Leaf, TrendingDown, BarChart3, AlertTriangle, CheckCircle, Target, Activity } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface EmissionData {
   // Ship Parameters
@@ -97,6 +97,7 @@ interface EmissionResult {
 }
 
 export const EmissionCalculations = () => {
+  const { toast } = useToast();
   const [data, setData] = useState<EmissionData>({
     deadweight: 25000, grossTonnage: 18000, shipType: 'Bulk Carrier', buildYear: 2015,
     annualFuelConsumption: 2400, fuelType: 'HFO', sulfurContent: 0.5,

@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Settings, Fuel, Gauge, Activity, Zap, AlertTriangle, CheckCircle, TrendingUp, BarChart3 } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 interface EngineData {
   // Main Engine Parameters
@@ -125,6 +125,7 @@ interface EngineResult {
 }
 
 export const EngineCalculations = () => {
+  const { toast } = useToast();
   const [data, setData] = useState<EngineData>({
     mcrPower: 15000, currentLoad: 75, engineRPM: 120,
     fuelType: 'HFO', sfocAt85: 185, sfocAt75: 175,
