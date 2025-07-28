@@ -57,6 +57,23 @@ const Regulations = () => {
 
   const colregRules: COLREGRule[] = [
     {
+      id: "rule1",
+      rule: "Rule 1",
+      title: "Application",
+      category: "general",
+      description: "These Rules shall apply to all vessels upon the high seas and in all waters connected therewith navigable by seagoing vessels",
+      detailedText: "COLREG applies to all vessels on high seas and connected waters navigable by seagoing vessels. Special rules may be made by appropriate authorities for specific areas but must conform as closely as possible to these Rules. Traffic separation schemes may be adopted by the Organization.",
+      examples: [
+        "Commercial vessel transiting international waters",
+        "Yacht sailing from territorial waters to high seas",
+        "Special rules in port approaches that modify but don't contradict COLREG"
+      ],
+      relatedRules: ["Rule 10", "Rule 38"],
+      applicability: ["All vessels", "High seas", "Connected navigable waters"],
+      penalties: "Violation of Rule 1 can void insurance coverage and create liability",
+      modernInterpretation: "Applies to autonomous vessels, drones, and modern high-speed craft; includes cyber-navigation systems"
+    },
+    {
       id: "rule2",
       rule: "Rule 2",
       title: "Responsibility",
@@ -72,6 +89,40 @@ const Regulations = () => {
       applicability: ["All vessels", "All visibility conditions", "All waters"],
       penalties: "Civil and criminal liability for collision damages, potential license suspension",
       modernInterpretation: "Includes electronic navigation aids, AIS data interpretation, and cyber-security considerations in modern context"
+    },
+    {
+      id: "rule3",
+      rule: "Rule 3",
+      title: "General Definitions",
+      category: "general",
+      description: "Definitions of vessel, power-driven vessel, sailing vessel, fishing vessel, and other key terms",
+      detailedText: "Provides essential definitions including vessel (every description of watercraft), power-driven vessel (propelled by machinery), sailing vessel (under sail with machinery not being used), vessel engaged in fishing (with gear restricting maneuverability), vessel not under command, vessel restricted in ability to maneuver, and vessel constrained by draft.",
+      examples: [
+        "Sailing yacht using engine becomes power-driven vessel",
+        "Fishing trawler with nets deployed is vessel engaged in fishing",
+        "Ship with engine failure becomes vessel not under command"
+      ],
+      relatedRules: ["All Rules"],
+      applicability: ["All vessels", "Fundamental definitions"],
+      penalties: "Misclassification can affect right-of-way and collision liability",
+      modernInterpretation: "Includes WIG craft, high-speed craft, autonomous vessels, and modern propulsion systems"
+    },
+    {
+      id: "rule4",
+      rule: "Rule 4",
+      title: "Application (Section I)",
+      category: "general",
+      description: "Rules in Section I apply in any condition of visibility",
+      detailedText: "Section I rules (Rules 4-10) apply regardless of visibility conditions. These are fundamental navigation rules that must be followed whether in clear weather, fog, or any restricted visibility condition.",
+      examples: [
+        "Lookout requirements apply day and night, clear or foggy",
+        "Safe speed rules apply in all weather conditions",
+        "Traffic separation scheme rules apply regardless of visibility"
+      ],
+      relatedRules: ["Rule 5", "Rule 6", "Rule 7", "Rule 8", "Rule 9", "Rule 10"],
+      applicability: ["All vessels", "Any condition of visibility"],
+      penalties: "Violation of basic navigation principles",
+      modernInterpretation: "Encompasses all modern navigation aids and autonomous navigation systems"
     },
     {
       id: "rule5",
@@ -274,8 +325,484 @@ const Regulations = () => {
       ],
       relatedRules: ["Rule 12", "Rule 18", "Annex I"],
       applicability: ["Sailing vessels under sail alone", "Vessels under oars"],
-      penalties: "Sailing vessel accidents often involve recreational craft with inadequate lighting",
-      modernInterpretation: "Solar-powered LED systems, GPS-integrated lighting, and smart sailing technologies"
+              penalties: "Sailing vessel accidents often involve recreational craft with inadequate lighting",
+        modernInterpretation: "Solar-powered LED systems, GPS-integrated lighting, and smart sailing technologies"
+      },
+      {
+        id: "rule23",
+        rule: "Rule 23",
+        title: "Power-driven Vessels Underway",
+        category: "lights",
+        description: "Power-driven vessel shall exhibit masthead light, sidelights, and stern light",
+        detailedText: "Masthead light must be placed over fore and aft centerline showing unbroken light over 225° arc. Vessels 50m+ must show two masthead lights with after light higher than forward light. Side lights show unbroken light over 112.5° arc from dead ahead to 22.5° abaft beam. Stern light shows 135° arc centered on stern.",
+        examples: [
+          "Large container ship with two white masthead lights, red/green side lights, white stern light",
+          "Small motor yacht under 50m with single masthead light and navigation lights", 
+          "Pilot vessel displaying pilot lights in addition to normal navigation lights"
+        ],
+        relatedRules: ["Rule 20", "Rule 21", "Annex I"],
+        applicability: ["Power-driven vessels underway", "All sizes", "Night and restricted visibility"],
+        penalties: "Incorrect light display can determine collision liability",
+        modernInterpretation: "Smart LED systems, automatic light switching, and integration with vessel monitoring systems"
+      },
+      {
+        id: "rule8",
+      rule: "Rule 8", 
+      title: "Action to Avoid Collision",
+      category: "conduct",
+      description: "Any action taken to avoid collision shall be positive, made in ample time and with due regard to good seamanship",
+      detailedText: "Actions must be large enough to be readily apparent to the other vessel, taken early enough to be effective, and made with proper seamanship. Avoid succession of small alterations. If space permits, alteration of course alone may be more effective than alteration of speed. Actions should result in passing at safe distance.",
+      examples: [
+        "Making substantial course alteration early rather than small changes",
+        "Reducing speed significantly when course alteration is insufficient",
+        "Using engines rather than rudder alone for emergency maneuvers"
+      ],
+      relatedRules: ["Rule 5", "Rule 6", "Rule 7", "Rule 17"],
+      applicability: ["All vessels taking avoiding action", "All visibility conditions"],
+      penalties: "Inadequate action can result in shared liability",
+      modernInterpretation: "Includes dynamic positioning responses, automated collision avoidance systems, and coordinated fleet maneuvering"
+    },
+    {
+      id: "rule9",
+      rule: "Rule 9",
+      title: "Narrow Channels",
+      category: "conduct",
+      description: "A vessel proceeding along a narrow channel shall keep as near to the starboard side as is safe and practicable",
+      detailedText: "Vessels must keep to starboard side of narrow channels. Vessels under 20m or sailing vessels shall not impede larger vessels. Fishing vessels shall not impede passage. Overtaking signals are required in narrow channels. Vessels should avoid anchoring in channels.",
+      examples: [
+        "Container ship keeping to starboard in Suez Canal",
+        "Yacht giving way to commercial traffic in channel",
+        "Overtaking vessel using sound signals before passing"
+      ],
+      relatedRules: ["Rule 13", "Rule 34", "Rule 8"],
+      applicability: ["All vessels", "Narrow channels and fairways"],
+      penalties: "Channel violations can result in major collision liability",
+      modernInterpretation: "Includes VTS coordination, electronic chart integration, and AIS-based traffic management"
+    },
+    {
+      id: "rule10",
+      rule: "Rule 10",
+      title: "Traffic Separation Schemes",
+      category: "conduct",
+      description: "Rules for behavior in traffic separation schemes adopted by the Organization",
+      detailedText: "Vessels must proceed in appropriate traffic lanes in general direction of flow. Avoid crossing separation lines except at terminations. Cross traffic lanes at right angles when necessary. Inshore zones are for specific purposes only. Small vessels and fishing vessels have restrictions.",
+      examples: [
+        "Ship following Dover Strait TSS eastbound lane",
+        "Vessel crossing TSS at right angles to minimize exposure time",
+        "Fishing vessel operating in separation zone during emergency"
+      ],
+      relatedRules: ["Rule 1", "Rule 18", "Rule 8"],
+      applicability: ["All vessels", "IMO adopted traffic separation schemes"],
+      penalties: "TSS violations are monitored by VTS and can result in prosecution",
+      modernInterpretation: "Enhanced by AIS mandatory reporting, satellite monitoring, and real-time traffic management"
+    },
+    {
+      id: "rule11",
+      rule: "Rule 11",
+      title: "Application (Section II)",
+      category: "conduct",
+      description: "Rules in Section II apply to vessels in sight of one another",
+      detailedText: "Section II contains the classic 'rules of the road' for vessels that can see each other visually. These rules determine right-of-way between different types of vessels and in different encounter situations.",
+      examples: [
+        "Two ships meeting head-on in clear weather",
+        "Sailing yacht and motor vessel crossing paths",
+        "Commercial vessel overtaking another in good visibility"
+      ],
+      relatedRules: ["Rule 12", "Rule 13", "Rule 14", "Rule 15", "Rule 16", "Rule 17", "Rule 18"],
+      applicability: ["Vessels in sight of each other", "Good visibility conditions"],
+      penalties: "Right-of-way violations are primary cause of collision liability",
+      modernInterpretation: "Enhanced by AIS target identification and electronic bearing taking"
+    },
+    {
+      id: "rule14",
+      rule: "Rule 14",
+      title: "Head-on Situation",
+      category: "conduct",
+      description: "When two power-driven vessels are meeting head-on, each shall alter course to starboard",
+      detailedText: "Both vessels must alter course to starboard to pass port-to-port. Situation exists when vessels see each other ahead with masthead lights in line and both sidelights visible. When in doubt, assume head-on situation exists.",
+      examples: [
+        "Two container ships meeting in mid-ocean altering to starboard",
+        "Ferry and cargo ship meeting in channel both going to starboard",
+        "Uncertain situation treated as head-on for safety"
+      ],
+      relatedRules: ["Rule 8", "Rule 34"],
+      applicability: ["Power-driven vessels", "Meeting head-on or nearly so"],
+      penalties: "Head-on collision often results in shared liability if rules not followed",
+      modernInterpretation: "Enhanced by GPS course prediction and collision avoidance systems"
+    },
+    {
+      id: "rule15",
+      rule: "Rule 15",
+      title: "Crossing Situation", 
+      category: "conduct",
+      description: "When two power-driven vessels are crossing, the vessel having the other on her starboard side shall give way",
+      detailedText: "When two power vessels cross so that risk of collision exists, the vessel having the other on her starboard side must give way. The stand-on vessel should maintain course and speed but may take action if the give-way vessel does not take appropriate action. This is often called the 'starboard hand rule'.",
+      examples: [
+        "Port side vessel alters course when vessels cross at 90 degrees", 
+        "Vessel seeing green light of another vessel gives way",
+        "Stand-on vessel eventually takes action when give-way vessel fails to act"
+      ],
+      relatedRules: ["Rule 16", "Rule 17", "Rule 8"],
+      applicability: ["Power-driven vessels", "Crossing situations", "Good visibility"],
+      penalties: "Clear liability determination in most crossing collisions",
+      modernInterpretation: "Programming basis for autonomous collision avoidance systems"
+    },
+    {
+      id: "rule16",
+      rule: "Rule 16",
+      title: "Action by Give-way Vessel",
+      category: "conduct",
+      description: "Every vessel directed to keep out of the way shall take early and substantial action to keep well clear",
+      detailedText: "Give-way vessel must take positive, early action that is readily apparent to the other vessel. Action should be large enough to be clearly seen and result in passing at a safe distance.",
+      examples: [
+        "Port vessel in crossing situation making substantial course alteration",
+        "Overtaking vessel reducing speed and altering course early",
+        "Power vessel giving way to sailing vessel with obvious maneuver"
+      ],
+      relatedRules: ["Rule 8", "Rule 15", "Rule 17"],
+      applicability: ["Give-way vessels", "All encounter situations"],
+      penalties: "Inadequate give-way action can result in collision liability",
+      modernInterpretation: "Automated collision avoidance systems must demonstrate clear avoiding action"
+    },
+    {
+      id: "rule17",
+      rule: "Rule 17",
+      title: "Action by Stand-on Vessel",
+      category: "conduct", 
+      description: "The stand-on vessel shall maintain course and speed, but may take action when the other vessel is not taking appropriate action",
+      detailedText: "Stand-on vessel maintains course and speed but must take action when it becomes apparent the give-way vessel is not taking sufficient action. When taking action, avoid turning to port for vessels forward of the beam. The stand-on vessel may indicate intentions by sound signals but should act decisively when necessary.",
+      examples: [
+        "Stand-on vessel sounds danger signal when give-way vessel doesn't alter",
+        "Emergency action by stand-on vessel when collision becomes imminent", 
+        "Stand-on vessel maintaining course until last responsible moment"
+      ],
+      relatedRules: ["Rule 15", "Rule 16", "Rule 34"],
+      applicability: ["Stand-on vessels", "When give-way vessel fails to act"],
+      penalties: "Failure to take timely action can result in shared liability",
+      modernInterpretation: "Critical for autonomous vessel decision-making algorithms"
+    },
+    {
+      id: "rule18",
+      rule: "Rule 18",
+      title: "Responsibilities Between Vessels",
+      category: "conduct",
+      description: "Hierarchy of responsibilities between different types of vessels",
+      detailedText: "Power vessels give way to sailing vessels, fishing vessels, restricted vessels, and not under command vessels. Sailing vessels give way to fishing vessels and restricted vessels. Fishing vessels give way to not under command and restricted vessels. Seaplanes generally keep clear of all vessels.",
+      examples: [
+        "Motor yacht giving way to sailing vessel",
+        "Cargo ship avoiding fishing trawler with nets out",
+        "All vessels keeping clear of vessel not under command"
+      ],
+      relatedRules: ["Rule 26", "Rule 27", "Rule 3"],
+      applicability: ["All vessels", "Determines right-of-way hierarchy"],
+      penalties: "Failure to respect vessel hierarchy major factor in collision liability",
+      modernInterpretation: "Includes autonomous vessels, high-speed craft, and modern vessel classifications"
+    },
+    {
+      id: "rule19",
+      rule: "Rule 19", 
+      title: "Conduct of Vessels in Restricted Visibility",
+      category: "special",
+      description: "Special rules apply when vessels are not in sight of one another in restricted visibility",
+      detailedText: "Every vessel must proceed at safe speed and be ready to take immediate action to avoid collision. Vessels must navigate with extreme caution and may need to stop engines and cease all way. Sound signals must be made according to Part D. Regular and systematic use of radar is essential for detecting approaching vessels.",
+      examples: [
+        "Ship proceeding at slow speed in dense fog using radar",
+        "Vessel stopping engines when detecting close contact on radar", 
+        "Regular fog signals being made while navigating in poor visibility"
+      ],
+      relatedRules: ["Rule 5", "Rule 6", "Rule 35", "Rule 36"],
+      applicability: ["All vessels", "Restricted visibility conditions", "Fog, snow, storms"],
+      penalties: "Enhanced penalties for collisions in restricted visibility",
+      modernInterpretation: "Enhanced by thermal imaging, AI-assisted navigation, and 5G communication systems"
+    },
+    {
+      id: "rule20",
+      rule: "Rule 20",
+      title: "Application of Lights",
+      category: "lights",
+      description: "Rules concerning lights apply from sunset to sunrise and in restricted visibility",
+      detailedText: "Navigation lights must be displayed from sunset to sunrise. In restricted visibility, lights may be displayed during daylight. No other lights should interfere with prescribed lights or impair lookout. Lights must comply with Annex I specifications.",
+      examples: [
+        "Commercial vessel displaying proper lights at night",
+        "Ship showing lights in fog during daytime",
+        "Avoiding deck lights that interfere with navigation lights"
+      ],
+      relatedRules: ["Rule 21", "Rule 22", "Annex I"],
+      applicability: ["All vessels", "Night time and restricted visibility"],
+      penalties: "Improper lighting primary evidence in collision investigations",
+      modernInterpretation: "LED technology, smart lighting systems, and automated light control"
+    },
+    {
+      id: "rule21",
+      rule: "Rule 21",
+      title: "Definitions of Lights",
+      category: "lights",
+      description: "Definitions of masthead light, sidelights, stern light, towing light, all-round light, and flashing light",
+      detailedText: "Masthead light shows 225° arc ahead. Sidelights show 112.5° arcs (green starboard, red port). Stern light shows 135° arc astern. Towing light is yellow with stern light characteristics. All-round light shows 360°. Flashing light flashes 120+ times per minute.",
+      examples: [
+        "Masthead light covering forward 225° sector",
+        "Port and starboard sidelights with proper color and arc",
+        "Towing light distinguishing towing vessels"
+      ],
+      relatedRules: ["Rule 23", "Rule 24", "Rule 25", "Annex I"],
+      applicability: ["All vessels", "Light specifications"],
+      penalties: "Wrong light configuration can determine collision fault",
+      modernInterpretation: "Precise LED light specifications and photometric requirements"
+    },
+    {
+      id: "rule22",
+      rule: "Rule 22",
+      title: "Visibility of Lights",
+      category: "lights",
+      description: "Minimum visibility ranges for navigation lights based on vessel size",
+      detailedText: "Lights must be visible at specified minimum ranges: large vessels (50m+) require longer ranges, smaller vessels have reduced requirements. Visibility ranges ensure lights can be seen at safe distances for collision avoidance.",
+      examples: [
+        "Large container ship masthead light visible 6 miles",
+        "Small yacht sidelight visible 1 mile",
+        "Medium vessel towing light visible 2 miles"
+      ],
+      relatedRules: ["Rule 21", "Annex I"],
+      applicability: ["All vessels", "Light intensity requirements"],
+      penalties: "Insufficient light range contributes to collision risk",
+      modernInterpretation: "LED efficiency allows longer ranges, smart lighting adjusts to conditions"
+    },
+    {
+      id: "rule24",
+      rule: "Rule 24",
+      title: "Towing and Pushing",
+      category: "lights",
+      description: "Special lights for vessels engaged in towing and pushing operations",
+      detailedText: "Towing vessels show two or three masthead lights vertically (three if tow exceeds 200m), plus towing light. Vessels being towed show sidelights and stern light. Pushing vessels show two masthead lights. Composite units treated as single power vessel.",
+      examples: [
+        "Tug with three masthead lights towing long barge train",
+        "Push boat with two masthead lights and barge unit",
+        "Vessel being towed showing required lights and day shapes"
+      ],
+      relatedRules: ["Rule 23", "Rule 27", "Annex I"],
+      applicability: ["Towing and pushing vessels", "Vessels being towed"],
+      penalties: "Towing accidents often involve improper light display",
+      modernInterpretation: "LED light arrays, integrated towing systems, and smart barge lighting"
+    },
+    {
+      id: "rule26",
+      rule: "Rule 26",
+      title: "Fishing Vessels",
+      category: "lights",
+      description: "Special lights and shapes for vessels engaged in fishing",
+      detailedText: "Trawling vessels show green over white lights and two cones apex together. Other fishing shows red over white lights and two cones apex together. Additional white light indicates direction of outlying gear over 150m. When making way, also show normal navigation lights.",
+      examples: [
+        "Trawler with green over white lights and cone shapes",
+        "Longliner with red over white lights and gear direction indicator",
+        "Fishing vessel also showing sidelights and stern light when moving"
+      ],
+      relatedRules: ["Rule 18", "Rule 3", "Annex II"],
+      applicability: ["Vessels engaged in fishing", "Trawling and other fishing methods"],
+      penalties: "Fishing vessel lights critical for avoiding gear and determining rights",
+      modernInterpretation: "LED fishing lights, GPS-tracked fishing gear, and electronic fishing notifications"
+    },
+    {
+      id: "rule27",
+      rule: "Rule 27",
+      title: "Vessels Not Under Command or Restricted in Ability to Maneuver",
+      category: "lights",
+      description: "Special lights for vessels unable to maneuver normally",
+      detailedText: "Not under command vessels show two red lights and two balls vertically. Restricted in ability to maneuver show red-white-red lights and ball-diamond-ball shapes. Specific signals for dredging, diving, mineclearance operations.",
+      examples: [
+        "Ship with engine failure showing two red lights",
+        "Dredger with restricted maneuverability lights and obstruction indicators",
+        "Cable layer showing restricted lights while laying cable"
+      ],
+      relatedRules: ["Rule 18", "Rule 3", "Annex I"],
+      applicability: ["Vessels not under command", "Vessels restricted in maneuverability"],
+      penalties: "Failure to display proper signals removes right-of-way protection",
+      modernInterpretation: "Electronic failure notifications, satellite emergency beacons, and automated distress signals"
+    },
+    {
+      id: "rule28",
+      rule: "Rule 28",
+      title: "Vessels Constrained by Their Draft",
+      category: "lights",
+      description: "Special lights for deep-draft vessels with limited maneuverability",
+      detailedText: "Vessels constrained by draft may show three red lights vertically or cylinder shape in addition to normal power vessel lights. Indicates vessel cannot easily deviate from course due to depth limitations.",
+      examples: [
+        "VLCC in shallow channel showing three red lights",
+        "Bulk carrier with deep draft showing cylinder day shape",
+        "Loaded tanker indicating draft constraints to other traffic"
+      ],
+      relatedRules: ["Rule 18", "Rule 23"],
+      applicability: ["Deep-draft vessels", "Vessels limited by depth"],
+      penalties: "Other vessels must avoid impeding passage of draft-constrained vessels",
+      modernInterpretation: "Electronic draft monitoring, real-time under-keel clearance systems"
+    },
+    {
+      id: "rule29",
+      rule: "Rule 29",
+      title: "Pilot Vessels",
+      category: "lights",
+      description: "Special lights for vessels engaged in pilotage duty",
+      detailedText: "Pilot vessels show white over red lights at masthead when on pilotage duty, plus normal navigation lights when underway and anchor lights when at anchor. When not on pilotage duty, show normal lights for vessel of their size.",
+      examples: [
+        "Pilot boat with white over red lights approaching ship",
+        "Pilot vessel at anchor showing pilot lights plus anchor light",
+        "Off-duty pilot vessel showing normal pleasure craft lights"
+      ],
+      relatedRules: ["Rule 23", "Rule 30"],
+      applicability: ["Vessels engaged in pilotage duty"],
+      penalties: "Pilot vessels have special status but must follow general rules when not on duty",
+      modernInterpretation: "Electronic pilot scheduling, GPS pilot transfer monitoring, digital pilot identification"
+    },
+    {
+      id: "rule30",
+      rule: "Rule 30",
+      title: "Anchored Vessels and Vessels Aground",
+      category: "lights",
+      description: "Lights and shapes for anchored and grounded vessels",
+      detailedText: "Anchored vessels show white light forward and lower white light aft. Vessels under 50m may show single white light. Large vessels must illuminate decks. Aground vessels show anchor lights plus two red lights and three balls vertically.",
+      examples: [
+        "Cargo ship at anchor with forward and aft white lights",
+        "Small yacht with single white anchor light",
+        "Grounded vessel showing red lights warning of danger"
+      ],
+      relatedRules: ["Rule 35", "Annex I"],
+      applicability: ["Anchored vessels", "Vessels aground"],
+      penalties: "Improper anchor lights major cause of anchor area collisions",
+      modernInterpretation: "LED anchor lights, GPS anchor watch, electronic anchor position broadcasting"
+    },
+    {
+      id: "rule31",
+      rule: "Rule 31",
+      title: "Seaplanes",
+      category: "lights",
+      description: "Light requirements for seaplanes on water",
+      detailedText: "Seaplanes should exhibit lights similar to those prescribed for vessels as closely as possible when characteristics and position allow. Practical considerations of aircraft design may require modifications.",
+      examples: [
+        "Seaplane showing aircraft navigation lights adapted for water operations",
+        "Amphibious aircraft with maritime-style position lights",
+        "Floatplane displaying closest practical equivalent to vessel lights"
+      ],
+      relatedRules: ["Rule 18", "Annex I"],
+      applicability: ["Seaplanes operating on water"],
+      penalties: "Seaplanes must integrate safely with marine traffic",
+      modernInterpretation: "Modern amphibious aircraft, drone operations on water, hybrid air-sea vehicles"
+    },
+    {
+      id: "rule32",
+      rule: "Rule 32",
+      title: "Definitions of Sound Signals",
+      category: "sounds",
+      description: "Definitions of whistle, short blast, and prolonged blast",
+      detailedText: "Whistle means any sound signaling appliance meeting specifications. Short blast is about one second duration. Prolonged blast is four to six seconds duration. Sound signals must meet specific frequency and audibility requirements.",
+      examples: [
+        "Ship's whistle giving one short blast for starboard turn",
+        "Vessel sounding prolonged blast in fog every two minutes",
+        "Emergency sound signal of five short blasts"
+      ],
+      relatedRules: ["Rule 33", "Rule 34", "Rule 35", "Annex III"],
+      applicability: ["All vessels with sound signaling equipment"],
+      penalties: "Improper sound signals can indicate confusion or failure to communicate intentions",
+      modernInterpretation: "Electronic sound signal generation, automated fog signal systems, digital communication integration"
+    },
+    {
+      id: "rule33",
+      rule: "Rule 33",
+      title: "Equipment for Sound Signals",
+      category: "sounds",
+      description: "Requirements for whistles, bells, and gongs on vessels",
+      detailedText: "Vessels 12m+ need whistle and bell. Vessels 100m+ also need gong. Sound equipment must meet specifications in Annex III. Smaller vessels need some means of making efficient sound signal. Manual sounding must always be possible.",
+      examples: [
+        "Large container ship with whistle, bell, and gong",
+        "Medium fishing vessel with whistle and bell",
+        "Small recreational boat with air horn or whistle"
+      ],
+      relatedRules: ["Rule 32", "Rule 34", "Rule 35", "Annex III"],
+      applicability: ["All vessels by size category"],
+      penalties: "Inadequate sound signaling equipment violates safety requirements",
+      modernInterpretation: "Electronic sound signal systems, automated signaling, backup sound devices"
+    },
+    {
+      id: "rule34",
+      rule: "Rule 34",
+      title: "Maneuvering and Warning Signals",
+      category: "sounds",
+      description: "Sound signals for indicating maneuvers and warning other vessels",
+      detailedText: "One short blast means altering course to starboard. Two short blasts mean altering to port. Three short blasts mean engines going astern. Five short blasts indicate doubt or danger. Narrow channel overtaking signals use prolonged and short blast combinations.",
+      examples: [
+        "Container ship sounding one blast before turning right",
+        "Ferry giving two blasts before port turn",
+        "Vessel in doubt sounding five short blasts rapidly"
+      ],
+      relatedRules: ["Rule 8", "Rule 9", "Rule 35"],
+      applicability: ["Vessels in sight of each other", "Maneuvering situations"],
+      penalties: "Failure to signal maneuvers or improper signals contribute to collision risk",
+      modernInterpretation: "Integration with AIS maneuvering broadcasts, automated turn signals, digital intention sharing"
+    },
+    {
+      id: "rule35",
+      rule: "Rule 35",
+      title: "Sound Signals in Restricted Visibility",
+      category: "sounds",
+      description: "Fog signals for different types of vessels and situations",
+      detailedText: "Power vessels making way sound one prolonged blast every 2 minutes. Power vessels stopped sound two prolonged blasts. Sailing vessels, fishing vessels, and restricted vessels sound one prolonged plus two short blasts. Anchored vessels ring bell for 5 seconds every minute.",
+      examples: [
+        "Ship in fog sounding one long blast every two minutes",
+        "Anchored vessel ringing bell every minute",
+        "Fishing vessel sounding one long plus two short blasts"
+      ],
+      relatedRules: ["Rule 19", "Rule 30", "Rule 33"],
+      applicability: ["All vessels", "Restricted visibility conditions"],
+      penalties: "Failure to make fog signals major factor in collision investigations",
+      modernInterpretation: "Automated fog signal systems, GPS-triggered signals, electronic fog signal coordination"
+    },
+    {
+      id: "rule36",
+      rule: "Rule 36",
+      title: "Signals to Attract Attention",
+      category: "sounds",
+      description: "Signals for attracting attention of other vessels",
+      detailedText: "Any vessel may make light or sound signals to attract attention, provided they cannot be mistaken for signals authorized elsewhere in the Rules. Searchlights may be directed toward danger but must not embarrass other vessels.",
+      examples: [
+        "Vessel flashing searchlight to warn of hazard",
+        "Ship using horn to attract attention in emergency",
+        "Warning signals that don't conflict with navigation signals"
+      ],
+      relatedRules: ["Rule 37", "Annex IV"],
+      applicability: ["All vessels", "Emergency and attention-getting situations"],
+      penalties: "Improper attention signals must not interfere with navigation",
+      modernInterpretation: "LED signal lights, electronic warning systems, digital emergency communication"
+    },
+    {
+      id: "rule37",
+      rule: "Rule 37",
+      title: "Distress Signals",
+      category: "sounds",
+      description: "Signals indicating distress and need of assistance",
+      detailedText: "Vessels in distress shall use signals prescribed in Annex IV including rockets, orange smoke, radio signals (SOS, MAYDAY), signal flags, flames, and other internationally recognized distress signals. Misuse of distress signals is prohibited.",
+      examples: [
+        "Vessel firing red rocket flares in emergency",
+        "Ship transmitting MAYDAY on VHF radio",
+        "Vessel displaying orange smoke signal"
+      ],
+      relatedRules: ["Rule 36", "Annex IV"],
+      applicability: ["Vessels in distress", "Emergency situations"],
+      penalties: "False distress signals subject to severe penalties; failure to assist vessels in distress is criminal",
+      modernInterpretation: "EPIRB satellite beacons, digital selective calling (DSC), GPS emergency positioning"
+    },
+    {
+      id: "rule38",
+      rule: "Rule 38",
+      title: "Exemptions",
+      category: "special",
+      description: "Exemptions for vessels built before COLREG 1972 entry into force",
+      detailedText: "Vessels complying with previous 1960 Collision Regulations that were built or under construction when 1972 COLREG entered force may be exempted from certain light and sound signal requirements for specified periods. Applies mainly to historic vessels.",
+      examples: [
+        "Classic yacht with traditional light arrangements",
+        "Historic vessel with grandfathered equipment",
+        "Older commercial vessel with approved alternative compliance"
+      ],
+      relatedRules: ["Rule 1", "Annex I", "Annex III"],
+      applicability: ["Pre-1977 vessels", "Historic vessels", "Special construction vessels"],
+      penalties: "Exemptions must be properly documented and approved by flag state",
+      modernInterpretation: "Modern exemptions for innovative designs, autonomous vessels, and alternative compliance methods"
     }
   ];
 
