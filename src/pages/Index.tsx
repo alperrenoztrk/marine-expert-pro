@@ -16,14 +16,6 @@ import React from "react"; // Added missing import for React
 
 
 // Import all calculation components with error boundary
-const HydrodynamicsCalculations = React.lazy(() => 
-  import("@/components/calculations/HydrodynamicsCalculations").then(module => ({
-    default: module.HydrodynamicsCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
 const EngineCalculations = React.lazy(() => 
   import("@/components/calculations/EngineCalculations").then(module => ({
     default: module.EngineCalculations
@@ -174,13 +166,6 @@ const Index = () => {
 
   // Calculation cards configuration
   const calculationCards: CalculationCard[] = [
-    {
-      id: "hydrodynamics",
-      title: "Hidrodinamik",
-      description: "Direnç, güç, itme ve dalga yük hesaplamaları",
-      icon: Waves,
-      component: HydrodynamicsCalculations
-    },
     {
       id: "engine",
       title: "Makine Hesaplamaları", 
@@ -399,6 +384,12 @@ const Index = () => {
                   <Button size="sm" variant="outline" className="gap-2 border-orange-300 text-orange-600 hover:bg-orange-50">
                     <Compass className="w-4 h-4" />
                     <span data-translatable>Seyir</span>
+                  </Button>
+                </Link>
+                <Link to="/hydrodynamics">
+                  <Button size="sm" variant="outline" className="gap-2 border-cyan-300 text-cyan-600 hover:bg-cyan-50">
+                    <Waves className="w-4 h-4" />
+                    <span data-translatable>Hidrodinamik</span>
                   </Button>
                 </Link>
                 <Link to="/regulations">
