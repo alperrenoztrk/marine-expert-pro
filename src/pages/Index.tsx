@@ -16,14 +16,6 @@ import React from "react"; // Added missing import for React
 
 
 // Import all calculation components with error boundary
-const CargoCalculations = React.lazy(() => 
-  import("@/components/calculations/CargoCalculations").then(module => ({
-    default: module.CargoCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
 const BallastCalculations = React.lazy(() => 
   import("@/components/calculations/BallastCalculations").then(module => ({
     default: module.BallastCalculations
@@ -158,13 +150,6 @@ const Index = () => {
 
   // Calculation cards configuration
   const calculationCards: CalculationCard[] = [
-    {
-      id: "cargo",
-      title: "Kargo Operasyonları",
-      description: "Yük hesaplamaları, istif planı ve ağırlık merkezi",
-      icon: Package,
-      component: CargoCalculations
-    },
     {
       id: "ballast",
       title: "Balast Hesaplamaları",
@@ -381,6 +366,12 @@ const Index = () => {
                   <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50">
                     <Cog className="w-4 h-4" />
                     <span data-translatable>Makine</span>
+                  </Button>
+                </Link>
+                <Link to="/cargo">
+                  <Button size="sm" variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50">
+                    <Package className="w-4 h-4" />
+                    <span data-translatable>Kargo</span>
                   </Button>
                 </Link>
                 <Link to="/regulations">
