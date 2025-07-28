@@ -14,7 +14,6 @@ import { EngineCalculations } from "./calculations/EngineCalculations";
 import { SafetyCalculations } from "./calculations/SafetyCalculations";
 import { EmissionCalculations } from "./calculations/EmissionCalculations";
 import { WeatherCalculations } from "./calculations/WeatherCalculations";
-import { EconomicCalculations } from "./calculations/EconomicCalculations";
 import { SpecialShipCalculations } from "./calculations/SpecialShipCalculations";
 
 export const MaritimeCalculator = () => {
@@ -79,10 +78,6 @@ export const MaritimeCalculator = () => {
             <Waves className="w-3 h-3" />
             <span>Hava</span>
           </TabsTrigger>
-          <TabsTrigger value="economic" className="text-xs flex-col gap-1 p-2">
-            <Calculator className="w-3 h-3" />
-            <span>Ekonomik</span>
-          </TabsTrigger>
           <TabsTrigger value="special" className="text-xs flex-col gap-1 p-2">
             <Ship className="w-3 h-3" />
             <span>Özel</span>
@@ -131,10 +126,6 @@ export const MaritimeCalculator = () => {
         
         <TabsContent value="weather" className="mt-4">
           <WeatherCalculations />
-        </TabsContent>
-        
-        <TabsContent value="economic" className="mt-4">
-          <EconomicCalculations />
         </TabsContent>
         
         <TabsContent value="special" className="mt-4">

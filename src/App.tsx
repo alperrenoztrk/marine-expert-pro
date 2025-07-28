@@ -13,6 +13,7 @@ import Cargo from "./pages/Cargo";
 import Ballast from "./pages/Ballast";
 import TrimList from "./pages/TrimList";
 import AuthCallback from "./pages/AuthCallback";
+import Economics from "./pages/Economics";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/cargo" element={<Cargo />} />
           <Route path="/ballast" element={<Ballast />} />
           <Route path="/trim-list" element={<TrimList />} />
+          <Route path="/economics" element={<Economics />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>

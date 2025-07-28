@@ -13,6 +13,7 @@ import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
+import { EconomicCalculationsCard } from "@/components/EconomicCalculationsCard";
 
 
 // Import all calculation components with error boundary
@@ -49,13 +50,7 @@ const WeatherCalculations = React.lazy(() =>
   }))
 );
 
-const EconomicCalculations = React.lazy(() => 
-  import("@/components/calculations/EconomicCalculations").then(module => ({
-    default: module.EconomicCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
+
 
 const SpecialShipCalculations = React.lazy(() => 
   import("@/components/calculations/SpecialShipCalculations").then(module => ({
@@ -183,7 +178,7 @@ const Index = () => {
       title: "Ekonomik Hesaplamalar",
       description: "Maliyet analizi, yakıt ekonomisi ve verimlilik hesaplamaları",
       icon: DollarSign,
-      component: EconomicCalculations
+      component: EconomicCalculationsCard
     },
     {
       id: "special",
