@@ -14,6 +14,7 @@ import { AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { WorkingAIAssistant } from "@/components/WorkingAIAssistant";
 import { PermanentAIAssistant } from "@/components/PermanentAIAssistant";
+import { WolframIntegration } from "@/components/WolframIntegration";
 
 const Formulas = () => {
   const [question, setQuestion] = useState("");
@@ -149,6 +150,9 @@ const Formulas = () => {
         </div>
       )}
 
+      {/* Wolfram Alpha Calculator */}
+      <WolframIntegration />
+      
       {/* Kalıcı Maritime AI Asistanı */}
       <PermanentAIAssistant />
       

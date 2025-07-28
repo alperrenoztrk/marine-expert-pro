@@ -47,14 +47,14 @@ serve(async (req) => {
     let geminiApiKey = Deno.env.get('GEMINI_API_KEY');
     let wolframApiKey = Deno.env.get('WOLFRAM_API_KEY');
     
-    // Fallback API keys
+    // Fallback API keys - Updated with new keys
     if (!geminiApiKey) {
       geminiApiKey = 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
       console.log('Using fallback Gemini API key');
     }
     
     if (!wolframApiKey) {
-      wolframApiKey = '6YH9XR-Y7JA8WVXTJ';
+      wolframApiKey = 'G3KTLV-GL5URGJ7YG';
       console.log('Using fallback Wolfram API key');
     }
     
