@@ -19,6 +19,8 @@ interface COLREGRule {
   description: string;
   detailedText: string;
   visualAid?: string;
+  imageUrl?: string;
+  imageDescription?: string;
   examples: string[];
   relatedRules: string[];
   applicability: string[];
@@ -312,12 +314,33 @@ const Regulations = () => {
       modernInterpretation: "Smart LED systems, automatic light switching, and integration with vessel monitoring systems"
     },
     {
+      id: "rule23b",
+      rule: "Rule 23(b)",
+      title: "Air-cushion Vessels (Hovercraft)",
+      category: "lights",
+      description: "Special additional lights for air-cushion vessels operating in non-displacement mode",
+      detailedText: "Air-cushion vessel when operating in non-displacement mode shows all-round flashing yellow light in addition to normal power vessel lights. When in displacement mode, shows only normal power vessel lights.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/hovercraft-ahead-new-3x.png",
+      imageDescription: "Hovercraft showing flashing yellow light in addition to normal navigation lights",
+      examples: [
+        "Passenger hovercraft with flashing yellow light",
+        "Military hovercraft showing yellow beacon",
+        "Commercial air-cushion vehicle with additional yellow light"
+      ],
+      relatedRules: ["Rule 23", "Annex I"],
+      applicability: ["Air-cushion vessels", "Non-displacement mode operation"],
+      penalties: "Failure to show proper lights can affect collision avoidance",
+      modernInterpretation: "LED flashing systems, integrated hovercraft lighting, GPS mode detection"
+    },
+        {
       id: "rule25",
       rule: "Rule 25",
       title: "Sailing Vessels and Vessels Under Oars",
       category: "lights",
       description: "Sailing vessel underway shall exhibit sidelights and a stern light",
       detailedText: "Sailing vessel may carry side lights and stern light in separate lanterns or combined in one lantern at masthead. Vessels under 20m may display these lights in one lantern at masthead. Vessels under oars may display lights or have electric torch ready for use. Sailing vessels may also display red over green lights at masthead for additional visibility.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/sailingboat1-ahead-new-3x.png",
+      imageDescription: "Sailing vessel navigation lights showing red/green sidelights and white stern light configuration",
       examples: [
         "Yacht with red/green side lights and white stern light",
         "Racing sailboat with masthead tricolor light",
@@ -325,26 +348,28 @@ const Regulations = () => {
       ],
       relatedRules: ["Rule 12", "Rule 18", "Annex I"],
       applicability: ["Sailing vessels under sail alone", "Vessels under oars"],
-              penalties: "Sailing vessel accidents often involve recreational craft with inadequate lighting",
-        modernInterpretation: "Solar-powered LED systems, GPS-integrated lighting, and smart sailing technologies"
-      },
-      {
-        id: "rule23",
-        rule: "Rule 23",
-        title: "Power-driven Vessels Underway",
-        category: "lights",
-        description: "Power-driven vessel shall exhibit masthead light, sidelights, and stern light",
-        detailedText: "Masthead light must be placed over fore and aft centerline showing unbroken light over 225° arc. Vessels 50m+ must show two masthead lights with after light higher than forward light. Side lights show unbroken light over 112.5° arc from dead ahead to 22.5° abaft beam. Stern light shows 135° arc centered on stern.",
-        examples: [
-          "Large container ship with two white masthead lights, red/green side lights, white stern light",
-          "Small motor yacht under 50m with single masthead light and navigation lights", 
-          "Pilot vessel displaying pilot lights in addition to normal navigation lights"
-        ],
-        relatedRules: ["Rule 20", "Rule 21", "Annex I"],
-        applicability: ["Power-driven vessels underway", "All sizes", "Night and restricted visibility"],
-        penalties: "Incorrect light display can determine collision liability",
-        modernInterpretation: "Smart LED systems, automatic light switching, and integration with vessel monitoring systems"
-      },
+      penalties: "Sailing vessel accidents often involve recreational craft with inadequate lighting",
+      modernInterpretation: "Solar-powered LED systems, GPS-integrated lighting, and smart sailing technologies"
+    },
+          {
+      id: "rule23",
+      rule: "Rule 23",
+      title: "Power-driven Vessels Underway",
+      category: "lights",
+      description: "Power-driven vessel shall exhibit masthead light, sidelights, and stern light",
+      detailedText: "Masthead light must be placed over fore and aft centerline showing unbroken light over 225° arc. Vessels 50m+ must show two masthead lights with after light higher than forward light. Side lights show unbroken light over 112.5° arc from dead ahead to 22.5° abaft beam. Stern light shows 135° arc centered on stern.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/power-driven-vessel-ahead-new-3x.png",
+      imageDescription: "Power-driven vessel navigation lights showing masthead light forward, red/green sidelights, and white stern light configuration",
+      examples: [
+        "Large container ship with two white masthead lights, red/green side lights, white stern light",
+        "Small motor yacht under 50m with single masthead light and navigation lights", 
+        "Pilot vessel displaying pilot lights in addition to normal navigation lights"
+      ],
+      relatedRules: ["Rule 20", "Rule 21", "Annex I"],
+      applicability: ["Power-driven vessels underway", "All sizes", "Night and restricted visibility"],
+      penalties: "Incorrect light display can determine collision liability",
+      modernInterpretation: "Smart LED systems, automatic light switching, and integration with vessel monitoring systems"
+    },
       {
         id: "rule8",
       rule: "Rule 8", 
@@ -420,6 +445,8 @@ const Regulations = () => {
       category: "conduct",
       description: "When two power-driven vessels are meeting head-on, each shall alter course to starboard",
       detailedText: "Both vessels must alter course to starboard to pass port-to-port. Situation exists when vessels see each other ahead with masthead lights in line and both sidelights visible. When in doubt, assume head-on situation exists.",
+      imageUrl: "https://www.hughes38.com/wp-content/uploads/2016/02/COLREGS-Summary-and-Action-Chart.pdf",
+      imageDescription: "COLREG head-on situation diagram showing both vessels altering course to starboard",
       examples: [
         "Two container ships meeting in mid-ocean altering to starboard",
         "Ferry and cargo ship meeting in channel both going to starboard",
@@ -437,6 +464,8 @@ const Regulations = () => {
       category: "conduct",
       description: "When two power-driven vessels are crossing, the vessel having the other on her starboard side shall give way",
       detailedText: "When two power vessels cross so that risk of collision exists, the vessel having the other on her starboard side must give way. The stand-on vessel should maintain course and speed but may take action if the give-way vessel does not take appropriate action. This is often called the 'starboard hand rule'.",
+      imageUrl: "https://www.unitedmarine.net/blog/wp-content/uploads/vessels-passing21.jpg",
+      imageDescription: "Diagram showing crossing situation where vessel with another on starboard side gives way",
       examples: [
         "Port side vessel alters course when vessels cross at 90 degrees", 
         "Vessel seeing green light of another vessel gives way",
@@ -573,6 +602,8 @@ const Regulations = () => {
       category: "lights",
       description: "Special lights for vessels engaged in towing and pushing operations",
       detailedText: "Towing vessels show two or three masthead lights vertically (three if tow exceeds 200m), plus towing light. Vessels being towed show sidelights and stern light. Pushing vessels show two masthead lights. Composite units treated as single power vessel.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/tugboat-50-200-ahead-new2-3x.png",
+      imageDescription: "Towing vessel showing three vertical masthead lights and yellow towing light for tow exceeding 200m",
       examples: [
         "Tug with three masthead lights towing long barge train",
         "Push boat with two masthead lights and barge unit",
@@ -590,6 +621,8 @@ const Regulations = () => {
       category: "lights",
       description: "Special lights and shapes for vessels engaged in fishing",
       detailedText: "Trawling vessels show green over white lights and two cones apex together. Other fishing shows red over white lights and two cones apex together. Additional white light indicates direction of outlying gear over 150m. When making way, also show normal navigation lights.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/trawling-ahead-new-3x.png",
+      imageDescription: "Fishing vessel engaged in trawling showing green over white lights and proper day shapes",
       examples: [
         "Trawler with green over white lights and cone shapes",
         "Longliner with red over white lights and gear direction indicator",
@@ -607,6 +640,8 @@ const Regulations = () => {
       category: "lights",
       description: "Special lights for vessels unable to maneuver normally",
       detailedText: "Not under command vessels show two red lights and two balls vertically. Restricted in ability to maneuver show red-white-red lights and ball-diamond-ball shapes. Specific signals for dredging, diving, mineclearance operations.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/vessel-no-command-ahead-new-3x.png",
+      imageDescription: "Vessel not under command showing two red all-round lights vertically aligned",
       examples: [
         "Ship with engine failure showing two red lights",
         "Dredger with restricted maneuverability lights and obstruction indicators",
@@ -618,12 +653,33 @@ const Regulations = () => {
       modernInterpretation: "Electronic failure notifications, satellite emergency beacons, and automated distress signals"
     },
     {
+      id: "rule27f",
+      rule: "Rule 27(f)",
+      title: "Mine Clearance Vessels",
+      category: "lights",
+      description: "Special lights for vessels engaged in mine clearance operations",
+      detailedText: "Vessels engaged in mine clearance show three green all-round lights in triangular formation - one at foremast and one at each end of the foreyard. Other vessels must stay at least 1000m clear. Shows normal power vessel or anchor lights as appropriate.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/minesweeper-ahead-new2-3x.png",
+      imageDescription: "Mine clearance vessel showing three green lights in triangular formation with day shapes",
+      examples: [
+        "Naval minesweeper with three green lights in triangle formation",
+        "Mine clearance vessel with warning zone of 1000m minimum",
+        "Commercial mine clearance showing green lights and normal navigation lights"
+      ],
+      relatedRules: ["Rule 18", "Rule 27", "Annex I"],
+      applicability: ["Vessels engaged in mine clearance", "All other vessels must keep clear"],
+      penalties: "Severe penalties for violating 1000m exclusion zone",
+      modernInterpretation: "GPS-monitored exclusion zones, electronic warning systems, satellite tracking"
+    },
+    {
       id: "rule28",
       rule: "Rule 28",
       title: "Vessels Constrained by Their Draft",
       category: "lights",
       description: "Special lights for deep-draft vessels with limited maneuverability",
       detailedText: "Vessels constrained by draft may show three red lights vertically or cylinder shape in addition to normal power vessel lights. Indicates vessel cannot easily deviate from course due to depth limitations.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/power-driven-vessel-constrained-ahead-new-3x.png",
+      imageDescription: "Vessel constrained by draft showing three red lights vertically and cylinder day shape",
       examples: [
         "VLCC in shallow channel showing three red lights",
         "Bulk carrier with deep draft showing cylinder day shape",
@@ -641,6 +697,8 @@ const Regulations = () => {
       category: "lights",
       description: "Special lights for vessels engaged in pilotage duty",
       detailedText: "Pilot vessels show white over red lights at masthead when on pilotage duty, plus normal navigation lights when underway and anchor lights when at anchor. When not on pilotage duty, show normal lights for vessel of their size.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/pilot-boat-ahead-new-3x.png",
+      imageDescription: "Pilot vessel showing white over red lights plus navigation lights when on duty",
       examples: [
         "Pilot boat with white over red lights approaching ship",
         "Pilot vessel at anchor showing pilot lights plus anchor light",
@@ -658,6 +716,8 @@ const Regulations = () => {
       category: "lights",
       description: "Lights and shapes for anchored and grounded vessels",
       detailedText: "Anchored vessels show white light forward and lower white light aft. Vessels under 50m may show single white light. Large vessels must illuminate decks. Aground vessels show anchor lights plus two red lights and three balls vertically.",
+      imageUrl: "https://www.sailingissues.com/navcourse10images/anchored-100-ahead-new-3x.png",
+      imageDescription: "Anchored vessel showing required white anchor lights fore and aft",
       examples: [
         "Cargo ship at anchor with forward and aft white lights",
         "Small yacht with single white anchor light",
@@ -1028,6 +1088,37 @@ const Regulations = () => {
                             <h4 className="font-semibold mb-2">Detaylı Açıklama</h4>
                             <p className="text-sm leading-relaxed">{rule.detailedText}</p>
                           </div>
+
+                          {/* Visual Reference */}
+                          {rule.imageUrl && (
+                            <div>
+                              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                <Camera className="h-4 w-4" />
+                                Görsel Referans
+                              </h4>
+                              <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                <div className="relative overflow-hidden rounded-lg border border-gray-300">
+                                  <img 
+                                    src={rule.imageUrl} 
+                                    alt={rule.imageDescription || `Visual diagram for ${rule.title}`}
+                                    className="w-full h-auto max-h-96 object-contain"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                      e.currentTarget.nextElementSibling.style.display = 'block';
+                                    }}
+                                  />
+                                  <div className="hidden text-center text-gray-500 p-4">
+                                    Görsel yüklenemedi
+                                  </div>
+                                </div>
+                                {rule.imageDescription && (
+                                  <p className="text-sm text-gray-600 mt-2 italic">
+                                    {rule.imageDescription}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          )}
 
                           {/* Examples */}
                           <div>
