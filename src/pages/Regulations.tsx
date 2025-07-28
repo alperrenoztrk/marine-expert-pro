@@ -218,6 +218,8 @@ const Regulations = () => {
       category: "conduct",
       description: "Any vessel overtaking another shall keep clear of the vessel being overtaken",
       detailedText: "Overtaking vessel must keep clear until finally past and clear. A vessel is overtaking when approaching from direction more than 22.5° abaft the beam. When in doubt, assume you are overtaking. The overtaking vessel remains the give-way vessel even if the overtaken vessel changes course during the maneuver.",
+      imageUrl: "https://www.hughes38.com/wp-content/uploads/2016/02/COLREGS-Summary-and-Action-Chart.pdf",
+      imageDescription: "COLREG overtaking diagram showing 22.5° abaft beam sector and stern light visibility zone",
       examples: [
         "Fast container ship overtaking slower bulk carrier",
         "Yacht overtaking commercial fishing vessel",
@@ -735,6 +737,8 @@ const Regulations = () => {
       category: "lights",
       description: "Light requirements for seaplanes on water",
       detailedText: "Seaplanes should exhibit lights similar to those prescribed for vessels as closely as possible when characteristics and position allow. Practical considerations of aircraft design may require modifications.",
+      imageUrl: "https://opanalytics.ca/courses/mod/page/view.php?id=12",
+      imageDescription: "Seaplane navigation lights configuration showing aircraft adapted for water operations",
       examples: [
         "Seaplane showing aircraft navigation lights adapted for water operations",
         "Amphibious aircraft with maritime-style position lights",
