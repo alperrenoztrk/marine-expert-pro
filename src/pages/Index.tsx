@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History, Calculator } from "lucide-react";
+import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History, Calculator, TrendingUp } from "lucide-react";
 import maritimeHero from "@/assets/maritime-hero.jpg";
 import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
@@ -60,6 +60,14 @@ const EconomicCalculations = React.lazy(() =>
 const SpecialShipCalculations = React.lazy(() => 
   import("@/components/calculations/SpecialShipCalculations").then(module => ({
     default: module.SpecialShipCalculations
+  })).catch(() => ({ 
+    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
+  }))
+);
+
+const TrimCalculations = React.lazy(() => 
+  import("@/components/calculations/TrimCalculations").then(module => ({
+    default: module.TrimCalculations
   })).catch(() => ({ 
     default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
   }))
@@ -141,6 +149,13 @@ const Index = () => {
       description: "Mukavemet, gerilme ve yapısal analiz hesaplamaları", 
       icon: Building,
       component: StructuralCalculations
+    },
+    {
+      id: "trim",
+      title: "Trim ve List Hesaplamaları",
+      description: "Gemi duruşu, trim açısı ve list düzeltme hesaplamaları",
+      icon: TrendingUp,
+      component: TrimCalculations
     },
     {
       id: "safety",
