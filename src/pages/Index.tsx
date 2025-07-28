@@ -10,7 +10,7 @@ import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { useAdManager, loadAdSenseScript } from "@/hooks/useAdManager";
 import { useUserData } from "@/hooks/useUserData";
 import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
-import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
+
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
 

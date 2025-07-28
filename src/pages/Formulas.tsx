@@ -11,7 +11,7 @@ import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
 import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
 import { useAdManager } from "@/hooks/useAdManager";
 import { AdBannerInline } from "@/components/ads/AdBanner";
-import { NativeAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
+
 import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
 
 const Formulas = () => {
@@ -142,11 +142,7 @@ const Formulas = () => {
       </div>
 
       {/* Üst reklam - Sayfa yüklendiğinde */}
-      {shouldShowAd('top-page') && (
-        <div className="mb-6">
-          <MaritimeSoftwareAd />
-        </div>
-      )}
+
 
       {/* Unified Maritime Assistant */}
       <UnifiedMaritimeAssistant />
@@ -271,12 +267,7 @@ const Formulas = () => {
           </CardContent>
         </Card>
 
-        {/* Sayfa sonu reklamı */}
-        {shouldShowAd('bottom-page') && (
-          <div className="mt-6 pt-4 border-t">
-            <NativeAd />
-          </div>
-        )}
+
       </div>
     </MobileLayout>
   );
