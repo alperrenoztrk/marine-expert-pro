@@ -16,14 +16,6 @@ import React from "react"; // Added missing import for React
 
 
 // Import all calculation components with error boundary
-const EngineCalculations = React.lazy(() => 
-  import("@/components/calculations/EngineCalculations").then(module => ({
-    default: module.EngineCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
 const CargoCalculations = React.lazy(() => 
   import("@/components/calculations/CargoCalculations").then(module => ({
     default: module.CargoCalculations
@@ -166,13 +158,6 @@ const Index = () => {
 
   // Calculation cards configuration
   const calculationCards: CalculationCard[] = [
-    {
-      id: "engine",
-      title: "Makine Hesaplamaları", 
-      description: "Motor gücü, yakıt tüketimi ve performans hesaplamaları",
-      icon: Cog,
-      component: EngineCalculations
-    },
     {
       id: "cargo",
       title: "Kargo Operasyonları",
@@ -390,6 +375,12 @@ const Index = () => {
                   <Button size="sm" variant="outline" className="gap-2 border-cyan-300 text-cyan-600 hover:bg-cyan-50">
                     <Waves className="w-4 h-4" />
                     <span data-translatable>Hidrodinamik</span>
+                  </Button>
+                </Link>
+                <Link to="/engine">
+                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50">
+                    <Cog className="w-4 h-4" />
+                    <span data-translatable>Makine</span>
                   </Button>
                 </Link>
                 <Link to="/regulations">
