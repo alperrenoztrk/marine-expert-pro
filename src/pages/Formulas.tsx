@@ -12,9 +12,7 @@ import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
 import { useAdManager } from "@/hooks/useAdManager";
 import { AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
-import { WorkingAIAssistant } from "@/components/WorkingAIAssistant";
-import { PermanentAIAssistant } from "@/components/PermanentAIAssistant";
-import { WolframIntegration } from "@/components/WolframIntegration";
+import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
 
 const Formulas = () => {
   const [question, setQuestion] = useState("");
@@ -150,17 +148,11 @@ const Formulas = () => {
         </div>
       )}
 
-      {/* Wolfram Alpha Calculator */}
-      <WolframIntegration />
-      
-      {/* Kalıcı Maritime AI Asistanı */}
-      <PermanentAIAssistant />
-      
-      {/* Backup AI Asistanı */}
-      <WorkingAIAssistant />
+      {/* Unified Maritime Assistant */}
+      <UnifiedMaritimeAssistant />
 
-      {/* Gemini AI Soru-Cevap Bölümü - Gelişmiş */}
-      <div className="space-y-3 sm:space-y-4">
+      {/* Legacy Gemini Section - Hidden */}
+      <div className="space-y-3 sm:space-y-4 hidden">
         <Card className="shadow-[var(--shadow-card)] border-l-4 border-l-primary/20">
           <CardHeader className="pb-3 sm:pb-4">
             <div className="flex items-center justify-between">

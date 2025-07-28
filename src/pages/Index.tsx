@@ -13,8 +13,7 @@ import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
-import { TestCalculation } from "@/components/TestCalculation";
-import { TestGeminiAI } from "@/components/TestGeminiAI";
+
 
 // Import all calculation components with error boundary
 const StabilityCalculations = React.lazy(() => 
@@ -281,20 +280,6 @@ const Index = () => {
       description: "Tanker, konteyner, yolcu gemisi özel hesaplamaları",
       icon: Ship,
       component: SpecialShipCalculations
-    },
-    {
-      id: "test",
-      title: "Test Hesaplama",
-      description: "Basit deplasman hesaplaması - test için",
-      icon: Calculator,
-      component: TestCalculation
-    },
-    {
-      id: "ai-test",
-      title: "AI Test Modu",
-      description: "Gemini AI asistanını test edin - simülasyon",
-      icon: Brain,
-      component: TestGeminiAI
     }
   ];
 
