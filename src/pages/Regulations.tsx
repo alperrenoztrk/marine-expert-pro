@@ -329,13 +329,13 @@ const Regulations = () => {
   const handleDownloadCOLREG = () => {
     toast({
       title: "COLREG İndiriliyor",
-      description: "Resmi IMO dokümantasyonu cihazınıza kaydediliyor",
+      description: "US Coast Guard resmi Navigation Rules dokümantasyonu",
     });
 
-    const downloadUrl = 'https://www.pfri.uniri.hr/bopri/documents/33-MECOLREGS_000.pdf';
+    const downloadUrl = 'https://www.navcen.uscg.gov/sites/default/files/pdf/navRules/navrules.pdf';
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.download = 'COLREG_1972_Official.pdf';
+    link.download = 'COLREG_Navigation_Rules_2024.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1096,17 +1096,17 @@ const Regulations = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-6 text-center space-y-4">
-                  <div className="space-y-2">
-                    <p className="text-gray-800 font-semibold">
-                      Collision Regulations
-                    </p>
-                    <p className="text-gray-600 text-sm">
-                      Çarpışmayı Önleme Kuralları - Resmi IMO Dokümantasyonu
-                    </p>
-                    <Badge variant="secondary" className="text-xs">
-                      Latest Amendment: 2001
-                    </Badge>
-                  </div>
+                                     <div className="space-y-2">
+                     <p className="text-gray-800 font-semibold">
+                       Navigation Rules (International-Inland)
+                     </p>
+                     <p className="text-gray-600 text-sm">
+                       US Coast Guard Resmi Navigation Rules - COLREG 1972 + Inland Rules
+                     </p>
+                     <Badge variant="secondary" className="text-xs">
+                       Latest Edition: 2024
+                     </Badge>
+                   </div>
                   <Button 
                     onClick={handleDownloadCOLREG}
                     className="w-full bg-blue-600 hover:bg-blue-700"
@@ -1114,9 +1114,9 @@ const Regulations = () => {
                     <Download className="w-4 h-4 mr-2" />
                     COLREG İndir
                   </Button>
-                  <p className="text-xs text-gray-500">
-                    PDF | ~2.1MB | English
-                  </p>
+                                     <p className="text-xs text-gray-500">
+                     PDF | ~3.2MB | English | US Coast Guard Official
+                   </p>
                 </CardContent>
               </Card>
 
