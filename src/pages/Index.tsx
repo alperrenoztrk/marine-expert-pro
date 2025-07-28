@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History, Calculator, TrendingUp, ExternalLink } from "lucide-react";
+import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, BookmarkPlus, History } from "lucide-react";
 import maritimeHero from "@/assets/maritime-hero.jpg";
 import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
@@ -13,72 +13,11 @@ import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
-import { EconomicCalculationsCard } from "@/components/EconomicCalculationsCard";
 
 
-// Import all calculation components with error boundary
-
-const StructuralCalculations = React.lazy(() => 
-  import("@/components/calculations/StructuralCalculations").then(module => ({
-    default: module.StructuralCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
-const SafetyCalculations = React.lazy(() => 
-  import("@/components/calculations/SafetyCalculations").then(module => ({
-    default: module.SafetyCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
-const EmissionCalculations = React.lazy(() => 
-  import("@/components/calculations/EmissionCalculations").then(module => ({
-    default: module.EmissionCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
-const WeatherCalculations = React.lazy(() => 
-  import("@/components/calculations/WeatherCalculations").then(module => ({
-    default: module.WeatherCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
-
-
-const SpecialShipCalculations = React.lazy(() => 
-  import("@/components/calculations/SpecialShipCalculations").then(module => ({
-    default: module.SpecialShipCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
-const TrimCalculations = React.lazy(() => 
-  import("@/components/calculations/TrimCalculations").then(module => ({
-    default: module.TrimCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
-interface CalculationCard {
-  id: string;
-  title: string;
-  description: string;
-  icon: any;
-  component: any;
-  url?: string;
-}
+// Removed calculation components - they are now on individual pages
 
 const Index = () => {
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -137,76 +76,7 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Calculation cards configuration
-  const calculationCards: CalculationCard[] = [
-    {
-      id: "structural",
-      title: "Yapısal Hesaplamalar",
-      description: "Mukavemet, gerilme ve yapısal analiz hesaplamaları", 
-      icon: Building,
-      component: StructuralCalculations,
-      url: "/structural"
-    },
-    {
-      id: "trim",
-      title: "Trim ve List Hesaplamaları",
-      description: "Gemi duruşu, trim açısı ve list düzeltme hesaplamaları",
-      icon: TrendingUp,
-      component: TrimCalculations,
-      url: "/trim-list"
-    },
-    {
-      id: "safety",
-      title: "Güvenlik Hesaplamaları",
-      description: "Can salı, yangın sistemi ve acil durum hesaplamaları",
-      icon: Shield,
-      component: SafetyCalculations,
-      url: "/safety"
-    },
-    {
-      id: "emission",
-      title: "Emisyon Hesaplamaları",
-      description: "CO2, NOx, SOx emisyon hesaplamaları ve çevre uyumu",
-      icon: Leaf,
-      component: EmissionCalculations,
-      url: "/emissions"
-    },
-    {
-      id: "weather",
-      title: "Hava Durumu",
-      description: "Rota optimizasyonu, hava koşulları ve dalga hesaplamaları",
-      icon: Cloud,
-      component: WeatherCalculations,
-      url: "/weather"
-    },
-    {
-      id: "economic",
-      title: "Ekonomik Hesaplamalar",
-      description: "Maliyet analizi, yakıt ekonomisi ve verimlilik hesaplamaları",
-      icon: DollarSign,
-      component: EconomicCalculationsCard,
-      url: "/economics"
-    },
-    {
-      id: "special",
-      title: "Özel Gemi Hesaplamaları",
-      description: "Tanker, konteyner, yolcu gemisi özel hesaplamaları",
-      icon: Ship,
-      component: SpecialShipCalculations,
-      url: "/special-ships"
-    }
-  ];
-
-  const handleCardClick = (card: CalculationCard) => {
-    if (card.url) {
-      // Redirect to individual page
-      window.location.href = card.url;
-    } else {
-      // Fallback to inline expansion for cards without URL
-      setExpandedCard(expandedCard === card.id ? null : card.id);
-    }
-    trackInteraction('card_click');
-  };
+  // Calculation cards removed - using individual pages now
 
   const handleCalculationComplete = async (calculationType: string, inputData: any, resultData: any) => {
     if (currentUser?.id) {
@@ -227,19 +97,6 @@ const Index = () => {
       } catch (error) {
         console.warn('Failed to toggle favorite:', error);
       }
-    }
-  };
-
-  const getAdComponent = (index: number) => {
-    switch (index % 3) {
-      case 0:
-        return <NativeAd className="my-4" />;
-      case 1:
-        return <MaritimeEquipmentAd />;
-      case 2:
-        return <MaritimeSoftwareAd />;
-      default:
-        return <NativeAd className="my-4" />;
     }
   };
 
@@ -430,75 +287,14 @@ const Index = () => {
         </div>
       )}
 
-      {/* Calculation Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        {calculationCards.map((card, index) => {
-          const IconComponent = card.icon;
-          const CalculationComponent = card.component;
-          const isExpanded = expandedCard === card.id;
-
-          return (
-            <React.Fragment key={card.id}>
-              <Card className={`
-                transition-all duration-300 hover:shadow-lg border-2
-                ${isExpanded ? 'border-primary shadow-lg scale-[1.02]' : 'border-border hover:border-primary/50'}
-              `}>
-                <CardHeader 
-                  className="cursor-pointer pb-3 hover:bg-gray-50/50 transition-colors"
-                  onClick={() => handleCardClick(card)}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <IconComponent className="w-5 h-5 text-primary" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <CardTitle className="text-base leading-tight line-clamp-2" data-translatable>
-                          {card.title}
-                        </CardTitle>
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0 ml-2">
-                      {card.url ? (
-                        <ExternalLink className="w-5 h-5 text-muted-foreground" />
-                      ) : isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                      )}
-                    </div>
-                  </div>
-                  <CardDescription className="text-sm leading-tight line-clamp-2" data-translatable>
-                    {card.description}
-                  </CardDescription>
-                </CardHeader>
-
-                {isExpanded && !card.url && (
-                  <CardContent className="pt-0">
-                    <div className="border-t border-border/50 pt-4">
-                      <React.Suspense 
-                        fallback={
-                          <div className="flex items-center justify-center py-8">
-                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                          </div>
-                        }
-                      >
-                        <CalculationComponent onCalculationComplete={handleCalculationComplete} />
-                      </React.Suspense>
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
-
-              {/* Between cards ads */}
-              {shouldShowAd('between-cards') && (index + 1) % 4 === 0 && (
-                <div className="col-span-full my-4">
-                  {getAdComponent(Math.floor(index / 4))}
-                </div>
-              )}
-            </React.Fragment>
-          );
-        })}
+      {/* Quick Access Section */}
+      <div className="text-center space-y-4">
+        <h2 className="text-2xl font-bold text-gray-900" data-translatable>
+          Hızlı Erişim Hesaplama Modülleri
+        </h2>
+        <p className="text-gray-600" data-translatable>
+          Profesyonel denizcilik hesaplamalarına tek tıkla erişin
+        </p>
       </div>
 
       {/* Bottom Page Ad */}
