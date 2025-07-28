@@ -17,14 +17,6 @@ import React from "react"; // Added missing import for React
 
 // Import all calculation components with error boundary
 
-const TrimCalculations = React.lazy(() => 
-  import("@/components/calculations/TrimCalculations").then(module => ({
-    default: module.TrimCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
 const StructuralCalculations = React.lazy(() => 
   import("@/components/calculations/StructuralCalculations").then(module => ({
     default: module.StructuralCalculations
@@ -143,13 +135,6 @@ const Index = () => {
 
   // Calculation cards configuration
   const calculationCards: CalculationCard[] = [
-    {
-      id: "trim",
-      title: "Trim ve List",
-      description: "Gemi duruşu, trim açısı ve list düzeltme hesaplamaları",
-      icon: Building,
-      component: TrimCalculations
-    },
     {
       id: "structural",
       title: "Yapısal Hesaplamalar",
@@ -328,6 +313,12 @@ const Index = () => {
                   <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     <Brain className="w-4 h-4" />
                     <span data-translatable>AI Asistana Sor</span>
+                  </Button>
+                </Link>
+                <Link to="/trim-list">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50">
+                    <Building className="w-4 h-4" />
+                    <span data-translatable>Trim ve List</span>
                   </Button>
                 </Link>
                 <Link to="/stability">

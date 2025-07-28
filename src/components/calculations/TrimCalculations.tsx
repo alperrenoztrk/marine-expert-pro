@@ -48,7 +48,11 @@ interface DisplacementData {
   MCT: number;
 }
 
-export const TrimCalculations = () => {
+interface TrimCalculationsProps {
+  onCalculationComplete?: (calculationType: string, inputData: any, resultData: any) => void;
+}
+
+export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProps = {}) => {
   const { toast } = useToast();
   
   
@@ -199,6 +203,11 @@ export const TrimCalculations = () => {
     };
     
     setResult(result);
+    
+    // Call onCalculationComplete if provided
+    if (onCalculationComplete) {
+      onCalculationComplete('trim', data, result);
+    }
     
     toast({
       title: "Trim Hesaplandı",

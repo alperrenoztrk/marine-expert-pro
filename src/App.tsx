@@ -11,6 +11,7 @@ import Hydrodynamics from "./pages/Hydrodynamics";
 import Engine from "./pages/Engine";
 import Cargo from "./pages/Cargo";
 import Ballast from "./pages/Ballast";
+import TrimList from "./pages/TrimList";
 import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/engine" element={<Engine />} />
           <Route path="/cargo" element={<Cargo />} />
           <Route path="/ballast" element={<Ballast />} />
+          <Route path="/trim-list" element={<TrimList />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>
