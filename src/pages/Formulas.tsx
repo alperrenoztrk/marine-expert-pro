@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
-import { Brain, ArrowLeft, MessageCircle, Send, Loader2 } from "lucide-react";
+import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,8 +19,32 @@ const Formulas = () => {
   const [aiResponse, setAiResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseCount, setResponseCount] = useState(0);
+  const [geminiApiStatus, setGeminiApiStatus] = useState<'unknown' | 'working' | 'error'>('unknown');
   const { translateContent } = useAutoLanguageDetection();
   const { shouldShowAd, trackInteraction } = useAdManager();
+
+  // Check Gemini API status on mount
+  useEffect(() => {
+    checkGeminiApiStatus();
+  }, []);
+
+  const checkGeminiApiStatus = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('ask-ai', {
+        body: { question: "test" }
+      });
+      
+      if (error) {
+        setGeminiApiStatus('error');
+      } else if (data?.source === 'gemini' || data?.source === 'hybrid') {
+        setGeminiApiStatus('working');
+      } else {
+        setGeminiApiStatus('error');
+      }
+    } catch (error) {
+      setGeminiApiStatus('error');
+    }
+  };
 
   const askAI = async () => {
     if (!question.trim()) {
@@ -49,99 +73,20 @@ const Formulas = () => {
         setAiResponse(translatedAnswer);
         setResponseCount(prev => prev + 1);
         
-        if (data.source === 'hybrid') {
-          toast.success("AI + Wolfram hibrit hesaplama tamamlandı! ✅");
-        } else if (data.source === 'gemini') {
-          toast.success("Gemini AI'dan yanıt alındı!");
-        } else {
-          toast.success("Yanıt alındı");
+        // Update API status based on response
+        if (data.source === 'gemini' || data.source === 'hybrid') {
+          setGeminiApiStatus('working');
         }
+        
+        toast.success("AI yanıtı alındı!");
+        setQuestion(""); // Soruyu temizle
       } else {
-        throw new Error('Boş yanıt alındı');
+        throw new Error("AI yanıtı alınamadı");
       }
     } catch (error) {
-      console.error('AI Error:', error);
-      toast.error("AI'ya bağlanamadı. Lütfen tekrar deneyin.");
-      
-      // Fallback yerel yanıtlar
-      const localAnswers = {
-        "trim": `**Trim Hesabı:**
-
-Trim = Ta - Tf (Kıç taslağı - Baş taslağı)
-
-**Trim Açısı:**
-θ = arctan(Trim / LPP)
-
-**Boyuna Metasantır:**
-GML = KML - KG
-MCT1cm = (Δ × GML) / (100 × LPP)
-
-**Değerlendirme:**
-- |θ| < 0.5°: Normal
-- 0.5° ≤ |θ| < 2.0°: Kabul edilebilir  
-- |θ| ≥ 2.0°: Aşırı trim`,
-
-        "gm": `**GM (Metasantır Yüksekliği) Hesabı:**
-
-GM = KM - KG
-
-**Bileşenler:**
-- KM = KB + BM (Metasantır mesafesi)
-- BM = Iw / ∇ (Metasantır yarıçapı)
-- KG = Ağırlık merkezi yüksekliği
-
-**IMO Kriterleri:**
-- GM ≥ 0.15m (Minimum)
-- 0.15m ≤ GM ≤ 0.35m (Önerilen)
-- GM > 0.35m (Aşırı sert)`,
-
-        "stabilite": `**Stabilite Formülleri:**
-
-**Temel:** GM = KM - KG
-**Metasantır:** KM = KB + BM  
-**Yarıçap:** BM = Iw / ∇
-
-**Kritik Değerler:**
-- GM > 0.15m (IMO minimum)
-- Pozitif stabilite: GM > 0
-- Aşırı stabilite: GM > 0.35m
-
-**Serbest Yüzey Düzeltmesi:**
-GM(düzeltilmiş) = GM(katı) - ΣFSC`
-      };
-      
-      const lowerQuestion = question.toLowerCase();
-      let localAnswer = "";
-      
-      Object.keys(localAnswers).forEach(key => {
-        if (lowerQuestion.includes(key)) {
-          localAnswer = localAnswers[key];
-        }
-      });
-      
-      if (localAnswer) {
-        const translatedLocalAnswer = await translateContent(localAnswer + "\n\n*Yerel yanıt gösteriliyor.*");
-        setAiResponse(translatedLocalAnswer);
-        setResponseCount(prev => prev + 1);
-      } else {
-        const defaultResponse = `**Maritime Mühendisliği AI Asistanı**
-
-Maritime mühendisliği konularında size yardımcı olmaya hazırım! 
-
-Soru örnekleri:
-• **Stabilite**: GM, BM, KM hesaplamaları
-• **Trim**: Boyuna stabilite, MCT
-• **Yükleme**: Kargo dağılımı, balast
-• **Hidrostatik**: Taslak, deplasman
-• **Sevk**: Direnç, itki, verimlilik
-• **Güvenlik**: IMO, SOLAS kriterleri
-
-Detaylı formüller ve örneklerle yanıtlayacağım.`;
-        
-        const translatedDefaultResponse = await translateContent(defaultResponse);
-        setAiResponse(translatedDefaultResponse);
-        setResponseCount(prev => prev + 1);
-      }
+      console.error("AI soru-cevap hatası:", error);
+      setGeminiApiStatus('error');
+      toast.error(`AI hatası: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -203,22 +148,41 @@ Detaylı formüller ve örneklerle yanıtlayacağım.`;
         </div>
       )}
 
-      {/* Çalışan AI Asistanı */}
+      {/* Çalışan AI Asistanı - Ana Bölüm */}
       <WorkingAIAssistant />
 
-      {/* Orijinal AI Soru-Cevap Bölümü (Backup) - Mobil optimize */}
+      {/* Gemini AI Soru-Cevap Bölümü - Gelişmiş */}
       <div className="space-y-3 sm:space-y-4">
-        <Card className="shadow-[var(--shadow-card)] opacity-50">
+        <Card className="shadow-[var(--shadow-card)] border-l-4 border-l-primary/20">
           <CardHeader className="pb-3 sm:pb-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
-              <CardTitle className="text-base sm:text-lg leading-tight" data-translatable>
-                Maritime AI Asistanı (Backup - Gemini API Gerekli)
-              </CardTitle>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+                <CardTitle className="text-base sm:text-lg leading-tight" data-translatable>
+                  Gemini AI Asistanı (Gelişmiş)
+                </CardTitle>
+              </div>
+              <div className="flex items-center gap-2">
+                {geminiApiStatus === 'working' && (
+                  <div className="flex items-center gap-1 text-green-600">
+                    <CheckCircle className="w-4 h-4" />
+                    <span className="text-xs font-medium">Aktif</span>
+                  </div>
+                )}
+                {geminiApiStatus === 'error' && (
+                  <div className="flex items-center gap-1 text-amber-600">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span className="text-xs font-medium">API Key Gerekli</span>
+                  </div>
+                )}
+              </div>
             </div>
             <CardDescription className="text-xs sm:text-sm leading-relaxed px-1">
               <span data-translatable>
-                Bu bölüm Gemini API anahtarı gerektirir. Yukarıdaki çalışan AI asistanını kullanın.
+                {geminiApiStatus === 'working' 
+                  ? "Google Gemini AI ile gelişmiş maritime mühendisliği analizi."
+                  : "Lovable Environment Variables'da GEMINI_API_KEY ekleyin."
+                }
               </span>
             </CardDescription>
           </CardHeader>
