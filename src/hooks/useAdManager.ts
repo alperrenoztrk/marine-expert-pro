@@ -50,8 +50,8 @@ export const useAdManager = (): AdManager => {
     localStorage.setItem('interaction-count', newCount.toString());
     
     // Analytics için
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'ad_interaction', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'ad_interaction', {
         event_category: 'engagement',
         event_label: action,
         value: newCount

@@ -23,8 +23,8 @@ export const NativeAd = ({ className = "" }: NativeAdProps) => {
 
   const handleAdClick = () => {
     // Reklam tıklama analitiklerini kaydet
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'ad_click', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'ad_click', {
         event_category: 'advertisement',
         event_label: 'native_ad_maritime_software',
         value: 1
