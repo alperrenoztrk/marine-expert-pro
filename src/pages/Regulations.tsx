@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, FileText, Shield } from "lucide-react";
+import { Download, FileText, Shield, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const Regulations = () => {
@@ -26,6 +27,16 @@ const Regulations = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-4xl mx-auto space-y-8">
         
+        {/* Back Button */}
+        <div className="flex items-center gap-3">
+          <Link to="/">
+            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50">
+              <ArrowLeft className="w-4 h-4" />
+              <span data-translatable>Ana Sayfa</span>
+            </Button>
+          </Link>
+        </div>
+
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
