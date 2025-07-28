@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History, Calculator, TrendingUp } from "lucide-react";
+import { Brain, ChevronDown, ChevronUp, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, DollarSign, Settings, BookmarkPlus, History, Calculator, TrendingUp, ExternalLink } from "lucide-react";
 import maritimeHero from "@/assets/maritime-hero.jpg";
 import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
@@ -74,6 +74,7 @@ interface CalculationCard {
   description: string;
   icon: any;
   component: any;
+  url?: string;
 }
 
 const Index = () => {
@@ -143,55 +144,68 @@ const Index = () => {
       title: "Yapısal Hesaplamalar",
       description: "Mukavemet, gerilme ve yapısal analiz hesaplamaları", 
       icon: Building,
-      component: StructuralCalculations
+      component: StructuralCalculations,
+      url: "/structural"
     },
     {
       id: "trim",
       title: "Trim ve List Hesaplamaları",
       description: "Gemi duruşu, trim açısı ve list düzeltme hesaplamaları",
       icon: TrendingUp,
-      component: TrimCalculations
+      component: TrimCalculations,
+      url: "/trim-list"
     },
     {
       id: "safety",
       title: "Güvenlik Hesaplamaları",
       description: "Can salı, yangın sistemi ve acil durum hesaplamaları",
       icon: Shield,
-      component: SafetyCalculations
+      component: SafetyCalculations,
+      url: "/safety"
     },
     {
       id: "emission",
       title: "Emisyon Hesaplamaları",
       description: "CO2, NOx, SOx emisyon hesaplamaları ve çevre uyumu",
       icon: Leaf,
-      component: EmissionCalculations
+      component: EmissionCalculations,
+      url: "/emissions"
     },
     {
       id: "weather",
       title: "Hava Durumu",
       description: "Rota optimizasyonu, hava koşulları ve dalga hesaplamaları",
       icon: Cloud,
-      component: WeatherCalculations
+      component: WeatherCalculations,
+      url: "/weather"
     },
     {
       id: "economic",
       title: "Ekonomik Hesaplamalar",
       description: "Maliyet analizi, yakıt ekonomisi ve verimlilik hesaplamaları",
       icon: DollarSign,
-      component: EconomicCalculationsCard
+      component: EconomicCalculationsCard,
+      url: "/economics"
     },
     {
       id: "special",
       title: "Özel Gemi Hesaplamaları",
       description: "Tanker, konteyner, yolcu gemisi özel hesaplamaları",
       icon: Ship,
-      component: SpecialShipCalculations
+      component: SpecialShipCalculations,
+      url: "/special-ships"
     }
   ];
 
-  const toggleCard = (cardId: string) => {
-    setExpandedCard(expandedCard === cardId ? null : cardId);
-    trackInteraction('card_toggle');
+  const handleCardClick = (card: CalculationCard) => {
+    if (card.url) {
+      // Redirect to individual page
+      window.location.href = card.url;
+    } else {
+      // Fallback to inline expansion for cards without URL
+      setExpandedCard(expandedCard === card.id ? null : card.id);
+    }
+    trackInteraction('card_click');
   };
 
   const handleCalculationComplete = async (calculationType: string, inputData: any, resultData: any) => {
@@ -373,6 +387,36 @@ const Index = () => {
                     <span data-translatable>Regülasyonlar</span>
                   </Button>
                 </Link>
+                <Link to="/structural">
+                  <Button size="sm" variant="outline" className="gap-2 border-gray-300 text-gray-600 hover:bg-gray-50">
+                    <Building className="w-4 h-4" />
+                    <span data-translatable>Yapısal</span>
+                  </Button>
+                </Link>
+                <Link to="/safety">
+                  <Button size="sm" variant="outline" className="gap-2 border-red-300 text-red-600 hover:bg-red-50">
+                    <Shield className="w-4 h-4" />
+                    <span data-translatable>Güvenlik</span>
+                  </Button>
+                </Link>
+                <Link to="/emissions">
+                  <Button size="sm" variant="outline" className="gap-2 border-green-300 text-green-600 hover:bg-green-50">
+                    <Leaf className="w-4 h-4" />
+                    <span data-translatable>Emisyon</span>
+                  </Button>
+                </Link>
+                <Link to="/weather">
+                  <Button size="sm" variant="outline" className="gap-2 border-sky-300 text-sky-600 hover:bg-sky-50">
+                    <Cloud className="w-4 h-4" />
+                    <span data-translatable>Hava Durumu</span>
+                  </Button>
+                </Link>
+                <Link to="/special-ships">
+                  <Button size="sm" variant="outline" className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50">
+                    <Ship className="w-4 h-4" />
+                    <span data-translatable>Özel Gemiler</span>
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -400,8 +444,8 @@ const Index = () => {
                 ${isExpanded ? 'border-primary shadow-lg scale-[1.02]' : 'border-border hover:border-primary/50'}
               `}>
                 <CardHeader 
-                  className="cursor-pointer pb-3"
-                  onClick={() => toggleCard(card.id)}
+                  className="cursor-pointer pb-3 hover:bg-gray-50/50 transition-colors"
+                  onClick={() => handleCardClick(card)}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -415,7 +459,9 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="flex-shrink-0 ml-2">
-                      {isExpanded ? (
+                      {card.url ? (
+                        <ExternalLink className="w-5 h-5 text-muted-foreground" />
+                      ) : isExpanded ? (
                         <ChevronUp className="w-5 h-5 text-muted-foreground" />
                       ) : (
                         <ChevronDown className="w-5 h-5 text-muted-foreground" />
@@ -427,7 +473,7 @@ const Index = () => {
                   </CardDescription>
                 </CardHeader>
 
-                {isExpanded && (
+                {isExpanded && !card.url && (
                   <CardContent className="pt-0">
                     <div className="border-t border-border/50 pt-4">
                       <React.Suspense 

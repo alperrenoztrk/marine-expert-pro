@@ -14,6 +14,11 @@ import Ballast from "./pages/Ballast";
 import TrimList from "./pages/TrimList";
 import AuthCallback from "./pages/AuthCallback";
 import Economics from "./pages/Economics";
+import StructuralCalculationsPage from "./pages/StructuralCalculations";
+import SafetyCalculationsPage from "./pages/SafetyCalculations";
+import EmissionCalculationsPage from "./pages/EmissionCalculations";
+import WeatherCalculationsPage from "./pages/WeatherCalculations";
+import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +39,11 @@ const App = () => (
           <Route path="/ballast" element={<Ballast />} />
           <Route path="/trim-list" element={<TrimList />} />
           <Route path="/economics" element={<Economics />} />
+          <Route path="/structural" element={<StructuralCalculationsPage />} />
+          <Route path="/safety" element={<SafetyCalculationsPage />} />
+          <Route path="/emissions" element={<EmissionCalculationsPage />} />
+          <Route path="/weather" element={<WeatherCalculationsPage />} />
+          <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>
