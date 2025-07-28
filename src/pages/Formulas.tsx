@@ -13,6 +13,7 @@ import { useAdManager } from "@/hooks/useAdManager";
 import { AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { WorkingAIAssistant } from "@/components/WorkingAIAssistant";
+import { PermanentAIAssistant } from "@/components/PermanentAIAssistant";
 
 const Formulas = () => {
   const [question, setQuestion] = useState("");
@@ -148,7 +149,10 @@ const Formulas = () => {
         </div>
       )}
 
-      {/* Çalışan AI Asistanı - Ana Bölüm */}
+      {/* Kalıcı Maritime AI Asistanı */}
+      <PermanentAIAssistant />
+      
+      {/* Backup AI Asistanı */}
       <WorkingAIAssistant />
 
       {/* Gemini AI Soru-Cevap Bölümü - Gelişmiş */}

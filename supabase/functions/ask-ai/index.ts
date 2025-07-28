@@ -43,9 +43,20 @@ serve(async (req) => {
     console.log('Question received:', question);
     console.log('Values received:', values);
 
-    // API anahtarlarını al
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    const wolframApiKey = Deno.env.get('WOLFRAM_API_KEY');
+    // API anahtarlarını al - environment variables öncelikli, fallback olarak hardcoded
+    let geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    let wolframApiKey = Deno.env.get('WOLFRAM_API_KEY');
+    
+    // Fallback API keys
+    if (!geminiApiKey) {
+      geminiApiKey = 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
+      console.log('Using fallback Gemini API key');
+    }
+    
+    if (!wolframApiKey) {
+      wolframApiKey = '6YH9XR-Y7JA8WVXTJ';
+      console.log('Using fallback Wolfram API key');
+    }
     
     if (!geminiApiKey || !wolframApiKey) {
       console.log('API keys missing:', { gemini: !!geminiApiKey, wolfram: !!wolframApiKey });
@@ -87,7 +98,11 @@ serve(async (req) => {
     console.error('Error in ask-ai function:', error);
     const localAnswer = getLocalAnswer(question);
     return new Response(
-      JSON.stringify({ answer: localAnswer }),
+      JSON.stringify({ 
+        answer: localAnswer,
+        source: 'local',
+        error: error.message
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
