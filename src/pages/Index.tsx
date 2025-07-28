@@ -16,14 +16,6 @@ import React from "react"; // Added missing import for React
 
 
 // Import all calculation components with error boundary
-const StabilityCalculations = React.lazy(() => 
-  import("@/components/calculations/StabilityCalculations").then(module => ({
-    default: module.StabilityCalculations
-  })).catch(() => ({ 
-    default: () => <div className="p-4 text-muted-foreground">Hesaplama bileşeni yüklenemedi</div> 
-  }))
-);
-
 const NavigationCalculations = React.lazy(() => 
   import("@/components/calculations/NavigationCalculations").then(module => ({
     default: module.NavigationCalculations
@@ -190,13 +182,6 @@ const Index = () => {
 
   // Calculation cards configuration
   const calculationCards: CalculationCard[] = [
-    {
-      id: "stability",
-      title: "Gemi Stabilitesi",
-      description: "GM, GZ eğrisi, stabilite faktörleri ve heeling açısı hesaplamaları",
-      icon: Ship,
-      component: StabilityCalculations
-    },
     {
       id: "navigation", 
       title: "Seyir Hesaplamaları",
@@ -417,6 +402,12 @@ const Index = () => {
                   <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     <Brain className="w-4 h-4" />
                     <span data-translatable>AI Asistana Sor</span>
+                  </Button>
+                </Link>
+                <Link to="/stability">
+                  <Button size="sm" variant="outline" className="gap-2 border-green-300 text-green-600 hover:bg-green-50">
+                    <Ship className="w-4 h-4" />
+                    <span data-translatable>Stabilite</span>
                   </Button>
                 </Link>
                 <Link to="/regulations">
