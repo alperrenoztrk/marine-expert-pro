@@ -10,7 +10,7 @@ interface NativeAdProps {
 export const NativeAd = ({ className = "" }: NativeAdProps) => {
   // Sponsorlu maritime ürünleri/servisleri
   const sponsoredContent = {
-    title: "Maritime Software Solutions",
+    title: "Professional Maritime Tools",
     description: "Professional ship design and stability analysis software used by leading shipyards worldwide.",
     image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
     badge: "Sponsored",
@@ -104,7 +104,7 @@ export const MaritimeEquipmentAd = () => (
         <Badge variant="secondary" className="text-xs">Equipment</Badge>
         <Badge variant="outline" className="text-xs text-green-600">New Tech</Badge>
       </div>
-      <CardTitle className="text-lg">Advanced Maritime Equipment</CardTitle>
+      <CardTitle className="text-lg">Maritime Navigation Systems</CardTitle>
     </CardHeader>
     <CardContent>
       <p className="text-sm text-muted-foreground mb-4">
@@ -125,7 +125,7 @@ export const MaritimeSoftwareAd = () => (
         <Badge variant="secondary" className="text-xs">Software</Badge>
         <Badge variant="outline" className="text-xs text-purple-600">Free Trial</Badge>
       </div>
-      <CardTitle className="text-lg">Professional Maritime Software</CardTitle>
+      <CardTitle className="text-lg">Maritime Design Systems</CardTitle>
     </CardHeader>
     <CardContent>
       <p className="text-sm text-muted-foreground mb-4">
