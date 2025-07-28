@@ -24,11 +24,11 @@ const WeatherCalculationsPage = () => {
           <div className="flex items-center justify-center gap-3">
             <Cloud className="h-12 w-12 text-blue-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Hava Durumu Hesaplamaları
+              Meteoroloji ve Oşinografi Hesaplamaları
             </h1>
           </div>
           <p className="text-lg text-gray-600">
-            Rota optimizasyonu, hava koşulları ve dalga hesaplamalarını yapın
+            Beaufort & Douglas skalaları, rüzgar/akıntı etkileri ve kuvvet analizi
           </p>
         </div>
 
@@ -37,7 +37,7 @@ const WeatherCalculationsPage = () => {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-xl">
               <Cloud className="h-6 w-6 text-blue-600" />
-              Hava Durumu Hesaplama Modülü
+              Meteoroloji ve Oşinografi Hesaplama Modülü
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -47,7 +47,7 @@ const WeatherCalculationsPage = () => {
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">
-          Meteorolojik veriler, dalga analizi ve güvenli seyir planlaması
+          Beaufort & Douglas skalaları, rüzgar/akıntı kuvvet analizi ve seyir düzeltmeleri
         </div>
       </div>
     </div>

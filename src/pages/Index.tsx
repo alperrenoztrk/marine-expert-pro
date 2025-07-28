@@ -265,7 +265,7 @@ const Index = () => {
                 <Link to="/weather">
                   <Button size="sm" variant="outline" className="gap-2 border-sky-300 text-sky-600 hover:bg-sky-50">
                     <Cloud className="w-4 h-4" />
-                    <span data-translatable>Hava Durumu</span>
+                    <span data-translatable>Meteoroloji</span>
                   </Button>
                 </Link>
                 <Link to="/special-ships">
