@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, TrendingUp, AlertTriangle, CheckCircle, Activity, Target, BarChart3, Waves } from "lucide-react";
-import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calculator, TrendingUp, AlertTriangle, CheckCircle, Activity, Target, BarChart3, Waves, Ship, Droplets, Compass, Ruler } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface TrimData {
   // Ship Parameters
@@ -15,22 +16,51 @@ interface TrimData {
   B: number; // Breadth (m)
   displacement: number; // Current displacement (tonnes)
   LCF: number; // Longitudinal Center of Flotation from AP (m)
+  LCB: number; // Longitudinal Center of Buoyancy from AP (m)
   MCT: number; // Moment to Change Trim 1 cm (tonne.m/cm)
   TPC: number; // Tonnes per Centimeter immersion
   
   // Current condition
   draftForward: number; // Forward draft (m)
   draftAft: number; // Aft draft (m)
+  draftMidships: number; // Midships draft (m)
   
   // Weight operations
   weightAdded: number; // Weight to be added/removed (tonnes)
   weightLCG: number; // Longitudinal position of weight from AP (m)
   
-  // Additional parameters for enhanced calculations
+  // Additional parameters
   CB: number; // Block coefficient
   waterplaneCoeff: number; // Waterplane coefficient
   trimMomentArm: number; // Trim moment arm (m)
   maxAllowableTrim: number; // Max allowable trim (m)
+  
+  // Draft Survey Parameters
+  surveyType: 'initial' | 'final' | 'bunker'; // Survey type
+  freeboardForward: number; // Freeboard forward (m)
+  freeboardAft: number; // Freeboard aft (m)
+  freeboardMidships: number; // Freeboard midships (m)
+  airTemperature: number; // Air temperature (°C)
+  waterTemperature: number; // Water temperature (°C)
+  waterDensity: number; // Water density (kg/m³)
+  ballastWeight: number; // Ballast weight (tonnes)
+  fuelWeight: number; // Fuel weight (tonnes)
+  freshWaterWeight: number; // Fresh water weight (tonnes)
+  
+  // Sounding Table Parameters
+  tankType: 'cargo' | 'ballast' | 'fuel' | 'freshwater'; // Tank type
+  tankNumber: number; // Tank number
+  soundingDepth: number; // Sounding depth (cm)
+  tankLength: number; // Tank length (m)
+  tankWidth: number; // Tank width (m)
+  tankHeight: number; // Tank height (m)
+  trimCorrection: boolean; // Apply trim correction
+  heelCorrection: boolean; // Apply heel correction
+  
+  // Bonjean Curves Parameters
+  stationNumber: number; // Station number (0-20)
+  waterlineHeight: number; // Waterline height (m)
+  frameSpacing: number; // Frame spacing (m)
   
   // Environmental factors
   waveHeight: number; // Significant wave height (m)
@@ -39,56 +69,109 @@ interface TrimData {
 }
 
 interface TrimResult {
+  // Basic Trim Results
   currentTrim: number; // Current trim (m)
   trimMoment: number; // Trim moment (tonne.m)
   trimChange: number; // Change in trim (cm)
   newTrimBy: number; // New trim condition (m)
   newDraftForward: number; // New forward draft (m)
   newDraftAft: number; // New aft draft (m)
+  newDraftMidships: number; // New midships draft (m)
   newMeanDraft: number; // New mean draft (m)
   bodilyChange: number; // Change due to bodily sinkage (cm)
   
-  // Enhanced calculations
-  trimPercentage: number; // Trim as percentage of length
-  hydrostaticStability: number; // Hydrostatic stability factor
-  longitudinalStressIndex: number; // Longitudinal stress index
-  shearForceDistribution: number; // Shear force distribution factor
-  bendingMomentCoeff: number; // Bending moment coefficient
+  // Draft Survey Results
+  draftSurvey: {
+    grossDisplacement: number; // Gross displacement (tonnes)
+    netDisplacement: number; // Net displacement (tonnes)
+    cargoWeight: number; // Calculated cargo weight (tonnes)
+    densityCorrection: number; // Density correction (tonnes)
+    trimCorrection: number; // Trim correction (tonnes)
+    draftAccuracy: number; // Draft reading accuracy (cm)
+    surveyReliability: 'excellent' | 'good' | 'fair' | 'poor';
+    deadweightUtilization: number; // Deadweight utilization (%)
+  };
   
-  // Performance impacts
-  speedLoss: number; // Speed loss due to trim (%)
-  fuelConsumptionIncrease: number; // Fuel consumption increase (%)
-  maneuverabilityIndex: number; // Maneuverability index (1-10)
-  seakeepingIndex: number; // Seakeeping index (1-10)
+  // Trim Effects on Draft Differences
+  trimEffects: {
+    forwardDraftChange: number; // Forward draft change due to trim (cm)
+    aftDraftChange: number; // Aft draft change due to trim (cm)
+    midshipsDraftChange: number; // Midships draft change due to trim (cm)
+    maximumDraftDifference: number; // Maximum draft difference (cm)
+    distributionFactor: number; // Trim distribution factor
+    hydrostatic: {
+      LCF_new: number; // New LCF position (m)
+      MCT_new: number; // New MCT value (tonne.m/cm)
+      TPC_new: number; // New TPC value (tonnes/cm)
+    };
+  };
   
-  // Regulatory compliance
+  // Bonjean Curves Results
+  bonjeanCurves: {
+    area: number; // Cross-sectional area at station (m²)
+    firstMoment: number; // First moment of area (m³)
+    centroid: number; // Centroid height from baseline (m)
+    volume: number; // Volume to waterline (m³)
+    displacement: number; // Displacement to waterline (tonnes)
+    LCB_station: number; // LCB contribution from station (m)
+    coefficients: {
+      CP: number; // Prismatic coefficient
+      CM: number; // Midship coefficient  
+      CWP: number; // Waterplane coefficient at station
+    };
+  };
+  
+  // Sounding Table Results
+  soundingTable: {
+    tankVolume: number; // Tank volume at sounding (m³)
+    liquidWeight: number; // Liquid weight (tonnes)
+    freeVolume: number; // Free volume remaining (m³)
+    fillPercentage: number; // Tank fill percentage
+    correctedVolume: number; // Trim/heel corrected volume (m³)
+    vcg: number; // Vertical center of gravity of liquid (m)
+    lcg: number; // Longitudinal center of gravity of liquid (m)
+    tcg: number; // Transverse center of gravity of liquid (m)
+    corrections: {
+      trimCorrection: number; // Trim correction factor
+      heelCorrection: number; // Heel correction factor
+      densityCorrection: number; // Density correction factor
+      temperatureCorrection: number; // Temperature correction factor
+    };
+  };
+  
+  // Enhanced calculations (existing)
+  trimPercentage: number;
+  hydrostaticStability: number;
+  longitudinalStressIndex: number;
+  shearForceDistribution: number;
+  bendingMomentCoeff: number;
+  
+  // Performance impacts (existing)
+  speedLoss: number;
+  fuelConsumptionIncrease: number;
+  maneuverabilityIndex: number;
+  seakeepingIndex: number;
+  
+  // Regulatory compliance (existing)
   imoCompliance: {
-    loadLineConvention: boolean; // IMO Load Line Convention
-    solasStability: boolean; // SOLAS stability requirements
-    trimLimitation: boolean; // Trim limitation criteria
-    strengthStandard: boolean; // Ship strength standards
-    operationalGuidance: boolean; // Operational guidance compliance
+    loadLineConvention: boolean;
+    solasStability: boolean;
+    trimLimitation: boolean;
+    strengthStandard: boolean;
+    operationalGuidance: boolean;
   };
   
   status: 'excellent' | 'good' | 'acceptable' | 'warning' | 'excessive' | 'dangerous';
   recommendations: string[];
   warnings: string[];
   
-  // List calculations (added for comprehensive trim and list analysis)
-  listAngle: number; // Current list angle (degrees)
-  maxPermissibleList: number; // Maximum permissible list (degrees)
-  listCorrection: number; // Required ballast for list correction (tonnes)
-  heelMoment: number; // Heeling moment (tonne.m)
-  rightingMoment: number; // Righting moment (tonne.m)
-  stabilityMargin: number; // Stability margin
-}
-
-interface DisplacementData {
-  displacement: number;
-  meanDraft: number;
-  TPC: number;
-  LCF: number;
-  MCT: number;
+  // List calculations (existing)
+  listAngle: number;
+  maxPermissibleList: number;
+  listCorrection: number;
+  heelMoment: number;
+  rightingMoment: number;
+  stabilityMargin: number;
 }
 
 interface TrimCalculationsProps {
@@ -96,6 +179,7 @@ interface TrimCalculationsProps {
 }
 
 export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProps = {}) => {
+  const { toast } = useToast();
   const [trimData, setTrimData] = useState<Partial<TrimData>>({
     CB: 0.75,
     waterplaneCoeff: 0.85,
@@ -103,6 +187,14 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     windSpeed: 25,
     currentSpeed: 2,
     maxAllowableTrim: 1.5,
+    surveyType: 'initial',
+    waterDensity: 1025,
+    airTemperature: 15,
+    waterTemperature: 12,
+    tankType: 'cargo',
+    frameSpacing: 0.6,
+    trimCorrection: true,
+    heelCorrection: false,
   });
   const [result, setResult] = useState<TrimResult | null>(null);
   const [activeTab, setActiveTab] = useState("basic");
@@ -115,6 +207,237 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   // Calculate mean draft
   const calculateMeanDraft = (draftForward: number, draftAft: number): number => {
     return (draftForward + draftAft) / 2;
+  };
+
+  // Calculate Draft Survey
+  const calculateDraftSurvey = (data: TrimData) => {
+    const meanDraft = calculateMeanDraft(data.draftForward, data.draftAft);
+    const currentTrim = calculateCurrentTrim(data.draftAft, data.draftForward);
+    
+    // Displacement from hydrostatic tables (simplified calculation)
+    const grossDisplacement = data.displacement || (data.L * data.B * meanDraft * data.CB * (data.waterDensity / 1000));
+    
+    // Density correction
+    const standardDensity = 1025;
+    const densityCorrection = grossDisplacement * ((data.waterDensity - standardDensity) / standardDensity);
+    
+    // Trim correction for displacement
+    const trimCorrectionFactor = Math.abs(currentTrim) * 0.02; // 2% per meter trim
+    const trimCorrection = grossDisplacement * trimCorrectionFactor;
+    
+    // Net displacement
+    const netDisplacement = grossDisplacement + densityCorrection;
+    
+    // Calculate cargo weight
+    const ballastWeight = data.ballastWeight || 0;
+    const fuelWeight = data.fuelWeight || 0;
+    const freshWaterWeight = data.freshWaterWeight || 0;
+    const lightWeight = grossDisplacement * 0.15; // Assume 15% light weight
+    
+    const cargoWeight = netDisplacement - lightWeight - ballastWeight - fuelWeight - freshWaterWeight;
+    
+    // Draft accuracy assessment
+    const draftAccuracy = Math.max(
+      Math.abs(data.draftForward - data.draftMidships) * 100,
+      Math.abs(data.draftAft - data.draftMidships) * 100
+    );
+    
+    // Survey reliability
+    let surveyReliability: 'excellent' | 'good' | 'fair' | 'poor';
+    if (draftAccuracy <= 2) surveyReliability = 'excellent';
+    else if (draftAccuracy <= 5) surveyReliability = 'good';
+    else if (draftAccuracy <= 10) surveyReliability = 'fair';
+    else surveyReliability = 'poor';
+    
+    // Deadweight utilization
+    const assumedDeadweight = grossDisplacement * 0.85; // Assume 85% DWT ratio
+    const deadweightUtilization = (cargoWeight + ballastWeight + fuelWeight + freshWaterWeight) / assumedDeadweight * 100;
+    
+    return {
+      grossDisplacement,
+      netDisplacement,
+      cargoWeight,
+      densityCorrection,
+      trimCorrection,
+      draftAccuracy,
+      surveyReliability,
+      deadweightUtilization
+    };
+  };
+
+  // Calculate Trim Effects on Draft Differences
+  const calculateTrimEffects = (data: TrimData, currentTrim: number) => {
+    const L = data.L;
+    const LCF = data.LCF;
+    
+    // Forward lever arm from LCF
+    const forwardLever = L - LCF;
+    // Aft lever arm from LCF
+    const aftLever = LCF;
+    // Midships lever arm from LCF
+    const midshipsLever = Math.abs(L/2 - LCF);
+    
+    // Draft changes due to trim (in cm)
+    const forwardDraftChange = -(currentTrim * forwardLever / L) * 100;
+    const aftDraftChange = (currentTrim * aftLever / L) * 100;
+    const midshipsDraftChange = (currentTrim * midshipsLever / L) * 100 * (L/2 > LCF ? -1 : 1);
+    
+    // Maximum draft difference
+    const maximumDraftDifference = Math.abs(currentTrim * 100);
+    
+    // Distribution factor
+    const distributionFactor = L / (2 * Math.max(forwardLever, aftLever));
+    
+    // New hydrostatic properties (simplified)
+    const LCF_new = LCF + (currentTrim * 0.01); // Small adjustment
+    const MCT_new = data.MCT * (1 + Math.abs(currentTrim) * 0.001);
+    const TPC_new = data.TPC * (1 + Math.abs(currentTrim) * 0.0005);
+    
+    return {
+      forwardDraftChange,
+      aftDraftChange,
+      midshipsDraftChange,
+      maximumDraftDifference,
+      distributionFactor,
+      hydrostatic: {
+        LCF_new,
+        MCT_new,
+        TPC_new
+      }
+    };
+  };
+
+  // Calculate Bonjean Curves
+  const calculateBonjeanCurves = (data: TrimData) => {
+    const stationPosition = (data.stationNumber / 20) * data.L; // Station position from AP
+    const waterlineHeight = data.waterlineHeight;
+    
+    // Simplified Bonjean curve calculation (normally from ship's curves)
+    // Cross-sectional area at station
+    const maxBeam = data.B;
+    const stationBeam = maxBeam * Math.sin((data.stationNumber / 20) * Math.PI); // Simplified ship form
+    const area = stationBeam * waterlineHeight * 0.85; // With shape coefficient
+    
+    // First moment of area
+    const centroid = waterlineHeight / 2; // Simplified centroid
+    const firstMoment = area * centroid;
+    
+    // Volume contribution (per frame spacing)
+    const frameSpacing = data.frameSpacing;
+    const volume = area * frameSpacing;
+    
+    // Displacement contribution
+    const displacement = volume * (data.waterDensity / 1000);
+    
+    // LCB contribution
+    const LCB_station = stationPosition;
+    
+    // Coefficients at station
+    const CP = area / (maxBeam * waterlineHeight); // Prismatic coefficient contribution
+    const CM = stationBeam / maxBeam; // Midship coefficient at station
+    const CWP = stationBeam / maxBeam; // Waterplane coefficient
+    
+    return {
+      area,
+      firstMoment,
+      centroid,
+      volume,
+      displacement,
+      LCB_station,
+      coefficients: {
+        CP,
+        CM,
+        CWP
+      }
+    };
+  };
+
+  // Calculate Sounding Table Volume
+  const calculateSoundingTable = (data: TrimData) => {
+    const soundingDepth = data.soundingDepth / 100; // Convert cm to m
+    const tankLength = data.tankLength;
+    const tankWidth = data.tankWidth;
+    const tankHeight = data.tankHeight;
+    
+    // Basic tank volume calculation
+    let tankVolume = tankLength * tankWidth * soundingDepth;
+    
+    // Apply corrections
+    let correctedVolume = tankVolume;
+    
+    // Trim correction
+    let trimCorrection = 1.0;
+    if (data.trimCorrection && result) {
+      const trimAngle = Math.atan(result.currentTrim / data.L);
+      trimCorrection = 1 + (Math.sin(trimAngle) * 0.1); // Simplified correction
+      correctedVolume *= trimCorrection;
+    }
+    
+    // Heel correction
+    let heelCorrection = 1.0;
+    if (data.heelCorrection && result) {
+      const heelAngle = result.listAngle * Math.PI / 180;
+      heelCorrection = 1 + (Math.sin(heelAngle) * 0.05); // Simplified correction
+      correctedVolume *= heelCorrection;
+    }
+    
+    // Density correction for liquid weight
+    let liquidDensity = 1000; // Default water density
+    switch (data.tankType) {
+      case 'fuel':
+        liquidDensity = 850; // Typical fuel density
+        break;
+      case 'ballast':
+        liquidDensity = data.waterDensity;
+        break;
+      case 'freshwater':
+        liquidDensity = 1000;
+        break;
+      case 'cargo':
+        liquidDensity = 1500; // Typical cargo density
+        break;
+    }
+    
+    const liquidWeight = correctedVolume * (liquidDensity / 1000); // Convert to tonnes
+    
+    // Free volume
+    const totalTankVolume = tankLength * tankWidth * tankHeight;
+    const freeVolume = totalTankVolume - correctedVolume;
+    
+    // Fill percentage
+    const fillPercentage = (correctedVolume / totalTankVolume) * 100;
+    
+    // Centers of gravity
+    const vcg = soundingDepth / 2; // Vertical CG of liquid
+    const lcg = tankLength / 2; // Longitudinal CG (simplified)
+    const tcg = tankWidth / 2; // Transverse CG (simplified)
+    
+    // Temperature correction (for fuel/cargo)
+    let temperatureCorrection = 1.0;
+    if (data.tankType === 'fuel' || data.tankType === 'cargo') {
+      const refTemp = 15; // Reference temperature
+      const tempDiff = data.waterTemperature - refTemp;
+      temperatureCorrection = 1 + (tempDiff * 0.0007); // Typical expansion coefficient
+    }
+    
+    const densityCorrection = liquidDensity / 1000;
+    
+    return {
+      tankVolume,
+      liquidWeight,
+      freeVolume,
+      fillPercentage,
+      correctedVolume,
+      vcg,
+      lcg,
+      tcg,
+      corrections: {
+        trimCorrection,
+        heelCorrection,
+        densityCorrection,
+        temperatureCorrection
+      }
+    };
   };
 
   // Calculate trim moment
@@ -198,6 +521,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   const calculateNewDrafts = (
     currentDraftF: number,
     currentDraftA: number,
+    currentDraftM: number,
     bodilyChange: number,
     trimChange: number,
     L: number,
@@ -210,16 +534,19 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     const newMeanDraft = calculateMeanDraft(currentDraftF, currentDraftA) + bodilyChangeM;
     
     // Trim moment lever arms
-    const leverAft = (L / 2) - LCF;
-    const leverForward = (L / 2) + LCF;
+    const leverAft = LCF;
+    const leverForward = L - LCF;
+    const leverMidships = Math.abs(L/2 - LCF);
     
     // New drafts
-    const newDraftAft = newMeanDraft + (trimChangeM * leverAft / L);
-    const newDraftForward = newMeanDraft - (trimChangeM * leverForward / L);
+    const newDraftAft = currentDraftA + bodilyChangeM + (trimChangeM * leverAft / L);
+    const newDraftForward = currentDraftF + bodilyChangeM - (trimChangeM * leverForward / L);
+    const newDraftMidships = currentDraftM + bodilyChangeM + (trimChangeM * leverMidships / L) * (L/2 > LCF ? -1 : 1);
     
     return {
       newDraftForward,
       newDraftAft,
+      newDraftMidships,
       newMeanDraft
     };
   };
@@ -256,6 +583,19 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     const recommendations: string[] = [];
     const warnings: string[] = [];
     
+    // Draft Survey recommendations
+    if (result.draftSurvey.draftAccuracy > 5) {
+      warnings.push("Draft okuma hassasiyeti düşük - ölçümleri tekrarlayın");
+    }
+    
+    if (result.draftSurvey.surveyReliability === 'poor') {
+      warnings.push("Draft survey güvenilirliği düşük - hava koşullarını bekleyin");
+    }
+    
+    if (result.draftSurvey.deadweightUtilization > 95) {
+      warnings.push("Deadweight kullanımı çok yüksek - yük dağılımını kontrol edin");
+    }
+    
     // Trim-based recommendations
     if (Math.abs(result.newTrimBy) > (data.L || 140) * 0.015) {
       recommendations.push("Trim değeri yüksek - balast transferi ile düzeltme yapın");
@@ -264,6 +604,20 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
       } else {
         recommendations.push("Baş trim (head) - kıç ballast tanklarına su alın");
       }
+    }
+    
+    // Sounding table recommendations
+    if (result.soundingTable.fillPercentage > 95) {
+      warnings.push("Tank doluluk oranı çok yüksek - taşma riski");
+    }
+    
+    if (result.soundingTable.corrections.trimCorrection > 1.05) {
+      recommendations.push("Trim düzeltme faktörü yüksek - tank hesaplamalarını gözden geçirin");
+    }
+    
+    // Bonjean curves recommendations
+    if (result.bonjeanCurves.coefficients.CP < 0.6) {
+      recommendations.push("Prismatic katsayı düşük - performans optimizasyonu gerekli");
     }
     
     // Performance recommendations
@@ -297,12 +651,14 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     return { recommendations, warnings };
   };
 
-  // Main trim calculation - enhanced
+  // Main trim calculation - enhanced with new features
   const calculateTrim = () => {
     if (!trimData.L || !trimData.displacement || !trimData.draftForward || 
         !trimData.draftAft || !trimData.LCF) {
-      toast.error("Eksik Veri", { 
-        description: "Lütfen gerekli değerleri girin." 
+      toast({
+        title: "Eksik Veri",
+        description: "Lütfen gerekli değerleri girin.",
+        variant: "destructive",
       });
       return;
     }
@@ -325,10 +681,11 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     const trimChange = calculateTrimChange(trimMoment, MCT);
     const bodilyChange = calculateBodilyChange(weightAdded, TPC);
     
-    // Calculate new drafts
-    const { newDraftForward, newDraftAft, newMeanDraft } = calculateNewDrafts(
+    // Calculate new drafts including midships
+    const { newDraftForward, newDraftAft, newDraftMidships, newMeanDraft } = calculateNewDrafts(
       data.draftForward,
       data.draftAft,
+      data.draftMidships || currentMeanDraft,
       bodilyChange,
       trimChange,
       data.L,
@@ -362,6 +719,24 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
       operationalGuidance: trimPercentage <= 1.5 // Operational guidance
     };
     
+    // NEW CALCULATIONS
+    // Draft Survey calculations
+    const draftSurvey = calculateDraftSurvey(data);
+    
+    // Trim effects on draft differences
+    const trimEffects = calculateTrimEffects(data, currentTrim);
+    
+    // Bonjean curves calculations
+    const bonjeanCurves = calculateBonjeanCurves(data);
+    
+    // Sounding table calculations (temporary result for corrections)
+    const tempResult = {
+      currentTrim,
+      listAngle: listAnalysis.listAngle
+    } as TrimResult;
+    
+    const soundingTable = calculateSoundingTable(data);
+    
     const result: TrimResult = {
       currentTrim,
       trimMoment,
@@ -369,8 +744,23 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
       newTrimBy,
       newDraftForward,
       newDraftAft,
+      newDraftMidships,
       newMeanDraft,
       bodilyChange,
+      
+      // NEW: Draft Survey Results
+      draftSurvey,
+      
+      // NEW: Trim Effects
+      trimEffects,
+      
+      // NEW: Bonjean Curves
+      bonjeanCurves,
+      
+      // NEW: Sounding Table
+      soundingTable,
+      
+      // Existing enhanced calculations
       trimPercentage,
       hydrostaticStability,
       longitudinalStressIndex,
@@ -396,20 +786,21 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     
     // Call onCalculationComplete if provided
     if (onCalculationComplete) {
-      onCalculationComplete('trim_and_list', data, result);
+      onCalculationComplete('trim_draft_survey', data, result);
     }
     
     const statusMessages = {
-      excellent: "Mükemmel trim durumu!",
-      good: "İyi trim durumu",
+      excellent: "Mükemmel trim ve draft durumu!",
+      good: "İyi trim ve draft durumu",
       acceptable: "Kabul edilebilir trim",
       warning: "Trim uyarısı",
       excessive: "Aşırı trim!",
       dangerous: "Tehlikeli trim durumu!"
     };
     
-    toast.success("Trim ve List Analizi Tamamlandı!", {
-      description: `${statusMessages[status]} - Yeni trim: ${newTrimBy > 0 ? 'Stern' : 'Head'} ${Math.abs(newTrimBy).toFixed(3)}m`
+    toast({
+      title: "Kapsamlı Trim ve Draft Analizi Tamamlandı!",
+      description: `${statusMessages[status]} - Yeni trim: ${newTrimBy > 0 ? 'Stern' : 'Head'} ${Math.abs(newTrimBy).toFixed(3)}m`,
     });
   };
 
@@ -442,22 +833,24 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-6 w-6" />
-            Kapsamlı Trim ve List Hesaplamaları
+            <Ship className="h-6 w-6" />
+            Gelişmiş Trim ve Draft Hesaplamaları
           </CardTitle>
           <CardDescription>
-            IMO Load Line Convention, SOLAS ve ISM standartlarına uygun gelişmiş trim ve list analizi - Tüm hesaplama türleri
+            Draft Survey, Trim Etkileri, Bonjean Curves ve Sounding Tabloları - Tam profesyonel denizcilik hesaplama paketi
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="basic">Temel Trim</TabsTrigger>
+              <TabsTrigger value="draft-survey">Draft Survey</TabsTrigger>
+              <TabsTrigger value="trim-effects">Trim Etkileri</TabsTrigger>
+              <TabsTrigger value="bonjean">Bonjean Curves</TabsTrigger>
+              <TabsTrigger value="sounding">Sounding Tabloları</TabsTrigger>
               <TabsTrigger value="operations">Yük İşlemleri</TabsTrigger>
               <TabsTrigger value="performance">Performans</TabsTrigger>
-              <TabsTrigger value="list">List Analizi</TabsTrigger>
-              <TabsTrigger value="hydrostatic">Hidrostatik</TabsTrigger>
-              <TabsTrigger value="analysis">Kapsamlı Analiz</TabsTrigger>
+              <TabsTrigger value="analysis">Analiz</TabsTrigger>
             </TabsList>
 
             <TabsContent value="basic" className="space-y-6">
@@ -503,6 +896,16 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="LCB">LCB (Kıçtan) [m]</Label>
+                  <Input
+                    id="LCB"
+                    type="number"
+                    value={trimData.LCB || ''}
+                    onChange={(e) => setTrimData({...trimData, LCB: parseFloat(e.target.value)})}
+                    placeholder="70"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="CB">Blok Katsayısı (CB)</Label>
                   <Input
                     id="CB"
@@ -513,22 +916,11 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                     placeholder="0.75"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="waterplaneCoeff">Su Çizgisi Katsayısı (CWP)</Label>
-                  <Input
-                    id="waterplaneCoeff"
-                    type="number"
-                    step="0.01"
-                    value={trimData.waterplaneCoeff || ''}
-                    onChange={(e) => setTrimData({...trimData, waterplaneCoeff: parseFloat(e.target.value)})}
-                    placeholder="0.85"
-                  />
-                </div>
               </div>
 
               <Separator />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="draftForward">Baş Draft [m]</Label>
                   <Input
@@ -538,6 +930,17 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                     value={trimData.draftForward || ''}
                     onChange={(e) => setTrimData({...trimData, draftForward: parseFloat(e.target.value)})}
                     placeholder="7.50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="draftMidships">Orta Draft [m]</Label>
+                  <Input
+                    id="draftMidships"
+                    type="number"
+                    step="0.01"
+                    value={trimData.draftMidships || ''}
+                    onChange={(e) => setTrimData({...trimData, draftMidships: parseFloat(e.target.value)})}
+                    placeholder="7.65"
                   />
                 </div>
                 <div className="space-y-2">
@@ -588,147 +991,501 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                 </div>
               </div>
 
-              <Button onClick={calculateTrim} className="flex items-center gap-2">
+              <Button onClick={calculateTrim} className="flex items-center gap-2 w-full">
                 <Calculator className="h-4 w-4" />
-                Kapsamlı Trim ve List Analizi Yap
+                Kapsamlı Trim ve Draft Analizi Yap
               </Button>
+            </TabsContent>
+
+            <TabsContent value="draft-survey" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Ruler className="h-5 w-5" />
+                    Draft Survey Hesaplamaları
+                  </CardTitle>
+                  <CardDescription>
+                    IMO Code of Practice for Draft Survey standartlarına uygun hesaplamalar
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="surveyType">Survey Tipi</Label>
+                      <Select 
+                        value={trimData.surveyType} 
+                        onValueChange={(value: 'initial' | 'final' | 'bunker') => setTrimData({...trimData, surveyType: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Survey tipi seçin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="initial">İlk Survey</SelectItem>
+                          <SelectItem value="final">Son Survey</SelectItem>
+                          <SelectItem value="bunker">Bunker Survey</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="waterDensity">Su Yoğunluğu [kg/m³]</Label>
+                      <Input
+                        id="waterDensity"
+                        type="number"
+                        value={trimData.waterDensity || ''}
+                        onChange={(e) => setTrimData({...trimData, waterDensity: parseFloat(e.target.value)})}
+                        placeholder="1025"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="freeboardForward">Baş Freeboard [m]</Label>
+                      <Input
+                        id="freeboardForward"
+                        type="number"
+                        step="0.01"
+                        value={trimData.freeboardForward || ''}
+                        onChange={(e) => setTrimData({...trimData, freeboardForward: parseFloat(e.target.value)})}
+                        placeholder="3.50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="freeboardMidships">Orta Freeboard [m]</Label>
+                      <Input
+                        id="freeboardMidships"
+                        type="number"
+                        step="0.01"
+                        value={trimData.freeboardMidships || ''}
+                        onChange={(e) => setTrimData({...trimData, freeboardMidships: parseFloat(e.target.value)})}
+                        placeholder="3.35"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="freeboardAft">Kıç Freeboard [m]</Label>
+                      <Input
+                        id="freeboardAft"
+                        type="number"
+                        step="0.01"
+                        value={trimData.freeboardAft || ''}
+                        onChange={(e) => setTrimData({...trimData, freeboardAft: parseFloat(e.target.value)})}
+                        placeholder="3.20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="ballastWeight">Ballast Ağırlığı [ton]</Label>
+                      <Input
+                        id="ballastWeight"
+                        type="number"
+                        value={trimData.ballastWeight || ''}
+                        onChange={(e) => setTrimData({...trimData, ballastWeight: parseFloat(e.target.value)})}
+                        placeholder="2500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="fuelWeight">Yakıt Ağırlığı [ton]</Label>
+                      <Input
+                        id="fuelWeight"
+                        type="number"
+                        value={trimData.fuelWeight || ''}
+                        onChange={(e) => setTrimData({...trimData, fuelWeight: parseFloat(e.target.value)})}
+                        placeholder="800"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="freshWaterWeight">Tatlı Su Ağırlığı [ton]</Label>
+                      <Input
+                        id="freshWaterWeight"
+                        type="number"
+                        value={trimData.freshWaterWeight || ''}
+                        onChange={(e) => setTrimData({...trimData, freshWaterWeight: parseFloat(e.target.value)})}
+                        placeholder="200"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="airTemperature">Hava Sıcaklığı [°C]</Label>
+                      <Input
+                        id="airTemperature"
+                        type="number"
+                        value={trimData.airTemperature || ''}
+                        onChange={(e) => setTrimData({...trimData, airTemperature: parseFloat(e.target.value)})}
+                        placeholder="15"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               {result && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5" />
-                      Trim ve List Analiz Sonuçları
-                      <Badge className={getStatusColor(result.status)}>
-                        {result.status.toUpperCase()}
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription>Detaylı trim, list ve performans analizi</CardDescription>
+                    <CardTitle>Draft Survey Sonuçları</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Primary Results */}
+                  <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-2xl font-bold">
-                          {result.currentTrim > 0 ? '+' : ''}{result.currentTrim.toFixed(3)}m
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Mevcut Trim {result.currentTrim > 0 ? '(Stern)' : '(Head)'}
-                        </div>
+                        <div className="text-xl font-bold">{result.draftSurvey.grossDisplacement.toFixed(0)} ton</div>
+                        <div className="text-sm text-muted-foreground">Brüt Deplasman</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-2xl font-bold">
-                          {result.newTrimBy > 0 ? '+' : ''}{result.newTrimBy.toFixed(3)}m
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Yeni Trim {result.newTrimBy > 0 ? '(Stern)' : '(Head)'}
-                        </div>
+                        <div className="text-xl font-bold">{result.draftSurvey.netDisplacement.toFixed(0)} ton</div>
+                        <div className="text-sm text-muted-foreground">Net Deplasman</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-2xl font-bold">{result.trimChange.toFixed(1)}cm</div>
-                        <div className="text-sm text-muted-foreground">Trim Değişimi</div>
+                        <div className="text-xl font-bold">{result.draftSurvey.cargoWeight.toFixed(0)} ton</div>
+                        <div className="text-sm text-muted-foreground">Kargo Ağırlığı</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-2xl font-bold">{result.bodilyChange.toFixed(1)}cm</div>
-                        <div className="text-sm text-muted-foreground">Batma/Çıkma</div>
+                        <div className="text-xl font-bold">{result.draftSurvey.deadweightUtilization.toFixed(1)}%</div>
+                        <div className="text-sm text-muted-foreground">DWT Kullanımı</div>
                       </div>
                     </div>
-
-                    <Separator />
-
-                    {/* Enhanced Metrics */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    
+                    <div className="mt-4 grid grid-cols-2 gap-4">
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.trimPercentage.toFixed(2)}%</div>
-                        <div className="text-sm text-muted-foreground">Trim/Boy Oranı</div>
+                        <div className="text-lg font-bold">{result.draftSurvey.draftAccuracy.toFixed(1)} cm</div>
+                        <div className="text-sm text-muted-foreground">Draft Hassasiyeti</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.hydrostaticStability.toFixed(1)}</div>
-                        <div className="text-sm text-muted-foreground">Hidrostatik Stabilite</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.longitudinalStressIndex.toFixed(1)}%</div>
-                        <div className="text-sm text-muted-foreground">Boyuna Stress İndeksi</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.bendingMomentCoeff.toFixed(2)}</div>
-                        <div className="text-sm text-muted-foreground">Bending Moment Katsayısı</div>
+                        <div className="text-lg font-bold">
+                          <Badge variant={result.draftSurvey.surveyReliability === 'excellent' ? 'default' : 
+                                         result.draftSurvey.surveyReliability === 'good' ? 'secondary' : 'destructive'}>
+                            {result.draftSurvey.surveyReliability.toUpperCase()}
+                          </Badge>
+                        </div>
+                        <div className="text-sm text-muted-foreground">Survey Güvenilirliği</div>
                       </div>
                     </div>
-
-                    <Separator />
-
-                    {/* Draft Information */}
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold">{result.newDraftForward.toFixed(3)}m</div>
-                        <div className="text-sm text-muted-foreground">Yeni Baş Draft</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold">{result.newMeanDraft.toFixed(3)}m</div>
-                        <div className="text-sm text-muted-foreground">Yeni Ortalama Draft</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold">{result.newDraftAft.toFixed(3)}m</div>
-                        <div className="text-sm text-muted-foreground">Yeni Kıç Draft</div>
-                      </div>
-                    </div>
-
-                    {/* IMO Compliance */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Target className="h-4 w-4" />
-                        IMO/SOLAS Uygunluk Analizi
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {Object.entries(result.imoCompliance).map(([key, value]) => (
-                          <div key={key} className="flex items-center gap-2">
-                            {value ? (
-                              <CheckCircle className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <AlertTriangle className="h-4 w-4 text-red-500" />
-                            )}
-                            <span className="text-sm">
-                              {key === 'loadLineConvention' && 'IMO Load Line Convention'}
-                              {key === 'solasStability' && 'SOLAS Stabilite Kriterleri'}
-                              {key === 'trimLimitation' && 'Trim Limitasyon Kriteri'}
-                              {key === 'strengthStandard' && 'Gemi Dayanım Standartları'}
-                              {key === 'operationalGuidance' && 'Operasyonel Kılavuz Uyumu'}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Recommendations and Warnings */}
-                    {(result.recommendations.length > 0 || result.warnings.length > 0) && (
-                      <div className="space-y-4">
-                        {result.recommendations.length > 0 && (
-                          <div>
-                            <h4 className="font-semibold mb-2 text-blue-600">Öneriler</h4>
-                            <ul className="list-disc list-inside space-y-1">
-                              {result.recommendations.map((rec, index) => (
-                                <li key={index} className="text-sm">{rec}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        
-                        {result.warnings.length > 0 && (
-                          <div>
-                            <h4 className="font-semibold mb-2 text-red-600">Uyarılar</h4>
-                            <ul className="list-disc list-inside space-y-1">
-                              {result.warnings.map((warning, index) => (
-                                <li key={index} className="text-sm text-red-600">{warning}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               )}
+            </TabsContent>
+
+            <TabsContent value="trim-effects" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Trim Etkisiyle Draft Farkları
+                  </CardTitle>
+                  <CardDescription>
+                    Trim değişiminin farklı noktalardaki draft değerlerine etkisi
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {result && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.trimEffects.forwardDraftChange.toFixed(1)} cm</div>
+                          <div className="text-sm text-muted-foreground">Baş Draft Değişimi</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.trimEffects.midshipsDraftChange.toFixed(1)} cm</div>
+                          <div className="text-sm text-muted-foreground">Orta Draft Değişimi</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.trimEffects.aftDraftChange.toFixed(1)} cm</div>
+                          <div className="text-sm text-muted-foreground">Kıç Draft Değişimi</div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.trimEffects.maximumDraftDifference.toFixed(1)} cm</div>
+                          <div className="text-sm text-muted-foreground">Maksimum Draft Farkı</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.trimEffects.distributionFactor.toFixed(2)}</div>
+                          <div className="text-sm text-muted-foreground">Dağılım Faktörü</div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div>
+                        <h4 className="font-semibold mb-3">Yeni Hidrostatik Özellikler</h4>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.trimEffects.hydrostatic.LCF_new.toFixed(2)} m</div>
+                            <div className="text-sm text-muted-foreground">Yeni LCF</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.trimEffects.hydrostatic.MCT_new.toFixed(1)} ton.m/cm</div>
+                            <div className="text-sm text-muted-foreground">Yeni MCT</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.trimEffects.hydrostatic.TPC_new.toFixed(1)} ton/cm</div>
+                            <div className="text-sm text-muted-foreground">Yeni TPC</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="bonjean" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Bonjean Curves Kullanımı
+                  </CardTitle>
+                  <CardDescription>
+                    Gemi kesit özelliklerinin hesaplanması ve hidrostatik analiz
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="stationNumber">İstasyon Numarası (0-20)</Label>
+                      <Input
+                        id="stationNumber"
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={trimData.stationNumber || ''}
+                        onChange={(e) => setTrimData({...trimData, stationNumber: parseFloat(e.target.value)})}
+                        placeholder="10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="waterlineHeight">Su Çizgisi Yüksekliği [m]</Label>
+                      <Input
+                        id="waterlineHeight"
+                        type="number"
+                        step="0.1"
+                        value={trimData.waterlineHeight || ''}
+                        onChange={(e) => setTrimData({...trimData, waterlineHeight: parseFloat(e.target.value)})}
+                        placeholder="8.0"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="frameSpacing">Frame Aralığı [m]</Label>
+                      <Input
+                        id="frameSpacing"
+                        type="number"
+                        step="0.1"
+                        value={trimData.frameSpacing || ''}
+                        onChange={(e) => setTrimData({...trimData, frameSpacing: parseFloat(e.target.value)})}
+                        placeholder="0.6"
+                      />
+                    </div>
+                  </div>
+
+                  {result && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.bonjeanCurves.area.toFixed(2)} m²</div>
+                          <div className="text-sm text-muted-foreground">Kesit Alanı</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.bonjeanCurves.firstMoment.toFixed(1)} m³</div>
+                          <div className="text-sm text-muted-foreground">İlk Moment</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.bonjeanCurves.centroid.toFixed(2)} m</div>
+                          <div className="text-sm text-muted-foreground">Ağırlık Merkezi</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.bonjeanCurves.volume.toFixed(1)} m³</div>
+                          <div className="text-sm text-muted-foreground">Hacim</div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.bonjeanCurves.coefficients.CP.toFixed(3)}</div>
+                          <div className="text-sm text-muted-foreground">CP Katsayısı</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.bonjeanCurves.coefficients.CM.toFixed(3)}</div>
+                          <div className="text-sm text-muted-foreground">CM Katsayısı</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.bonjeanCurves.coefficients.CWP.toFixed(3)}</div>
+                          <div className="text-sm text-muted-foreground">CWP Katsayısı</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="sounding" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Droplets className="h-5 w-5" />
+                    Sounding Tabloları ile Hacim Hesabı
+                  </CardTitle>
+                  <CardDescription>
+                    Tank hacim hesaplamaları ve trim/heel düzeltmeleri
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="tankType">Tank Tipi</Label>
+                      <Select 
+                        value={trimData.tankType} 
+                        onValueChange={(value: 'cargo' | 'ballast' | 'fuel' | 'freshwater') => setTrimData({...trimData, tankType: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Tank tipi seçin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cargo">Kargo Tankı</SelectItem>
+                          <SelectItem value="ballast">Ballast Tankı</SelectItem>
+                          <SelectItem value="fuel">Yakıt Tankı</SelectItem>
+                          <SelectItem value="freshwater">Tatlı Su Tankı</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tankNumber">Tank Numarası</Label>
+                      <Input
+                        id="tankNumber"
+                        type="number"
+                        value={trimData.tankNumber || ''}
+                        onChange={(e) => setTrimData({...trimData, tankNumber: parseFloat(e.target.value)})}
+                        placeholder="1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="soundingDepth">Sounding Derinliği [cm]</Label>
+                      <Input
+                        id="soundingDepth"
+                        type="number"
+                        value={trimData.soundingDepth || ''}
+                        onChange={(e) => setTrimData({...trimData, soundingDepth: parseFloat(e.target.value)})}
+                        placeholder="650"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tankLength">Tank Boyu [m]</Label>
+                      <Input
+                        id="tankLength"
+                        type="number"
+                        value={trimData.tankLength || ''}
+                        onChange={(e) => setTrimData({...trimData, tankLength: parseFloat(e.target.value)})}
+                        placeholder="15"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tankWidth">Tank Genişliği [m]</Label>
+                      <Input
+                        id="tankWidth"
+                        type="number"
+                        value={trimData.tankWidth || ''}
+                        onChange={(e) => setTrimData({...trimData, tankWidth: parseFloat(e.target.value)})}
+                        placeholder="10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tankHeight">Tank Yüksekliği [m]</Label>
+                      <Input
+                        id="tankHeight"
+                        type="number"
+                        value={trimData.tankHeight || ''}
+                        onChange={(e) => setTrimData({...trimData, tankHeight: parseFloat(e.target.value)})}
+                        placeholder="8"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="trimCorrection"
+                        checked={trimData.trimCorrection}
+                        onChange={(e) => setTrimData({...trimData, trimCorrection: e.target.checked})}
+                      />
+                      <Label htmlFor="trimCorrection">Trim Düzeltmesi Uygula</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="heelCorrection"
+                        checked={trimData.heelCorrection}
+                        onChange={(e) => setTrimData({...trimData, heelCorrection: e.target.checked})}
+                      />
+                      <Label htmlFor="heelCorrection">Heel Düzeltmesi Uygula</Label>
+                    </div>
+                  </div>
+
+                  {result && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.soundingTable.tankVolume.toFixed(1)} m³</div>
+                          <div className="text-sm text-muted-foreground">Tank Hacmi</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.soundingTable.correctedVolume.toFixed(1)} m³</div>
+                          <div className="text-sm text-muted-foreground">Düzeltilmiş Hacim</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.soundingTable.liquidWeight.toFixed(0)} ton</div>
+                          <div className="text-sm text-muted-foreground">Sıvı Ağırlığı</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-xl font-bold">{result.soundingTable.fillPercentage.toFixed(1)}%</div>
+                          <div className="text-sm text-muted-foreground">Doluluk Oranı</div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.soundingTable.vcg.toFixed(2)} m</div>
+                          <div className="text-sm text-muted-foreground">VCG (Dikey AG)</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.soundingTable.lcg.toFixed(2)} m</div>
+                          <div className="text-sm text-muted-foreground">LCG (Boyuna AG)</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.soundingTable.tcg.toFixed(2)} m</div>
+                          <div className="text-sm text-muted-foreground">TCG (Enine AG)</div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-semibold mb-3">Düzeltme Faktörleri</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.soundingTable.corrections.trimCorrection.toFixed(3)}</div>
+                            <div className="text-sm text-muted-foreground">Trim Düzeltmesi</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.soundingTable.corrections.heelCorrection.toFixed(3)}</div>
+                            <div className="text-sm text-muted-foreground">Heel Düzeltmesi</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.soundingTable.corrections.densityCorrection.toFixed(3)}</div>
+                            <div className="text-sm text-muted-foreground">Yoğunluk Düzeltmesi</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-lg font-bold">{result.soundingTable.corrections.temperatureCorrection.toFixed(3)}</div>
+                            <div className="text-sm text-muted-foreground">Sıcaklık Düzeltmesi</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="operations" className="space-y-6">
@@ -882,186 +1639,128 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
               )}
             </TabsContent>
 
-            <TabsContent value="list" className="space-y-6">
+            <TabsContent value="analysis" className="space-y-6">
               {result && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  {/* Primary Results */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <Waves className="h-5 w-5" />
-                        List Analizi
+                        <CheckCircle className="h-5 w-5" />
+                        Kapsamlı Analiz Sonuçları
+                        <Badge className={getStatusColor(result.status)}>
+                          {result.status.toUpperCase()}
+                        </Badge>
                       </CardTitle>
+                      <CardDescription>Detaylı trim, draft survey ve tank analizi</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <CardContent className="space-y-6">
+                      {/* Primary Results */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold">{result.listAngle.toFixed(2)}°</div>
-                          <div className="text-sm text-muted-foreground">Mevcut List Açısı</div>
+                          <div className="text-2xl font-bold">
+                            {result.currentTrim > 0 ? '+' : ''}{result.currentTrim.toFixed(3)}m
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Mevcut Trim {result.currentTrim > 0 ? '(Stern)' : '(Head)'}
+                          </div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold">{result.maxPermissibleList.toFixed(1)}°</div>
-                          <div className="text-sm text-muted-foreground">Max İzin Verilen</div>
+                          <div className="text-2xl font-bold">
+                            {result.newTrimBy > 0 ? '+' : ''}{result.newTrimBy.toFixed(3)}m
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Yeni Trim {result.newTrimBy > 0 ? '(Stern)' : '(Head)'}
+                          </div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-2xl font-bold">{result.trimChange.toFixed(1)}cm</div>
+                          <div className="text-sm text-muted-foreground">Trim Değişimi</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-2xl font-bold">{result.bodilyChange.toFixed(1)}cm</div>
+                          <div className="text-sm text-muted-foreground">Batma/Çıkma</div>
                         </div>
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold">{result.listCorrection.toFixed(0)} ton</div>
-                          <div className="text-sm text-muted-foreground">List Düzeltme</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold">{result.stabilityMargin.toFixed(1)}</div>
-                          <div className="text-sm text-muted-foreground">Stabilite Marjı</div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Moment Analizi</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 gap-4">
+                      <Separator />
+
+                      {/* Draft Information */}
+                      <div className="grid grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{(result.heelMoment / 1000).toFixed(0)} kN.m</div>
-                          <div className="text-sm text-muted-foreground">Heel Moment</div>
+                          <div className="text-lg font-bold">{result.newDraftForward.toFixed(3)}m</div>
+                          <div className="text-sm text-muted-foreground">Yeni Baş Draft</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{(result.rightingMoment / 1000).toFixed(0)} kN.m</div>
-                          <div className="text-sm text-muted-foreground">Righting Moment</div>
+                          <div className="text-lg font-bold">{result.newDraftMidships.toFixed(3)}m</div>
+                          <div className="text-sm text-muted-foreground">Yeni Orta Draft</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.newDraftAft.toFixed(3)}m</div>
+                          <div className="text-sm text-muted-foreground">Yeni Kıç Draft</div>
+                        </div>
+                        <div className="text-center p-3 bg-muted rounded-lg">
+                          <div className="text-lg font-bold">{result.newMeanDraft.toFixed(3)}m</div>
+                          <div className="text-sm text-muted-foreground">Yeni Ortalama Draft</div>
                         </div>
                       </div>
+
+                      {/* IMO Compliance */}
+                      <div>
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                          <Target className="h-4 w-4" />
+                          IMO/SOLAS Uygunluk Analizi
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {Object.entries(result.imoCompliance).map(([key, value]) => (
+                            <div key={key} className="flex items-center gap-2">
+                              {value ? (
+                                <CheckCircle className="h-4 w-4 text-green-500" />
+                              ) : (
+                                <AlertTriangle className="h-4 w-4 text-red-500" />
+                              )}
+                              <span className="text-sm">
+                                {key === 'loadLineConvention' && 'IMO Load Line Convention'}
+                                {key === 'solasStability' && 'SOLAS Stabilite Kriterleri'}
+                                {key === 'trimLimitation' && 'Trim Limitasyon Kriteri'}
+                                {key === 'strengthStandard' && 'Gemi Dayanım Standartları'}
+                                {key === 'operationalGuidance' && 'Operasyonel Kılavuz Uyumu'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Recommendations and Warnings */}
+                      {(result.recommendations.length > 0 || result.warnings.length > 0) && (
+                        <div className="space-y-4">
+                          {result.recommendations.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold mb-2 text-blue-600">Öneriler</h4>
+                              <ul className="list-disc list-inside space-y-1">
+                                {result.recommendations.map((rec, index) => (
+                                  <li key={index} className="text-sm">{rec}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          
+                          {result.warnings.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold mb-2 text-red-600">Uyarılar</h4>
+                              <ul className="list-disc list-inside space-y-1">
+                                {result.warnings.map((warning, index) => (
+                                  <li key={index} className="text-sm text-red-600">{warning}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
               )}
-            </TabsContent>
-
-            <TabsContent value="hydrostatic" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Gelişmiş Hidrostatik Özellikler</CardTitle>
-                  <CardDescription>
-                    Gemi formuna bağlı hidrostatik parametreler ve hesaplama formülleri
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="prose max-w-none">
-                    <h4>Temel Formüller:</h4>
-                    <ul>
-                      <li><strong>TPC = (Aw × ρ × CWP) / 100</strong> (Tonnes per Centimeter)</li>
-                      <li><strong>MCT = (Δ × BML) / 100</strong> (Moment to Change Trim)</li>
-                      <li><strong>Trim = (W × d) / MCT</strong> (Trim change)</li>
-                      <li><strong>Bodily sinkage = W / TPC</strong> (Vertical displacement)</li>
-                      <li><strong>List = arctan(Heel Moment / Righting Moment)</strong></li>
-                    </ul>
-                    
-                    <h4>Gelişmiş Hesaplamalar:</h4>
-                    <ul>
-                      <li><strong>Longitudinal Stress = (M × y) / I</strong> (Boyuna stress)</li>
-                      <li><strong>Shear Force = dM/dx</strong> (Kesme kuvveti)</li>
-                      <li><strong>Bending Moment = ∫(q × x)dx</strong> (Eğilme momenti)</li>
-                      <li><strong>Stability Margin = GM / (W/Δ)</strong> (Stabilite marjı)</li>
-                    </ul>
-                    
-                    <h4>Semboller:</h4>
-                    <ul>
-                      <li><strong>Aw:</strong> Su hattı alanı (m²)</li>
-                      <li><strong>ρ:</strong> Su yoğunluğu (1.025 t/m³)</li>
-                      <li><strong>BML:</strong> Boyuna metasantrik yarıçap (m)</li>
-                      <li><strong>CWP:</strong> Su çizgisi katsayısı</li>
-                      <li><strong>LCF:</strong> Boyuna yüzdürme merkezi (m)</li>
-                      <li><strong>LCB:</strong> Boyuna yüzdürme merkezi (m)</li>
-                      <li><strong>I:</strong> Su çizgisi atalet momenti (m⁴)</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="analysis" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Activity className="h-5 w-5" />
-                    Kapsamlı Trim ve List Analizi
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="prose max-w-none">
-                    <h4>IMO Load Line Convention (1966/88):</h4>
-                    <ul>
-                      <li>Trim değeri gemi boyunun %2'sini geçmemeli</li>
-                      <li>Even keel şartında optimum performans sağlanır</li>
-                      <li>Aşırı trim yakıt tüketimini %15'e kadar artırabilir</li>
-                      <li>Load line markalarının su altında kalmaması</li>
-                    </ul>
-                    
-                    <h4>SOLAS Chapter II-1 (Stability):</h4>
-                    <ul>
-                      <li>Stabilite hesaplamalarında trim etkisi dikkate alınmalı</li>
-                      <li>Hasar stabilitesinde trim kontrolü kritik</li>
-                      <li>Yük dağılımı ve trim optimizasyonu gerekli</li>
-                      <li>List 5°'yi geçmemeli (normal operasyonlarda)</li>
-                    </ul>
-                    
-                    <h4>ISM Code (International Safety Management):</h4>
-                    <ul>
-                      <li>Trim ve list monitoring prosedürleri</li>
-                      <li>Ballast operasyon prosedürleri</li>
-                      <li>Acil durum trim düzeltme prosedürleri</li>
-                      <li>Mürettebat eğitimi gereksinimleri</li>
-                    </ul>
-                    
-                    <h4>Operasyonel Limitler ve Kriterler:</h4>
-                    <ul>
-                      <li><strong>Mükemmel:</strong> |Trim| ≤ 0.5% × L, List ≤ 1°</li>
-                      <li><strong>İyi:</strong> 0.5% × L &lt; |Trim| ≤ 1% × L, 1° &lt; List ≤ 2°</li>
-                      <li><strong>Kabul edilebilir:</strong> 1% × L &lt; |Trim| ≤ 1.5% × L, 2° &lt; List ≤ 3°</li>
-                      <li><strong>Uyarı:</strong> 1.5% × L &lt; |Trim| ≤ 2% × L, 3° &lt; List ≤ 5°</li>
-                      <li><strong>Aşırı:</strong> 2% × L &lt; |Trim| ≤ 2.5% × L, 5° &lt; List ≤ 7°</li>
-                      <li><strong>Tehlikeli:</strong> |Trim| &gt; 2.5% × L, List &gt; 7°</li>
-                    </ul>
-                    
-                    <h4>Trim Etkilerinin Detaylı Analizi:</h4>
-                    <ul>
-                      <li><strong>Stern trim (kıç trim):</strong>
-                        <ul>
-                          <li>Daha iyi manevra kabiliyeti</li>
-                          <li>Artan sürtünme direnci (%5-15)</li>
-                          <li>Pervane verimliliğinde artış</li>
-                          <li>Bow slamming riskinde azalma</li>
-                        </ul>
-                      </li>
-                      <li><strong>Head trim (baş trim):</strong>
-                        <ul>
-                          <li>Daha yüksek hız potansiyeli</li>
-                          <li>Pervane ventilasyon riski</li>
-                          <li>Yüksek dalgalarda slamming riski</li>
-                          <li>Manevra zorluğu</li>
-                        </ul>
-                      </li>
-                      <li><strong>Even keel:</strong>
-                        <ul>
-                          <li>Optimum hidrodinamik performans</li>
-                          <li>En düşük yakıt tüketimi</li>
-                          <li>Dengeli yük dağılımı</li>
-                          <li>En iyi denizcilik özellikleri</li>
-                        </ul>
-                      </li>
-                    </ul>
-                    
-                    <h4>List Etkileri ve Düzeltme Yöntemleri:</h4>
-                    <ul>
-                      <li><strong>List nedenleri:</strong> Asimetrik yük dağılımı, ballast dengesizliği, yakıt tüketimi</li>
-                      <li><strong>List etkileri:</strong> Stabilite azalması, manevra zorluğu, yük kayması riski</li>
-                      <li><strong>Düzeltme yöntemleri:</strong> Ballast transferi, yük yeniden dağılımı, cross flooding</li>
-                      <li><strong>Acil durum prosedürleri:</strong> Hızlı ballast alma/verme, counter flooding</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
           </Tabs>
         </CardContent>
