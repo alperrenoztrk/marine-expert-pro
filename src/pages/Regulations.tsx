@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { OpenLibraryBrowser } from "@/components/ui/open-library-browser";
 import { 
   ArrowLeft, 
   Ship, 
@@ -559,9 +560,10 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="chapters">SOLAS Chapters</TabsTrigger>
             <TabsTrigger value="amendments">2024 Amendments</TabsTrigger>
+            <TabsTrigger value="library">Open Library</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
@@ -665,6 +667,10 @@ const Regulations = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="library" className="space-y-4">
+            <OpenLibraryBrowser className="w-full" />
           </TabsContent>
         </Tabs>
       </div>
