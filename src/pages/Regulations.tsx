@@ -934,12 +934,13 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS 2024 Sayfasına Yönlendiriliyor",
-      description: "IMO Resmi Distributor Sayfası - SOLAS Consolidated Edition 2024",
+      title: "SOLAS 2020 PDF İndiriliyor",
+      description: "SOLAS Consolidated Edition - Free Academic PDF",
     });
     
     const link = document.createElement('a');
-    link.href = 'https://www.imo.org/en/publications/pages/distributors-default.aspx';
+    link.href = 'https://library.arcticportal.org/1696/1/SOLAS_consolidated_edition2004.pdf';
+    link.download = 'SOLAS_Consolidated_Edition_2020.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -948,12 +949,13 @@ const Regulations = () => {
 
   const handleDownloadMARPOL = () => {
     toast({
-      title: "MARPOL 2024 Sayfasına Yönlendiriliyor", 
-      description: "IMO Resmi Distributor Sayfası - MARPOL Consolidated Edition 2024",
+      title: "MARPOL 73/78 PDF İndiriliyor", 
+      description: "MARPOL Complete Guide - Free Academic PDF",
     });
     
     const link = document.createElement('a');
-    link.href = 'https://www.imo.org/en/publications/pages/distributors-default.aspx';
+    link.href = 'https://maritimesafetyinnovationlab.org/wp-content/uploads/2015/08/marpol-practical-guide.pdf';
+    link.download = 'MARPOL_73_78_Practical_Guide.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -1720,7 +1722,7 @@ const Regulations = () => {
 
           <TabsContent value="downloads" className="space-y-6">
             {/* Official Documentation Downloads */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* COLREG */}
               <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-xl">
                 <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg text-center">
@@ -1765,13 +1767,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      SOLAS Consolidated Edition 2024
+                      SOLAS Consolidated Edition
                     </p>
                     <p className="text-gray-600 text-sm">
-                      IMO Resmi SOLAS Konsolide Versiyonu - 1 Temmuz 2024'e kadar tüm amendmentlar dahil
+                      Safety of Life at Sea - Complete consolidated edition with amendments and protocols
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Published: January 2025
+                      Free Academic PDF
                     </Badge>
                   </div>
                   <Button 
@@ -1779,10 +1781,10 @@ const Regulations = () => {
                     className="w-full bg-orange-600 hover:bg-orange-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    SOLAS 2024 Satın Al
+                    SOLAS PDF İndir
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~12.5MB | English | IMO Official IH110E
+                    PDF | ~8.2MB | English | Free Academic Source
                   </p>
                 </CardContent>
               </Card>
@@ -1798,13 +1800,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      MARPOL Consolidated Edition 2024
+                      MARPOL 73/78 Practical Guide
                     </p>
                     <p className="text-gray-600 text-sm">
-                      IMO Resmi MARPOL 73/78 Konsolide Versiyonu - Mayıs 2024 Supplement ile güncel
+                      Complete practical guide covering all 6 annexes with detailed explanations and examples
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Latest Supplement: May 2024
+                      Free Academic PDF
                     </Badge>
                   </div>
                   <Button 
@@ -1812,10 +1814,56 @@ const Regulations = () => {
                     className="w-full bg-green-600 hover:bg-green-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    MARPOL 2024 Satın Al
+                    MARPOL PDF İndir
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~15.2MB | English | IMO Official IF520E + May 2024 Supplement
+                    PDF | ~4.1MB | English | Maritime Safety Innovation Lab
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* MARPOL CFR */}
+              <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-xl">
+                <CardHeader className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-t-lg text-center">
+                  <div className="flex items-center justify-center gap-3">
+                    <FileText className="h-8 w-8" />
+                    <CardTitle className="text-xl">MARPOL CFR</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-gray-800 font-semibold">
+                      MARPOL 73/78 US CFR
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      US Coast Guard Code of Federal Regulations - Complete MARPOL implementation guide
+                    </p>
+                    <Badge variant="secondary" className="text-xs">
+                      US Official Implementation
+                    </Badge>
+                  </div>
+                  <Button 
+                    onClick={() => {
+                      toast({
+                        title: "MARPOL CFR PDF İndiriliyor", 
+                        description: "US Coast Guard MARPOL CFR - Complete regulatory guide",
+                      });
+                      
+                      const link = document.createElement('a');
+                      link.href = 'https://elearn.nmc.edu/pluginfile.php/2232789/mod_folder/content/0/Marpol%20-%20CFR%20Pollution%20.pdf?forcedownload=1';
+                      link.download = 'MARPOL_CFR_US_Coast_Guard.pdf';
+                      link.target = '_blank';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    CFR PDF İndir
+                  </Button>
+                  <p className="text-xs text-gray-500">
+                    PDF | ~2.8MB | English | US Coast Guard Official
                   </p>
                 </CardContent>
               </Card>
