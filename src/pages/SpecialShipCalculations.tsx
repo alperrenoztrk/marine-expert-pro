@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Ship } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Ship, Calculator } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { SpecialShipCalculations } from "@/components/calculations/SpecialShipCalculations";
 
@@ -33,17 +34,102 @@ const SpecialShipCalculationsPage = () => {
         </div>
 
         {/* Special Ship Calculations */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Ship className="h-6 w-6 text-blue-600" />
-              Özel Gemi Hesaplama Modülü
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SpecialShipCalculations />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Ship className="h-6 w-6 text-blue-600" />
+                  Özel Gemi Hesaplama Modülü
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SpecialShipCalculations />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Formüller Kutucuğu */}
+          <div className="lg:col-span-1">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  Formüller
+                </CardTitle>
+                <CardDescription>
+                  Özel gemi hesaplama formülleri
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold text-sm text-blue-700 mb-2">🚢 Konteyner Gemisi</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>TEU Kapasitesi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">TEU = L × B × H / (6.1 × 2.44 × 2.59)</p>
+                      <p><strong>Bay Sayısı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Bays = (L - 2×E) / 6.1</p>
+                      <p><strong>Stack Weight:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">W_stack = n × 30.48 tons</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-green-700 mb-2">🛢️ Tanker Gemisi</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Kargo Kapasitesi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">DWT = Δ_loaded - Δ_light</p>
+                      <p><strong>Tank Hacmi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">V_cargo = 0.98 × DWT / ρ_cargo</p>
+                      <p><strong>İnert Gas:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">IG_rate = 125% × V_cargo_pump</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-purple-700 mb-2">⚓ Offshore Desteği</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>DP Capability:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">DP = √(F_thrust² + F_thruster²)</p>
+                      <p><strong>ROV Kapasitesi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Depth_max = P_max / (ρ × g)</p>
+                      <p><strong>Crane SWL:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">SWL = MBL / SF</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-orange-700 mb-2">🌉 RoRo Gemisi</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Lane Metre:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">LM = Σ(Lane_length × Lane_width / 2.5)</p>
+                      <p><strong>Car Capacity:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Cars = Deck_area / (4.5 × 1.8)</p>
+                      <p><strong>Ramp Load:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Load_max = σ_allow × A_ramp</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xs text-blue-700">
+                      <strong>Semboller:</strong><br/>
+                      TEU: twenty-foot equivalent unit, DWT: deadweight<br/>
+                      DP: dynamic positioning, SWL: safe working load<br/>
+                      LM: lane metre, MBL: maximum breaking load
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

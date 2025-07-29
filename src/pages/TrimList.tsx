@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, TrendingUp } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, TrendingUp, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TrimCalculations } from "@/components/calculations/TrimCalculations";
+import { Separator } from "@/components/ui/separator";
 
 const TrimList = () => {
   return (
@@ -33,17 +34,116 @@ const TrimList = () => {
         </div>
 
         {/* Trim Calculations */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <TrendingUp className="h-6 w-6 text-blue-600" />
-              Trim ve List Hesaplama Modülü
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TrimCalculations />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <TrendingUp className="h-6 w-6 text-blue-600" />
+                  Trim ve List Hesaplama Modülü
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TrimCalculations />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Formüller Kutucuğu */}
+          <div className="lg:col-span-1">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  Formüller
+                </CardTitle>
+                <CardDescription>
+                  Trim ve draft hesaplama formülleri
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold text-sm text-blue-700 mb-2">📐 Temel Trim Formülleri</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Trim Açısı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">θ = arctan((T_a - T_f) / L)</p>
+                      <p><strong>MCT (Moment to Change Trim):</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">MCT = (Δ × GM_L × B²) / (12 × L)</p>
+                      <p><strong>Trim Değişimi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">ΔT = (W × d) / MCT</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-green-700 mb-2">⚖️ Draft Survey Formülleri</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Ortalama Draft:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">T_mean = (T_f + 4×T_m + T_a) / 6</p>
+                      <p><strong>Displacement:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Δ = V × ρ_sw</p>
+                      <p><strong>TPC (Tonnes per cm):</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">TPC = (A_wp × ρ_sw) / 100</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-purple-700 mb-2">📊 Bonjean Curves</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Su Altı Hacim:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">V = ∫ A(x) dx</p>
+                      <p><strong>LCB Hesabı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">LCB = ∫ x × A(x) dx / V</p>
+                      <p><strong>Moment:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">M = ∫ x² × A(x) dx</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-orange-700 mb-2">🧮 Sounding Tabloları</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Tank Hacmi (Dikdörtgen):</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">V = L × B × h</p>
+                      <p><strong>Tank Hacmi (Silindirik):</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">V = π × r² × h</p>
+                      <p><strong>Trim Düzeltmesi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">ΔV = A × tan(θ) × l</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-cyan-700 mb-2">🌊 List ve Stabilite</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>List Açısı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">φ = arctan(W × d / (Δ × GM))</p>
+                      <p><strong>Metacentric Height:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">GM = KB + BM - KG</p>
+                      <p><strong>Righting Moment:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">GZ = GM × sin(φ)</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xs text-blue-700">
+                      <strong>Semboller:</strong><br/>
+                      T: draft, L: boy, W: ağırlık, Δ: deplasман<br/>
+                      GM: metacentric height, LCB: boyuna sürat merkezi<br/>
+                      φ: list açısı, θ: trim açısı, ρ: yoğunluk
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

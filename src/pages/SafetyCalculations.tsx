@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Shield } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Shield, Calculator } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { SafetyCalculations } from "@/components/calculations/SafetyCalculations";
 
@@ -33,17 +34,102 @@ const SafetyCalculationsPage = () => {
         </div>
 
         {/* Safety Calculations */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Shield className="h-6 w-6 text-blue-600" />
-              Güvenlik Hesaplama Modülü
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SafetyCalculations />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Shield className="h-6 w-6 text-blue-600" />
+                  Güvenlik Hesaplama Modülü
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SafetyCalculations />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Formüller Kutucuğu */}
+          <div className="lg:col-span-1">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  Formüller
+                </CardTitle>
+                <CardDescription>
+                  Güvenlik hesaplama formülleri
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold text-sm text-blue-700 mb-2">🛟 Can Kurtarma Formülleri</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Can Salı Kapasitesi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Capacity = Persons × 105%</p>
+                      <p><strong>Fırlatma Süresi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">T_launch = N_boats × 30 min</p>
+                      <p><strong>Toplama Noktası:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Area = N_persons × 0.35 m²</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-red-700 mb-2">🔥 Yangın Güvenliği</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Söndürme Kapasitesi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">Q = A × k × √h</p>
+                      <p><strong>Sprinkler Debisi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">q = 5 L/min/m²</p>
+                      <p><strong>Kaçış Süresi:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">T_escape = Distance / V_walk</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-green-700 mb-2">⚖️ Stabilite Güvenliği</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>GM Minimum:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">GM ≥ 0.15 m</p>
+                      <p><strong>GZ Max Kriteri:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">GZ_max ≥ 0.20 m</p>
+                      <p><strong>Area under GZ:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">∫GZ dφ ≥ 0.055 m·rad</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-purple-700 mb-2">🔒 Emniyet Faktörleri</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>Yapısal Emniyet:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">SF_struct = σ_yield / σ_working ≥ 2.0</p>
+                      <p><strong>Çapa Emniyeti:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">SF_anchor = MBL / WLL ≥ 5.0</p>
+                      <p><strong>Halat Emniyeti:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">SF_rope = BL / SWL ≥ 6.0</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xs text-blue-700">
+                      <strong>Semboller:</strong><br/>
+                      GM: metacentric height, GZ: righting arm<br/>
+                      SF: güvenlik faktörü, MBL: maximum breaking load<br/>
+                      WLL: working load limit, SWL: safe working load
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

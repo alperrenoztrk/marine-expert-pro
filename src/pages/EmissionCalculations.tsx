@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Leaf } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Leaf, Calculator } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { EmissionCalculations } from "@/components/calculations/EmissionCalculations";
 
@@ -33,17 +34,102 @@ const EmissionCalculationsPage = () => {
         </div>
 
         {/* Emission Calculations */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Leaf className="h-6 w-6 text-blue-600" />
-              Emisyon Hesaplama Modülü
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <EmissionCalculations />
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Leaf className="h-6 w-6 text-blue-600" />
+                  Emisyon Hesaplama Modülü
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EmissionCalculations />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Formüller Kutucuğu */}
+          <div className="lg:col-span-1">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  Formüller
+                </CardTitle>
+                <CardDescription>
+                  Emisyon hesaplama formülleri
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold text-sm text-red-700 mb-2">💨 NOx Emisyonu</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>NOx Tier III:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">NOx ≤ 3.4 g/kWh</p>
+                      <p><strong>NOx Hesabı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">NOx = EF × FC × CF</p>
+                      <p><strong>SCR Verimliliği:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">η_SCR = (NOx_in - NOx_out) / NOx_in</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-orange-700 mb-2">🟫 SOx Emisyonu</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>SOx Hesabı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">SOx = FC × S% × 2</p>
+                      <p><strong>EGCS Verimliliği:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">η_EGCS ≥ 98%</p>
+                      <p><strong>Kükürt Limiti:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">S_fuel ≤ 0.50% m/m</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-green-700 mb-2">🌍 CO₂ Emisyonu</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>CO₂ Hesabı:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">CO₂ = FC × CF × 44/12</p>
+                      <p><strong>EEOI:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">EEOI = CO₂ / (Cargo × Distance)</p>
+                      <p><strong>CII Rating:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">CII = CO₂ / (DWT × Distance)</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-sm text-purple-700 mb-2">🔢 MARPOL Annex VI</h4>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>ECA SOx Limit:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">S_ECA ≤ 0.10% m/m</p>
+                      <p><strong>PM Emisyonu:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">PM = FC × EF_PM</p>
+                      <p><strong>ECA NOx Limit:</strong></p>
+                      <p className="font-mono bg-gray-50 p-1 rounded">NOx_ECA ≤ 2.0 g/kWh</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xs text-blue-700">
+                      <strong>Semboller:</strong><br/>
+                      EF: emisyon faktörü, FC: yakıt tüketimi<br/>
+                      CF: karbon faktörü, S%: kükürt oranı<br/>
+                      EEOI: enerji verimliliği, CII: karbon yoğunluğu
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">
