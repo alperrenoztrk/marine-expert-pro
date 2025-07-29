@@ -287,15 +287,7 @@ const Index = () => {
         </div>
       )}
 
-      {/* Quick Access Section */}
-      <div className="text-center space-y-4">
-        <h2 className="text-2xl font-bold text-gray-900" data-translatable>
-          Hızlı Erişim Hesaplama Modülleri
-        </h2>
-        <p className="text-gray-600" data-translatable>
-          Profesyonel denizcilik hesaplamalarına tek tıkla erişin
-        </p>
-      </div>
+
 
       {/* Bottom Page Ad */}
       {shouldShowAd('bottom-page') && (
