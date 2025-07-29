@@ -6,7 +6,11 @@ import { Link } from "react-router-dom";
 import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, BookmarkPlus, History } from "lucide-react";
 import maritimeHero from "@/assets/maritime-hero.jpg";
 import { LanguageSelector } from "@/components/ui/language-selector";
+<<<<<<< HEAD
 import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
+=======
+import { LanguageDebug } from "@/components/ui/language-debug";
+>>>>>>> 1483d6f (Fix language selection issues and add debug tools)
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { useAdManager, loadAdSenseScript } from "@/hooks/useAdManager";
 import { useUserData } from "@/hooks/useUserData";
@@ -299,6 +303,9 @@ const Index = () => {
 
       {/* Floating Language Selector */}
       <LanguageSelector variant="floating" />
+      
+      {/* Language Debug Panel (development only) */}
+      <LanguageDebug />
     </MobileLayout>
   );
 };

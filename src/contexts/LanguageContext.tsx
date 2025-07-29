@@ -13,6 +13,7 @@ interface LanguageContextType {
   autoDetectLanguage: () => Promise<void>;
   getLanguageName: (code: string) => string;
   isRTL: boolean;
+  resetLanguagePreferences: () => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -43,22 +44,35 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const languages = await translationService.getSupportedLanguages();
       setSupportedLanguages(languages);
 
-      // Check for saved language preference
+      // Check for saved language preference first (manual selection takes priority)
       const savedLanguage = localStorage.getItem('preferredLanguage');
-      if (savedLanguage) {
+      const isManualSelection = localStorage.getItem('manualLanguageSelection') === 'true';
+      
+      if (savedLanguage && isManualSelection) {
+        // User has manually selected a language before
+        setCurrentLanguage(savedLanguage);
+        console.log(`Using manually selected language: ${savedLanguage}`);
+      } else if (savedLanguage) {
+        // Previously saved language (could be from auto-detection)
         setCurrentLanguage(savedLanguage);
       } else {
-        // Auto-detect browser language
+        // First time user - auto-detect browser language
         const browserLang = translationService.getBrowserLanguage();
         setCurrentLanguage(browserLang);
         localStorage.setItem('preferredLanguage', browserLang);
 
-        // Notify user about auto-detection
+        // Show notification only for first-time auto-detection
         toast({
           title: "Dil Algılandı",
-          description: `Tarayıcı diliniz (${translationService.getLanguageName(browserLang)}) otomatik olarak seçildi`,
+          description: `Tarayıcı diliniz (${translationService.getLanguageName(browserLang)}) otomatik olarak seçildi. Dil seçici ile değiştirebilirsiniz.`,
         });
       }
+
+      // Update document properties
+      const finalLang = localStorage.getItem('preferredLanguage') || 'en';
+      document.documentElement.dir = rtlLanguages.includes(finalLang) ? 'rtl' : 'ltr';
+      document.documentElement.lang = finalLang;
+      
     } catch (error) {
       console.error('Language initialization error:', error);
       toast({
@@ -78,6 +92,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     try {
       setCurrentLanguage(languageCode);
       localStorage.setItem('preferredLanguage', languageCode);
+      localStorage.setItem('manualLanguageSelection', 'true'); // Mark as manually selected
 
       // Update document direction for RTL languages
       document.documentElement.dir = rtlLanguages.includes(languageCode) ? 'rtl' : 'ltr';
@@ -88,9 +103,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
         description: `Uygulama dili ${translationService.getLanguageName(languageCode)} olarak değiştirildi`,
       });
 
-      // Trigger page reload to apply translations
-      // Note: In a full implementation, you'd want to translate all visible text
-      window.location.reload();
+      // Apply translations without page reload for better UX
+      await applyTranslationsToCurrentPage(languageCode);
+      
     } catch (error) {
       console.error('Language change error:', error);
       toast({
@@ -151,6 +166,42 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     return translationService.getLanguageName(code);
   };
 
+  // Apply translations to current page without reload
+  const applyTranslationsToCurrentPage = async (languageCode: string) => {
+    try {
+      // Find all elements with data-translatable attribute
+      const translatableElements = document.querySelectorAll('[data-translatable]');
+      
+      if (translatableElements.length === 0) return;
+
+      const textsToTranslate = Array.from(translatableElements).map(el => el.textContent || '');
+      
+      // Filter out empty texts
+      const nonEmptyTexts = textsToTranslate.filter(text => text.trim().length > 0);
+      
+      if (nonEmptyTexts.length === 0) return;
+
+      // Translate in batches
+      const translatedTexts = await translationService.translateBatch(nonEmptyTexts, languageCode);
+      
+      // Apply translations
+      let textIndex = 0;
+      translatableElements.forEach((element, index) => {
+        const originalText = textsToTranslate[index];
+        if (originalText.trim().length > 0) {
+          element.textContent = translatedTexts[textIndex] || originalText;
+          textIndex++;
+        }
+      });
+
+      console.log(`Applied ${translatedTexts.length} translations to current page`);
+    } catch (error) {
+      console.error('Error applying translations:', error);
+      // Fallback to page reload if translation fails
+      setTimeout(() => window.location.reload(), 1000);
+    }
+  };
+
   const contextValue: LanguageContextType = {
     currentLanguage,
     supportedLanguages,
@@ -159,9 +210,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     changeLanguage,
     translateText,
     translateBatch,
-    autoDetectLanguage,
-    getLanguageName,
-    isRTL
+      autoDetectLanguage,
+  getLanguageName,
+  isRTL,
+  resetLanguagePreferences: () => {
+    localStorage.removeItem('preferredLanguage');
+    localStorage.removeItem('manualLanguageSelection');
+    window.location.reload();
+  }
   };
 
   return (

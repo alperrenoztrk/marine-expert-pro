@@ -37,7 +37,8 @@ export const LanguageSelector = ({
     isTranslating,
     changeLanguage,
     autoDetectLanguage,
-    getLanguageName
+    getLanguageName,
+    resetLanguagePreferences
   } = useLanguage();
 
   const [isDetecting, setIsDetecting] = useState(false);
@@ -52,6 +53,9 @@ export const LanguageSelector = ({
   };
 
   const handleLanguageChange = async (languageCode: string) => {
+    if (currentLanguage === languageCode) return;
+    
+    console.log(`Changing language from ${currentLanguage} to ${languageCode}`);
     await changeLanguage(languageCode);
   };
 
@@ -149,19 +153,28 @@ export const LanguageSelector = ({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             
-            {/* Auto Detect Option */}
-            <DropdownMenuItem
-              onClick={handleAutoDetect}
-              className="flex items-center gap-2 font-medium"
-              disabled={isDetecting}
-            >
-              {isDetecting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Zap className="h-4 w-4 text-blue-500" />
-              )}
-              Otomatik Algıla
-            </DropdownMenuItem>
+                         {/* Auto Detect Option */}
+             <DropdownMenuItem
+               onClick={handleAutoDetect}
+               className="flex items-center gap-2 font-medium"
+               disabled={isDetecting}
+             >
+               {isDetecting ? (
+                 <Loader2 className="h-4 w-4 animate-spin" />
+               ) : (
+                 <Zap className="h-4 w-4 text-blue-500" />
+               )}
+               Otomatik Algıla
+             </DropdownMenuItem>
+             
+             {/* Reset Option */}
+             <DropdownMenuItem
+               onClick={resetLanguagePreferences}
+               className="flex items-center gap-2 font-medium text-orange-600"
+             >
+               <span className="text-orange-500">↻</span>
+               Dil Ayarlarını Sıfırla
+             </DropdownMenuItem>
             
             <DropdownMenuSeparator />
             
