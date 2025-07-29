@@ -4,6 +4,7 @@ import { ArrowLeft, Leaf, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { EmissionCalculations } from "@/components/calculations/EmissionCalculations";
+import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const EmissionCalculationsPage = () => {
   return (
@@ -130,6 +131,20 @@ const EmissionCalculationsPage = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Diagram Section */}
+        <DiagramViewer
+          title="Emisyon Kontrol Sistemi Diyagramı"
+          description="AI destekli emisyon kontrolü - SCR, EGCS ve MARPOL uyumluluk akışı"
+          data={{
+            enginePower: 8500,
+            fuelSulfur: 0.5,
+            noxTier: 'III',
+            scrubberType: 'open-loop'
+          }}
+          diagramType="emission"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

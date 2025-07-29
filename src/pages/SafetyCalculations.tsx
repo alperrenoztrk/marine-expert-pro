@@ -4,6 +4,7 @@ import { ArrowLeft, Shield, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { SafetyCalculations } from "@/components/calculations/SafetyCalculations";
+import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const SafetyCalculationsPage = () => {
   return (
@@ -130,6 +131,19 @@ const SafetyCalculationsPage = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Diagram Section */}
+        <DiagramViewer
+          title="Acil Durum Tahliye Diyagramı"
+          description="AI destekli güvenlik prosedürleri - acil durum akışı ve tahliye planları"
+          data={{
+            personCapacity: 450,
+            lifeboatCount: 8,
+            emergencyType: 'fire'
+          }}
+          diagramType="safety"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

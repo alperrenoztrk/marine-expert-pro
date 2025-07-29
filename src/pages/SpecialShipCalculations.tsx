@@ -4,6 +4,7 @@ import { ArrowLeft, Ship, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { SpecialShipCalculations } from "@/components/calculations/SpecialShipCalculations";
+import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const SpecialShipCalculationsPage = () => {
   return (
@@ -130,6 +131,20 @@ const SpecialShipCalculationsPage = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Diagram Section */}
+        <DiagramViewer
+          title="Kargo Operasyon Akış Diyagramı"
+          description="AI destekli kargo operasyonları - yükleme, boşaltma ve liman işlemleri akışı"
+          data={{
+            shipType: 'container',
+            cargoCapacity: 14000,
+            portOperations: 'loading',
+            craneCapacity: 65
+          }}
+          diagramType="cargo"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

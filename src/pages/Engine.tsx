@@ -4,6 +4,7 @@ import { ArrowLeft, Cog, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EngineCalculations } from "@/components/calculations/EngineCalculations";
 import { Separator } from "@/components/ui/separator";
+import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const Engine = () => {
   return (
@@ -144,6 +145,20 @@ const Engine = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Diagram Section */}
+        <DiagramViewer
+          title="Makine Sistemi Akış Diyagramı"
+          description="AI destekli makine sistemi görselleştirmesi - yakıt akışı, güç iletimi ve emisyon kontrolü"
+          data={{
+            mcrPower: 8500,
+            currentLoad: 75,
+            fuelType: 'HFO',
+            seawaterInletTemp: 32
+          }}
+          diagramType="engine"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

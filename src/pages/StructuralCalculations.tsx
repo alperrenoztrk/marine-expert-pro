@@ -4,6 +4,7 @@ import { ArrowLeft, Building, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { StructuralCalculations } from "@/components/calculations/StructuralCalculations";
+import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const StructuralCalculationsPage = () => {
   return (
@@ -130,6 +131,20 @@ const StructuralCalculationsPage = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Diagram Section */}
+        <DiagramViewer
+          title="Yapısal Analiz Akış Diyagramı"
+          description="AI destekli yapısal analiz - yük hesaplaması, gerilme analizi ve güvenlik değerlendirmesi"
+          data={{
+            beamLength: 12,
+            loadType: 'distributed',
+            materialGrade: 'AH36',
+            safetyFactor: 2.0
+          }}
+          diagramType="structural"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">

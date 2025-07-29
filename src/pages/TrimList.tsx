@@ -4,6 +4,7 @@ import { ArrowLeft, TrendingUp, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TrimCalculations } from "@/components/calculations/TrimCalculations";
 import { Separator } from "@/components/ui/separator";
+import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const TrimList = () => {
   return (
@@ -144,6 +145,20 @@ const TrimList = () => {
             </Card>
           </div>
         </div>
+
+        {/* AI Diagram Section */}
+        <DiagramViewer
+          title="Trim ve Stabilite Diyagramı"
+          description="AI destekli trim analizi - gemi profili, su hattı ve ağırlık dağılımı görselleştirmesi"
+          data={{
+            L: 180,
+            draftForward: 8.5,
+            draftAft: 9.2,
+            displacement: 25000
+          }}
+          diagramType="trim"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">
