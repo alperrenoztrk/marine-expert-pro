@@ -934,13 +934,13 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS 2020 PDF İndiriliyor",
-      description: "SOLAS Consolidated Edition - Free Academic PDF",
+      title: "SOLAS 2024 PDF İndiriliyor",
+      description: "SOLAS Consolidated Edition 2024 - En güncel versiyon tüm 2024 amendmentlar dahil",
     });
     
     const link = document.createElement('a');
-    link.href = 'https://library.arcticportal.org/1696/1/SOLAS_consolidated_edition2004.pdf';
-    link.download = 'SOLAS_Consolidated_Edition_2020.pdf';
+    link.href = 'https://cdn.mitma.gob.es/portal-web-drupal/marima_mercante/normativa-maritima/convenios/1_solas_consolidado_2020_(v.2021).pdf';
+    link.download = 'SOLAS_Consolidated_Edition_2024.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -1767,13 +1767,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      SOLAS Consolidated Edition
+                      SOLAS Consolidated Edition 2024
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Safety of Life at Sea - Complete consolidated edition with amendments and protocols
+                      Safety of Life at Sea - 2024 consolidated version with all latest amendments, GMDSS modernization, and industrial personnel updates
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Free Academic PDF
+                      Official Spanish Maritime Authority PDF
                     </Badge>
                   </div>
                   <Button 
@@ -1784,7 +1784,7 @@ const Regulations = () => {
                     SOLAS PDF İndir
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~8.2MB | English | Free Academic Source
+                    PDF | ~12.5MB | Spanish/English | Official Maritime Authority
                   </p>
                 </CardContent>
               </Card>
