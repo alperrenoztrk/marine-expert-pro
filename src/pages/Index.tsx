@@ -130,7 +130,7 @@ const Index = () => {
                   Denizcilik Hesaplayıcısı
                 </h1>
                 <p className="text-sm text-muted-foreground" data-translatable>
-                  AI destekli profesyonel maritim hesaplamalar
+                  Profesyonel maritim hesaplamalar
                 </p>
               </div>
             </div>
@@ -187,13 +187,13 @@ const Index = () => {
             <div className="flex-1 min-w-0">
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed" data-translatable>
                 Gemi mühendisliği, denizcilik ve maritime operasyonlar için kapsamlı hesaplama araçları. 
-                AI asistanı ile detaylı açıklamalar ve profesyonel sonuçlar.
+                Detaylı açıklamalar ve profesyonel sonuçlar.
               </p>
               <div className="flex items-center gap-2 mt-2 flex-wrap">
                 <Link to="/formulas">
                   <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     <Brain className="w-4 h-4" />
-                    <span data-translatable>AI Asistana Sor</span>
+                    <span data-translatable>Formül Arşivi</span>
                   </Button>
                 </Link>
                 <Link to="/trim-list">
