@@ -134,6 +134,81 @@ class DiagramAPIService {
 </div>`;
     }
     
+    if (keywords.includes('gz') || keywords.includes('curve') || keywords.includes('righting')) {
+      return `
+<div class="mermaid-diagram">
+  <div class="diagram-header">GZ Curve (Righting Arm Curve)</div>
+  <svg viewBox="0 0 800 600" style="width: 100%; height: 450px;">
+    <!-- Grid -->
+    <defs>
+      <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 30" fill="none" stroke="#E0E0E0" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect x="80" y="80" width="640" height="400" fill="url(#grid)"/>
+    
+    <!-- Axes -->
+    <line x1="80" y1="480" x2="720" y2="480" stroke="#333" stroke-width="2"/>
+    <line x1="80" y1="480" x2="80" y2="80" stroke="#333" stroke-width="2"/>
+    
+    <!-- Axis Labels -->
+    <text x="400" y="520" text-anchor="middle" font-size="14" fill="#333">Heel Angle (degrees)</text>
+    <text x="40" y="280" text-anchor="middle" font-size="14" fill="#333" transform="rotate(-90 40 280)">GZ (m)</text>
+    
+    <!-- X-axis ticks and labels -->
+    <g stroke="#666" stroke-width="1">
+      <line x1="160" y1="475" x2="160" y2="485"/><text x="160" y="500" text-anchor="middle" font-size="10">15°</text>
+      <line x1="240" y1="475" x2="240" y2="485"/><text x="240" y="500" text-anchor="middle" font-size="10">30°</text>
+      <line x1="320" y1="475" x2="320" y2="485"/><text x="320" y="500" text-anchor="middle" font-size="10">45°</text>
+      <line x1="400" y1="475" x2="400" y2="485"/><text x="400" y="500" text-anchor="middle" font-size="10">60°</text>
+      <line x1="480" y1="475" x2="480" y2="485"/><text x="480" y="500" text-anchor="middle" font-size="10">75°</text>
+      <line x1="560" y1="475" x2="560" y2="485"/><text x="560" y="500" text-anchor="middle" font-size="10">90°</text>
+    </g>
+    
+    <!-- Y-axis ticks and labels -->
+    <g stroke="#666" stroke-width="1">
+      <line x1="75" y1="440" x2="85" y2="440"/><text x="70" y="445" text-anchor="end" font-size="10">0.2</text>
+      <line x1="75" y1="400" x2="85" y2="400"/><text x="70" y="405" text-anchor="end" font-size="10">0.4</text>
+      <line x1="75" y1="360" x2="85" y2="360"/><text x="70" y="365" text-anchor="end" font-size="10">0.6</text>
+      <line x1="75" y1="320" x2="85" y2="320"/><text x="70" y="325" text-anchor="end" font-size="10">0.8</text>
+      <line x1="75" y1="280" x2="85" y2="280"/><text x="70" y="285" text-anchor="end" font-size="10">1.0</text>
+      <line x1="75" y1="240" x2="85" y2="240"/><text x="70" y="245" text-anchor="end" font-size="10">1.2</text>
+    </g>
+    
+    <!-- GZ Curve -->
+    <path d="M 80 480 Q 120 460 160 420 Q 200 360 240 320 Q 280 280 320 260 Q 360 250 400 260 Q 440 280 480 320 Q 520 380 560 450 Q 600 480 640 490" 
+          fill="none" stroke="#2196F3" stroke-width="4"/>
+    
+    <!-- Key points -->
+    <circle cx="320" cy="260" r="5" fill="#FF4444"/>
+    <text x="330" y="255" font-size="10" fill="#FF4444">Max GZ</text>
+    
+    <circle cx="640" cy="490" r="5" fill="#FF9800"/>
+    <text x="650" y="485" font-size="10" fill="#FF9800">Vanishing</text>
+    
+    <!-- IMO Criteria lines -->
+    <line x1="160" y1="440" x2="720" y2="440" stroke="#4CAF50" stroke-width="2" stroke-dasharray="5,5"/>
+    <text x="730" y="445" font-size="10" fill="#4CAF50">IMO Min</text>
+    
+    <!-- Area under curve -->
+    <path d="M 80 480 Q 120 460 160 420 Q 200 360 240 320 Q 280 280 320 260 Q 360 250 400 260 L 400 480 L 80 480" 
+          fill="#2196F3" opacity="0.2"/>
+    
+    <!-- Legend -->
+    <rect x="550" y="100" width="160" height="120" fill="white" stroke="#333" stroke-width="1"/>
+    <text x="630" y="120" text-anchor="middle" font-size="12" font-weight="bold">Stability Curve</text>
+    <line x1="560" y1="135" x2="580" y2="135" stroke="#2196F3" stroke-width="4"/>
+    <text x="590" y="140" font-size="10">GZ Curve</text>
+    <line x1="560" y1="150" x2="580" y2="150" stroke="#4CAF50" stroke-width="2" stroke-dasharray="3,3"/>
+    <text x="590" y="155" font-size="10">IMO Criteria</text>
+    <circle cx="570" cy="170" r="3" fill="#FF4444"/>
+    <text x="590" y="175" font-size="10">Critical Points</text>
+    <rect x="560" y="185" width="20" height="10" fill="#2196F3" opacity="0.2"/>
+    <text x="590" y="195" font-size="10">Stability Area</text>
+  </svg>
+</div>`;
+    }
+    
     if (keywords.includes('trim') || keywords.includes('stability')) {
       return `
 <div class="mermaid-diagram">
@@ -237,6 +312,24 @@ class DiagramAPIService {
     - Metacentric height GM
     - Stability curve
     Show the ship profile with waterlines and load condition.`;
+
+    return this.generateDiagram({
+      description,
+      diagramType: 'flowchart',
+      style: 'modern'
+    });
+  }
+
+  async generateGZCurveDiagram(stabilityData: any): Promise<DiagramResponse> {
+    const description = `Create a GZ curve (righting arm curve) stability diagram showing:
+    - Initial stability (GM): ${stabilityData.GM || 'calculated'} meters
+    - Displacement: ${stabilityData.displacement || 'current'} tonnes
+    - Maximum GZ value and corresponding heel angle
+    - Range of positive stability
+    - Angle of vanishing stability
+    - IMO stability criteria compliance
+    - Critical heel angles and stability parameters
+    Show the mathematical curve with grid lines, axes labels, and stability zones.`;
 
     return this.generateDiagram({
       description,

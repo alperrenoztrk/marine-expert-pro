@@ -10,7 +10,7 @@ interface DiagramViewerProps {
   title: string;
   description?: string;
   data: any;
-  diagramType: 'engine' | 'trim' | 'safety' | 'emission' | 'cargo' | 'structural';
+  diagramType: 'engine' | 'trim' | 'safety' | 'emission' | 'cargo' | 'structural' | 'gz-curve';
   className?: string;
 }
 
@@ -52,6 +52,9 @@ export const DiagramViewer = ({
           break;
         case 'structural':
           response = await diagramAPI.generateStructuralAnalysisDiagram(data);
+          break;
+        case 'gz-curve':
+          response = await diagramAPI.generateGZCurveDiagram(data);
           break;
         default:
           throw new Error('Unsupported diagram type');

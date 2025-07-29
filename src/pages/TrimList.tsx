@@ -149,7 +149,7 @@ const TrimList = () => {
         {/* AI Diagram Section */}
         <DiagramViewer
           title="Trim ve Stabilite Diyagramı"
-          description="AI destekli trim analizi - gemi profili, su hattı ve ağırlık dağılımı görselleştirmesi"
+          description="Trim analizi - gemi profili, su hattı ve ağırlık dağılımı görselleştirmesi"
           data={{
             L: 180,
             draftForward: 8.5,
@@ -157,6 +157,20 @@ const TrimList = () => {
             displacement: 25000
           }}
           diagramType="trim"
+          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+        />
+
+        <DiagramViewer
+          title="GZ Eğrisi (Stabilite Kolu Eğrisi)"
+          description="Stabilite analizi - righting arm eğrisi, kritik açılar ve IMO kriterlerinin değerlendirilmesi"
+          data={{
+            GM: 1.2,
+            displacement: 25000,
+            maxGZ: 0.85,
+            vanishingAngle: 78,
+            loadCondition: "departure"
+          }}
+          diagramType="gz-curve"
           className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
         />
 
