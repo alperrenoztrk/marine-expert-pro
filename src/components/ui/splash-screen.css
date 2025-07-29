@@ -1,0 +1,348 @@
+/* Splash Screen Styles */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e3a8a, #1e40af, #06b6d4);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.splash-screen.animate {
+  opacity: 1;
+}
+
+/* Background Waves */
+.splash-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wave-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  opacity: 0.1;
+  animation: waveMove 4s linear infinite;
+}
+
+.wave-svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes waveMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Main Content */
+.splash-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+/* Logo Container */
+.logo-container {
+  position: relative;
+  margin-bottom: 2rem;
+  transform: scale(0) rotate(-180deg);
+  animation: logoAppear 0.8s ease-out 0.5s forwards;
+}
+
+.logo-circle {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compass-ring {
+  position: absolute;
+  inset: 0.5rem;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  animation: rotate 2s linear infinite;
+}
+
+.anchor-icon {
+  transform: scale(0);
+  animation: anchorAppear 0.5s ease-out 0.8s forwards;
+}
+
+@keyframes logoAppear {
+  to {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes anchorAppear {
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Floating Elements */
+.floating-ship {
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  opacity: 0;
+  animation: shipFloat 2s ease-in-out infinite, fadeInFloat 0.5s ease-out 1s forwards;
+}
+
+.floating-waves {
+  position: absolute;
+  bottom: -1.5rem;
+  left: -1.5rem;
+  opacity: 0;
+  animation: wavesFloat 3s ease-in-out infinite, fadeInFloat 0.5s ease-out 1.2s forwards;
+}
+
+.floating-compass {
+  position: absolute;
+  top: -1.5rem;
+  left: -1.5rem;
+  opacity: 0;
+  animation: compassFloat 4s ease-in-out infinite, fadeInFloat 0.5s ease-out 1.4s forwards;
+}
+
+@keyframes shipFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes wavesFloat {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(15px); }
+}
+
+@keyframes compassFloat {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+}
+
+@keyframes fadeInFloat {
+  to {
+    opacity: 1;
+  }
+}
+
+/* App Title */
+.app-title {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: titleAppear 0.6s ease-out 2s forwards;
+}
+
+.title-text {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to right, #ffffff, #a7f3d0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle-text {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 300;
+}
+
+@keyframes titleAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading Animation */
+.loading-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  animation: loadingAppear 0.5s ease-out 1.5s forwards;
+}
+
+.progress-bar {
+  width: 16rem;
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #22d3ee, #ffffff);
+  border-radius: 9999px;
+  width: 0%;
+  animation: progressFill 1.5s ease-in-out 1.8s forwards;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.3;
+  transform: scale(0.5);
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+.dot-1 { animation-delay: 0s; }
+.dot-2 { animation-delay: 0.2s; }
+.dot-3 { animation-delay: 0.4s; }
+
+.loading-text {
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  opacity: 0;
+  animation: textFadeIn 0.5s ease-out 2.2s forwards;
+}
+
+@keyframes loadingAppear {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progressFill {
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes textFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Particles */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 0.25rem;
+  height: 0.25rem;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFloat 4s linear infinite;
+}
+
+.particle-1 { left: 10%; animation-delay: 0s; }
+.particle-2 { left: 20%; animation-delay: 0.5s; }
+.particle-3 { left: 30%; animation-delay: 1s; }
+.particle-4 { left: 40%; animation-delay: 1.5s; }
+.particle-5 { left: 50%; animation-delay: 2s; }
+.particle-6 { left: 60%; animation-delay: 2.5s; }
+.particle-7 { left: 70%; animation-delay: 3s; }
+.particle-8 { left: 80%; animation-delay: 3.5s; }
+.particle-9 { left: 90%; animation-delay: 4s; }
+.particle-10 { left: 15%; animation-delay: 4.5s; }
+.particle-11 { left: 35%; animation-delay: 5s; }
+.particle-12 { left: 65%; animation-delay: 5.5s; }
+
+@keyframes particleFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh);
+  }
+  10%, 90% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .logo-circle {
+    width: 6rem;
+    height: 6rem;
+  }
+  
+  .title-text {
+    font-size: 2rem;
+  }
+  
+  .subtitle-text {
+    font-size: 1rem;
+  }
+  
+  .progress-bar {
+    width: 12rem;
+  }
+}
+
+/* Dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+  .splash-screen {
+    background: linear-gradient(135deg, #0f172a, #1e293b, #0891b2);
+  }
+}

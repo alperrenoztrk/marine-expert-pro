@@ -3,6 +3,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { SplashScreen } from "@/components/ui/splash-screen";
+import { useState } from "react";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
@@ -23,12 +25,19 @@ import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <LanguageProvider>
-        <Toaster />
-        <BrowserRouter>
+const App = () => {
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <LanguageProvider>
+          <Toaster />
+          <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/formulas" element={<Formulas />} />
@@ -47,11 +56,12 @@ const App = () => (
           <Route path="/weather" element={<WeatherCalculationsPage />} />
           <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
-        </Routes>
-      </BrowserRouter>
+                  </Routes>
+        </BrowserRouter>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
