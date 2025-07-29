@@ -279,7 +279,7 @@ export const LanguageSelector = ({
               {currentLanguage === lang.language && (
                 <div className="flex items-center gap-1">
                   <Check className="h-4 w-4 text-green-600" />
-                  <Badge variant="default" size="sm">
+                  <Badge variant="default">
                     Aktif
                   </Badge>
                 </div>
