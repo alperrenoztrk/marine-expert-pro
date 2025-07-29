@@ -934,13 +934,13 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS 2020 PDF İndiriliyor",
-      description: "En güncel erişilebilir İngilizce SOLAS Consolidated Edition",
+      title: "SOLAS PDF İndiriliyor",
+      description: "Arctic Portal Academic Library - SOLAS Consolidated Edition 2004 İngilizce",
     });
     
     const link = document.createElement('a');
-    link.href = 'https://wwwcdn.imo.org/localresources/en/publications/Documents/Consolidated%20texts/English/SOLAS_Consolidated_Edition_2020.pdf';
-    link.download = 'SOLAS_Consolidated_Edition_2020_English.pdf';
+    link.href = 'https://library.arcticportal.org/1696/1/SOLAS_consolidated_edition2004.pdf';
+    link.download = 'SOLAS_Consolidated_Edition_Academic.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -1767,13 +1767,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      SOLAS Consolidated Edition 2020
+                      SOLAS Consolidated Edition 2004
                     </p>
                     <p className="text-gray-600 text-sm">
-                      IMO Official - Safety of Life at Sea consolidated edition in English with comprehensive amendments and regulations
+                      Arctic Portal Academic Library - Safety of Life at Sea consolidated edition in English
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Free IMO English PDF
+                      Free Academic Library PDF
                     </Badge>
                   </div>
                   <Button 
@@ -1784,7 +1784,7 @@ const Regulations = () => {
                     SOLAS PDF İndir
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~15MB | English | Free IMO Official
+                    PDF | ~8.2MB | English | Free Academic Library
                   </p>
                 </CardContent>
               </Card>
