@@ -934,13 +934,13 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS PDF İndiriliyor",
-      description: "Arctic Portal Academic Library - SOLAS Consolidated Edition 2004 İngilizce",
+      title: "SOLAS 2020-2024 Amendments İndiriliyor",
+      description: "UK Government Official - En güncel SOLAS amendments (2020-2024)",
     });
     
     const link = document.createElement('a');
-    link.href = 'https://library.arcticportal.org/1696/1/SOLAS_consolidated_edition2004.pdf';
-    link.download = 'SOLAS_Consolidated_Edition_Academic.pdf';
+    link.href = 'https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/942095/TS_52020_SOLAS_1974_amendments.pdf';
+    link.download = 'SOLAS_2020_Amendments_UK_Government.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -1767,13 +1767,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      SOLAS Consolidated Edition 2004
+                      SOLAS 2020-2024 Amendments
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Arctic Portal Academic Library - Safety of Life at Sea consolidated edition in English
+                      UK Government Official - Latest SOLAS amendments including MSC resolutions and 2024 updates
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Free Academic Library PDF
+                      Official UK Government PDF
                     </Badge>
                   </div>
                   <Button 
@@ -1784,7 +1784,7 @@ const Regulations = () => {
                     SOLAS PDF İndir
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~8.2MB | English | Free Academic Library
+                    PDF | ~728KB | English | UK Government Official
                   </p>
                 </CardContent>
               </Card>
