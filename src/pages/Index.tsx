@@ -193,7 +193,7 @@ const Index = () => {
                 <Link to="/formulas">
                   <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                     <Brain className="w-4 h-4" />
-                    <span data-translatable>Formül Arşivi</span>
+                    <span data-translatable>Asistan</span>
                   </Button>
                 </Link>
                 <Link to="/trim-list">
