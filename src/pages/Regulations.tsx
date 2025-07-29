@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { 
   ArrowLeft, 
   Ship, 
@@ -1334,7 +1334,7 @@ const Regulations = () => {
                                     className="w-full h-auto max-h-96 object-contain"
                                     onError={(e) => {
                                       e.currentTarget.style.display = 'none';
-                                      e.currentTarget.nextElementSibling.style.display = 'block';
+                                      (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
                                     }}
                                   />
                                   <div className="hidden text-center text-gray-500 p-4">

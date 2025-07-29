@@ -257,7 +257,8 @@ export const EngineCalculations = () => {
     
     // Typical generation rates
     const bilgeGeneration = (data.mcrPower / 1000) * 0.5; // L/day per MW
-    const sludgeGeneration = (data.dailyConsumption * 1000) * 0.01; // 1% of fuel consumption
+    const estimatedConsumption = (data.mcrPower * 0.185 * 24) / 1000; // Estimated daily consumption in tonnes
+    const sludgeGeneration = (estimatedConsumption * 1000) * 0.01; // 1% of fuel consumption
     
     return { bilgeCapacity, sludgeCapacity, bilgeGeneration, sludgeGeneration };
   };
