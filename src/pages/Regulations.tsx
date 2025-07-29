@@ -934,13 +934,13 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS 2024 İndiriliyor",
-      description: "IMO Resmi SOLAS Consolidated Edition 2024 - En güncel İngilizce versiyon",
+      title: "SOLAS 2020 PDF İndiriliyor",
+      description: "En güncel erişilebilir İngilizce SOLAS Consolidated Edition",
     });
     
-    // IMO'nun resmi distributor sayfasına yönlendir
     const link = document.createElement('a');
-    link.href = 'https://www.imo.org/en/publications/pages/distributors-default.aspx';
+    link.href = 'https://wwwcdn.imo.org/localresources/en/publications/Documents/Consolidated%20texts/English/SOLAS_Consolidated_Edition_2020.pdf';
+    link.download = 'SOLAS_Consolidated_Edition_2020_English.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -1767,13 +1767,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      SOLAS Consolidated Edition 2024
+                      SOLAS Consolidated Edition 2020
                     </p>
                     <p className="text-gray-600 text-sm">
-                      IMO Official - Safety of Life at Sea 2024 consolidated version with all latest amendments including GMDSS modernization and Industrial Personnel Code
+                      IMO Official - Safety of Life at Sea consolidated edition in English with comprehensive amendments and regulations
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      IMO Official English Edition
+                      Free IMO English PDF
                     </Badge>
                   </div>
                   <Button 
@@ -1781,10 +1781,10 @@ const Regulations = () => {
                     className="w-full bg-orange-600 hover:bg-orange-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    SOLAS 2024 Satın Al
+                    SOLAS PDF İndir
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | 604 pages | English | £160 | Code: IH110E
+                    PDF | ~15MB | English | Free IMO Official
                   </p>
                 </CardContent>
               </Card>
