@@ -110,7 +110,6 @@ export const DiagramViewer = ({
             <div>
               <CardTitle className="flex items-center gap-2">
                 📊 {title}
-                <Badge variant="secondary" className="ml-2">AI Generated</Badge>
               </CardTitle>
               {description && (
                 <CardDescription className="mt-2">
@@ -177,7 +176,7 @@ export const DiagramViewer = ({
             <div className="flex flex-col items-center justify-center py-12 space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
               <div className="text-center">
-                <p className="text-lg font-medium text-gray-700">AI Diyagram Oluşturuluyor...</p>
+                <p className="text-lg font-medium text-gray-700">Diyagram Oluşturuluyor...</p>
                 <p className="text-sm text-gray-500 mt-1">
                   Bu işlem 10-30 saniye sürebilir
                 </p>
@@ -196,11 +195,8 @@ export const DiagramViewer = ({
                 </div>
               </div>
               
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>AI destekli diagram - RapidAPI FlowChart Generator</span>
-                <Badge variant="outline" className="gap-1">
-                  ✨ Yapay Zeka ile Oluşturuldu
-                </Badge>
+              <div className="flex items-center justify-center text-sm text-gray-500">
+                <span>Teknik Diyagram Sistemi</span>
               </div>
             </div>
           )}
@@ -213,7 +209,7 @@ export const DiagramViewer = ({
               <div className="text-center">
                 <p className="text-lg font-medium text-gray-700">Diyagram Hazır Değil</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  Hesaplama verilerinizi analiz ederek AI destekli diyagram oluşturun
+                  Hesaplama verilerinizi analiz ederek teknik diyagram oluşturun
                 </p>
               </div>
             </div>
