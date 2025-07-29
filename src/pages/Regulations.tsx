@@ -934,13 +934,13 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS 2024 PDF İndiriliyor",
-      description: "SOLAS Consolidated Edition 2024 - En güncel versiyon tüm 2024 amendmentlar dahil",
+      title: "SOLAS 2024 İndiriliyor",
+      description: "IMO Resmi SOLAS Consolidated Edition 2024 - En güncel İngilizce versiyon",
     });
     
+    // IMO'nun resmi distributor sayfasına yönlendir
     const link = document.createElement('a');
-    link.href = 'https://cdn.mitma.gob.es/portal-web-drupal/marima_mercante/normativa-maritima/convenios/1_solas_consolidado_2020_(v.2021).pdf';
-    link.download = 'SOLAS_Consolidated_Edition_2024.pdf';
+    link.href = 'https://www.imo.org/en/publications/pages/distributors-default.aspx';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -1770,10 +1770,10 @@ const Regulations = () => {
                       SOLAS Consolidated Edition 2024
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Safety of Life at Sea - 2024 consolidated version with all latest amendments, GMDSS modernization, and industrial personnel updates
+                      IMO Official - Safety of Life at Sea 2024 consolidated version with all latest amendments including GMDSS modernization and Industrial Personnel Code
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Official Spanish Maritime Authority PDF
+                      IMO Official English Edition
                     </Badge>
                   </div>
                   <Button 
@@ -1781,10 +1781,10 @@ const Regulations = () => {
                     className="w-full bg-orange-600 hover:bg-orange-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    SOLAS PDF İndir
+                    SOLAS 2024 Satın Al
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~12.5MB | Spanish/English | Official Maritime Authority
+                    PDF | 604 pages | English | £160 | Code: IH110E
                   </p>
                 </CardContent>
               </Card>
