@@ -934,18 +934,30 @@ const Regulations = () => {
 
   const handleDownloadSOLAS = () => {
     toast({
-      title: "SOLAS İndiriliyor",
-      description: "Safety of Life at Sea Convention dokümantasyonu",
+      title: "SOLAS 2024 Sayfasına Yönlendiriliyor",
+      description: "IMO Resmi Distributor Sayfası - SOLAS Consolidated Edition 2024",
     });
-    // IMO SOLAS link would go here
+    
+    const link = document.createElement('a');
+    link.href = 'https://www.imo.org/en/publications/pages/distributors-default.aspx';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleDownloadMARPOL = () => {
     toast({
-      title: "MARPOL İndiriliyor", 
-      description: "Marine Pollution Convention dokümantasyonu",
+      title: "MARPOL 2024 Sayfasına Yönlendiriliyor", 
+      description: "IMO Resmi Distributor Sayfası - MARPOL Consolidated Edition 2024",
     });
-    // IMO MARPOL link would go here
+    
+    const link = document.createElement('a');
+    link.href = 'https://www.imo.org/en/publications/pages/distributors-default.aspx';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const filteredRules = colregRules.filter(rule => {
@@ -1753,13 +1765,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      Safety of Life at Sea
+                      SOLAS Consolidated Edition 2024
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Denizde Can Güvenliği Sözleşmesi - Konsolidasyonlu Versiyon
+                      IMO Resmi SOLAS Konsolide Versiyonu - 1 Temmuz 2024'e kadar tüm amendmentlar dahil
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Latest Amendment: 2024
+                      Published: January 2025
                     </Badge>
                   </div>
                   <Button 
@@ -1767,10 +1779,10 @@ const Regulations = () => {
                     className="w-full bg-orange-600 hover:bg-orange-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    SOLAS İndir
+                    SOLAS 2024 Satın Al
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~8.5MB | English
+                    PDF | ~12.5MB | English | IMO Official IH110E
                   </p>
                 </CardContent>
               </Card>
@@ -1786,13 +1798,13 @@ const Regulations = () => {
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="space-y-2">
                     <p className="text-gray-800 font-semibold">
-                      Marine Pollution Prevention
+                      MARPOL Consolidated Edition 2024
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Deniz Kirliliğini Önleme Sözleşmesi - Tüm Ekler
+                      IMO Resmi MARPOL 73/78 Konsolide Versiyonu - Mayıs 2024 Supplement ile güncel
                     </p>
                     <Badge variant="secondary" className="text-xs">
-                      Latest Amendment: 2024
+                      Latest Supplement: May 2024
                     </Badge>
                   </div>
                   <Button 
@@ -1800,10 +1812,10 @@ const Regulations = () => {
                     className="w-full bg-green-600 hover:bg-green-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    MARPOL İndir
+                    MARPOL 2024 Satın Al
                   </Button>
                   <p className="text-xs text-gray-500">
-                    PDF | ~12.3MB | English
+                    PDF | ~15.2MB | English | IMO Official IF520E + May 2024 Supplement
                   </p>
                 </CardContent>
               </Card>
@@ -1858,14 +1870,16 @@ const Regulations = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 text-sm">
-                  <p><strong>Son Güncelleme:</strong> 1 Ocak 2024</p>
-                  <p><strong>Sonraki Revizyon:</strong> Temmuz 2024 (IMO MEPC 82)</p>
-                  <p><strong>Önemli Değişiklikler:</strong></p>
+                  <p><strong>Son Güncelleme:</strong> 7 Ocak 2025</p>
+                  <p><strong>SOLAS 2024:</strong> 1 Temmuz 2024'e kadar tüm amendmentlar dahil</p>
+                  <p><strong>MARPOL 2024:</strong> Mayıs 2024 Supplement ile güncel</p>
+                  <p><strong>Önemli 2024-2025 Değişiklikleri:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-4">
-                    <li>MARPOL Annex VI - Carbon Intensity Indicator (CII) güncellemeleri</li>
-                    <li>SOLAS Chapter V - E-Navigation sistemleri entegrasyonu</li>
-                    <li>COLREG Rule 5 - Autonomous vessel considerations</li>
-                    <li>ISM Code - Cyber risk management gereksinimleri</li>
+                    <li>SOLAS Chapter II-1 - Enhanced watertight integrity requirements (MSC.474(102))</li>
+                    <li>MARPOL Annex VI - Updated CII calculations and energy efficiency measures</li>
+                    <li>COLREG - Extended visual reference system with modern navigation aids</li>
+                    <li>SOLAS Chapter III - Advanced life-saving appliances standards</li>
+                    <li>MARPOL Annex I - Enhanced oil pollution prevention measures</li>
                   </ul>
                   <p className="text-blue-600">
                     <strong>Not:</strong> Bu platform sürekli güncellenmekte olup, en son IMO düzenlemelerini takip etmektedir.
