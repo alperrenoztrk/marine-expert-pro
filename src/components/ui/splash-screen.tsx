@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Anchor, Waves, Ship, Compass } from "lucide-react";
-import "./splash-screen.css";
 
 interface SplashScreenProps {
   onComplete: () => void;
