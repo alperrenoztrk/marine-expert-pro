@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "react-router-dom";
 import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, BookmarkPlus, History } from "lucide-react";
 import maritimeHero from "@/assets/maritime-hero.jpg";
-import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
+import { LanguageSelector } from "@/components/ui/language-selector";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { useAdManager, loadAdSenseScript } from "@/hooks/useAdManager";
 import { useUserData } from "@/hooks/useUserData";
@@ -295,6 +295,9 @@ const Index = () => {
           <AdBannerInline />
         </div>
       )}
+
+      {/* Floating Language Selector */}
+      <LanguageSelector variant="floating" />
     </MobileLayout>
   );
 };

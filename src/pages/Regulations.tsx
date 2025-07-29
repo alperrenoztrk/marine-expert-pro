@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { OpenLibraryBrowser } from "@/components/ui/open-library-browser";
+import { LanguageSelector } from "@/components/ui/language-selector";
 import { 
   ArrowLeft, 
   Ship, 
@@ -511,10 +512,13 @@ const Regulations = () => {
               </div>
             </div>
           </div>
-          <Button onClick={exportToPDF} className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            PDF İndir
-          </Button>
+          <div className="flex items-center gap-2">
+            <LanguageSelector variant="compact" />
+            <Button onClick={exportToPDF} className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              PDF İndir
+            </Button>
+          </div>
         </div>
 
         {/* Search and Filters */}
