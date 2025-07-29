@@ -35,7 +35,35 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
   useEffect(() => {
     initializeLanguage();
-  }, []);
+    
+    // Listen for language changes in browser/system
+    const handleLanguageChange = () => {
+      const newBrowserLang = translationService.getBrowserLanguage();
+      if (newBrowserLang !== currentLanguage) {
+        console.log(`Browser language changed to: ${newBrowserLang}`);
+        changeLanguage(newBrowserLang);
+      }
+    };
+    
+    // Listen for language change events
+    window.addEventListener('languagechange', handleLanguageChange);
+    
+    // Check periodically for language changes (for mobile apps)
+    const languageCheckInterval = setInterval(() => {
+      const currentBrowserLang = translationService.getBrowserLanguage();
+      const savedLang = localStorage.getItem('preferredLanguage');
+      
+      if (currentBrowserLang !== savedLang) {
+        console.log(`System language changed from ${savedLang} to ${currentBrowserLang}`);
+        handleLanguageChange();
+      }
+    }, 5000); // Check every 5 seconds
+    
+    return () => {
+      window.removeEventListener('languagechange', handleLanguageChange);
+      clearInterval(languageCheckInterval);
+    };
+  }, [currentLanguage]);
 
   const initializeLanguage = async () => {
     setIsLoading(true);
@@ -44,27 +72,33 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const languages = await translationService.getSupportedLanguages();
       setSupportedLanguages(languages);
 
-      // Check for saved language preference first (manual selection takes priority)
+      // Always check current browser/system language
+      const currentBrowserLang = translationService.getBrowserLanguage();
       const savedLanguage = localStorage.getItem('preferredLanguage');
-      const isManualSelection = localStorage.getItem('manualLanguageSelection') === 'true';
       
-      if (savedLanguage && isManualSelection) {
-        // User has manually selected a language before
-        setCurrentLanguage(savedLanguage);
-        console.log(`Using manually selected language: ${savedLanguage}`);
+      // If browser language changed, update automatically
+      if (savedLanguage && savedLanguage !== currentBrowserLang) {
+        console.log(`Auto-updating language from ${savedLanguage} to ${currentBrowserLang} (system change detected)`);
+        setCurrentLanguage(currentBrowserLang);
+        localStorage.setItem('preferredLanguage', currentBrowserLang);
+        localStorage.removeItem('manualLanguageSelection'); // Reset manual flag since system changed
+        
+        toast({
+          title: "Dil Otomatik Güncellendi",
+          description: `Sistem diliniz değişti. Uygulama dili ${translationService.getLanguageName(currentBrowserLang)} olarak güncellendi.`,
+        });
       } else if (savedLanguage) {
-        // Previously saved language (could be from auto-detection)
+        // Use saved language if no change detected
         setCurrentLanguage(savedLanguage);
+        console.log(`Using saved language: ${savedLanguage}`);
       } else {
-        // First time user - auto-detect browser language
-        const browserLang = translationService.getBrowserLanguage();
-        setCurrentLanguage(browserLang);
-        localStorage.setItem('preferredLanguage', browserLang);
-
-        // Show notification only for first-time auto-detection
+        // First time user - use browser language
+        setCurrentLanguage(currentBrowserLang);
+        localStorage.setItem('preferredLanguage', currentBrowserLang);
+        
         toast({
           title: "Dil Algılandı",
-          description: `Tarayıcı diliniz (${translationService.getLanguageName(browserLang)}) otomatik olarak seçildi. Dil seçici ile değiştirebilirsiniz.`,
+          description: `Sistem diliniz (${translationService.getLanguageName(currentBrowserLang)}) otomatik olarak seçildi.`,
         });
       }
 
@@ -92,15 +126,22 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     try {
       setCurrentLanguage(languageCode);
       localStorage.setItem('preferredLanguage', languageCode);
-      localStorage.setItem('manualLanguageSelection', 'true'); // Mark as manually selected
+      
+      // Note: No longer setting manualLanguageSelection flag
+      // Language will auto-sync with system changes
 
       // Update document direction for RTL languages
       document.documentElement.dir = rtlLanguages.includes(languageCode) ? 'rtl' : 'ltr';
       document.documentElement.lang = languageCode;
 
+      const browserLang = translationService.getBrowserLanguage();
+      const isSystemLanguage = languageCode === browserLang;
+      
       toast({
         title: "Dil Değiştirildi",
-        description: `Uygulama dili ${translationService.getLanguageName(languageCode)} olarak değiştirildi`,
+        description: isSystemLanguage 
+          ? `Uygulama dili ${translationService.getLanguageName(languageCode)} olarak değiştirildi (sistem dili)`
+          : `Uygulama dili ${translationService.getLanguageName(languageCode)} olarak değiştirildi (sistem dili değişirse otomatik güncellenecek)`,
       });
 
       // Apply translations without page reload for better UX
@@ -144,21 +185,27 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
   const autoDetectLanguage = async () => {
     try {
-      // Sample text to detect language from page content
-      const sampleText = document.title || "Maritime Calculator";
-      const detection = await translationService.detectLanguage(sampleText);
+      const detectedLang = translationService.getBrowserLanguage();
       
-      if (detection.confidence > 0.7 && detection.language !== currentLanguage) {
-        const shouldChange = window.confirm(
-          `Detected language: ${translationService.getLanguageName(detection.language)}. Switch to this language?`
-        );
-        
-        if (shouldChange) {
-          await changeLanguage(detection.language);
-        }
+      if (detectedLang !== currentLanguage) {
+        await changeLanguage(detectedLang);
+        toast({
+          title: "Sistem Dili Algılandı",
+          description: `Dil ${translationService.getLanguageName(detectedLang)} olarak güncellendi`,
+        });
+      } else {
+        toast({
+          title: "Dil Zaten Güncel",
+          description: `Mevcut dil zaten sistem dili ile eşleşiyor (${translationService.getLanguageName(detectedLang)})`,
+        });
       }
     } catch (error) {
-      console.error('Auto language detection error:', error);
+      console.error('Auto-detect error:', error);
+      toast({
+        title: "Algılama Hatası",
+        description: "Dil algılanırken hata oluştu",
+        variant: "destructive",
+      });
     }
   };
 
@@ -216,6 +263,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   resetLanguagePreferences: () => {
     localStorage.removeItem('preferredLanguage');
     localStorage.removeItem('manualLanguageSelection');
+    // Re-detect system language
+    const browserLang = translationService.getBrowserLanguage();
+    localStorage.setItem('preferredLanguage', browserLang);
     window.location.reload();
   }
   };
