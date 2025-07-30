@@ -629,10 +629,11 @@ export const WeatherCalculations = () => {
                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
                          <h4 className="font-semibold">Cumulus (Cu)</h4>
                        </div>
-                       <div className="h-32 bg-gradient-to-b from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
+                       <div className="w-full h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center border-2 border-blue-300">
                          <div className="text-center">
-                           <div className="text-4xl mb-2">☁️</div>
-                           <div className="text-xs text-gray-600">Pamuk benzeri bulutlar</div>
+                           <div className="text-5xl mb-2">☁️</div>
+                           <div className="text-sm font-bold text-blue-800">CUMULUS</div>
+                           <div className="text-xs text-blue-600">Pamuk benzeri bulutlar</div>
                          </div>
                        </div>
                        <div className="text-sm space-y-1">
@@ -643,25 +644,27 @@ export const WeatherCalculations = () => {
                        </div>
                      </div>
 
-                    {/* Cumulonimbus - CH 3 */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="destructive" className="bg-red-100 text-red-800">CH 3</Badge>
-                        <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
-                        <AlertTriangle className="h-4 w-4 text-red-600" />
-                      </div>
-                                             <img 
-                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Cumulonimbus_cloud.jpg/300px-Cumulonimbus_cloud.jpg" 
-                         alt="Cumulonimbus - Anvil top thunderstorm"
-                         className="w-full h-32 object-cover rounded-lg"
-                       />
-                      <div className="text-sm space-y-1">
-                        <p><strong>Denizcilik Önemi:</strong> ⚠️ Fırtına, şimşek tehlikesi</p>
-                        <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
-                        <p><strong>Rüzgar:</strong> Çok güçlü (35+ knot)</p>
-                        <p><strong>Yağış:</strong> Şiddetli yağmur/dolu</p>
-                      </div>
-                    </div>
+                                         {/* Cumulonimbus - CH 3 */}
+                     <div className="space-y-3">
+                       <div className="flex items-center gap-2">
+                         <Badge variant="destructive" className="bg-red-100 text-red-800">CH 3</Badge>
+                         <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
+                         <AlertTriangle className="h-4 w-4 text-red-600" />
+                       </div>
+                                               <div className="w-full h-32 bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center border-2 border-red-400">
+                          <div className="text-center">
+                            <div className="text-5xl mb-2">⛈️</div>
+                            <div className="text-sm font-bold text-white">CUMULONIMBUS</div>
+                            <div className="text-xs text-red-200">Fırtına bulutu</div>
+                          </div>
+                        </div>
+                       <div className="text-sm space-y-1">
+                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Fırtına, şimşek tehlikesi</p>
+                         <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
+                         <p><strong>Rüzgar:</strong> Çok güçlü (35+ knot)</p>
+                         <p><strong>Yağış:</strong> Şiddetli yağmur/dolu</p>
+                       </div>
+                     </div>
 
                     {/* Stratocumulus - CH 2 */}
                     <div className="space-y-3">
