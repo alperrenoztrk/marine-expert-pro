@@ -121,14 +121,14 @@ const Index = () => {
       <div className="relative mb-6 sm:mb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-teal-600/20 rounded-xl"></div>
         
-        <div className="relative bg-white/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-blue-200/50 shadow-lg">
+        <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-blue-200/50 dark:border-blue-800/50 shadow-lg dark:shadow-gray-900/30">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
                 <Ship className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900" data-translatable>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100" data-translatable>
                   Denizcilik Hesaplayıcısı
                 </h1>
                 <p className="text-sm text-muted-foreground" data-translatable>
@@ -205,7 +205,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/stability">
-                  <Button size="sm" variant="outline" className="gap-2 border-green-300 text-green-600 hover:bg-green-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-gray-700">
                     <Ship className="w-4 h-4" />
                     <span data-translatable>Stabilite</span>
                   </Button>
@@ -217,19 +217,19 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/hydrodynamics">
-                  <Button size="sm" variant="outline" className="gap-2 border-cyan-300 text-cyan-600 hover:bg-cyan-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-cyan-300 dark:border-cyan-700 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-gray-700">
                     <Waves className="w-4 h-4" />
                     <span data-translatable>Hidrodinamik</span>
                   </Button>
                 </Link>
                 <Link to="/engine">
-                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-gray-700">
                     <Cog className="w-4 h-4" />
                     <span data-translatable>Makine</span>
                   </Button>
                 </Link>
                 <Link to="/cargo">
-                  <Button size="sm" variant="outline" className="gap-2 border-amber-300 text-amber-600 hover:bg-amber-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-amber-300 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700">
                     <Package className="w-4 h-4" />
                     <span data-translatable>Kargo</span>
                   </Button>
@@ -247,7 +247,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/structural">
-                  <Button size="sm" variant="outline" className="gap-2 border-gray-300 text-gray-600 hover:bg-gray-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
                     <Building className="w-4 h-4" />
                     <span data-translatable>Yapısal</span>
                   </Button>
@@ -259,19 +259,19 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/emissions">
-                  <Button size="sm" variant="outline" className="gap-2 border-green-300 text-green-600 hover:bg-green-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-gray-700">
                     <Leaf className="w-4 h-4" />
                     <span data-translatable>Emisyon</span>
                   </Button>
                 </Link>
                 <Link to="/weather">
-                  <Button size="sm" variant="outline" className="gap-2 border-sky-300 text-sky-600 hover:bg-sky-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-sky-300 dark:border-sky-700 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-gray-700">
                     <Cloud className="w-4 h-4" />
                     <span data-translatable>Meteoroloji</span>
                   </Button>
                 </Link>
                 <Link to="/special-ships">
-                  <Button size="sm" variant="outline" className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700">
                     <Ship className="w-4 h-4" />
                     <span data-translatable>Özel Gemiler</span>
                   </Button>
