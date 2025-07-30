@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SplashScreen } from "@/components/ui/splash-screen";
+import { ThemeProvider } from "@/hooks/useTheme";
 import { useState } from "react";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
@@ -22,6 +23,7 @@ import SafetyCalculationsPage from "./pages/SafetyCalculations";
 import EmissionCalculationsPage from "./pages/EmissionCalculations";
 import WeatherCalculationsPage from "./pages/WeatherCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -35,9 +37,10 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <LanguageProvider>
-          <Toaster />
-          <BrowserRouter>
+        <ThemeProvider defaultTheme="light">
+          <LanguageProvider>
+            <Toaster />
+            <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/formulas" element={<Formulas />} />
@@ -56,9 +59,11 @@ const App = () => {
           <Route path="/weather" element={<WeatherCalculationsPage />} />
           <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/settings" element={<Settings />} />
                   </Routes>
         </BrowserRouter>
       </LanguageProvider>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
   );

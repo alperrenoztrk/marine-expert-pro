@@ -298,8 +298,19 @@ const Index = () => {
         </div>
       )}
 
-      {/* Floating Language Selector */}
-      <LanguageSelector variant="floating" />
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+        <Link to="/settings">
+          <Button
+            size="icon"
+            className="w-12 h-12 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+            title="Ayarlar"
+          >
+            <Settings className="w-5 h-5" />
+          </Button>
+        </Link>
+        <LanguageSelector variant="floating" />
+      </div>
       
       {/* Language Debug Panel (development only) */}
       <LanguageDebug />
