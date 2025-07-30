@@ -1,0 +1,173 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CloudType } from "@/components/calculations/cloud-types";
+import { 
+  Cloud, 
+  Eye, 
+  Wind, 
+  Droplets, 
+  AlertTriangle, 
+  Info,
+  Navigation,
+  Thermometer
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface CloudCardProps {
+  cloud: CloudType;
+  className?: string;
+}
+
+export function CloudCard({ cloud, className }: CloudCardProps) {
+  const getDangerColor = (danger: string) => {
+    switch (danger) {
+      case 'high':
+        return 'border-red-500 bg-red-50';
+      case 'medium':
+        return 'border-orange-400 bg-orange-50';
+      case 'low':
+        return 'border-blue-300 bg-blue-50';
+      default:
+        return 'border-gray-300 bg-gray-50';
+    }
+  };
+
+  const getDangerBadge = (danger: string) => {
+    switch (danger) {
+      case 'high':
+        return <Badge variant="destructive" className="gap-1">
+          <AlertTriangle className="h-3 w-3" />
+          Yüksek Risk
+        </Badge>;
+      case 'medium':
+        return <Badge variant="outline" className="border-orange-500 text-orange-700 gap-1">
+          <Info className="h-3 w-3" />
+          Orta Risk
+        </Badge>;
+      case 'low':
+        return <Badge variant="secondary" className="gap-1">
+          <Info className="h-3 w-3" />
+          Düşük Risk
+        </Badge>;
+      default:
+        return null;
+    }
+  };
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case 'low':
+        return 'bg-blue-100 text-blue-800';
+      case 'middle':
+        return 'bg-green-100 text-green-800';
+      case 'high':
+        return 'bg-purple-100 text-purple-800';
+      case 'vertical':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  return (
+    <Card className={cn(getDangerColor(cloud.danger), "transition-all hover:shadow-lg", className)}>
+      <CardHeader>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Cloud className="h-5 w-5" />
+              {cloud.name} ({cloud.code})
+            </CardTitle>
+            <CardDescription className="text-base font-medium mt-1">
+              {cloud.nameTr}
+            </CardDescription>
+          </div>
+          <div className="flex flex-col gap-2 items-end">
+            {getDangerBadge(cloud.danger)}
+            <Badge className={cn("text-xs", getLevelColor(cloud.level))}>
+              {cloud.mgmCode}
+            </Badge>
+          </div>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        {/* Görsel */}
+        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 bg-gradient-to-br from-sky-100 to-sky-200">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center">
+              <Cloud className="h-16 w-16 text-sky-600 mb-2" />
+              <div className="text-lg font-bold text-sky-800">{cloud.code}</div>
+              <div className="text-sm text-sky-700">{cloud.nameTr}</div>
+            </div>
+          </div>
+          <div className="absolute top-2 left-2">
+            <Badge variant="secondary" className="text-xs">
+              <Thermometer className="h-3 w-3 mr-1" />
+              {cloud.altitude}
+            </Badge>
+          </div>
+          <div className="absolute top-2 right-2">
+            <Badge variant="secondary" className="text-xs">
+              {cloud.altitudeFt}
+            </Badge>
+          </div>
+        </div>
+
+        {/* Açıklama */}
+        <div className="space-y-2">
+          <p className="text-sm text-gray-700">{cloud.descriptionTr}</p>
+          
+          {/* Özellikler */}
+          <div className="bg-white/50 rounded-lg p-3 space-y-2">
+            <h4 className="font-semibold text-sm flex items-center gap-1">
+              <Info className="h-4 w-4" />
+              Özellikler
+            </h4>
+            <ul className="text-xs space-y-1">
+              {cloud.characteristics.map((char, index) => (
+                <li key={index} className="flex items-start gap-1">
+                  <span className="text-gray-400 mt-0.5">•</span>
+                  <span>{char}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Denizcilik Önemi */}
+        <Alert className={cn(
+          "border",
+          cloud.danger === 'high' ? 'border-red-300 bg-red-50' :
+          cloud.danger === 'medium' ? 'border-orange-300 bg-orange-50' :
+          'border-blue-300 bg-blue-50'
+        )}>
+          <Navigation className="h-4 w-4" />
+          <AlertDescription className="text-sm">
+            <span className="font-semibold">Denizcilik Önemi:</span> {cloud.maritimeImportance}
+          </AlertDescription>
+        </Alert>
+
+        {/* Detaylı Bilgiler */}
+        <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="bg-white/50 rounded p-2 text-center">
+            <Eye className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+            <div className="font-semibold">Görüş</div>
+            <div className="text-gray-700">{cloud.visibility}</div>
+          </div>
+          <div className="bg-white/50 rounded p-2 text-center">
+            <Wind className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+            <div className="font-semibold">Rüzgar</div>
+            <div className="text-gray-700">{cloud.wind}</div>
+          </div>
+          <div className="bg-white/50 rounded p-2 text-center">
+            <Droplets className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+            <div className="font-semibold">Yağış</div>
+            <div className="text-gray-700">{cloud.precipitation}</div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
