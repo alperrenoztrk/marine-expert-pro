@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { translateText, detectLanguage } from '@/utils/microsoftTranslator';
+import { googleTranslator } from '@/utils/googleTranslator';
 
 interface AutoLanguageDetectionHook {
   detectedLanguage: string;
@@ -73,8 +73,12 @@ export const useAutoLanguageDetection = (): AutoLanguageDetectionHook => {
 
     try {
       setIsTranslating(true);
-      const result = await translateText(text, 'tr', target);
-      return result;
+      const result = await googleTranslator.translate({
+        text,
+        targetLang: target,
+        sourceLang: 'tr'
+      });
+      return result.translatedText;
     } catch (error) {
       console.error('Translation error:', error);
       return text;
@@ -108,7 +112,12 @@ async function translatePageContent(targetLang: string) {
       }
 
       try {
-        const translatedText = await translateText(originalText, 'tr', targetLang);
+        const result = await googleTranslator.translate({
+          text: originalText,
+          targetLang: targetLang,
+          sourceLang: 'tr'
+        });
+        const translatedText = result.translatedText;
         htmlElement.textContent = translatedText;
       } catch (error) {
         console.error('Element translation error:', error);
@@ -128,7 +137,12 @@ async function translatePageContent(targetLang: string) {
       }
 
       try {
-        const translatedPlaceholder = await translateText(originalPlaceholder, 'tr', targetLang);
+        const result = await googleTranslator.translate({
+          text: originalPlaceholder,
+          targetLang: targetLang,
+          sourceLang: 'tr'
+        });
+        const translatedPlaceholder = result.translatedText;
         inputElement.placeholder = translatedPlaceholder;
       } catch (error) {
         console.error('Placeholder translation error:', error);

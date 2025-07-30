@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
-  const { currentLanguage, setCurrentLanguage } = useAutoLanguageDetection();
+  const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
   const [isDarkMode, setIsDarkMode] = useState(theme === "dark");
 
   useEffect(() => {
@@ -29,8 +29,31 @@ const Settings = () => {
     toast.success(checked ? "Koyu tema aktif" : "Açık tema aktif");
   };
 
-  const handleLanguageChange = (value: string) => {
-    setCurrentLanguage(value);
+  const handleLanguageChange = async (value: string) => {
+    await setLanguage(value);
+    
+    // Sayfa içeriğini çevir
+    if (value !== 'tr') {
+      const elementsToTranslate = document.querySelectorAll('[data-translatable]');
+      for (const element of elementsToTranslate) {
+        const htmlElement = element as HTMLElement;
+        const originalText = htmlElement.dataset.originalText || htmlElement.textContent;
+        
+        if (originalText) {
+          if (!htmlElement.dataset.originalText) {
+            htmlElement.dataset.originalText = originalText;
+          }
+
+          try {
+            const translatedText = await translateContent(originalText, value);
+            htmlElement.textContent = translatedText;
+          } catch (error) {
+            console.error('Element translation error:', error);
+          }
+        }
+      }
+    }
+    
     toast.success(`Dil değiştirildi: ${languages.find(lang => lang.code === value)?.name}`);
   };
 
