@@ -1066,16 +1066,16 @@ export const NavigationCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="route" className="w-full">
-            <TabsList className="grid w-full grid-cols-9 text-xs">
-              <TabsTrigger value="route">Rota</TabsTrigger>
-              <TabsTrigger value="current">Akıntı</TabsTrigger>
-              <TabsTrigger value="compass">Pusula</TabsTrigger>
-              <TabsTrigger value="radar">Radar</TabsTrigger>
-              <TabsTrigger value="tidal">Gelgit</TabsTrigger>
-              <TabsTrigger value="weather">Hava</TabsTrigger>
-              <TabsTrigger value="port">Liman</TabsTrigger>
-              <TabsTrigger value="celestial">Göksel</TabsTrigger>
-              <TabsTrigger value="astronomical">Astronomik</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1">
+              <TabsTrigger value="route" className="text-xs px-2">Rota</TabsTrigger>
+              <TabsTrigger value="current" className="text-xs px-2">Akıntı</TabsTrigger>
+              <TabsTrigger value="compass" className="text-xs px-2">Pusula</TabsTrigger>
+              <TabsTrigger value="radar" className="text-xs px-2">Radar</TabsTrigger>
+              <TabsTrigger value="tidal" className="text-xs px-2">Gelgit</TabsTrigger>
+              <TabsTrigger value="weather" className="text-xs px-2">Hava</TabsTrigger>
+              <TabsTrigger value="port" className="text-xs px-2">Liman</TabsTrigger>
+              <TabsTrigger value="celestial" className="text-xs px-2">Göksel</TabsTrigger>
+              <TabsTrigger value="astronomical" className="text-xs px-2">Astronomik</TabsTrigger>
             </TabsList>
 
             <TabsContent value="route" className="space-y-4">
@@ -1710,17 +1710,17 @@ export const NavigationCalculations = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="text-center">
-                            <div className="text-2xl mb-1">{moonPhase.phaseName}</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div className="text-center space-y-1">
+                            <div className="text-xl sm:text-2xl font-semibold">{moonPhase.phaseName}</div>
                             <div className="text-sm text-gray-600">Faz Adı</div>
                           </div>
-                          <div className="text-center">
-                            <div className="text-2xl mb-1">{moonPhase.phase}%</div>
+                          <div className="text-center space-y-1">
+                            <div className="text-xl sm:text-2xl font-semibold">{moonPhase.phase}%</div>
                             <div className="text-sm text-gray-600">Tamamlanma</div>
                           </div>
-                          <div className="text-center">
-                            <div className="text-2xl mb-1">{moonPhase.illumination}%</div>
+                          <div className="text-center space-y-1">
+                            <div className="text-xl sm:text-2xl font-semibold">{moonPhase.illumination}%</div>
                             <div className="text-sm text-gray-600">Aydınlanma</div>
                           </div>
                         </div>
@@ -1878,29 +1878,29 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Büyük Daire Mesafesi</Label>
-                  <p className="text-2xl font-bold text-blue-600">{result.gcDistance.toFixed(1)} nm</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Büyük Daire Mesafesi</Label>
+                  <p className="text-xl sm:text-2xl font-bold text-blue-600">{result.gcDistance.toFixed(1)} nm</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Loxodromik Mesafe</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.rhumbDistance.toFixed(1)} nm</p>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Loxodromik Mesafe</Label>
+                  <p className="text-xl sm:text-2xl font-bold text-green-600">{result.rhumbDistance.toFixed(1)} nm</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">İlk Doğrultu</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">İlk Doğrultu</Label>
                   <p className="text-lg font-semibold">{result.gcInitialBearing.toFixed(1)}°</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Son Doğrultu</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Son Doğrultu</Label>
                   <p className="text-lg font-semibold">{result.gcFinalBearing.toFixed(1)}°</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">ETA</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">ETA</Label>
                   <p className="text-lg font-semibold">{result.eta}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Seyir Süresi</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Seyir Süresi</Label>
                   <p className="text-lg font-semibold">{result.timeToGo.toFixed(1)} saat</p>
                 </div>
               </div>
@@ -1915,21 +1915,21 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Yerüstü Rotası</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Yerüstü Rotası</Label>
                   <p className="text-lg font-semibold">{result.groundTrack.toFixed(1)}°</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Yerüstü Hızı</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Yerüstü Hızı</Label>
                   <p className="text-lg font-semibold">{result.groundSpeed.toFixed(1)} knot</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Sürüklenme Açısı</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Sürüklenme Açısı</Label>
                   <p className="text-lg font-semibold">{result.driftAngle.toFixed(1)}°</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Tutulacak Rota</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Tutulacak Rota</Label>
                   <p className="text-lg font-semibold">{result.courseToSteer.toFixed(1)}°</p>
                 </div>
               </div>
@@ -1944,17 +1944,17 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">CPA</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">CPA</Label>
                   <p className="text-lg font-semibold">{result.cpa.toFixed(2)} nm</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">TCPA</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">TCPA</Label>
                   <p className="text-lg font-semibold">{result.tcpa.toFixed(1)} dakika</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Çarpışma Riski</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Çarpışma Riski</Label>
                   <Badge variant={
                     result.collisionRisk === 'high' ? 'destructive' :
                     result.collisionRisk === 'medium' ? 'default' :
@@ -1966,8 +1966,8 @@ export const NavigationCalculations = () => {
                   </Badge>
                 </div>
               </div>
-              <div>
-                <Label className="text-sm font-medium">Önerilen Eylem</Label>
+              <div className="space-y-1">
+                <Label className="text-sm font-medium text-gray-600">Önerilen Eylem</Label>
                 <p className="text-sm">{result.recommendedAction}</p>
               </div>
             </CardContent>
@@ -1981,21 +1981,21 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Mevcut Gelgit Yüksekliği</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Mevcut Gelgit Yüksekliği</Label>
                   <p className="text-lg font-semibold">{result.currentTideHeight.toFixed(1)} m</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Gelgit Farkı</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Gelgit Farkı</Label>
                   <p className="text-lg font-semibold">{result.tideRange.toFixed(1)} m</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Yüksek Suya Kalan Süre</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Yüksek Suya Kalan Süre</Label>
                   <p className="text-lg font-semibold">{result.timeToHW.toFixed(1)} saat</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Alçak Suya Kalan Süre</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Alçak Suya Kalan Süre</Label>
                   <p className="text-lg font-semibold">{result.timeToLW.toFixed(1)} saat</p>
                 </div>
               </div>
@@ -2010,19 +2010,19 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Spheroidal Mesafe</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Spheroidal Mesafe</Label>
                   <p className="text-lg font-semibold text-blue-600">{result.spheroidalDistance.toFixed(3)} nm</p>
                   <p className="text-xs text-gray-500">WGS84 elipsoidi</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Yakıt Maliyeti</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Yakıt Maliyeti</Label>
                   <p className="text-lg font-semibold text-green-600">${result.totalFuelCost.toFixed(0)}</p>
                   <p className="text-xs text-gray-500">Tahmini maliyet</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Hava Gecikmesi</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Hava Gecikmesi</Label>
                   <p className="text-lg font-semibold text-orange-600">{result.alternateETA}</p>
                   <p className="text-xs text-gray-500">Hava koşulları ile</p>
                 </div>
@@ -2038,23 +2038,23 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-4 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Beaufort Skalası</Label>
-                  <p className="text-2xl font-bold text-blue-600">{result.beaufortScale}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Beaufort Skalası</Label>
+                  <p className="text-xl lg:text-2xl font-bold text-blue-600">{result.beaufortScale}</p>
                   <p className="text-xs text-gray-500">Rüzgar şiddeti</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Deniz Durumu</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.seaState}</p>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Deniz Durumu</Label>
+                  <p className="text-xl lg:text-2xl font-bold text-green-600">{result.seaState}</p>
                   <p className="text-xs text-gray-500">Douglas skalası</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Hava Gecikmesi</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Hava Gecikmesi</Label>
                   <p className="text-lg font-semibold">{result.weatherDelay.toFixed(1)} saat</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Güvenli Rota</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Güvenli Rota</Label>
                   <p className="text-lg font-semibold">{result.safeCourse.toFixed(1)}°</p>
                 </div>
               </div>
@@ -2069,21 +2069,21 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Spring/Neap Faktörü</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Spring/Neap Faktörü</Label>
                   <p className="text-lg font-semibold">{result.springNeapFactor.toFixed(2)}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Gelgit Akımı Doğrultusu</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Gelgit Akımı Doğrultusu</Label>
                   <p className="text-lg font-semibold">{result.tidalStreamDirection.toFixed(1)}°</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Gelgit Değişim Hızı</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Gelgit Değişim Hızı</Label>
                   <p className="text-lg font-semibold">{result.tidalAcceleration.toFixed(2)} m/sa</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Gelgit Akımı</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Gelgit Akımı</Label>
                   <p className="text-lg font-semibold">{result.tidalStream.toFixed(1)} knot</p>
                 </div>
               </div>
@@ -2098,21 +2098,21 @@ export const NavigationCalculations = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Pilot Alma Mesafesi</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Pilot Alma Mesafesi</Label>
                   <p className="text-lg font-semibold">{result.pilotBoardingDistance.toFixed(1)} nm</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Pilot Alma ETA</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Pilot Alma ETA</Label>
                   <p className="text-lg font-semibold">{result.pilotBoardingETA}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Güvenli Draf</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Güvenli Draf</Label>
                   <p className="text-lg font-semibold">{result.safeDraft.toFixed(1)} m</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Minimum Derinlik</Label>
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-gray-600">Minimum Derinlik</Label>
                   <p className="text-lg font-semibold">{result.minimumDepth.toFixed(1)} m</p>
                 </div>
               </div>
