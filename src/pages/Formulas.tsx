@@ -284,25 +284,43 @@ const Formulas = () => {
               <Separator className="my-2" />
               
               <div className="space-y-2">
-                <h4 className="font-semibold text-sm text-muted-foreground">Sözel Sorular:</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground">Denizcilik Soruları:</h4>
                 <div className="grid gap-1">
                   <button 
-                    onClick={() => setQuestion("SOLAS nedir ve neden önemlidir?")}
+                    onClick={() => setQuestion("COLREG Kural 13 ne der?")}
                     className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
                   >
-                    • Regülasyon açıklaması
+                    • COLREG kuralları
                   </button>
                   <button 
-                    onClick={() => setQuestion("Gemi stabilitesi nedir ve nasıl ölçülür?")}
+                    onClick={() => setQuestion("MARPOL Annex VI emisyon limitleri nedir?")}
                     className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
                   >
-                    • Teknik kavram
+                    • MARPOL gereksinimleri
                   </button>
                   <button 
-                    onClick={() => setQuestion("Ballast suyu yönetimi neden önemlidir?")}
+                    onClick={() => setQuestion("Beaufort 7 rüzgar hızı ve dalga yüksekliği?")}
                     className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
                   >
-                    • Çevre ve güvenlik
+                    • Meteoroloji
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("IMDG Kod Sınıf 3 tehlikeli yükler nelerdir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Tehlikeli yük
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("VHF kanal 16'nın kullanım amacı nedir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Haberleşme
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("Pilot merdiveni gereksinimleri nelerdir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Operasyonel güvenlik
                   </button>
                 </div>
               </div>

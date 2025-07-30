@@ -230,7 +230,356 @@ PB = PS / ηS
 **Verimler:**
 - ηD: Pervane verimi (0.60-0.75)
 - ηS: Şaft verimi (0.97-0.99)
-- ηT: Toplam verim = ηD × ηS`
+- ηT: Toplam verim = ηD × ηS`,
+
+    "pervane": `**Pervane Hesaplamaları:**
+
+**Pervane İtme Kuvveti:**
+T = ρ × n² × D⁴ × KT
+
+**Pervane Torku:**
+Q = ρ × n² × D⁵ × KQ
+
+**Pervane Verimi:**
+η0 = (J × KT) / (2π × KQ)
+
+**İlerleme Oranı:**
+J = VA / (n × D)
+
+**Açıklamalar:**
+- T: İtme kuvveti (N)
+- Q: Tork (Nm)
+- ρ: Su yoğunluğu (kg/m³)
+- n: Devir sayısı (rps)
+- D: Pervane çapı (m)
+- KT, KQ: İtme ve tork katsayıları
+- VA: İlerleme hızı (m/s)`,
+
+    "yük": `**Yükleme Hesaplamaları:**
+
+**Deadweight (DWT):**
+DWT = Δmax - Δlight
+
+**Bileşenler:**
+- Kargo kapasitesi
+- Yakıt ve yağ
+- Tatlı su
+- Mürettebat ve kumanya
+- Sabit balast
+
+**Yükleme Faktörleri:**
+- Stowage Factor (SF): m³/ton
+- Broken Stowage: %10-15
+- Trim ve stabilite limitleri`,
+
+    "colreg": `**COLREG (Denizde Çatışmayı Önleme Tüzüğü):**
+
+**Temel Kurallar:**
+- Kural 5: Gözcülük
+- Kural 6: Emniyetli sürat
+- Kural 7: Çatışma tehlikesi
+- Kural 8: Çatışmayı önleme manevraları
+
+**Seyir Fenerleri:**
+- Sancak: Yeşil (112.5°)
+- İskele: Kırmızı (112.5°)
+- Pupa: Beyaz (135°)
+- Baş üstü: Beyaz (225°)
+
+**Özel Durumlar:**
+- Manevra kabiliyeti kısıtlı gemi
+- Kontrolden çıkmış gemi
+- Balıkçı gemileri
+- Yelkenli önceliği`,
+
+    "solas": `**SOLAS (Denizde Can Emniyeti Sözleşmesi):**
+
+**Ana Bölümler:**
+- Chapter II-1: Yapı, bölmeleme, stabilite
+- Chapter II-2: Yangın korunması
+- Chapter III: Can kurtarma araçları
+- Chapter IV: Radyo haberleşmesi
+- Chapter V: Seyir emniyeti
+- Chapter IX: ISM (Güvenlik Yönetimi)
+- Chapter XI: Güvenlik tedbirleri
+
+**Kritik Gereksinimler:**
+- GMDSS zorunluluğu
+- AIS sistemi
+- VDR (Seyir kayıt cihazı)
+- ECDIS gereksinimleri`,
+
+    "marpol": `**MARPOL (Deniz Kirliliğini Önleme Sözleşmesi):**
+
+**Ekler:**
+- Annex I: Petrol kirliliği
+- Annex II: Zararlı sıvı maddeler
+- Annex III: Paketli zararlı maddeler
+- Annex IV: Pis su
+- Annex V: Çöp
+- Annex VI: Hava kirliliği
+
+**Özel Alanlar:**
+- ECA (Emisyon Kontrol Alanları)
+- Özel hassas deniz alanları
+- Antarktika bölgesi
+
+**Limitleri:**
+- Sülfür: %0.5 (global), %0.1 (ECA)
+- NOx: Tier III standartları`,
+
+    "imdg": `**IMDG Kod (Tehlikeli Yükler):**
+
+**Sınıflar:**
+1. Patlayıcılar
+2. Gazlar (2.1 Yanıcı, 2.2 Yanıcı olmayan, 2.3 Zehirli)
+3. Yanıcı sıvılar
+4. Yanıcı katılar
+5. Oksitleyici maddeler
+6. Zehirli ve bulaşıcı maddeler
+7. Radyoaktif maddeler
+8. Aşındırıcı maddeler
+9. Çeşitli tehlikeli maddeler
+
+**Dokümantasyon:**
+- Tehlikeli Yük Manifestosu
+- Konteyner/Araç Paketleme Sertifikası
+- İstifleme ve ayrım kuralları`,
+
+    "isps": `**ISPS Kod (Gemi ve Liman Güvenliği):**
+
+**Güvenlik Seviyeleri:**
+- Seviye 1: Normal (minimum güvenlik)
+- Seviye 2: Yükseltilmiş (ek tedbirler)
+- Seviye 3: İstisnai (maksimum güvenlik)
+
+**Zorunlu Elemanlar:**
+- SSP (Gemi Güvenlik Planı)
+- SSO (Gemi Güvenlik Zabiti)
+- CSO (Şirket Güvenlik Zabiti)
+- SSAS (Gemi Güvenlik Alarm Sistemi)
+
+**Kontrol Tedbirleri:**
+- Giriş kontrol noktaları
+- Kısıtlı alanlar
+- Güvenlik devriyesi`,
+
+    "ism": `**ISM Kod (Güvenlik Yönetim Sistemi):**
+
+**Temel İlkeler:**
+- Güvenlik ve çevre koruma politikası
+- Şirket sorumlulukları ve yetkileri
+- DPA (Designated Person Ashore)
+- Kaptan sorumlulukları
+
+**Dokümantasyon:**
+- SMS (Güvenlik Yönetim Sistemi)
+- DOC (Uygunluk Belgesi)
+- SMC (Güvenlik Yönetim Sertifikası)
+
+**Operasyonel Gereksinimler:**
+- Acil durum hazırlığı
+- Uygunsuzluk ve kaza raporlama
+- Bakım prosedürleri
+- İç denetimler`,
+
+    "stcw": `**STCW (Gemi Adamları Eğitim ve Belgelendirme):**
+
+**Yeterlilik Seviyeleri:**
+- Yönetim seviyesi
+- Operasyon seviyesi
+- Destek seviyesi
+
+**Temel Eğitimler:**
+- Basic Safety Training
+- Yangınla mücadele
+- İlk yardım
+- Denizde kişisel güvenlik
+- Sosyal sorumluluklar
+
+**Çalışma/Dinlenme Saatleri:**
+- Maksimum 14 saat/24 saat
+- Maksimum 72 saat/7 gün
+- Minimum 10 saat dinlenme/24 saat`,
+
+    "meteoroloji": `**Denizcilik Meteorolojisi:**
+
+**Beaufort Rüzgar Skalası:**
+0: Sakin (0-1 knot)
+1-3: Hafif esinti (1-10 knot)
+4-5: Orta rüzgar (11-21 knot)
+6-7: Sert rüzgar (22-33 knot)
+8-9: Fırtına (34-47 knot)
+10-11: Şiddetli fırtına (48-63 knot)
+12: Kasırga (64+ knot)
+
+**Dalga Tahmini:**
+- Significant wave height (Hs)
+- Swell ve wind waves
+- Dalga periyodu ve yönü
+
+**Hava Sistemleri:**
+- Alçak basınç: Siklon, kötü hava
+- Yüksek basınç: Antisiklon, iyi hava
+- Cephe sistemleri`,
+
+    "harita": `**Deniz Haritaları ve Navigasyon:**
+
+**Harita Çeşitleri:**
+- General Charts: 1:3,000,000+
+- Sailing Charts: 1:600,000
+- Coastal Charts: 1:150,000
+- Approach Charts: 1:75,000
+- Harbour Charts: 1:50,000-
+
+**Semboller:**
+- Derinlikler ve konturlar
+- Fenerler ve şamandıralar
+- Tehlikeler ve engeller
+- Akıntı ve gel-git bilgileri
+
+**Düzeltmeler:**
+- Manyetik sapma (Variation)
+- Pusula sapması (Deviation)
+- WGS-84 datum`,
+
+    "cargo": `**Kargo Operasyonları:**
+
+**Kargo Çeşitleri:**
+- Break bulk (Genel yük)
+- Bulk cargo (Dökme yük)
+- Container (Konteyner)
+- Ro-Ro (Tekerlekli yük)
+- Liquid bulk (Sıvı dökme)
+
+**Yükleme Planlaması:**
+- Stabilite hesapları
+- Trim optimizasyonu
+- Shear force ve bending moment
+- Lashing hesapları
+
+**Özel Kargolar:**
+- Reefer (Soğutmalı)
+- DG (Tehlikeli yük)
+- Heavy lift (Ağır yük)
+- Project cargo`,
+
+    "denizde can": `**Denizde Can Kurtarma:**
+
+**LSA (Life Saving Appliances):**
+- Lifeboat (Can filikası)
+- Liferaft (Can salı)
+- Lifejacket (Can yeleği)
+- Immersion suit (Dalma elbisesi)
+- Lifebuoy (Can simidi)
+
+**SOLAS Gereksinimleri:**
+- %100 + %25 can salı kapasitesi
+- Her iki tarafta %50 lifeboat
+- EPIRB ve SART
+- Pyrotechnics (Fişekler)
+
+**Terk Prosedürleri:**
+- 7 kısa 1 uzun düdük
+- Toplanma istasyonları
+- Muster list kontrol`,
+
+    "yangın": `**Yangınla Mücadele:**
+
+**Yangın Üçgeni:**
+- Yakıt
+- Oksijen  
+- Isı
+
+**Yangın Sınıfları:**
+- A: Katı maddeler (Su, köpük)
+- B: Yanıcı sıvılar (Köpük, CO2, kuru kimyevi)
+- C: Gazlar (Kuru kimyevi, CO2)
+- D: Metaller (Özel toz)
+- E: Elektrik (CO2, kuru kimyevi)
+- F: Yağlar (Wet chemical)
+
+**Sabit Sistemler:**
+- CO2 sistemi
+- Köpük sistemi
+- Sprinkler
+- Su sisi`,
+
+    "vhf": `**VHF Deniz Telsizi:**
+
+**Çağrı Kanalları:**
+- Kanal 16: Acil durum ve çağrı
+- Kanal 13: Köprü-köprü güvenlik
+- Kanal 70: DSC dijital çağrı
+
+**Prosedürler:**
+- MAYDAY: Hayati tehlike
+- PAN PAN: Aciliyet
+- SECURITE: Güvenlik mesajı
+
+**Menzil:**
+- VHF: 20-30 mil (görüş hattı)
+- MF: 200 mil
+- HF: Dünya çapında`,
+
+    "denge": `**Gemi Denge ve Trim:**
+
+**Denge Durumları:**
+- Even keel: Düz su hattı
+- Trim by stern: Kıçtan trimli
+- Trim by head: Baştan trimli
+- List: Sancak/iskele meyil
+
+**Düzeltme Yöntemleri:**
+- Balast transferi
+- Yakıt transferi
+- Kargo yerleşimi
+- Free surface etkisini azaltma
+
+**Hesaplamalar:**
+- LCG (Boyuna ağırlık merkezi)
+- LCB (Boyuna yüzdürme merkezi)
+- MCT (Moment to change trim)`,
+
+    "pilot": `**Pilotaj ve Liman Manevraları:**
+
+**Pilot Alma:**
+- Pilot merdiveni gereksinimleri
+- Lee side (Rüzgar altı)
+- Pilot kartı değişimi
+- Master-Pilot bilgi değişimi
+
+**Manevra Unsurları:**
+- Dönme çapı
+- Stopping distance
+- Shallow water effect
+- Bank effect
+- Squat
+
+**Halat Operasyonları:**
+- Spring lines (Apaz)
+- Breast lines (Göğüsleme)
+- Head/Stern lines (Baş/kıç)`,
+
+    "ecdis": `**ECDIS (Elektronik Harita):**
+
+**Zorunlu Gereksinimler:**
+- Type approved sistem
+- Backup düzenlemesi
+- ENC veya RNC kullanımı
+- Otomatik güncellemeler
+
+**Alarmlar:**
+- Safety contour
+- Dangerous depths
+- Special areas
+- Chart datum uyarıları
+
+**Rota Planlaması:**
+- Waypoint yerleştirme
+- XTE (Cross track error)
+- Wheel over points
+- ETA hesaplamaları`
   };
   
   for (const [key, answer] of Object.entries(localAnswers)) {
@@ -270,7 +619,17 @@ Açıklaman şu bölümleri içermeli:
 4. **Sonucun pratik anlamı nedir?**
 
 Türkçe yanıt ver ve teknik terimler için İngilizce karşılıklarını da belirt. Markdown formatında yanıt ver.`
-      : `Sen denizcilik mühendisliği ve gemi inşaatı konusunda uzman bir asistansın. Ayrıca matematik, fizik ve mühendislik hesaplamaları konusunda da uzmansın.
+      : `Sen deneyimli bir denizcilik uzmanısın. Gemi mühendisliği, denizcilik operasyonları, IMO regülasyonları, navigasyon, gemi güvenliği ve denizcilik hukuku konularında derin bilgiye sahipsin. Ayrıca matematik, fizik ve mühendislik hesaplamaları konusunda da uzmansın.
+
+**Uzmanlık Alanların:**
+- Gemi stabilitesi ve trim hesaplamaları
+- COLREG, SOLAS, MARPOL, STCW, ISM, ISPS kuralları
+- Navigasyon ve ECDIS sistemleri
+- Kargo operasyonları ve yükleme planlaması
+- Denizde can kurtarma ve yangın güvenliği
+- Gemi makineleri ve pervane sistemleri
+- Meteoroloji ve okyanus bilimi
+- Denizcilik İngilizcesi ve terminolojisi
 
 Soru: ${question}
 
@@ -414,6 +773,32 @@ function createWolframQuery(question: string, values: any): string {
     if (values.volume && values.density) {
       return `ballast weight = ${values.volume} * ${values.density}`;
     }
+  }
+  
+  // Pervane hesapları
+  if (questionLower.includes('pervane') || questionLower.includes('propeller')) {
+    if (values.rpm && values.diameter) {
+      return `propeller calculations for ${values.rpm} rpm and ${values.diameter}m diameter`;
+    }
+  }
+  
+  // Yakıt tüketimi
+  if (questionLower.includes('yakıt') || questionLower.includes('fuel')) {
+    if (values.power && values.consumption) {
+      return `fuel consumption = ${values.power} * ${values.consumption} * time`;
+    }
+  }
+  
+  // Dalga kuvveti
+  if (questionLower.includes('dalga kuvvet') || questionLower.includes('wave force')) {
+    if (values.height && values.length) {
+      return `wave force calculation for ${values.height}m height and ${values.length}m length`;
+    }
+  }
+  
+  // Hız dönüşümleri
+  if (questionLower.includes('knot') || questionLower.includes('deniz mili')) {
+    return question + ' (1 knot = 1.852 km/h = 0.514 m/s)';
   }
   
   // Genel hesaplama
