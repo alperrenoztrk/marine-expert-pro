@@ -960,6 +960,105 @@ const Regulations = () => {
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="flex items-center gap-2">
+                      <Ship className="h-5 w-5 text-blue-600" />
+                      SOLAS Consolidated Edition 2024
+                    </CardTitle>
+                    <CardDescription>
+                      International Convention for the Safety of Life at Sea - Latest consolidated edition with 2024 amendments
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open('https://www.imo.org/en/publications/Pages/SOLAS.aspx', '_blank')}
+                      className="flex items-center gap-2"
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      IMO Publications
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-white/80 rounded-lg border border-blue-100">
+                    <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Official SOLAS Resources
+                    </h4>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.imo.org/en/About/Conventions/Pages/International-Convention-for-the-Safety-of-Life-at-Sea-(SOLAS),-1974.aspx', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        SOLAS Convention Overview
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/SOLAS-amendments.aspx', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        Latest SOLAS Amendments
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/Documents/SOLAS%20Brief%20History%20-%20List%20of%20amendments%20to%20date%20and%20how%20to%20find%20them.pdf', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        SOLAS Amendment History
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/InternationalLifeSavingAppliance(LSA)Code.aspx', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Shield className="h-4 w-4 mr-2" />
+                        LSA Code (Life-Saving)
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/FSS-Code.aspx', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Flame className="h-4 w-4 mr-2" />
+                        FSS Code (Fire Safety)
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.classnk.or.jp/hp/pdf/activities/statutory/solas/solas_amend_2024.pdf', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        2024 Amendments Summary (ClassNK)
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded">
+                    <p className="font-medium mb-1">⚠️ Important Note:</p>
+                    <p>The complete SOLAS consolidated edition is available for purchase from IMO Publications. 
+                    Free resources include summaries, amendments, and implementation guidance.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid gap-4">
               {filteredChapters.map((chapter) => (
                 <Card key={chapter.id} className="cursor-pointer hover:shadow-md transition-shadow">
