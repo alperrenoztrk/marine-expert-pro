@@ -630,7 +630,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Cumulus (Cu)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/cu_fair.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Cumulus_clouds_in_fair_weather.jpg/300px-Cumulus_clouds_in_fair_weather.jpg" 
                          alt="Cumulus bulutları - Fair weather cumulus"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -650,7 +650,7 @@ export const WeatherCalculations = () => {
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/cb_anvil.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Cumulonimbus_cloud.jpg/300px-Cumulonimbus_cloud.jpg" 
                          alt="Cumulonimbus - Anvil top thunderstorm"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -669,7 +669,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Stratocumulus (Sc)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/sc_layer.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Stratocumulus_undulatus_asperatus.jpg/300px-Stratocumulus_undulatus_asperatus.jpg" 
                          alt="Stratocumulus - Low layered clouds"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -689,7 +689,7 @@ export const WeatherCalculations = () => {
                         <Eye className="h-4 w-4 text-gray-600" />
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/st_fog.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Stratus_clouds_over_Copenhagen.jpg/300px-Stratus_clouds_over_Copenhagen.jpg" 
                          alt="Stratus - Low fog and mist"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -724,7 +724,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Altocumulus (Ac)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/ac_patches.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Altocumulus_clouds.jpg/300px-Altocumulus_clouds.jpg" 
                          alt="Altocumulus - Mid-level patchy clouds"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -743,7 +743,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Altostratus (As)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/as_gray.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Altostratus_clouds.jpg/300px-Altostratus_clouds.jpg" 
                          alt="Altostratus - Gray mid-level layer"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -778,7 +778,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Cirrus (Ci)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/ci_wispy.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Cirrus_clouds2.jpg/300px-Cirrus_clouds2.jpg" 
                          alt="Cirrus - High wispy ice clouds"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -797,7 +797,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Cirrocumulus (Cc)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/cc_mackerel.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Cirrocumulus_clouds.jpg/300px-Cirrocumulus_clouds.jpg" 
                          alt="Cirrocumulus - Mackerel sky pattern"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -816,7 +816,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Cirrostratus (Cs)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/cs_halo.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/22_degree_halo_and_sun_dog.jpg/300px-22_degree_halo_and_sun_dog.jpg" 
                          alt="Cirrostratus - Sun halo formation"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -852,7 +852,7 @@ export const WeatherCalculations = () => {
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/mammatus.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mammatus_clouds_over_Nebraska.jpg/300px-Mammatus_clouds_over_Nebraska.jpg" 
                          alt="Mammatus - Pouch-like cloud formations"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -872,7 +872,7 @@ export const WeatherCalculations = () => {
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/wall_cloud.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Wall_cloud_at_Erick_Oklahoma.jpg/300px-Wall_cloud_at_Erick_Oklahoma.jpg" 
                          alt="Wall Cloud - Tornado precursor formation"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -891,7 +891,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Shelf Cloud (Raf Bulutu)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/shelf_cloud.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Shelf_cloud.jpg/300px-Shelf_cloud.jpg" 
                          alt="Shelf Cloud - Squall line leading edge"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -910,7 +910,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Lenticular (Mercek)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/jetstream/clouds/lenticular.jpg" 
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Lenticular_cloud.jpg/300px-Lenticular_cloud.jpg" 
                          alt="Lenticular - Mountain wave clouds"
                          className="w-full h-32 object-cover rounded-lg"
                        />
