@@ -236,7 +236,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       translatableElements.forEach((element, index) => {
         const originalText = textsToTranslate[index];
         if (originalText.trim().length > 0) {
-          element.textContent = translatedTexts[textIndex] || originalText;
+          const translatedText = translatedTexts[textIndex];
+          element.textContent = typeof translatedText === 'string' ? translatedText : originalText;
           textIndex++;
         }
       });

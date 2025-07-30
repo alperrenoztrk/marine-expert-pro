@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera } from "lucide-react";
 import { toast } from "sonner";
+import { CoordinateInput } from "@/components/CoordinateInput";
 
 interface NavigationData {
   // Position coordinates
@@ -118,7 +119,7 @@ interface NavigationResult {
   magneticBearing: number; // Magnetic bearing
   compassBearing: number; // Compass bearing
   trueBearing: number; // True bearing
-  compassError: number; // Total compass error
+  totalCompassError: number; // Total compass error
   
   // ARPA calculations
   cpa: number; // Closest point of approach (nm)
@@ -146,7 +147,7 @@ interface NavigationResult {
   latitude: number; // Calculated latitude
   longitude: number; // Calculated longitude
   altitudeCorrection: number; // Total altitude correction
-  compassError: number; // Compass error from celestial
+  celestialCompassError: number; // Compass error from celestial
   estimatedPosition: { lat: number; lon: number }; // EP from celestial
   
   // Astronomical positions
@@ -983,7 +984,7 @@ export const NavigationCalculations = () => {
         magneticBearing,
         compassBearing,
         trueBearing,
-        compassError,
+        totalCompassError: compassError,
         cpa: arpa.cpa,
         tcpa: arpa.tcpa,
         relativeSpeed: arpa.relativeSpeed,
@@ -1005,6 +1006,7 @@ export const NavigationCalculations = () => {
         latitude,
         longitude,
         altitudeCorrection: -5.2, // Example sextant corrections
+        celestialCompassError: compassError, // Compass error from celestial
         estimatedPosition: { lat: latitude, lon: longitude },
         sunPosition: { 
           altitude: sunPos.altitude, 
@@ -1096,35 +1098,22 @@ export const NavigationCalculations = () => {
                         Başlangıç Konumu
                       </h4>
                       <div className="space-y-3">
-                        <div className="space-y-2">
-                          <Label htmlFor="lat1">Enlem (°) - Kuzey (+) / Güney (-)</Label>
-                          <Input
-                            id="lat1"
-                            type="number"
-                            step="0.0001"
-                            value={data.lat1}
-                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
-                            placeholder="41.0082 (İstanbul)"
-                            className="text-right"
-                          />
-                          <div className="text-xs text-gray-500">
-                            Örnekler: İstanbul (41.0082), İzmir (38.4237), Antalya (36.8969)
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="lon1">Boylam (°) - Doğu (+) / Batı (-)</Label>
-                          <Input
-                            id="lon1"
-                            type="number"
-                            step="0.0001"
-                            value={data.lon1}
-                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
-                            placeholder="28.9784 (İstanbul)"
-                            className="text-right"
-                          />
-                          <div className="text-xs text-gray-500">
-                            Örnekler: İstanbul (28.9784), İzmir (27.1428), Antalya (30.7133)
-                          </div>
+                        <CoordinateInput
+                          label="Enlem (°)"
+                          value={data.lat1}
+                          onChange={(value) => updateData('lat1', value)}
+                          placeholder="41.0082"
+                          type="latitude"
+                        />
+                        <CoordinateInput
+                          label="Boylam (°)"
+                          value={data.lon1}
+                          onChange={(value) => updateData('lon1', value)}
+                          placeholder="28.9784"
+                          type="longitude"
+                        />
+                        <div className="text-xs text-gray-500">
+                          Örnekler: İstanbul (41.0082, 28.9784), İzmir (38.4237, 27.1428)
                         </div>
                       </div>
                     </div>
@@ -1136,31 +1125,24 @@ export const NavigationCalculations = () => {
                         Varış Konumu
                       </h4>
                       <div className="space-y-3">
-                        <div className="space-y-2">
-                          <Label htmlFor="lat2">Enlem (°) - Kuzey (+) / Güney (-)</Label>
-                          <Input
-                            id="lat2"
-                            type="number"
-                            step="0.0001"
-                            value={data.lat2}
-                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
-                            placeholder="36.8969 (Antalya)"
-                            className="text-right"
-                          />
+                        <CoordinateInput
+                          label="Enlem (°)"
+                          value={data.lat2}
+                          onChange={(value) => updateData('lat2', value)}
+                          placeholder="36.8969"
+                          type="latitude"
+                        />
+                        <CoordinateInput
+                          label="Boylam (°)"
+                          value={data.lon2}
+                          onChange={(value) => updateData('lon2', value)}
+                          placeholder="30.7133"
+                          type="longitude"
+                        />
+                        <div className="text-xs text-gray-500">
+                          Örnekler: Antalya (36.8969, 30.7133), Trabzon (41.0027, 39.7168)
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="lon2">Boylam (°) - Doğu (+) / Batı (-)</Label>
-                                                     <Input
-                             id="lon2"
-                             type="number"
-                             step="0.0001"
-                             value={data.lon2}
-                             onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
-                             placeholder="30.7133 (Antalya)"
-                             className="text-right"
-                           />
-                         </div>
-                       </div>
+                      </div>
                      </div>
                    </div>
                  </CardContent>
