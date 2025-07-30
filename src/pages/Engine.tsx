@@ -10,13 +10,13 @@ import shipBridge from "@/assets/maritime/ship-bridge.jpg";
 
 const Engine = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
           <Link to="/">
-            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50">
+            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700">
               <ArrowLeft className="w-4 h-4" />
               <span data-translatable>Ana Sayfa</span>
             </Button>
@@ -34,12 +34,12 @@ const Engine = () => {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <Cog className="h-12 w-12 text-blue-600" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <Cog className="h-12 w-12 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
               Makine Hesaplamaları
             </h1>
           </div>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Motor gücü, yakıt tüketimi ve performans hesaplamalarınızı yapın
           </p>
         </div>
@@ -47,10 +47,10 @@ const Engine = () => {
         {/* Engine Calculations */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl">
-                  <Cog className="h-6 w-6 text-blue-600" />
+                  <Cog className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   Makine Hesaplama Modülü
                 </CardTitle>
               </CardHeader>
@@ -62,7 +62,7 @@ const Engine = () => {
 
           {/* Formüller Kutucuğu */}
           <div className="lg:col-span-1">
-            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5" />
@@ -143,7 +143,7 @@ const Engine = () => {
                   </div>
 
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <p className="text-xs text-blue-700">
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
                       <strong>Semboller:</strong><br/>
                       P: güç, η: verimlilik, FC: yakıt tüketimi<br/>
                       Q: ısı, U: ısı transfer katsayısı, LMTD: log ort. sıc. farkı<br/>
@@ -167,11 +167,11 @@ const Engine = () => {
             seawaterInletTemp: 32
           }}
           diagramType="engine"
-          className="shadow-lg border-0 bg-white/80 backdrop-blur-sm"
+          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
         />
 
         {/* Info */}
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
           Motor performansı, yakıt verimlilik analizi ve güç hesaplamaları
         </div>
       </div>

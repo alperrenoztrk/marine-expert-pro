@@ -1153,7 +1153,7 @@ export const NavigationCalculations = () => {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Navigation className="h-5 w-5 text-blue-600" />
+                    <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     Gemi Verileri
                   </CardTitle>
                 </CardHeader>
@@ -1245,7 +1245,7 @@ export const NavigationCalculations = () => {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Compass className="h-5 w-5 text-blue-600" />
+                    <Compass className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     Pusula Düzeltmeleri
                   </CardTitle>
                   <CardDescription>
@@ -1881,7 +1881,7 @@ export const NavigationCalculations = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600">Büyük Daire Mesafesi</Label>
-                  <p className="text-xl sm:text-2xl font-bold text-blue-600">{result.gcDistance.toFixed(1)} nm</p>
+                  <p className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">{result.gcDistance.toFixed(1)} nm</p>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600">Loxodromik Mesafe</Label>
@@ -2013,7 +2013,7 @@ export const NavigationCalculations = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600">Spheroidal Mesafe</Label>
-                  <p className="text-lg font-semibold text-blue-600">{result.spheroidalDistance.toFixed(3)} nm</p>
+                  <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{result.spheroidalDistance.toFixed(3)} nm</p>
                   <p className="text-xs text-gray-500">WGS84 elipsoidi</p>
                 </div>
                 <div className="space-y-1">
@@ -2041,7 +2041,7 @@ export const NavigationCalculations = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600">Beaufort Skalası</Label>
-                  <p className="text-xl lg:text-2xl font-bold text-blue-600">{result.beaufortScale}</p>
+                  <p className="text-xl lg:text-2xl font-bold text-blue-600 dark:text-blue-400">{result.beaufortScale}</p>
                   <p className="text-xs text-gray-500">Rüzgar şiddeti</p>
                 </div>
                 <div className="space-y-1">

@@ -380,7 +380,7 @@ Hangi konuda yardım istiyorsunuz?`
           </div>
 
           {aiResponse && (
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-blue-50 border-blue-200 dark:border-blue-800">
               <CardContent className="pt-4">
                 <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
                   <MessageCircle className="w-4 h-4" />

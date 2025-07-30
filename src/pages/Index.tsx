@@ -145,11 +145,11 @@ const Index = () => {
 
           {/* User Stats (if logged in) */}
           {currentUser && userStats && (
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mb-4">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-lg p-3 mb-4">
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1">
-                    <Settings className="w-4 h-4 text-blue-600" />
+                    <Settings className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     <span data-translatable>Toplam:</span> {userStats.total_calculations}
                   </span>
                   <span className="flex items-center gap-1">
@@ -199,7 +199,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/trim-list">
-                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700">
                     <Building className="w-4 h-4" />
                     <span data-translatable>Trim ve List</span>
                   </Button>
@@ -235,13 +235,13 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/ballast">
-                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700">
                     <Droplets className="w-4 h-4" />
                     <span data-translatable>Balast</span>
                   </Button>
                 </Link>
                 <Link to="/regulations">
-                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700">
                     <Shield className="w-4 h-4" />
                     <span data-translatable>Regülasyonlar</span>
                   </Button>

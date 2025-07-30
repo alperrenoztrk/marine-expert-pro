@@ -963,12 +963,12 @@ const Regulations = () => {
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 dark:border-blue-800">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <CardTitle className="flex items-center gap-2">
-                      <Ship className="h-5 w-5 text-blue-600" />
+                      <Ship className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                       SOLAS Consolidated Edition 2024
                     </CardTitle>
                     <CardDescription>
@@ -990,7 +990,7 @@ const Regulations = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 bg-white/80 rounded-lg border border-blue-100">
+                  <div className="p-4 bg-white/80 dark:bg-gray-800/80 rounded-lg border border-blue-100">
                     <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
                       Official SOLAS Resources
@@ -1000,7 +1000,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://assets.publishing.service.gov.uk/media/5f7311fce90e0752cb8d2ae9/solas-v-on-safety-of-navigation.pdf', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         SOLAS Chapter V - Safety of Navigation
@@ -1009,7 +1009,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/SOLAS-amendments.aspx', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <AlertTriangle className="h-4 w-4 mr-2" />
                         Latest SOLAS Amendments
@@ -1018,7 +1018,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://wwwcdn.imo.org/localresources/en/KnowledgeCentre/Documents/SOLAS%20Brief%20History%20-%20List%20of%20amendments%20to%20date%20and%20how%20to%20find%20them.pdf', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <FileText className="h-4 w-4 mr-2" />
                         SOLAS Amendment History
@@ -1027,7 +1027,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/InternationalLifeSavingAppliance(LSA)Code.aspx', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <Shield className="h-4 w-4 mr-2" />
                         LSA Code (Life-Saving)
@@ -1036,7 +1036,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/FSS-Code.aspx', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <Flame className="h-4 w-4 mr-2" />
                         FSS Code (Fire Safety)
@@ -1045,7 +1045,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.classnk.or.jp/hp/pdf/activities/statutory/solas/solas_amend_2024.pdf', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         2024 Amendments Summary (ClassNK)
@@ -1054,7 +1054,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.dco.uscg.mil/Portals/9/CG-5PC/CG-CVC/CVC3/references/SOLAS%20Consolidated%20Edition%202009.pdf', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         SOLAS 2009 Edition (USCG)
@@ -1063,7 +1063,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.ccaimo.com/images/Documents_IMO_Conventions_10_codes_IBC.pdf', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         SOLAS + Other IMO Conventions
@@ -1192,7 +1192,7 @@ const Regulations = () => {
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <CardTitle className="flex items-center gap-2">
-                        <Compass className="h-5 w-5 text-blue-600" />
+                        <Compass className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                         International Regulations for Preventing Collisions at Sea (COLREG)
                       </CardTitle>
                       <CardDescription>
@@ -1214,11 +1214,11 @@ const Regulations = () => {
                 </CardHeader>
               </Card>
 
-              <Card className="bg-blue-50 border-blue-200">
+              <Card className="bg-blue-50 border-blue-200 dark:border-blue-800">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-blue-100 rounded-lg">
-                      <FileText className="h-6 w-6 text-blue-600" />
+                      <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-blue-900 mb-2">USCG Navigation Rules Resources</h3>
@@ -1335,7 +1335,7 @@ const Regulations = () => {
 
           <TabsContent value="mgm" className="space-y-6">
             {/* MGM Bulutlar Kataloğu */}
-            <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-sky-50">
+            <Card className="border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-sky-50 dark:from-gray-800 dark:to-gray-700">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl">
                   <div className="p-3 bg-blue-600 rounded-lg">
@@ -1357,8 +1357,8 @@ const Regulations = () => {
                   </p>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <h4 className="font-semibold text-blue-700">İçerik:</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
+                      <h4 className="font-semibold text-blue-700 dark:text-blue-300">İçerik:</h4>
+                      <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                         <li className="flex items-start gap-2">
                           <span className="text-blue-500 mt-0.5">•</span>
                           <span>10 ana bulut tipi ve alt türleri</span>
@@ -1378,8 +1378,8 @@ const Regulations = () => {
                       </ul>
                     </div>
                     <div className="space-y-2">
-                      <h4 className="font-semibold text-blue-700">Denizcilik İçin Önemi:</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
+                      <h4 className="font-semibold text-blue-700 dark:text-blue-300">Denizcilik İçin Önemi:</h4>
+                      <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                         <li className="flex items-start gap-2">
                           <span className="text-blue-500 mt-0.5">•</span>
                           <span>Fırtına öncesi bulut belirtileri</span>
@@ -1480,7 +1480,7 @@ const Regulations = () => {
                     <Card className="border-blue-200 bg-blue-50/50">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-base flex items-center gap-2">
-                          <Compass className="h-4 w-4 text-blue-600" />
+                          <Compass className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                           Altocumulus (Ac)
                         </CardTitle>
                       </CardHeader>

@@ -261,7 +261,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Brain className="w-6 h-6 text-blue-600" />
+            <Brain className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             <div>
               <CardTitle className="text-xl text-blue-800">Maritime AI Asistanı</CardTitle>
               <CardDescription className="text-sm">

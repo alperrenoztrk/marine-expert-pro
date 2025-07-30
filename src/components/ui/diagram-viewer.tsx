@@ -177,7 +177,7 @@ export const DiagramViewer = ({
 
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-12 space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400" />
               <div className="text-center">
                 <p className="text-lg font-medium text-gray-700">Diyagram Oluşturuluyor...</p>
                 <p className="text-sm text-gray-500 mt-1">

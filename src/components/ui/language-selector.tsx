@@ -252,7 +252,7 @@ export const LanguageSelector = ({
         {/* Auto Detect Option */}
         <DropdownMenuItem
           onClick={handleAutoDetect}
-          className="flex items-center gap-2 font-medium text-blue-600"
+          className="flex items-center gap-2 font-medium text-blue-600 dark:text-blue-400"
           disabled={isDetecting}
         >
           {isDetecting ? (

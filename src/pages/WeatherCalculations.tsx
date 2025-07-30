@@ -7,13 +7,13 @@ import { Separator } from "@/components/ui/separator";
 
 const WeatherCalculationsPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
           <Link to="/">
-            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50">
+            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700">
               <ArrowLeft className="w-4 h-4" />
               <span data-translatable>Ana Sayfa</span>
             </Button>
@@ -23,12 +23,12 @@ const WeatherCalculationsPage = () => {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <Cloud className="h-12 w-12 text-blue-600" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <Cloud className="h-12 w-12 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
               Meteoroloji ve Oşinografi Hesaplamaları
             </h1>
           </div>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Beaufort & Douglas skalaları, rüzgar/akıntı etkileri ve kuvvet analizi
           </p>
         </div>
@@ -36,10 +36,10 @@ const WeatherCalculationsPage = () => {
         {/* Weather Calculations */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl">
-                  <Cloud className="h-6 w-6 text-blue-600" />
+                  <Cloud className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   Meteoroloji ve Oşinografi Hesaplama Modülü
                 </CardTitle>
               </CardHeader>
@@ -51,7 +51,7 @@ const WeatherCalculationsPage = () => {
 
           {/* Formüller Kutucuğu */}
           <div className="lg:col-span-1">
-            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5" />
@@ -132,7 +132,7 @@ const WeatherCalculationsPage = () => {
                   </div>
 
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <p className="text-xs text-blue-700">
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
                       <strong>Semboller:</strong><br/>
                       v: hız, ρ: yoğunluk, P: basınç, T: sıcaklık<br/>
                       H_s: anlamlı dalga yüksekliği, λ: dalga boyu<br/>
@@ -146,7 +146,7 @@ const WeatherCalculationsPage = () => {
         </div>
 
         {/* Info */}
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
           Beaufort & Douglas skalaları, rüzgar/akıntı kuvvet analizi ve seyir düzeltmeleri
         </div>
       </div>

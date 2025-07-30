@@ -145,7 +145,7 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
         </div>
 
         {response && (
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-blue-50 border-blue-200 dark:border-blue-800">
             <CardContent className="pt-4">
               <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                 <Brain className="w-4 h-4" />

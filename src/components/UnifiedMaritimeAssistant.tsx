@@ -275,7 +275,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
     <Card className="shadow-lg border-l-4 border-l-blue-500 mb-6">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
-          <Ship className="w-6 h-6 text-blue-600" />
+          <Ship className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           <div>
             <CardTitle className="text-xl text-blue-800">Maritime Mühendisliği Danışmanı</CardTitle>
             <CardDescription className="text-sm">

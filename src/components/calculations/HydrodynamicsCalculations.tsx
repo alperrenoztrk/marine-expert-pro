@@ -709,7 +709,7 @@ export const HydrodynamicsCalculations = () => {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Froude Sayısı</Label>
-                  <p className="text-2xl font-bold text-blue-600">{result.froudeNumber.toFixed(3)}</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.froudeNumber.toFixed(3)}</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Toplam Direnç</Label>
@@ -754,7 +754,7 @@ export const HydrodynamicsCalculations = () => {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Dalıp Çıkma</Label>
-                  <p className="text-2xl font-bold text-blue-600">{result.heaveAmplitude.toFixed(1)} m</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.heaveAmplitude.toFixed(1)} m</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Düşey İvme</Label>
@@ -785,7 +785,7 @@ export const HydrodynamicsCalculations = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Denizcilik İndeksi</Label>
-                  <p className="text-2xl font-bold text-blue-600">{result.seakeepingIndex.toFixed(1)}/10</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.seakeepingIndex.toFixed(1)}/10</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Konfor Seviyesi</Label>
@@ -836,7 +836,7 @@ export const HydrodynamicsCalculations = () => {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">İtki Gücü</Label>
-                  <p className="text-2xl font-bold text-blue-600">{result.thrustPower.toFixed(0)} kW</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.thrustPower.toFixed(0)} kW</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Teslim Edilen Güç</Label>
