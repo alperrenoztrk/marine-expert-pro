@@ -974,7 +974,7 @@ const Regulations = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      variant="primary"
+                      variant="default"
                       size="sm"
                       onClick={() => window.open('https://www.mar.ist.utl.pt/mventura/Projecto-Navios-I/IMO-Conventions%20(copies)/SOLAS.pdf', '_blank')}
                       className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
