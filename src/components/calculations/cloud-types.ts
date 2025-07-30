@@ -10,6 +10,11 @@ import cirrusImage from '@/assets/weather/cirrus-clouds.jpg';
 import cirrocumulusImage from '@/assets/clouds/cirrocumulus.jpg';
 import cirrostratusImage from '@/assets/clouds/cirrostratus.jpg';
 import stormImage from '@/assets/weather/storm-clouds.jpg';
+import mammatusImage from '@/assets/clouds/mammatus.jpg';
+import lenticularisImage from '@/assets/clouds/lenticularis.jpg';
+import arcusImage from '@/assets/clouds/arcus.jpg';
+import fractusImage from '@/assets/clouds/fractus.jpg';
+import tubaImage from '@/assets/clouds/tuba.jpg';
 
 export interface CloudType {
   id: string;
@@ -302,7 +307,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok değişken',
     precipitation: 'Yakında şiddetli',
     danger: 'high',
-    imageUrl: stormImage
+    imageUrl: mammatusImage
   },
   {
     id: 'lenticularis',
@@ -326,7 +331,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok güçlü (yerel)',
     precipitation: 'Genelde yok',
     danger: 'medium',
-    imageUrl: altocumulusImage
+    imageUrl: lenticularisImage
   },
   {
     id: 'castellanus',
@@ -374,7 +379,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Güçlü',
     precipitation: 'Devam eden',
     danger: 'medium',
-    imageUrl: stratusImage
+    imageUrl: fractusImage
   },
   {
     id: 'tuba',
@@ -398,7 +403,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Döner, çok şiddetli',
     precipitation: 'Şiddetli',
     danger: 'high',
-    imageUrl: cumulonimbusImage
+    imageUrl: tubaImage
   },
   {
     id: 'arcus',
@@ -422,7 +427,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Ani artış (> 40 knot)',
     precipitation: 'Hemen arkasında',
     danger: 'high',
-    imageUrl: stormImage
+    imageUrl: arcusImage
   },
   {
     id: 'asperitas',
