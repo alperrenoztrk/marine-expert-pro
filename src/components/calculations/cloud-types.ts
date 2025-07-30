@@ -376,7 +376,7 @@ export const cloudTypes: CloudType[] = [
     descriptionTr: 'Huni bulutu (hortum öncüsü)',
     characteristics: [
       'Huni şeklinde',
-      'Cb'den sarkar',
+      'Cb tabanından sarkar',
       'Döner',
       'Hortum öncüsü'
     ],
