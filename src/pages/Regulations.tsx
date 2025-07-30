@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +31,8 @@ import {
   Compass,
   Eye,
   Volume2,
-  Lightbulb
+  Lightbulb,
+  Cloud
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 
@@ -81,6 +82,7 @@ interface COLREGPart {
 
 const Regulations = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [selectedChapter, setSelectedChapter] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -952,11 +954,12 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="chapters">SOLAS</TabsTrigger>
             <TabsTrigger value="colreg">COLREG</TabsTrigger>
             <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
             <TabsTrigger value="library">Library</TabsTrigger>
+            <TabsTrigger value="mgm">MGM Bulutlar</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
@@ -1328,6 +1331,210 @@ const Regulations = () => {
 
           <TabsContent value="library" className="space-y-4">
             <OpenLibraryBrowser className="w-full" />
+          </TabsContent>
+
+          <TabsContent value="mgm" className="space-y-6">
+            {/* MGM Bulutlar Kataloğu */}
+            <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-sky-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-2xl">
+                  <div className="p-3 bg-blue-600 rounded-lg">
+                    <Droplets className="h-6 w-6 text-white" />
+                  </div>
+                  MGM Bulutlar Kataloğu
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Meteoroloji Genel Müdürlüğü - Bulut Gözlem ve Sınıflandırma Rehberi
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 border border-blue-100">
+                  <h3 className="font-semibold text-lg mb-3 text-blue-800">Hakkında</h3>
+                  <p className="text-gray-700 mb-4">
+                    Meteoroloji Genel Müdürlüğü tarafından hazırlanan bu kapsamlı bulut kataloğu, 
+                    denizciler ve meteoroloji gözlemcileri için kritik öneme sahip bulut tiplerini, 
+                    karakteristiklerini ve denizcilik açısından önemlerini detaylı olarak açıklamaktadır.
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-blue-700">İçerik:</h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>10 ana bulut tipi ve alt türleri</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>CL, CM, CH kodlama sistemi</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>Bulut yükseklikleri ve oluşum şartları</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>Hava tahmin yöntemleri</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-blue-700">Denizcilik İçin Önemi:</h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>Fırtına öncesi bulut belirtileri</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>Görüş mesafesi tahminleri</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>Rüzgar değişimi göstergeleri</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span>Yağış zamanlaması ve şiddeti</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    variant="default" 
+                    size="lg" 
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    onClick={() => window.open('https://www.mgm.gov.tr/FILES/genel/kitaplar/bulutlar.pdf', '_blank')}
+                  >
+                    <Download className="mr-2 h-5 w-5" />
+                    MGM Bulutlar PDF İndir
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="flex-1"
+                    onClick={() => navigate('/weather-calculations')}
+                  >
+                    <Droplets className="mr-2 h-5 w-5" />
+                    Bulut Kataloğunu Görüntüle
+                  </Button>
+                </div>
+
+                {/* Önemli Bulut Tipleri */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-lg text-blue-800">Kritik Bulut Tipleri</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card className="border-red-200 bg-red-50/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-red-600" />
+                          Cumulonimbus (Cb)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-700">
+                          <strong>Tehlike:</strong> Şiddetli fırtına, yıldırım, su hortumu
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <strong>İşaret:</strong> Örs şeklinde tepe, koyu taban
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-orange-200 bg-orange-50/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Eye className="h-4 w-4 text-orange-600" />
+                          Stratus (St)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-700">
+                          <strong>Tehlike:</strong> Çok düşük görüş, deniz sisi
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <strong>İşaret:</strong> Düzgün gri tabaka, alçak tavan
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-yellow-200 bg-yellow-50/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Navigation className="h-4 w-4 text-yellow-700" />
+                          Cirrostratus (Cs)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-700">
+                          <strong>İşaret:</strong> Güneş/ay halesi
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <strong>Anlam:</strong> 12-24 saat içinde fırtına
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-blue-200 bg-blue-50/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Compass className="h-4 w-4 text-blue-600" />
+                          Altocumulus (Ac)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-700">
+                          <strong>İşaret:</strong> Koyun sürüsü görünümü
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          <strong>Anlam:</strong> 24 saat içinde hava değişimi
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* MGM Kaynakları */}
+                <Card className="border-gray-200 bg-gray-50/50">
+                  <CardHeader>
+                    <CardTitle className="text-base">İlgili MGM Kaynakları</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="justify-start"
+                        onClick={() => window.open('https://www.mgm.gov.tr', '_blank')}
+                      >
+                        <Building className="mr-2 h-4 w-4" />
+                        MGM Ana Sayfa
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="justify-start"
+                        onClick={() => window.open('https://www.mgm.gov.tr/denizcilik', '_blank')}
+                      >
+                        <Ship className="mr-2 h-4 w-4" />
+                        MGM Denizcilik Meteorolojisi
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="justify-start"
+                        onClick={() => window.open('https://www.mgm.gov.tr/egitim', '_blank')}
+                      >
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        MGM Eğitim Kaynakları
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
