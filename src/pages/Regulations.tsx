@@ -1344,7 +1344,7 @@ const Regulations = () => {
                   MGM Bulutlar Kataloğu
                 </CardTitle>
                 <CardDescription className="text-base">
-                  Meteoroloji Genel Müdürlüğü - Bulut Gözlem ve Sınıflandırma Rehberi
+                  Meteoroloji Genel Müdürlüğü (MGM) - Bulut Gözlem ve Sınıflandırma Rehberi
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
