@@ -866,6 +866,56 @@ export const WeatherCalculations = () => {
                 </CardContent>
               </Card>
 
+              {/* Nimbostratus - Special Rain Cloud */}
+              <Card className="border-gray-400 bg-gray-100/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <CloudRain className="h-5 w-5" />
+                    Nimbostratus - Yağmur Bulutu
+                  </CardTitle>
+                  <CardDescription>
+                    Sürekli yağmur getiren, kalın ve koyu bulut tabakası
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="destructive" className="bg-gray-600 text-white">Özel</Badge>
+                      <h4 className="font-semibold">Nimbostratus (Ns)</h4>
+                      <CloudRain className="h-4 w-4 text-gray-600" />
+                    </div>
+                    <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-400 shadow-lg">
+                      <img 
+                        src={stormClouds}
+                        alt="Nimbostratus - Dark rain-bearing cloud layer"
+                        className="w-full h-full object-cover"
+                         onError={(e) => {
+                           e.currentTarget.style.display = 'none';
+                           const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                           if (sibling) sibling.style.display = 'flex';
+                         }}
+                      />
+                      <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-700 via-gray-600 to-gray-800 items-center justify-center text-center p-3">
+                        <div>
+                          <div className="text-4xl mb-1 filter drop-shadow-lg">🌧️</div>
+                          <div className="text-sm font-bold text-white mb-1">NIMBOSTRATUS (Ns)</div>
+                          <div className="text-xs text-gray-200 leading-tight">Kalın koyu<br/>sürekli yağmur</div>
+                        </div>
+                      </div>
+                      <div className="absolute top-1 right-1 bg-gray-700/90 text-white px-2 py-1 rounded text-xs font-bold">YAĞMUR</div>
+                      <div className="absolute bottom-1 left-1 bg-blue-600/90 text-white px-2 py-1 rounded text-xs font-bold">🌧️ SÜREKLİ</div>
+                    </div>
+                    <div className="text-sm space-y-1">
+                      <p><strong>Denizcilik Önemi:</strong> Sürekli yağmur, kötü görüş şartları</p>
+                      <p><strong>Görüş:</strong> Çok kötü (1-3 nm)</p>
+                      <p><strong>Rüzgar:</strong> Orta-güçlü (15-30 knot)</p>
+                      <p><strong>Yağış:</strong> Sürekli, orta-şiddetli</p>
+                      <p><strong>Tehlike:</strong> Görüş kaybı, deniz durumu kötüleşir</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* High Clouds (6000-12000m) */}
               <Card className="border-purple-200 bg-purple-50/50">
                 <CardHeader>
@@ -879,10 +929,10 @@ export const WeatherCalculations = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    {/* Cirrus - CH 8 */}
+                    {/* Cirrus - CH 6-7 */}
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-purple-100 text-purple-800">CH 8</Badge>
+                        <Badge variant="secondary" className="bg-purple-100 text-purple-800">CH 6-7</Badge>
                         <h4 className="font-semibold">Cirrus (Ci)</h4>
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
@@ -903,7 +953,7 @@ export const WeatherCalculations = () => {
                             <div className="text-xs text-purple-700 leading-tight">İnce tüy gibi<br/>buz kristal bulut</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 8</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 6-7</div>
                         <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CIRRUS (Ci)</div>
                       </div>
                       <div className="text-sm space-y-1">
@@ -914,10 +964,45 @@ export const WeatherCalculations = () => {
                       </div>
                     </div>
 
-                    {/* Cirrocumulus - CH 9 */}
+                    {/* Cirrus spissatus - CH 7 */}
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="border-purple-500 text-purple-700">CH 9</Badge>
+                        <Badge variant="secondary" className="bg-purple-200 text-purple-900">CH 7</Badge>
+                        <h4 className="font-semibold">Cirrus spissatus (Ci sp)</h4>
+                      </div>
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-400 shadow-md">
+                        <img 
+                          src={cirrusClouds}
+                          alt="Cirrus spissatus - Thick dense cirrus clouds"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-200 via-gray-200 to-purple-300 items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-sm">☁️</div>
+                            <div className="text-sm font-bold text-purple-900 mb-1">CIRRUS SPISSATUS</div>
+                            <div className="text-xs text-purple-800 leading-tight">Kalın cirrus<br/>fırtına öncüsü</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 7</div>
+                        <div className="absolute bottom-1 left-1 bg-purple-600/90 text-white px-2 py-1 rounded text-xs font-bold">KALIN CİRRUS</div>
+                      </div>
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Yaklaşan cephe sistemi, hava bozuluyor</p>
+                        <p><strong>Görüş:</strong> İyi ama hızla azalacak (10-15 nm)</p>
+                        <p><strong>Rüzgar:</strong> Güçleniyor (20-30 knot)</p>
+                        <p><strong>Yağış:</strong> 12-24 saat içinde başlar</p>
+                      </div>
+                    </div>
+
+                    {/* Cirrocumulus - CH 8 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-purple-500 text-purple-700">CH 8</Badge>
                         <h4 className="font-semibold">Cirrocumulus (Cc)</h4>
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-200 shadow-md">
@@ -938,7 +1023,7 @@ export const WeatherCalculations = () => {
                             <div className="text-xs text-purple-700 leading-tight">Balık pulu<br/>ince kümecikler</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 9</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 8</div>
                         <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CIRROCUMULUS (Cc)</div>
                       </div>
                       <div className="text-sm space-y-1">
@@ -949,10 +1034,10 @@ export const WeatherCalculations = () => {
                       </div>
                     </div>
 
-                    {/* Cirrostratus - CH 6-7 */}
+                    {/* Cirrostratus - CH 9 */}
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="border-purple-600 text-purple-800">CH 6-7</Badge>
+                        <Badge variant="outline" className="border-purple-600 text-purple-800">CH 9</Badge>
                         <h4 className="font-semibold">Cirrostratus (Cs)</h4>
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
@@ -973,7 +1058,7 @@ export const WeatherCalculations = () => {
                             <div className="text-xs text-purple-700 leading-tight">İnce tabaka<br/>güneş halesi</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 6-7</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 9</div>
                         <div className="absolute bottom-1 left-1 bg-yellow-500/90 text-black px-2 py-1 rounded text-xs font-bold">☀️ HALE</div>
                       </div>
                       <div className="text-sm space-y-1">
@@ -1139,6 +1224,78 @@ export const WeatherCalculations = () => {
                         <p><strong>Görüş:</strong> İyi (10+ nm)</p>
                         <p><strong>Rüzgar:</strong> Çok güçlü üst rüzgarlar</p>
                         <p><strong>Not:</strong> Dağlık kıyılarda dikkat</p>
+                      </div>
+                    </div>
+
+                    {/* Fog - Sis */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="destructive" className="bg-gray-200 text-gray-900">Özel</Badge>
+                        <h4 className="font-semibold">Fog (Sis)</h4>
+                        <Eye className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-400 shadow-lg">
+                        <img 
+                          src={stratusClouds}
+                          alt="Fog - Ground level cloud reducing visibility"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-300 via-gray-200 to-gray-400 items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-sm">🌫️</div>
+                            <div className="text-sm font-bold text-gray-800 mb-1">FOG (SİS)</div>
+                            <div className="text-xs text-gray-700 leading-tight">Yer seviyesi<br/>görüş kaybı</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-red-600/90 text-white px-2 py-1 rounded text-xs font-bold">TEHLİKE</div>
+                        <div className="absolute bottom-1 left-1 bg-gray-600/90 text-white px-2 py-1 rounded text-xs font-bold">🌫️ SİS</div>
+                      </div>
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> ⚠️ Çatışma riski, seyir tehlikesi</p>
+                        <p><strong>Görüş:</strong> Çok tehlikeli (&lt;0.5 nm)</p>
+                        <p><strong>Rüzgar:</strong> Genelde sakin (&lt;5 knot)</p>
+                        <p><strong>Tehlike:</strong> Sis düdüğü kullan, radar izle</p>
+                      </div>
+                    </div>
+
+                    {/* Towering Cumulus */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="bg-orange-200 text-orange-800">Özel</Badge>
+                        <h4 className="font-semibold">Towering Cumulus (TCu)</h4>
+                        <TrendingUp className="h-4 w-4 text-orange-600" />
+                      </div>
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-orange-400 shadow-lg">
+                        <img 
+                          src={cumulusClouds}
+                          alt="Towering Cumulus - Tall developing cumulus"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-orange-200 via-white to-orange-300 items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-lg">⛰️</div>
+                            <div className="text-sm font-bold text-orange-800 mb-1">TOWERING CUMULUS</div>
+                            <div className="text-xs text-orange-700 leading-tight">Yükselen kule<br/>CB öncüsü</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-orange-600/90 text-white px-2 py-1 rounded text-xs font-bold">GELİŞİYOR</div>
+                        <div className="absolute bottom-1 left-1 bg-orange-500/90 text-white px-2 py-1 rounded text-xs font-bold">⬆️ KULE</div>
+                      </div>
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Yakında gök gürültülü fırtına</p>
+                        <p><strong>Görüş:</strong> İyi ama değişken (5-10 nm)</p>
+                        <p><strong>Rüzgar:</strong> Değişken, ani artışlar (10-30 knot)</p>
+                        <p><strong>Yağış:</strong> 30-60 dk içinde sağanak</p>
                       </div>
                     </div>
                   </div>
