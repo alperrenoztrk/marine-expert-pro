@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CloudRain, Wind, Waves, Compass, Navigation, Activity, Calculator, TrendingUp } from "lucide-react";
+import { CloudRain, Wind, Waves, Compass, Navigation, Activity, Calculator, TrendingUp, Cloud, Eye, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface MeteoOceanData {
@@ -375,12 +375,13 @@ export const WeatherCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="wind" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="wind">Rüzgar</TabsTrigger>
               <TabsTrigger value="waves">Dalgalar</TabsTrigger>
               <TabsTrigger value="current">Akıntı</TabsTrigger>
               <TabsTrigger value="ship">Gemi</TabsTrigger>
               <TabsTrigger value="environment">Çevre</TabsTrigger>
+              <TabsTrigger value="clouds">Bulutlar</TabsTrigger>
             </TabsList>
 
             <TabsContent value="wind" className="space-y-4">
@@ -600,6 +601,368 @@ export const WeatherCalculations = () => {
                   />
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="clouds" className="space-y-6">
+              {/* Cloud Classification Guide */}
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Bulut Sınıflandırması ve CH Kodları</h3>
+                <p className="text-gray-600">Denizciler için bulut tipleri, irtifaları ve önemi</p>
+              </div>
+
+              {/* Low Clouds (0-2000m) */}
+              <Card className="border-blue-200 bg-blue-50/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-blue-800">
+                    <Cloud className="h-5 w-5" />
+                    Alçak Bulutlar (0-2000m) - CH 0-3
+                  </CardTitle>
+                  <CardDescription>
+                    Deniz seviyesine yakın, görüş mesafesini etkileyen bulutlar
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Cumulus - CH 1 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
+                        <h4 className="font-semibold">Cumulus (Cu)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" 
+                        alt="Cumulus bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
+                        <p><strong>Görüş:</strong> İyi (10+ nm)</p>
+                        <p><strong>Rüzgar:</strong> Hafif-orta (5-15 knot)</p>
+                        <p><strong>Yağış:</strong> Yok/çok az</p>
+                      </div>
+                    </div>
+
+                    {/* Cumulonimbus - CH 3 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="destructive" className="bg-red-100 text-red-800">CH 3</Badge>
+                        <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
+                        <AlertTriangle className="h-4 w-4 text-red-600" />
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1605027990121-3b2c6ed2861e?w=300&h=200&fit=crop" 
+                        alt="Cumulonimbus fırtına bulutu"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> ⚠️ Fırtına, şimşek tehlikesi</p>
+                        <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
+                        <p><strong>Rüzgar:</strong> Çok güçlü (35+ knot)</p>
+                        <p><strong>Yağış:</strong> Şiddetli yağmur/dolu</p>
+                      </div>
+                    </div>
+
+                    {/* Stratocumulus - CH 2 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-gray-400 text-gray-700">CH 2</Badge>
+                        <h4 className="font-semibold">Stratocumulus (Sc)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300&h=200&fit=crop" 
+                        alt="Stratocumulus bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Değişken hava koşulları</p>
+                        <p><strong>Görüş:</strong> Orta (3-8 nm)</p>
+                        <p><strong>Rüzgar:</strong> Orta (10-20 knot)</p>
+                        <p><strong>Yağış:</strong> Hafif yağmur</p>
+                      </div>
+                    </div>
+
+                    {/* Stratus - CH 0 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-gray-500 text-gray-600">CH 0</Badge>
+                        <h4 className="font-semibold">Stratus (St)</h4>
+                        <Eye className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&h=200&fit=crop" 
+                        alt="Stratus sis bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> ⚠️ Sis, görüş problemi</p>
+                        <p><strong>Görüş:</strong> Çok kötü (&lt;0.5 nm)</p>
+                        <p><strong>Rüzgar:</strong> Hafif (0-10 knot)</p>
+                        <p><strong>Yağış:</strong> Çisenti/hafif yağmur</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Medium Clouds (2000-6000m) */}
+              <Card className="border-green-200 bg-green-50/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-green-800">
+                    <Cloud className="h-5 w-5" />
+                    Orta Bulutlar (2000-6000m) - CH 4-5
+                  </CardTitle>
+                  <CardDescription>
+                    Orta irtifada, hava değişikliklerinin habercisi
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Altocumulus - CH 4 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">CH 4</Badge>
+                        <h4 className="font-semibold">Altocumulus (Ac)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=300&h=200&fit=crop" 
+                        alt="Altocumulus bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Hava değişikliği yaklaşıyor</p>
+                        <p><strong>Görüş:</strong> İyi (8-15 nm)</p>
+                        <p><strong>Rüzgar:</strong> Orta (10-25 knot)</p>
+                        <p><strong>Yağış:</strong> 24 saat içinde yağış olası</p>
+                      </div>
+                    </div>
+
+                    {/* Altostratus - CH 5 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-green-500 text-green-700">CH 5</Badge>
+                        <h4 className="font-semibold">Altostratus (As)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1604537529428-15bcbeecfe4d?w=300&h=200&fit=crop" 
+                        alt="Altostratus bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Sistematik yağış yaklaşıyor</p>
+                        <p><strong>Görüş:</strong> Orta (5-10 nm)</p>
+                        <p><strong>Rüzgar:</strong> Güçlü (15-30 knot)</p>
+                        <p><strong>Yağış:</strong> 12-24 saat içinde kesin</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* High Clouds (6000-12000m) */}
+              <Card className="border-purple-200 bg-purple-50/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-purple-800">
+                    <Cloud className="h-5 w-5" />
+                    Yüksek Bulutlar (6000-12000m) - CH 6-9
+                  </CardTitle>
+                  <CardDescription>
+                    Yüksek irtifada, uzak hava sistemlerinin habercisi
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Cirrus - CH 8 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="bg-purple-100 text-purple-800">CH 8</Badge>
+                        <h4 className="font-semibold">Cirrus (Ci)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop" 
+                        alt="Cirrus bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> 48-72 saat sonra hava bozulması</p>
+                        <p><strong>Görüş:</strong> Mükemmel (15+ nm)</p>
+                        <p><strong>Rüzgar:</strong> Hafif (5-15 knot)</p>
+                        <p><strong>Yağış:</strong> Yok, ama yaklaşıyor</p>
+                      </div>
+                    </div>
+
+                    {/* Cirrocumulus - CH 9 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-purple-500 text-purple-700">CH 9</Badge>
+                        <h4 className="font-semibold">Cirrocumulus (Cc)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1434725039720-aaad6dd32dfe?w=300&h=200&fit=crop" 
+                        alt="Cirrocumulus balık pulu bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> "Balık pulu" - hava değişimi</p>
+                        <p><strong>Görüş:</strong> İyi (10-20 nm)</p>
+                        <p><strong>Rüzgar:</strong> Artan (15-25 knot)</p>
+                        <p><strong>Yağış:</strong> 24-48 saat içinde</p>
+                      </div>
+                    </div>
+
+                    {/* Cirrostratus - CH 6-7 */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-purple-600 text-purple-800">CH 6-7</Badge>
+                        <h4 className="font-semibold">Cirrostratus (Cs)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=300&h=200&fit=crop" 
+                        alt="Cirrostratus halo bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Güneş/ay halesi - fırtına yaklaşıyor</p>
+                        <p><strong>Görüş:</strong> İyi ama azalan (8-15 nm)</p>
+                        <p><strong>Rüzgar:</strong> Güçlenir (20-35 knot)</p>
+                        <p><strong>Yağış:</strong> 12-36 saat içinde kesin</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Special Clouds */}
+              <Card className="border-orange-200 bg-orange-50/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-orange-800">
+                    <AlertTriangle className="h-5 w-5" />
+                    Özel Durum Bulutları - Diğer CH Kodları
+                  </CardTitle>
+                  <CardDescription>
+                    Denizciler için özel önem taşıyan bulut formasyonları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Mammatus */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="destructive" className="bg-red-100 text-red-800">Özel</Badge>
+                        <h4 className="font-semibold">Mammatus</h4>
+                        <AlertTriangle className="h-4 w-4 text-red-600" />
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1527482797697-8795b05a13fe?w=300&h=200&fit=crop" 
+                        alt="Mammatus bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> ⚠️ Şiddetli türbülans</p>
+                        <p><strong>Görüş:</strong> Değişken (1-5 nm)</p>
+                        <p><strong>Rüzgar:</strong> Çok değişken (0-50 knot)</p>
+                        <p><strong>Tehlike:</strong> Ani rüzgar değişimi</p>
+                      </div>
+                    </div>
+
+                    {/* Wall Cloud */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="destructive" className="bg-red-200 text-red-900">Özel</Badge>
+                        <h4 className="font-semibold">Wall Cloud (Duvar Bulutu)</h4>
+                        <AlertTriangle className="h-4 w-4 text-red-600" />
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1563235067-7e7c8e8cce9a?w=300&h=200&fit=crop" 
+                        alt="Wall cloud duvar bulutu"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> ⚠️ Tornado/waterspout tehlikesi</p>
+                        <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
+                        <p><strong>Rüzgar:</strong> Döner, şiddetli (40+ knot)</p>
+                        <p><strong>Tehlike:</strong> Su hortumu olasılığı</p>
+                      </div>
+                    </div>
+
+                    {/* Shelf Cloud */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="destructive" className="bg-yellow-100 text-yellow-800">Özel</Badge>
+                        <h4 className="font-semibold">Shelf Cloud (Raf Bulutu)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1521919743851-0f31c7ce6d21?w=300&h=200&fit=crop" 
+                        alt="Shelf cloud raf bulutu"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Squall line yaklaşıyor</p>
+                        <p><strong>Görüş:</strong> Hızla azalan (5→&lt;1 nm)</p>
+                        <p><strong>Rüzgar:</strong> Ani artış (15→40 knot)</p>
+                        <p><strong>Yağış:</strong> Aniden başlar, şiddetli</p>
+                      </div>
+                    </div>
+
+                    {/* Lenticular */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="border-blue-500 text-blue-700">Özel</Badge>
+                        <h4 className="font-semibold">Lenticular (Mercek)</h4>
+                      </div>
+                      <img 
+                        src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop" 
+                        alt="Lenticular mercek bulutları"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <div className="text-sm space-y-1">
+                        <p><strong>Denizcilik Önemi:</strong> Güçlü rüzgar dalgaları</p>
+                        <p><strong>Görüş:</strong> İyi (10+ nm)</p>
+                        <p><strong>Rüzgar:</strong> Çok güçlü üst rüzgarlar</p>
+                        <p><strong>Not:</strong> Dağlık kıyılarda dikkat</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* CH Code Reference */}
+              <Card className="border-indigo-200 bg-indigo-50/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-indigo-800">
+                    <Navigation className="h-5 w-5" />
+                    CH Kod Referansı
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <h5 className="font-semibold mb-2">Alçak Bulutlar (CL)</h5>
+                      <ul className="space-y-1">
+                        <li>CH 0: Stratus nebulosis</li>
+                        <li>CH 1: Cumulus humilis</li>
+                        <li>CH 2: Stratocumulus</li>
+                        <li>CH 3: Cumulonimbus</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold mb-2">Orta Bulutlar (CM)</h5>
+                      <ul className="space-y-1">
+                        <li>CH 4: Altocumulus</li>
+                        <li>CH 5: Altostratus</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold mb-2">Yüksek Bulutlar (CH)</h5>
+                      <ul className="space-y-1">
+                        <li>CH 6: Cirrus fibratus</li>
+                        <li>CH 7: Cirrus spissatus</li>
+                        <li>CH 8: Cirrocumulus</li>
+                        <li>CH 9: Cirrostratus</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
 
