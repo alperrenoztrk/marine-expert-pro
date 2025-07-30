@@ -7,9 +7,12 @@ interface CloudImageProps {
   alt: string;
   cloudType: string;
   cloudCode: string;
+  mgmCode?: string;
   emoji: string;
   variant?: 'default' | 'warning' | 'danger';
   description?: string;
+  altitude?: string;
+  nameTr?: string;
   className?: string;
 }
 
@@ -18,9 +21,12 @@ export const CloudImage: React.FC<CloudImageProps> = ({
   alt,
   cloudType,
   cloudCode,
+  mgmCode,
   emoji,
   variant = 'default',
   description,
+  altitude,
+  nameTr,
   className
 }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -128,8 +134,19 @@ export const CloudImage: React.FC<CloudImageProps> = ({
         styles.badge,
         "backdrop-blur-sm group-hover:scale-105"
       )}>
-        {cloudCode}
+        <div>{cloudCode}</div>
+        {mgmCode && <div className="text-[10px] opacity-80">MGM: {mgmCode}</div>}
       </div>
+
+      {/* Altitude Badge */}
+      {altitude && (
+        <div className={cn(
+          "absolute top-1 left-1 px-2 py-1 rounded text-xs font-medium text-white transition-all duration-300",
+          "bg-blue-600/80 backdrop-blur-sm group-hover:scale-105"
+        )}>
+          {altitude}
+        </div>
+      )}
 
       {/* Cloud Type Label */}
       <div className={cn(
@@ -137,7 +154,8 @@ export const CloudImage: React.FC<CloudImageProps> = ({
         styles.badge,
         "backdrop-blur-sm group-hover:scale-105"
       )}>
-        {cloudType.toUpperCase()}
+        <div>{cloudType.toUpperCase()}</div>
+        {nameTr && <div className="text-[10px] opacity-80">{nameTr}</div>}
         {variant === 'danger' && ' ⚠️'}
       </div>
     </div>

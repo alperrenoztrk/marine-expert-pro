@@ -15,6 +15,7 @@ import { tr } from "date-fns/locale";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { CloudImage } from "@/components/ui/cloud-image";
+import { cloudTypes } from "@/components/calculations/cloud-types";
 
 // Import new cloud images
 import cumulusClouds from "@/assets/weather/cumulus-clouds.jpg";
@@ -648,14 +649,17 @@ export const WeatherCalculations = () => {
                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
                          <h4 className="font-semibold">Cumulus (Cu)</h4>
                        </div>
-                                                                   <CloudImage
+                           <CloudImage
                         src={cumulusClouds}
                         alt="Cumulus Clouds - Fair weather puffy white clouds"
                         cloudType="Cumulus (Cu)"
-                        cloudCode="CH 1"
-                        emoji="☁️"
+                        cloudCode="CL 1"
+                        mgmCode="Cu"
+                        emoji="⛅"
                         variant="default"
-                        description="Pamuk benzeri|dikey gelişim"
+                        description="Pamuk görünümlü|Güzel hava"
+                        altitude="600-2000m"
+                        nameTr="Kümülüs"
                       />
                        <div className="text-sm space-y-1">
                          <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
@@ -672,27 +676,18 @@ export const WeatherCalculations = () => {
                          <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
                          <AlertTriangle className="h-4 w-4 text-red-600" />
                        </div>
-                                               <div className="relative w-full h-32 rounded-lg overflow-hidden border border-red-300 shadow-lg">
-                        <img 
-                          src={cumulonimbusClouds}
-                          alt="Cumulonimbus Storm Cloud - Dangerous thunderstorm cloud"
-                          className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                              const sibling = e.currentTarget.nextElementSibling as HTMLElement;
-                              if (sibling) sibling.style.display = 'flex';
-                            }}
-                         />
-                         <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-800 to-gray-900 items-center justify-center text-center p-3">
-                           <div>
-                             <div className="text-4xl mb-1 filter drop-shadow-lg">⛈️</div>
-                             <div className="text-sm font-bold text-white mb-1">CUMULONIMBUS (Cb)</div>
-                             <div className="text-xs text-yellow-200 leading-tight">Örs şekilli<br/>fırtına bulutu</div>
-                           </div>
-                         </div>
-                         <div className="absolute top-1 right-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">CH 3</div>
-                         <div className="absolute bottom-1 left-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">CUMULONIMBUS ⚠️</div>
-                       </div>
+                       <CloudImage
+                        src={cumulonimbusClouds}
+                        alt="Cumulonimbus Storm Cloud - Dangerous thunderstorm cloud"
+                        cloudType="Cumulonimbus (Cb)"
+                        cloudCode="CL 9"
+                        mgmCode="Cb"
+                        emoji="⛈️"
+                        variant="danger"
+                        description="Örs şeklinde|Gök gürültülü fırtına"
+                        altitude="600-12000m+"
+                        nameTr="Kümülonimbüs"
+                      />
                        <div className="text-sm space-y-1">
                          <p><strong>Denizcilik Önemi:</strong> ⚠️ Fırtına, şimşek tehlikesi</p>
                          <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
@@ -707,27 +702,18 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-gray-400 text-gray-700">CH 2</Badge>
                         <h4 className="font-semibold">Stratocumulus (Sc)</h4>
                       </div>
-                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-300 shadow-md">
-                        <img 
-                          src={stratocumulusClouds}
-                          alt="Stratocumulus Clouds - Low layered lumpy clouds"
-                          className="w-full h-full object-cover"
-                           onError={(e) => {
-                             e.currentTarget.style.display = 'none';
-                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
-                             if (sibling) sibling.style.display = 'flex';
-                           }}
-                        />
-                        <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 items-center justify-center text-center p-3">
-                          <div>
-                            <div className="text-4xl mb-1 filter drop-shadow-sm">🌫️</div>
-                            <div className="text-sm font-bold text-gray-800 mb-1">STRATOCUMULUS (Sc)</div>
-                            <div className="text-xs text-gray-600 leading-tight">Yuvarlak kütleli<br/>tabakalı bulut</div>
-                          </div>
-                        </div>
-                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 2</div>
-                        <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">STRATOCUMULUS (Sc)</div>
-                      </div>
+                      <CloudImage
+                        src={stratocumulusClouds}
+                        alt="Stratocumulus Clouds - Low layered lumpy clouds"
+                        cloudType="Stratocumulus (Sc)"
+                        cloudCode="CL 5"
+                        mgmCode="Sc"
+                        emoji="☁️"
+                        variant="default"
+                        description="Alçak gri yamalar|Yumrulu tabaka"
+                        altitude="600-2000m"
+                        nameTr="Stratokümülüs"
+                      />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Değişken hava koşulları</p>
                         <p><strong>Görüş:</strong> Orta (3-8 nm)</p>
@@ -743,27 +729,18 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Stratus (St)</h4>
                         <Eye className="h-4 w-4 text-gray-600" />
                       </div>
-                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-400 shadow-md">
-                        <img 
-                          src={stratusClouds}
-                          alt="Stratus Clouds - Low flat gray layer clouds and fog"
-                          className="w-full h-full object-cover"
-                           onError={(e) => {
-                             e.currentTarget.style.display = 'none';
-                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
-                             if (sibling) sibling.style.display = 'flex';
-                           }}
-                        />
-                        <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-400 to-gray-500 items-center justify-center text-center p-3">
-                          <div>
-                            <div className="text-4xl mb-1 filter drop-shadow-sm">🌁</div>
-                            <div className="text-sm font-bold text-gray-800 mb-1">STRATUS (St)</div>
-                            <div className="text-xs text-gray-600 leading-tight">Düz tabaka<br/>sis benzeri</div>
-                          </div>
-                        </div>
-                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 0</div>
-                        <div className="absolute bottom-1 left-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">⚠️ SİS RISKI</div>
-                      </div>
+                      <CloudImage
+                        src={stratusClouds}
+                        alt="Stratus Clouds - Low flat gray layer clouds and fog"
+                        cloudType="Stratus (St)"
+                        cloudCode="CL 6"
+                        mgmCode="St"
+                        emoji="🌫️"
+                        variant="warning"
+                        description="Gri tabaka|Alçak tavan"
+                        altitude="0-2000m"
+                        nameTr="Stratus"
+                      />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Sis, görüş problemi</p>
                         <p><strong>Görüş:</strong> Çok kötü (&lt;0.5 nm)</p>
