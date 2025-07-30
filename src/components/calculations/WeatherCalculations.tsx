@@ -629,11 +629,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
                         <h4 className="font-semibold">Cumulus (Cu)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" 
-                        alt="Cumulus bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/cu_fair.jpg" 
+                         alt="Cumulus bulutları - Fair weather cumulus"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
                         <p><strong>Görüş:</strong> İyi (10+ nm)</p>
@@ -649,11 +649,11 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1605027990121-3b2c6ed2861e?w=300&h=200&fit=crop" 
-                        alt="Cumulonimbus fırtına bulutu"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/cb_anvil.jpg" 
+                         alt="Cumulonimbus - Anvil top thunderstorm"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Fırtına, şimşek tehlikesi</p>
                         <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
@@ -668,11 +668,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-gray-400 text-gray-700">CH 2</Badge>
                         <h4 className="font-semibold">Stratocumulus (Sc)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300&h=200&fit=crop" 
-                        alt="Stratocumulus bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/sc_layer.jpg" 
+                         alt="Stratocumulus - Low layered clouds"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Değişken hava koşulları</p>
                         <p><strong>Görüş:</strong> Orta (3-8 nm)</p>
@@ -688,11 +688,11 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Stratus (St)</h4>
                         <Eye className="h-4 w-4 text-gray-600" />
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&h=200&fit=crop" 
-                        alt="Stratus sis bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/st_fog.jpg" 
+                         alt="Stratus - Low fog and mist"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Sis, görüş problemi</p>
                         <p><strong>Görüş:</strong> Çok kötü (&lt;0.5 nm)</p>
@@ -723,11 +723,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="secondary" className="bg-green-100 text-green-800">CH 4</Badge>
                         <h4 className="font-semibold">Altocumulus (Ac)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=300&h=200&fit=crop" 
-                        alt="Altocumulus bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/ac_patches.jpg" 
+                         alt="Altocumulus - Mid-level patchy clouds"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Hava değişikliği yaklaşıyor</p>
                         <p><strong>Görüş:</strong> İyi (8-15 nm)</p>
@@ -742,11 +742,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-green-500 text-green-700">CH 5</Badge>
                         <h4 className="font-semibold">Altostratus (As)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1604537529428-15bcbeecfe4d?w=300&h=200&fit=crop" 
-                        alt="Altostratus bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/as_gray.jpg" 
+                         alt="Altostratus - Gray mid-level layer"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Sistematik yağış yaklaşıyor</p>
                         <p><strong>Görüş:</strong> Orta (5-10 nm)</p>
@@ -777,11 +777,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="secondary" className="bg-purple-100 text-purple-800">CH 8</Badge>
                         <h4 className="font-semibold">Cirrus (Ci)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop" 
-                        alt="Cirrus bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/ci_wispy.jpg" 
+                         alt="Cirrus - High wispy ice clouds"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> 48-72 saat sonra hava bozulması</p>
                         <p><strong>Görüş:</strong> Mükemmel (15+ nm)</p>
@@ -796,11 +796,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-purple-500 text-purple-700">CH 9</Badge>
                         <h4 className="font-semibold">Cirrocumulus (Cc)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1434725039720-aaad6dd32dfe?w=300&h=200&fit=crop" 
-                        alt="Cirrocumulus balık pulu bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/cc_mackerel.jpg" 
+                         alt="Cirrocumulus - Mackerel sky pattern"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> "Balık pulu" - hava değişimi</p>
                         <p><strong>Görüş:</strong> İyi (10-20 nm)</p>
@@ -815,11 +815,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-purple-600 text-purple-800">CH 6-7</Badge>
                         <h4 className="font-semibold">Cirrostratus (Cs)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=300&h=200&fit=crop" 
-                        alt="Cirrostratus halo bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/cs_halo.jpg" 
+                         alt="Cirrostratus - Sun halo formation"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Güneş/ay halesi - fırtına yaklaşıyor</p>
                         <p><strong>Görüş:</strong> İyi ama azalan (8-15 nm)</p>
@@ -851,11 +851,11 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Mammatus</h4>
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1527482797697-8795b05a13fe?w=300&h=200&fit=crop" 
-                        alt="Mammatus bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/mammatus.jpg" 
+                         alt="Mammatus - Pouch-like cloud formations"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Şiddetli türbülans</p>
                         <p><strong>Görüş:</strong> Değişken (1-5 nm)</p>
@@ -871,11 +871,11 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Wall Cloud (Duvar Bulutu)</h4>
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1563235067-7e7c8e8cce9a?w=300&h=200&fit=crop" 
-                        alt="Wall cloud duvar bulutu"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/wall_cloud.jpg" 
+                         alt="Wall Cloud - Tornado precursor formation"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Tornado/waterspout tehlikesi</p>
                         <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
@@ -890,11 +890,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="destructive" className="bg-yellow-100 text-yellow-800">Özel</Badge>
                         <h4 className="font-semibold">Shelf Cloud (Raf Bulutu)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1521919743851-0f31c7ce6d21?w=300&h=200&fit=crop" 
-                        alt="Shelf cloud raf bulutu"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/shelf_cloud.jpg" 
+                         alt="Shelf Cloud - Squall line leading edge"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Squall line yaklaşıyor</p>
                         <p><strong>Görüş:</strong> Hızla azalan (5→&lt;1 nm)</p>
@@ -909,11 +909,11 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-blue-500 text-blue-700">Özel</Badge>
                         <h4 className="font-semibold">Lenticular (Mercek)</h4>
                       </div>
-                      <img 
-                        src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=300&h=200&fit=crop" 
-                        alt="Lenticular mercek bulutları"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
+                                             <img 
+                         src="https://www.weather.gov/images/jetstream/clouds/lenticular.jpg" 
+                         alt="Lenticular - Mountain wave clouds"
+                         className="w-full h-32 object-cover rounded-lg"
+                       />
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Güçlü rüzgar dalgaları</p>
                         <p><strong>Görüş:</strong> İyi (10+ nm)</p>
