@@ -18,7 +18,7 @@ serve(async (req) => {
     const body = await req.json();
     console.log('Request body:', body);
     
-    const { question, values } = body;
+    const { question, values, conversationHistory } = body;
     
     // Input validation and sanitization
     if (!question || typeof question !== 'string') {
@@ -62,7 +62,7 @@ serve(async (req) => {
       console.log('API keys missing:', { gemini: !!geminiApiKey, wolfram: !!wolframApiKey });
       return new Response(
         JSON.stringify({ 
-          answer: getLocalAnswer(question),
+          answer: getLocalAnswer(question, conversationHistory),
           calculation: null,
           source: 'local'
         }),
@@ -73,7 +73,7 @@ serve(async (req) => {
     console.log('API keys found, starting hybrid calculation...');
 
     // 1. Önce AI açıklama al
-    const aiExplanation = await getGeminiExplanation(question, values, geminiApiKey);
+    const aiExplanation = await getGeminiExplanation(question, values, geminiApiKey, conversationHistory);
     
     // 2. Wolfram hesaplama yap (eğer değerler varsa)
     let wolframResult = null;
@@ -96,7 +96,7 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('Error in ask-ai function:', error);
-    const localAnswer = getLocalAnswer(question);
+    const localAnswer = getLocalAnswer(question, conversationHistory);
     return new Response(
       JSON.stringify({ 
         answer: localAnswer,
@@ -108,7 +108,7 @@ serve(async (req) => {
   }
 });
 
-function getLocalAnswer(question: string): string {
+function getLocalAnswer(question: string, conversationHistory?: Array<{question: string, answer: string}>): string {
   const lowerQuestion = question.toLowerCase();
   
   const localAnswers = {
@@ -604,7 +604,7 @@ Detaylı formüller ve %100 doğru hesaplamalarla yanıtlayacağım.`;
 }
 
 // Gemini AI açıklama fonksiyonu
-async function getGeminiExplanation(question: string, values: any, apiKey: string) {
+async function getGeminiExplanation(question: string, values: any, apiKey: string, conversationHistory?: Array<{question: string, answer: string}>) {
   try {
     const prompt = values 
       ? `Sen denizcilik mühendisliği konusunda uzman bir asistansın. Verilen değerlerle hesaplama yapılacak. Önce neden bu hesabın yapıldığını, hangi formülün kullanıldığını açıkla.
@@ -630,6 +630,14 @@ Türkçe yanıt ver ve teknik terimler için İngilizce karşılıklarını da b
 - Gemi makineleri ve pervane sistemleri
 - Meteoroloji ve okyanus bilimi
 - Denizcilik İngilizcesi ve terminolojisi
+
+${conversationHistory && conversationHistory.length > 0 ? `
+**Önceki Konuşma Geçmişi:**
+${conversationHistory.slice(-3).map((item, index) => `
+${index + 1}. Soru: ${item.question}
+   Cevap: ${item.answer.substring(0, 200)}...
+`).join('')}
+` : ''}
 
 Soru: ${question}
 

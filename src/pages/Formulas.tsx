@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
-import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb } from "lucide-react";
+import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,8 +21,28 @@ const Formulas = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [responseCount, setResponseCount] = useState(0);
   const [geminiApiStatus, setGeminiApiStatus] = useState<'unknown' | 'working' | 'error'>('unknown');
+  const [conversationHistory, setConversationHistory] = useState<Array<{question: string, answer: string}>>([]);
   const { translateContent } = useAutoLanguageDetection();
   const { shouldShowAd, trackInteraction } = useAdManager();
+
+  // localStorage'dan konuşma geçmişini yükle
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('aiConversationHistory');
+    if (savedHistory) {
+      try {
+        setConversationHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error('Failed to load conversation history:', e);
+      }
+    }
+  }, []);
+
+  // Konuşma geçmişi değiştiğinde localStorage'a kaydet
+  useEffect(() => {
+    if (conversationHistory.length > 0) {
+      localStorage.setItem('aiConversationHistory', JSON.stringify(conversationHistory));
+    }
+  }, [conversationHistory]);
 
   // Check Gemini API status on mount
   useEffect(() => {
@@ -60,7 +80,8 @@ const Formulas = () => {
       // Supabase Edge Function çağrısı
       const { data, error } = await supabase.functions.invoke('ask-ai', {
         body: { 
-          question: question.trim()
+          question: question.trim(),
+          conversationHistory: conversationHistory // Konuşma geçmişini gönder
         }
       });
 
@@ -73,6 +94,12 @@ const Formulas = () => {
         const translatedAnswer = await translateContent(data.answer);
         setAiResponse(translatedAnswer);
         setResponseCount(prev => prev + 1);
+        
+        // Konuşma geçmişine ekle
+        setConversationHistory(prev => [...prev, {
+          question: question.trim(),
+          answer: translatedAnswer
+        }]);
         
         // Update API status based on response
         if (data.source === 'gemini' || data.source === 'hybrid') {
@@ -246,6 +273,49 @@ const Formulas = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Konuşma Geçmişi */}
+        {conversationHistory.length > 0 && (
+          <Card className="shadow-[var(--shadow-card)]">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-blue-500" />
+                <span data-translatable>Konuşma Geçmişi</span>
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setConversationHistory([]);
+                  localStorage.removeItem('aiConversationHistory');
+                  toast.success("Konuşma geçmişi temizlendi");
+                }}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 max-h-60 overflow-y-auto">
+                {conversationHistory.slice(-5).map((item, index) => (
+                  <div key={index} className="border-l-2 border-primary/20 pl-3">
+                    <div className="text-sm font-medium text-primary">
+                      Soru: {item.question}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                      {item.answer}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {conversationHistory.length > 5 && (
+                <div className="mt-3 text-xs text-muted-foreground text-center">
+                  Son 5 konuşma gösteriliyor
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Önerilen Sorular - Mobil optimize */}
         <Card className="shadow-[var(--shadow-card)]">
