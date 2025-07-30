@@ -22,6 +22,12 @@ import cumulonimbusClouds from "@/assets/weather/cumulonimbus-clouds.jpg";
 import stratusClouds from "@/assets/weather/stratus-clouds.jpg";
 import cirrusClouds from "@/assets/weather/cirrus-clouds.jpg";
 import stormClouds from "@/assets/weather/storm-clouds.jpg";
+import altocumulusClouds from "@/assets/clouds/altocumulus.jpg";
+import altostratusClouds from "@/assets/clouds/altostratus.jpg";
+import cirrocumulusClouds from "@/assets/clouds/cirrocumulus.jpg";
+import cirrostratusClouds from "@/assets/clouds/cirrostratus.jpg";
+import stratocumulusClouds from "@/assets/clouds/stratocumulus.jpg";
+import nimbostratusClouds from "@/assets/clouds/nimbostratus.jpg";
 
 interface MeteoOceanData {
   // Wind Parameters
@@ -703,7 +709,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-300 shadow-md">
                         <img 
-                          src={stratusClouds}
+                          src={stratocumulusClouds}
                           alt="Stratocumulus Clouds - Low layered lumpy clouds"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -790,7 +796,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-300 shadow-md">
                         <img 
-                          src="https://www.weather.gov/media/jetstream/clouds/altocumulus.jpg"
+                          src={altocumulusClouds}
                           alt="Altocumulus Clouds - Mid-level patchy clouds"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -825,7 +831,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-400 shadow-md">
                         <img 
-                          src="https://www.weather.gov/media/jetstream/clouds/altostratus.jpg"
+                          src={altostratusClouds}
                           alt="Altostratus Clouds - Gray mid-level layer covering sun"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -875,7 +881,7 @@ export const WeatherCalculations = () => {
                     </div>
                     <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-400 shadow-lg">
                       <img 
-                        src={stormClouds}
+                        src={nimbostratusClouds}
                         alt="Nimbostratus - Dark rain-bearing cloud layer"
                         className="w-full h-full object-cover"
                          onError={(e) => {
@@ -996,7 +1002,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-200 shadow-md">
                         <img 
-                          src="https://www.weather.gov/media/jetstream/clouds/cirrocumulus.jpg"
+                          src={cirrocumulusClouds}
                           alt="Cirrocumulus Clouds - High patchy mackerel sky"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -1031,7 +1037,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
                         <img 
-                          src="https://www.weather.gov/media/jetstream/clouds/cirrostratus.jpg"
+                          src={cirrostratusClouds}
                           alt="Cirrostratus Clouds - High thin layer with sun halo"
                           className="w-full h-full object-cover"
                            onError={(e) => {
