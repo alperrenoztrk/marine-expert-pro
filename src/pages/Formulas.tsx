@@ -254,34 +254,64 @@ const Formulas = () => {
             </div>
 
             {aiResponse && (
-              <div className="mt-4 sm:mt-6">
-                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="p-2 bg-primary/20 rounded-full">
-                          <Brain className="w-5 h-5 text-primary" />
+              <div className="mt-6">
+                <div style={{
+                  background: 'linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%)',
+                  border: '2px solid #3b82f6',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  boxShadow: '0 10px 30px rgba(59, 130, 246, 0.15)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: '-50px',
+                    right: '-50px',
+                    width: '150px',
+                    height: '150px',
+                    background: 'rgba(59, 130, 246, 0.1)',
+                    borderRadius: '50%',
+                    filter: 'blur(40px)'
+                  }}></div>
+                  <div style={{ position: 'relative', zIndex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{
+                          background: 'rgba(59, 130, 246, 0.2)',
+                          padding: '10px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Brain style={{ width: '24px', height: '24px', color: '#2563eb' }} />
                         </div>
-                        <h4 className="font-semibold text-lg text-primary">
-                          <span data-translatable>AI Yanıtı</span>
+                        <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1e40af', margin: 0 }}>
+                          AI Yanıtı
                         </h4>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <button
                           onClick={() => {
                             navigator.clipboard.writeText(aiResponse);
                             toast.success("Yanıt kopyalandı!");
                           }}
-                          className="text-muted-foreground hover:text-primary"
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            padding: '8px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                           title="Kopyala"
                         >
-                          <Copy className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                          <Copy style={{ width: '18px', height: '18px', color: '#2563eb' }} />
+                        </button>
+                        <button
                           onClick={() => {
                             const printWindow = window.open('', '_blank');
                             if (printWindow) {
@@ -316,14 +346,21 @@ const Formulas = () => {
                               printWindow.print();
                             }
                           }}
-                          className="text-muted-foreground hover:text-primary"
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            padding: '8px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                           title="Yazdır"
                         >
-                          <Printer className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                          <Printer style={{ width: '18px', height: '18px', color: '#2563eb' }} />
+                        </button>
+                        <button
                           onClick={() => {
                             if (navigator.share) {
                               navigator.share({
@@ -335,22 +372,43 @@ const Formulas = () => {
                               toast.success("Paylaşım metni kopyalandı!");
                             }
                           }}
-                          className="text-muted-foreground hover:text-primary"
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            padding: '8px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                           title="Paylaş"
                         >
-                          <Share2 className="w-4 h-4" />
-                        </Button>
+                          <Share2 style={{ width: '18px', height: '18px', color: '#2563eb' }} />
+                        </button>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm sm:text-base leading-relaxed text-foreground/90 space-y-2">
+                    <div style={{ fontSize: '15px', lineHeight: '1.8', color: '#1f2937' }}>
                       {aiResponse.split('\n').map((line, index) => {
                         // Başlıkları vurgula
                         if (line.startsWith('**') && line.endsWith('**')) {
                           return (
-                            <h3 key={index} className="text-lg font-bold text-primary mt-4 mb-2 flex items-center gap-2">
-                              <span className="w-1 h-5 bg-primary rounded-full"></span>
+                            <h3 key={index} style={{ 
+                              fontSize: '18px', 
+                              fontWeight: 'bold', 
+                              color: '#1e40af', 
+                              marginTop: '16px', 
+                              marginBottom: '8px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}>
+                              <span style={{ 
+                                width: '4px', 
+                                height: '20px', 
+                                background: '#3b82f6', 
+                                borderRadius: '2px' 
+                              }}></span>
                               {line.replace(/\*\*/g, '')}
                             </h3>
                           );
@@ -426,8 +484,8 @@ const Formulas = () => {
                         return <div key={index} className="h-2"></div>;
                       })}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
             )}
 
