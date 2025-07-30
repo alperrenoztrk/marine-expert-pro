@@ -1539,49 +1539,73 @@ export const NavigationCalculations = () => {
             </TabsContent>
 
             <TabsContent value="astronomical" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">Tarih</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={data.date}
-                    onChange={(e) => updateData('date', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="timeZone">Saat Dilimi (UTC'den fark)</Label>
-                  <Input
-                    id="timeZone"
-                    type="number"
-                    step="0.5"
-                    value={data.timeZone}
-                    onChange={(e) => updateData('timeZone', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="observerLatitude">Gözlemci Enlemi (°)</Label>
-                  <Input
-                    id="observerLatitude"
-                    type="number"
-                    step="0.0001"
-                    value={data.observerLatitude}
-                    onChange={(e) => updateData('observerLatitude', parseFloat(e.target.value) || 0)}
-                    placeholder="41.0082 (İstanbul)"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="observerLongitude">Gözlemci Boylamı (°)</Label>
-                  <Input
-                    id="observerLongitude"
-                    type="number"
-                    step="0.0001"
-                    value={data.observerLongitude}
-                    onChange={(e) => updateData('observerLongitude', parseFloat(e.target.value) || 0)}
-                    placeholder="28.9784 (İstanbul)"
-                  />
-                </div>
-              </div>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Sun className="h-5 w-5 text-orange-600" />
+                    Astronomik Hesaplamalar
+                  </CardTitle>
+                  <CardDescription>
+                    Gündoğumu, günbatımı, alacakaranlık zamanları ve ay fazı hesaplamaları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* Date and Time Settings */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-green-700 flex items-center gap-2 mb-4">
+                      <Clock className="h-4 w-4" />
+                      Tarih ve Saat Ayarları
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="date">Tarih</Label>
+                        <Input
+                          id="date"
+                          type="date"
+                          value={data.date}
+                          onChange={(e) => updateData('date', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="timeZone">Saat Dilimi (UTC'den fark)</Label>
+                        <Input
+                          id="timeZone"
+                          type="number"
+                          step="0.5"
+                          value={data.timeZone}
+                          onChange={(e) => updateData('timeZone', parseFloat(e.target.value) || 0)}
+                          placeholder="3 (Türkiye)"
+                          className="text-right"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Observer Position with N-S E-W Buttons */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-blue-700 flex items-center gap-2 mb-4">
+                      <Globe className="h-4 w-4" />
+                      Gözlemci Pozisyonu
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <CoordinateInput
+                        label="Gözlemci Enlemi"
+                        value={data.observerLatitude}
+                        onChange={(value) => updateData('observerLatitude', value)}
+                        placeholder="41.0082"
+                        type="latitude"
+                      />
+                      <CoordinateInput
+                        label="Gözlemci Boylamı"
+                        value={data.observerLongitude}
+                        onChange={(value) => updateData('observerLongitude', value)}
+                        placeholder="28.9784"
+                        type="longitude"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
               
               {/* Astronomical Results */}
               {(() => {
@@ -1702,48 +1726,96 @@ export const NavigationCalculations = () => {
             </TabsContent>
 
             <TabsContent value="celestial" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="altitude">Sextant Yüksekliği (°)</Label>
-                  <Input
-                    id="altitude"
-                    type="number"
-                    step="0.1"
-                    value={data.altitude}
-                    onChange={(e) => updateData('altitude', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="azimuth">Azimut (°)</Label>
-                  <Input
-                    id="azimuth"
-                    type="number"
-                    step="0.1"
-                    value={data.azimuth}
-                    onChange={(e) => updateData('azimuth', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="gha">GHA (°)</Label>
-                  <Input
-                    id="gha"
-                    type="number"
-                    step="0.1"
-                    value={data.gha}
-                    onChange={(e) => updateData('gha', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="declination">Deklinasyon (°)</Label>
-                  <Input
-                    id="declination"
-                    type="number"
-                    step="0.1"
-                    value={data.declination}
-                    onChange={(e) => updateData('declination', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-              </div>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Star className="h-5 w-5 text-yellow-600" />
+                    Göksel Seyir Hesaplamaları
+                  </CardTitle>
+                  <CardDescription>
+                    Sextant ölçümleri ve gözlemci pozisyonu ile celestial navigation hesaplamaları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* Observer Position */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-blue-700 flex items-center gap-2 mb-4">
+                      <Eye className="h-4 w-4" />
+                      Gözlemci Pozisyonu
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <CoordinateInput
+                        label="Gözlemci Enlemi"
+                        value={data.observerLatitude}
+                        onChange={(value) => updateData('observerLatitude', value)}
+                        placeholder="41.0082"
+                        type="latitude"
+                      />
+                      <CoordinateInput
+                        label="Gözlemci Boylamı"
+                        value={data.observerLongitude}
+                        onChange={(value) => updateData('observerLongitude', value)}
+                        placeholder="28.9784"
+                        type="longitude"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Celestial Measurements */}
+                  <div>
+                    <h4 className="font-semibold text-purple-700 flex items-center gap-2 mb-4">
+                      <Camera className="h-4 w-4" />
+                      Sextant Ölçümleri
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="altitude">Sextant Yüksekliği (°)</Label>
+                        <Input
+                          id="altitude"
+                          type="number"
+                          step="0.1"
+                          value={data.altitude}
+                          onChange={(e) => updateData('altitude', parseFloat(e.target.value) || 0)}
+                          className="text-right"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="azimuth">Azimut (°)</Label>
+                        <Input
+                          id="azimuth"
+                          type="number"
+                          step="0.1"
+                          value={data.azimuth}
+                          onChange={(e) => updateData('azimuth', parseFloat(e.target.value) || 0)}
+                          className="text-right"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="gha">GHA (°)</Label>
+                        <Input
+                          id="gha"
+                          type="number"
+                          step="0.1"
+                          value={data.gha}
+                          onChange={(e) => updateData('gha', parseFloat(e.target.value) || 0)}
+                          className="text-right"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="declination">Deklinasyon (°)</Label>
+                        <Input
+                          id="declination"
+                          type="number"
+                          step="0.1"
+                          value={data.declination}
+                          onChange={(e) => updateData('declination', parseFloat(e.target.value) || 0)}
+                          className="text-right"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
 
