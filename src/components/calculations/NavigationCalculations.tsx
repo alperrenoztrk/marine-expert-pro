@@ -1477,61 +1477,73 @@ export const NavigationCalculations = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="pilotBoardingLat">Pilot Alma Enlemi (°)</Label>
-                      <Input
-                        id="pilotBoardingLat"
-                        type="number"
-                        step="0.0001"
+                  {/* Pilot Boarding Position with N-S E-W Buttons */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-blue-700 flex items-center gap-2 mb-4">
+                      <Ship className="h-4 w-4" />
+                      Pilot Alma Pozisyonu
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <CoordinateInput
+                        label="Pilot Alma Enlemi"
                         value={data.pilotBoardingLat}
-                        onChange={(e) => updateData('pilotBoardingLat', parseFloat(e.target.value) || 0)}
+                        onChange={(value) => updateData('pilotBoardingLat', value)}
                         placeholder="41.1500"
+                        type="latitude"
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="pilotBoardingLon">Pilot Alma Boylamı (°)</Label>
-                      <Input
-                        id="pilotBoardingLon"
-                        type="number"
-                        step="0.0001"
+                      <CoordinateInput
+                        label="Pilot Alma Boylamı"
                         value={data.pilotBoardingLon}
-                        onChange={(e) => updateData('pilotBoardingLon', parseFloat(e.target.value) || 0)}
+                        onChange={(value) => updateData('pilotBoardingLon', value)}
                         placeholder="29.1000"
+                        type="longitude"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="portApproachSpeed">Yaklaşım Hızı (knot)</Label>
-                      <Input
-                        id="portApproachSpeed"
-                        type="number"
-                        step="0.1"
-                        value={data.portApproachSpeed}
-                        onChange={(e) => updateData('portApproachSpeed', parseFloat(e.target.value) || 0)}
-                        placeholder="8"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="requiredUKC">Gerekli UKC (m)</Label>
-                      <Input
-                        id="requiredUKC"
-                        type="number"
-                        step="0.1"
-                        value={data.requiredUKC}
-                        onChange={(e) => updateData('requiredUKC', parseFloat(e.target.value) || 0)}
-                        placeholder="2.0"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipDraft">Gemi Drafı (m)</Label>
-                      <Input
-                        id="shipDraft"
-                        type="number"
-                        step="0.1"
-                        value={data.shipDraft}
-                        onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
-                        placeholder="8.5"
-                      />
+                  </div>
+
+                  {/* Port Approach Parameters */}
+                  <div>
+                    <h4 className="font-semibold text-green-700 flex items-center gap-2 mb-4">
+                      <Anchor className="h-4 w-4" />
+                      Yaklaşım Parametreleri
+                    </h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="portApproachSpeed">Yaklaşım Hızı (knot)</Label>
+                        <Input
+                          id="portApproachSpeed"
+                          type="number"
+                          step="0.1"
+                          value={data.portApproachSpeed}
+                          onChange={(e) => updateData('portApproachSpeed', parseFloat(e.target.value) || 0)}
+                          placeholder="8"
+                          className="text-right"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="requiredUKC">Gerekli UKC (m)</Label>
+                        <Input
+                          id="requiredUKC"
+                          type="number"
+                          step="0.1"
+                          value={data.requiredUKC}
+                          onChange={(e) => updateData('requiredUKC', parseFloat(e.target.value) || 0)}
+                          placeholder="2.0"
+                          className="text-right"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="shipDraft">Gemi Drafı (m)</Label>
+                        <Input
+                          id="shipDraft"
+                          type="number"
+                          step="0.1"
+                          value={data.shipDraft}
+                          onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                          placeholder="8.5"
+                          className="text-right"
+                        />
+                      </div>
                     </div>
                   </div>
                 </CardContent>
