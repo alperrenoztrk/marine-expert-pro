@@ -27,7 +27,11 @@ import {
   AlertTriangle,
   Zap,
   Users,
-  Building
+  Building,
+  Compass,
+  Eye,
+  Volume2,
+  Lightbulb
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 
@@ -54,11 +58,33 @@ interface SOLASRegulation {
   penalties: string;
 }
 
+interface COLREGRule {
+  id: string;
+  part: string;
+  section: string;
+  rule: string;
+  title: string;
+  category: 'general' | 'steering' | 'lights' | 'sound' | 'distress';
+  description: string;
+  keyProvisions: string[];
+  diagrams?: string[];
+  applicability: string[];
+}
+
+interface COLREGPart {
+  id: string;
+  part: string;
+  title: string;
+  description: string;
+  rules: COLREGRule[];
+}
+
 const Regulations = () => {
   const { toast } = useToast();
   const [selectedChapter, setSelectedChapter] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [selectedCOLREGPart, setSelectedCOLREGPart] = useState<string>("");
 
   const solasChapters: SOLASChapter[] = [
     {
@@ -387,6 +413,349 @@ const Regulations = () => {
     }
   ];
 
+  // COLREG Rules Data (Based on USCG Navigation Rules)
+  const colregParts: COLREGPart[] = [
+    {
+      id: "partA",
+      part: "Part A",
+      title: "General",
+      description: "General application, responsibility, and definitions",
+      rules: [
+        {
+          id: "rule1",
+          part: "A",
+          section: "General",
+          rule: "Rule 1",
+          title: "Application",
+          category: "general",
+          description: "These Rules shall apply to all vessels upon the high seas and in all waters connected therewith navigable by seagoing vessels",
+          keyProvisions: [
+            "Applies to all vessels on high seas",
+            "Applies to all waters connected to high seas",
+            "Nothing interferes with special rules made by appropriate authority",
+            "Special rules for harbors, rivers, lakes may be made by local authority"
+          ],
+          applicability: ["All vessels", "All waters"]
+        },
+        {
+          id: "rule2",
+          part: "A",
+          section: "General",
+          rule: "Rule 2",
+          title: "Responsibility",
+          category: "general",
+          description: "Nothing in these Rules shall exonerate any vessel from consequences of neglect to comply with Rules or special circumstances",
+          keyProvisions: [
+            "Compliance with rules required",
+            "Due regard to all dangers of navigation",
+            "Special circumstances may require departure from Rules",
+            "Precautions required by ordinary practice of seamen"
+          ],
+          applicability: ["All vessels", "All situations"]
+        },
+        {
+          id: "rule3",
+          part: "A",
+          section: "General",
+          rule: "Rule 3",
+          title: "General Definitions",
+          category: "general",
+          description: "Definitions of vessel types and conditions used throughout the Rules",
+          keyProvisions: [
+            "Vessel: Every description of water craft",
+            "Power-driven vessel: Any vessel propelled by machinery",
+            "Sailing vessel: Any vessel under sail without machinery",
+            "Vessel engaged in fishing: Using nets, lines, trawls",
+            "Vessel not under command: Unable to maneuver",
+            "Vessel restricted in ability to maneuver: Due to nature of work",
+            "Vessel constrained by draft: Due to draft vs available depth"
+          ],
+          applicability: ["All vessels"]
+        }
+      ]
+    },
+    {
+      id: "partB",
+      part: "Part B",
+      title: "Steering and Sailing Rules",
+      description: "Rules for vessel conduct in any condition of visibility",
+      rules: [
+        {
+          id: "rule4",
+          part: "B",
+          section: "Section I - Any Visibility",
+          rule: "Rule 4",
+          title: "Application",
+          category: "steering",
+          description: "Rules in this section apply in any condition of visibility",
+          keyProvisions: [
+            "Applies to all visibility conditions",
+            "Day or night",
+            "Clear weather or restricted visibility"
+          ],
+          applicability: ["All vessels", "Any visibility"]
+        },
+        {
+          id: "rule5",
+          part: "B",
+          section: "Section I - Any Visibility",
+          rule: "Rule 5",
+          title: "Look-out",
+          category: "steering",
+          description: "Every vessel shall at all times maintain a proper look-out",
+          keyProvisions: [
+            "Proper look-out by sight and hearing",
+            "Use all available means appropriate",
+            "Full appraisal of situation",
+            "Risk of collision assessment"
+          ],
+          applicability: ["All vessels", "All times"]
+        },
+        {
+          id: "rule6",
+          part: "B",
+          section: "Section I - Any Visibility",
+          rule: "Rule 6",
+          title: "Safe Speed",
+          category: "steering",
+          description: "Every vessel shall proceed at a safe speed to avoid collision",
+          keyProvisions: [
+            "Take proper and effective action to avoid collision",
+            "Stop within appropriate distance",
+            "Consider visibility, traffic density, maneuverability",
+            "Background lights, sea conditions, draft"
+          ],
+          applicability: ["All vessels", "All conditions"]
+        },
+        {
+          id: "rule7",
+          part: "B",
+          section: "Section I - Any Visibility",
+          rule: "Rule 7",
+          title: "Risk of Collision",
+          category: "steering",
+          description: "Use all available means to determine if risk of collision exists",
+          keyProvisions: [
+            "Use all available means including radar",
+            "Compass bearing of approaching vessel",
+            "If bearing does not appreciably change, risk exists",
+            "Risk may exist even with appreciable bearing change"
+          ],
+          applicability: ["All vessels"]
+        },
+        {
+          id: "rule8",
+          part: "B",
+          section: "Section I - Any Visibility",
+          rule: "Rule 8",
+          title: "Action to Avoid Collision",
+          category: "steering",
+          description: "Action taken to avoid collision shall be positive and in ample time",
+          keyProvisions: [
+            "Positive action made in ample time",
+            "Large alteration readily apparent",
+            "Series of small alterations to be avoided",
+            "Result in passing at safe distance",
+            "Effectiveness monitored until finally past"
+          ],
+          applicability: ["All vessels"]
+        },
+        {
+          id: "rule13",
+          part: "B",
+          section: "Section II - Vessels in Sight",
+          rule: "Rule 13",
+          title: "Overtaking",
+          category: "steering",
+          description: "Any vessel overtaking shall keep out of the way of vessel being overtaken",
+          keyProvisions: [
+            "Overtaking vessel keeps clear",
+            "Coming up from direction more than 22.5° abaft beam",
+            "If in doubt, assume overtaking",
+            "Remains overtaking vessel until finally past and clear"
+          ],
+          applicability: ["All vessels", "In sight"]
+        },
+        {
+          id: "rule14",
+          part: "B",
+          section: "Section II - Vessels in Sight",
+          rule: "Rule 14",
+          title: "Head-on Situation",
+          category: "steering",
+          description: "Vessels meeting head-on shall each alter course to starboard",
+          keyProvisions: [
+            "Both alter course to starboard",
+            "Pass port to port",
+            "Applies when on reciprocal or nearly reciprocal courses",
+            "If in doubt, assume head-on situation exists"
+          ],
+          applicability: ["Power-driven vessels", "In sight"]
+        },
+        {
+          id: "rule15",
+          part: "B",
+          section: "Section II - Vessels in Sight",
+          rule: "Rule 15",
+          title: "Crossing Situation",
+          category: "steering",
+          description: "Vessel with other on starboard side shall keep out of way",
+          keyProvisions: [
+            "Give-way vessel has other on starboard side",
+            "Keep out of way and avoid crossing ahead",
+            "Stand-on vessel maintains course and speed",
+            "Early and substantial action required"
+          ],
+          applicability: ["Power-driven vessels", "In sight"]
+        }
+      ]
+    },
+    {
+      id: "partC",
+      part: "Part C",
+      title: "Lights and Shapes",
+      description: "Requirements for navigation lights and day shapes",
+      rules: [
+        {
+          id: "rule20",
+          part: "C",
+          section: "Lights and Shapes",
+          rule: "Rule 20",
+          title: "Application",
+          category: "lights",
+          description: "Rules concerning lights shall be complied with from sunset to sunrise",
+          keyProvisions: [
+            "Lights from sunset to sunrise",
+            "During restricted visibility",
+            "No other lights to impair visibility",
+            "Day shapes during daylight"
+          ],
+          applicability: ["All vessels"]
+        },
+        {
+          id: "rule21",
+          part: "C",
+          section: "Lights and Shapes",
+          rule: "Rule 21",
+          title: "Definitions",
+          category: "lights",
+          description: "Technical specifications for navigation lights",
+          keyProvisions: [
+            "Masthead light: White, 225° arc, 6 miles visibility",
+            "Sidelights: Green starboard, Red port, 112.5° arc, 3 miles",
+            "Sternlight: White, 135° arc, 3 miles",
+            "Towing light: Yellow, same as sternlight",
+            "All-round light: 360° arc",
+            "Flashing light: 120+ flashes per minute"
+          ],
+          applicability: ["All vessels"]
+        },
+        {
+          id: "rule23",
+          part: "C",
+          section: "Lights and Shapes",
+          rule: "Rule 23",
+          title: "Power-driven Vessels Underway",
+          category: "lights",
+          description: "Lights to be displayed by power-driven vessels when underway",
+          keyProvisions: [
+            "Masthead light forward",
+            "Second masthead light abaft and higher (>50m)",
+            "Sidelights",
+            "Sternlight",
+            "Vessels <50m may combine lights"
+          ],
+          applicability: ["Power-driven vessels", "Underway"]
+        }
+      ]
+    },
+    {
+      id: "partD",
+      part: "Part D",
+      title: "Sound and Light Signals",
+      description: "Requirements for sound signals and distress signals",
+      rules: [
+        {
+          id: "rule32",
+          part: "D",
+          section: "Sound Signals",
+          rule: "Rule 32",
+          title: "Definitions",
+          category: "sound",
+          description: "Definitions of sound signal equipment and signals",
+          keyProvisions: [
+            "Whistle: Any sound signaling appliance",
+            "Short blast: About 1 second duration",
+            "Prolonged blast: 4-6 seconds duration",
+            "Vessels >100m: Whistle, bell, and gong",
+            "Vessels 20-100m: Whistle and bell",
+            "Vessels <20m: Efficient sound signal"
+          ],
+          applicability: ["All vessels"]
+        },
+        {
+          id: "rule34",
+          part: "D",
+          section: "Sound Signals",
+          rule: "Rule 34",
+          title: "Maneuvering and Warning Signals",
+          category: "sound",
+          description: "Sound signals for maneuvering in sight of one another",
+          keyProvisions: [
+            "One short blast: Altering course to starboard",
+            "Two short blasts: Altering course to port",
+            "Three short blasts: Operating astern propulsion",
+            "Five short blasts: Warning/doubt signal",
+            "Agreement required in narrow channels"
+          ],
+          applicability: ["Power-driven vessels", "In sight"]
+        },
+        {
+          id: "rule35",
+          part: "D",
+          section: "Sound Signals",
+          rule: "Rule 35",
+          title: "Sound Signals in Restricted Visibility",
+          category: "sound",
+          description: "Required sound signals when operating in or near restricted visibility",
+          keyProvisions: [
+            "Power-driven making way: One prolonged blast every 2 minutes",
+            "Power-driven stopped: Two prolonged blasts every 2 minutes",
+            "Not under command/restricted/constrained/sailing/fishing/towing: One prolonged + two short every 2 minutes",
+            "Vessel at anchor: Rapid bell for 5 seconds every minute",
+            "Vessel aground: Three bell strokes + rapid bell + three bell strokes"
+          ],
+          applicability: ["All vessels", "Restricted visibility"]
+        }
+      ]
+    },
+    {
+      id: "partE",
+      part: "Part E",
+      title: "Exemptions",
+      description: "Exemptions for vessels based on construction date",
+      rules: [
+        {
+          id: "rule38",
+          part: "E",
+          section: "Exemptions",
+          rule: "Rule 38",
+          title: "Exemptions",
+          category: "general",
+          description: "Exemptions from technical requirements based on vessel construction date",
+          keyProvisions: [
+            "Vessels constructed before Rules entry into force",
+            "Light positioning exemptions",
+            "Sound signal equipment exemptions",
+            "Time limits for compliance",
+            "National authority determinations"
+          ],
+          applicability: ["Older vessels"]
+        }
+      ]
+    }
+  ];
+
   const filteredChapters = solasChapters.filter(chapter => {
     const matchesSearch = chapter.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          chapter.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -395,6 +764,17 @@ const Regulations = () => {
                          );
     const matchesCategory = activeCategory === "all" || chapter.category === activeCategory;
     return matchesSearch && matchesCategory;
+  });
+
+  const filteredCOLREGParts = colregParts.filter(part => {
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = part.title.toLowerCase().includes(searchLower) ||
+                         part.description.toLowerCase().includes(searchLower) ||
+                         part.rules.some(rule => 
+                           rule.title.toLowerCase().includes(searchLower) ||
+                           rule.description.toLowerCase().includes(searchLower)
+                         );
+    return matchesSearch;
   });
 
   const getCategoryIcon = (category: string) => {
@@ -407,6 +787,10 @@ const Regulations = () => {
       case 'safety': return <Navigation className="h-4 w-4" />;
       case 'cargo': return <Package className="h-4 w-4" />;
       case 'nuclear': return <Zap className="h-4 w-4" />;
+      case 'steering': return <Compass className="h-4 w-4" />;
+      case 'lights': return <Lightbulb className="h-4 w-4" />;
+      case 'sound': return <Volume2 className="h-4 w-4" />;
+      case 'distress': return <AlertTriangle className="h-4 w-4" />;
       default: return <Ship className="h-4 w-4" />;
     }
   };
@@ -421,6 +805,10 @@ const Regulations = () => {
       case 'safety': return 'bg-indigo-100 text-indigo-800';
       case 'cargo': return 'bg-yellow-100 text-yellow-800';
       case 'nuclear': return 'bg-gray-100 text-gray-800';
+      case 'steering': return 'bg-cyan-100 text-cyan-800';
+      case 'lights': return 'bg-amber-100 text-amber-800';
+      case 'sound': return 'bg-pink-100 text-pink-800';
+      case 'distress': return 'bg-red-200 text-red-900';
       default: return 'bg-slate-100 text-slate-800';
     }
   };
@@ -564,10 +952,11 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="chapters">SOLAS Chapters</TabsTrigger>
-            <TabsTrigger value="amendments">2024 Amendments</TabsTrigger>
-            <TabsTrigger value="library">Open Library</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="chapters">SOLAS</TabsTrigger>
+            <TabsTrigger value="colreg">COLREG</TabsTrigger>
+            <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
+            <TabsTrigger value="library">Library</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
@@ -671,6 +1060,89 @@ const Regulations = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="colreg" className="space-y-4">
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Compass className="h-5 w-5 text-blue-600" />
+                    International Regulations for Preventing Collisions at Sea (COLREG)
+                  </CardTitle>
+                  <CardDescription>
+                    Based on USCG Navigation Rules - 72 COLREGS
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              {filteredCOLREGParts.map((part) => (
+                <Card key={part.id} className="overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50">
+                    <CardTitle className="text-lg">
+                      {part.part}: {part.title}
+                    </CardTitle>
+                    <CardDescription>{part.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="divide-y">
+                      {part.rules.map((rule) => (
+                        <div key={rule.id} className="p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              {getCategoryIcon(rule.category)}
+                              <div>
+                                <h4 className="font-semibold text-sm">
+                                  {rule.rule}: {rule.title}
+                                </h4>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {rule.description}
+                                </p>
+                              </div>
+                            </div>
+                            <Badge className={getCategoryColor(rule.category)}>
+                              {rule.category}
+                            </Badge>
+                          </div>
+                          
+                          <div className="ml-7 space-y-3">
+                            <div>
+                              <h5 className="font-medium text-sm mb-2">Key Provisions:</h5>
+                              <ul className="space-y-1">
+                                {rule.keyProvisions.map((provision, index) => (
+                                  <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                                    <span className="text-primary mt-0.5">•</span>
+                                    <span>{provision}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              {rule.applicability.map((scope, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {scope}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+
+              {filteredCOLREGParts.length === 0 && (
+                <Card>
+                  <CardContent className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      No COLREG rules found matching your search.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="library" className="space-y-4">
