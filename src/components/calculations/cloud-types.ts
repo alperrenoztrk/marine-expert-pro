@@ -1,3 +1,16 @@
+// Import cloud images
+import stratusImage from '@/assets/clouds/stratus.jpg';
+import stratocumulusImage from '@/assets/clouds/stratocumulus.jpg';
+import cumulusImage from '@/assets/weather/cumulus-clouds.jpg';
+import cumulonimbusImage from '@/assets/weather/cumulonimbus-clouds.jpg';
+import nimbostratusImage from '@/assets/clouds/nimbostratus.jpg';
+import altostratusImage from '@/assets/clouds/altostratus.jpg';
+import altocumulusImage from '@/assets/clouds/altocumulus.jpg';
+import cirrusImage from '@/assets/weather/cirrus-clouds.jpg';
+import cirrocumulusImage from '@/assets/clouds/cirrocumulus.jpg';
+import cirrostratusImage from '@/assets/clouds/cirrostratus.jpg';
+import stormImage from '@/assets/weather/storm-clouds.jpg';
+
 export interface CloudType {
   id: string;
   name: string;
@@ -43,7 +56,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Hafif (< 10 knot)',
     precipitation: 'Çisenti veya hafif kar',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Stratus_nebulosus_2.jpg/800px-Stratus_nebulosus_2.jpg'
+    imageUrl: stratusImage
   },
   {
     id: 'stratocumulus',
@@ -67,7 +80,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Orta (10-20 knot)',
     precipitation: 'Hafif yağmur veya kar serpintisi',
     danger: 'low',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Stratocumulus_perlucidus.jpg/800px-Stratocumulus_perlucidus.jpg'
+    imageUrl: stratocumulusImage
   },
   {
     id: 'cumulus',
@@ -91,7 +104,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Hafif-orta (5-15 knot)',
     precipitation: 'Genelde yok',
     danger: 'low',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/GoldenGateBridge-001.jpg/800px-GoldenGateBridge-001.jpg'
+    imageUrl: cumulusImage
   },
   {
     id: 'cumulonimbus',
@@ -115,7 +128,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok güçlü (> 35 knot)',
     precipitation: 'Şiddetli yağmur, dolu, kar',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Cumulonimbus_calvus_cloud.jpg/800px-Cumulonimbus_calvus_cloud.jpg'
+    imageUrl: cumulonimbusImage
   },
   {
     id: 'nimbostratus',
@@ -139,7 +152,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Orta-güçlü (15-30 knot)',
     precipitation: 'Sürekli orta/şiddetli yağmur',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Nimbostratus_virga.JPG/800px-Nimbostratus_virga.JPG'
+    imageUrl: nimbostratusImage
   },
 
   // ORTA BULUTLAR (2-7 km)
@@ -165,7 +178,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Artan (15-25 knot)',
     precipitation: '12 saat içinde başlar',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Altostratus_translucidus.jpg/800px-Altostratus_translucidus.jpg'
+    imageUrl: altostratusImage
   },
   {
     id: 'altocumulus',
@@ -189,7 +202,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Orta (10-25 knot)',
     precipitation: '24 saat içinde olası',
     danger: 'low',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Altocumulus_floccus_2.jpg/800px-Altocumulus_floccus_2.jpg'
+    imageUrl: altocumulusImage
   },
 
   // YÜKSEK BULUTLAR (5-13 km)
@@ -215,7 +228,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Üst seviye güçlü',
     precipitation: 'Yok (48-72 saat sonra olası)',
     danger: 'low',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Cirrus_fibratus_clouds.jpg/800px-Cirrus_fibratus_clouds.jpg'
+    imageUrl: cirrusImage
   },
   {
     id: 'cirrocumulus',
@@ -239,7 +252,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken',
     precipitation: '24-48 saat içinde olası',
     danger: 'low',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Cirrocumulus_20040830.jpg/800px-Cirrocumulus_20040830.jpg'
+    imageUrl: cirrocumulusImage
   },
   {
     id: 'cirrostratus',
@@ -263,7 +276,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Güçleniyor',
     precipitation: '12-24 saat içinde',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Cirrostratus_nebulosus.jpg/800px-Cirrostratus_nebulosus.jpg'
+    imageUrl: cirrostratusImage
   },
 
   // ÖZEL BULUTLAR
@@ -289,7 +302,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok değişken',
     precipitation: 'Yakında şiddetli',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Mammatus_clouds_regina_sk_june_26_2012.JPG/800px-Mammatus_clouds_regina_sk_june_26_2012.JPG'
+    imageUrl: stormImage
   },
   {
     id: 'lenticularis',
@@ -313,7 +326,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok güçlü (yerel)',
     precipitation: 'Genelde yok',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Lenticularis.jpg/800px-Lenticularis.jpg'
+    imageUrl: altocumulusImage
   },
   {
     id: 'castellanus',
@@ -337,7 +350,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Artan',
     precipitation: '6-12 saat içinde',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Altocumulus_castellanus_clouds_Pic_du_Midi_Observatory_2013_10_28.jpg/800px-Altocumulus_castellanus_clouds_Pic_du_Midi_Observatory_2013_10_28.jpg'
+    imageUrl: cumulusImage
   },
   {
     id: 'fractus',
@@ -361,7 +374,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Güçlü',
     precipitation: 'Devam eden',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Cumulus_fractus.jpg/800px-Cumulus_fractus.jpg'
+    imageUrl: stratusImage
   },
   {
     id: 'tuba',
@@ -385,7 +398,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Döner, çok şiddetli',
     precipitation: 'Şiddetli',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/F5_tornado_funnel_cloud.jpg/800px-F5_tornado_funnel_cloud.jpg'
+    imageUrl: cumulonimbusImage
   },
   {
     id: 'arcus',
@@ -409,7 +422,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Ani artış (> 40 knot)',
     precipitation: 'Hemen arkasında',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Rolling-thunder-cloud.jpg/800px-Rolling-thunder-cloud.jpg'
+    imageUrl: stormImage
   },
   {
     id: 'asperitas',
@@ -433,7 +446,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken',
     precipitation: 'Olası',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Asperitas_clouds.jpg/800px-Asperitas_clouds.jpg'
+    imageUrl: stratocumulusImage
   },
   {
     id: 'pyrocumulus',
@@ -457,7 +470,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken, güçlü',
     precipitation: 'Nadir, kül yağışı',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Pyrocumulus_cloud_above_Oregon_wildfire_2020.jpg/800px-Pyrocumulus_cloud_above_Oregon_wildfire_2020.jpg'
+    imageUrl: cumulonimbusImage
   },
   {
     id: 'contrails',
@@ -481,7 +494,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Üst seviye',
     precipitation: 'Yok',
     danger: 'low',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Contrails.jpg/800px-Contrails.jpg'
+    imageUrl: cirrusImage
   },
   {
     id: 'virga',
@@ -505,7 +518,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Ani değişimler olası',
     precipitation: 'Yere ulaşmaz',
     danger: 'medium',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Virga.jpg/800px-Virga.jpg'
+    imageUrl: nimbostratusImage
   },
   {
     id: 'kelvin-helmholtz',
@@ -529,7 +542,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Kesme (shear)',
     precipitation: 'Yok',
     danger: 'high',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Kelvin-Helmholtz_instability_clouds.jpg/800px-Kelvin-Helmholtz_instability_clouds.jpg'
+    imageUrl: altostratusImage
   }
 ];
 
