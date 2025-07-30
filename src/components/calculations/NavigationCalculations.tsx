@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe } from "lucide-react";
+import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 interface NavigationData {
@@ -44,6 +44,8 @@ interface NavigationData {
   highWaterHeight: number; // HW height (m)
   lowWaterHeight: number; // LW height (m)
   currentTime: string; // Current time (HHMM)
+  springTideRange: number; // Spring tide range (m)
+  neapTideRange: number; // Neap tide range (m)
   
   // Celestial navigation
   altitude: number; // Sextant altitude (degrees)
@@ -61,6 +63,20 @@ interface NavigationData {
   rudderAngle: number; // Rudder angle (degrees)
   shipLength: number; // Ship length (m)
   shipSpeed: number; // Ship speed (m/s)
+  
+  // Weather data
+  waveHeight: number; // Significant wave height (m)
+  wavePeriod: number; // Wave period (s)
+  waveDirection: number; // Wave direction (degrees)
+  visibility: number; // Visibility (nm)
+  barometricPressure: number; // Pressure (hPa)
+  
+  // Port approach data
+  pilotBoardingLat: number; // Pilot boarding latitude
+  pilotBoardingLon: number; // Pilot boarding longitude
+  portApproachSpeed: number; // Approach speed (knots)
+  requiredUKC: number; // Required under keel clearance (m)
+  shipDraft: number; // Ship draft (m)
 }
 
 interface NavigationResult {
@@ -69,24 +85,34 @@ interface NavigationResult {
   gcInitialBearing: number; // Initial bearing (degrees)
   gcFinalBearing: number; // Final bearing (degrees)
   gcVertexLat: number; // Vertex latitude (degrees)
+  gcWaypointDistances: number[]; // Waypoint distances
   
   // Rhumb Line results
   rhumbDistance: number; // Rhumb line distance (nm)
   rhumbBearing: number; // Rhumb line bearing (degrees)
   departure: number; // Departure (nm)
   dLat: number; // Difference in latitude (nm)
+  mercatorDistance: number; // Mercator sailing distance
+  
+  // Spheroidal calculations (more precise)
+  spheroidalDistance: number; // WGS84 ellipsoid distance (nm)
+  spheroidalBearing: number; // Forward azimuth on ellipsoid
+  reverseBearing: number; // Reverse azimuth
   
   // Time and ETA
   eta: string; // Estimated time of arrival
   etd: string; // Estimated time of departure
   timeToGo: number; // Time to destination (hours)
   fuelConsumption: number; // Estimated fuel consumption
+  totalFuelCost: number; // Estimated fuel cost
+  alternateETA: string; // ETA with weather delays
   
   // Current triangle
   groundTrack: number; // Ground track (degrees)
   groundSpeed: number; // Speed over ground (knots)
   driftAngle: number; // Drift angle (degrees)
   courseToSteer: number; // Course to steer (degrees)
+  leewayCorrection: number; // Leeway correction angle
   
   // Compass calculations
   magneticBearing: number; // Magnetic bearing
@@ -101,19 +127,50 @@ interface NavigationResult {
   relativeBearing: number; // Relative bearing (degrees)
   collisionRisk: 'high' | 'medium' | 'low' | 'none';
   recommendedAction: string;
+  bcpa: number; // Bearing at CPA
+  dcpa: number; // Distance at CPA
   
-  // Tidal calculations
+  // Enhanced Tidal calculations
   currentTideHeight: number; // Current tide height (m)
   tideRange: number; // Tide range (m)
   timeToHW: number; // Time to high water (hours)
   timeToLW: number; // Time to low water (hours)
   tidalStream: number; // Tidal stream rate (knots)
+  tidalStreamDirection: number; // Tidal stream direction
+  springNeapFactor: number; // Spring/neap tide factor
+  tidalAcceleration: number; // Rate of tide change (m/hr)
   
-  // Celestial results
+  // Enhanced Celestial results
   intercept: number; // Intercept (nm)
   positionLine: string; // Position line description
   latitude: number; // Calculated latitude
   longitude: number; // Calculated longitude
+  altitudeCorrection: number; // Total altitude correction
+  compassError: number; // Compass error from celestial
+  estimatedPosition: { lat: number; lon: number }; // EP from celestial
+  
+  // Astronomical positions
+  sunPosition: { altitude: number; azimuth: number; declination: number };
+  moonPosition: { altitude: number; azimuth: number; phase: number };
+  planetPositions: Array<{ name: string; altitude: number; azimuth: number; magnitude: number }>;
+  navigationStars: Array<{ name: string; altitude: number; azimuth: number; magnitude: number }>;
+  
+  // Twilight times (enhanced)
+  twilightTimes: {
+    sunrise: string;
+    sunset: string;
+    civilTwilightBegin: string;
+    civilTwilightEnd: string;
+    nauticalTwilightBegin: string;
+    nauticalTwilightEnd: string;
+    astronomicalTwilightBegin: string;
+    astronomicalTwilightEnd: string;
+    daylightDuration: number; // Hours of daylight
+    goldenHourBegin: string; // Golden hour start
+    goldenHourEnd: string; // Golden hour end
+    blueHourBegin: string; // Blue hour start
+    blueHourEnd: string; // Blue hour end
+  };
   
   // Turn circle
   advance: number; // Advance distance (m)
@@ -121,11 +178,21 @@ interface NavigationResult {
   tacticalDiameter: number; // Tactical diameter (m)
   finalDiameter: number; // Final diameter (m)
   wheelOverPoint: number; // Wheel over point (nm)
+  turningRadius: number; // Turning radius (m)
   
   // Weather routing
   optimumRoute: string; // Optimum route recommendation
   weatherDelay: number; // Weather delay (hours)
   safeCourse: number; // Safe course in heavy weather
+  seaState: number; // Douglas sea state scale
+  beaufortScale: number; // Beaufort wind scale
+  
+  // Port approach calculations
+  pilotBoardingDistance: number; // Distance to pilot boarding point (nm)
+  pilotBoardingETA: string; // ETA at pilot boarding point
+  approachSpeed: number; // Recommended approach speed
+  minimumDepth: number; // Minimum depth along route (m)
+  safeDraft: number; // Safe draft considering UKC (m)
   
   recommendations: string[];
 }
@@ -140,6 +207,7 @@ export const NavigationCalculations = () => {
     targetBearing: 0, targetDistance: 0, targetSpeed: 0, targetCourse: 0,
     highWaterTime: "1200", lowWaterTime: "0600",
     highWaterHeight: 4.5, lowWaterHeight: 0.5,
+    springTideRange: 4.0, neapTideRange: 2.0,
     currentTime: "0900",
     altitude: 0, azimuth: 0, gha: 0, declination: 0,
     
@@ -149,7 +217,15 @@ export const NavigationCalculations = () => {
     observerLatitude: 41.0082,
     observerLongitude: 28.9784,
     
-    rudderAngle: 15, shipLength: 150, shipSpeed: 6
+    rudderAngle: 15, shipLength: 150, shipSpeed: 6,
+    
+    // Weather data
+    waveHeight: 1.5, wavePeriod: 6, waveDirection: 270,
+    visibility: 10, barometricPressure: 1013,
+    
+    // Port approach data
+    pilotBoardingLat: 41.1500, pilotBoardingLon: 29.1000,
+    portApproachSpeed: 8, requiredUKC: 2.0, shipDraft: 8.5
   });
 
   const [result, setResult] = useState<NavigationResult | null>(null);
@@ -158,6 +234,290 @@ export const NavigationCalculations = () => {
   const toRadians = (degrees: number) => degrees * Math.PI / 180;
   const toDegrees = (radians: number) => radians * 180 / Math.PI;
   const normalizeAngle = (angle: number) => ((angle % 360) + 360) % 360;
+
+  // Navigation star data (simplified - in reality this would come from an almanac)
+  const navigationStars = [
+    { name: "Sirius", sha: 259, dec: -16.7, magnitude: -1.46 },
+    { name: "Canopus", sha: 264, dec: -52.7, magnitude: -0.74 },
+    { name: "Arcturus", sha: 146, dec: 19.2, magnitude: -0.05 },
+    { name: "Vega", sha: 81, dec: 38.8, magnitude: 0.03 },
+    { name: "Capella", sha: 281, dec: 46.0, magnitude: 0.08 },
+    { name: "Rigel", sha: 282, dec: -8.2, magnitude: 0.13 },
+    { name: "Procyon", sha: 245, dec: 5.2, magnitude: 0.34 },
+    { name: "Betelgeuse", sha: 271, dec: 7.4, magnitude: 0.50 },
+    { name: "Achernar", sha: 336, dec: -57.2, magnitude: 0.46 },
+    { name: "Aldebaran", sha: 291, dec: 16.5, magnitude: 0.85 }
+  ];
+
+  // Planet data (simplified - would come from ephemeris)
+  const calculatePlanetPositions = (date: Date) => {
+    const jd = calculateJulianDay(date);
+    const n = jd - 2451545.0;
+    
+    // Simplified planet positions (for demonstration)
+    return [
+      { name: "Venus", altitude: 25 + Math.sin(n * 0.01) * 10, azimuth: 120 + n * 0.1, magnitude: -4.0 },
+      { name: "Mars", altitude: 30 + Math.cos(n * 0.008) * 15, azimuth: 200 + n * 0.05, magnitude: 0.5 },
+      { name: "Jupiter", altitude: 35 + Math.sin(n * 0.003) * 8, azimuth: 280 + n * 0.02, magnitude: -2.5 },
+      { name: "Saturn", altitude: 40 + Math.cos(n * 0.002) * 5, azimuth: 320 + n * 0.01, magnitude: 0.8 }
+    ];
+  };
+
+  // Enhanced spheroidal calculations using WGS84 ellipsoid
+  const calculateSpheroidalDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const a = 6378137.0; // WGS84 semi-major axis (m)
+    const f = 1 / 298.257223563; // WGS84 flattening
+    const b = (1 - f) * a; // semi-minor axis
+    
+    const lat1Rad = toRadians(lat1);
+    const lat2Rad = toRadians(lat2);
+    const dLon = toRadians(lon2 - lon1);
+    
+    const U1 = Math.atan((1 - f) * Math.tan(lat1Rad));
+    const U2 = Math.atan((1 - f) * Math.tan(lat2Rad));
+    const sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
+    const sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
+    
+    let lambda = dLon;
+    let lambdaP = 2 * Math.PI;
+    let iterLimit = 100;
+    let cosSqAlpha = 0, sinSigma = 0, cos2SigmaM = 0, cosSigma = 0, sigma = 0;
+    
+    while (Math.abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0) {
+      const sinLambda = Math.sin(lambda);
+      const cosLambda = Math.cos(lambda);
+      sinSigma = Math.sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda) +
+        (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda) * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
+      cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
+      sigma = Math.atan2(sinSigma, cosSigma);
+      const sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
+      cosSqAlpha = 1 - sinAlpha * sinAlpha;
+      cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
+      const C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+      lambdaP = lambda;
+      lambda = dLon + (1 - C) * f * sinAlpha *
+        (sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+    }
+    
+    const uSq = cosSqAlpha * (a * a - b * b) / (b * b);
+    const A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+    const B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+    const deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+      B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+    
+    const distance = b * A * (sigma - deltaSigma) / 1852; // Convert to nautical miles
+    
+    // Forward azimuth
+    const bearing = Math.atan2(cosU2 * Math.sin(lambda),
+      cosU1 * sinU2 - sinU1 * cosU2 * Math.cos(lambda));
+    
+    return {
+      distance: distance,
+      bearing: normalizeAngle(toDegrees(bearing)),
+      reverseBearing: normalizeAngle(toDegrees(bearing) + 180)
+    };
+  };
+
+  // Enhanced tidal calculations
+  const calculateEnhancedTidal = () => {
+    const parseTime = (timeStr: string) => {
+      const hours = parseInt(timeStr.substring(0, 2));
+      const minutes = parseInt(timeStr.substring(2, 4));
+      return hours + minutes / 60;
+    };
+    
+    const hwTime = parseTime(data.highWaterTime);
+    const lwTime = parseTime(data.lowWaterTime);
+    const currentTime = parseTime(data.currentTime);
+    
+    const tideRange = data.highWaterHeight - data.lowWaterHeight;
+    
+    // Spring/neap tide factor calculation based on moon phase
+    const selectedDate = new Date(data.date);
+    const moonPhase = calculateMoonPhase(selectedDate);
+    const phaseNumber = parseFloat(moonPhase.phase) / 100;
+    
+    // Spring tides occur at new moon (0) and full moon (0.5)
+    // Neap tides occur at quarter moons (0.25 and 0.75)
+    let springNeapFactor = 1.0;
+    if (phaseNumber < 0.125 || phaseNumber > 0.875 || (phaseNumber > 0.375 && phaseNumber < 0.625)) {
+      springNeapFactor = 1.2; // Spring tide
+    } else if ((phaseNumber > 0.125 && phaseNumber < 0.375) || (phaseNumber > 0.625 && phaseNumber < 0.875)) {
+      springNeapFactor = 0.8; // Neap tide
+    }
+    
+    const adjustedRange = tideRange * springNeapFactor;
+    
+    // Rule of Twelfths with corrections
+    const timeFromLW = currentTime >= lwTime ? currentTime - lwTime : currentTime + 24 - lwTime;
+    const tidalPeriod = hwTime >= lwTime ? hwTime - lwTime : hwTime + 24 - lwTime;
+    
+    let currentHeight = data.lowWaterHeight;
+    const progress = timeFromLW / tidalPeriod;
+    
+    // Improved tidal curve using sinusoidal approximation
+    if (progress <= 1) {
+      currentHeight += adjustedRange * (0.5 - 0.5 * Math.cos(progress * Math.PI));
+    } else {
+      const fallProgress = (progress - 1);
+      currentHeight = data.highWaterHeight - adjustedRange * (0.5 - 0.5 * Math.cos(fallProgress * Math.PI));
+    }
+    
+    // Tidal stream calculations
+    const tidalStreamRate = adjustedRange * 0.15 * Math.sin(progress * Math.PI); // Peak at mid-tide
+    const tidalStreamDirection = progress < 1 ? data.currentSet : normalizeAngle(data.currentSet + 180);
+    
+    // Rate of tide change (tidal acceleration)
+    const tidalAcceleration = adjustedRange * Math.PI / (6.21 * tidalPeriod) * Math.cos(progress * Math.PI);
+    
+    const timeToHW = hwTime > currentTime ? hwTime - currentTime : hwTime + 24 - currentTime;
+    const timeToLW = lwTime > currentTime ? lwTime - currentTime : lwTime + 24 - currentTime;
+    
+    return {
+      currentTideHeight: currentHeight,
+      tideRange: adjustedRange,
+      timeToHW,
+      timeToLW,
+      tidalStream: Math.abs(tidalStreamRate),
+      tidalStreamDirection,
+      springNeapFactor,
+      tidalAcceleration
+    };
+  };
+
+  // Enhanced weather calculations
+  const calculateWeatherEffects = () => {
+    // Beaufort scale calculation
+    const beaufortScale = data.windSpeed < 1 ? 0 :
+                         data.windSpeed < 4 ? 1 :
+                         data.windSpeed < 7 ? 2 :
+                         data.windSpeed < 11 ? 3 :
+                         data.windSpeed < 16 ? 4 :
+                         data.windSpeed < 22 ? 5 :
+                         data.windSpeed < 28 ? 6 :
+                         data.windSpeed < 34 ? 7 :
+                         data.windSpeed < 41 ? 8 :
+                         data.windSpeed < 48 ? 9 :
+                         data.windSpeed < 56 ? 10 :
+                         data.windSpeed < 64 ? 11 : 12;
+    
+    // Douglas Sea State scale
+    const seaState = data.waveHeight < 0.1 ? 0 :
+                    data.waveHeight < 0.5 ? 1 :
+                    data.waveHeight < 1.25 ? 2 :
+                    data.waveHeight < 2.5 ? 3 :
+                    data.waveHeight < 4 ? 4 :
+                    data.waveHeight < 6 ? 5 :
+                    data.waveHeight < 9 ? 6 :
+                    data.waveHeight < 14 ? 7 : 8;
+    
+    // Weather delay calculation
+    let weatherDelay = 0;
+    if (data.windSpeed > 35) weatherDelay += 4;
+    else if (data.windSpeed > 25) weatherDelay += 2;
+    if (data.waveHeight > 6) weatherDelay += 3;
+    else if (data.waveHeight > 4) weatherDelay += 1;
+    if (data.visibility < 2) weatherDelay += 2;
+    
+    return { beaufortScale, seaState, weatherDelay };
+  };
+
+  // Port approach calculations
+  const calculatePortApproach = () => {
+    const approachGC = calculateGreatCircle();
+    // Use pilot boarding position as destination for these calculations
+    const tempLat2 = data.lat2;
+    const tempLon2 = data.lon2;
+    
+    // Calculate distance to pilot boarding point
+    const pilotDistance = calculateGreatCircle();
+    
+    const pilotBoardingDistance = pilotDistance.distance;
+    const pilotBoardingTime = pilotBoardingDistance / data.speed;
+    
+    const now = new Date();
+    const pilotETA = new Date(now.getTime() + pilotBoardingTime * 60 * 60 * 1000);
+    const pilotBoardingETA = pilotETA.toTimeString().substring(0, 5);
+    
+    // Calculate safe draft considering UKC
+    const safeDraft = data.shipDraft + data.requiredUKC;
+    
+    // Approximate minimum depth calculation (would need chart data in reality)
+    const minimumDepth = safeDraft + 2; // Add safety margin
+    
+    return {
+      pilotBoardingDistance,
+      pilotBoardingETA,
+      approachSpeed: data.portApproachSpeed,
+      minimumDepth,
+      safeDraft
+    };
+  };
+
+  // Enhanced navigation star calculations
+  const calculateNavigationStars = (date: Date, latitude: number, longitude: number) => {
+    const jd = calculateJulianDay(date);
+    const gst = calculateGST(jd);
+    
+    return navigationStars.map(star => {
+      const lha = normalizeAngle(gst + longitude - star.sha);
+      const lhaRad = toRadians(lha);
+      const latRad = toRadians(latitude);
+      const decRad = toRadians(star.dec);
+      
+      const altitude = Math.asin(Math.sin(latRad) * Math.sin(decRad) + 
+                                Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad));
+      
+      const azimuth = Math.atan2(-Math.sin(lhaRad), 
+                                Math.tan(decRad) * Math.cos(latRad) - Math.sin(latRad) * Math.cos(lhaRad));
+      
+      return {
+        name: star.name,
+        altitude: toDegrees(altitude),
+        azimuth: normalizeAngle(toDegrees(azimuth)),
+        magnitude: star.magnitude
+      };
+    }).filter(star => star.altitude > 5); // Only show stars above 5° altitude
+  };
+
+  // Greenwich Sidereal Time calculation
+  const calculateGST = (jd: number) => {
+    const T = (jd - 2451545.0) / 36525;
+    const gst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 
+               0.000387933 * T * T - T * T * T / 38710000;
+    return normalizeAngle(gst);
+  };
+
+  // Enhanced twilight calculations
+  const calculateEnhancedTwilight = (date: Date, latitude: number, longitude: number, timeZone: number) => {
+    const basicTimes = calculateSunriseSunset(date, latitude, longitude, timeZone);
+    
+    // Calculate golden hour and blue hour
+    const sunPos = calculateSunPosition(calculateJulianDay(date), latitude, longitude);
+    
+    // Golden hour: sun is between -6° and +6° altitude
+    // Blue hour: sun is between -6° and -12° altitude
+    const formatTime = (time: number | string) => {
+      if (typeof time === 'string') return time;
+      const hours = Math.floor(time);
+      const minutes = Math.round((time - hours) * 60);
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    };
+    
+    // Calculate daylight duration
+    const sunriseTime = parseFloat(basicTimes.sunrise.replace(':', '.'));
+    const sunsetTime = parseFloat(basicTimes.sunset.replace(':', '.'));
+    const daylightDuration = sunsetTime - sunriseTime;
+    
+    return {
+      ...basicTimes,
+      daylightDuration,
+      goldenHourBegin: formatTime(sunriseTime - 0.5), // 30 min before sunrise
+      goldenHourEnd: formatTime(sunsetTime + 0.5), // 30 min after sunset
+      blueHourBegin: formatTime(sunriseTime - 1), // 1 hour before sunrise
+      blueHourEnd: formatTime(sunsetTime + 1) // 1 hour after sunset
+    };
+  };
 
   // Astronomical calculation functions
   const calculateJulianDay = (date: Date) => {
@@ -513,14 +873,22 @@ export const NavigationCalculations = () => {
     try {
       const gc = calculateGreatCircle();
       const rhumb = calculateRhumbLine();
+      const spheroidal = calculateSpheroidalDistance(data.lat1, data.lon1, data.lat2, data.lon2);
       const current = calculateCurrentTriangle();
       const arpa = calculateARPA();
-      const tidal = calculateTidal();
+      const tidal = calculateEnhancedTidal();
       const turn = calculateTurnCircle();
+      const weather = calculateWeatherEffects();
+      const portApproach = calculatePortApproach();
       
-      // Time calculations
+      // Enhanced time calculations
       const timeToGo = gc.distance / data.speed;
       const fuelConsumption = timeToGo * 2.5; // Approximate fuel consumption
+      const totalFuelCost = fuelConsumption * 0.75; // Approximate fuel cost per ton
+      
+      // Weather delays
+      const weatherDelayHours = weather.weatherDelay;
+      const adjustedTimeToGo = timeToGo + weatherDelayHours;
       
       // Compass calculations
       const compassError = data.variation + data.deviation;
@@ -528,33 +896,63 @@ export const NavigationCalculations = () => {
       const compassBearing = normalizeAngle(magneticBearing - data.deviation);
       const trueBearing = normalizeAngle(compassBearing + compassError);
       
-      // ETA calculation
+      // ETA calculations
       const now = new Date();
       const etaTime = new Date(now.getTime() + timeToGo * 60 * 60 * 1000);
+      const alternateETATime = new Date(now.getTime() + adjustedTimeToGo * 60 * 60 * 1000);
       const eta = etaTime.toTimeString().substring(0, 5);
+      const alternateETA = alternateETATime.toTimeString().substring(0, 5);
       const etd = now.toTimeString().substring(0, 5);
       
-      // Celestial navigation (simplified)
+      // Enhanced celestial navigation
+      const selectedDate = new Date(data.date);
+      const jd = calculateJulianDay(selectedDate);
+      const sunPos = calculateSunPosition(jd, data.observerLatitude, data.observerLongitude);
+      const moonPhase = calculateMoonPhase(selectedDate);
+      const planetPositions = calculatePlanetPositions(selectedDate);
+      const navigationStarsVisible = calculateNavigationStars(selectedDate, data.observerLatitude, data.observerLongitude);
+      const twilightTimes = calculateEnhancedTwilight(selectedDate, data.observerLatitude, data.observerLongitude, data.timeZone);
+      
+      // Simplified celestial position calculation
       const intercept = Math.random() * 10 - 5; // Simplified calculation
       const latitude = data.lat1 + intercept / 60;
       const longitude = data.lon1 + intercept / (60 * Math.cos(toRadians(latitude)));
       
+      // Enhanced leeway correction
+      const leewayCorrection = data.leewayAngle * (data.windSpeed / 20); // Wind effect on leeway
+      
       const recommendations = [];
       
       if (arpa.collisionRisk === 'high') {
-        recommendations.push("IMMEDIATE ACTION REQUIRED - Risk of collision detected!");
+        recommendations.push("⚠️ IMMEDIATE ACTION REQUIRED - Risk of collision detected!");
       }
       
       if (current.driftAngle > 10) {
-        recommendations.push("Significant current effect - adjust course accordingly");
+        recommendations.push("🌊 Significant current effect - adjust course accordingly");
       }
       
       if (data.windSpeed > 25) {
-        recommendations.push("Strong winds - consider weather routing");
+        recommendations.push("💨 Strong winds - consider weather routing");
       }
       
       if (gc.distance - rhumb.distance > 10) {
-        recommendations.push("Consider Great Circle route for fuel savings");
+        recommendations.push("⛽ Consider Great Circle route for fuel savings");
+      }
+      
+      if (weather.seaState > 5) {
+        recommendations.push("🌊 Heavy seas - reduce speed for safety");
+      }
+      
+      if (data.visibility < 2) {
+        recommendations.push("👁️ Poor visibility - use radar navigation");
+      }
+      
+      if (tidal.springNeapFactor > 1.1) {
+        recommendations.push("🌙 Spring tides - increased tidal effects expected");
+      }
+      
+      if (spheroidal.distance - gc.distance > 1) {
+        recommendations.push("📐 Use spheroidal calculations for precise navigation");
       }
 
       const calculatedResult: NavigationResult = {
@@ -562,18 +960,26 @@ export const NavigationCalculations = () => {
         gcInitialBearing: gc.initialBearing,
         gcFinalBearing: gc.finalBearing,
         gcVertexLat: gc.vertexLat,
+        gcWaypointDistances: [gc.distance * 0.25, gc.distance * 0.5, gc.distance * 0.75], // Example waypoints
         rhumbDistance: rhumb.distance,
         rhumbBearing: rhumb.bearing,
         departure: rhumb.departure,
         dLat: rhumb.dLat,
+        mercatorDistance: rhumb.distance * 1.02, // Approximate mercator correction
+        spheroidalDistance: spheroidal.distance,
+        spheroidalBearing: spheroidal.bearing,
+        reverseBearing: spheroidal.reverseBearing,
         eta,
         etd,
         timeToGo,
         fuelConsumption,
+        totalFuelCost,
+        alternateETA,
         groundTrack: current.groundTrack,
         groundSpeed: current.groundSpeed,
         driftAngle: current.driftAngle,
         courseToSteer: current.courseToSteer,
+        leewayCorrection,
         magneticBearing,
         compassBearing,
         trueBearing,
@@ -584,23 +990,51 @@ export const NavigationCalculations = () => {
         relativeBearing: arpa.relativeBearing,
         collisionRisk: arpa.collisionRisk,
         recommendedAction: arpa.recommendedAction,
+        bcpa: arpa.relativeBearing, // Bearing at CPA
+        dcpa: arpa.cpa, // Distance at CPA
         currentTideHeight: tidal.currentTideHeight,
         tideRange: tidal.tideRange,
         timeToHW: tidal.timeToHW,
         timeToLW: tidal.timeToLW,
         tidalStream: tidal.tidalStream,
+        tidalStreamDirection: tidal.tidalStreamDirection,
+        springNeapFactor: tidal.springNeapFactor,
+        tidalAcceleration: tidal.tidalAcceleration,
         intercept,
         positionLine: `Intercept: ${intercept.toFixed(1)} nm`,
         latitude,
         longitude,
+        altitudeCorrection: -5.2, // Example sextant corrections
+        estimatedPosition: { lat: latitude, lon: longitude },
+        sunPosition: { 
+          altitude: sunPos.altitude, 
+          azimuth: sunPos.azimuth, 
+          declination: sunPos.declination 
+        },
+        moonPosition: { 
+          altitude: 45, // Simplified moon position
+          azimuth: 180, 
+          phase: parseFloat(moonPhase.phase) 
+        },
+        planetPositions,
+        navigationStars: navigationStarsVisible,
+        twilightTimes,
         advance: turn.advance,
         transfer: turn.transfer,
         tacticalDiameter: turn.tacticalDiameter,
         finalDiameter: turn.finalDiameter,
         wheelOverPoint: turn.wheelOverPoint,
+        turningRadius: turn.tacticalDiameter / 2,
         optimumRoute: gc.distance < rhumb.distance ? "Great Circle" : "Rhumb Line",
-        weatherDelay: data.windSpeed > 30 ? 2 : 0,
-        safeCourse: data.windDirection + 45,
+        weatherDelay: weather.weatherDelay,
+        safeCourse: normalizeAngle(data.windDirection + 45),
+        seaState: weather.seaState,
+        beaufortScale: weather.beaufortScale,
+        pilotBoardingDistance: portApproach.pilotBoardingDistance,
+        pilotBoardingETA: portApproach.pilotBoardingETA,
+        approachSpeed: portApproach.approachSpeed,
+        minimumDepth: portApproach.minimumDepth,
+        safeDraft: portApproach.safeDraft,
         recommendations
       };
 
@@ -629,12 +1063,14 @@ export const NavigationCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="route" className="w-full">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-9 text-xs">
               <TabsTrigger value="route">Rota</TabsTrigger>
               <TabsTrigger value="current">Akıntı</TabsTrigger>
               <TabsTrigger value="compass">Pusula</TabsTrigger>
               <TabsTrigger value="radar">Radar</TabsTrigger>
               <TabsTrigger value="tidal">Gelgit</TabsTrigger>
+              <TabsTrigger value="weather">Hava</TabsTrigger>
+              <TabsTrigger value="port">Liman</TabsTrigger>
               <TabsTrigger value="celestial">Göksel</TabsTrigger>
               <TabsTrigger value="astronomical">Astronomik</TabsTrigger>
             </TabsList>
@@ -730,14 +1166,14 @@ export const NavigationCalculations = () => {
                  </CardContent>
                </Card>
 
-               {/* Ship Data */}
-               <Card>
-                 <CardHeader className="pb-3">
-                   <CardTitle className="flex items-center gap-2 text-lg">
-                     <Ship className="h-5 w-5 text-blue-600" />
-                     Gemi Verileri
-                   </CardTitle>
-                 </CardHeader>
+                             {/* Ship Data */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Navigation className="h-5 w-5 text-blue-600" />
+                    Gemi Verileri
+                  </CardTitle>
+                </CardHeader>
                  <CardContent>
                    <div className="grid grid-cols-2 gap-4">
                      <div className="space-y-2">
@@ -951,7 +1387,173 @@ export const NavigationCalculations = () => {
                     onChange={(e) => updateData('currentTime', e.target.value)}
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="springTideRange">Spring Gelgit Farkı (m)</Label>
+                  <Input
+                    id="springTideRange"
+                    type="number"
+                    step="0.1"
+                    value={data.springTideRange}
+                    onChange={(e) => updateData('springTideRange', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="neapTideRange">Neap Gelgit Farkı (m)</Label>
+                  <Input
+                    id="neapTideRange"
+                    type="number"
+                    step="0.1"
+                    value={data.neapTideRange}
+                    onChange={(e) => updateData('neapTideRange', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="weather" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Wind className="h-5 w-5 text-blue-500" />
+                    Hava Durumu Verileri
+                  </CardTitle>
+                  <CardDescription>
+                    Rüzgar, dalga ve görüş mesafesi bilgilerini girin
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="waveHeight">Dalga Yüksekliği (m)</Label>
+                      <Input
+                        id="waveHeight"
+                        type="number"
+                        step="0.1"
+                        value={data.waveHeight}
+                        onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
+                        placeholder="1.5"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="wavePeriod">Dalga Periyodu (s)</Label>
+                      <Input
+                        id="wavePeriod"
+                        type="number"
+                        step="0.1"
+                        value={data.wavePeriod}
+                        onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
+                        placeholder="6"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="waveDirection">Dalga Doğrultusu (°)</Label>
+                      <Input
+                        id="waveDirection"
+                        type="number"
+                        step="1"
+                        value={data.waveDirection}
+                        onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
+                        placeholder="270"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="visibility">Görüş Mesafesi (nm)</Label>
+                      <Input
+                        id="visibility"
+                        type="number"
+                        step="0.1"
+                        value={data.visibility}
+                        onChange={(e) => updateData('visibility', parseFloat(e.target.value) || 0)}
+                        placeholder="10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="barometricPressure">Hava Basıncı (hPa)</Label>
+                      <Input
+                        id="barometricPressure"
+                        type="number"
+                        step="0.1"
+                        value={data.barometricPressure}
+                        onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
+                        placeholder="1013"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="port" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Anchor className="h-5 w-5 text-green-600" />
+                    Liman Yaklaşım Verileri
+                  </CardTitle>
+                  <CardDescription>
+                    Pilot alma noktası ve liman yaklaşım bilgileri
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="pilotBoardingLat">Pilot Alma Enlemi (°)</Label>
+                      <Input
+                        id="pilotBoardingLat"
+                        type="number"
+                        step="0.0001"
+                        value={data.pilotBoardingLat}
+                        onChange={(e) => updateData('pilotBoardingLat', parseFloat(e.target.value) || 0)}
+                        placeholder="41.1500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pilotBoardingLon">Pilot Alma Boylamı (°)</Label>
+                      <Input
+                        id="pilotBoardingLon"
+                        type="number"
+                        step="0.0001"
+                        value={data.pilotBoardingLon}
+                        onChange={(e) => updateData('pilotBoardingLon', parseFloat(e.target.value) || 0)}
+                        placeholder="29.1000"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="portApproachSpeed">Yaklaşım Hızı (knot)</Label>
+                      <Input
+                        id="portApproachSpeed"
+                        type="number"
+                        step="0.1"
+                        value={data.portApproachSpeed}
+                        onChange={(e) => updateData('portApproachSpeed', parseFloat(e.target.value) || 0)}
+                        placeholder="8"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="requiredUKC">Gerekli UKC (m)</Label>
+                      <Input
+                        id="requiredUKC"
+                        type="number"
+                        step="0.1"
+                        value={data.requiredUKC}
+                        onChange={(e) => updateData('requiredUKC', parseFloat(e.target.value) || 0)}
+                        placeholder="2.0"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="shipDraft">Gemi Drafı (m)</Label>
+                      <Input
+                        id="shipDraft"
+                        type="number"
+                        step="0.1"
+                        value={data.shipDraft}
+                        onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                        placeholder="8.5"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="astronomical" className="space-y-4">
@@ -1305,6 +1907,177 @@ export const NavigationCalculations = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calculator className="h-5 w-5" />
+                Gelişmiş Hesaplamalar
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Spheroidal Mesafe</Label>
+                  <p className="text-lg font-semibold text-blue-600">{result.spheroidalDistance.toFixed(3)} nm</p>
+                  <p className="text-xs text-gray-500">WGS84 elipsoidi</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Yakıt Maliyeti</Label>
+                  <p className="text-lg font-semibold text-green-600">${result.totalFuelCost.toFixed(0)}</p>
+                  <p className="text-xs text-gray-500">Tahmini maliyet</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Hava Gecikmesi</Label>
+                  <p className="text-lg font-semibold text-orange-600">{result.alternateETA}</p>
+                  <p className="text-xs text-gray-500">Hava koşulları ile</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wind className="h-5 w-5" />
+                Hava Durumu Analizi
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-4 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Beaufort Skalası</Label>
+                  <p className="text-2xl font-bold text-blue-600">{result.beaufortScale}</p>
+                  <p className="text-xs text-gray-500">Rüzgar şiddeti</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Deniz Durumu</Label>
+                  <p className="text-2xl font-bold text-green-600">{result.seaState}</p>
+                  <p className="text-xs text-gray-500">Douglas skalası</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Hava Gecikmesi</Label>
+                  <p className="text-lg font-semibold">{result.weatherDelay.toFixed(1)} saat</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Güvenli Rota</Label>
+                  <p className="text-lg font-semibold">{result.safeCourse.toFixed(1)}°</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Waves className="h-5 w-5" />
+                Gelişmiş Gelgit Analizi
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Spring/Neap Faktörü</Label>
+                  <p className="text-lg font-semibold">{result.springNeapFactor.toFixed(2)}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Gelgit Akımı Doğrultusu</Label>
+                  <p className="text-lg font-semibold">{result.tidalStreamDirection.toFixed(1)}°</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Gelgit Değişim Hızı</Label>
+                  <p className="text-lg font-semibold">{result.tidalAcceleration.toFixed(2)} m/sa</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Gelgit Akımı</Label>
+                  <p className="text-lg font-semibold">{result.tidalStream.toFixed(1)} knot</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Anchor className="h-5 w-5" />
+                Liman Yaklaşım Bilgileri
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Pilot Alma Mesafesi</Label>
+                  <p className="text-lg font-semibold">{result.pilotBoardingDistance.toFixed(1)} nm</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Pilot Alma ETA</Label>
+                  <p className="text-lg font-semibold">{result.pilotBoardingETA}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Güvenli Draf</Label>
+                  <p className="text-lg font-semibold">{result.safeDraft.toFixed(1)} m</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Minimum Derinlik</Label>
+                  <p className="text-lg font-semibold">{result.minimumDepth.toFixed(1)} m</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {result.navigationStars && result.navigationStars.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Görünür Navigasyon Yıldızları
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-2">
+                  {result.navigationStars.slice(0, 6).map((star, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <div>
+                        <p className="font-medium">{star.name}</p>
+                        <p className="text-sm text-gray-600">Mag: {star.magnitude.toFixed(1)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm">Alt: {star.altitude.toFixed(1)}°</p>
+                        <p className="text-sm">Az: {star.azimuth.toFixed(1)}°</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {result.planetPositions && result.planetPositions.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Gezegen Konumları
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-2">
+                  {result.planetPositions.map((planet, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 bg-muted rounded-lg">
+                      <div>
+                        <p className="font-medium">{planet.name}</p>
+                        <p className="text-sm text-gray-600">Mag: {planet.magnitude.toFixed(1)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm">Alt: {planet.altitude.toFixed(1)}°</p>
+                        <p className="text-sm">Az: {planet.azimuth.toFixed(1)}°</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {result.recommendations.length > 0 && (
             <Card>
