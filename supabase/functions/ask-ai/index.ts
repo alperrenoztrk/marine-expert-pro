@@ -211,7 +211,7 @@ Soru: ${question}
 
 Lütfen ayrıntılı ve teknik bir açıklama yap. Türkçe yanıt ver ve teknik terimler için İngilizce karşılıklarını da belirt. Markdown formatında yanıt ver.`;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
