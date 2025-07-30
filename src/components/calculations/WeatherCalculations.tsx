@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { CloudImage } from "@/components/ui/cloud-image";
 
 // Import new cloud images
 import cumulusClouds from "@/assets/weather/cumulus-clouds.jpg";
@@ -641,27 +642,15 @@ export const WeatherCalculations = () => {
                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
                          <h4 className="font-semibold">Cumulus (Cu)</h4>
                        </div>
-                                             <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-200 shadow-md">
-                        <img 
-                          src={cumulusClouds}
-                          alt="Cumulus Clouds - Fair weather puffy white clouds"
-                          className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                              const sibling = e.currentTarget.nextElementSibling as HTMLElement;
-                              if (sibling) sibling.style.display = 'flex';
-                            }}
-                         />
-                         <div className="hidden absolute inset-0 bg-gradient-to-br from-sky-50 via-blue-100 to-blue-200 items-center justify-center text-center p-3">
-                           <div>
-                             <div className="text-4xl mb-1 filter drop-shadow-sm">☁️</div>
-                             <div className="text-sm font-bold text-blue-900 mb-1">CUMULUS (Cu)</div>
-                             <div className="text-xs text-blue-700 leading-tight">Pamuk benzeri<br/>dikey gelişim</div>
-                           </div>
-                         </div>
-                         <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 1</div>
-                         <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CUMULUS (Cu)</div>
-                       </div>
+                                                                   <CloudImage
+                        src={cumulusClouds}
+                        alt="Cumulus Clouds - Fair weather puffy white clouds"
+                        cloudType="Cumulus (Cu)"
+                        cloudCode="CH 1"
+                        emoji="☁️"
+                        variant="default"
+                        description="Pamuk benzeri|dikey gelişim"
+                      />
                        <div className="text-sm space-y-1">
                          <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
                          <p><strong>Görüş:</strong> İyi (10+ nm)</p>
