@@ -1,44 +1,67 @@
-# Cloud Images Update Summary
+# Cloud Images Update Documentation
 
-## Updated Cloud Images in Weather Calculations
+## Overview
+This document tracks the updates made to cloud images in the weather calculations application.
 
-All cloud images in the Meteorology and Oceanography Calculations section have been replaced with real photographs from reputable meteorological sources.
+## Updated Local Cloud Images
 
-### Sources Used:
-1. **NOAA/National Weather Service (weather.gov)** - Primary source for most cloud types
-2. **CloudMan.com** - For lenticular cloud image
-3. All images are from official weather services and meteorological organizations
+All cloud images have been updated with high-quality, real photographs from Wikimedia Commons. The following images were replaced:
 
-### Updated Cloud Types:
+### 1. Cumulus Clouds (cumulus-clouds.jpg)
+- **Type**: Fair weather puffy white clouds  
+- **Original Source**: Wikimedia Commons - Featured Picture
+- **Description**: Cumulus clouds as seen from an airplane
+- **License**: CC BY-SA 3.0
 
-#### Low Clouds (Alçak Bulutlar):
-- **Cumulus (Cu)** - CH 1: Real cumulus cloud from NOAA
-- **Cumulonimbus (Cb)** - CH 3: Real cumulonimbus storm cloud from NOAA
-- **Stratocumulus (Sc)** - CH 2: Real stratocumulus from NOAA
-- **Stratus (St)** - CH 0: Real stratus/fog layer from NOAA
+### 2. Cumulonimbus Clouds (cumulonimbus-clouds.jpg)
+- **Type**: Dangerous thunderstorm clouds with anvil shape
+- **Original Source**: Wikimedia Commons  
+- **Description**: Big Cumulonimbus with large anvil
+- **License**: CC BY-SA 3.0
 
-#### Middle Clouds (Orta Bulutlar):
-- **Altocumulus (Ac)** - CH 4: Real altocumulus from NOAA
-- **Altostratus (As)** - CH 5: Real altostratus from NOAA
+### 3. Stratus Clouds (stratus-clouds.jpg)
+- **Type**: Low, flat gray layer clouds
+- **Original Source**: Wikimedia Commons
+- **Description**: Large Stratocumulus stratiformis perlucidus
+- **License**: CC BY-SA 3.0/GFDL
 
-#### High Clouds (Yüksek Bulutlar):
-- **Cirrus (Ci)** - CH 8: Real cirrus from NOAA
-- **Cirrocumulus (Cc)** - CH 9: Real cirrocumulus from NOAA
-- **Cirrostratus (Cs)** - CH 6-7: Real cirrostratus from NOAA
+### 4. Cirrus Clouds (cirrus-clouds.jpg)
+- **Type**: High wispy ice crystal clouds
+- **Status**: Using existing image (temporary)
+- **Note**: Need to find a suitable high-quality replacement
 
-#### Special Clouds (Özel Durum Bulutları):
-- **Mammatus**: Real mammatus clouds from NOAA
-- **Wall Cloud**: Real wall cloud from NOAA
-- **Shelf Cloud**: Real shelf cloud from NOAA
-- **Lenticular**: Real lenticular cloud from CloudMan.com
+### 5. Storm Clouds (storm-clouds.jpg)
+- **Type**: Severe weather/supercell clouds
+- **Original Source**: Wikipedia
+- **Description**: Heavy rainy clouds/supercell
+- **License**: CC BY-SA 3.0
 
-### Benefits:
-1. **Authenticity**: All images now show real meteorological phenomena
-2. **Educational Value**: Actual cloud formations help mariners better identify clouds in real conditions
-3. **Reliability**: Images from official weather services ensure accuracy
-4. **Professional Quality**: High-quality meteorological photographs
+## External Cloud Image URLs
 
-### File Updated:
-- `/workspace/src/components/calculations/WeatherCalculations.tsx`
+The following external URLs are used in WeatherCalculations.tsx for various cloud types:
 
-All images maintain the same display format with CH codes and Turkish/English descriptions for maritime use.
+### Medium Level Clouds (2000-6000m)
+- Altocumulus: `https://www.weather.gov/media/jetstream/clouds/altocumulus.jpg`
+- Altostratus: `https://www.weather.gov/media/jetstream/clouds/altostratus.jpg`
+
+### High Level Clouds (6000-12000m)  
+- Cirrocumulus: `https://www.weather.gov/media/jetstream/clouds/cirrocumulus.jpg`
+- Cirrostratus: `https://www.weather.gov/media/jetstream/clouds/cirrostratus.jpg`
+
+### Special Formation Clouds
+- Mammatus: `https://www.weather.gov/media/jetstream/clouds/mammatus.jpg`
+- Wall Cloud: `https://www.weather.gov/media/jetstream/clouds/wallcloud.jpg`
+- Shelf Cloud: `https://www.weather.gov/media/jetstream/clouds/shelfcloud.jpg`
+- Lenticular: `https://www.cloudman.com/gallery/pix/len1_420.jpg`
+
+## Notes
+- All local images have been backed up with `-old` suffix
+- External URLs from weather.gov are official NOAA resources
+- Images include proper alt text for accessibility
+- Error handling implemented for failed image loads
+
+## Future Considerations
+1. Consider downloading and hosting all external images locally for better reliability
+2. Optimize image sizes for web performance
+3. Add WebP format alternatives for modern browsers
+4. Implement lazy loading for better initial page load
