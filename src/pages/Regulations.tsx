@@ -1066,14 +1066,75 @@ const Regulations = () => {
             <div className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Compass className="h-5 w-5 text-blue-600" />
-                    International Regulations for Preventing Collisions at Sea (COLREG)
-                  </CardTitle>
-                  <CardDescription>
-                    Based on USCG Navigation Rules - 72 COLREGS
-                  </CardDescription>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1">
+                      <CardTitle className="flex items-center gap-2">
+                        <Compass className="h-5 w-5 text-blue-600" />
+                        International Regulations for Preventing Collisions at Sea (COLREG)
+                      </CardTitle>
+                      <CardDescription>
+                        Based on USCG Navigation Rules - 72 COLREGS
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.navcen.uscg.gov/sites/default/files/pdf/navRules/navrules.pdf', '_blank')}
+                        className="flex items-center gap-2"
+                      >
+                        <Download className="h-4 w-4" />
+                        Download USCG COLREG PDF
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
+              </Card>
+
+              <Card className="bg-blue-50 border-blue-200">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-blue-100 rounded-lg">
+                      <FileText className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-blue-900 mb-2">USCG Navigation Rules Resources</h3>
+                      <p className="text-sm text-blue-800 mb-3">
+                        The U.S. Coast Guard maintains the official Navigation Rules for U.S. waters, 
+                        which incorporate the International COLREGS with additional Inland Rules.
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open('https://www.navcen.uscg.gov/navigation-rules-amalgamated', '_blank')}
+                          className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                        >
+                          <BookOpen className="h-4 w-4 mr-2" />
+                          USCG Navigation Center
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open('https://www.navcen.uscg.gov/sites/default/files/pdf/navRules/CG_NRHB_20240101.pdf', '_blank')}
+                          className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Navigation Rules Handbook 2024
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open('https://www.navcen.uscg.gov/sites/default/files/pdf/navRules/InlandNavRules2019.pdf', '_blank')}
+                          className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                        >
+                          <Ship className="h-4 w-4 mr-2" />
+                          Inland Navigation Rules
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
 
               {filteredCOLREGParts.map((part) => (
