@@ -5,14 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Cloud, Compass, Wind, Droplets, Sun, Thermometer, Eye, Info } from "lucide-react";
+import { Cloud, Compass, Wind, Droplets, Sun, Thermometer, Eye, Info, CloudRain, AlertTriangle, Navigation, Calculator, Waves, Activity, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalculationResult } from "@/components/calculations/CalculationResult";
+
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 
 // Import new cloud images
 import cumulusClouds from "@/assets/weather/cumulus-clouds.jpg";
@@ -645,10 +646,11 @@ export const WeatherCalculations = () => {
                           src={cumulusClouds}
                           alt="Cumulus Clouds - Fair weather puffy white clouds"
                           className="w-full h-full object-cover"
-                           onError={(e) => {
-                             e.currentTarget.style.display = 'none';
-                             e.currentTarget.nextElementSibling.style.display = 'flex';
-                           }}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (sibling) sibling.style.display = 'flex';
+                            }}
                          />
                          <div className="hidden absolute inset-0 bg-gradient-to-br from-sky-50 via-blue-100 to-blue-200 items-center justify-center text-center p-3">
                            <div>
@@ -680,10 +682,11 @@ export const WeatherCalculations = () => {
                           src={cumulonimbusClouds}
                           alt="Cumulonimbus Storm Cloud - Dangerous thunderstorm cloud"
                           className="w-full h-full object-cover"
-                           onError={(e) => {
-                             e.currentTarget.style.display = 'none';
-                             e.currentTarget.nextElementSibling.style.display = 'flex';
-                           }}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (sibling) sibling.style.display = 'flex';
+                            }}
                          />
                          <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-800 to-gray-900 items-center justify-center text-center p-3">
                            <div>
@@ -714,10 +717,11 @@ export const WeatherCalculations = () => {
                           src={stratusClouds}
                           alt="Stratocumulus Clouds - Low layered lumpy clouds"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 items-center justify-center text-center p-3">
                           <div>
@@ -749,10 +753,11 @@ export const WeatherCalculations = () => {
                           src={stratusClouds}
                           alt="Stratus Clouds - Low flat gray layer clouds and fog"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-400 to-gray-500 items-center justify-center text-center p-3">
                           <div>
@@ -799,10 +804,11 @@ export const WeatherCalculations = () => {
                           src={cumulusClouds}
                           alt="Altocumulus Clouds - Mid-level patchy clouds"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-green-100 via-blue-200 to-green-300 items-center justify-center text-center p-3">
                           <div>
@@ -833,10 +839,11 @@ export const WeatherCalculations = () => {
                           src={stratusClouds}
                           alt="Altostratus Clouds - Gray mid-level layer covering sun"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-green-200 via-gray-300 to-green-400 items-center justify-center text-center p-3">
                           <div>
@@ -883,10 +890,11 @@ export const WeatherCalculations = () => {
                           src={cirrusClouds}
                           alt="Cirrus Clouds - High wispy ice crystal clouds"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 items-center justify-center text-center p-3">
                           <div>
@@ -917,10 +925,11 @@ export const WeatherCalculations = () => {
                           src={cirrusClouds}
                           alt="Cirrocumulus Clouds - High patchy mackerel sky"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-purple-150 items-center justify-center text-center p-3">
                           <div>
@@ -951,10 +960,11 @@ export const WeatherCalculations = () => {
                           src={cirrusClouds}
                           alt="Cirrostratus Clouds - High thin layer with sun halo"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling.style.display = 'flex';
-                          }}
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
                         />
                         <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-100 via-gray-100 to-purple-200 items-center justify-center text-center p-3">
                           <div>

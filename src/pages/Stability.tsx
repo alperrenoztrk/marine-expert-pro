@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Anchor } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CalculationHero } from "@/components/ui/calculation-hero";
+import { StabilityCalculations } from "@/components/calculations/StabilityCalculations";
 import cargoShipOcean from "@/assets/maritime/cargo-ship-ocean.jpg";
 
 const Stability = () => {
