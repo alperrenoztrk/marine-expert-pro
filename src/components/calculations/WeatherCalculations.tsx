@@ -623,24 +623,25 @@ export const WeatherCalculations = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    {/* Cumulus - CH 1 */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
-                        <h4 className="font-semibold">Cumulus (Cu)</h4>
-                      </div>
-                                             <img 
-                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Cumulus_clouds_in_fair_weather.jpg/300px-Cumulus_clouds_in_fair_weather.jpg" 
-                         alt="Cumulus bulutları - Fair weather cumulus"
-                         className="w-full h-32 object-cover rounded-lg"
-                       />
-                      <div className="text-sm space-y-1">
-                        <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
-                        <p><strong>Görüş:</strong> İyi (10+ nm)</p>
-                        <p><strong>Rüzgar:</strong> Hafif-orta (5-15 knot)</p>
-                        <p><strong>Yağış:</strong> Yok/çok az</p>
-                      </div>
-                    </div>
+                                                              {/* Cumulus - CH 1 */}
+                     <div className="space-y-3">
+                       <div className="flex items-center gap-2">
+                         <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
+                         <h4 className="font-semibold">Cumulus (Cu)</h4>
+                       </div>
+                       <div className="h-32 bg-gradient-to-b from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
+                         <div className="text-center">
+                           <div className="text-4xl mb-2">☁️</div>
+                           <div className="text-xs text-gray-600">Pamuk benzeri bulutlar</div>
+                         </div>
+                       </div>
+                       <div className="text-sm space-y-1">
+                         <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
+                         <p><strong>Görüş:</strong> İyi (10+ nm)</p>
+                         <p><strong>Rüzgar:</strong> Hafif-orta (5-15 knot)</p>
+                         <p><strong>Yağış:</strong> Yok/çok az</p>
+                       </div>
+                     </div>
 
                     {/* Cumulonimbus - CH 3 */}
                     <div className="space-y-3">
