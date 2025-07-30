@@ -4,6 +4,7 @@ import { ArrowLeft, Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CalculationHero } from "@/components/ui/calculation-hero";
 import navigationCompass from "@/assets/maritime/navigation-compass.jpg";
+import { NavigationCalculations } from "@/components/calculations/NavigationCalculations";
 
 const Navigation = () => {
   return (
@@ -42,17 +43,7 @@ const Navigation = () => {
         </div>
 
         {/* Navigation Calculations */}
-        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Compass className="h-6 w-6 text-blue-600" />
-              Seyir Hesaplama Modülü
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* NavigationCalculations component was removed from imports, so this section is now empty */}
-          </CardContent>
-        </Card>
+        <NavigationCalculations />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500">
