@@ -629,16 +629,25 @@ export const WeatherCalculations = () => {
                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
                          <h4 className="font-semibold">Cumulus (Cu)</h4>
                        </div>
-                       <div className="relative w-full h-32 bg-gradient-to-br from-sky-50 via-blue-100 to-blue-200 rounded-lg overflow-hidden border border-blue-200 shadow-md">
-                         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/40"></div>
-                         <div className="relative h-full flex items-center justify-center text-center p-3">
+                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-200 shadow-md">
+                         <img 
+                           src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&auto=format"
+                           alt="Cumulus Clouds - Fair weather puffy white clouds"
+                           className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             e.currentTarget.nextElementSibling.style.display = 'flex';
+                           }}
+                         />
+                         <div className="hidden absolute inset-0 bg-gradient-to-br from-sky-50 via-blue-100 to-blue-200 items-center justify-center text-center p-3">
                            <div>
                              <div className="text-4xl mb-1 filter drop-shadow-sm">☁️</div>
                              <div className="text-sm font-bold text-blue-900 mb-1">CUMULUS (Cu)</div>
                              <div className="text-xs text-blue-700 leading-tight">Pamuk benzeri<br/>dikey gelişim</div>
                            </div>
                          </div>
-                         <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-blue-800">CH 1</div>
+                         <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 1</div>
+                         <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CUMULUS (Cu)</div>
                        </div>
                        <div className="text-sm space-y-1">
                          <p><strong>Denizcilik Önemi:</strong> Güzel hava, düşük rüzgar</p>
@@ -655,18 +664,26 @@ export const WeatherCalculations = () => {
                          <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
                          <AlertTriangle className="h-4 w-4 text-red-600" />
                        </div>
-                                               <div className="relative w-full h-32 bg-gradient-to-br from-gray-600 via-gray-800 to-gray-900 rounded-lg overflow-hidden border border-red-300 shadow-lg">
-                          <div className="absolute inset-0 bg-gradient-to-b from-yellow-300/10 via-transparent to-purple-900/20"></div>
-                          <div className="relative h-full flex items-center justify-center text-center p-3">
-                            <div>
-                              <div className="text-4xl mb-1 filter drop-shadow-lg">⛈️</div>
-                              <div className="text-sm font-bold text-white mb-1">CUMULONIMBUS (Cb)</div>
-                              <div className="text-xs text-yellow-200 leading-tight">Örs şekilli<br/>fırtına bulutu</div>
-                            </div>
-                          </div>
-                          <div className="absolute top-1 right-1 bg-red-500/90 text-white px-1 rounded text-xs font-bold">CH 3</div>
-                          <div className="absolute bottom-1 left-1 text-xs text-red-200">⚠️ TEHLİKELİ</div>
-                        </div>
+                        <div className="relative w-full h-32 rounded-lg overflow-hidden border border-red-300 shadow-lg">
+                         <img 
+                           src="https://images.unsplash.com/photo-1527482797697-8795b05a13fe?w=400&h=300&fit=crop&auto=format"
+                           alt="Cumulonimbus Storm Cloud - Dangerous thunderstorm cloud"
+                           className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             e.currentTarget.nextElementSibling.style.display = 'flex';
+                           }}
+                         />
+                         <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-800 to-gray-900 items-center justify-center text-center p-3">
+                           <div>
+                             <div className="text-4xl mb-1 filter drop-shadow-lg">⛈️</div>
+                             <div className="text-sm font-bold text-white mb-1">CUMULONIMBUS (Cb)</div>
+                             <div className="text-xs text-yellow-200 leading-tight">Örs şekilli<br/>fırtına bulutu</div>
+                           </div>
+                         </div>
+                         <div className="absolute top-1 right-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">CH 3</div>
+                         <div className="absolute bottom-1 left-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">CUMULONIMBUS ⚠️</div>
+                       </div>
                        <div className="text-sm space-y-1">
                          <p><strong>Denizcilik Önemi:</strong> ⚠️ Fırtına, şimşek tehlikesi</p>
                          <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
@@ -681,16 +698,25 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-gray-400 text-gray-700">CH 2</Badge>
                         <h4 className="font-semibold">Stratocumulus (Sc)</h4>
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 rounded-lg overflow-hidden border border-gray-300 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-gray-400/20"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-300 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop&auto=format"
+                          alt="Stratocumulus Clouds - Low layered lumpy clouds"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">🌫️</div>
                             <div className="text-sm font-bold text-gray-800 mb-1">STRATOCUMULUS (Sc)</div>
                             <div className="text-xs text-gray-600 leading-tight">Yuvarlak kütleli<br/>tabakalı bulut</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-gray-800">CH 2</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 2</div>
+                        <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">STRATOCUMULUS (Sc)</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Değişken hava koşulları</p>
@@ -707,17 +733,25 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Stratus (St)</h4>
                         <Eye className="h-4 w-4 text-gray-600" />
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-gray-200 via-gray-400 to-gray-500 rounded-lg overflow-hidden border border-gray-400 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-gray-300/30 to-gray-600/40"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-400 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1561089489-f13d5e730d72?w=400&h=300&fit=crop&auto=format"
+                          alt="Stratus Clouds - Low flat gray layer clouds and fog"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-400 to-gray-500 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">🌁</div>
                             <div className="text-sm font-bold text-gray-800 mb-1">STRATUS (St)</div>
                             <div className="text-xs text-gray-600 leading-tight">Düz tabaka<br/>sis benzeri</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-gray-800">CH 0</div>
-                        <div className="absolute bottom-1 left-1 text-xs text-red-600">⚠️ SİS</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 0</div>
+                        <div className="absolute bottom-1 left-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">⚠️ SİS RISKI</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Sis, görüş problemi</p>
@@ -749,16 +783,25 @@ export const WeatherCalculations = () => {
                         <Badge variant="secondary" className="bg-green-100 text-green-800">CH 4</Badge>
                         <h4 className="font-semibold">Altocumulus (Ac)</h4>
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-green-100 via-blue-200 to-green-300 rounded-lg overflow-hidden border border-green-300 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-green-400/20"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-300 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=400&h=300&fit=crop&auto=format"
+                          alt="Altocumulus Clouds - Mid-level patchy clouds"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-green-100 via-blue-200 to-green-300 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">☁️</div>
                             <div className="text-sm font-bold text-green-800 mb-1">ALTOCUMULUS (Ac)</div>
                             <div className="text-xs text-green-700 leading-tight">Orta seviye<br/>parçalı bulutlar</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-green-800">CH 4</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 4</div>
+                        <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">ALTOCUMULUS (Ac)</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Hava değişikliği yaklaşıyor</p>
@@ -774,16 +817,25 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-green-500 text-green-700">CH 5</Badge>
                         <h4 className="font-semibold">Altostratus (As)</h4>
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-green-200 via-gray-300 to-green-400 rounded-lg overflow-hidden border border-green-400 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-gray-200/40 to-green-500/30"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-400 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1436891620584-47fd0e565afb?w=400&h=300&fit=crop&auto=format"
+                          alt="Altostratus Clouds - Gray mid-level layer covering sun"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-green-200 via-gray-300 to-green-400 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">🌥️</div>
                             <div className="text-sm font-bold text-green-800 mb-1">ALTOSTRATUS (As)</div>
                             <div className="text-xs text-green-700 leading-tight">Gri orta tabaka<br/>güneşi örtücü</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-green-800">CH 5</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 5</div>
+                        <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">ALTOSTRATUS (As)</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Sistematik yağış yaklaşıyor</p>
@@ -815,16 +867,25 @@ export const WeatherCalculations = () => {
                         <Badge variant="secondary" className="bg-purple-100 text-purple-800">CH 8</Badge>
                         <h4 className="font-semibold">Cirrus (Ci)</h4>
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 rounded-lg overflow-hidden border border-purple-300 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-transparent to-purple-300/30"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop&auto=format"
+                          alt="Cirrus Clouds - High wispy ice crystal clouds"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-100 via-blue-100 to-purple-200 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">🤍</div>
                             <div className="text-sm font-bold text-purple-800 mb-1">CIRRUS (Ci)</div>
                             <div className="text-xs text-purple-700 leading-tight">İnce tüy gibi<br/>buz kristal bulut</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-purple-800">CH 8</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 8</div>
+                        <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CIRRUS (Ci)</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> 48-72 saat sonra hava bozulması</p>
@@ -840,16 +901,25 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-purple-500 text-purple-700">CH 9</Badge>
                         <h4 className="font-semibold">Cirrocumulus (Cc)</h4>
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-purple-50 via-white to-purple-150 rounded-lg overflow-hidden border border-purple-200 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-purple-100/30 to-purple-200/40"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-200 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1552399923-1b420df6c5a3?w=400&h=300&fit=crop&auto=format"
+                          alt="Cirrocumulus Clouds - High patchy mackerel sky"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-purple-150 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">⚪</div>
                             <div className="text-sm font-bold text-purple-800 mb-1">CIRROCUMULUS (Cc)</div>
                             <div className="text-xs text-purple-700 leading-tight">Balık pulu<br/>ince kümecikler</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-purple-800">CH 9</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 9</div>
+                        <div className="absolute bottom-1 left-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CIRROCUMULUS (Cc)</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> "Balık pulu" - hava değişimi</p>
@@ -865,17 +935,25 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-purple-600 text-purple-800">CH 6-7</Badge>
                         <h4 className="font-semibold">Cirrostratus (Cs)</h4>
                       </div>
-                      <div className="relative w-full h-32 bg-gradient-to-br from-purple-100 via-gray-100 to-purple-200 rounded-lg overflow-hidden border border-purple-300 shadow-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-yellow-100/20 to-purple-300/30"></div>
-                        <div className="relative h-full flex items-center justify-center text-center p-3">
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
+                        <img 
+                          src="https://images.unsplash.com/photo-1465147963099-d75a7eb5eafc?w=400&h=300&fit=crop&auto=format"
+                          alt="Cirrostratus Clouds - High thin layer with sun halo"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-purple-100 via-gray-100 to-purple-200 items-center justify-center text-center p-3">
                           <div>
                             <div className="text-4xl mb-1 filter drop-shadow-sm">⭕</div>
                             <div className="text-sm font-bold text-purple-800 mb-1">CIRROSTRATUS (Cs)</div>
                             <div className="text-xs text-purple-700 leading-tight">İnce tabaka<br/>güneş halesi</div>
                           </div>
                         </div>
-                        <div className="absolute top-1 right-1 bg-white/80 px-1 rounded text-xs font-medium text-purple-800">CH 6-7</div>
-                        <div className="absolute bottom-1 left-1 text-xs text-yellow-600">☀️ HALE</div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">CH 6-7</div>
+                        <div className="absolute bottom-1 left-1 bg-yellow-500/90 text-black px-2 py-1 rounded text-xs font-bold">☀️ HALE</div>
                       </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Güneş/ay halesi - fırtına yaklaşıyor</p>
