@@ -1,14 +1,25 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Cloud, Compass, Wind, Droplets, Sun, Thermometer, Eye, Info } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CloudRain, Wind, Waves, Compass, Navigation, Activity, Calculator, TrendingUp, Cloud, Eye, AlertTriangle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalculationResult } from "@/components/calculations/CalculationResult";
+import { format } from "date-fns";
+import { tr } from "date-fns/locale";
+import { Separator } from "@/components/ui/separator";
+
+// Import new cloud images
+import cumulusClouds from "@/assets/weather/cumulus-clouds.jpg";
+import cumulonimbusClouds from "@/assets/weather/cumulonimbus-clouds.jpg";
+import stratusClouds from "@/assets/weather/stratus-clouds.jpg";
+import cirrusClouds from "@/assets/weather/cirrus-clouds.jpg";
+import stormClouds from "@/assets/weather/storm-clouds.jpg";
 
 interface MeteoOceanData {
   // Wind Parameters
@@ -629,11 +640,11 @@ export const WeatherCalculations = () => {
                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">CH 1</Badge>
                          <h4 className="font-semibold">Cumulus (Cu)</h4>
                        </div>
-                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-200 shadow-md">
-                         <img 
-                           src="https://www.weather.gov/images/lmk/soo/cumulus.jpg"
-                           alt="Cumulus Clouds - Fair weather puffy white clouds"
-                           className="w-full h-full object-cover"
+                                             <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-200 shadow-md">
+                        <img 
+                          src={cumulusClouds}
+                          alt="Cumulus Clouds - Fair weather puffy white clouds"
+                          className="w-full h-full object-cover"
                            onError={(e) => {
                              e.currentTarget.style.display = 'none';
                              e.currentTarget.nextElementSibling.style.display = 'flex';
@@ -664,11 +675,11 @@ export const WeatherCalculations = () => {
                          <h4 className="font-semibold">Cumulonimbus (Cb)</h4>
                          <AlertTriangle className="h-4 w-4 text-red-600" />
                        </div>
-                        <div className="relative w-full h-32 rounded-lg overflow-hidden border border-red-300 shadow-lg">
-                         <img 
-                           src="https://www.weather.gov/images/lmk/soo/cumulonimbus2.jpg"
-                           alt="Cumulonimbus Storm Cloud - Dangerous thunderstorm cloud"
-                           className="w-full h-full object-cover"
+                                               <div className="relative w-full h-32 rounded-lg overflow-hidden border border-red-300 shadow-lg">
+                        <img 
+                          src={cumulonimbusClouds}
+                          alt="Cumulonimbus Storm Cloud - Dangerous thunderstorm cloud"
+                          className="w-full h-full object-cover"
                            onError={(e) => {
                              e.currentTarget.style.display = 'none';
                              e.currentTarget.nextElementSibling.style.display = 'flex';
@@ -700,7 +711,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-300 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/stratocumulus.jpg"
+                          src={stratusClouds}
                           alt="Stratocumulus Clouds - Low layered lumpy clouds"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -735,7 +746,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-gray-400 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/stratus.jpg"
+                          src={stratusClouds}
                           alt="Stratus Clouds - Low flat gray layer clouds and fog"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -785,7 +796,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-300 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/altocumulus.jpg"
+                          src={cumulusClouds}
                           alt="Altocumulus Clouds - Mid-level patchy clouds"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -819,7 +830,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-400 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/altostratus2.jpg"
+                          src={stratusClouds}
                           alt="Altostratus Clouds - Gray mid-level layer covering sun"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -869,7 +880,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/cirrus.jpg"
+                          src={cirrusClouds}
                           alt="Cirrus Clouds - High wispy ice crystal clouds"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -903,7 +914,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-200 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/Cirrocumulus.jpg"
+                          src={cirrusClouds}
                           alt="Cirrocumulus Clouds - High patchy mackerel sky"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -937,7 +948,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
                         <img 
-                          src="https://www.weather.gov/images/lmk/soo/cirrostratus.jpg"
+                          src={cirrusClouds}
                           alt="Cirrostratus Clouds - High thin layer with sun halo"
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -987,7 +998,7 @@ export const WeatherCalculations = () => {
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/lmk/soo/mammatus.jpg" 
+                                                   src={stormClouds} 
                          alt="Mammatus - Pouch-like cloud formations"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -1007,7 +1018,7 @@ export const WeatherCalculations = () => {
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/lmk/soo/WallCloud1.jpg" 
+                                                   src={stormClouds} 
                          alt="Wall Cloud - Tornado precursor formation"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -1026,7 +1037,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Shelf Cloud (Raf Bulutu)</h4>
                       </div>
                                              <img 
-                         src="https://www.weather.gov/images/lmk/soo/ShelfCloud1.jpg" 
+                                                   src={stormClouds} 
                          alt="Shelf Cloud - Squall line leading edge"
                          className="w-full h-32 object-cover rounded-lg"
                        />
@@ -1045,7 +1056,7 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Lenticular (Mercek)</h4>
                       </div>
                                              <img 
-                         src="https://www.cloudman.com/atlas/acsl.jpg" 
+                                                   src={cumulusClouds} 
                          alt="Lenticular - Mountain wave clouds"
                          className="w-full h-32 object-cover rounded-lg"
                        />

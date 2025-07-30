@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Waves } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CalculationHero } from "@/components/ui/calculation-hero";
+import oceanWaves from "@/assets/maritime/ocean-waves.jpg";
 import { HydrodynamicsCalculations } from "@/components/calculations/HydrodynamicsCalculations";
 
 const Hydrodynamics = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
@@ -19,12 +21,20 @@ const Hydrodynamics = () => {
           </Link>
         </div>
 
+        {/* Hero Section */}
+        <CalculationHero
+          title="Hidrodinamik Hesaplamalar"
+          description="Gemi direnci, itme gücü ve dalga etkileşimleri"
+          imageSrc={oceanWaves}
+          imageAlt="Ocean Waves"
+        />
+
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Waves className="h-12 w-12 text-blue-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Hidrodinamik Hesaplamaları
+              <span data-translatable>Hidrodinamik Hesaplamalar</span>
             </h1>
           </div>
           <p className="text-lg text-gray-600">

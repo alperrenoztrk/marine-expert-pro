@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { EngineCalculations } from "@/components/calculations/EngineCalculations";
 import { Separator } from "@/components/ui/separator";
 import { DiagramViewer } from "@/components/ui/diagram-viewer";
+import { CalculationHero } from "@/components/ui/calculation-hero";
+import shipBridge from "@/assets/maritime/ship-bridge.jpg";
 
 const Engine = () => {
   return (
@@ -20,6 +22,14 @@ const Engine = () => {
             </Button>
           </Link>
         </div>
+
+        {/* Hero Section */}
+        <CalculationHero
+          title="Makine Hesaplamaları"
+          description="Gemi makineleri ve güç sistemleri hesaplamaları"
+          imageSrc={shipBridge}
+          imageAlt="Ship Bridge Control Panel"
+        />
 
         {/* Header */}
         <div className="text-center space-y-4">

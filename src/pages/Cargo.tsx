@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Package } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CalculationHero } from "@/components/ui/calculation-hero";
+import containerShipAerial from "@/assets/maritime/container-ship-aerial.jpg";
 import { CargoCalculations } from "@/components/calculations/CargoCalculations";
 
 const Cargo = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
@@ -19,12 +21,20 @@ const Cargo = () => {
           </Link>
         </div>
 
+        {/* Hero Section */}
+        <CalculationHero
+          title="Kargo Hesaplamaları"
+          description="Yük planlama, konteyner optimizasyonu ve kargo yönetimi"
+          imageSrc={containerShipAerial}
+          imageAlt="Container Ship Aerial View"
+        />
+
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Package className="h-12 w-12 text-blue-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Kargo Operasyonları
+              <span data-translatable>Kargo Hesaplamaları</span>
             </h1>
           </div>
           <p className="text-lg text-gray-600">
