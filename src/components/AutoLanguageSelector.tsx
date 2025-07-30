@@ -120,9 +120,7 @@ export const AutoLanguageSelector = () => {
           {/* Otomatik Algılanan Dil (Eğer farklıysa) */}
           {detectedLanguage !== currentLanguage && (
             <>
-              <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-b">
-                🤖 Otomatik Algılanan
-              </div>
+
               <DropdownMenuItem
                 onClick={() => handleLanguageChange(detectedLanguage)}
                 className="flex items-center justify-between cursor-pointer bg-blue-50 hover:bg-blue-100"
@@ -132,11 +130,9 @@ export const AutoLanguageSelector = () => {
                   <span>{detectedLangInfo.flag}</span>
                   <span className="text-sm font-medium">{detectedLangInfo.name}</span>
                 </div>
-                <span className="text-xs text-blue-600 dark:text-blue-400">Önerilen</span>
+
               </DropdownMenuItem>
-              <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-b">
-                🌍 Tüm Diller
-              </div>
+
             </>
           )}
 

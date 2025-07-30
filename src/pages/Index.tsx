@@ -3,14 +3,14 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, BookmarkPlus, History } from "lucide-react";
+import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings } from "lucide-react";
 import containerShipAerial from "@/assets/maritime/container-ship-aerial.jpg";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
 import { LanguageDebug } from "@/components/ui/language-debug";
-import { GoogleAuth } from "@/components/auth/GoogleAuth";
+
 import { useAdManager, loadAdSenseScript } from "@/hooks/useAdManager";
-import { useUserData } from "@/hooks/useUserData";
+
 import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
@@ -20,7 +20,6 @@ import React from "react"; // Added missing import for React
 // Removed calculation components - they are now on individual pages
 
 const Index = () => {
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   // Safe hooks with error handling
@@ -36,31 +35,7 @@ const Index = () => {
     }
   })();
   
-  const safeUserData = (() => {
-    try {
-      return useUserData(currentUser?.id);
-    } catch (error) {
-      console.warn('UserData hook failed, using fallback:', error);
-      return {
-        calculationHistory: [],
-        userStats: null,
-        saveCalculation: () => Promise.resolve(),
-        toggleFavorite: () => Promise.resolve(),
-        getFavorites: () => [],
-        getRecentCalculations: () => []
-      };
-    }
-  })();
-
   const { shouldShowAd, trackInteraction } = safeAdManager;
-  const { 
-    calculationHistory, 
-    userStats, 
-    saveCalculation, 
-    toggleFavorite, 
-    getFavorites,
-    getRecentCalculations 
-  } = safeUserData;
 
   // Load AdSense script safely
   useEffect(() => {
@@ -123,57 +98,21 @@ const Index = () => {
         
         <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-blue-200/50 dark:border-blue-800/50 shadow-lg dark:shadow-gray-900/30">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-                <Ship className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100" data-translatable>
-                  Denizcilik Hesaplayıcısı
-                </h1>
-                <p className="text-sm text-muted-foreground" data-translatable>
-                  Profesyonel maritim hesaplamalar
-                </p>
-              </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100" data-translatable>
+                Denizcilik Hesaplayıcısı
+              </h1>
+              <p className="text-sm text-muted-foreground" data-translatable>
+                Profesyonel maritim hesaplamalar
+              </p>
             </div>
             
             <div className="flex items-center gap-2 sm:gap-3">
               <AutoLanguageSelector />
-              <GoogleAuth onAuthChange={setCurrentUser} />
             </div>
           </div>
 
-          {/* User Stats (if logged in) */}
-          {currentUser && userStats && (
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-lg p-3 mb-4">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1">
-                    <Settings className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    <span data-translatable>Toplam:</span> {userStats.total_calculations}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <BookmarkPlus className="w-4 h-4 text-purple-600" />
-                    <span data-translatable>Favori:</span> {getFavorites().length}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <History className="w-4 h-4 text-teal-600" />
-                    <span data-translatable>Seviye:</span> {userStats.user_level}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="text-xs">
-                    <BookmarkPlus className="w-3 h-3 mr-1" />
-                    <span data-translatable>Favoriler</span>
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs">
-                    <History className="w-3 h-3 mr-1" />
-                    <span data-translatable>Geçmiş</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden shadow-md">
