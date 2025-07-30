@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
-import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb, Trash2 } from "lucide-react";
+import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb, Trash2, Printer, Copy, Share2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -254,14 +254,180 @@ const Formulas = () => {
             </div>
 
             {aiResponse && (
-              <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-muted/30 rounded-lg">
-                <h4 className="font-semibold text-primary mb-2 flex items-center gap-2 text-sm sm:text-base">
-                  <Brain className="w-4 h-4 flex-shrink-0" />
-                  <span data-translatable>AI Yanıtı:</span>
-                </h4>
-                <div className="text-xs sm:text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                  {aiResponse}
-                </div>
+              <div className="mt-4 sm:mt-6">
+                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 bg-primary/20 rounded-full">
+                          <Brain className="w-5 h-5 text-primary" />
+                        </div>
+                        <h4 className="font-semibold text-lg text-primary">
+                          <span data-translatable>AI Yanıtı</span>
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            navigator.clipboard.writeText(aiResponse);
+                            toast.success("Yanıt kopyalandı!");
+                          }}
+                          className="text-muted-foreground hover:text-primary"
+                          title="Kopyala"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const printWindow = window.open('', '_blank');
+                            if (printWindow) {
+                              printWindow.document.write(`
+                                <html>
+                                  <head>
+                                    <title>AI Yanıtı - Maritime Calculator</title>
+                                    <style>
+                                      body { font-family: system-ui; padding: 40px; max-width: 800px; margin: 0 auto; }
+                                      h1 { color: #0066cc; }
+                                      .question { background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+                                      .answer { line-height: 1.6; }
+                                      @media print { body { padding: 20px; } }
+                                    </style>
+                                  </head>
+                                  <body>
+                                    <h1>Maritime Calculator - AI Yanıtı</h1>
+                                    <div class="question">
+                                      <strong>Soru:</strong> ${question}
+                                    </div>
+                                    <div class="answer">
+                                      ${aiResponse.replace(/\n/g, '<br>')}
+                                    </div>
+                                    <hr style="margin-top: 40px;">
+                                    <p style="text-align: center; color: #666; font-size: 12px;">
+                                      ${new Date().toLocaleString('tr-TR')} - Maritime Calculator
+                                    </p>
+                                  </body>
+                                </html>
+                              `);
+                              printWindow.document.close();
+                              printWindow.print();
+                            }
+                          }}
+                          className="text-muted-foreground hover:text-primary"
+                          title="Yazdır"
+                        >
+                          <Printer className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            if (navigator.share) {
+                              navigator.share({
+                                title: 'Maritime Calculator - AI Yanıtı',
+                                text: `Soru: ${question}\n\nCevap: ${aiResponse}`
+                              }).catch(() => {});
+                            } else {
+                              navigator.clipboard.writeText(`Soru: ${question}\n\nCevap: ${aiResponse}`);
+                              toast.success("Paylaşım metni kopyalandı!");
+                            }
+                          }}
+                          className="text-muted-foreground hover:text-primary"
+                          title="Paylaş"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm sm:text-base leading-relaxed text-foreground/90 space-y-2">
+                      {aiResponse.split('\n').map((line, index) => {
+                        // Başlıkları vurgula
+                        if (line.startsWith('**') && line.endsWith('**')) {
+                          return (
+                            <h3 key={index} className="text-lg font-bold text-primary mt-4 mb-2 flex items-center gap-2">
+                              <span className="w-1 h-5 bg-primary rounded-full"></span>
+                              {line.replace(/\*\*/g, '')}
+                            </h3>
+                          );
+                        }
+                        
+                        // Alt başlıklar (bold text)
+                        if (line.includes('**') && !line.startsWith('**')) {
+                          const parts = line.split('**');
+                          return (
+                            <p key={index} className="mb-2">
+                              {parts.map((part, i) => 
+                                i % 2 === 1 ? <strong key={i} className="text-primary font-semibold">{part}</strong> : part
+                              )}
+                            </p>
+                          );
+                        }
+                        
+                        // Liste elemanları
+                        if (line.startsWith('- ') || line.startsWith('• ')) {
+                          return (
+                            <div key={index} className="flex items-start gap-2 ml-2">
+                              <span className="text-primary mt-1.5">•</span>
+                              <span className="flex-1">{line.substring(2)}</span>
+                            </div>
+                          );
+                        }
+                        
+                        // Numaralı liste
+                        if (/^\d+\./.test(line)) {
+                          const [num, ...content] = line.split('.');
+                          return (
+                            <div key={index} className="flex items-start gap-3 ml-2">
+                              <span className="text-primary font-semibold min-w-[20px]">{num}.</span>
+                              <span className="flex-1">{content.join('.').trim()}</span>
+                            </div>
+                          );
+                        }
+                        
+                        // Kod blokları (backtick ile)
+                        if (line.includes('`')) {
+                          const parts = line.split('`');
+                          return (
+                            <p key={index} className="mb-2">
+                              {parts.map((part, i) => 
+                                i % 2 === 1 ? (
+                                  <code key={i} className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary">
+                                    {part}
+                                  </code>
+                                ) : part
+                              )}
+                            </p>
+                          );
+                        }
+                        
+                        // Formül satırları (= içeren)
+                        if (line.includes('=') && (line.includes('×') || line.includes('+') || line.includes('-') || line.includes('/'))) {
+                          return (
+                            <div key={index} className="bg-muted/50 p-2 rounded-md font-mono text-sm border border-primary/20">
+                              {line}
+                            </div>
+                          );
+                        }
+                        
+                        // Normal paragraf
+                        if (line.trim()) {
+                          return (
+                            <p key={index} className="mb-2">
+                              {line}
+                            </p>
+                          );
+                        }
+                        
+                        return <div key={index} className="h-2"></div>;
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
@@ -296,14 +462,20 @@ const Formulas = () => {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3 max-h-60 overflow-y-auto">
+              <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
                 {conversationHistory.slice(-5).map((item, index) => (
-                  <div key={index} className="border-l-2 border-primary/20 pl-3">
-                    <div className="text-sm font-medium text-primary">
-                      Soru: {item.question}
+                  <div key={index} className="bg-muted/30 rounded-lg p-3 border border-primary/10 hover:border-primary/30 transition-colors">
+                    <div className="flex items-start gap-2 mb-2">
+                      <MessageCircle className="w-4 h-4 text-primary mt-0.5" />
+                      <div className="text-sm font-medium text-primary flex-1">
+                        {item.question}
+                      </div>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                      {item.answer}
+                    <div className="flex items-start gap-2">
+                      <Brain className="w-4 h-4 text-muted-foreground mt-0.5" />
+                      <div className="text-xs text-muted-foreground line-clamp-3 flex-1">
+                        {item.answer.replace(/\*\*/g, '').replace(/\n/g, ' ')}
+                      </div>
                     </div>
                   </div>
                 ))}
