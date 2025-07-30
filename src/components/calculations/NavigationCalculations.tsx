@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle } from "lucide-react";
+import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe } from "lucide-react";
 import { toast } from "sonner";
 
 interface NavigationData {
@@ -48,6 +48,12 @@ interface NavigationData {
   // Celestial navigation
   altitude: number; // Sextant altitude (degrees)
   azimuth: number; // Celestial body azimuth (degrees)
+  
+  // Astronomical data
+  date: string; // Date for calculations (YYYY-MM-DD)
+  timeZone: number; // Time zone offset from UTC (hours)
+  observerLatitude: number; // Observer latitude (degrees)
+  observerLongitude: number; // Observer longitude (degrees)
   gha: number; // Greenwich Hour Angle (degrees)
   declination: number; // Declination (degrees)
   
@@ -136,6 +142,13 @@ export const NavigationCalculations = () => {
     highWaterHeight: 4.5, lowWaterHeight: 0.5,
     currentTime: "0900",
     altitude: 0, azimuth: 0, gha: 0, declination: 0,
+    
+    // Astronomical data
+    date: new Date().toISOString().split('T')[0],
+    timeZone: 3, // Turkey time zone
+    observerLatitude: 41.0082,
+    observerLongitude: 28.9784,
+    
     rudderAngle: 15, shipLength: 150, shipSpeed: 6
   });
 
@@ -145,6 +158,129 @@ export const NavigationCalculations = () => {
   const toRadians = (degrees: number) => degrees * Math.PI / 180;
   const toDegrees = (radians: number) => radians * 180 / Math.PI;
   const normalizeAngle = (angle: number) => ((angle % 360) + 360) % 360;
+
+  // Astronomical calculation functions
+  const calculateJulianDay = (date: Date) => {
+    const a = Math.floor((14 - (date.getMonth() + 1)) / 12);
+    const y = date.getFullYear() + 4800 - a;
+    const m = (date.getMonth() + 1) + 12 * a - 3;
+    return date.getDate() + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  };
+
+  const calculateSunPosition = (jd: number, latitude: number, longitude: number) => {
+    const n = jd - 2451545.0;
+    const L = (280.460 + 0.9856474 * n) % 360;
+    const g = toRadians((357.528 + 0.9856003 * n) % 360);
+    const lambda = toRadians(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g));
+    
+    const alpha = Math.atan2(Math.cos(toRadians(23.439)) * Math.sin(lambda), Math.cos(lambda));
+    const delta = Math.asin(Math.sin(toRadians(23.439)) * Math.sin(lambda));
+    
+    const gmst = (280.46061837 + 360.98564736629 * n) % 360;
+    const lmst = (gmst + longitude) % 360;
+    const ha = toRadians(lmst - toDegrees(alpha));
+    
+    const lat_rad = toRadians(latitude);
+    const h = Math.asin(Math.sin(lat_rad) * Math.sin(delta) + Math.cos(lat_rad) * Math.cos(delta) * Math.cos(ha));
+    const azimuth = Math.atan2(-Math.sin(ha), Math.tan(delta) * Math.cos(lat_rad) - Math.sin(lat_rad) * Math.cos(ha));
+    
+    return {
+      altitude: toDegrees(h),
+      azimuth: (toDegrees(azimuth) + 360) % 360,
+      declination: toDegrees(delta),
+      hourAngle: toDegrees(ha)
+    };
+  };
+
+  const calculateSunriseSunset = (date: Date, latitude: number, longitude: number, timeZone: number) => {
+    const jd = calculateJulianDay(date);
+    const n = jd - 2451545.0;
+    const L = (280.460 + 0.9856474 * n) % 360;
+    const g = toRadians((357.528 + 0.9856003 * n) % 360);
+    const lambda = toRadians(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g));
+    const delta = Math.asin(Math.sin(toRadians(23.439)) * Math.sin(lambda));
+    
+    const lat_rad = toRadians(latitude);
+    const h0 = -0.833; // Civil twilight
+    const h0_rad = toRadians(h0);
+    
+    const cosH = (Math.sin(h0_rad) - Math.sin(lat_rad) * Math.sin(delta)) / (Math.cos(lat_rad) * Math.cos(delta));
+    
+    if (Math.abs(cosH) > 1) {
+      return {
+        sunrise: "N/A (Polar day/night)",
+        sunset: "N/A (Polar day/night)",
+        civilTwilightBegin: "N/A",
+        civilTwilightEnd: "N/A",
+        nauticalTwilightBegin: "N/A",
+        nauticalTwilightEnd: "N/A",
+        astronomicalTwilightBegin: "N/A",
+        astronomicalTwilightEnd: "N/A"
+      };
+    }
+    
+    const H = toDegrees(Math.acos(cosH));
+    const transitTime = (12 - longitude / 15) + timeZone;
+    const sunrise = transitTime - H / 15;
+    const sunset = transitTime + H / 15;
+    
+    // Calculate twilight times
+    const calculateTwilight = (angle: number) => {
+      const h_rad = toRadians(angle);
+      const cosH_twilight = (Math.sin(h_rad) - Math.sin(lat_rad) * Math.sin(delta)) / (Math.cos(lat_rad) * Math.cos(delta));
+      if (Math.abs(cosH_twilight) > 1) return { begin: "N/A", end: "N/A" };
+      const H_twilight = toDegrees(Math.acos(cosH_twilight));
+      return {
+        begin: transitTime - H_twilight / 15,
+        end: transitTime + H_twilight / 15
+      };
+    };
+    
+    const civilTwilight = calculateTwilight(-6);
+    const nauticalTwilight = calculateTwilight(-12);
+    const astronomicalTwilight = calculateTwilight(-18);
+    
+    const formatTime = (time: number | string) => {
+      if (typeof time === 'string') return time;
+      const hours = Math.floor(time);
+      const minutes = Math.round((time - hours) * 60);
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    };
+    
+    return {
+      sunrise: formatTime(sunrise),
+      sunset: formatTime(sunset),
+      civilTwilightBegin: formatTime(civilTwilight.begin),
+      civilTwilightEnd: formatTime(civilTwilight.end),
+      nauticalTwilightBegin: formatTime(nauticalTwilight.begin),
+      nauticalTwilightEnd: formatTime(nauticalTwilight.end),
+      astronomicalTwilightBegin: formatTime(astronomicalTwilight.begin),
+      astronomicalTwilightEnd: formatTime(astronomicalTwilight.end)
+    };
+  };
+
+  const calculateMoonPhase = (date: Date) => {
+    const jd = calculateJulianDay(date);
+    const daysSinceNewMoon = (jd - 2451549.5) % 29.530588853;
+    const phase = daysSinceNewMoon / 29.530588853;
+    
+    let phaseName = "";
+    if (phase < 0.0625) phaseName = "Yeni Ay";
+    else if (phase < 0.1875) phaseName = "Hilal";
+    else if (phase < 0.3125) phaseName = "İlk Dördün";
+    else if (phase < 0.4375) phaseName = "Şişkin Ay";
+    else if (phase < 0.5625) phaseName = "Dolunay";
+    else if (phase < 0.6875) phaseName = "Şişkin Ay (Azalan)";
+    else if (phase < 0.8125) phaseName = "Son Dördün";
+    else if (phase < 0.9375) phaseName = "Hilal (Azalan)";
+    else phaseName = "Yeni Ay";
+    
+    return {
+      phase: (phase * 100).toFixed(1),
+      phaseName,
+      illumination: (Math.cos(Math.PI * phase) * -50 + 50).toFixed(1)
+    };
+  };
 
   // Great Circle calculations
   const calculateGreatCircle = () => {
@@ -493,78 +629,142 @@ export const NavigationCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="route" className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="route">Rota</TabsTrigger>
               <TabsTrigger value="current">Akıntı</TabsTrigger>
               <TabsTrigger value="compass">Pusula</TabsTrigger>
               <TabsTrigger value="radar">Radar</TabsTrigger>
               <TabsTrigger value="tidal">Gelgit</TabsTrigger>
               <TabsTrigger value="celestial">Göksel</TabsTrigger>
+              <TabsTrigger value="astronomical">Astronomik</TabsTrigger>
             </TabsList>
 
             <TabsContent value="route" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="lat1">Başlangıç Enlemi (°)</Label>
-                  <Input
-                    id="lat1"
-                    type="number"
-                    step="0.0001"
-                    value={data.lat1}
-                    onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lon1">Başlangıç Boylamı (°)</Label>
-                  <Input
-                    id="lon1"
-                    type="number"
-                    step="0.0001"
-                    value={data.lon1}
-                    onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lat2">Varış Enlemi (°)</Label>
-                  <Input
-                    id="lat2"
-                    type="number"
-                    step="0.0001"
-                    value={data.lat2}
-                    onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lon2">Varış Boylamı (°)</Label>
-                  <Input
-                    id="lon2"
-                    type="number"
-                    step="0.0001"
-                    value={data.lon2}
-                    onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="speed">Gemi Hızı (knot)</Label>
-                  <Input
-                    id="speed"
-                    type="number"
-                    step="0.1"
-                    value={data.speed}
-                    onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="course">Rota (°)</Label>
-                  <Input
-                    id="course"
-                    type="number"
-                    step="0.1"
-                    value={data.course}
-                    onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-              </div>
+              {/* Coordinate Input Section */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <MapPin className="h-5 w-5 text-blue-500" />
+                    Konum Koordinatları
+                  </CardTitle>
+                  <CardDescription>
+                    Enlem/Boylam koordinatlarını ondalık derece formatında girin (örn: 41.0082, 28.9784)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    {/* Departure Position */}
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-green-700 flex items-center gap-2">
+                        <Navigation className="h-4 w-4" />
+                        Başlangıç Konumu
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="lat1">Enlem (°) - Kuzey (+) / Güney (-)</Label>
+                          <Input
+                            id="lat1"
+                            type="number"
+                            step="0.0001"
+                            value={data.lat1}
+                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            placeholder="41.0082 (İstanbul)"
+                            className="text-right"
+                          />
+                          <div className="text-xs text-gray-500">
+                            Örnekler: İstanbul (41.0082), İzmir (38.4237), Antalya (36.8969)
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lon1">Boylam (°) - Doğu (+) / Batı (-)</Label>
+                          <Input
+                            id="lon1"
+                            type="number"
+                            step="0.0001"
+                            value={data.lon1}
+                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            placeholder="28.9784 (İstanbul)"
+                            className="text-right"
+                          />
+                          <div className="text-xs text-gray-500">
+                            Örnekler: İstanbul (28.9784), İzmir (27.1428), Antalya (30.7133)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Arrival Position */}
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-red-700 flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        Varış Konumu
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="lat2">Enlem (°) - Kuzey (+) / Güney (-)</Label>
+                          <Input
+                            id="lat2"
+                            type="number"
+                            step="0.0001"
+                            value={data.lat2}
+                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            placeholder="36.8969 (Antalya)"
+                            className="text-right"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lon2">Boylam (°) - Doğu (+) / Batı (-)</Label>
+                                                     <Input
+                             id="lon2"
+                             type="number"
+                             step="0.0001"
+                             value={data.lon2}
+                             onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                             placeholder="30.7133 (Antalya)"
+                             className="text-right"
+                           />
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </CardContent>
+               </Card>
+
+               {/* Ship Data */}
+               <Card>
+                 <CardHeader className="pb-3">
+                   <CardTitle className="flex items-center gap-2 text-lg">
+                     <Ship className="h-5 w-5 text-blue-600" />
+                     Gemi Verileri
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <div className="grid grid-cols-2 gap-4">
+                     <div className="space-y-2">
+                       <Label htmlFor="speed">Hız (knot)</Label>
+                       <Input
+                         id="speed"
+                         type="number"
+                         step="0.1"
+                         value={data.speed}
+                         onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                         placeholder="12"
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="course">Rota (°)</Label>
+                       <Input
+                         id="course"
+                         type="number"
+                         step="0.1"
+                         value={data.course}
+                         onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                         placeholder="090"
+                       />
+                     </div>
+                   </div>
+                 </CardContent>
+               </Card>
             </TabsContent>
 
             <TabsContent value="current" className="space-y-4">
@@ -752,6 +952,169 @@ export const NavigationCalculations = () => {
                   />
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="astronomical" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="date">Tarih</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={data.date}
+                    onChange={(e) => updateData('date', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="timeZone">Saat Dilimi (UTC'den fark)</Label>
+                  <Input
+                    id="timeZone"
+                    type="number"
+                    step="0.5"
+                    value={data.timeZone}
+                    onChange={(e) => updateData('timeZone', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="observerLatitude">Gözlemci Enlemi (°)</Label>
+                  <Input
+                    id="observerLatitude"
+                    type="number"
+                    step="0.0001"
+                    value={data.observerLatitude}
+                    onChange={(e) => updateData('observerLatitude', parseFloat(e.target.value) || 0)}
+                    placeholder="41.0082 (İstanbul)"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="observerLongitude">Gözlemci Boylamı (°)</Label>
+                  <Input
+                    id="observerLongitude"
+                    type="number"
+                    step="0.0001"
+                    value={data.observerLongitude}
+                    onChange={(e) => updateData('observerLongitude', parseFloat(e.target.value) || 0)}
+                    placeholder="28.9784 (İstanbul)"
+                  />
+                </div>
+              </div>
+              
+              {/* Astronomical Results */}
+              {(() => {
+                const selectedDate = new Date(data.date);
+                const sunTimes = calculateSunriseSunset(selectedDate, data.observerLatitude, data.observerLongitude, data.timeZone);
+                const moonPhase = calculateMoonPhase(selectedDate);
+                const jd = calculateJulianDay(selectedDate);
+                const sunPos = calculateSunPosition(jd, data.observerLatitude, data.observerLongitude);
+                
+                return (
+                  <div className="space-y-4 mt-6">
+                    {/* Sun Times */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <Sun className="h-5 w-5 text-yellow-500" />
+                          Güneş Zamanları
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="font-medium">Gündoğumu:</span>
+                              <Badge variant="outline" className="gap-1">
+                                <Sunrise className="h-3 w-3" />
+                                {sunTimes.sunrise}
+                              </Badge>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-medium">Günbatımı:</span>
+                              <Badge variant="outline" className="gap-1">
+                                <Sunset className="h-3 w-3" />
+                                {sunTimes.sunset}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-sm">Sivil Alacakaranlık:</span>
+                              <span className="text-sm">{sunTimes.civilTwilightBegin} - {sunTimes.civilTwilightEnd}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-sm">Denizci Alacakaranlığı:</span>
+                              <span className="text-sm">{sunTimes.nauticalTwilightBegin} - {sunTimes.nauticalTwilightEnd}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-sm">Astronomik Alacakaranlık:</span>
+                              <span className="text-sm">{sunTimes.astronomicalTwilightBegin} - {sunTimes.astronomicalTwilightEnd}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Moon Phase */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <Moon className="h-5 w-5 text-blue-400" />
+                          Ay Fazı
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="text-center">
+                            <div className="text-2xl mb-1">{moonPhase.phaseName}</div>
+                            <div className="text-sm text-gray-600">Faz Adı</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl mb-1">{moonPhase.phase}%</div>
+                            <div className="text-sm text-gray-600">Tamamlanma</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl mb-1">{moonPhase.illumination}%</div>
+                            <div className="text-sm text-gray-600">Aydınlanma</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Sun Position */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <Globe className="h-5 w-5 text-orange-500" />
+                          Güneş Konumu
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="font-medium">Yükseklik:</span>
+                              <Badge variant="secondary">{sunPos.altitude.toFixed(2)}°</Badge>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-medium">Azimut:</span>
+                              <Badge variant="secondary">{sunPos.azimuth.toFixed(2)}°</Badge>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="font-medium">Deklinasyon:</span>
+                              <Badge variant="outline">{sunPos.declination.toFixed(2)}°</Badge>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-medium">Saat Açısı:</span>
+                              <Badge variant="outline">{sunPos.hourAngle.toFixed(2)}°</Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                );
+              })()}
             </TabsContent>
 
             <TabsContent value="celestial" className="space-y-4">
