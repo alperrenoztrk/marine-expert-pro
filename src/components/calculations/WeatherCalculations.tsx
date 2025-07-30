@@ -801,7 +801,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-300 shadow-md">
                         <img 
-                          src={cumulusClouds}
+                          src="https://www.weather.gov/media/jetstream/clouds/altocumulus.jpg"
                           alt="Altocumulus Clouds - Mid-level patchy clouds"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -836,7 +836,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-green-400 shadow-md">
                         <img 
-                          src={stratusClouds}
+                          src="https://www.weather.gov/media/jetstream/clouds/altostratus.jpg"
                           alt="Altostratus Clouds - Gray mid-level layer covering sun"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -922,7 +922,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-200 shadow-md">
                         <img 
-                          src={cirrusClouds}
+                          src="https://www.weather.gov/media/jetstream/clouds/cirrocumulus.jpg"
                           alt="Cirrocumulus Clouds - High patchy mackerel sky"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -957,7 +957,7 @@ export const WeatherCalculations = () => {
                       </div>
                       <div className="relative w-full h-32 rounded-lg overflow-hidden border border-purple-300 shadow-md">
                         <img 
-                          src={cirrusClouds}
+                          src="https://www.weather.gov/media/jetstream/clouds/cirrostratus.jpg"
                           alt="Cirrostratus Clouds - High thin layer with sun halo"
                           className="w-full h-full object-cover"
                            onError={(e) => {
@@ -1007,11 +1007,27 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Mammatus</h4>
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
-                                             <img 
-                                                   src={stormClouds} 
-                         alt="Mammatus - Pouch-like cloud formations"
-                         className="w-full h-32 object-cover rounded-lg"
-                       />
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-red-300 shadow-lg">
+                        <img 
+                          src="https://www.weather.gov/media/jetstream/clouds/mammatus.jpg"
+                          alt="Mammatus - Pouch-like cloud formations"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-red-200 via-orange-300 to-red-400 items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-lg">☁️</div>
+                            <div className="text-sm font-bold text-red-900 mb-1">MAMMATUS</div>
+                            <div className="text-xs text-red-700 leading-tight">Meme şekilli<br/>türbülans göstergesi</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">ÖZEL</div>
+                        <div className="absolute bottom-1 left-1 bg-red-500/90 text-white px-2 py-1 rounded text-xs font-bold">MAMMATUS ⚠️</div>
+                      </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Şiddetli türbülans</p>
                         <p><strong>Görüş:</strong> Değişken (1-5 nm)</p>
@@ -1027,11 +1043,27 @@ export const WeatherCalculations = () => {
                         <h4 className="font-semibold">Wall Cloud (Duvar Bulutu)</h4>
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                       </div>
-                                             <img 
-                                                   src={stormClouds} 
-                         alt="Wall Cloud - Tornado precursor formation"
-                         className="w-full h-32 object-cover rounded-lg"
-                       />
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-red-400 shadow-lg">
+                        <img 
+                          src="https://www.weather.gov/media/jetstream/clouds/wallcloud.jpg"
+                          alt="Wall Cloud - Tornado precursor formation"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-gray-700 via-gray-800 to-black items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-lg">🌪️</div>
+                            <div className="text-sm font-bold text-white mb-1">WALL CLOUD</div>
+                            <div className="text-xs text-gray-200 leading-tight">Döner duvar<br/>tornado öncüsü</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-red-600/90 text-white px-2 py-1 rounded text-xs font-bold">ÖZEL</div>
+                        <div className="absolute bottom-1 left-1 bg-red-600/90 text-white px-2 py-1 rounded text-xs font-bold">DUVAR BULUTU ⚠️</div>
+                      </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> ⚠️ Tornado/waterspout tehlikesi</p>
                         <p><strong>Görüş:</strong> Çok kötü (&lt;1 nm)</p>
@@ -1046,11 +1078,27 @@ export const WeatherCalculations = () => {
                         <Badge variant="destructive" className="bg-yellow-100 text-yellow-800">Özel</Badge>
                         <h4 className="font-semibold">Shelf Cloud (Raf Bulutu)</h4>
                       </div>
-                                             <img 
-                                                   src={stormClouds} 
-                         alt="Shelf Cloud - Squall line leading edge"
-                         className="w-full h-32 object-cover rounded-lg"
-                       />
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-yellow-400 shadow-lg">
+                        <img 
+                          src="https://www.weather.gov/media/jetstream/clouds/shelfcloud.jpg"
+                          alt="Shelf Cloud - Squall line leading edge"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-yellow-200 via-gray-400 to-yellow-600 items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-lg">🌊</div>
+                            <div className="text-sm font-bold text-gray-900 mb-1">SHELF CLOUD</div>
+                            <div className="text-xs text-gray-700 leading-tight">Raf şekilli<br/>squall hattı</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-yellow-600/90 text-white px-2 py-1 rounded text-xs font-bold">ÖZEL</div>
+                        <div className="absolute bottom-1 left-1 bg-yellow-600/90 text-white px-2 py-1 rounded text-xs font-bold">RAF BULUTU</div>
+                      </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Squall line yaklaşıyor</p>
                         <p><strong>Görüş:</strong> Hızla azalan (5→&lt;1 nm)</p>
@@ -1065,11 +1113,27 @@ export const WeatherCalculations = () => {
                         <Badge variant="outline" className="border-blue-500 text-blue-700">Özel</Badge>
                         <h4 className="font-semibold">Lenticular (Mercek)</h4>
                       </div>
-                                             <img 
-                                                   src={cumulusClouds} 
-                         alt="Lenticular - Mountain wave clouds"
-                         className="w-full h-32 object-cover rounded-lg"
-                       />
+                      <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-400 shadow-md">
+                        <img 
+                          src="https://www.cloudman.com/gallery/pix/len1_420.jpg"
+                          alt="Lenticular - Mountain wave clouds"
+                          className="w-full h-full object-cover"
+                           onError={(e) => {
+                             e.currentTarget.style.display = 'none';
+                             const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                             if (sibling) sibling.style.display = 'flex';
+                           }}
+                        />
+                        <div className="hidden absolute inset-0 bg-gradient-to-br from-blue-200 via-white to-blue-300 items-center justify-center text-center p-3">
+                          <div>
+                            <div className="text-4xl mb-1 filter drop-shadow-sm">🛸</div>
+                            <div className="text-sm font-bold text-blue-800 mb-1">LENTICULAR</div>
+                            <div className="text-xs text-blue-700 leading-tight">Mercek şekilli<br/>dağ dalgası</div>
+                          </div>
+                        </div>
+                        <div className="absolute top-1 right-1 bg-black/70 px-2 py-1 rounded text-xs font-medium text-white">ÖZEL</div>
+                        <div className="absolute bottom-1 left-1 bg-blue-500/90 text-white px-2 py-1 rounded text-xs font-bold">MERCEK BULUT</div>
+                      </div>
                       <div className="text-sm space-y-1">
                         <p><strong>Denizcilik Önemi:</strong> Güçlü rüzgar dalgaları</p>
                         <p><strong>Görüş:</strong> İyi (10+ nm)</p>
