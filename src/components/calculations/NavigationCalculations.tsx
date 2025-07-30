@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
+import { DirectionInput } from "@/components/DirectionInput";
 
 interface NavigationData {
   // Position coordinates
@@ -1241,38 +1242,65 @@ export const NavigationCalculations = () => {
             </TabsContent>
 
             <TabsContent value="compass" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="variation">Manyetik Sapma (°)</Label>
-                  <Input
-                    id="variation"
-                    type="number"
-                    step="0.1"
-                    value={data.variation}
-                    onChange={(e) => updateData('variation', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="deviation">Pusula Sapmasi (°)</Label>
-                  <Input
-                    id="deviation"
-                    type="number"
-                    step="0.1"
-                    value={data.deviation}
-                    onChange={(e) => updateData('deviation', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="gyroError">Gyro Hatası (°)</Label>
-                  <Input
-                    id="gyroError"
-                    type="number"
-                    step="0.1"
-                    value={data.gyroError}
-                    onChange={(e) => updateData('gyroError', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
-              </div>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Compass className="h-5 w-5 text-blue-600" />
+                    Pusula Düzeltmeleri
+                  </CardTitle>
+                  <CardDescription>
+                    Manyetik sapma, pusula sapması ve gyro hatası değerleri
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* Magnetic Corrections with E-W Buttons */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-red-700 flex items-center gap-2 mb-4">
+                      <Navigation className="h-4 w-4" />
+                      Manyetik Düzeltmeler
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <DirectionInput
+                        label="Manyetik Sapma (Variation)"
+                        value={data.variation}
+                        onChange={(value) => updateData('variation', value)}
+                        placeholder="5.2"
+                      />
+                      <DirectionInput
+                        label="Pusula Sapması (Deviation)"
+                        value={data.deviation}
+                        onChange={(value) => updateData('deviation', value)}
+                        placeholder="2.1"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Other Compass Errors */}
+                  <div>
+                    <h4 className="font-semibold text-green-700 flex items-center gap-2 mb-4">
+                      <Target className="h-4 w-4" />
+                      Diğer Pusula Hataları
+                    </h4>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="gyroError">Gyro Hatası (°)</Label>
+                        <Input
+                          id="gyroError"
+                          type="number"
+                          step="0.1"
+                          value={data.gyroError}
+                          onChange={(e) => updateData('gyroError', parseFloat(e.target.value) || 0)}
+                          placeholder="0.5"
+                          className="text-right"
+                        />
+                        <div className="text-xs text-gray-500">
+                          Gyro compass hatası (pozitif/negatif)
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="radar" className="space-y-4">
