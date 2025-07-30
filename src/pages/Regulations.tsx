@@ -974,13 +974,13 @@ const Regulations = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      variant="outline"
+                      variant="primary"
                       size="sm"
-                      onClick={() => window.open('https://www.imo.org/en/publications/Pages/SOLAS.aspx', '_blank')}
-                      className="flex items-center gap-2"
+                      onClick={() => window.open('https://www.register-iri.com/wp-content/uploads/SOLAS_2014.pdf', '_blank')}
+                      className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
                     >
-                      <BookOpen className="h-4 w-4" />
-                      IMO Publications
+                      <Download className="h-4 w-4" />
+                      Download SOLAS 2014 PDF
                     </Button>
                   </div>
                 </div>
@@ -996,11 +996,11 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://www.imo.org/en/About/Conventions/Pages/International-Convention-for-the-Safety-of-Life-at-Sea-(SOLAS),-1974.aspx', '_blank')}
+                        onClick={() => window.open('https://www.samgongustofa.is/media/english/SOLAS-Consolidated-Edition-2014.pdf', '_blank')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        SOLAS Convention Overview
+                        SOLAS Consolidated 2014 (Full PDF)
                       </Button>
                       <Button
                         variant="outline"
@@ -1047,13 +1047,32 @@ const Regulations = () => {
                         <Download className="h-4 w-4 mr-2" />
                         2024 Amendments Summary (ClassNK)
                       </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://maddenmaritime.files.wordpress.com/2017/01/solas-consolidated-edition-2014.pdf', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        SOLAS 2014 Alternative Mirror
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.gov.si/assets/organi-v-sestavi/URSP/Dokumenti/SOLAS/SOLAS-consolidated-edition-2020.pdf', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        SOLAS 2020 Edition (Slovenia Maritime)
+                      </Button>
                     </div>
                   </div>
                   
                   <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded">
-                    <p className="font-medium mb-1">⚠️ Important Note:</p>
-                    <p>The complete SOLAS consolidated edition is available for purchase from IMO Publications. 
-                    Free resources include summaries, amendments, and implementation guidance.</p>
+                    <p className="font-medium mb-1">📋 Available SOLAS Editions:</p>
+                    <p>• SOLAS 2014 Consolidated Edition - İzlanda Denizcilik İdaresi</p>
+                    <p>• SOLAS 2020 Consolidated Edition - Slovenya Denizcilik Otoritesi</p>
+                    <p className="mt-2 text-xs">Not: En güncel 2024 versiyonu IMO'dan satın alınmalıdır.</p>
                   </div>
                 </div>
               </CardContent>
