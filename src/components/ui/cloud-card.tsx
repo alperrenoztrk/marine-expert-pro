@@ -94,8 +94,22 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
       
       <CardContent className="space-y-4">
         {/* Görsel */}
-        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 bg-gradient-to-br from-sky-100 to-sky-200">
-          <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+          {cloud.imageUrl ? (
+            <img 
+              src={cloud.imageUrl} 
+              alt={`${cloud.name} - ${cloud.descriptionTr}`}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            />
+          ) : null}
+          <div 
+            className={`${cloud.imageUrl ? 'hidden' : 'flex'} absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 items-center justify-center`}
+          >
             <div className="text-center">
               <Cloud className="h-16 w-16 text-sky-600 mb-2" />
               <div className="text-lg font-bold text-sky-800">{cloud.code}</div>
@@ -103,14 +117,19 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
             </div>
           </div>
           <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs backdrop-blur-sm">
               <Thermometer className="h-3 w-3 mr-1" />
               {cloud.altitude}
             </Badge>
           </div>
           <div className="absolute top-2 right-2">
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs backdrop-blur-sm">
               {cloud.altitudeFt}
+            </Badge>
+          </div>
+          <div className="absolute bottom-2 left-2">
+            <Badge className={cn("text-xs font-bold backdrop-blur-sm", getLevelColor(cloud.level))}>
+              {cloud.code}
             </Badge>
           </div>
         </div>
