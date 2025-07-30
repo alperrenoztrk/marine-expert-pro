@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Compass } from "lucide-react";
 import { Link } from "react-router-dom";
-import { CalculationHero } from "@/components/ui/calculation-hero";
-import navigationCompass from "@/assets/maritime/navigation-compass.jpg";
+
 import { NavigationCalculations } from "@/components/calculations/NavigationCalculations";
 
 const Navigation = () => {
@@ -20,14 +19,6 @@ const Navigation = () => {
             </Button>
           </Link>
         </div>
-
-        {/* Hero Section */}
-        <CalculationHero
-          title="Seyir Hesaplamaları"
-          description="Denizcilik navigasyon ve rota planlama araçları"
-          imageSrc={navigationCompass}
-          imageAlt="Navigation Compass"
-        />
 
         {/* Header */}
         <div className="text-center space-y-4">
