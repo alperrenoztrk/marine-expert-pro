@@ -165,7 +165,72 @@ MCT1cm = (Δ × GML) / (100 × LPP)`,
 
 **Kritik Değerler:**
 - GM > 0.15m (IMO minimum)
-- Pozitif stabilite: GM > 0`
+- Pozitif stabilite: GM > 0`,
+
+    "deplasman": `**Deplasman (Displacement) Hesabı:**
+
+Δ = L × B × T × CB × ρ
+
+**Açıklamalar:**
+- Δ: Deplasman (ton)
+- L: Gemi boyu (m)
+- B: Gemi genişliği (m)
+- T: Su çekimi (m)
+- CB: Blok katsayısı (0.5-0.85)
+- ρ: Su yoğunluğu (1.025 t/m³ deniz suyu)
+
+**Örnek:**
+L=100m, B=20m, T=8m, CB=0.7
+Δ = 100 × 20 × 8 × 0.7 × 1.025 = 11,480 ton`,
+
+    "dalga": `**Dalga Hesaplamaları:**
+
+**Dalga Hızı:**
+C = √(gλ/2π) = 1.56√λ (m/s)
+
+**Dalga Periyodu:**
+T = λ/C = √(2πλ/g)
+
+**Dalga Boyu:**
+λ = gT²/2π = 1.56T² (m)
+
+**Açıklamalar:**
+- C: Dalga hızı (m/s)
+- λ: Dalga boyu (m)
+- T: Dalga periyodu (s)
+- g: Yerçekimi (9.81 m/s²)`,
+
+    "direnç": `**Gemi Direnci Hesaplamaları:**
+
+RT = RF + RW + RA + RAP
+
+**Bileşenler:**
+- RF: Sürtünme direnci = ½ρSV²CF
+- RW: Dalga direnci
+- RA: Hava direnci
+- RAP: Apandis direnci
+
+**Sürtünme Katsayısı (ITTC):**
+CF = 0.075/(log₁₀Rn - 2)²
+
+**Reynolds Sayısı:**
+Rn = VL/ν`,
+
+    "güç": `**Gemi Gücü Hesaplamaları:**
+
+**Efektif Güç (PE):**
+PE = RT × V (Watt)
+
+**Şaft Gücü (PS):**
+PS = PE / ηD
+
+**Fren Gücü (PB):**
+PB = PS / ηS
+
+**Verimler:**
+- ηD: Pervane verimi (0.60-0.75)
+- ηS: Şaft verimi (0.97-0.99)
+- ηT: Toplam verim = ηD × ηS`
   };
   
   for (const [key, answer] of Object.entries(localAnswers)) {
@@ -205,11 +270,41 @@ Açıklaman şu bölümleri içermeli:
 4. **Sonucun pratik anlamı nedir?**
 
 Türkçe yanıt ver ve teknik terimler için İngilizce karşılıklarını da belirt. Markdown formatında yanıt ver.`
-      : `Sen denizcilik mühendisliği konusunda uzman bir asistansın. Maritime engineering konularında detaylı yardım ediyorsun.
+      : `Sen denizcilik mühendisliği ve gemi inşaatı konusunda uzman bir asistansın. Ayrıca matematik, fizik ve mühendislik hesaplamaları konusunda da uzmansın.
 
 Soru: ${question}
 
-Lütfen ayrıntılı ve teknik bir açıklama yap. Türkçe yanıt ver ve teknik terimler için İngilizce karşılıklarını da belirt. Markdown formatında yanıt ver.`;
+Lütfen şu kurallara göre yanıt ver:
+
+1. **SAYISAL SORULAR İÇİN:**
+   - İlgili formülleri açıkla
+   - Adım adım çözüm göster
+   - Birimleri mutlaka belirt
+   - Sonucu vurgula ve pratik anlamını açıkla
+   - Mümkünse örnek değerlerle göster
+
+2. **SÖZEL/TEORİK SORULAR İÇİN:**
+   - Konuyu kapsamlı açıkla
+   - Tanımları ver
+   - Pratik uygulamaları belirt
+   - Denizcilik açısından önemini vurgula
+   - İlgili standartları (IMO, SOLAS, MARPOL vb.) belirt
+
+3. **HİBRİT SORULAR İÇİN:**
+   - Hem teoriyi hem hesaplamayı içer
+   - Formüller ve açıklamalar dengeli olmalı
+
+4. **GENEL KURALLAR:**
+   - Türkçe yanıt ver
+   - Teknik terimler için İngilizce karşılıklarını parantez içinde ver
+   - Markdown formatı kullan
+   - Başlıkları, listeleri ve vurguları kullan
+   - Her zaman denizcilik perspektifinden yaklaş
+
+5. **EĞER EMİN DEĞİLSEN:**
+   - "Bu konuda kesin bilgi veremiyorum ama..." diye başla
+   - Genel prensipleri açıkla
+   - İlgili kaynakları öner`;
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -223,10 +318,10 @@ Lütfen ayrıntılı ve teknik bir açıklama yap. Türkçe yanıt ver ve teknik
           }]
         }],
         generationConfig: {
-          temperature: 0.7,
+          temperature: 0.3,
           topK: 1,
-          topP: 1,
-          maxOutputTokens: 2048,
+          topP: 0.95,
+          maxOutputTokens: 4096,
         }
       })
     });

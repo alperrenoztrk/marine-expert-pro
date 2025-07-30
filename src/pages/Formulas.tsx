@@ -1,9 +1,10 @@
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
-import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle } from "lucide-react";
+import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -247,6 +248,68 @@ const Formulas = () => {
         </Card>
 
         {/* Önerilen Sorular - Mobil optimize */}
+        <Card className="shadow-[var(--shadow-card)]">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-yellow-500" />
+              <span data-translatable>Örnek Sorular</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm text-muted-foreground">Sayısal Sorular:</h4>
+                <div className="grid gap-1">
+                  <button 
+                    onClick={() => setQuestion("100 metre boyunda, 20 metre genişliğinde ve 8 metre su çekimi olan bir geminin deplasmanını hesapla")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Deplasman hesaplama
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("50 knot hızı km/saat cinsinden nedir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Birim dönüşümü
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("5 metre yüksekliğindeki dalganın periyodu nedir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Dalga hesaplaması
+                  </button>
+                </div>
+              </div>
+              
+              <Separator className="my-2" />
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm text-muted-foreground">Sözel Sorular:</h4>
+                <div className="grid gap-1">
+                  <button 
+                    onClick={() => setQuestion("SOLAS nedir ve neden önemlidir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Regülasyon açıklaması
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("Gemi stabilitesi nedir ve nasıl ölçülür?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Teknik kavram
+                  </button>
+                  <button 
+                    onClick={() => setQuestion("Ballast suyu yönetimi neden önemlidir?")}
+                    className="text-left text-sm p-2 rounded hover:bg-muted/50 transition-colors"
+                  >
+                    • Çevre ve güvenlik
+                  </button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="shadow-[var(--shadow-card)]">
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-base sm:text-lg" data-translatable>
