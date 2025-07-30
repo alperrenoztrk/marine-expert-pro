@@ -976,11 +976,11 @@ const Regulations = () => {
                     <Button
                       variant="primary"
                       size="sm"
-                      onClick={() => window.open('https://www.register-iri.com/wp-content/uploads/SOLAS_2014.pdf', '_blank')}
+                      onClick={() => window.open('https://www.mar.ist.utl.pt/mventura/Projecto-Navios-I/IMO-Conventions%20(copies)/SOLAS.pdf', '_blank')}
                       className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
                     >
                       <Download className="h-4 w-4" />
-                      Download SOLAS 2014 PDF
+                      Download SOLAS Full PDF
                     </Button>
                   </div>
                 </div>
@@ -996,11 +996,11 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://www.samgongustofa.is/media/english/SOLAS-Consolidated-Edition-2014.pdf', '_blank')}
+                        onClick={() => window.open('https://assets.publishing.service.gov.uk/media/5f7311fce90e0752cb8d2ae9/solas-v-on-safety-of-navigation.pdf', '_blank')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        SOLAS Consolidated 2014 (Full PDF)
+                        SOLAS Chapter V - Safety of Navigation
                       </Button>
                       <Button
                         variant="outline"
@@ -1050,30 +1050,32 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://maddenmaritime.files.wordpress.com/2017/01/solas-consolidated-edition-2014.pdf', '_blank')}
+                        onClick={() => window.open('https://www.dco.uscg.mil/Portals/9/CG-5PC/CG-CVC/CVC3/references/SOLAS%20Consolidated%20Edition%202009.pdf', '_blank')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        SOLAS 2014 Alternative Mirror
+                        SOLAS 2009 Edition (USCG)
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://www.gov.si/assets/organi-v-sestavi/URSP/Dokumenti/SOLAS/SOLAS-consolidated-edition-2020.pdf', '_blank')}
+                        onClick={() => window.open('https://www.ccaimo.com/images/Documents_IMO_Conventions_10_codes_IBC.pdf', '_blank')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        SOLAS 2020 Edition (Slovenia Maritime)
+                        SOLAS + Other IMO Conventions
                       </Button>
                     </div>
                   </div>
                   
-                  <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded">
-                    <p className="font-medium mb-1">📋 Available SOLAS Editions:</p>
-                    <p>• SOLAS 2014 Consolidated Edition - İzlanda Denizcilik İdaresi</p>
-                    <p>• SOLAS 2020 Consolidated Edition - Slovenya Denizcilik Otoritesi</p>
-                    <p className="mt-2 text-xs">Not: En güncel 2024 versiyonu IMO'dan satın alınmalıdır.</p>
-                  </div>
+                                      <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded">
+                      <p className="font-medium mb-1">📋 Available SOLAS Resources:</p>
+                      <p>• Full SOLAS Convention text (IST Lisbon)</p>
+                      <p>• SOLAS Chapter V - Safety of Navigation (UK MCA)</p>
+                      <p>• SOLAS 2009 Consolidated Edition (USCG)</p>
+                      <p>• Historical amendments and related codes</p>
+                      <p className="mt-2 text-xs">Not: En güncel 2024 versiyonu IMO'dan satın alınabilir.</p>
+                    </div>
                 </div>
               </CardContent>
             </Card>
