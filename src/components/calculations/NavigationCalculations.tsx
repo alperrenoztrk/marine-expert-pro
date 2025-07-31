@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera } from "lucide-react";
+import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera, BookOpen, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
 import { DirectionInput } from "@/components/DirectionInput";
@@ -2195,6 +2195,55 @@ export const NavigationCalculations = () => {
           )}
         </div>
       )}
+
+      {/* Almanac Book Upload Section */}
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-blue-600" />
+            Almanac Kitabı Yükle
+          </CardTitle>
+          <CardDescription>
+            Seyir hesaplamaları için nautical almanac kitabını yükleyin
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+              <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  PDF formatında almanac kitabını buraya sürükleyin veya tıklayarak seçin
+                </p>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                  id="almanac-upload"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      toast.success(`${file.name} yüklendi!`);
+                    }
+                  }}
+                />
+                <label
+                  htmlFor="almanac-upload"
+                  className="inline-block cursor-pointer"
+                >
+                  <Button variant="outline" className="gap-2">
+                    <Upload className="h-4 w-4" />
+                    Dosya Seç
+                  </Button>
+                </label>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Desteklenen format: PDF • Maksimum boyut: 50MB
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

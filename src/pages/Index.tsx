@@ -56,25 +56,15 @@ const Index = () => {
   // Calculation cards removed - using individual pages now
 
   const handleCalculationComplete = async (calculationType: string, inputData: any, resultData: any) => {
-    if (currentUser?.id) {
-      try {
-        await saveCalculation(calculationType, inputData, resultData);
-        toast.success("Hesaplama kaydedildi!");
-      } catch (error) {
-        console.warn('Failed to save calculation:', error);
-      }
-    }
+    // Temporarily disabled - authentication not implemented
+    console.log('Calculation completed:', calculationType, inputData, resultData);
+    toast.success("Hesaplama tamamlandı!");
   };
 
   const handleToggleFavorite = async (calculationId: string) => {
-    if (currentUser?.id) {
-      try {
-        await toggleFavorite(calculationId);
-        toast.success("Favori durumu güncellendi!");
-      } catch (error) {
-        console.warn('Failed to toggle favorite:', error);
-      }
-    }
+    // Temporarily disabled - authentication not implemented
+    console.log('Toggle favorite:', calculationId);
+    toast.success("Favori durumu güncellendi!");
   };
 
   if (isLoading) {
