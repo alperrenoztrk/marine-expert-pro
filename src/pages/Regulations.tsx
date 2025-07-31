@@ -399,7 +399,7 @@ const Regulations = () => {
                 <Tabs defaultValue="chapters" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="chapters">SOLAS 2020</TabsTrigger>
-            <TabsTrigger value="uscg">USCG Navigation</TabsTrigger>
+            <TabsTrigger value="uscg">COLREG</TabsTrigger>
             <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
           </TabsList>
 
@@ -547,10 +547,10 @@ const Regulations = () => {
                   <div className="space-y-1">
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
-                      USCG Navigation Rules
+                      COLREG Navigation Rules
                     </CardTitle>
                     <CardDescription>
-                      United States Coast Guard Navigation Rules and Regulations
+                      International Regulations for Preventing Collisions at Sea
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
@@ -561,7 +561,7 @@ const Regulations = () => {
                       className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
                     >
                       <Download className="h-4 w-4" />
-                      Download USCG PDF
+                      Download COLREG PDF
                     </Button>
                   </div>
                 </div>
@@ -571,7 +571,7 @@ const Regulations = () => {
                   <div className="p-4 bg-card/80 rounded-lg border border-border">
                     <h4 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
-                      USCG Navigation Resources
+                      COLREG Resources
                     </h4>
                     <div className="grid gap-3 md:grid-cols-2">
                       <Button
@@ -581,7 +581,7 @@ const Regulations = () => {
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        USCG Navigation Rules (PDF)
+                        COLREG Navigation Rules (PDF)
                       </Button>
                       <Button
                         variant="outline"
@@ -596,10 +596,10 @@ const Regulations = () => {
                   </div>
                   
                   <div className="text-sm text-red-800 bg-red-100/50 p-3 rounded">
-                    <p className="font-medium mb-1">📋 Available USCG Navigation Resources:</p>
-                    <p>• USCG Navigation Rules (PDF)</p>
-                    <p>• US Coast Guard navigation regulations</p>
-                    <p>• Inland and international navigation rules</p>
+                    <p className="font-medium mb-1">📋 Available COLREG Resources:</p>
+                    <p>• COLREG Navigation Rules (PDF)</p>
+                    <p>• International collision avoidance regulations</p>
+                    <p>• Navigation lights, shapes, and signals</p>
                     <p className="mt-2 text-xs">Not: En güncel versiyonu USCG Navigation Center'dan alınabilir.</p>
                   </div>
                 </div>
