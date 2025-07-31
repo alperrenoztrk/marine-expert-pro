@@ -397,8 +397,10 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="chapters">SOLAS 2020</TabsTrigger>
+            <TabsTrigger value="colreg">COLREG 1972</TabsTrigger>
+            <TabsTrigger value="uscq">USCQ</TabsTrigger>
             <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
           </TabsList>
 
@@ -536,6 +538,487 @@ const Regulations = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="colreg" className="space-y-4">
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:border-green-800">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="flex items-center gap-2">
+                      <Ship className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      COLREG 1972
+                    </CardTitle>
+                    <CardDescription>
+                      International Regulations for Preventing Collisions at Sea - 1972 Edition
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => window.open('/COLREG-1972.pdf', '_blank')}
+                      className="flex items-center gap-2 bg-green-600 text-white hover:bg-green-700"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download COLREG PDF
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-card/80 rounded-lg border border-border">
+                    <h4 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      COLREG 1972 Resources
+                    </h4>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('/COLREG-1972.pdf', '_blank')}
+                        className="justify-start text-green-700 border-green-300 hover:bg-green-50 dark:hover:bg-gray-700"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        COLREG 1972 Edition (PDF)
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/COLREG.aspx', '_blank')}
+                        className="justify-start text-green-700 border-green-300 hover:bg-green-50 dark:hover:bg-gray-700"
+                      >
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        IMO COLREG Information
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-green-800 bg-green-100/50 p-3 rounded">
+                    <p className="font-medium mb-1">📋 Available COLREG 1972 Resources:</p>
+                    <p>• COLREG 1972 Edition (PDF)</p>
+                    <p>• Navigation rules and collision avoidance</p>
+                    <p>• Lights, shapes, and sound signals</p>
+                    <p className="mt-2 text-xs">Not: En güncel versiyonu IMO'dan satın alınabilir.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4">
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Ship className="h-5 w-5 text-green-600" />
+                        <CardTitle className="text-lg">Part A: General</CardTitle>
+                        <Badge className="bg-green-100 text-green-800">General</Badge>
+                      </div>
+                      <CardDescription>Application, responsibility, and general definitions</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 1972</span>
+                        <span>•</span>
+                        <span>3 Düzenleme</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Application to all vessels on the high seas
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Responsibility for compliance with regulations
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          General definitions and terms
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">High seas</Badge>
+                        <Badge variant="outline" className="text-xs">Navigation</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Ship className="h-5 w-5 text-green-600" />
+                        <CardTitle className="text-lg">Part B: Steering and Sailing Rules</CardTitle>
+                        <Badge className="bg-green-100 text-green-800">Navigation</Badge>
+                      </div>
+                      <CardDescription>Rules for vessel conduct in any condition of visibility</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 1972</span>
+                        <span>•</span>
+                        <span>15 Düzenleme</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Conduct of vessels in any condition of visibility
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Conduct of vessels in sight of one another
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Conduct of vessels in restricted visibility
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Navigation</Badge>
+                        <Badge variant="outline" className="text-xs">Collision avoidance</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Ship className="h-5 w-5 text-green-600" />
+                        <CardTitle className="text-lg">Part C: Lights and Shapes</CardTitle>
+                        <Badge className="bg-green-100 text-green-800">Lights</Badge>
+                      </div>
+                      <CardDescription>Requirements for lights and shapes to be exhibited by vessels</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 1972</span>
+                        <span>•</span>
+                        <span>12 Düzenleme</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Lights to be exhibited by vessels
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Shapes to be exhibited by vessels
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Technical details of lights and shapes
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Night navigation</Badge>
+                        <Badge variant="outline" className="text-xs">Visibility</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Ship className="h-5 w-5 text-green-600" />
+                        <CardTitle className="text-lg">Part D: Sound and Light Signals</CardTitle>
+                        <Badge className="bg-green-100 text-green-800">Signals</Badge>
+                      </div>
+                      <CardDescription>Sound and light signals for vessels in sight of one another</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 1972</span>
+                        <span>•</span>
+                        <span>8 Düzenleme</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Sound signals for vessels in sight of one another
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Sound signals in restricted visibility
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Light signals for vessels in sight of one another
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Communication</Badge>
+                        <Badge variant="outline" className="text-xs">Signaling</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="uscq" className="space-y-4">
+            <Card className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200 dark:border-red-800">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
+                      USCQ Regulations
+                    </CardTitle>
+                    <CardDescription>
+                      United States Coast Guard Maritime Regulations
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => window.open('/USCQ-Regulations.pdf', '_blank')}
+                      className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download USCQ PDF
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-card/80 rounded-lg border border-border">
+                    <h4 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      USCQ Resources
+                    </h4>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('/USCQ-Regulations.pdf', '_blank')}
+                        className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        USCQ Regulations (PDF)
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://www.uscg.mil/', '_blank')}
+                        className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
+                      >
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        USCG Official Website
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-red-800 bg-red-100/50 p-3 rounded">
+                    <p className="font-medium mb-1">📋 Available USCQ Resources:</p>
+                    <p>• USCQ Regulations (PDF)</p>
+                    <p>• US Coast Guard maritime regulations</p>
+                    <p>• Navigation and safety requirements</p>
+                    <p className="mt-2 text-xs">Not: En güncel versiyonu USCG'den alınabilir.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4">
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-lg">Title 33 CFR</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">Navigation</Badge>
+                      </div>
+                      <CardDescription>Navigation and navigable waters regulations</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 2024</span>
+                        <span>•</span>
+                        <span>Multiple Parts</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Navigation and navigable waters
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Bridge administration and regulations
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Vessel traffic management
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">US waters</Badge>
+                        <Badge variant="outline" className="text-xs">Navigation</Badge>
+                        <Badge variant="outline" className="text-xs">Vessel traffic</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-lg">Title 46 CFR</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">Safety</Badge>
+                      </div>
+                      <CardDescription>Shipping regulations and vessel safety requirements</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 2024</span>
+                        <span>•</span>
+                        <span>Multiple Parts</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Vessel construction and equipment
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Marine engineering and electrical systems
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Lifesaving and fire protection equipment
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">US vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Safety equipment</Badge>
+                        <Badge variant="outline" className="text-xs">Construction</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-lg">Title 49 CFR</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">Transportation</Badge>
+                      </div>
+                      <CardDescription>Transportation regulations including hazardous materials</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 2024</span>
+                        <span>•</span>
+                        <span>Multiple Parts</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Transportation of hazardous materials
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Pipeline safety regulations
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Transportation security requirements
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">Transportation</Badge>
+                        <Badge variant="outline" className="text-xs">Hazardous materials</Badge>
+                        <Badge variant="outline" className="text-xs">Security</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
