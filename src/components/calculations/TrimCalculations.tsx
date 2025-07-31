@@ -840,17 +840,17 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             Draft Survey, Trim Etkileri, Bonjean Curves ve Sounding Tabloları - Tam profesyonel denizcilik hesaplama paketi
           </CardDescription>
         </CardHeader>
-        <CardContent className="max-h-[70vh] overflow-y-auto">
+        <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 p-1">
-              <TabsTrigger value="basic" className="text-sm px-3 py-2">Temel Trim</TabsTrigger>
-              <TabsTrigger value="draft-survey" className="text-sm px-3 py-2">Draft Survey</TabsTrigger>
-              <TabsTrigger value="trim-effects" className="text-sm px-3 py-2">Trim Etkileri</TabsTrigger>
-              <TabsTrigger value="bonjean" className="text-sm px-3 py-2">Bonjean</TabsTrigger>
-              <TabsTrigger value="sounding" className="text-sm px-3 py-2">Sounding</TabsTrigger>
-              <TabsTrigger value="operations" className="text-sm px-3 py-2">Yük İşlemleri</TabsTrigger>
-              <TabsTrigger value="performance" className="text-sm px-3 py-2">Performans</TabsTrigger>
-              <TabsTrigger value="analysis" className="text-sm px-3 py-2">Analiz</TabsTrigger>
+            <TabsList className="flex flex-wrap gap-1 p-2 bg-muted/50 rounded-lg">
+              <TabsTrigger value="basic" className="flex-1 min-w-[120px] text-xs">Temel Trim</TabsTrigger>
+              <TabsTrigger value="draft-survey" className="flex-1 min-w-[120px] text-xs">Draft Survey</TabsTrigger>
+              <TabsTrigger value="trim-effects" className="flex-1 min-w-[120px] text-xs">Trim Etkileri</TabsTrigger>
+              <TabsTrigger value="bonjean" className="flex-1 min-w-[120px] text-xs">Bonjean</TabsTrigger>
+              <TabsTrigger value="sounding" className="flex-1 min-w-[120px] text-xs">Sounding</TabsTrigger>
+              <TabsTrigger value="operations" className="flex-1 min-w-[120px] text-xs">Yük İşlemleri</TabsTrigger>
+              <TabsTrigger value="performance" className="flex-1 min-w-[120px] text-xs">Performans</TabsTrigger>
+              <TabsTrigger value="analysis" className="flex-1 min-w-[120px] text-xs">Analiz</TabsTrigger>
             </TabsList>
 
             <TabsContent value="basic" className="space-y-6">
