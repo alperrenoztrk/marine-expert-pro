@@ -49,16 +49,18 @@
 }
 
 /* Main Content */
-.splash-content {
+.splash-screen .splash-content {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
-  justify-content: center;
+  justify-content: center !important;
   color: white;
   text-align: center !important;
-  width: 100%;
-  max-width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
 }
 
 /* Logo Container */
@@ -161,18 +163,21 @@
 }
 
 /* App Title */
-.app-title {
+.splash-screen .app-title {
   opacity: 0;
   transform: translateY(30px);
   animation: titleAppear 0.6s ease-out 2s forwards;
   text-align: center !important;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
 }
 
-.title-text {
+.splash-screen .title-text {
   font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
@@ -181,15 +186,21 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center !important;
-  width: 100%;
+  width: 100% !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.subtitle-text {
+.splash-screen .subtitle-text {
   font-size: 1.125rem;
   color: rgba(255, 255, 255, 0.8);
   font-weight: 300;
   text-align: center !important;
-  width: 100%;
+  width: 100% !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 @keyframes titleAppear {
@@ -200,15 +211,18 @@
 }
 
 /* Loading Animation */
-.loading-container {
+.splash-screen .loading-container {
   margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
+  justify-content: center !important;
   opacity: 0;
   animation: loadingAppear 0.5s ease-out 1.5s forwards;
   text-align: center !important;
-  width: 100%;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .progress-bar {
@@ -248,14 +262,17 @@
 .dot-2 { animation-delay: 0.2s; }
 .dot-3 { animation-delay: 0.4s; }
 
-.loading-text {
+.splash-screen .loading-text {
   margin-top: 1rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
   opacity: 0;
   animation: textFadeIn 0.5s ease-out 2.2s forwards;
   text-align: center !important;
-  width: 100%;
+  width: 100% !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 @keyframes loadingAppear {
