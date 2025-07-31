@@ -1068,6 +1068,15 @@ const Regulations = () => {
                         <Download className="h-4 w-4 mr-2" />
                         SOLAS + Other IMO Conventions
                       </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open('https://share.google/c37tG0ULCekKFUn07', '_blank')}
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        SOLAS 2020 Edition
+                      </Button>
                     </div>
                   </div>
                   
@@ -1076,6 +1085,7 @@ const Regulations = () => {
                       <p>• Full SOLAS Convention text (IST Lisbon)</p>
                       <p>• SOLAS Chapter V - Safety of Navigation (UK MCA)</p>
                       <p>• SOLAS 2009 Consolidated Edition (USCG)</p>
+                      <p>• SOLAS 2020 Edition (Google Drive)</p>
                       <p>• Historical amendments and related codes</p>
                       <p className="mt-2 text-xs">Not: En güncel 2024 versiyonu IMO'dan satın alınabilir.</p>
                     </div>
