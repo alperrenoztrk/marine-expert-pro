@@ -49,6 +49,7 @@ const Regulations = () => {
   const [selectedChapter, setSelectedChapter] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("chapters");
 
   const solasChapters: SOLASChapter[] = [
     {
@@ -341,8 +342,16 @@ const Regulations = () => {
             <div className="flex items-center gap-2">
               <Ship className="h-6 w-6 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold">SOLAS 2020 Edition</h1>
-                <p className="text-muted-foreground">International Convention for the Safety of Life at Sea</p>
+                <h1 className="text-2xl font-bold">
+                  {activeTab === "chapters" && "SOLAS 2020 Edition"}
+                  {activeTab === "uscg" && "COLREG Navigation Rules"}
+                  {activeTab === "amendments" && "SOLAS 2024 Updates"}
+                </h1>
+                <p className="text-muted-foreground">
+                  {activeTab === "chapters" && "International Convention for the Safety of Life at Sea"}
+                  {activeTab === "uscg" && "International Regulations for Preventing Collisions at Sea"}
+                  {activeTab === "amendments" && "Latest SOLAS Amendments and Updates"}
+                </p>
               </div>
             </div>
           </div>
@@ -396,7 +405,7 @@ const Regulations = () => {
           </CardContent>
         </Card>
 
-                <Tabs defaultValue="chapters" className="space-y-6">
+                <Tabs defaultValue="chapters" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="chapters">SOLAS 2020</TabsTrigger>
             <TabsTrigger value="uscg">COLREG</TabsTrigger>
