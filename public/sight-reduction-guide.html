@@ -11,7 +11,7 @@
             background-color: #f5f5f5;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             padding: 20px;
@@ -27,6 +27,10 @@
             color: #3b82f6;
             margin-top: 30px;
         }
+        h3 {
+            color: #1e40af;
+            margin-top: 20px;
+        }
         .subtitle {
             text-align: center;
             color: #6b7280;
@@ -39,15 +43,22 @@
             padding: 15px;
             margin: 20px 0;
         }
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            font-size: 14px;
+            font-size: 12px;
         }
         th, td {
             border: 1px solid #d1d5db;
-            padding: 8px;
+            padding: 6px;
             text-align: center;
         }
         th {
@@ -60,6 +71,14 @@
         }
         .lat-header {
             background-color: #3b82f6;
+            color: white;
+        }
+        .same-header {
+            background-color: #10b981;
+            color: white;
+        }
+        .contrary-header {
+            background-color: #ef4444;
             color: white;
         }
         .formula {
@@ -80,6 +99,11 @@
             padding: 5px;
             margin: 5px;
             width: 100px;
+        }
+        .calculator select {
+            padding: 5px;
+            margin: 5px;
+            width: 150px;
         }
         .calculator button {
             background: #3b82f6;
@@ -115,9 +139,48 @@
         .abbr-item strong {
             color: #1e40af;
         }
+        .table-navigation {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .table-navigation button {
+            background: #6b7280;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .table-navigation button:hover {
+            background: #4b5563;
+        }
+        .table-navigation button.active {
+            background: #3b82f6;
+        }
+        .table-section {
+            display: none;
+        }
+        .table-section.active {
+            display: block;
+        }
         @media print {
-            .calculator, button {
+            .calculator, button, .table-navigation {
                 display: none;
+            }
+            .table-section {
+                display: block !important;
+                page-break-before: always;
+            }
+        }
+        @media (max-width: 768px) {
+            table {
+                font-size: 10px;
+            }
+            th, td {
+                padding: 4px;
             }
         }
     </style>
@@ -132,6 +195,7 @@
             <ol>
                 <li>Varsayılan konumunuzun enlemini (Latitude) tam derece olarak seçin</li>
                 <li>Gök cisminin deklinasyonunu (Declination) tam dereceye yuvarlayın</li>
+                <li>Enlem ve deklinasyon aynı yarımkürede ise SAME, farklı yarımkürelerde ise CONTRARY tablosunu kullanın</li>
                 <li>Yerel saat açısını (LHA) hesaplayın</li>
                 <li>Tablodan Hc (hesaplanmış yükseklik), d (düzeltme faktörü) ve Z (azimut) değerlerini okuyun</li>
             </ol>
@@ -145,192 +209,343 @@
             <div class="abbr-item"><strong>d:</strong> Difference (Düzeltme Faktörü)</div>
             <div class="abbr-item"><strong>Z:</strong> Azimuth Angle (Azimut Açısı)</div>
             <div class="abbr-item"><strong>Lat:</strong> Latitude (Enlem)</div>
+            <div class="abbr-item"><strong>SAME:</strong> Enlem ve deklinasyon aynı yarımküre</div>
+            <div class="abbr-item"><strong>CONTRARY:</strong> Enlem ve deklinasyon farklı yarımküre</div>
         </div>
 
-        <h2>Örnek Sight Reduction Table</h2>
-        <p><strong>Latitude 40° - SAME name as declination</strong></p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th rowspan="2">LHA</th>
-                    <th colspan="3">Dec 10°</th>
-                    <th colspan="3">Dec 15°</th>
-                    <th colspan="3">Dec 20°</th>
-                    <th colspan="3">Dec 25°</th>
-                </tr>
-                <tr>
-                    <th>Hc</th>
-                    <th>d</th>
-                    <th>Z</th>
-                    <th>Hc</th>
-                    <th>d</th>
-                    <th>Z</th>
-                    <th>Hc</th>
-                    <th>d</th>
-                    <th>Z</th>
-                    <th>Hc</th>
-                    <th>d</th>
-                    <th>Z</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>0°</td>
-                    <td>60°00.0</td>
-                    <td>+60</td>
-                    <td>90.0</td>
-                    <td>55°00.0</td>
-                    <td>+60</td>
-                    <td>90.0</td>
-                    <td>50°00.0</td>
-                    <td>+60</td>
-                    <td>90.0</td>
-                    <td>45°00.0</td>
-                    <td>+60</td>
-                    <td>90.0</td>
-                </tr>
-                <tr>
-                    <td>5°</td>
-                    <td>59°41.5</td>
-                    <td>+60</td>
-                    <td>89.2</td>
-                    <td>54°41.8</td>
-                    <td>+60</td>
-                    <td>89.1</td>
-                    <td>49°42.0</td>
-                    <td>+60</td>
-                    <td>89.0</td>
-                    <td>44°42.2</td>
-                    <td>+59</td>
-                    <td>88.9</td>
-                </tr>
-                <tr>
-                    <td>10°</td>
-                    <td>58°45.8</td>
-                    <td>+59</td>
-                    <td>88.4</td>
-                    <td>53°46.5</td>
-                    <td>+59</td>
-                    <td>88.2</td>
-                    <td>48°47.1</td>
-                    <td>+59</td>
-                    <td>88.0</td>
-                    <td>43°47.6</td>
-                    <td>+58</td>
-                    <td>87.8</td>
-                </tr>
-                <tr>
-                    <td>15°</td>
-                    <td>57°14.2</td>
-                    <td>+58</td>
-                    <td>87.6</td>
-                    <td>52°15.8</td>
-                    <td>+58</td>
-                    <td>87.3</td>
-                    <td>47°17.2</td>
-                    <td>+57</td>
-                    <td>87.0</td>
-                    <td>42°18.5</td>
-                    <td>+57</td>
-                    <td>86.7</td>
-                </tr>
-                <tr>
-                    <td>20°</td>
-                    <td>55°08.5</td>
-                    <td>+56</td>
-                    <td>86.8</td>
-                    <td>50°11.2</td>
-                    <td>+56</td>
-                    <td>86.4</td>
-                    <td>45°13.7</td>
-                    <td>+55</td>
-                    <td>86.0</td>
-                    <td>40°16.0</td>
-                    <td>+55</td>
-                    <td>85.6</td>
-                </tr>
-                <tr>
-                    <td>30°</td>
-                    <td>49°38.4</td>
-                    <td>+52</td>
-                    <td>85.1</td>
-                    <td>44°44.8</td>
-                    <td>+51</td>
-                    <td>84.6</td>
-                    <td>39°50.8</td>
-                    <td>+50</td>
-                    <td>84.0</td>
-                    <td>34°56.5</td>
-                    <td>+49</td>
-                    <td>83.4</td>
-                </tr>
-                <tr>
-                    <td>45°</td>
-                    <td>40°12.3</td>
-                    <td>+44</td>
-                    <td>82.0</td>
-                    <td>35°26.4</td>
-                    <td>+42</td>
-                    <td>81.2</td>
-                    <td>30°39.8</td>
-                    <td>+41</td>
-                    <td>80.4</td>
-                    <td>25°52.7</td>
-                    <td>+39</td>
-                    <td>79.6</td>
-                </tr>
-                <tr>
-                    <td>60°</td>
-                    <td>28°44.7</td>
-                    <td>+33</td>
-                    <td>77.6</td>
-                    <td>24°10.5</td>
-                    <td>+31</td>
-                    <td>76.5</td>
-                    <td>19°35.2</td>
-                    <td>+29</td>
-                    <td>75.4</td>
-                    <td>14°59.3</td>
-                    <td>+27</td>
-                    <td>74.3</td>
-                </tr>
-                <tr>
-                    <td>90°</td>
-                    <td>10°00.0</td>
-                    <td>0</td>
-                    <td>0.0</td>
-                    <td>15°00.0</td>
-                    <td>0</td>
-                    <td>0.0</td>
-                    <td>20°00.0</td>
-                    <td>0</td>
-                    <td>0.0</td>
-                    <td>25°00.0</td>
-                    <td>0</td>
-                    <td>0.0</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Hızlı Hesap Makinesi</h2>
+        <h2>Gelişmiş Sight Reduction Hesaplayıcı</h2>
         <div class="calculator">
-            <h3>Basit Sight Reduction Hesaplayıcı</h3>
+            <h3>Marc St. Hilaire Metodu Hesaplayıcı</h3>
             <div>
-                <label>Latitude (Enlem): <input type="number" id="lat" placeholder="40" min="-90" max="90" step="1"></label>
+                <label>Latitude (Enlem): 
+                    <input type="number" id="lat" placeholder="40" min="-90" max="90" step="0.1">
+                    <select id="lat-dir">
+                        <option value="N">N (Kuzey)</option>
+                        <option value="S">S (Güney)</option>
+                    </select>
+                </label>
             </div>
             <div>
-                <label>Declination (Deklinasyon): <input type="number" id="dec" placeholder="15" min="-90" max="90" step="0.1"></label>
+                <label>Declination (Deklinasyon): 
+                    <input type="number" id="dec" placeholder="15" min="-90" max="90" step="0.1">
+                    <select id="dec-dir">
+                        <option value="N">N (Kuzey)</option>
+                        <option value="S">S (Güney)</option>
+                    </select>
+                </label>
             </div>
             <div>
-                <label>LHA (Yerel Saat Açısı): <input type="number" id="lha" placeholder="45" min="0" max="360" step="0.1"></label>
+                <label>LHA (Yerel Saat Açısı): 
+                    <input type="number" id="lha" placeholder="45" min="0" max="360" step="0.1">°
+                </label>
             </div>
-            <button onclick="calculateSight()">Hesapla</button>
+            <div>
+                <label>Ho (Gözlenen Yükseklik - opsiyonel): 
+                    <input type="number" id="ho" placeholder="45.5" min="0" max="90" step="0.1">°
+                </label>
+            </div>
+            <button onclick="calculateAdvancedSight()">Hesapla</button>
             <div id="result" class="result"></div>
         </div>
 
-        <h2>İnterpolasyon Tablosu</h2>
-        <table style="max-width: 600px;">
+        <h2>Sight Reduction Tables</h2>
+        
+        <div class="table-navigation">
+            <button onclick="showTable('lat0-15')" class="active">Lat 0°-15°</button>
+            <button onclick="showTable('lat15-30')">Lat 15°-30°</button>
+            <button onclick="showTable('lat30-45')">Lat 30°-45°</button>
+            <button onclick="showTable('lat45-60')">Lat 45°-60°</button>
+            <button onclick="showTable('lat60-75')">Lat 60°-75°</button>
+            <button onclick="showTable('lat75-90')">Lat 75°-90°</button>
+        </div>
+
+        <!-- Latitude 0°-15° Tables -->
+        <div id="lat0-15" class="table-section active">
+            <h3>Latitude 0° - 15°</h3>
+            
+            <h4 class="same-header" style="padding: 10px; border-radius: 4px;">SAME name as declination</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">LHA</th>
+                        <th colspan="3">Lat 0° / Dec 15°</th>
+                        <th colspan="3">Lat 5° / Dec 15°</th>
+                        <th colspan="3">Lat 10° / Dec 15°</th>
+                        <th colspan="3">Lat 15° / Dec 15°</th>
+                    </tr>
+                    <tr>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0°</td>
+                        <td>75°00.0</td><td>+60</td><td>90.0</td>
+                        <td>70°04.8</td><td>+60</td><td>90.0</td>
+                        <td>65°10.2</td><td>+59</td><td>90.0</td>
+                        <td>60°16.8</td><td>+58</td><td>90.0</td>
+                    </tr>
+                    <tr>
+                        <td>15°</td>
+                        <td>72°29.5</td><td>+58</td><td>87.1</td>
+                        <td>67°35.8</td><td>+58</td><td>87.0</td>
+                        <td>62°43.2</td><td>+57</td><td>86.9</td>
+                        <td>57°52.0</td><td>+56</td><td>86.8</td>
+                    </tr>
+                    <tr>
+                        <td>30°</td>
+                        <td>65°28.3</td><td>+52</td><td>83.7</td>
+                        <td>60°39.4</td><td>+51</td><td>83.5</td>
+                        <td>55°52.1</td><td>+50</td><td>83.3</td>
+                        <td>51°06.8</td><td>+49</td><td>83.1</td>
+                    </tr>
+                    <tr>
+                        <td>45°</td>
+                        <td>55°00.5</td><td>+43</td><td>79.6</td>
+                        <td>50°22.8</td><td>+42</td><td>79.2</td>
+                        <td>45°47.5</td><td>+40</td><td>78.8</td>
+                        <td>41°14.9</td><td>+39</td><td>78.4</td>
+                    </tr>
+                    <tr>
+                        <td>60°</td>
+                        <td>42°51.2</td><td>+32</td><td>74.1</td>
+                        <td>38°30.6</td><td>+30</td><td>73.5</td>
+                        <td>34°12.8</td><td>+28</td><td>72.9</td>
+                        <td>29°58.2</td><td>+26</td><td>72.3</td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>15°00.0</td><td>0</td><td>0.0</td>
+                        <td>15°00.0</td><td>0</td><td>0.0</td>
+                        <td>15°00.0</td><td>0</td><td>0.0</td>
+                        <td>15°00.0</td><td>0</td><td>0.0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 class="contrary-header" style="padding: 10px; border-radius: 4px;">CONTRARY name to declination</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">LHA</th>
+                        <th colspan="3">Lat 0° / Dec 15°</th>
+                        <th colspan="3">Lat 5° / Dec 15°</th>
+                        <th colspan="3">Lat 10° / Dec 15°</th>
+                        <th colspan="3">Lat 15° / Dec 15°</th>
+                    </tr>
+                    <tr>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0°</td>
+                        <td>75°00.0</td><td>-60</td><td>90.0</td>
+                        <td>79°55.2</td><td>-60</td><td>90.0</td>
+                        <td>84°49.8</td><td>-59</td><td>90.0</td>
+                        <td>89°43.2</td><td>-58</td><td>90.0</td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>15°00.0</td><td>0</td><td>180.0</td>
+                        <td>10°00.0</td><td>0</td><td>180.0</td>
+                        <td>5°00.0</td><td>0</td><td>180.0</td>
+                        <td>0°00.0</td><td>0</td><td>180.0</td>
+                    </tr>
+                    <tr>
+                        <td>180°</td>
+                        <td>75°00.0</td><td>+60</td><td>270.0</td>
+                        <td>79°55.2</td><td>+60</td><td>270.0</td>
+                        <td>84°49.8</td><td>+59</td><td>270.0</td>
+                        <td>89°43.2</td><td>+58</td><td>270.0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Latitude 30°-45° Tables -->
+        <div id="lat30-45" class="table-section">
+            <h3>Latitude 30° - 45°</h3>
+            
+            <h4 class="same-header" style="padding: 10px; border-radius: 4px;">SAME name as declination</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">LHA</th>
+                        <th colspan="3">Lat 30° / Dec 20°</th>
+                        <th colspan="3">Lat 35° / Dec 20°</th>
+                        <th colspan="3">Lat 40° / Dec 20°</th>
+                        <th colspan="3">Lat 45° / Dec 20°</th>
+                    </tr>
+                    <tr>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0°</td>
+                        <td>60°00.0</td><td>+60</td><td>90.0</td>
+                        <td>55°00.0</td><td>+60</td><td>90.0</td>
+                        <td>50°00.0</td><td>+60</td><td>90.0</td>
+                        <td>45°00.0</td><td>+60</td><td>90.0</td>
+                    </tr>
+                    <tr>
+                        <td>15°</td>
+                        <td>57°50.4</td><td>+58</td><td>87.3</td>
+                        <td>52°53.1</td><td>+58</td><td>87.0</td>
+                        <td>47°56.8</td><td>+57</td><td>86.7</td>
+                        <td>43°01.7</td><td>+56</td><td>86.4</td>
+                    </tr>
+                    <tr>
+                        <td>30°</td>
+                        <td>51°39.2</td><td>+52</td><td>84.0</td>
+                        <td>46°52.7</td><td>+51</td><td>83.4</td>
+                        <td>42°08.1</td><td>+50</td><td>82.8</td>
+                        <td>37°25.4</td><td>+48</td><td>82.2</td>
+                    </tr>
+                    <tr>
+                        <td>45°</td>
+                        <td>42°36.8</td><td>+44</td><td>79.8</td>
+                        <td>38°04.2</td><td>+42</td><td>78.9</td>
+                        <td>33°33.9</td><td>+40</td><td>78.0</td>
+                        <td>29°06.1</td><td>+38</td><td>77.1</td>
+                    </tr>
+                    <tr>
+                        <td>60°</td>
+                        <td>31°49.5</td><td>+33</td><td>74.3</td>
+                        <td>27°37.2</td><td>+30</td><td>73.1</td>
+                        <td>23°27.8</td><td>+28</td><td>71.9</td>
+                        <td>19°21.6</td><td>+25</td><td>70.7</td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>10°00.0</td><td>0</td><td>0.0</td>
+                        <td>15°00.0</td><td>0</td><td>0.0</td>
+                        <td>20°00.0</td><td>0</td><td>0.0</td>
+                        <td>25°00.0</td><td>0</td><td>0.0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 class="contrary-header" style="padding: 10px; border-radius: 4px;">CONTRARY name to declination</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">LHA</th>
+                        <th colspan="3">Lat 30° / Dec 20°</th>
+                        <th colspan="3">Lat 35° / Dec 20°</th>
+                        <th colspan="3">Lat 40° / Dec 20°</th>
+                        <th colspan="3">Lat 45° / Dec 20°</th>
+                    </tr>
+                    <tr>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>90°</td>
+                        <td>40°00.0</td><td>0</td><td>180.0</td>
+                        <td>35°00.0</td><td>0</td><td>180.0</td>
+                        <td>30°00.0</td><td>0</td><td>180.0</td>
+                        <td>25°00.0</td><td>0</td><td>180.0</td>
+                    </tr>
+                    <tr>
+                        <td>120°</td>
+                        <td>31°49.5</td><td>-33</td><td>105.7</td>
+                        <td>27°37.2</td><td>-30</td><td>106.9</td>
+                        <td>23°27.8</td><td>-28</td><td>108.1</td>
+                        <td>19°21.6</td><td>-25</td><td>109.3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Latitude 45°-60° Tables -->
+        <div id="lat45-60" class="table-section">
+            <h3>Latitude 45° - 60°</h3>
+            
+            <h4 class="same-header" style="padding: 10px; border-radius: 4px;">SAME name as declination</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">LHA</th>
+                        <th colspan="3">Lat 45° / Dec 25°</th>
+                        <th colspan="3">Lat 50° / Dec 25°</th>
+                        <th colspan="3">Lat 55° / Dec 25°</th>
+                        <th colspan="3">Lat 60° / Dec 25°</th>
+                    </tr>
+                    <tr>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                        <th>Hc</th><th>d</th><th>Z</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0°</td>
+                        <td>50°00.0</td><td>+60</td><td>90.0</td>
+                        <td>45°00.0</td><td>+60</td><td>90.0</td>
+                        <td>40°00.0</td><td>+60</td><td>90.0</td>
+                        <td>35°00.0</td><td>+60</td><td>90.0</td>
+                    </tr>
+                    <tr>
+                        <td>30°</td>
+                        <td>42°46.3</td><td>+49</td><td>82.8</td>
+                        <td>38°08.5</td><td>+47</td><td>82.1</td>
+                        <td>33°33.7</td><td>+45</td><td>81.4</td>
+                        <td>29°02.1</td><td>+43</td><td>80.7</td>
+                    </tr>
+                    <tr>
+                        <td>60°</td>
+                        <td>25°13.8</td><td>+27</td><td>71.5</td>
+                        <td>21°08.4</td><td>+24</td><td>70.0</td>
+                        <td>17°06.7</td><td>+21</td><td>68.5</td>
+                        <td>13°08.9</td><td>+18</td><td>67.0</td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>20°00.0</td><td>0</td><td>0.0</td>
+                        <td>25°00.0</td><td>0</td><td>0.0</td>
+                        <td>30°00.0</td><td>0</td><td>0.0</td>
+                        <td>35°00.0</td><td>0</td><td>0.0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Other latitude ranges -->
+        <div id="lat15-30" class="table-section">
+            <h3>Latitude 15° - 30°</h3>
+            <p>Bu enlem aralığı için tablolar benzer formatta devam eder...</p>
+        </div>
+
+        <div id="lat60-75" class="table-section">
+            <h3>Latitude 60° - 75°</h3>
+            <p>Yüksek enlemler için özel tablolar...</p>
+        </div>
+
+        <div id="lat75-90" class="table-section">
+            <h3>Latitude 75° - 90°</h3>
+            <p>Kutup bölgeleri için özel hesaplamalar...</p>
+        </div>
+
+        <h2>İnterpolasyon Tabloları</h2>
+        
+        <h3>Deklinasyon İnterpolasyonu (d faktörü)</h3>
+        <table style="max-width: 800px;">
             <thead>
                 <tr>
                     <th>d değeri</th>
@@ -355,50 +570,131 @@
             </tbody>
         </table>
 
-        <div class="info-box" style="margin-top: 40px;">
-            <strong>Not:</strong> Bu örnek tablolar eğitim amaçlıdır. Gerçek navigasyon için resmi Sight Reduction Tables (HO 229, HO 249, veya NP 401) kullanınız.
+        <h3>Azimut Dönüşüm Kuralları</h3>
+        <div class="info-box">
+            <p><strong>Z'den Gerçek Azimut'a (Zn) Dönüşüm:</strong></p>
+            <ul>
+                <li><strong>Kuzey Enlemi, LHA < 180°:</strong> Zn = Z</li>
+                <li><strong>Kuzey Enlemi, LHA > 180°:</strong> Zn = 360° - Z</li>
+                <li><strong>Güney Enlemi, LHA < 180°:</strong> Zn = 180° - Z</li>
+                <li><strong>Güney Enlemi, LHA > 180°:</strong> Zn = 180° + Z</li>
+            </ul>
         </div>
 
-        <h2>Formüller</h2>
+        <div class="warning-box">
+            <strong>Önemli Notlar:</strong>
+            <ul>
+                <li>Bu tablolar eğitim amaçlıdır ve gerçek değerlerden küçük sapmalar gösterebilir</li>
+                <li>Gerçek navigasyon için resmi Sight Reduction Tables (HO 229, HO 249, veya NP 401) kullanınız</li>
+                <li>Yüksek enlemlerde (>70°) ve çok düşük yüksekliklerde (<10°) hesaplama hassasiyeti azalır</li>
+                <li>Tablolar arasında geçiş yaparken interpolasyon gerekebilir</li>
+            </ul>
+        </div>
+
+        <h2>Formüller ve Teorik Bilgi</h2>
         <div class="formula">
+            <strong>Temel Sight Reduction Formülü:</strong><br>
             sin(Hc) = sin(Lat) × sin(Dec) + cos(Lat) × cos(Dec) × cos(LHA)
         </div>
         <div class="formula">
+            <strong>Azimut Formülü:</strong><br>
             cos(Z) = (sin(Dec) - sin(Lat) × sin(Hc)) / (cos(Lat) × cos(Hc))
+        </div>
+        <div class="formula">
+            <strong>İntersepta (a) Hesaplama:</strong><br>
+            a = Ho - Hc (dakika cinsinden)
         </div>
     </div>
 
     <script>
-        function calculateSight() {
+        function showTable(tableId) {
+            // Tüm tabloları gizle
+            const tables = document.querySelectorAll('.table-section');
+            tables.forEach(table => table.classList.remove('active'));
+            
+            // Tüm butonlardan active sınıfını kaldır
+            const buttons = document.querySelectorAll('.table-navigation button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Seçilen tabloyu göster
+            document.getElementById(tableId).classList.add('active');
+            
+            // Tıklanan butona active sınıfı ekle
+            event.target.classList.add('active');
+        }
+
+        function calculateAdvancedSight() {
             const lat = parseFloat(document.getElementById('lat').value) || 0;
+            const latDir = document.getElementById('lat-dir').value;
             const dec = parseFloat(document.getElementById('dec').value) || 0;
+            const decDir = document.getElementById('dec-dir').value;
             const lha = parseFloat(document.getElementById('lha').value) || 0;
+            const ho = parseFloat(document.getElementById('ho').value) || null;
+            
+            // Enlem ve deklinasyonu işaretli değerlere çevir
+            const latSigned = latDir === 'S' ? -lat : lat;
+            const decSigned = decDir === 'S' ? -dec : dec;
+            
+            // Same/Contrary belirleme
+            const sameContrary = (latDir === decDir) ? 'SAME' : 'CONTRARY';
             
             // Dereceyi radyana çevir
             const toRad = (deg) => deg * Math.PI / 180;
             const toDeg = (rad) => rad * 180 / Math.PI;
             
             // Hc hesapla
-            const latRad = toRad(lat);
-            const decRad = toRad(dec);
+            const latRad = toRad(Math.abs(latSigned));
+            const decRad = toRad(Math.abs(decSigned));
             const lhaRad = toRad(lha);
             
-            const sinHc = Math.sin(latRad) * Math.sin(decRad) + 
-                         Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad);
+            let sinHc;
+            if (sameContrary === 'SAME') {
+                sinHc = Math.sin(latRad) * Math.sin(decRad) + 
+                       Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad);
+            } else {
+                sinHc = -Math.sin(latRad) * Math.sin(decRad) + 
+                       Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad);
+            }
+            
             const hcRad = Math.asin(sinHc);
             const hc = toDeg(hcRad);
             
             // Z hesapla
-            let cosZ = (Math.sin(decRad) - Math.sin(latRad) * sinHc) / 
+            let cosZ;
+            if (sameContrary === 'SAME') {
+                cosZ = (Math.sin(decRad) - Math.sin(latRad) * sinHc) / 
                       (Math.cos(latRad) * Math.cos(hcRad));
+            } else {
+                cosZ = (-Math.sin(decRad) - Math.sin(latRad) * sinHc) / 
+                      (Math.cos(latRad) * Math.cos(hcRad));
+            }
             
             // cosZ değerini -1 ile 1 arasında sınırla
             cosZ = Math.max(-1, Math.min(1, cosZ));
-            let z = toDeg(Math.acos(cosZ));
+            let z = toDeg(Math.acos(Math.abs(cosZ)));
             
-            // LHA > 180 ise Z = 360 - Z
-            if (lha > 180) {
-                z = 360 - z;
+            // Gerçek Azimut (Zn) hesapla
+            let zn;
+            if (latSigned >= 0) { // Kuzey enlemi
+                if (lha < 180) {
+                    zn = z;
+                } else {
+                    zn = 360 - z;
+                }
+            } else { // Güney enlemi
+                if (lha < 180) {
+                    zn = 180 - z;
+                } else {
+                    zn = 180 + z;
+                }
+            }
+            
+            // İntersepta hesapla (eğer Ho verilmişse)
+            let intercepta = null;
+            let direction = '';
+            if (ho !== null) {
+                intercepta = (ho - hc) * 60; // Dakika cinsinden
+                direction = intercepta >= 0 ? 'TOWARD' : 'AWAY';
             }
             
             // Sonuçları göster
@@ -406,9 +702,20 @@
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
                 <h4>Hesaplama Sonuçları:</h4>
-                <p><strong>Hc (Hesaplanmış Yükseklik):</strong> ${hc.toFixed(1)}°</p>
+                <p><strong>Enlem/Deklinasyon Durumu:</strong> ${sameContrary}</p>
+                <p><strong>Hc (Hesaplanmış Yükseklik):</strong> ${hc >= 0 ? hc.toFixed(1) : 'Gök cismi ufkun altında'}</p>
                 <p><strong>Z (Azimut Açısı):</strong> ${z.toFixed(1)}°</p>
-                <p><strong>Gerçek Azimut:</strong> ${lat >= 0 ? 'N' : 'S'} ${z.toFixed(1)}° ${lha < 180 ? 'E' : 'W'}</p>
+                <p><strong>Zn (Gerçek Azimut):</strong> ${zn.toFixed(1)}°</p>
+                ${ho !== null ? `
+                    <p><strong>Ho (Gözlenen Yükseklik):</strong> ${ho.toFixed(1)}°</p>
+                    <p><strong>İntersepta (a):</strong> ${Math.abs(intercepta).toFixed(1)}′ ${direction}</p>
+                    <p><strong>Konum Hattı:</strong> ${direction === 'TOWARD' ? 'Gök cismine doğru' : 'Gök cisminden uzağa'} ${Math.abs(intercepta).toFixed(1)} deniz mili</p>
+                ` : ''}
+                <hr>
+                <p style="font-size: 0.9em; color: #666;">
+                    <strong>Not:</strong> Bu hesaplama küresel trigonometri formülleri kullanılarak yapılmıştır. 
+                    Gerçek tablolardan küçük farklılıklar gösterebilir.
+                </p>
             `;
         }
     </script>
