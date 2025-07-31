@@ -1066,7 +1066,7 @@ export const NavigationCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="route" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-1">
               <TabsTrigger value="route" className="text-xs px-2">Rota</TabsTrigger>
               <TabsTrigger value="current" className="text-xs px-2">Akıntı</TabsTrigger>
               <TabsTrigger value="compass" className="text-xs px-2">Pusula</TabsTrigger>
@@ -1076,6 +1076,7 @@ export const NavigationCalculations = () => {
               <TabsTrigger value="port" className="text-xs px-2">Liman</TabsTrigger>
               <TabsTrigger value="celestial" className="text-xs px-2">Göksel</TabsTrigger>
               <TabsTrigger value="astronomical" className="text-xs px-2">Astronomik</TabsTrigger>
+              <TabsTrigger value="almanac" className="text-xs px-2">Almanac</TabsTrigger>
             </TabsList>
 
             <TabsContent value="route" className="space-y-4">
@@ -1856,6 +1857,173 @@ export const NavigationCalculations = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Almanac Tab */}
+            <TabsContent value="almanac" className="space-y-4">
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="h-5 w-5 text-blue-500" />
+                      Nautical Almanac
+                    </CardTitle>
+                    <CardDescription>
+                      Denizcilik hesaplamaları için astronomik veriler ve tablolar
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Almanac PDF Links */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Card className="border-dashed">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <Star className="h-4 w-4 text-yellow-500" />
+                            Nautical Almanac 2024
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Güncel yıl için astronomi verileri, güneş, ay ve gezegen pozisyonları
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => window.open('https://www.thenauticalalmanac.com/TNARegular/2024_Nautical_Almanac.pdf', '_blank')}
+                          >
+                            <Globe className="h-4 w-4 mr-2" />
+                            PDF İndir
+                          </Button>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-dashed">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <Navigation className="h-4 w-4 text-blue-500" />
+                            Sight Reduction Tables
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            HO 229, HO 249 tabloları ve göksel navigasyon hesaplamaları
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => window.open('https://msi.nga.mil/api/publications/download?key=16693975/SFH00000/Pub229.pdf', '_blank')}
+                          >
+                            <Calculator className="h-4 w-4 mr-2" />
+                            PDF İndir
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    <Separator />
+
+                    {/* Quick Reference Tables */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium flex items-center gap-2">
+                        <Eye className="h-4 w-4" />
+                        Hızlı Referans Tabloları
+                      </h4>
+                      
+                      {/* Dip Table */}
+                      <Card className="bg-muted/30">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Dip (Ufuk Düzeltmesi) Tablosu</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-4 gap-2 text-xs">
+                            <div className="font-medium">Göz Yük. (m)</div>
+                            <div className="font-medium">Dip (′)</div>
+                            <div className="font-medium">Göz Yük. (m)</div>
+                            <div className="font-medium">Dip (′)</div>
+                            
+                            <div>2.0</div><div>-2.5</div><div>10.0</div><div>-5.6</div>
+                            <div>3.0</div><div>-3.0</div><div>15.0</div><div>-6.8</div>
+                            <div>4.0</div><div>-3.5</div><div>20.0</div><div>-7.9</div>
+                            <div>5.0</div><div>-3.9</div><div>25.0</div><div>-8.8</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Refraction Table */}
+                      <Card className="bg-muted/30">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Refraksiyon Düzeltmesi</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-4 gap-2 text-xs">
+                            <div className="font-medium">Yükseklik (°)</div>
+                            <div className="font-medium">Düzeltme (′)</div>
+                            <div className="font-medium">Yükseklik (°)</div>
+                            <div className="font-medium">Düzeltme (′)</div>
+                            
+                            <div>0°</div><div>-34.5</div><div>20°</div><div>-2.6</div>
+                            <div>5°</div><div>-9.9</div><div>30°</div><div>-1.7</div>
+                            <div>10°</div><div>-5.3</div><div>45°</div><div>-1.0</div>
+                            <div>15°</div><div>-3.5</div><div>90°</div><div>0.0</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Semi-diameter values */}
+                      <Card className="bg-muted/30">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Güneş ve Ay Yarı Çapları</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="flex items-center gap-2">
+                                <Sun className="h-3 w-3 text-yellow-500" />
+                                Güneş SD
+                              </span>
+                              <span>15.7′ - 16.3′</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="flex items-center gap-2">
+                                <Moon className="h-3 w-3 text-gray-400" />
+                                Ay SD
+                              </span>
+                              <span>14.7′ - 16.8′</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    <Separator />
+
+                    {/* Additional Resources */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Ek Kaynaklar</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => window.open('https://aa.usno.navy.mil/data/RS_OneYear', '_blank')}
+                        >
+                          <Sunrise className="h-4 w-4 mr-2" />
+                          Gündoğumu/Batımı Tabloları
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => window.open('https://www.nhc.noaa.gov/marine/', '_blank')}
+                        >
+                          <Wind className="h-4 w-4 mr-2" />
+                          Deniz Hava Durumu
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
 
