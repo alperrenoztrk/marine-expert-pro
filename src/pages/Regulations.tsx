@@ -397,12 +397,12 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="chapters">SOLAS 2020</TabsTrigger>
-            <TabsTrigger value="colreg">COLREG 1972</TabsTrigger>
-            <TabsTrigger value="uscq">USCQ</TabsTrigger>
-            <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
-          </TabsList>
+                      <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="chapters">SOLAS 2020</TabsTrigger>
+              <TabsTrigger value="colreg">COLREG 1972</TabsTrigger>
+              <TabsTrigger value="uscg">USCG Navigation</TabsTrigger>
+              <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
+            </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
             <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 dark:border-blue-800">
@@ -806,28 +806,28 @@ const Regulations = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="uscq" className="space-y-4">
+          <TabsContent value="uscg" className="space-y-4">
             <Card className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200 dark:border-red-800">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
-                      USCQ Regulations
+                      USCG Navigation Rules
                     </CardTitle>
                     <CardDescription>
-                      United States Coast Guard Maritime Regulations
+                      United States Coast Guard Navigation Rules and Regulations
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => window.open('/USCQ-Regulations.pdf', '_blank')}
+                      onClick={() => window.open('/USCG-Navigation-Rules.pdf', '_blank')}
                       className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
                     >
                       <Download className="h-4 w-4" />
-                      Download USCQ PDF
+                      Download USCG PDF
                     </Button>
                   </div>
                 </div>
@@ -837,36 +837,36 @@ const Regulations = () => {
                   <div className="p-4 bg-card/80 rounded-lg border border-border">
                     <h4 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
-                      USCQ Resources
+                      USCG Navigation Resources
                     </h4>
                     <div className="grid gap-3 md:grid-cols-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('/USCQ-Regulations.pdf', '_blank')}
+                        onClick={() => window.open('/USCG-Navigation-Rules.pdf', '_blank')}
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        USCQ Regulations (PDF)
+                        USCG Navigation Rules (PDF)
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://www.uscg.mil/', '_blank')}
+                        onClick={() => window.open('https://www.navcen.uscg.gov/', '_blank')}
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <AlertTriangle className="h-4 w-4 mr-2" />
-                        USCG Official Website
+                        USCG Navigation Center
                       </Button>
                     </div>
                   </div>
                   
                   <div className="text-sm text-red-800 bg-red-100/50 p-3 rounded">
-                    <p className="font-medium mb-1">📋 Available USCQ Resources:</p>
-                    <p>• USCQ Regulations (PDF)</p>
-                    <p>• US Coast Guard maritime regulations</p>
-                    <p>• Navigation and safety requirements</p>
-                    <p className="mt-2 text-xs">Not: En güncel versiyonu USCG'den alınabilir.</p>
+                    <p className="font-medium mb-1">📋 Available USCG Navigation Resources:</p>
+                    <p>• USCG Navigation Rules (PDF)</p>
+                    <p>• US Coast Guard navigation regulations</p>
+                    <p>• Inland and international navigation rules</p>
+                    <p className="mt-2 text-xs">Not: En güncel versiyonu USCG Navigation Center'dan alınabilir.</p>
                   </div>
                 </div>
               </CardContent>
@@ -879,14 +879,14 @@ const Regulations = () => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Shield className="h-5 w-5 text-red-600" />
-                        <CardTitle className="text-lg">Title 33 CFR</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">Navigation</Badge>
+                        <CardTitle className="text-lg">Part A: General</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">General</Badge>
                       </div>
-                      <CardDescription>Navigation and navigable waters regulations</CardDescription>
+                      <CardDescription>Application, responsibility, and general definitions</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>Son Güncelleme: 2024</span>
                         <span>•</span>
-                        <span>Multiple Parts</span>
+                        <span>3 Düzenleme</span>
                       </div>
                     </div>
                   </div>
@@ -898,15 +898,15 @@ const Regulations = () => {
                       <ul className="space-y-1">
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Navigation and navigable waters
+                          Application to all vessels on US waters
                         </li>
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Bridge administration and regulations
+                          Responsibility for compliance with regulations
                         </li>
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Vessel traffic management
+                          General definitions and terms
                         </li>
                       </ul>
                     </div>
@@ -915,7 +915,7 @@ const Regulations = () => {
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="outline" className="text-xs">US waters</Badge>
                         <Badge variant="outline" className="text-xs">Navigation</Badge>
-                        <Badge variant="outline" className="text-xs">Vessel traffic</Badge>
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
                       </div>
                     </div>
                   </div>
@@ -928,14 +928,14 @@ const Regulations = () => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Shield className="h-5 w-5 text-red-600" />
-                        <CardTitle className="text-lg">Title 46 CFR</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">Safety</Badge>
+                        <CardTitle className="text-lg">Part B: Steering and Sailing Rules</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">Navigation</Badge>
                       </div>
-                      <CardDescription>Shipping regulations and vessel safety requirements</CardDescription>
+                      <CardDescription>Rules for vessel conduct in any condition of visibility</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>Son Güncelleme: 2024</span>
                         <span>•</span>
-                        <span>Multiple Parts</span>
+                        <span>15 Düzenleme</span>
                       </div>
                     </div>
                   </div>
@@ -947,24 +947,24 @@ const Regulations = () => {
                       <ul className="space-y-1">
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Vessel construction and equipment
+                          Conduct of vessels in any condition of visibility
                         </li>
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Marine engineering and electrical systems
+                          Conduct of vessels in sight of one another
                         </li>
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Lifesaving and fire protection equipment
+                          Conduct of vessels in restricted visibility
                         </li>
                       </ul>
                     </div>
                     <div>
                       <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="text-xs">US vessels</Badge>
-                        <Badge variant="outline" className="text-xs">Safety equipment</Badge>
-                        <Badge variant="outline" className="text-xs">Construction</Badge>
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Navigation</Badge>
+                        <Badge variant="outline" className="text-xs">Collision avoidance</Badge>
                       </div>
                     </div>
                   </div>
@@ -977,14 +977,14 @@ const Regulations = () => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Shield className="h-5 w-5 text-red-600" />
-                        <CardTitle className="text-lg">Title 49 CFR</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">Transportation</Badge>
+                        <CardTitle className="text-lg">Part C: Lights and Shapes</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">Lights</Badge>
                       </div>
-                      <CardDescription>Transportation regulations including hazardous materials</CardDescription>
+                      <CardDescription>Requirements for lights and shapes to be exhibited by vessels</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>Son Güncelleme: 2024</span>
                         <span>•</span>
-                        <span>Multiple Parts</span>
+                        <span>12 Düzenleme</span>
                       </div>
                     </div>
                   </div>
@@ -996,24 +996,73 @@ const Regulations = () => {
                       <ul className="space-y-1">
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Transportation of hazardous materials
+                          Lights to be exhibited by vessels
                         </li>
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Pipeline safety regulations
+                          Shapes to be exhibited by vessels
                         </li>
                         <li className="text-sm text-muted-foreground flex items-start gap-2">
                           <span className="text-primary">•</span>
-                          Transportation security requirements
+                          Technical details of lights and shapes
                         </li>
                       </ul>
                     </div>
                     <div>
                       <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
                       <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="text-xs">Transportation</Badge>
-                        <Badge variant="outline" className="text-xs">Hazardous materials</Badge>
-                        <Badge variant="outline" className="text-xs">Security</Badge>
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Night navigation</Badge>
+                        <Badge variant="outline" className="text-xs">Visibility</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-lg">Part D: Sound and Light Signals</CardTitle>
+                        <Badge className="bg-red-100 text-red-800">Signals</Badge>
+                      </div>
+                      <CardDescription>Sound and light signals for vessels in sight of one another</CardDescription>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Son Güncelleme: 2024</span>
+                        <span>•</span>
+                        <span>8 Düzenleme</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Temel Hükümler:</h4>
+                      <ul className="space-y-1">
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Sound signals for vessels in sight of one another
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Sound signals in restricted visibility
+                        </li>
+                        <li className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary">•</span>
+                          Light signals for vessels in sight of one another
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="text-xs">All vessels</Badge>
+                        <Badge variant="outline" className="text-xs">Communication</Badge>
+                        <Badge variant="outline" className="text-xs">Signaling</Badge>
                       </div>
                     </div>
                   </div>
