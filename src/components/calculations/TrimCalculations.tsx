@@ -840,7 +840,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             Draft Survey, Trim Etkileri, Bonjean Curves ve Sounding Tabloları - Tam profesyonel denizcilik hesaplama paketi
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="max-h-[70vh] overflow-y-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 p-1">
               <TabsTrigger value="basic" className="text-sm px-3 py-2">Temel Trim</TabsTrigger>
