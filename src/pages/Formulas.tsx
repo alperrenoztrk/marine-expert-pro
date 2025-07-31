@@ -453,11 +453,11 @@ const Formulas = () => {
                           return (
                             <p key={index} className="mb-2">
                               {parts.map((part, i) => 
-                                i % 2 === 1 ? (
-                                  <code key={i} className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary">
-                                    {part}
-                                  </code>
-                                ) : part
+                                 i % 2 === 1 ? (
+                                   <code key={i} className="bg-card border border-primary/20 px-2 py-1 rounded text-sm font-mono text-card-foreground">
+                                     {part}
+                                   </code>
+                                 ) : part
                               )}
                             </p>
                           );
@@ -466,8 +466,8 @@ const Formulas = () => {
                         // Formül satırları (= içeren)
                         if (line.includes('=') && (line.includes('×') || line.includes('+') || line.includes('-') || line.includes('/'))) {
                           return (
-                            <div key={index} className="bg-muted/50 p-2 rounded-md font-mono text-sm border border-primary/20">
-                              {line}
+                            <div key={index} className="bg-card border-2 border-primary/30 p-3 rounded-lg font-mono text-sm shadow-sm">
+                              <code className="text-card-foreground">{line}</code>
                             </div>
                           );
                         }

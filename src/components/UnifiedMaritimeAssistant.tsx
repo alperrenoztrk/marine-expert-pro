@@ -342,13 +342,36 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
 
         {/* Response */}
         {response && (
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400">
-            <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+          <div className="p-4 bg-card border border-primary/20 rounded-lg shadow-sm">
+            <h4 className="font-semibold text-card-foreground mb-3 flex items-center gap-2">
               <Calculator className="w-5 h-5" />
               Yanıt:
             </h4>
-            <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
-              {response}
+            <div className="text-sm text-card-foreground whitespace-pre-wrap leading-relaxed space-y-2">
+              {response.split('\n').map((line, index) => {
+                // Formül satırları için özel stil
+                if (line.includes('=') && (line.includes('×') || line.includes('+') || line.includes('-') || line.includes('/'))) {
+                  return (
+                    <div key={index} className="bg-muted border border-primary/30 p-3 rounded-lg font-mono text-sm">
+                      <code className="text-foreground">{line}</code>
+                    </div>
+                  );
+                }
+                // Başlık satırları
+                if (line.startsWith('**') && line.endsWith('**')) {
+                  return (
+                    <h5 key={index} className="font-semibold text-primary mt-3 mb-1">
+                      {line.replace(/\*\*/g, '')}
+                    </h5>
+                  );
+                }
+                // Normal satırlar
+                return line.trim() ? (
+                  <p key={index} className="mb-1">{line}</p>
+                ) : (
+                  <div key={index} className="h-2"></div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -359,9 +382,9 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
             <h4 className="text-sm font-medium text-muted-foreground">Son Sorular:</h4>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {conversationHistory.slice(0, 3).map((entry, index) => (
-                <div key={index} className="text-xs p-2 bg-gray-50 rounded border-l-2 border-gray-300 dark:border-gray-600">
-                  <div className="font-medium text-gray-600 dark:text-gray-400">S: {entry.question}</div>
-                  <div className="text-gray-500 mt-1 truncate">
+                <div key={index} className="text-xs p-2 bg-muted rounded border-l-2 border-primary/30">
+                  <div className="font-medium text-foreground">S: {entry.question}</div>
+                  <div className="text-muted-foreground mt-1 truncate">
                     A: {entry.answer.substring(0, 80)}...
                   </div>
                 </div>
@@ -370,7 +393,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
           </div>
         )}
 
-        <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded">
+        <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded border border-primary/10">
           <strong>📊 Özellikler:</strong> Gerçek zamanlı hesaplama, kapsamlı maritime bilgi bankası, IMO standartları<br />
           <strong>🔧 Hesaplama Motoru:</strong> Otomatik sayı tespiti ile arka plan hesaplamaları<br />
           <strong>✨ Kapsam:</strong> Stabilite, navigasyon, hidrodinamik, yapısal analiz ve tüm maritime mühendisliği alanları
