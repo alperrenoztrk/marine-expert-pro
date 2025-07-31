@@ -1909,15 +1909,15 @@ export const NavigationCalculations = () => {
                           <p className="text-sm text-muted-foreground mb-3">
                             HO 229, HO 249 tabloları ve göksel navigasyon hesaplamaları
                           </p>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => window.open('https://msi.nga.mil/api/publications/download?key=16693975/SFH00000/Pub229.pdf', '_blank')}
-                          >
-                            <Calculator className="h-4 w-4 mr-2" />
-                            PDF İndir
-                          </Button>
+                                                  <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => window.open('/sight-reduction-guide.html', '_blank')}
+                        >
+                          <Calculator className="h-4 w-4 mr-2" />
+                          İnteraktif Tablolar
+                        </Button>
                         </CardContent>
                       </Card>
                     </div>

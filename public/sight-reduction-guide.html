@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sight Reduction Tables - Gözlem İndirgeme Tabloları</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e40af;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #3b82f6;
+            margin-top: 30px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #1e40af;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .lat-header {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .formula {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .calculator {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .calculator input {
+            padding: 5px;
+            margin: 5px;
+            width: 100px;
+        }
+        .calculator button {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .calculator button:hover {
+            background: #2563eb;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #dcfce7;
+            border: 1px solid #4ade80;
+            border-radius: 4px;
+            display: none;
+        }
+        .abbreviations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .abbr-item {
+            background: #f9fafb;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .abbr-item strong {
+            color: #1e40af;
+        }
+        @media print {
+            .calculator, button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SIGHT REDUCTION TABLES</h1>
+        <p class="subtitle">Gözlem İndirgeme Tabloları - HO 229 Formatı</p>
+        
+        <div class="info-box">
+            <strong>Kullanım Talimatları:</strong>
+            <ol>
+                <li>Varsayılan konumunuzun enlemini (Latitude) tam derece olarak seçin</li>
+                <li>Gök cisminin deklinasyonunu (Declination) tam dereceye yuvarlayın</li>
+                <li>Yerel saat açısını (LHA) hesaplayın</li>
+                <li>Tablodan Hc (hesaplanmış yükseklik), d (düzeltme faktörü) ve Z (azimut) değerlerini okuyun</li>
+            </ol>
+        </div>
+
+        <h2>Kısaltmalar ve Terimler</h2>
+        <div class="abbreviations">
+            <div class="abbr-item"><strong>LHA:</strong> Local Hour Angle (Yerel Saat Açısı)</div>
+            <div class="abbr-item"><strong>Dec:</strong> Declination (Deklinasyon)</div>
+            <div class="abbr-item"><strong>Hc:</strong> Computed Altitude (Hesaplanmış Yükseklik)</div>
+            <div class="abbr-item"><strong>d:</strong> Difference (Düzeltme Faktörü)</div>
+            <div class="abbr-item"><strong>Z:</strong> Azimuth Angle (Azimut Açısı)</div>
+            <div class="abbr-item"><strong>Lat:</strong> Latitude (Enlem)</div>
+        </div>
+
+        <h2>Örnek Sight Reduction Table</h2>
+        <p><strong>Latitude 40° - SAME name as declination</strong></p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">LHA</th>
+                    <th colspan="3">Dec 10°</th>
+                    <th colspan="3">Dec 15°</th>
+                    <th colspan="3">Dec 20°</th>
+                    <th colspan="3">Dec 25°</th>
+                </tr>
+                <tr>
+                    <th>Hc</th>
+                    <th>d</th>
+                    <th>Z</th>
+                    <th>Hc</th>
+                    <th>d</th>
+                    <th>Z</th>
+                    <th>Hc</th>
+                    <th>d</th>
+                    <th>Z</th>
+                    <th>Hc</th>
+                    <th>d</th>
+                    <th>Z</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0°</td>
+                    <td>60°00.0</td>
+                    <td>+60</td>
+                    <td>90.0</td>
+                    <td>55°00.0</td>
+                    <td>+60</td>
+                    <td>90.0</td>
+                    <td>50°00.0</td>
+                    <td>+60</td>
+                    <td>90.0</td>
+                    <td>45°00.0</td>
+                    <td>+60</td>
+                    <td>90.0</td>
+                </tr>
+                <tr>
+                    <td>5°</td>
+                    <td>59°41.5</td>
+                    <td>+60</td>
+                    <td>89.2</td>
+                    <td>54°41.8</td>
+                    <td>+60</td>
+                    <td>89.1</td>
+                    <td>49°42.0</td>
+                    <td>+60</td>
+                    <td>89.0</td>
+                    <td>44°42.2</td>
+                    <td>+59</td>
+                    <td>88.9</td>
+                </tr>
+                <tr>
+                    <td>10°</td>
+                    <td>58°45.8</td>
+                    <td>+59</td>
+                    <td>88.4</td>
+                    <td>53°46.5</td>
+                    <td>+59</td>
+                    <td>88.2</td>
+                    <td>48°47.1</td>
+                    <td>+59</td>
+                    <td>88.0</td>
+                    <td>43°47.6</td>
+                    <td>+58</td>
+                    <td>87.8</td>
+                </tr>
+                <tr>
+                    <td>15°</td>
+                    <td>57°14.2</td>
+                    <td>+58</td>
+                    <td>87.6</td>
+                    <td>52°15.8</td>
+                    <td>+58</td>
+                    <td>87.3</td>
+                    <td>47°17.2</td>
+                    <td>+57</td>
+                    <td>87.0</td>
+                    <td>42°18.5</td>
+                    <td>+57</td>
+                    <td>86.7</td>
+                </tr>
+                <tr>
+                    <td>20°</td>
+                    <td>55°08.5</td>
+                    <td>+56</td>
+                    <td>86.8</td>
+                    <td>50°11.2</td>
+                    <td>+56</td>
+                    <td>86.4</td>
+                    <td>45°13.7</td>
+                    <td>+55</td>
+                    <td>86.0</td>
+                    <td>40°16.0</td>
+                    <td>+55</td>
+                    <td>85.6</td>
+                </tr>
+                <tr>
+                    <td>30°</td>
+                    <td>49°38.4</td>
+                    <td>+52</td>
+                    <td>85.1</td>
+                    <td>44°44.8</td>
+                    <td>+51</td>
+                    <td>84.6</td>
+                    <td>39°50.8</td>
+                    <td>+50</td>
+                    <td>84.0</td>
+                    <td>34°56.5</td>
+                    <td>+49</td>
+                    <td>83.4</td>
+                </tr>
+                <tr>
+                    <td>45°</td>
+                    <td>40°12.3</td>
+                    <td>+44</td>
+                    <td>82.0</td>
+                    <td>35°26.4</td>
+                    <td>+42</td>
+                    <td>81.2</td>
+                    <td>30°39.8</td>
+                    <td>+41</td>
+                    <td>80.4</td>
+                    <td>25°52.7</td>
+                    <td>+39</td>
+                    <td>79.6</td>
+                </tr>
+                <tr>
+                    <td>60°</td>
+                    <td>28°44.7</td>
+                    <td>+33</td>
+                    <td>77.6</td>
+                    <td>24°10.5</td>
+                    <td>+31</td>
+                    <td>76.5</td>
+                    <td>19°35.2</td>
+                    <td>+29</td>
+                    <td>75.4</td>
+                    <td>14°59.3</td>
+                    <td>+27</td>
+                    <td>74.3</td>
+                </tr>
+                <tr>
+                    <td>90°</td>
+                    <td>10°00.0</td>
+                    <td>0</td>
+                    <td>0.0</td>
+                    <td>15°00.0</td>
+                    <td>0</td>
+                    <td>0.0</td>
+                    <td>20°00.0</td>
+                    <td>0</td>
+                    <td>0.0</td>
+                    <td>25°00.0</td>
+                    <td>0</td>
+                    <td>0.0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Hızlı Hesap Makinesi</h2>
+        <div class="calculator">
+            <h3>Basit Sight Reduction Hesaplayıcı</h3>
+            <div>
+                <label>Latitude (Enlem): <input type="number" id="lat" placeholder="40" min="-90" max="90" step="1"></label>
+            </div>
+            <div>
+                <label>Declination (Deklinasyon): <input type="number" id="dec" placeholder="15" min="-90" max="90" step="0.1"></label>
+            </div>
+            <div>
+                <label>LHA (Yerel Saat Açısı): <input type="number" id="lha" placeholder="45" min="0" max="360" step="0.1"></label>
+            </div>
+            <button onclick="calculateSight()">Hesapla</button>
+            <div id="result" class="result"></div>
+        </div>
+
+        <h2>İnterpolasyon Tablosu</h2>
+        <table style="max-width: 600px;">
+            <thead>
+                <tr>
+                    <th>d değeri</th>
+                    <th>0.1°</th>
+                    <th>0.2°</th>
+                    <th>0.3°</th>
+                    <th>0.4°</th>
+                    <th>0.5°</th>
+                    <th>0.6°</th>
+                    <th>0.7°</th>
+                    <th>0.8°</th>
+                    <th>0.9°</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>10</td><td>1.0</td><td>2.0</td><td>3.0</td><td>4.0</td><td>5.0</td><td>6.0</td><td>7.0</td><td>8.0</td><td>9.0</td></tr>
+                <tr><td>20</td><td>2.0</td><td>4.0</td><td>6.0</td><td>8.0</td><td>10.0</td><td>12.0</td><td>14.0</td><td>16.0</td><td>18.0</td></tr>
+                <tr><td>30</td><td>3.0</td><td>6.0</td><td>9.0</td><td>12.0</td><td>15.0</td><td>18.0</td><td>21.0</td><td>24.0</td><td>27.0</td></tr>
+                <tr><td>40</td><td>4.0</td><td>8.0</td><td>12.0</td><td>16.0</td><td>20.0</td><td>24.0</td><td>28.0</td><td>32.0</td><td>36.0</td></tr>
+                <tr><td>50</td><td>5.0</td><td>10.0</td><td>15.0</td><td>20.0</td><td>25.0</td><td>30.0</td><td>35.0</td><td>40.0</td><td>45.0</td></tr>
+                <tr><td>60</td><td>6.0</td><td>12.0</td><td>18.0</td><td>24.0</td><td>30.0</td><td>36.0</td><td>42.0</td><td>48.0</td><td>54.0</td></tr>
+            </tbody>
+        </table>
+
+        <div class="info-box" style="margin-top: 40px;">
+            <strong>Not:</strong> Bu örnek tablolar eğitim amaçlıdır. Gerçek navigasyon için resmi Sight Reduction Tables (HO 229, HO 249, veya NP 401) kullanınız.
+        </div>
+
+        <h2>Formüller</h2>
+        <div class="formula">
+            sin(Hc) = sin(Lat) × sin(Dec) + cos(Lat) × cos(Dec) × cos(LHA)
+        </div>
+        <div class="formula">
+            cos(Z) = (sin(Dec) - sin(Lat) × sin(Hc)) / (cos(Lat) × cos(Hc))
+        </div>
+    </div>
+
+    <script>
+        function calculateSight() {
+            const lat = parseFloat(document.getElementById('lat').value) || 0;
+            const dec = parseFloat(document.getElementById('dec').value) || 0;
+            const lha = parseFloat(document.getElementById('lha').value) || 0;
+            
+            // Dereceyi radyana çevir
+            const toRad = (deg) => deg * Math.PI / 180;
+            const toDeg = (rad) => rad * 180 / Math.PI;
+            
+            // Hc hesapla
+            const latRad = toRad(lat);
+            const decRad = toRad(dec);
+            const lhaRad = toRad(lha);
+            
+            const sinHc = Math.sin(latRad) * Math.sin(decRad) + 
+                         Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad);
+            const hcRad = Math.asin(sinHc);
+            const hc = toDeg(hcRad);
+            
+            // Z hesapla
+            let cosZ = (Math.sin(decRad) - Math.sin(latRad) * sinHc) / 
+                      (Math.cos(latRad) * Math.cos(hcRad));
+            
+            // cosZ değerini -1 ile 1 arasında sınırla
+            cosZ = Math.max(-1, Math.min(1, cosZ));
+            let z = toDeg(Math.acos(cosZ));
+            
+            // LHA > 180 ise Z = 360 - Z
+            if (lha > 180) {
+                z = 360 - z;
+            }
+            
+            // Sonuçları göster
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h4>Hesaplama Sonuçları:</h4>
+                <p><strong>Hc (Hesaplanmış Yükseklik):</strong> ${hc.toFixed(1)}°</p>
+                <p><strong>Z (Azimut Açısı):</strong> ${z.toFixed(1)}°</p>
+                <p><strong>Gerçek Azimut:</strong> ${lat >= 0 ? 'N' : 'S'} ${z.toFixed(1)}° ${lha < 180 ? 'E' : 'W'}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
