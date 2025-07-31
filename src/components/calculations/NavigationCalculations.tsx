@@ -1877,20 +1877,20 @@ export const NavigationCalculations = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Card className="border-dashed">
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-base flex items-center gap-2">
-                            <Star className="h-4 w-4 text-yellow-500" />
-                            Nautical Almanac 2024
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-muted-foreground mb-3">
-                            Güncel yıl için astronomi verileri, güneş, ay ve gezegen pozisyonları
-                          </p>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => window.open('https://www.thenauticalalmanac.com/TNARegular/2024_Nautical_Almanac.pdf', '_blank')}
+                                                  <CardTitle className="text-base flex items-center gap-2">
+                          <Star className="h-4 w-4 text-yellow-500" />
+                          Nautical Almanac 2025
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Güncel yıl için astronomi verileri, güneş, ay ve gezegen pozisyonları
+                        </p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => window.open('https://thenauticalalmanac.com/TNARegular/2025_Nautical_Almanac.pdf', '_blank')}
                           >
                             <Globe className="h-4 w-4 mr-2" />
                             PDF İndir
