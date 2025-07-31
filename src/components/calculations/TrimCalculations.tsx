@@ -842,15 +842,15 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="basic">Temel Trim</TabsTrigger>
-              <TabsTrigger value="draft-survey">Draft Survey</TabsTrigger>
-              <TabsTrigger value="trim-effects">Trim Etkileri</TabsTrigger>
-              <TabsTrigger value="bonjean">Bonjean Curves</TabsTrigger>
-              <TabsTrigger value="sounding">Sounding Tabloları</TabsTrigger>
-              <TabsTrigger value="operations">Yük İşlemleri</TabsTrigger>
-              <TabsTrigger value="performance">Performans</TabsTrigger>
-              <TabsTrigger value="analysis">Analiz</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 gap-1">
+              <TabsTrigger value="basic" className="text-xs">Temel Trim</TabsTrigger>
+              <TabsTrigger value="draft-survey" className="text-xs">Draft Survey</TabsTrigger>
+              <TabsTrigger value="trim-effects" className="text-xs">Trim Etkileri</TabsTrigger>
+              <TabsTrigger value="bonjean" className="text-xs">Bonjean</TabsTrigger>
+              <TabsTrigger value="sounding" className="text-xs">Sounding</TabsTrigger>
+              <TabsTrigger value="operations" className="text-xs">Yük İşlemleri</TabsTrigger>
+              <TabsTrigger value="performance" className="text-xs">Performans</TabsTrigger>
+              <TabsTrigger value="analysis" className="text-xs">Analiz</TabsTrigger>
             </TabsList>
 
             <TabsContent value="basic" className="space-y-6">
