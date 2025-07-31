@@ -43,7 +43,7 @@ const Stability = () => {
         </div>
 
         {/* Stability Calculations */}
-        <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-blue-200 shadow-xl dark:shadow-gray-900/50">
+        <Card className="bg-white dark:bg-gray-800/80 dark:bg-gray-800/80 dark:bg-gray-800/80 backdrop-blur-sm border-blue-200 shadow-xl dark:shadow-gray-900/50">
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 text-white rounded-t-lg">
             <CardTitle className="text-2xl flex items-center gap-3">
               <Anchor className="h-8 w-8" />

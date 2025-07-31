@@ -425,7 +425,7 @@ Hangi konuda yardım istiyorsunuz?`
               <CardContent className="space-y-3 max-h-60 overflow-y-auto">
                 {conversationHistory.slice(-3).map((conv, index) => (
                   <div key={index} className="text-xs border-l-2 border-gray-200 pl-3">
-                    <p className="font-medium text-gray-700">S: {conv.question}</p>
+                    <p className="font-medium text-gray-700 dark:text-gray-300">S: {conv.question}</p>
                     <p className="text-gray-600 mt-1 line-clamp-2">C: {conv.answer.substring(0, 150)}...</p>
                   </div>
                 ))}

@@ -79,7 +79,7 @@ export const DirectionInput = ({
           ))}
         </div>
       </div>
-      <div className="text-xs text-gray-500">
+      <div className="text-xs text-gray-500 dark:text-gray-400">
         Sonuç: {absoluteValue.toFixed(1)}° {direction} = {value.toFixed(1)}°
       </div>
     </div>

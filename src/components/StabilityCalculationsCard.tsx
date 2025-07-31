@@ -15,7 +15,7 @@ export const StabilityCalculationsCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className="w-full cursor-pointer transition-all duration-200 hover:shadow-lg">
+    <Card className="w-full cursor-pointer transition-all duration-200 hover:shadow-lg dark:shadow-gray-900/50">
       <div onClick={() => setIsExpanded(!isExpanded)}>
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2">

@@ -43,7 +43,7 @@ const Cargo = () => {
         </div>
 
         {/* Cargo Calculations */}
-        <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+        <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 dark:bg-gray-800/80 backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-xl">
               <Package className="h-6 w-6 text-blue-600 dark:text-blue-400" />

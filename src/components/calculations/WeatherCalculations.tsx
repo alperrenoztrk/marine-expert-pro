@@ -614,7 +614,7 @@ export const WeatherCalculations = () => {
             <TabsContent value="clouds" className="space-y-6">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">MGM Bulut Kataloğu</h3>
-                <p className="text-gray-600">Meteoroloji Genel Müdürlüğü standartlarına göre bulut tipleri ve denizcilik önemi</p>
+                <p className="text-gray-600 dark:text-gray-400">Meteoroloji Genel Müdürlüğü standartlarına göre bulut tipleri ve denizcilik önemi</p>
               </div>
 
               {/* Tehlikeli Bulutlar */}

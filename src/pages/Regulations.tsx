@@ -806,7 +806,7 @@ const Regulations = () => {
       case 'radio': return 'bg-purple-100 text-purple-800';
       case 'safety': return 'bg-indigo-100 text-indigo-800';
       case 'cargo': return 'bg-yellow-100 text-yellow-800';
-      case 'nuclear': return 'bg-gray-100 text-gray-800';
+      case 'nuclear': return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
       case 'steering': return 'bg-cyan-100 text-cyan-800';
       case 'lights': return 'bg-amber-100 text-amber-800';
       case 'sound': return 'bg-pink-100 text-pink-800';
@@ -990,7 +990,7 @@ const Regulations = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 bg-white/80 dark:bg-gray-800/80 rounded-lg border border-blue-100">
+                  <div className="p-4 bg-white/80 dark:bg-gray-800/80 dark:bg-gray-800/80 rounded-lg border border-blue-100 dark:border-blue-900">
                     <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
                       Official SOLAS Resources
@@ -1262,7 +1262,7 @@ const Regulations = () => {
 
               {filteredCOLREGParts.map((part) => (
                 <Card key={part.id} className="overflow-hidden">
-                  <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50">
+                  <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-gray-800">
                     <CardTitle className="text-lg">
                       {part.part}: {part.title}
                     </CardTitle>
@@ -1348,7 +1348,7 @@ const Regulations = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 border border-blue-100">
+                <div className="bg-white dark:bg-gray-800/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-lg p-6 border border-blue-100 dark:border-blue-900">
                   <h3 className="font-semibold text-lg mb-3 text-blue-800">Hakkında</h3>
                   <p className="text-gray-700 mb-4">
                     Meteoroloji Genel Müdürlüğü tarafından hazırlanan bu kapsamlı bulut kataloğu, 
@@ -1434,7 +1434,7 @@ const Regulations = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                           <strong>Tehlike:</strong> Şiddetli fırtına, yıldırım, su hortumu
                         </p>
                         <p className="text-sm text-gray-600 mt-1">
@@ -1451,7 +1451,7 @@ const Regulations = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                           <strong>Tehlike:</strong> Çok düşük görüş, deniz sisi
                         </p>
                         <p className="text-sm text-gray-600 mt-1">
@@ -1468,7 +1468,7 @@ const Regulations = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                           <strong>İşaret:</strong> Güneş/ay halesi
                         </p>
                         <p className="text-sm text-gray-600 mt-1">
@@ -1485,7 +1485,7 @@ const Regulations = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                           <strong>İşaret:</strong> Koyun sürüsü görünümü
                         </p>
                         <p className="text-sm text-gray-600 mt-1">

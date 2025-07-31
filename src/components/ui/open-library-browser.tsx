@@ -123,7 +123,7 @@ export const OpenLibraryBrowser = ({ className = "" }: OpenLibraryBrowserProps) 
               {doc.title}
             </CardTitle>
             {doc.author_name && (
-              <CardDescription className="text-sm text-gray-600">
+              <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
                 Yazar: {doc.author_name.join(", ")}
               </CardDescription>
             )}
@@ -166,7 +166,7 @@ export const OpenLibraryBrowser = ({ className = "" }: OpenLibraryBrowserProps) 
 
           {/* Publishers */}
           {doc.publisher && doc.publisher.length > 0 && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Yayıncı: {doc.publisher.slice(0, 2).join(", ")}
               {doc.publisher.length > 2 && " ..."}
             </p>
@@ -174,7 +174,7 @@ export const OpenLibraryBrowser = ({ className = "" }: OpenLibraryBrowserProps) 
 
           {/* Edition count */}
           {doc.edition_count && doc.edition_count > 1 && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {doc.edition_count} farklı baskı
             </p>
           )}
@@ -323,7 +323,7 @@ export const OpenLibraryBrowser = ({ className = "" }: OpenLibraryBrowserProps) 
               <Badge variant="secondary">{searchResults.length} belge</Badge>
             </div>
             {searchResults.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 Arama yapmak için yukarıdaki kutuyu kullanın
               </div>
             ) : (

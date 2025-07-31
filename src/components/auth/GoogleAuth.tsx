@@ -161,7 +161,7 @@ export const GoogleAuth = ({ onAuthChange }: AuthProps) => {
           <Button
             onClick={signInWithGoogle}
             disabled={loading}
-            className="w-full gap-2 bg-white hover:bg-gray-50 text-gray-900 border border-gray-300"
+            className="w-full gap-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
             variant="outline"
           >
             {loading ? (

@@ -471,7 +471,7 @@ export const StabilityCalculations = () => {
       case 'stiff': return 'bg-red-100 text-red-800';
       case 'tender': return 'bg-yellow-100 text-yellow-800';
       case 'neutral': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
     }
   };
 

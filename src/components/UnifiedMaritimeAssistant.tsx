@@ -359,8 +359,8 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
             <h4 className="text-sm font-medium text-muted-foreground">Son Sorular:</h4>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {conversationHistory.slice(0, 3).map((entry, index) => (
-                <div key={index} className="text-xs p-2 bg-gray-50 rounded border-l-2 border-gray-300">
-                  <div className="font-medium text-gray-600">S: {entry.question}</div>
+                <div key={index} className="text-xs p-2 bg-gray-50 rounded border-l-2 border-gray-300 dark:border-gray-600">
+                  <div className="font-medium text-gray-600 dark:text-gray-400">S: {entry.question}</div>
                   <div className="text-gray-500 mt-1 truncate">
                     A: {entry.answer.substring(0, 80)}...
                   </div>

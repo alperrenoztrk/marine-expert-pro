@@ -66,12 +66,12 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
       case 'vertical':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
     }
   };
 
   return (
-    <Card className={cn(getDangerColor(cloud.danger), "transition-all hover:shadow-lg", className)}>
+    <Card className={cn(getDangerColor(cloud.danger), "transition-all hover:shadow-lg dark:shadow-gray-900/50", className)}>
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
@@ -94,7 +94,7 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
       
       <CardContent className="space-y-4">
         {/* Görsel */}
-        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200">
+        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
           {cloud.imageUrl ? (
             <img 
               src={cloud.imageUrl} 
@@ -136,10 +136,10 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
 
         {/* Açıklama */}
         <div className="space-y-2">
-          <p className="text-sm text-gray-700">{cloud.descriptionTr}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">{cloud.descriptionTr}</p>
           
           {/* Özellikler */}
-          <div className="bg-white/50 rounded-lg p-3 space-y-2">
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded-lg p-3 space-y-2">
             <h4 className="font-semibold text-sm flex items-center gap-1">
               <Info className="h-4 w-4" />
               Özellikler
@@ -170,20 +170,20 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
 
         {/* Detaylı Bilgiler */}
         <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-white/50 rounded p-2 text-center">
-            <Eye className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center">
+            <Eye className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400" />
             <div className="font-semibold">Görüş</div>
-            <div className="text-gray-700">{cloud.visibility}</div>
+            <div className="text-gray-700 dark:text-gray-300">{cloud.visibility}</div>
           </div>
-          <div className="bg-white/50 rounded p-2 text-center">
-            <Wind className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center">
+            <Wind className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400" />
             <div className="font-semibold">Rüzgar</div>
-            <div className="text-gray-700">{cloud.wind}</div>
+            <div className="text-gray-700 dark:text-gray-300">{cloud.wind}</div>
           </div>
-          <div className="bg-white/50 rounded p-2 text-center">
-            <Droplets className="h-4 w-4 mx-auto mb-1 text-gray-600" />
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center">
+            <Droplets className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400" />
             <div className="font-semibold">Yağış</div>
-            <div className="text-gray-700">{cloud.precipitation}</div>
+            <div className="text-gray-700 dark:text-gray-300">{cloud.precipitation}</div>
           </div>
         </div>
       </CardContent>
