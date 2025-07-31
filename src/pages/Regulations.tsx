@@ -990,7 +990,7 @@ const Regulations = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 bg-white/80 dark:bg-gray-800/80 dark:bg-gray-800/80 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div className="p-4 bg-card/80 rounded-lg border border-border">
                     <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
                       Official SOLAS Resources
@@ -1348,7 +1348,7 @@ const Regulations = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-white dark:bg-gray-800/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-lg p-6 border border-blue-100 dark:border-blue-900">
+                <div className="bg-card/70 backdrop-blur-sm rounded-lg p-6 border border-border">
                   <h3 className="font-semibold text-lg mb-3 text-blue-800">Hakkında</h3>
                   <p className="text-gray-700 mb-4">
                     Meteoroloji Genel Müdürlüğü tarafından hazırlanan bu kapsamlı bulut kataloğu, 

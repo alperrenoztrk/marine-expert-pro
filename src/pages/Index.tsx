@@ -86,7 +86,7 @@ const Index = () => {
       <div className="relative mb-6 sm:mb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-teal-600/20 rounded-xl"></div>
         
-        <div className="relative bg-white/90 dark:bg-gray-800/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-blue-200/50 dark:border-blue-800/50 shadow-lg dark:shadow-gray-900/30">
+        <div className="relative bg-card/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-border shadow-lg">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100" data-translatable>
