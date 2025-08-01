@@ -320,7 +320,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                Danış
+                Sor
               </>
             )}
           </Button>
