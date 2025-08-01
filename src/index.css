@@ -1185,58 +1185,179 @@ All colors MUST be HSL.
   animation: glowPulse 2.5s ease-in-out infinite alternate-reverse !important;
 }
 
-@keyframes glowPulse {
-  0% { 
-    opacity: 0.3;
+/* New Matrix Scanning Effect */
+.billboard-matrix-scan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    hsl(180 100% 70% / 0.8) 20%, 
+    hsl(180 100% 70% / 1) 50%, 
+    hsl(180 100% 70% / 0.8) 80%, 
+    transparent 100%
+  );
+  box-shadow: 
+    0 0 10px hsl(180 100% 70% / 0.8),
+    0 0 20px hsl(180 100% 70% / 0.6),
+    0 0 30px hsl(180 100% 70% / 0.4);
+  animation: matrixScan 3s linear infinite;
+  z-index: 15;
+}
+
+@keyframes matrixScan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400%);
+    opacity: 0;
+  }
+}
+
+/* New Holographic Shimmer Effect */
+.billboard-holographic-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    hsl(180 100% 70% / 0.1) 25%, 
+    hsl(180 100% 70% / 0.3) 50%, 
+    hsl(180 100% 70% / 0.1) 75%, 
+    transparent 100%
+  );
+  animation: holographicShimmer 4s ease-in-out infinite;
+  z-index: 12;
+}
+
+@keyframes holographicShimmer {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* New Corner Glitch Effect */
+.billboard-corner-glitch {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid hsl(180 100% 70% / 0.8);
+  box-shadow: 
+    0 0 10px hsl(180 100% 70% / 0.6),
+    inset 0 0 5px hsl(180 100% 70% / 0.3);
+  animation: cornerGlitch 2s ease-in-out infinite;
+  z-index: 16;
+}
+
+.billboard-corner-glitch.top-left {
+  top: 5px;
+  left: 5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.billboard-corner-glitch.top-right {
+  top: 5px;
+  right: 5px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.billboard-corner-glitch.bottom-left {
+  bottom: 5px;
+  left: 5px;
+  border-right: none;
+  border-top: none;
+}
+
+.billboard-corner-glitch.bottom-right {
+  bottom: 5px;
+  right: 5px;
+  border-left: none;
+  border-top: none;
+}
+
+@keyframes cornerGlitch {
+  0%, 100% {
+    opacity: 0.6;
     transform: scale(1);
-    animation-duration: calc(var(--animation-duration) * 3);
   }
-  100% { 
-    opacity: 0.8;
-    transform: scale(1.05);
-    animation-duration: calc(var(--animation-duration) * 3);
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
   }
 }
 
-.neon-text {
-  background: linear-gradient(135deg, 
-    hsl(180 100% 90%), 
-    hsl(300 100% 90%), 
-    hsl(60 100% 90%)
-  ) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  color: transparent !important;
-  text-shadow: 
-    0 0 20px hsl(180 100% 70% / 0.8),
-    0 0 40px hsl(300 100% 70% / 0.6),
-    0 0 60px hsl(60 100% 70% / 0.4),
-    0 0 80px hsl(180 100% 70% / 0.2) !important;
-  animation: neonTextFlicker 4s ease-in-out infinite !important;
-  position: relative !important;
-  z-index: 10 !important;
+/* New Pulse Rings Effect */
+.billboard-pulse-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  z-index: 8;
 }
 
-@keyframes neonTextFlicker {
-  0%, 100% { 
-    opacity: 1; 
-    animation-duration: calc(var(--animation-duration) * 4);
+.billboard-pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid hsl(180 100% 70% / 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulseRing 3s ease-out infinite;
+}
+
+.billboard-pulse-ring:nth-child(1) {
+  width: 60%;
+  height: 60%;
+  animation-delay: 0s;
+}
+
+.billboard-pulse-ring:nth-child(2) {
+  width: 80%;
+  height: 80%;
+  animation-delay: 1s;
+}
+
+.billboard-pulse-ring:nth-child(3) {
+  width: 100%;
+  height: 100%;
+  animation-delay: 2s;
+}
+
+@keyframes pulseRing {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.8);
   }
-  10% { 
-    opacity: 0.9; 
-    animation-duration: calc(var(--animation-duration) * 4);
-  }
-  20% { 
-    opacity: 1; 
-    animation-duration: calc(var(--animation-duration) * 4);
-  }
-  30% { 
-    opacity: 0.95; 
-    animation-duration: calc(var(--animation-duration) * 4);
-  }
-  40% { 
-    opacity: 1; 
-    animation-duration: calc(var(--animation-duration) * 4);
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
   }
 }
 
@@ -1421,3 +1542,58 @@ All colors MUST be HSL.
 }
 
 /* Cyberpunk Theme Background Overrides */
+
+@keyframes glowPulse {
+  0% { 
+    opacity: 0.3;
+    transform: scale(1);
+    animation-duration: calc(var(--animation-duration) * 3);
+  }
+  100% { 
+    opacity: 0.8;
+    transform: scale(1.05);
+    animation-duration: calc(var(--animation-duration) * 3);
+  }
+}
+
+.neon-text {
+  background: linear-gradient(135deg, 
+    hsl(180 100% 90%), 
+    hsl(300 100% 90%), 
+    hsl(60 100% 90%)
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  text-shadow: 
+    0 0 20px hsl(180 100% 70% / 0.8),
+    0 0 40px hsl(300 100% 70% / 0.6),
+    0 0 60px hsl(60 100% 70% / 0.4),
+    0 0 80px hsl(180 100% 70% / 0.2) !important;
+  animation: neonTextFlicker 4s ease-in-out infinite !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+@keyframes neonTextFlicker {
+  0%, 100% { 
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  10% { 
+    opacity: 0.9; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  20% { 
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  30% { 
+    opacity: 0.95; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  40% { 
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+}

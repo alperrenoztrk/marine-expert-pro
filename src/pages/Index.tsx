@@ -140,6 +140,25 @@ const Index = () => {
                   {/* Billboard Background */}
                   <div className="billboard-background absolute inset-0 bg-black/80 rounded-lg border-2 border-cyan-400/50 shadow-[0_0_30px_rgba(0,255,255,0.5)]"></div>
                   
+                  {/* New Pulse Rings Effect */}
+                  <div className="billboard-pulse-rings">
+                    <div className="billboard-pulse-ring"></div>
+                    <div className="billboard-pulse-ring"></div>
+                    <div className="billboard-pulse-ring"></div>
+                  </div>
+                  
+                  {/* New Matrix Scanning Effect */}
+                  <div className="billboard-matrix-scan"></div>
+                  
+                  {/* New Holographic Shimmer Effect */}
+                  <div className="billboard-holographic-shimmer"></div>
+                  
+                  {/* New Corner Glitch Effects */}
+                  <div className="billboard-corner-glitch top-left"></div>
+                  <div className="billboard-corner-glitch top-right"></div>
+                  <div className="billboard-corner-glitch bottom-left"></div>
+                  <div className="billboard-corner-glitch bottom-right"></div>
+                  
                   {/* Neon Text Container */}
                   <div className="relative z-10 p-4">
                     <h1 
