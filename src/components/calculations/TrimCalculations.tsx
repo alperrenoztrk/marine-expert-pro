@@ -69,6 +69,9 @@ interface TrimData {
   waveHeight: number; // Significant wave height (m)
   windSpeed: number; // Wind speed (knots)
   currentSpeed: number; // Current speed (knots)
+  crossSectionalArea: number; // Cross-sectional area (m²)
+  stationPosition: number; // Station position (m)
+  moment: number; // Moment (m³)
 }
 
 interface TrimResult {
@@ -120,7 +123,7 @@ interface TrimResult {
     coefficients: {
       CP: number; // Prismatic coefficient
       CM: number; // Midship coefficient  
-      CWP: number; // Waterplane coefficient at station
+      CWP: number; // Waterplane coefficient
     };
   };
   
@@ -226,7 +229,10 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     frameSpacing: 7,
     waveHeight: 2,
     windSpeed: 15,
-    currentSpeed: 3
+    currentSpeed: 3,
+    crossSectionalArea: 150,
+    stationPosition: 70,
+    moment: 150
   });
 
   const [trimResult, setTrimResult] = useState<TrimResult | null>(null);
@@ -241,6 +247,12 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     meanDraft: number;
     displacement: number;
     tpc: number;
+  } | null>(null);
+
+  const [bonjeanResults, setBonjeanResults] = useState<{
+    volume: number;
+    lcb: number;
+    moment: number;
   } | null>(null);
 
   // Calculate current trim
@@ -316,48 +328,27 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   };
 
   // Calculate Bonjean Curves
-  const calculateBonjeanCurves = (data: TrimData) => {
-    const stationPosition = (data.stationNumber / 20) * data.L; // Station position from AP
-    const waterlineHeight = data.waterlineHeight;
+  const calculateBonjeanCurves = () => {
+    const stationPosition = trimData.stationPosition;
+    const crossSectionalArea = trimData.crossSectionalArea;
+    const frameSpacing = trimData.frameSpacing;
     
-    // Simplified Bonjean curve calculation (normally from ship's curves)
-    // Cross-sectional area at station
-    const maxBeam = data.B;
-    const stationBeam = maxBeam * Math.sin((data.stationNumber / 20) * Math.PI); // Simplified ship form
-    const area = stationBeam * waterlineHeight * 0.85; // With shape coefficient
+    // Calculate volume
+    const volume = crossSectionalArea * frameSpacing;
     
-    // First moment of area
-    const centroid = waterlineHeight / 2; // Simplified centroid
-    const firstMoment = area * centroid;
+    // Calculate LCB
+    const lcb = (crossSectionalArea * stationPosition) / volume;
     
-    // Volume contribution (per frame spacing)
-    const frameSpacing = data.frameSpacing;
-    const volume = area * frameSpacing;
+    // Calculate moment
+    const moment = (crossSectionalArea * stationPosition * stationPosition) / volume;
     
-    // Displacement contribution
-    const displacement = volume * (data.waterDensity / 1000);
+    setBonjeanResults({
+      volume: volume,
+      lcb: lcb,
+      moment: moment
+    });
     
-    // LCB contribution
-    const LCB_station = stationPosition;
-    
-    // Coefficients at station
-    const CP = area / (maxBeam * waterlineHeight); // Prismatic coefficient contribution
-    const CM = stationBeam / maxBeam; // Midship coefficient at station
-    const CWP = stationBeam / maxBeam; // Waterplane coefficient
-    
-    return {
-      area,
-      firstMoment,
-      centroid,
-      volume,
-      displacement,
-      LCB_station,
-      coefficients: {
-        CP,
-        CM,
-        CWP
-      }
-    };
+    toast.success("Bonjean Curves hesaplamaları tamamlandı!");
   };
 
   // Calculate Sounding Table Volume
@@ -735,7 +726,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     const trimEffects = calculateTrimEffects(data, currentTrim);
     
     // Bonjean curves calculations
-    const bonjeanCurves = calculateBonjeanCurves(data);
+    const bonjeanCurves = calculateBonjeanCurves();
     
     // Sounding table calculations (temporary result for corrections)
     const tempResult = {
@@ -1256,93 +1247,159 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsContent>
 
             <TabsContent value="bonjean" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5" />
-                    Bonjean Curves Kullanımı
-                  </CardTitle>
-                  <CardDescription>
-                    Gemi kesit özelliklerinin hesaplanması ve hidrostatik analiz
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              {/* Formül 1: Su Altı Hacim - V = ∫ A(x) dx */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-700">🌊 Su Altı Hacim Hesaplama</h3>
+                <p className="text-sm text-gray-600">V = ∫ A(x) dx</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="stationNumber">Station Numarası</Label>
+                    <Input
+                      id="stationNumber"
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={trimData.stationNumber || ''}
+                      onChange={(e) => setTrimData({...trimData, stationNumber: parseInt(e.target.value)})}
+                      placeholder="10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="crossSectionalArea">Kesit Alanı A(x) [m²]</Label>
+                    <Input
+                      id="crossSectionalArea"
+                      type="number"
+                      step="0.01"
+                      value={trimData.crossSectionalArea || ''}
+                      onChange={(e) => setTrimData({...trimData, crossSectionalArea: parseFloat(e.target.value)})}
+                      placeholder="150"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="frameSpacing">Frame Aralığı [m]</Label>
+                    <Input
+                      id="frameSpacing"
+                      type="number"
+                      step="0.1"
+                      value={trimData.frameSpacing || ''}
+                      onChange={(e) => setTrimData({...trimData, frameSpacing: parseFloat(e.target.value)})}
+                      placeholder="7"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Formül 2: LCB Hesabı - LCB = ∫ x × A(x) dx / V */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-green-700">⚖️ LCB Hesabı</h3>
+                <p className="text-sm text-gray-600">LCB = ∫ x × A(x) dx / V</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="stationPosition">Station Pozisyonu x [m]</Label>
+                    <Input
+                      id="stationPosition"
+                      type="number"
+                      step="0.1"
+                      value={trimData.stationPosition || ''}
+                      onChange={(e) => setTrimData({...trimData, stationPosition: parseFloat(e.target.value)})}
+                      placeholder="70"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="crossSectionalArea_lcb">Kesit Alanı A(x) [m²]</Label>
+                    <Input
+                      id="crossSectionalArea_lcb"
+                      type="number"
+                      step="0.01"
+                      value={trimData.crossSectionalArea || ''}
+                      onChange={(e) => setTrimData({...trimData, crossSectionalArea: parseFloat(e.target.value)})}
+                      placeholder="150"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="volume_lcb">Hacim V [m³]</Label>
+                    <Input
+                      id="volume_lcb"
+                      type="number"
+                      step="0.1"
+                      value={trimData.volume || ''}
+                      onChange={(e) => setTrimData({...trimData, volume: parseFloat(e.target.value)})}
+                      placeholder="15000"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Formül 3: Moment - M = ∫ x² × A(x) dx */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-purple-700">📊 Moment Hesaplama</h3>
+                <p className="text-sm text-gray-600">M = ∫ x² × A(x) dx</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="stationPosition_moment">Station Pozisyonu x [m]</Label>
+                    <Input
+                      id="stationPosition_moment"
+                      type="number"
+                      step="0.1"
+                      value={trimData.stationPosition || ''}
+                      onChange={(e) => setTrimData({...trimData, stationPosition: parseFloat(e.target.value)})}
+                      placeholder="70"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="crossSectionalArea_moment">Kesit Alanı A(x) [m²]</Label>
+                    <Input
+                      id="crossSectionalArea_moment"
+                      type="number"
+                      step="0.01"
+                      value={trimData.crossSectionalArea || ''}
+                      onChange={(e) => setTrimData({...trimData, crossSectionalArea: parseFloat(e.target.value)})}
+                      placeholder="150"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hesaplama Butonu */}
+              <div className="flex justify-center pt-4">
+                <Button 
+                  onClick={calculateBonjeanCurves} 
+                  className="px-8 py-2 bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  Hesapla
+                </Button>
+              </div>
+
+              {/* Sonuçlar */}
+              {bonjeanResults && (
+                <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800">📊 Bonjean Curves Sonuçları</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="stationNumber">İstasyon Numarası (0-20)</Label>
-                      <Input
-                        id="stationNumber"
-                        type="number"
-                        min="0"
-                        max="20"
-                        value={trimData.stationNumber || ''}
-                        onChange={(e) => setTrimData({...trimData, stationNumber: parseFloat(e.target.value)})}
-                        placeholder="10"
-                      />
+                      <Label className="text-sm font-medium">Su Altı Hacim (V)</Label>
+                      <div className="text-lg font-bold text-blue-600">
+                        {bonjeanResults.volume.toFixed(1)} m³
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="waterlineHeight">Su Çizgisi Yüksekliği [m]</Label>
-                      <Input
-                        id="waterlineHeight"
-                        type="number"
-                        step="0.1"
-                        value={trimData.waterlineHeight || ''}
-                        onChange={(e) => setTrimData({...trimData, waterlineHeight: parseFloat(e.target.value)})}
-                        placeholder="8.0"
-                      />
+                      <Label className="text-sm font-medium">LCB</Label>
+                      <div className="text-lg font-bold text-green-600">
+                        {bonjeanResults.lcb.toFixed(2)} m
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="frameSpacing">Frame Aralığı [m]</Label>
-                      <Input
-                        id="frameSpacing"
-                        type="number"
-                        step="0.1"
-                        value={trimData.frameSpacing || ''}
-                        onChange={(e) => setTrimData({...trimData, frameSpacing: parseFloat(e.target.value)})}
-                        placeholder="0.6"
-                      />
+                      <Label className="text-sm font-medium">Moment (M)</Label>
+                      <div className="text-lg font-bold text-purple-600">
+                        {bonjeanResults.moment.toFixed(1)} m³
+                      </div>
                     </div>
                   </div>
-
-                  {trimResult && (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.area.toFixed(2)} m²</div>
-                          <div className="text-sm text-muted-foreground">Kesit Alanı</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.firstMoment.toFixed(1)} m³</div>
-                          <div className="text-sm text-muted-foreground">İlk Moment</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.centroid.toFixed(2)} m</div>
-                          <div className="text-sm text-muted-foreground">Ağırlık Merkezi</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.volume.toFixed(1)} m³</div>
-                          <div className="text-sm text-muted-foreground">Hacim</div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{trimResult.bonjeanCurves.coefficients.CP.toFixed(3)}</div>
-                          <div className="text-sm text-muted-foreground">CP Katsayısı</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{trimResult.bonjeanCurves.coefficients.CM.toFixed(3)}</div>
-                          <div className="text-sm text-muted-foreground">CM Katsayısı</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{trimResult.bonjeanCurves.coefficients.CWP.toFixed(3)}</div>
-                          <div className="text-sm text-muted-foreground">CWP Katsayısı</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="sounding" className="space-y-6">
