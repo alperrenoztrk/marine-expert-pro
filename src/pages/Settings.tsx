@@ -3,22 +3,19 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Globe, Settings as SettingsIcon, Palette, Zap, Volume2, VolumeX, Monitor } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Globe, Settings as SettingsIcon, Palette, Zap, Volume2, VolumeX } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
 import { useTheme } from "@/hooks/useTheme";
 import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
-import { useFrameRate } from "@/hooks/useFrameRate";
 import { languages } from "@/utils/languages";
 import { toast } from "sonner";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
-  const { frameRate, updateFrameRate } = useFrameRate();
   const [neonSoundEnabled, setNeonSoundEnabled] = useState(true);
 
   useEffect(() => {
@@ -74,12 +71,6 @@ const Settings = () => {
     setNeonSoundEnabled(enabled);
     localStorage.setItem('neonSoundEnabled', JSON.stringify(enabled));
     toast.success(enabled ? 'Neon ses efektleri aktif' : 'Neon ses efektleri devre dışı');
-  };
-
-  const handleFrameRateChange = (value: number[]) => {
-    const newFrameRate = value[0];
-    updateFrameRate(newFrameRate);
-    toast.success(`Kare hızı ${newFrameRate} FPS olarak ayarlandı`);
   };
 
   return (
@@ -220,41 +211,6 @@ const Settings = () => {
                 </CardContent>
               </Card>
             )}
-
-            {/* Frame Rate Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Monitor className="w-5 h-5" />
-                  <span data-translatable>Kare Hızı Ayarları</span>
-                </CardTitle>
-                <CardDescription>
-                  <span data-translatable>Uygulamanın çalışma kare hızını ayarlayın</span>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="frame-rate-slider">
-                      <span data-translatable>Kare Hızı</span>
-                    </Label>
-                    <span className="font-medium">{frameRate} FPS</span>
-                  </div>
-                  <Slider
-                    id="frame-rate-slider"
-                    value={[frameRate]}
-                    onValueChange={handleFrameRateChange}
-                    min={30}
-                    max={120}
-                    step={10}
-                    className="w-full"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    <span data-translatable>Uygulamanın çalışma kare hızını ayarlayın</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Language Settings */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
