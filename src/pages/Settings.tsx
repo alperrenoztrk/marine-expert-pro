@@ -18,12 +18,11 @@ const Settings = () => {
   const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark" | "orange" | "cyberpunk" | "neon" | "nature" | "system");
+    setTheme(newTheme as "light" | "dark" | "cyberpunk" | "neon" | "nature" | "system");
     
     const themeNames = {
       light: "Açık Tema",
       dark: "Koyu Tema", 
-      orange: "Turuncu Tema",
       cyberpunk: "Cyberpunk Tema",
       neon: "Neon Tema",
       nature: "Doğa Teması",
@@ -93,7 +92,7 @@ const Settings = () => {
           <div className="grid gap-6">
             
             {/* Theme Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 orange:bg-orange-50 orange:border-orange-200 cyberpunk:bg-slate-800 cyberpunk:border-cyan-500 nature:bg-green-50 nature:border-green-200">
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 cyberpunk:bg-slate-800 cyberpunk:border-cyan-500 nature:bg-green-50 nature:border-green-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />
@@ -126,12 +125,7 @@ const Settings = () => {
                             <span>Koyu Tema</span>
                           </div>
                         </SelectItem>
-                        <SelectItem value="orange">
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-400 via-amber-500 to-red-500 animate-pulse"></div>
-                            <span>Premium Turuncu Tema</span>
-                          </div>
-                        </SelectItem>
+
                         <SelectItem value="cyberpunk">
                           <div className="flex items-center gap-2">
                             <div className="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse"></div>
