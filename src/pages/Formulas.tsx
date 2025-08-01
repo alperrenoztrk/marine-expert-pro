@@ -143,7 +143,7 @@ const Formulas = () => {
         <Button asChild variant="ghost" size="sm" className="gap-2 text-sm">
           <Link to="/">
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden xs:inline" data-translatable>Hesaplayıcıya Dön</span>
+            <span className="hidden xs:inline" data-translatable>Ana Sayfa</span>
             <span className="xs:hidden" data-translatable>Geri</span>
           </Link>
         </Button>
