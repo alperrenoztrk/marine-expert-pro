@@ -16,6 +16,8 @@ import Navigation from "./pages/Navigation";
 import Hydrodynamics from "./pages/Hydrodynamics";
 import Engine from "./pages/Engine";
 import { CargoCalculations as Cargo } from "./pages/Cargo";
+import { HydrostaticsCalculations as Hydrostatics } from "./pages/Hydrostatics";
+import { TankCalculations as Tank } from "./pages/TankCalculations";
 import Ballast from "./pages/Ballast";
 import TrimList from "./pages/TrimList";
 import AuthCallback from "./pages/AuthCallback";
@@ -54,9 +56,11 @@ const App = () => {
                   <Route path="/navigation" element={<Navigation />} />
                   <Route path="/hydrodynamics" element={<Hydrodynamics />} />
                   <Route path="/engine" element={<Engine />} />
-                  <Route path="/cargo" element={<Cargo />} />
-                  <Route path="/ballast" element={<Ballast />} />
-                  <Route path="/trim-list" element={<TrimList />} />
+                            <Route path="/cargo" element={<Cargo />} />
+          <Route path="/hydrostatics" element={<Hydrostatics />} />
+          <Route path="/tank" element={<Tank />} />
+          <Route path="/ballast" element={<Ballast />} />
+          <Route path="/trim-list" element={<TrimList />} />
                   <Route path="/economics" element={<Economics />} />
                   <Route path="/structural" element={<StructuralCalculationsPage />} />
                   <Route path="/safety" element={<SafetyCalculationsPage />} />
