@@ -280,13 +280,11 @@ const Index = () => {
             <div className="flex-shrink-0">
               <Link to="/settings">
                 <Button
-                  size="sm"
-                  variant="outline"
-                  className="gap-2 border-gray-300 text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 cyberpunk:border-gray-400 cyberpunk:text-gray-400 cyberpunk:hover:bg-gray-800 nature:border-gray-400 nature:text-gray-600 nature:hover:bg-gray-50"
+                  size="icon"
+                  className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
                   title="Ayarlar"
                 >
-                  <Settings className="w-4 h-4" />
-                  <span data-translatable>Ayarlar</span>
+                  <Settings className="w-5 h-5" />
                 </Button>
               </Link>
             </div>
