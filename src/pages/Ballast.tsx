@@ -12,7 +12,7 @@ const Ballast = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => navigate('/')}
             className="flex items-center gap-2"
