@@ -20,7 +20,7 @@ const Ballast = () => {
             <ArrowLeft className="h-4 w-4" />
             Ana Sayfa
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 nature-title">
             Balast Hesaplamaları
           </h1>
         </div>

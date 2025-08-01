@@ -33,8 +33,8 @@ const Hydrodynamics = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Waves className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              <span data-translatable>Hidrodinamik Hesaplamalar</span>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
+              Hidrodinamik Hesaplamalar
             </h1>
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-300">
