@@ -845,7 +845,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsList>
             
             {/* 2 satır boşluk */}
-            <div className="mt-8"></div>
+            <div className="mt-12"></div>
 
             <TabsContent value="basic" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
