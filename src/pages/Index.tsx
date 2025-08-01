@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings } from "lucide-react";
-import containerShipAerial from "@/assets/maritime/container-ship-aerial.jpg";
 
 
 
@@ -103,16 +102,6 @@ const Index = () => {
 
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden shadow-md">
-              <img 
-                src={containerShipAerial} 
-                alt="Container Ship Aerial View" 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed" data-translatable>
                 Gemi mühendisliği, denizcilik ve maritime operasyonlar için kapsamlı hesaplama araçları. 
