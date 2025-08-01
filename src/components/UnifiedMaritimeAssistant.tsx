@@ -276,7 +276,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
       <CardContent className="space-y-4">
         {/* Quick Questions */}
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-muted-foreground">Hızlı Sorular:</h4>
+          <h4 className="text-sm font-medium text-muted-foreground mt-4">Hızlı Sorular:</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {quickQuestions.map((q, index) => (
               <Button
