@@ -27,7 +27,7 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
       case 'medium':
         return 'border-orange-400 bg-orange-50';
       case 'low':
-        return 'border-blue-300 bg-blue-50';
+        return 'border-blue-300 bg-blue-50 cyberpunk:border-yellow-400 cyberpunk:bg-gray-800';
       default:
         return 'border-gray-300 bg-gray-50';
     }
@@ -58,7 +58,7 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'low':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 cyberpunk:bg-gray-800 cyberpunk:text-yellow-400';
       case 'middle':
         return 'bg-green-100 text-green-800';
       case 'high':
@@ -160,7 +160,7 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
           "border",
           cloud.danger === 'high' ? 'border-red-300 bg-red-50' :
           cloud.danger === 'medium' ? 'border-orange-300 bg-orange-50' :
-          'border-blue-300 bg-blue-50'
+          'border-blue-300 bg-blue-50 cyberpunk:border-yellow-400 cyberpunk:bg-gray-800'
         )}>
           <Navigation className="h-4 w-4" />
           <AlertDescription className="text-sm">

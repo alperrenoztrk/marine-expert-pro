@@ -236,7 +236,7 @@ export const BallastCalculations = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'improved': return 'bg-green-500';
-      case 'neutral': return 'bg-blue-500';
+      case 'neutral': return 'bg-blue-500 cyberpunk:bg-yellow-500';
       case 'degraded': return 'bg-red-500';
       default: return 'bg-gray-500';
     }
@@ -479,7 +479,7 @@ export const BallastCalculations = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-blue-50 rounded-lg cyberpunk:bg-gray-800">
                     <h4 className="font-semibold text-blue-800 mb-2">BWM Convention Gereklilikleri</h4>
                     <ul className="text-sm text-blue-700 space-y-1">
                       <li>• Balast değişimi kıyıdan {'>'} 200 nm uzaklıkta</li>

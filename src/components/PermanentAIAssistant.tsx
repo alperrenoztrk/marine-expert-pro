@@ -277,7 +277,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
               </div>
             )}
             {apiStatus === 'error' && (
-              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full cyberpunk:text-yellow-400 cyberpunk:bg-gray-800">
                 <Zap className="w-4 h-4" />
                 <span className="text-sm font-medium">Local AI</span>
               </div>
@@ -345,7 +345,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
 
         {/* AI Response */}
         {aiResponse && (
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400">
+                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-l-yellow-400">
             <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <Brain className="w-5 h-5" />
               AI Yanıtı:

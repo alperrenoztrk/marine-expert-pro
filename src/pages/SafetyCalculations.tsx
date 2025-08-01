@@ -118,7 +118,7 @@ const SafetyCalculationsPage = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="mt-4 p-3 bg-blue-50 cyberpunk:bg-gray-800 rounded-lg">
                     <p className="text-xs text-blue-700 dark:text-blue-300">
                       <strong>Semboller:</strong><br/>
                       GM: metacentric height, GZ: righting arm<br/>

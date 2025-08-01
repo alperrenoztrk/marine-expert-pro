@@ -58,7 +58,7 @@ export const AutoLanguageSelector = () => {
     <div className="relative">
       {/* Otomatik Algılama Önerisi */}
       {showAutoDetectPrompt && detectedLanguage !== currentLanguage && (
-        <div className="absolute top-full mt-2 right-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-lg shadow-lg border max-w-xs">
+        <div className="absolute top-full mt-2 right-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-lg shadow-lg border max-w-xs cyberpunk:bg-gradient-to-r cyberpunk:from-yellow-500 cyberpunk:to-yellow-600 cyberpunk:text-black">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="w-4 h-4" />
             <span className="text-sm font-medium">Otomatik Dil Algılandı!</span>
@@ -108,7 +108,7 @@ export const AutoLanguageSelector = () => {
             
             {/* Otomatik algılama göstergesi */}
             {detectedLanguage !== currentLanguage && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse cyberpunk:bg-yellow-500" />
             )}
           </Button>
         </DropdownMenuTrigger>

@@ -458,7 +458,7 @@ export const StabilityCalculations = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'excellent': return 'bg-green-500';
-      case 'good': return 'bg-blue-500';
+      case 'good': return 'bg-blue-500 cyberpunk:bg-yellow-500';
       case 'acceptable': return 'bg-yellow-500';
       case 'poor': return 'bg-orange-500';
       case 'dangerous': return 'bg-red-500';

@@ -248,7 +248,7 @@ const Regulations = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'general': return 'bg-blue-100 text-blue-800';
+              case 'general': return 'bg-blue-100 text-blue-800 cyberpunk:bg-gray-800 cyberpunk:text-yellow-400';
       case 'construction': return 'bg-green-100 text-green-800';
       case 'fire': return 'bg-red-100 text-red-800';
       case 'lifesaving': return 'bg-orange-100 text-orange-800';
@@ -413,7 +413,7 @@ const Regulations = () => {
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 dark:border-blue-800">
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 dark:border-blue-800 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-gray-700">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
@@ -430,7 +430,7 @@ const Regulations = () => {
                       variant="default"
                       size="sm"
                       onClick={() => window.open('https://share.google/c37tG0ULCekKFUn07', '_blank')}
-                      className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
+                      className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 cyberpunk:bg-yellow-600 cyberpunk:text-black cyberpunk:hover:bg-yellow-700"
                     >
                       <Download className="h-4 w-4" />
                       Download SOLAS 2020 PDF
@@ -450,7 +450,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://share.google/c37tG0ULCekKFUn07', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         SOLAS 2020 Edition (Google Drive)
@@ -459,7 +459,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/SOLAS-amendments.aspx', '_blank')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700"
+                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
                       >
                         <AlertTriangle className="h-4 w-4 mr-2" />
                         Latest SOLAS Amendments
@@ -467,7 +467,7 @@ const Regulations = () => {
                     </div>
                   </div>
                   
-                  <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded">
+                  <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded cyberpunk:text-yellow-400 cyberpunk:bg-gray-800">
                     <p className="font-medium mb-1">📋 Available SOLAS 2020 Resources:</p>
                     <p>• SOLAS 2020 Edition (Google Drive)</p>
                     <p>• Latest amendments and updates</p>
