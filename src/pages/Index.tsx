@@ -187,7 +187,7 @@ const Index = () => {
                   <Link to="/formulas">
                     <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 nature:from-green-600 nature:to-emerald-600 nature:hover:from-green-700 nature:hover:to-emerald-700">
                       <Brain className="w-4 h-4" />
-                      <span data-translatable>Asistan</span>
+                      <span data-translatable>Soru Asistanı: Mark</span>
                     </Button>
                   </Link>
                   <Link to="/regulations">
