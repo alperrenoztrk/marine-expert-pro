@@ -6,6 +6,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SplashScreen } from "@/components/ui/splash-screen";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { useAndroidFeatures } from "@/hooks/useAndroidFeatures";
+import { useFrameRate } from "@/hooks/useFrameRate";
 import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
@@ -31,6 +32,7 @@ const queryClient = new QueryClient();
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
   const { isNative, keyboardVisible } = useAndroidFeatures();
+  const { frameRate } = useFrameRate(); // Initialize frame rate
 
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;

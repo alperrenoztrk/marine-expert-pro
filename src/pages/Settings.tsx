@@ -11,24 +11,20 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { useTheme } from "@/hooks/useTheme";
 import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
+import { useFrameRate } from "@/hooks/useFrameRate";
 import { languages } from "@/utils/languages";
 import { toast } from "sonner";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
+  const { frameRate, updateFrameRate } = useFrameRate();
   const [neonSoundEnabled, setNeonSoundEnabled] = useState(true);
-  const [frameRate, setFrameRate] = useState(60);
 
   useEffect(() => {
     const savedSoundSetting = localStorage.getItem('neonSoundEnabled');
     if (savedSoundSetting !== null) {
       setNeonSoundEnabled(JSON.parse(savedSoundSetting));
-    }
-    
-    const savedFrameRate = localStorage.getItem('frameRate');
-    if (savedFrameRate !== null) {
-      setFrameRate(parseInt(savedFrameRate));
     }
   }, []);
 
@@ -82,8 +78,7 @@ const Settings = () => {
 
   const handleFrameRateChange = (value: number[]) => {
     const newFrameRate = value[0];
-    setFrameRate(newFrameRate);
-    localStorage.setItem('frameRate', newFrameRate.toString());
+    updateFrameRate(newFrameRate);
     toast.success(`Kare hızı ${newFrameRate} FPS olarak ayarlandı`);
   };
 

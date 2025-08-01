@@ -53,6 +53,11 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
+    /* Frame rate and animation settings */
+    --frame-rate: 60;
+    --animation-duration: 16.67ms;
+    --transition-duration: 33.33ms;
+
     /* Maritime gradients */
     --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-deep: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-dark)));
@@ -64,7 +69,7 @@ All colors MUST be HSL.
     --shadow-button: 0 2px 8px -1px hsl(var(--primary) / 0.15);
 
     /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -1073,10 +1078,14 @@ All colors MUST be HSL.
 
 /* Logo animation */
 @keyframes logoFloat {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-5px) rotate(1deg); }
-  50% { transform: translateY(-10px) rotate(0deg); }
-  75% { transform: translateY(-5px) rotate(-1deg); }
+  0%, 100% { 
+    transform: translateY(0px); 
+    animation-duration: calc(var(--animation-duration) * 6);
+  }
+  50% { 
+    transform: translateY(-10px); 
+    animation-duration: calc(var(--animation-duration) * 6);
+  }
 }
 
 .maritime-logo {
@@ -1128,8 +1137,14 @@ All colors MUST be HSL.
 }
 
 @keyframes billboardFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
+  0%, 100% { 
+    transform: translateY(0px); 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  50% { 
+    transform: translateY(-3px); 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
 }
 
 .billboard-background {
@@ -1174,10 +1189,12 @@ All colors MUST be HSL.
   0% { 
     opacity: 0.3;
     transform: scale(1);
+    animation-duration: calc(var(--animation-duration) * 3);
   }
   100% { 
     opacity: 0.8;
     transform: scale(1.05);
+    animation-duration: calc(var(--animation-duration) * 3);
   }
 }
 
@@ -1202,24 +1219,24 @@ All colors MUST be HSL.
 
 @keyframes neonTextFlicker {
   0%, 100% { 
-    text-shadow: 
-      0 0 20px hsl(180 100% 70% / 0.8),
-      0 0 40px hsl(300 100% 70% / 0.6),
-      0 0 60px hsl(60 100% 70% / 0.4),
-      0 0 80px hsl(180 100% 70% / 0.2);
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 4);
   }
-  50% { 
-    text-shadow: 
-      0 0 25px hsl(180 100% 70% / 1),
-      0 0 50px hsl(300 100% 70% / 0.8),
-      0 0 75px hsl(60 100% 70% / 0.6),
-      0 0 100px hsl(180 100% 70% / 0.4);
+  10% { 
+    opacity: 0.9; 
+    animation-duration: calc(var(--animation-duration) * 4);
   }
-  75% { 
-    text-shadow: 
-      0 0 15px hsl(180 100% 70% / 0.6),
-      0 0 30px hsl(300 100% 70% / 0.4),
-      0 0 45px hsl(60 100% 70% / 0.2);
+  20% { 
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  30% { 
+    opacity: 0.95; 
+    animation-duration: calc(var(--animation-duration) * 4);
+  }
+  40% { 
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 4);
   }
 }
 
@@ -1241,8 +1258,20 @@ All colors MUST be HSL.
 }
 
 @keyframes cornerScan {
-  0% { background-position: 0 0, 0 0; }
-  100% { background-position: 100px 100px, -80px 80px; }
+  0% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) rotate(0deg);
+    animation-duration: calc(var(--animation-duration) * 2);
+  }
+  50% { 
+    opacity: 1; 
+    animation-duration: calc(var(--animation-duration) * 2);
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) rotate(360deg);
+    animation-duration: calc(var(--animation-duration) * 2);
+  }
 }
 
 /* Billboard mounting brackets */
@@ -1266,15 +1295,13 @@ All colors MUST be HSL.
 }
 
 @keyframes bracketGlow {
-  0% { 
-    box-shadow: 
-      0 0 15px hsl(180 100% 70% / 0.6),
-      0 0 30px hsl(300 100% 70% / 0.4);
+  0%, 100% { 
+    opacity: 0.3; 
+    animation-duration: calc(var(--animation-duration) * 1.5);
   }
-  100% { 
-    box-shadow: 
-      0 0 25px hsl(180 100% 70% / 0.8),
-      0 0 50px hsl(300 100% 70% / 0.6);
+  50% { 
+    opacity: 0.8; 
+    animation-duration: calc(var(--animation-duration) * 1.5);
   }
 }
 
