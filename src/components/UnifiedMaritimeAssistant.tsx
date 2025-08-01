@@ -380,12 +380,6 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
             </div>
           </div>
         )}
-
-        <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded border border-primary/10">
-          <strong>📊 Özellikler:</strong> Gerçek zamanlı hesaplama, kapsamlı maritime bilgi bankası, IMO standartları<br />
-          <strong>🔧 Hesaplama Motoru:</strong> Otomatik sayı tespiti ile arka plan hesaplamaları<br />
-          <strong>✨ Kapsam:</strong> Stabilite, navigasyon, hidrodinamik, yapısal analiz ve tüm maritime mühendisliği alanları
-        </div>
       </CardContent>
     </Card>
   );
