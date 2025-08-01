@@ -9,6 +9,7 @@ import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, 
 
 
 import { useAdManager, loadAdSenseScript } from "@/hooks/useAdManager";
+import { useTheme } from "@/hooks/useTheme";
 
 import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
@@ -20,6 +21,7 @@ import React from "react"; // Added missing import for React
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const { theme } = useTheme();
   
   // Safe hooks with error handling
   const safeAdManager = (() => {
@@ -98,11 +100,35 @@ const Index = () => {
               </div>
             </div>
             
-            {/* Title */}
+            {/* Title with Neon Billboard Effect */}
             <div className="text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
-                Maritime Calculator
-              </h1>
+              {theme === 'neon' ? (
+                <div className="neon-billboard relative">
+                  {/* Billboard Background */}
+                  <div className="billboard-background absolute inset-0 bg-black/80 rounded-lg border-2 border-cyan-400/50 shadow-[0_0_30px_rgba(0,255,255,0.5)]"></div>
+                  
+                  {/* Neon Text Container */}
+                  <div className="relative z-10 p-4">
+                    <h1 
+                      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold neon-text"
+                      data-translatable
+                    >
+                      Maritime Calculator
+                    </h1>
+                  </div>
+                  
+                  {/* Billboard Frame */}
+                  <div className="billboard-frame absolute inset-0 border-4 border-cyan-400/30 rounded-lg"></div>
+                  
+                  {/* Neon Glow Effects */}
+                  <div className="neon-glow-1 absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20 blur-sm"></div>
+                  <div className="neon-glow-2 absolute inset-0 rounded-lg bg-gradient-to-b from-cyan-400/10 to-transparent"></div>
+                </div>
+              ) : (
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
+                  Maritime Calculator
+                </h1>
+              )}
             </div>
           </div>
 
