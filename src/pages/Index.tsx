@@ -95,7 +95,8 @@ const Index = () => {
                   alt="Maritime Calculator Logo" 
                   className="maritime-logo w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300 object-cover object-center"
                   style={{
-                    clipPath: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)'
+                    clipPath: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)',
+                    filter: 'brightness(1.1) contrast(1.2) saturate(1.1)'
                   }}
                 />
               </div>
