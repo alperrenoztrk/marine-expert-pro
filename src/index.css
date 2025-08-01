@@ -186,7 +186,7 @@ All colors MUST be HSL.
 
 
 
-  /* Nature Theme - Green & Brown Pattern (Green Focused) */
+  /* Nature Theme - Enhanced Green & Brown Pattern (Green Focused) */
   .nature {
     --background: 120 30% 98%;
     --foreground: 120 30% 8%;
@@ -197,18 +197,18 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 120 30% 8%;
 
-    --primary: 120 60% 45%;
+    --primary: 120 70% 40%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 120 60% 60%;
-    --primary-dark: 120 60% 30%;
+    --primary-light: 120 70% 55%;
+    --primary-dark: 120 70% 25%;
 
-    --secondary: 30 50% 40%;
+    --secondary: 30 60% 45%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 120 30% 95%;
     --muted-foreground: 120 30% 40%;
 
-    --accent: 90 60% 50%;
+    --accent: 90 70% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -222,37 +222,37 @@ All colors MUST be HSL.
 
     --border: 120 30% 90%;
     --input: 120 30% 90%;
-    --ring: 120 60% 45%;
+    --ring: 120 70% 40%;
 
     /* Nature theme semantic colors */
-    --info: 120 60% 45%;
+    --info: 120 70% 40%;
     --info-foreground: 0 0% 100%;
     --info-muted: 120 30% 94%;
     --info-muted-foreground: 120 30% 40%;
 
-    /* Nature Green & Brown Gradients */
-    --gradient-ocean: linear-gradient(135deg, hsl(120 60% 45%), hsl(120 60% 60%), hsl(90 60% 50%));
-    --gradient-deep: linear-gradient(135deg, hsl(30 50% 40%), hsl(120 60% 30%), hsl(90 60% 35%));
+    /* Enhanced Nature Green & Brown Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(120 70% 40%), hsl(120 70% 55%), hsl(90 70% 45%));
+    --gradient-deep: linear-gradient(135deg, hsl(30 60% 45%), hsl(120 70% 25%), hsl(90 70% 35%));
     --gradient-surface: linear-gradient(135deg, hsl(120 30% 95%) 0%, hsl(120 30% 98%) 100%);
-    --gradient-forest: linear-gradient(135deg, hsl(120 60% 45%), hsl(90 60% 50%), hsl(60 60% 55%), hsl(30 60% 50%));
-    --gradient-meadow: linear-gradient(135deg, hsl(90 60% 50%), hsl(120 60% 45%), hsl(150 60% 40%), hsl(180 60% 35%));
-    --gradient-spring: linear-gradient(135deg, hsl(120 60% 60%), hsl(90 60% 55%), hsl(60 60% 50%), hsl(30 60% 45%));
-    --gradient-earth: linear-gradient(135deg, hsl(30 50% 40%), hsl(45 50% 45%), hsl(60 50% 50%), hsl(75 50% 55%));
-    --gradient-organic: linear-gradient(135deg, hsl(120 60% 45%), hsl(30 50% 40%), hsl(60 50% 45%), hsl(90 50% 50%));
+    --gradient-forest: linear-gradient(135deg, hsl(120 70% 40%), hsl(90 70% 45%), hsl(60 70% 50%), hsl(30 70% 45%));
+    --gradient-meadow: linear-gradient(135deg, hsl(90 70% 45%), hsl(120 70% 40%), hsl(150 70% 35%), hsl(180 70% 30%));
+    --gradient-spring: linear-gradient(135deg, hsl(120 70% 55%), hsl(90 70% 50%), hsl(60 70% 45%), hsl(30 70% 40%));
+    --gradient-earth: linear-gradient(135deg, hsl(30 60% 45%), hsl(45 60% 50%), hsl(60 60% 55%), hsl(75 60% 60%));
+    --gradient-organic: linear-gradient(135deg, hsl(120 70% 40%), hsl(30 60% 45%), hsl(60 60% 50%), hsl(90 60% 55%));
     
-    /* Nature Green & Brown Shadows */
-    --shadow-calculator: 0 8px 32px -4px hsl(120 60% 45% / 0.15), 0 0 20px hsl(90 60% 50% / 0.1);
-    --shadow-card: 0 4px 16px -2px hsl(120 60% 45% / 0.1), 0 0 10px hsl(90 60% 50% / 0.05);
-    --shadow-button: 0 2px 8px -1px hsl(120 60% 45% / 0.2), 0 0 5px hsl(90 60% 50% / 0.1);
+    /* Enhanced Nature Green & Brown Shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(120 70% 40% / 0.2), 0 0 20px hsl(90 70% 45% / 0.15);
+    --shadow-card: 0 4px 16px -2px hsl(120 70% 40% / 0.15), 0 0 10px hsl(90 70% 45% / 0.1);
+    --shadow-button: 0 2px 8px -1px hsl(120 70% 40% / 0.25), 0 0 5px hsl(90 70% 45% / 0.15);
 
     --sidebar-background: 120 30% 97%;
     --sidebar-foreground: 120 30% 15%;
-    --sidebar-primary: 120 60% 45%;
+    --sidebar-primary: 120 70% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 120 30% 94%;
     --sidebar-accent-foreground: 120 30% 15%;
     --sidebar-border: 120 30% 90%;
-    --sidebar-ring: 120 60% 45%;
+    --sidebar-ring: 120 70% 40%;
   }
 
   /* Cyberpunk Theme - Yellow & Black Pattern */
@@ -529,10 +529,33 @@ All colors MUST be HSL.
   /* Nature tema için gradient metin renkleri */
   .nature .bg-gradient-to-r.from-blue-600.to-indigo-600,
   .nature .bg-gradient-to-r.from-blue-400.to-indigo-400 {
-    background: linear-gradient(135deg, hsl(120 60% 45%), hsl(90 60% 50%)) !important;
+    background: linear-gradient(135deg, hsl(120 70% 40%), hsl(90 70% 45%)) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     color: transparent !important;
+  }
+
+  /* Nature tema için başlık renkleri */
+  .nature h1, .nature h2, .nature h3, .nature h4, .nature h5, .nature h6 {
+    color: hsl(120 70% 40%) !important;
+  }
+
+  /* Nature tema için ana başlık gradient'leri */
+  .nature .text-4xl.font-bold.bg-gradient-to-r {
+    background: linear-gradient(135deg, hsl(120 70% 40%), hsl(90 70% 45%)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+  }
+
+  /* Nature tema için icon renkleri */
+  .nature .text-blue-600, .nature .text-blue-400 {
+    color: hsl(120 70% 40%) !important;
+  }
+
+  /* Nature tema için card başlıkları */
+  .nature .card-title {
+    color: hsl(120 70% 40%) !important;
   }
 
   /* Neon Theme - True Neon Experience with Bright Colors & Glow Effects */

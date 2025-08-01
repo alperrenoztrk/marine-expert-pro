@@ -109,13 +109,13 @@ const Index = () => {
               </p>
               <div className="flex items-center gap-2 mt-2 flex-wrap">
                 <Link to="/formulas">
-                  <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 nature:from-green-600 nature:to-emerald-600 nature:hover:from-green-700 nature:hover:to-emerald-700">
                     <Brain className="w-4 h-4" />
                     <span data-translatable>Asistan</span>
                   </Button>
                 </Link>
                 <Link to="/trim-list">
-                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Building className="w-4 h-4" />
                     <span data-translatable>Trim ve List</span>
                   </Button>
@@ -127,67 +127,67 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/navigation">
-                  <Button size="sm" variant="outline" className="gap-2 border-orange-300 text-orange-600 hover:bg-orange-50 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-orange-300 text-orange-600 hover:bg-orange-50 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Compass className="w-4 h-4" />
                     <span data-translatable>Seyir</span>
                   </Button>
                 </Link>
                 <Link to="/hydrodynamics">
-                  <Button size="sm" variant="outline" className="gap-2 border-cyan-300 dark:border-cyan-700 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-cyan-300 dark:border-cyan-700 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Waves className="w-4 h-4" />
                     <span data-translatable>Hidrodinamik</span>
                   </Button>
                 </Link>
                 <Link to="/engine">
-                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Cog className="w-4 h-4" />
                     <span data-translatable>Makine</span>
                   </Button>
                 </Link>
                 <Link to="/cargo">
-                  <Button size="sm" variant="outline" className="gap-2 border-amber-300 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-amber-300 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Package className="w-4 h-4" />
                     <span data-translatable>Kargo</span>
                   </Button>
                 </Link>
                 <Link to="/ballast">
-                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Droplets className="w-4 h-4" />
                     <span data-translatable>Balast</span>
                   </Button>
                 </Link>
                 <Link to="/regulations">
-                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800">
+                  <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Shield className="w-4 h-4" />
                     <span data-translatable>Regülasyonlar</span>
                   </Button>
                 </Link>
                 <Link to="/structural">
-                  <Button size="sm" variant="outline" className="gap-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <Button size="sm" variant="outline" className="gap-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Building className="w-4 h-4" />
                     <span data-translatable>Yapısal</span>
                   </Button>
                 </Link>
                 <Link to="/safety">
-                  <Button size="sm" variant="outline" className="gap-2 border-red-300 text-red-600 hover:bg-red-50">
+                  <Button size="sm" variant="outline" className="gap-2 border-red-300 text-red-600 hover:bg-red-50 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Shield className="w-4 h-4" />
                     <span data-translatable>Güvenlik</span>
                   </Button>
                 </Link>
                 <Link to="/emissions">
-                  <Button size="sm" variant="outline" className="gap-2 border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-gray-700">
+                  <Button size="sm" variant="outline" className="gap-2 border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-gray-700 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Leaf className="w-4 h-4" />
                     <span data-translatable>Emisyon</span>
                   </Button>
                 </Link>
                 <Link to="/weather">
-                  <Button size="sm" variant="outline" className="gap-2 border-sky-300 dark:border-sky-700 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-gray-700">
+                  <Button size="sm" variant="outline" className="gap-2 border-sky-300 dark:border-sky-700 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-gray-700 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Cloud className="w-4 h-4" />
                     <span data-translatable>Meteoroloji</span>
                   </Button>
                 </Link>
                 <Link to="/special-ships">
-                  <Button size="sm" variant="outline" className="gap-2 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700">
+                  <Button size="sm" variant="outline" className="gap-2 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700 nature:border-green-300 nature:text-green-600 nature:hover:bg-green-50">
                     <Ship className="w-4 h-4" />
                     <span data-translatable>Özel Gemiler</span>
                   </Button>
