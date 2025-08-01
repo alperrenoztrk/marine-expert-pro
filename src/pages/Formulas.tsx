@@ -140,7 +140,12 @@ const Formulas = () => {
     <MobileLayout>
       {/* Language Selector ve Geri Dönüş */}
       <div className="flex justify-between items-center mb-4 px-1">
-        <Button asChild variant="ghost" size="sm" className="gap-2 text-sm">
+        <Button 
+          asChild 
+          variant="ghost" 
+          size="sm" 
+          className="gap-2 text-sm flex items-center"
+        >
           <Link to="/">
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden xs:inline" data-translatable>Ana Sayfa</span>

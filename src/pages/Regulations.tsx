@@ -331,13 +331,17 @@ const Regulations = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <Link 
-              to="/" 
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Ana Sayfa
-            </Link>
+              <Link to="/">
+                <ArrowLeft className="h-4 w-4" />
+                Ana Sayfa
+              </Link>
+            </Button>
             <Separator orientation="vertical" className="h-6" />
             <div className="flex items-center gap-2">
               <Ship className="h-6 w-6 text-primary" />
