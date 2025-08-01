@@ -145,13 +145,13 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
         </div>
 
         {response && (
-          <Card className="bg-blue-50 border-blue-200 dark:border-blue-800 cyberpunk:bg-gray-800 cyberpunk:border-gray-700">
+          <Card className="bg-info-muted border-info/20">
             <CardContent className="pt-4">
-              <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <h4 className="font-semibold text-info-muted-foreground mb-2 flex items-center gap-2">
                 <Brain className="w-4 h-4" />
                 AI Test Yanıtı:
               </h4>
-              <div className="text-sm text-blue-800 whitespace-pre-wrap leading-relaxed">
+              <div className="text-sm text-info-muted-foreground whitespace-pre-wrap leading-relaxed">
                 {response}
               </div>
             </CardContent>
@@ -161,7 +161,7 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
         <div className="text-xs text-muted-foreground bg-yellow-50 border border-yellow-200 rounded p-3">
           <strong>⚠️ Test Modu:</strong> Bu simülasyon modudur. Gerçek Gemini API için:
           <br />
-          1. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Google AI Studio</a>'dan API anahtarı alın
+          1. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-info underline">Google AI Studio</a>'dan API anahtarı alın
           <br />
           2. Lovable Environment Variables'a GEMINI_API_KEY ekleyin
           <br />

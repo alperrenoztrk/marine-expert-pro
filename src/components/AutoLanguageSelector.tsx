@@ -58,7 +58,7 @@ export const AutoLanguageSelector = () => {
     <div className="relative">
       {/* Otomatik Algılama Önerisi */}
       {showAutoDetectPrompt && detectedLanguage !== currentLanguage && (
-        <div className="absolute top-full mt-2 right-0 z-50 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-lg shadow-lg border max-w-xs">
+        <div className="absolute top-full mt-2 right-0 z-50 bg-info text-info-foreground p-3 rounded-lg shadow-lg border max-w-xs">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="w-4 h-4" />
             <span className="text-sm font-medium">Otomatik Dil Algılandı!</span>
@@ -108,7 +108,7 @@ export const AutoLanguageSelector = () => {
             
             {/* Otomatik algılama göstergesi */}
             {detectedLanguage !== currentLanguage && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-info rounded-full animate-pulse" />
             )}
           </Button>
         </DropdownMenuTrigger>
@@ -123,10 +123,10 @@ export const AutoLanguageSelector = () => {
 
               <DropdownMenuItem
                 onClick={() => handleLanguageChange(detectedLanguage)}
-                className="flex items-center justify-between cursor-pointer bg-blue-50 hover:bg-blue-100 cyberpunk:bg-gray-800 cyberpunk:hover:bg-gray-700"
+                className="flex items-center justify-between cursor-pointer bg-info-muted hover:bg-info-muted/80"
               >
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-blue-500" />
+                  <Zap className="w-4 h-4 text-info" />
                   <span>{detectedLangInfo.flag}</span>
                   <span className="text-sm font-medium">{detectedLangInfo.name}</span>
                 </div>

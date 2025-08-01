@@ -660,7 +660,7 @@ export const EmissionCalculations = () => {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Emisyon Azalması</Label>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.emissionReduction.toFixed(1)}%</p>
+                  <p className="text-2xl font-bold text-info">{result.emissionReduction.toFixed(1)}%</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Maliyet Tasarrufu</Label>

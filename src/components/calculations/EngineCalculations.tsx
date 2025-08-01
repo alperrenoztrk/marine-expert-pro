@@ -800,7 +800,7 @@ export const EngineCalculations = () => {
               <div className="grid grid-cols-4 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Mevcut SFOC</Label>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.currentSFOC.toFixed(1)} g/kWh</p>
+                  <p className="text-2xl font-bold text-info">{result.currentSFOC.toFixed(1)} g/kWh</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Saatlik Tüketim</Label>

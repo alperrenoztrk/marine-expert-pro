@@ -9,8 +9,8 @@ export const BallastCalculationsCard = () => {
     <Card className="cursor-pointer hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/20 cyberpunk:bg-gray-800 rounded-lg">
-            <Anchor className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="p-2 bg-info-muted rounded-lg">
+            <Anchor className="w-5 h-5 text-info" />
           </div>
           <div>
             <CardTitle className="text-lg">Balast</CardTitle>
