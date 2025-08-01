@@ -12,6 +12,11 @@
   overflow: hidden;
 }
 
+/* Orange theme splash screen */
+.orange .splash-screen {
+  background: linear-gradient(135deg, #fff7ed, #fed7aa, #fb923c, #ea580c);
+}
+
 .splash-screen.animate {
   opacity: 1;
 }

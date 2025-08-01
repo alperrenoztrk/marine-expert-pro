@@ -172,6 +172,66 @@ All colors MUST be HSL.
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Orange Theme - Premium Quality */
+  .orange {
+    --background: 25 95% 98%;
+    --foreground: 25 95% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 95% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 95% 8%;
+
+    --primary: 25 95% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 25 95% 65%;
+    --primary-dark: 25 95% 35%;
+
+    --secondary: 30 100% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 25 95% 94%;
+    --muted-foreground: 25 95% 45%;
+
+    --accent: 45 100% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 15%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 25 95% 90%;
+    --input: 25 95% 90%;
+    --ring: 25 95% 50%;
+
+    /* Orange theme gradients - Premium Quality */
+    --gradient-ocean: linear-gradient(135deg, hsl(25 95% 50%), hsl(25 95% 65%));
+    --gradient-deep: linear-gradient(135deg, hsl(30 100% 45%), hsl(25 95% 35%));
+    --gradient-surface: linear-gradient(135deg, hsl(25 95% 94%) 0%, hsl(25 95% 98%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(25 95% 50%), hsl(45 100% 55%), hsl(30 100% 45%));
+    --gradient-fire: linear-gradient(135deg, hsl(15 100% 50%), hsl(25 95% 50%), hsl(35 100% 50%));
+    
+    /* Premium shadows with orange tint */
+    --shadow-calculator: 0 8px 32px -4px hsl(25 95% 50% / 0.15);
+    --shadow-card: 0 4px 16px -2px hsl(25 95% 50% / 0.1);
+    --shadow-button: 0 2px 8px -1px hsl(25 95% 50% / 0.2);
+
+    --sidebar-background: 25 95% 96%;
+    --sidebar-foreground: 25 95% 20%;
+    --sidebar-primary: 25 95% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 95% 92%;
+    --sidebar-accent-foreground: 25 95% 20%;
+    --sidebar-border: 25 95% 88%;
+    --sidebar-ring: 25 95% 50%;
+  }
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
     .container {

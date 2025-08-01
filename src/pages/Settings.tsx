@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Globe, Settings as SettingsIcon } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Globe, Settings as SettingsIcon, Palette } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -16,17 +16,18 @@ import { toast } from "sonner";
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
-  const [isDarkMode, setIsDarkMode] = useState(theme === "dark");
 
-  useEffect(() => {
-    setIsDarkMode(theme === "dark");
-  }, [theme]);
-
-  const handleThemeToggle = (checked: boolean) => {
-    const newTheme = checked ? "dark" : "light";
-    setTheme(newTheme);
-    setIsDarkMode(checked);
-    toast.success(checked ? "Koyu tema aktif" : "Açık tema aktif");
+  const handleThemeChange = (newTheme: string) => {
+    setTheme(newTheme as "light" | "dark" | "orange" | "system");
+    
+    const themeNames = {
+      light: "Açık Tema",
+      dark: "Koyu Tema", 
+      orange: "Turuncu Tema",
+      system: "Sistem Teması"
+    };
+    
+    toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
   };
 
   const handleLanguageChange = async (value: string) => {
@@ -89,31 +90,57 @@ const Settings = () => {
           <div className="grid gap-6">
             
             {/* Theme Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 orange:bg-orange-50 orange:border-orange-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  {isDarkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                  <Palette className="w-5 h-5" />
                   <span data-translatable>Tema Ayarları</span>
                 </CardTitle>
                 <CardDescription>
                   <span data-translatable>Arayüz temasını seçin</span>
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label htmlFor="dark-mode" className="text-base">
-                      <span data-translatable>Koyu Tema</span>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="theme-select">
+                      <span data-translatable>Tema</span>
                     </Label>
-                    <p className="text-sm text-muted-foreground">
-                      <span data-translatable>Göz yorgunluğunu azaltır</span>
-                    </p>
+                    <Select value={theme} onValueChange={handleThemeChange}>
+                      <SelectTrigger id="theme-select">
+                        <SelectValue placeholder="Tema seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">
+                          <div className="flex items-center gap-2">
+                            <Sun className="w-4 h-4" />
+                            <span>Açık Tema</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="dark">
+                          <div className="flex items-center gap-2">
+                            <Moon className="w-4 h-4" />
+                            <span>Koyu Tema</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="orange">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-400 to-orange-600"></div>
+                            <span>Turuncu Tema</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="system">
+                          <div className="flex items-center gap-2">
+                            <Globe className="w-4 h-4" />
+                            <span>Sistem Teması</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Switch
-                    id="dark-mode"
-                    checked={isDarkMode}
-                    onCheckedChange={handleThemeToggle}
-                  />
+                  <p className="text-sm text-muted-foreground">
+                    <span data-translatable>Seçilen tema tüm uygulamada geçerli olacaktır</span>
+                  </p>
                 </div>
               </CardContent>
             </Card>
