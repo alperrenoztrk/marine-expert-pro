@@ -86,14 +86,22 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-teal-600/20 rounded-xl"></div>
         
         <div className="relative bg-card/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-border shadow-lg">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-            <div className="text-center w-full">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent" data-translatable>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <img 
+                src="/maritime-logo.svg" 
+                alt="Maritime Calculator Logo" 
+                className="maritime-logo w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            
+            {/* Title */}
+            <div className="text-center">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
                 Maritime Calculator
               </h1>
             </div>
-            
-
           </div>
 
 
