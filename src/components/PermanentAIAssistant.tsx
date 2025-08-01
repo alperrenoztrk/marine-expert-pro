@@ -261,9 +261,9 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Brain className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <Brain className="w-6 h-6 text-info" />
             <div>
-              <CardTitle className="text-xl text-blue-800">Maritime AI Asistanı</CardTitle>
+              <CardTitle className="text-xl text-info-muted-foreground">Maritime AI Asistanı</CardTitle>
               <CardDescription className="text-sm">
                 Kalıcı maritime mühendisliği AI asistanı
               </CardDescription>
@@ -345,7 +345,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
 
         {/* AI Response */}
         {aiResponse && (
-                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-l-yellow-400">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-l-yellow-400">
             <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <Brain className="w-5 h-5" />
               AI Yanıtı:

@@ -479,8 +479,13 @@ export const BallastCalculations = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+<<<<<<< HEAD
                   <div className="p-4 bg-blue-50 rounded-lg cyberpunk:bg-gray-800">
                     <h4 className="font-semibold text-blue-800 mb-2">BWM Convention Gereklilikleri</h4>
+=======
+                  <div className="p-4 bg-info-muted rounded-lg">
+                    <h4 className="font-semibold text-info-muted-foreground mb-2">BWM Convention Gereklilikleri</h4>
+>>>>>>> 5f34145cd4d61983a9c448a8969fc14c64e5d315
                     <ul className="text-sm text-blue-700 space-y-1">
                       <li>• Balast değişimi kıyıdan {'>'} 200 nm uzaklıkta</li>
                       <li>• Su derinliği {'>'} 200 metre</li>

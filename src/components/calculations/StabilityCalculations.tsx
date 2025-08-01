@@ -886,7 +886,7 @@ export const StabilityCalculations = () => {
                     <CardContent className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.angleOfList.toFixed(1)}°</div>
+                          <div className="text-2xl font-bold text-info">{result.angleOfList.toFixed(1)}°</div>
                           <div className="text-sm text-muted-foreground">Angle of List</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">

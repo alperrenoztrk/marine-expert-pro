@@ -1736,7 +1736,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                         <div className="space-y-4">
                           {result.recommendations.length > 0 && (
                             <div>
-                              <h4 className="font-semibold mb-2 text-blue-600 dark:text-blue-400">Öneriler</h4>
+                              <h4 className="font-semibold mb-2 text-info">Öneriler</h4>
                               <ul className="list-disc list-inside space-y-1">
                                 {result.recommendations.map((rec, index) => (
                                   <li key={index} className="text-sm">{rec}</li>

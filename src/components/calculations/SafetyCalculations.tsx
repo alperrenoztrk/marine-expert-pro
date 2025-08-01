@@ -741,7 +741,7 @@ export const SafetyCalculations = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Önerilen Zincir Uzunluğu</Label>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.recommendedChainLength.toFixed(0)} m</p>
+                  <p className="text-2xl font-bold text-info">{result.recommendedChainLength.toFixed(0)} m</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Minimum Zincir Uzunluğu</Label>
@@ -825,7 +825,7 @@ export const SafetyCalculations = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Toplam Can Botu Kapasitesi</Label>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.totalLifeboatCapacity} kişi</p>
+                  <p className="text-2xl font-bold text-info">{result.totalLifeboatCapacity} kişi</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Toplam Can Salı Kapasitesi</Label>
@@ -856,7 +856,7 @@ export const SafetyCalculations = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Minimum Freeboard</Label>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{result.minimumFreeboard.toFixed(0)} mm</p>
+                  <p className="text-2xl font-bold text-info">{result.minimumFreeboard.toFixed(0)} mm</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Mevcut Freeboard</Label>

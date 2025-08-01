@@ -123,10 +123,10 @@ export const AutoLanguageSelector = () => {
 
               <DropdownMenuItem
                 onClick={() => handleLanguageChange(detectedLanguage)}
-                className="flex items-center justify-between cursor-pointer bg-blue-50 hover:bg-blue-100 cyberpunk:bg-gray-800 cyberpunk:hover:bg-gray-700"
+                className="flex items-center justify-between cursor-pointer bg-info-muted hover:bg-info-muted/80"
               >
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-blue-500" />
+                  <Zap className="w-4 h-4 text-info" />
                   <span>{detectedLangInfo.flag}</span>
                   <span className="text-sm font-medium">{detectedLangInfo.name}</span>
                 </div>
