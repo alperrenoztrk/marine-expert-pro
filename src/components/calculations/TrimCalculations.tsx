@@ -1281,6 +1281,10 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-blue-700">🌊 Su Altı Hacim Hesaplama</h3>
                 <p className="text-sm text-gray-600">V = ∫ A(x) dx</p>
+                <p className="text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                  <strong>📋 Amaç:</strong> Gemi boyunca değişen kesit alanlarının integrali ile toplam su altı hacmi hesaplanır. 
+                  Bu formül gemi formunun karmaşık geometrisini dikkate alır.
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="stationNumber">Station Numarası</Label>
@@ -1437,6 +1441,10 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-blue-700">🌊 Su Altı Hacim Hesaplama</h3>
                 <p className="text-sm text-gray-600">V = A × h</p>
+                <p className="text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                  <strong>📋 Amaç:</strong> Tank hacmi için basit dikdörtgen formülü kullanılır. 
+                  Bu formül pratik tank hesaplamaları için uygundur.
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="tankArea">Tank Alanı A [m²]</Label>
