@@ -132,7 +132,7 @@ const Settings = () => {
                         </SelectItem>
                         <SelectItem value="cyberpunk">
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-pulse"></div>
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse"></div>
                             <span>Cyberpunk Tema</span>
                           </div>
                         </SelectItem>

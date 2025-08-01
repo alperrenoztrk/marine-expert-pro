@@ -235,66 +235,67 @@ All colors MUST be HSL.
     --sidebar-ring: 25 95% 55%;
   }
 
-  /* Cyberpunk Theme - Hyperrealistic Futuristic */
+  /* Cyberpunk Theme - Yellow & Black Pattern */
   .cyberpunk {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 3%;
+    --foreground: 60 100% 95%;
 
-    --card: 240 10% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 60 100% 95%;
 
-    --popover: 240 10% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 60 100% 95%;
 
-    --primary: 180 100% 50%;
-    --primary-foreground: 240 10% 4%;
-    --primary-light: 180 100% 70%;
-    --primary-dark: 180 100% 30%;
+    --primary: 60 100% 60%;
+    --primary-foreground: 0 0% 3%;
+    --primary-light: 60 100% 75%;
+    --primary-dark: 60 100% 45%;
 
-    --secondary: 300 100% 50%;
-    --secondary-foreground: 240 10% 4%;
+    --secondary: 45 100% 55%;
+    --secondary-foreground: 0 0% 3%;
 
-    --muted: 240 10% 12%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 60 100% 70%;
 
-    --accent: 60 100% 50%;
-    --accent-foreground: 240 10% 4%;
+    --accent: 30 100% 60%;
+    --accent-foreground: 0 0% 3%;
 
     --destructive: 0 100% 60%;
-    --destructive-foreground: 240 10% 4%;
+    --destructive-foreground: 0 0% 3%;
 
     --warning: 45 100% 60%;
-    --warning-foreground: 240 10% 4%;
+    --warning-foreground: 0 0% 3%;
 
     --success: 120 100% 50%;
-    --success-foreground: 240 10% 4%;
+    --success-foreground: 0 0% 3%;
 
-    --border: 240 10% 20%;
-    --input: 240 10% 20%;
-    --ring: 180 100% 50%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 60 100% 60%;
 
-    /* Cyberpunk gradients - Hyperrealistic */
-    --gradient-ocean: linear-gradient(135deg, hsl(180 100% 50%), hsl(180 100% 70%));
-    --gradient-deep: linear-gradient(135deg, hsl(300 100% 50%), hsl(180 100% 30%));
-    --gradient-surface: linear-gradient(135deg, hsl(240 10% 12%) 0%, hsl(240 10% 4%) 100%);
-    --gradient-neon: linear-gradient(135deg, hsl(180 100% 50%), hsl(300 100% 50%), hsl(60 100% 50%));
-    --gradient-hologram: linear-gradient(135deg, hsl(180 100% 50% / 0.8), hsl(300 100% 50% / 0.6), hsl(60 100% 50% / 0.4));
-    --gradient-cyber: linear-gradient(135deg, hsl(240 10% 4%), hsl(180 100% 30%), hsl(300 100% 30%), hsl(240 10% 4%));
-    --gradient-matrix: linear-gradient(135deg, hsl(120 100% 40%), hsl(180 100% 50%), hsl(120 100% 60%));
+    /* Cyberpunk Yellow & Black Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(60 100% 60%), hsl(60 100% 75%));
+    --gradient-deep: linear-gradient(135deg, hsl(45 100% 55%), hsl(60 100% 45%));
+    --gradient-surface: linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 3%) 100%);
+    --gradient-neon: linear-gradient(135deg, hsl(60 100% 60%), hsl(45 100% 55%), hsl(30 100% 60%));
+    --gradient-hologram: linear-gradient(135deg, hsl(60 100% 60% / 0.8), hsl(45 100% 55% / 0.6), hsl(30 100% 60% / 0.4));
+    --gradient-cyber: linear-gradient(135deg, hsl(0 0% 3%), hsl(60 100% 45%), hsl(45 100% 45%), hsl(0 0% 3%));
+    --gradient-matrix: linear-gradient(135deg, hsl(60 100% 40%), hsl(60 100% 60%), hsl(60 100% 80%));
+    --gradient-warning: linear-gradient(135deg, hsl(45 100% 55%), hsl(60 100% 60%), hsl(30 100% 60%));
     
-    /* Cyberpunk shadows with neon glow */
-    --shadow-calculator: 0 8px 32px -4px hsl(180 100% 50% / 0.3), 0 0 20px hsl(180 100% 50% / 0.2);
-    --shadow-card: 0 4px 16px -2px hsl(300 100% 50% / 0.2), 0 0 10px hsl(300 100% 50% / 0.1);
-    --shadow-button: 0 2px 8px -1px hsl(60 100% 50% / 0.3), 0 0 5px hsl(60 100% 50% / 0.2);
+    /* Cyberpunk Yellow & Black Shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(60 100% 60% / 0.3), 0 0 20px hsl(60 100% 60% / 0.2);
+    --shadow-card: 0 4px 16px -2px hsl(45 100% 55% / 0.2), 0 0 10px hsl(45 100% 55% / 0.1);
+    --shadow-button: 0 2px 8px -1px hsl(30 100% 60% / 0.3), 0 0 5px hsl(30 100% 60% / 0.2);
 
-    --sidebar-background: 240 10% 6%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 180 100% 50%;
-    --sidebar-primary-foreground: 240 10% 4%;
-    --sidebar-accent: 240 10% 10%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 240 10% 15%;
-    --sidebar-ring: 180 100% 50%;
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 60 100% 90%;
+    --sidebar-primary: 60 100% 60%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 60 100% 90%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 60 100% 60%;
   }
 
   /* Mobile optimizations */
