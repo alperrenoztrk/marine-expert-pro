@@ -72,6 +72,9 @@ interface TrimData {
   crossSectionalArea: number; // Cross-sectional area (m²)
   stationPosition: number; // Station position (m)
   moment: number; // Moment (m³)
+  tankArea: number; // Tank area (m²)
+  liquidHeight: number; // Liquid height (m)
+  liquidDensity: number; // Liquid density (kg/m³)
 }
 
 interface TrimResult {
@@ -232,7 +235,10 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     currentSpeed: 3,
     crossSectionalArea: 150,
     stationPosition: 70,
-    moment: 150
+    moment: 150,
+    tankArea: 50,
+    liquidHeight: 2.5,
+    liquidDensity: 1025
   });
 
   const [trimResult, setTrimResult] = useState<TrimResult | null>(null);
@@ -252,6 +258,12 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   const [bonjeanResults, setBonjeanResults] = useState<{
     volume: number;
     lcb: number;
+    moment: number;
+  } | null>(null);
+
+  const [soundingResults, setSoundingResults] = useState<{
+    volume: number;
+    weight: number;
     moment: number;
   } | null>(null);
 
@@ -352,91 +364,18 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   };
 
   // Calculate Sounding Table Volume
-  const calculateSoundingTable = (data: TrimData) => {
-    const soundingDepth = data.soundingDepth / 100; // Convert cm to m
-    const tankLength = data.tankLength;
-    const tankWidth = data.tankWidth;
-    const tankHeight = data.tankHeight;
+  const calculateSoundingTable = () => {
+    const volume = trimData.tankArea * trimData.liquidHeight;
+    const weight = volume * trimData.liquidDensity;
+    const moment = volume * trimData.liquidHeight / 2;
     
-    // Basic tank volume calculation
-    let tankVolume = tankLength * tankWidth * soundingDepth;
+    setSoundingResults({
+      volume: volume,
+      weight: weight,
+      moment: moment
+    });
     
-    // Apply corrections
-    let correctedVolume = tankVolume;
-    
-    // Trim correction
-    let trimCorrection = 1.0;
-    if (data.trimCorrection && trimResult) {
-      const trimAngle = Math.atan(trimResult.currentTrim / data.L);
-      trimCorrection = 1 + (Math.sin(trimAngle) * 0.1); // Simplified correction
-      correctedVolume *= trimCorrection;
-    }
-    
-    // Heel correction
-    let heelCorrection = 1.0;
-    if (data.heelCorrection && trimResult) {
-      const heelAngle = trimResult.listAngle * Math.PI / 180;
-      heelCorrection = 1 + (Math.sin(heelAngle) * 0.05); // Simplified correction
-      correctedVolume *= heelCorrection;
-    }
-    
-    // Density correction for liquid weight
-    let liquidDensity = 1000; // Default water density
-    switch (data.tankType) {
-      case 'fuel':
-        liquidDensity = 850; // Typical fuel density
-        break;
-      case 'ballast':
-        liquidDensity = data.waterDensity;
-        break;
-      case 'freshwater':
-        liquidDensity = 1000;
-        break;
-      case 'cargo':
-        liquidDensity = 1500; // Typical cargo density
-        break;
-    }
-    
-    const liquidWeight = correctedVolume * (liquidDensity / 1000); // Convert to tonnes
-    
-    // Free volume
-    const totalTankVolume = tankLength * tankWidth * tankHeight;
-    const freeVolume = totalTankVolume - correctedVolume;
-    
-    // Fill percentage
-    const fillPercentage = (correctedVolume / totalTankVolume) * 100;
-    
-    // Centers of gravity
-    const vcg = soundingDepth / 2; // Vertical CG of liquid
-    const lcg = tankLength / 2; // Longitudinal CG (simplified)
-    const tcg = tankWidth / 2; // Transverse CG (simplified)
-    
-    // Temperature correction (for fuel/cargo)
-    let temperatureCorrection = 1.0;
-    if (data.tankType === 'fuel' || data.tankType === 'cargo') {
-      const refTemp = 15; // Reference temperature
-      const tempDiff = data.waterTemperature - refTemp;
-      temperatureCorrection = 1 + (tempDiff * 0.0007); // Typical expansion coefficient
-    }
-    
-    const densityCorrection = liquidDensity / 1000;
-    
-    return {
-      tankVolume,
-      liquidWeight,
-      freeVolume,
-      fillPercentage,
-      correctedVolume,
-      vcg,
-      lcg,
-      tcg,
-      corrections: {
-        trimCorrection,
-        heelCorrection,
-        densityCorrection,
-        temperatureCorrection
-      }
-    };
+    toast.success("Sounding Table hesaplamaları tamamlandı!");
   };
 
   // Calculate trim moment
@@ -1403,172 +1342,153 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsContent>
 
             <TabsContent value="sounding" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Droplets className="h-5 w-5" />
-                    Sounding Tabloları ile Hacim Hesabı
-                  </CardTitle>
-                  <CardDescription>
-                    Tank hacim hesaplamaları ve trim/heel düzeltmeleri
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="tankType">Tank Tipi</Label>
-                      <Select 
-                        value={trimData.tankType} 
-                        onValueChange={(value: 'cargo' | 'ballast' | 'fuel' | 'freshwater') => setTrimData({...trimData, tankType: value})}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Tank tipi seçin" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="cargo">Kargo Tankı</SelectItem>
-                          <SelectItem value="ballast">Ballast Tankı</SelectItem>
-                          <SelectItem value="fuel">Yakıt Tankı</SelectItem>
-                          <SelectItem value="freshwater">Tatlı Su Tankı</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="tankNumber">Tank Numarası</Label>
-                      <Input
-                        id="tankNumber"
-                        type="number"
-                        value={trimData.tankNumber || ''}
-                        onChange={(e) => setTrimData({...trimData, tankNumber: parseFloat(e.target.value)})}
-                        placeholder="1"
-                      />
-                    </div>
+              {/* Formül 1: Su Altı Hacim - V = A × h */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-700">🌊 Su Altı Hacim Hesaplama</h3>
+                <p className="text-sm text-gray-600">V = A × h</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="tankArea">Tank Alanı A [m²]</Label>
+                    <Input
+                      id="tankArea"
+                      type="number"
+                      step="0.01"
+                      value={trimData.tankArea || ''}
+                      onChange={(e) => setTrimData({...trimData, tankArea: parseFloat(e.target.value)})}
+                      placeholder="50"
+                    />
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="soundingDepth">Sounding Derinliği [cm]</Label>
-                      <Input
-                        id="soundingDepth"
-                        type="number"
-                        value={trimData.soundingDepth || ''}
-                        onChange={(e) => setTrimData({...trimData, soundingDepth: parseFloat(e.target.value)})}
-                        placeholder="650"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="tankLength">Tank Boyu [m]</Label>
-                      <Input
-                        id="tankLength"
-                        type="number"
-                        value={trimData.tankLength || ''}
-                        onChange={(e) => setTrimData({...trimData, tankLength: parseFloat(e.target.value)})}
-                        placeholder="15"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="tankWidth">Tank Genişliği [m]</Label>
-                      <Input
-                        id="tankWidth"
-                        type="number"
-                        value={trimData.tankWidth || ''}
-                        onChange={(e) => setTrimData({...trimData, tankWidth: parseFloat(e.target.value)})}
-                        placeholder="10"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="tankHeight">Tank Yüksekliği [m]</Label>
-                      <Input
-                        id="tankHeight"
-                        type="number"
-                        value={trimData.tankHeight || ''}
-                        onChange={(e) => setTrimData({...trimData, tankHeight: parseFloat(e.target.value)})}
-                        placeholder="8"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="liquidHeight">Sıvı Yüksekliği h [m]</Label>
+                    <Input
+                      id="liquidHeight"
+                      type="number"
+                      step="0.01"
+                      value={trimData.liquidHeight || ''}
+                      onChange={(e) => setTrimData({...trimData, liquidHeight: parseFloat(e.target.value)})}
+                      placeholder="2.5"
+                    />
                   </div>
+                </div>
+              </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="trimCorrection"
-                        checked={trimData.trimCorrection}
-                        onChange={(e) => setTrimData({...trimData, trimCorrection: e.target.checked})}
-                      />
-                      <Label htmlFor="trimCorrection">Trim Düzeltmesi Uygula</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="heelCorrection"
-                        checked={trimData.heelCorrection}
-                        onChange={(e) => setTrimData({...trimData, heelCorrection: e.target.checked})}
-                      />
-                      <Label htmlFor="heelCorrection">Heel Düzeltmesi Uygula</Label>
-                    </div>
+              <Separator />
+
+              {/* Formül 2: Ağırlık - W = V × ρ */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-green-700">⚖️ Ağırlık Hesaplama</h3>
+                <p className="text-sm text-gray-600">W = V × ρ</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="volume_weight">Hacim V [m³]</Label>
+                    <Input
+                      id="volume_weight"
+                      type="number"
+                      step="0.1"
+                      value={trimData.volume || ''}
+                      onChange={(e) => setTrimData({...trimData, volume: parseFloat(e.target.value)})}
+                      placeholder="125"
+                    />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="liquidDensity">Sıvı Yoğunluğu ρ [kg/m³]</Label>
+                    <Input
+                      id="liquidDensity"
+                      type="number"
+                      step="0.1"
+                      value={trimData.liquidDensity || ''}
+                      onChange={(e) => setTrimData({...trimData, liquidDensity: parseFloat(e.target.value)})}
+                      placeholder="1025"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tankType">Tank Tipi</Label>
+                    <Select
+                      value={trimData.tankType || ''}
+                      onValueChange={(value) => setTrimData({...trimData, tankType: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Tank tipi seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fuel">Yakıt Tankı</SelectItem>
+                        <SelectItem value="ballast">Balast Tankı</SelectItem>
+                        <SelectItem value="freshwater">Tatlı Su Tankı</SelectItem>
+                        <SelectItem value="cargo">Kargo Tankı</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
 
-                  {trimResult && (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.soundingTable.tankVolume.toFixed(1)} m³</div>
-                          <div className="text-sm text-muted-foreground">Tank Hacmi</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.soundingTable.correctedVolume.toFixed(1)} m³</div>
-                          <div className="text-sm text-muted-foreground">Düzeltilmiş Hacim</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.soundingTable.liquidWeight.toFixed(0)} ton</div>
-                          <div className="text-sm text-muted-foreground">Sıvı Ağırlığı</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.soundingTable.fillPercentage.toFixed(1)}%</div>
-                          <div className="text-sm text-muted-foreground">Doluluk Oranı</div>
-                        </div>
-                      </div>
+              <Separator />
 
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{trimResult.soundingTable.vcg.toFixed(2)} m</div>
-                          <div className="text-sm text-muted-foreground">VCG (Dikey AG)</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{trimResult.soundingTable.lcg.toFixed(2)} m</div>
-                          <div className="text-sm text-muted-foreground">LCG (Boyuna AG)</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{trimResult.soundingTable.tcg.toFixed(2)} m</div>
-                          <div className="text-sm text-muted-foreground">TCG (Enine AG)</div>
-                        </div>
-                      </div>
+              {/* Formül 3: Moment - M = V × h/2 */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-purple-700">📊 Moment Hesaplama</h3>
+                <p className="text-sm text-gray-600">M = V × h/2</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="volume_moment">Hacim V [m³]</Label>
+                    <Input
+                      id="volume_moment"
+                      type="number"
+                      step="0.1"
+                      value={trimData.volume || ''}
+                      onChange={(e) => setTrimData({...trimData, volume: parseFloat(e.target.value)})}
+                      placeholder="125"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="liquidHeight_moment">Sıvı Yüksekliği h [m]</Label>
+                    <Input
+                      id="liquidHeight_moment"
+                      type="number"
+                      step="0.01"
+                      value={trimData.liquidHeight || ''}
+                      onChange={(e) => setTrimData({...trimData, liquidHeight: parseFloat(e.target.value)})}
+                      placeholder="2.5"
+                    />
+                  </div>
+                </div>
+              </div>
 
-                      <div>
-                        <h4 className="font-semibold mb-3">Düzeltme Faktörleri</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.trimCorrection.toFixed(3)}</div>
-                            <div className="text-sm text-muted-foreground">Trim Düzeltmesi</div>
-                          </div>
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.heelCorrection.toFixed(3)}</div>
-                            <div className="text-sm text-muted-foreground">Heel Düzeltmesi</div>
-                          </div>
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.densityCorrection.toFixed(3)}</div>
-                            <div className="text-sm text-muted-foreground">Yoğunluk Düzeltmesi</div>
-                          </div>
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.temperatureCorrection.toFixed(3)}</div>
-                            <div className="text-sm text-muted-foreground">Sıcaklık Düzeltmesi</div>
-                          </div>
-                        </div>
+              {/* Hesaplama Butonu */}
+              <div className="flex justify-center pt-4">
+                <Button 
+                  onClick={calculateSoundingTable} 
+                  className="px-8 py-2 bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Hesapla
+                </Button>
+              </div>
+
+              {/* Sonuçlar */}
+              {soundingResults && (
+                <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800">📊 Sounding Table Sonuçları</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Su Altı Hacim (V)</Label>
+                      <div className="text-lg font-bold text-blue-600">
+                        {soundingResults.volume.toFixed(1)} m³
                       </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Ağırlık (W)</Label>
+                      <div className="text-lg font-bold text-green-600">
+                        {soundingResults.weight.toFixed(1)} ton
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Moment (M)</Label>
+                      <div className="text-lg font-bold text-purple-600">
+                        {soundingResults.moment.toFixed(1)} ton.m
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="operations" className="space-y-6">
