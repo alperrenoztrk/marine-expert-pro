@@ -90,7 +90,7 @@ const Index = () => {
             {/* Logo */}
             <div className="flex-shrink-0">
               <img 
-                src="/maritime-logo.svg?v=2" 
+                src="/maritime-logo.svg?v=3" 
                 alt="Maritime Calculator Logo" 
                 className="maritime-logo w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
               />
