@@ -18,15 +18,14 @@ const Settings = () => {
   const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark" | "cyberpunk" | "neon" | "nature" | "system");
+    setTheme(newTheme as "light" | "dark" | "cyberpunk" | "neon" | "nature");
     
     const themeNames = {
       light: "Açık Tema",
       dark: "Koyu Tema", 
       cyberpunk: "Cyberpunk Tema",
       neon: "Neon Tema",
-      nature: "Doğa Teması",
-      system: "Sistem Teması"
+      nature: "Doğa Teması"
     };
     
     toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
@@ -144,12 +143,7 @@ const Settings = () => {
                             <span>Doğa Teması</span>
                           </div>
                         </SelectItem>
-                        <SelectItem value="system">
-                          <div className="flex items-center gap-2">
-                            <Globe className="w-4 h-4" />
-                            <span>Sistem Teması</span>
-                          </div>
-                        </SelectItem>
+
                       </SelectContent>
                     </Select>
                   </div>
