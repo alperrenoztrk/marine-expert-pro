@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Anchor, Waves, Ship, Compass, Navigation } from "lucide-react";
+import { Anchor } from "lucide-react";
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -43,31 +43,10 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
         </div>
       </div>
 
-      {/* Main Logo */}
+      {/* Main Anchor Logo */}
       <div className={`main-logo ${showLogo ? 'show' : ''}`}>
-        <div className="logo-orb">
-          <div className="orb-ring orb-ring-1"></div>
-          <div className="orb-ring orb-ring-2"></div>
-          <div className="orb-ring orb-ring-3"></div>
-          <div className="orb-center">
-            <Navigation className="w-16 h-16 text-white" />
-          </div>
-        </div>
-      </div>
-
-      {/* Floating Icons */}
-      <div className={`floating-icons ${showParticles ? 'show' : ''}`}>
-        <div className="floating-icon ship-icon">
-          <Ship className="w-16 h-16 text-cyan-300" />
-        </div>
-        <div className="floating-icon anchor-icon">
-          <Anchor className="w-12 h-12 text-blue-300" />
-        </div>
-        <div className="floating-icon compass-icon">
-          <Compass className="w-10 h-10 text-yellow-300" />
-        </div>
-        <div className="floating-icon waves-icon">
-          <Waves className="w-12 h-12 text-indigo-300" />
+        <div className="anchor-container">
+          <Anchor className="w-64 h-64 text-white" />
         </div>
       </div>
 

@@ -142,7 +142,7 @@
   }
 }
 
-/* Main Logo - PERFECTLY CENTERED */
+/* Main Anchor Logo - PERFECTLY CENTERED */
 .main-logo {
   position: fixed;
   top: 50%;
@@ -152,8 +152,8 @@
   opacity: 0;
   transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   pointer-events: none;
-  width: 120px;
-  height: 120px;
+  width: 256px;
+  height: 256px;
   margin: 0;
   padding: 0;
   display: flex;
@@ -164,6 +164,22 @@
 .main-logo.show {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+.anchor-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: anchorFloat 3s ease-in-out infinite;
+}
+
+@keyframes anchorFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
 }
 
 /* Premium Orange logo effects */
@@ -194,216 +210,10 @@
   }
 }
 
-.logo-orb {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  animation: orbPulse 3s ease-in-out infinite;
-}
 
-@keyframes orbPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.orb-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  animation: rotate 3s linear infinite;
-}
-
-.orb-ring-1 {
-  width: 120px;
-  height: 120px;
-  animation-duration: 3s;
-  animation: rotate 3s linear infinite, ringGlow 4s ease-in-out infinite;
-}
-
-.orb-ring-2 {
-  width: 100px;
-  height: 100px;
-  animation-duration: 4s;
-  animation-direction: reverse;
-  animation: rotate 4s linear infinite reverse, ringGlow 5s ease-in-out infinite;
-}
-
-.orb-ring-3 {
-  width: 80px;
-  height: 80px;
-  animation-duration: 5s;
-  animation: rotate 5s linear infinite, ringGlow 6s ease-in-out infinite;
-}
-
-@keyframes ringGlow {
-  0%, 100% {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  }
-  50% {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-  }
-}
-
-.orb-center {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  animation: centerPulse 2s ease-in-out infinite, centerGlow 3s ease-in-out infinite;
-}
-
-@keyframes centerPulse {
-  0%, 100% {
-    transform: scale(1);
-    background: rgba(255, 255, 255, 0.1);
-  }
-  50% {
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.2);
-  }
-}
-
-@keyframes centerGlow {
-  0%, 100% {
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-  }
-  50% {
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
-  }
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 
 /* Floating Icons with Enhanced Animations */
-.floating-icons {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-}
 
-.floating-icons.show {
-  opacity: 1;
-}
-
-.floating-icon {
-  position: absolute;
-  opacity: 0;
-  animation: iconFloat 6s ease-in-out infinite;
-}
-
-.ship-icon {
-  top: 20%;
-  right: 15%;
-  animation-delay: 0.5s;
-  animation: shipFloat 8s ease-in-out infinite;
-}
-
-.anchor-icon {
-  bottom: 25%;
-  left: 10%;
-  animation-delay: 1s;
-  animation: anchorFloat 7s ease-in-out infinite;
-}
-
-.compass-icon {
-  top: 10%;
-  left: 20%;
-  animation-delay: 1.5s;
-  animation: compassFloat 9s ease-in-out infinite;
-}
-
-.waves-icon {
-  bottom: 15%;
-  right: 25%;
-  animation-delay: 2s;
-  animation: wavesFloat 6s ease-in-out infinite;
-}
-
-@keyframes shipFloat {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(30px) translateX(-20px) scale(0.7) rotate(-5deg);
-  }
-  20%, 80% {
-    opacity: 1;
-    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.9;
-    transform: translateY(-20px) translateX(10px) scale(1.2) rotate(5deg);
-  }
-}
-
-@keyframes anchorFloat {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(25px) translateX(15px) scale(0.8) rotate(10deg);
-  }
-  25%, 75% {
-    opacity: 1;
-    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(-15px) translateX(-5px) scale(1.1) rotate(-5deg);
-  }
-}
-
-@keyframes compassFloat {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(20px) translateX(-10px) scale(0.9) rotate(-15deg);
-  }
-  30%, 70% {
-    opacity: 1;
-    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.9;
-    transform: translateY(-25px) translateX(15px) scale(1.3) rotate(15deg);
-  }
-}
-
-@keyframes wavesFloat {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(15px) translateX(20px) scale(0.8);
-  }
-  20%, 80% {
-    opacity: 1;
-    transform: translateY(0px) translateX(0px) scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(-10px) translateX(-10px) scale(1.1);
-  }
-}
 
 /* Loading Bar */
 .loading-container {
@@ -501,33 +311,13 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .main-logo {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
   }
   
-  .logo-orb {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .orb-ring-1 {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .orb-ring-2 {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .orb-ring-3 {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .orb-center {
-    width: 50px;
-    height: 50px;
+  .anchor-container {
+    width: 200px;
+    height: 200px;
   }
   
   .loading-container {
