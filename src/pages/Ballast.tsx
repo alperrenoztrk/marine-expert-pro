@@ -30,6 +30,9 @@ const Ballast = () => {
               Balast Hesaplamaları
             </h1>
           </div>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Balast tankları, ağırlık dağılımı ve stabilite hesaplamalarınızı yapın
+          </p>
         </div>
         
         <div className="max-w-4xl mx-auto">
