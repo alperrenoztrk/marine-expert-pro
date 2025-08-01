@@ -273,18 +273,6 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
 
   return (
     <Card className="shadow-lg border-l-4 border-l-blue-500 mb-6">
-      <CardHeader className="pb-4">
-        <div className="flex items-center gap-3">
-          <Ship className="w-6 h-6 text-info" />
-          <div>
-            <CardTitle className="text-xl text-info-muted-foreground">Asistan</CardTitle>
-            <CardDescription className="text-sm">
-              Maritime mühendisliği konularında yardım
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      
       <CardContent className="space-y-4">
         {/* Quick Questions */}
         <div className="space-y-2">
