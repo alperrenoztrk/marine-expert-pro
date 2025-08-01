@@ -91,7 +91,7 @@ const Index = () => {
             <div className="flex-shrink-0">
               <div className="relative overflow-hidden rounded-lg">
                 <img 
-                  src="/sextant-exact.svg" 
+                  src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png" 
                   alt="Maritime Calculator Logo" 
                   className="maritime-logo w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
                 />
