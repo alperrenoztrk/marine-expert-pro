@@ -432,6 +432,226 @@ All colors MUST be HSL.
     color: transparent !important;
   }
 
+  /* Neon Theme - Blue, Purple & Green Neon Lights */
+  .neon {
+    --background: 240 10% 4%;
+    --foreground: 200 100% 95%;
+
+    --card: 240 10% 8%;
+    --card-foreground: 200 100% 95%;
+
+    --popover: 240 10% 8%;
+    --popover-foreground: 200 100% 95%;
+
+    --primary: 200 100% 60%;
+    --primary-foreground: 240 10% 4%;
+    --primary-light: 200 100% 75%;
+    --primary-dark: 200 100% 45%;
+
+    --secondary: 280 100% 65%;
+    --secondary-foreground: 240 10% 4%;
+
+    --muted: 240 10% 12%;
+    --muted-foreground: 200 100% 70%;
+
+    --accent: 120 100% 60%;
+    --accent-foreground: 240 10% 4%;
+
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 240 10% 4%;
+
+    --warning: 45 100% 60%;
+    --warning-foreground: 240 10% 4%;
+
+    --success: 120 100% 50%;
+    --success-foreground: 240 10% 4%;
+
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 200 100% 60%;
+
+    /* Neon theme semantic colors */
+    --info: 200 100% 60%;
+    --info-foreground: 240 10% 4%;
+    --info-muted: 240 10% 12%;
+    --info-muted-foreground: 200 100% 75%;
+
+    /* Neon Blue, Purple & Green Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(200 100% 60%), hsl(280 100% 65%));
+    --gradient-deep: linear-gradient(135deg, hsl(280 100% 65%), hsl(120 100% 60%));
+    --gradient-surface: linear-gradient(135deg, hsl(240 10% 12%) 0%, hsl(240 10% 4%) 100%);
+    --gradient-neon: linear-gradient(135deg, hsl(200 100% 60%), hsl(280 100% 65%), hsl(120 100% 60%));
+    --gradient-hologram: linear-gradient(135deg, hsl(200 100% 60% / 0.8), hsl(280 100% 65% / 0.6), hsl(120 100% 60% / 0.4));
+    --gradient-cyber: linear-gradient(135deg, hsl(240 10% 4%), hsl(200 100% 45%), hsl(280 100% 55%), hsl(240 10% 4%));
+    --gradient-matrix: linear-gradient(135deg, hsl(120 100% 40%), hsl(120 100% 60%), hsl(120 100% 80%));
+    --gradient-warning: linear-gradient(135deg, hsl(280 100% 55%), hsl(200 100% 60%), hsl(120 100% 60%));
+    
+    /* Neon Glow Shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(200 100% 60% / 0.4), 0 0 20px hsl(200 100% 60% / 0.3), 0 0 40px hsl(200 100% 60% / 0.2);
+    --shadow-card: 0 4px 16px -2px hsl(280 100% 65% / 0.3), 0 0 10px hsl(280 100% 65% / 0.2), 0 0 20px hsl(280 100% 65% / 0.1);
+    --shadow-button: 0 2px 8px -1px hsl(120 100% 60% / 0.4), 0 0 5px hsl(120 100% 60% / 0.3), 0 0 15px hsl(120 100% 60% / 0.2);
+
+    --sidebar-background: 240 10% 6%;
+    --sidebar-foreground: 200 100% 90%;
+    --sidebar-primary: 200 100% 60%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 10% 10%;
+    --sidebar-accent-foreground: 200 100% 90%;
+    --sidebar-border: 240 10% 15%;
+    --sidebar-ring: 200 100% 60%;
+  }
+
+  /* Neon Global Overrides - Dark background with neon effects */
+  .neon {
+    background: hsl(240 10% 4%) !important;
+    color: hsl(200 100% 95%) !important;
+  }
+
+  .neon * {
+    background-color: inherit;
+  }
+
+  /* Neon tema için özel arka plan override'ları */
+  .neon .bg-gradient-to-br,
+  .neon .bg-gradient-to-r,
+  .neon .bg-gradient-to-l,
+  .neon .bg-gradient-to-t,
+  .neon .bg-gradient-to-b {
+    background: linear-gradient(135deg, hsl(240 10% 4%), hsl(240 10% 8%), hsl(240 10% 4%)) !important;
+  }
+
+  /* Neon tema için mavi arka planları override et */
+  .neon .bg-blue-50,
+  .neon .bg-blue-100,
+  .neon .bg-blue-200,
+  .neon .bg-blue-300,
+  .neon .bg-blue-400,
+  .neon .bg-blue-500,
+  .neon .bg-blue-600,
+  .neon .bg-blue-700,
+  .neon .bg-blue-800,
+  .neon .bg-blue-900 {
+    background-color: hsl(240 10% 8%) !important;
+    box-shadow: 0 0 15px hsl(200 100% 60% / 0.3) !important;
+  }
+
+  /* Neon tema için beyaz arka planları override et */
+  .neon .bg-white,
+  .neon .bg-gray-50,
+  .neon .bg-gray-100,
+  .neon .bg-gray-200,
+  .neon .bg-gray-300 {
+    background-color: hsl(240 10% 8%) !important;
+    box-shadow: 0 0 10px hsl(280 100% 65% / 0.2) !important;
+  }
+
+  /* Neon tema için indigo arka planları override et */
+  .neon .bg-indigo-50,
+  .neon .bg-indigo-100,
+  .neon .bg-indigo-200,
+  .neon .bg-indigo-300,
+  .neon .bg-indigo-400,
+  .neon .bg-indigo-500,
+  .neon .bg-indigo-600,
+  .neon .bg-indigo-700,
+  .neon .bg-indigo-800,
+  .neon .bg-indigo-900 {
+    background-color: hsl(240 10% 8%) !important;
+    box-shadow: 0 0 15px hsl(280 100% 65% / 0.3) !important;
+  }
+
+  /* Neon tema için kart arka planları */
+  .neon .bg-white\/80,
+  .neon .bg-white\/90,
+  .neon .bg-gray-800\/80,
+  .neon .bg-gray-800\/90 {
+    background-color: hsl(240 10% 8% / 0.9) !important;
+    box-shadow: 0 0 20px hsl(200 100% 60% / 0.2), 0 0 40px hsl(280 100% 65% / 0.1) !important;
+    border: 1px solid hsl(200 100% 60% / 0.3) !important;
+  }
+
+  /* Neon tema için formül kutucukları */
+  .neon .bg-gray-50 {
+    background-color: hsl(240 10% 12%) !important;
+    box-shadow: inset 0 0 10px hsl(120 100% 60% / 0.2) !important;
+    border: 1px solid hsl(120 100% 60% / 0.3) !important;
+  }
+
+  /* Neon tema için bilgi kutuları */
+  .neon .bg-blue-50 {
+    background-color: hsl(240 10% 12%) !important;
+    box-shadow: 0 0 15px hsl(200 100% 60% / 0.3), inset 0 0 10px hsl(200 100% 60% / 0.1) !important;
+    border: 1px solid hsl(200 100% 60% / 0.4) !important;
+  }
+
+  /* Neon tema için hover efektleri */
+  .neon .hover\:bg-blue-50:hover,
+  .neon .hover\:bg-gray-50:hover,
+  .neon .hover\:bg-white:hover {
+    background-color: hsl(240 10% 12%) !important;
+    box-shadow: 0 0 20px hsl(200 100% 60% / 0.4) !important;
+  }
+
+  /* Neon tema için border renkleri */
+  .neon .border-blue-200,
+  .neon .border-blue-300,
+  .neon .border-gray-200,
+  .neon .border-gray-300 {
+    border-color: hsl(200 100% 60% / 0.3) !important;
+  }
+
+  /* Neon tema için metin renkleri */
+  .neon .text-blue-600,
+  .neon .text-blue-700,
+  .neon .text-blue-800,
+  .neon .text-gray-600,
+  .neon .text-gray-700,
+  .neon .text-gray-800 {
+    color: hsl(200 100% 95%) !important;
+    text-shadow: 0 0 10px hsl(200 100% 60% / 0.5) !important;
+  }
+
+  /* Neon tema için gradient metin renkleri */
+  .neon .bg-gradient-to-r.from-blue-600.to-indigo-600,
+  .neon .bg-gradient-to-r.from-blue-400.to-indigo-400 {
+    background: linear-gradient(135deg, hsl(200 100% 60%), hsl(280 100% 65%)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    filter: drop-shadow(0 0 10px hsl(200 100% 60% / 0.5)) !important;
+  }
+
+  /* Neon buttons and interactive elements */
+  .neon button,
+  .neon .btn {
+    box-shadow: 0 0 10px hsl(200 100% 60% / 0.3) !important;
+    border: 1px solid hsl(200 100% 60% / 0.4) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .neon button:hover,
+  .neon .btn:hover {
+    box-shadow: 0 0 20px hsl(200 100% 60% / 0.6), 0 0 30px hsl(280 100% 65% / 0.4) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Neon inputs */
+  .neon input,
+  .neon select,
+  .neon textarea {
+    background-color: hsl(240 10% 8%) !important;
+    border: 1px solid hsl(200 100% 60% / 0.3) !important;
+    box-shadow: inset 0 0 10px hsl(200 100% 60% / 0.1) !important;
+    color: hsl(200 100% 95%) !important;
+  }
+
+  .neon input:focus,
+  .neon select:focus,
+  .neon textarea:focus {
+    box-shadow: 0 0 15px hsl(200 100% 60% / 0.5), inset 0 0 10px hsl(200 100% 60% / 0.2) !important;
+    border-color: hsl(200 100% 60% / 0.6) !important;
+  }
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
     .container {

@@ -18,13 +18,14 @@ const Settings = () => {
   const { currentLanguage, setLanguage, translateContent } = useAutoLanguageDetection();
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark" | "orange" | "cyberpunk" | "system");
+    setTheme(newTheme as "light" | "dark" | "orange" | "cyberpunk" | "neon" | "system");
     
     const themeNames = {
       light: "Açık Tema",
       dark: "Koyu Tema", 
       orange: "Turuncu Tema",
       cyberpunk: "Cyberpunk Tema",
+      neon: "Neon Tema",
       system: "Sistem Teması"
     };
     
@@ -61,13 +62,13 @@ const Settings = () => {
 
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
         <div className="max-w-4xl mx-auto space-y-6">
           
           {/* Back Button */}
           <div className="flex items-center gap-3">
             <Link to="/">
-              <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800">
+              <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800">
                 <ArrowLeft className="w-4 h-4" />
                 <span data-translatable>Ana Sayfa</span>
               </Button>
@@ -134,6 +135,12 @@ const Settings = () => {
                           <div className="flex items-center gap-2">
                             <div className="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse"></div>
                             <span>Cyberpunk Tema</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="neon">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-green-400 animate-pulse shadow-lg shadow-blue-500/50"></div>
+                            <span>Neon Tema</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="system">

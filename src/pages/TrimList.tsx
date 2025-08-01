@@ -8,13 +8,13 @@ import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const TrimList = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 p-4">
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
           <Link to="/">
-            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800">
+            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800">
               <ArrowLeft className="w-4 h-4" />
               <span data-translatable>Ana Sayfa</span>
             </Button>
@@ -37,7 +37,7 @@ const TrimList = () => {
         {/* Trim Calculations */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 neon:bg-slate-900/90 backdrop-blur-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <TrendingUp className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -52,7 +52,7 @@ const TrimList = () => {
 
           {/* Formüller Kutucuğu */}
           <div className="lg:col-span-1">
-            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 backdrop-blur-sm">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 neon:bg-slate-900/90 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5" />
@@ -157,7 +157,7 @@ const TrimList = () => {
             displacement: 25000
           }}
           diagramType="trim"
-          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 backdrop-blur-sm"
+          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 neon:bg-slate-900/90 backdrop-blur-sm"
         />
 
         <DiagramViewer
@@ -171,7 +171,7 @@ const TrimList = () => {
             loadCondition: "departure"
           }}
           diagramType="gz-curve"
-          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 backdrop-blur-sm"
+          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 neon:bg-slate-900/90 backdrop-blur-sm"
         />
 
         {/* Info */}
