@@ -147,7 +147,6 @@ const Formulas = () => {
             <span className="xs:hidden" data-translatable>Geri</span>
           </Link>
         </Button>
-        <AutoLanguageSelector />
       </div>
 
       {/* Header Section - Mobil optimize */}
