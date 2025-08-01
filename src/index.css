@@ -548,6 +548,15 @@ All colors MUST be HSL.
     color: transparent !important;
   }
 
+  /* Nature tema için nature-title class'ı olan başlıklar */
+  .nature .nature-title {
+    color: hsl(25 100% 25%) !important;
+    text-shadow: 0 2px 4px hsl(25 100% 25% / 0.3) !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+  }
+
   /* Nature tema için icon renkleri */
   .nature .text-blue-600, .nature .text-blue-400 {
     color: hsl(120 70% 40%) !important;
