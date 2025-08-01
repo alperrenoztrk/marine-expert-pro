@@ -676,59 +676,7 @@ export const WeatherCalculations = () => {
                 </div>
               </div>
 
-              <Separator />
 
-              {/* Dikey Gelişimli Bulutlar */}
-              <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-orange-700 flex items-center gap-2 neon:text-cyan-400">
-                  <TrendingUp className="h-5 w-5" />
-                  Dikey Gelişimli Bulutlar
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {cloudTypesByLevel.vertical.filter(c => c.danger !== 'high').map(cloud => (
-                    <CloudCard key={cloud.id} cloud={cloud} />
-                  ))}
-                </div>
-              </div>
-
-              {/* MGM Kod Referansı */}
-              <Card className="border-indigo-200 bg-indigo-50/50 neon:border-cyan-400 neon:bg-cyan-900/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-indigo-800 neon:text-cyan-400">
-                    <Navigation className="h-5 w-5" />
-                    MGM Bulut Kodları Referansı
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <h5 className="font-semibold mb-2">Alçak Bulutlar (CL)</h5>
-                      <ul className="space-y-1">
-                        <li>CL 1-2: Cumulus (Cu)</li>
-                        <li>CL 3,9: Cumulonimbus (Cb)</li>
-                        <li>CL 5: Stratocumulus (Sc)</li>
-                        <li>CL 6: Stratus (St)</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h5 className="font-semibold mb-2">Orta Bulutlar (CM)</h5>
-                      <ul className="space-y-1">
-                        <li>CM 1: Altostratus (As)</li>
-                        <li>CM 2: Nimbostratus (Ns)</li>
-                        <li>CM 3-9: Altocumulus (Ac)</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h5 className="font-semibold mb-2">Yüksek Bulutlar (CH)</h5>
-                      <ul className="space-y-1">
-                        <li>CH 1-4: Cirrus (Ci)</li>
-                        <li>CH 5-9: Cirrocumulus (Cc)</li>
-                        <li>CH: Cirrostratus (Cs)</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
           </Tabs>
 
