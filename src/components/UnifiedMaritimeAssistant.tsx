@@ -295,7 +295,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
         {/* Question Input */}
         <div className="space-y-3">
           <Textarea
-            placeholder="Maritime mühendisliği sorunuzu buraya yazın...
+            placeholder="Denizcilikle ilgili sorularınızı buraya yazınız...
 
 Örnekler:
 • 'GM hesaplaması nasıl yapılır?'
