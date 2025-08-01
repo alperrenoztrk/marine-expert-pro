@@ -20,6 +20,8 @@ interface TrimData {
   MCT: number; // Moment to Change Trim 1 cm (tonne.m/cm)
   TPC: number; // Tonnes per Centimeter immersion
   GML: number; // Longitudinal metacentric height (m)
+  volume: number; // Underwater volume (m³)
+  waterplaneArea: number; // Waterplane area (m²)
   
   // Current condition
   draftForward: number; // Forward draft (m)
@@ -190,6 +192,8 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     MCT: 180,
     TPC: 25.5,
     GML: 150,
+    volume: 15000,
+    waterplaneArea: 2500,
     draftForward: 7.50,
     draftAft: 7.80,
     draftMidships: 7.65,
@@ -233,6 +237,12 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     trimChange: number;
   } | null>(null);
 
+  const [draftSurveyResults, setDraftSurveyResults] = useState<{
+    meanDraft: number;
+    displacement: number;
+    tpc: number;
+  } | null>(null);
+
   // Calculate current trim
   const calculateCurrentTrim = (draftAft: number, draftForward: number): number => {
     return draftAft - draftForward; // Positive = trim by stern
@@ -244,59 +254,23 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   };
 
   // Calculate Draft Survey
-  const calculateDraftSurvey = (data: TrimData) => {
-    const meanDraft = calculateMeanDraft(data.draftForward, data.draftAft);
-    const currentTrim = calculateCurrentTrim(data.draftAft, data.draftForward);
+  const calculateDraftSurvey = () => {
+    // Formül 1: Ortalama Draft - T_mean = (T_f + 4×T_m + T_a) / 6
+    const meanDraft = (trimData.draftForward + 4 * trimData.draftMidships + trimData.draftAft) / 6;
     
-    // Displacement from hydrostatic tables (simplified calculation)
-    const grossDisplacement = data.displacement || (data.L * data.B * meanDraft * data.CB * (data.waterDensity / 1000));
+    // Formül 2: Displacement - Δ = V × ρ_sw
+    const displacement = (trimData.volume * trimData.waterDensity) / 1000; // Convert to tonnes
     
-    // Density correction
-    const standardDensity = 1025;
-    const densityCorrection = grossDisplacement * ((data.waterDensity - standardDensity) / standardDensity);
+    // Formül 3: TPC - TPC = (A_wp × ρ_sw) / 100
+    const tpc = (trimData.waterplaneArea * trimData.waterDensity) / 100000; // Convert to tonnes/cm
     
-    // Trim correction for displacement
-    const trimCorrectionFactor = Math.abs(currentTrim) * 0.02; // 2% per meter trim
-    const trimCorrection = grossDisplacement * trimCorrectionFactor;
+    setDraftSurveyResults({
+      meanDraft: meanDraft,
+      displacement: displacement,
+      tpc: tpc
+    });
     
-    // Net displacement
-    const netDisplacement = grossDisplacement + densityCorrection;
-    
-    // Calculate cargo weight
-    const ballastWeight = data.ballastWeight || 0;
-    const fuelWeight = data.fuelWeight || 0;
-    const freshWaterWeight = data.freshWaterWeight || 0;
-    const lightWeight = grossDisplacement * 0.15; // Assume 15% light weight
-    
-    const cargoWeight = netDisplacement - lightWeight - ballastWeight - fuelWeight - freshWaterWeight;
-    
-    // Draft accuracy assessment
-    const draftAccuracy = Math.max(
-      Math.abs(data.draftForward - data.draftMidships) * 100,
-      Math.abs(data.draftAft - data.draftMidships) * 100
-    );
-    
-    // Survey reliability
-    let surveyReliability: 'excellent' | 'good' | 'fair' | 'poor';
-    if (draftAccuracy <= 2) surveyReliability = 'excellent';
-    else if (draftAccuracy <= 5) surveyReliability = 'good';
-    else if (draftAccuracy <= 10) surveyReliability = 'fair';
-    else surveyReliability = 'poor';
-    
-    // Deadweight utilization
-    const assumedDeadweight = grossDisplacement * 0.85; // Assume 85% DWT ratio
-    const deadweightUtilization = (cargoWeight + ballastWeight + fuelWeight + freshWaterWeight) / assumedDeadweight * 100;
-    
-    return {
-      grossDisplacement,
-      netDisplacement,
-      cargoWeight,
-      densityCorrection,
-      trimCorrection,
-      draftAccuracy,
-      surveyReliability,
-      deadweightUtilization
-    };
+    toast.success("Draft survey hesaplamaları tamamlandı!");
   };
 
   // Calculate Trim Effects on Draft Differences
@@ -1073,169 +1047,146 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsContent>
 
             <TabsContent value="draft-survey" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Ruler className="h-5 w-5" />
-                    Draft Survey Hesaplamaları
-                  </CardTitle>
-                  <CardDescription>
-                    IMO Code of Practice for Draft Survey standartlarına uygun hesaplamalar
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="surveyType">Survey Tipi</Label>
-                      <Select 
-                        value={trimData.surveyType} 
-                        onValueChange={(value: 'initial' | 'final' | 'bunker') => setTrimData({...trimData, surveyType: value})}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Survey tipi seçin" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="initial">İlk Survey</SelectItem>
-                          <SelectItem value="final">Son Survey</SelectItem>
-                          <SelectItem value="bunker">Bunker Survey</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="waterDensity">Su Yoğunluğu [kg/m³]</Label>
-                      <Input
-                        id="waterDensity"
-                        type="number"
-                        value={trimData.waterDensity || ''}
-                        onChange={(e) => setTrimData({...trimData, waterDensity: parseFloat(e.target.value)})}
-                        placeholder="1025"
-                      />
-                    </div>
+              {/* Formül 1: Ortalama Draft - T_mean = (T_f + 4×T_m + T_a) / 6 */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-700">📏 Ortalama Draft Hesaplama</h3>
+                <p className="text-sm text-gray-600">T_mean = (T_f + 4×T_m + T_a) / 6</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="draftForward_survey">Baş Draft (T_f) [m]</Label>
+                    <Input
+                      id="draftForward_survey"
+                      type="number"
+                      step="0.01"
+                      value={trimData.draftForward || ''}
+                      onChange={(e) => setTrimData({...trimData, draftForward: parseFloat(e.target.value)})}
+                      placeholder="7.50"
+                    />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="draftMidships_survey">Orta Draft (T_m) [m]</Label>
+                    <Input
+                      id="draftMidships_survey"
+                      type="number"
+                      step="0.01"
+                      value={trimData.draftMidships || ''}
+                      onChange={(e) => setTrimData({...trimData, draftMidships: parseFloat(e.target.value)})}
+                      placeholder="7.65"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="draftAft_survey">Kıç Draft (T_a) [m]</Label>
+                    <Input
+                      id="draftAft_survey"
+                      type="number"
+                      step="0.01"
+                      value={trimData.draftAft || ''}
+                      onChange={(e) => setTrimData({...trimData, draftAft: parseFloat(e.target.value)})}
+                      placeholder="7.80"
+                    />
+                  </div>
+                </div>
+              </div>
 
+              <Separator />
+
+              {/* Formül 2: Displacement - Δ = V × ρ_sw */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-green-700">⚖️ Displacement Hesaplama</h3>
+                <p className="text-sm text-gray-600">Δ = V × ρ_sw</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="volume">Su Altı Hacim (V) [m³]</Label>
+                    <Input
+                      id="volume"
+                      type="number"
+                      step="0.1"
+                      value={trimData.volume || ''}
+                      onChange={(e) => setTrimData({...trimData, volume: parseFloat(e.target.value)})}
+                      placeholder="15000"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="waterDensity">Su Yoğunluğu (ρ_sw) [kg/m³]</Label>
+                    <Input
+                      id="waterDensity"
+                      type="number"
+                      step="0.1"
+                      value={trimData.waterDensity || ''}
+                      onChange={(e) => setTrimData({...trimData, waterDensity: parseFloat(e.target.value)})}
+                      placeholder="1025"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Formül 3: TPC - TPC = (A_wp × ρ_sw) / 100 */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-purple-700">📊 TPC Hesaplama</h3>
+                <p className="text-sm text-gray-600">TPC = (A_wp × ρ_sw) / 100</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="waterplaneArea">Su Hattı Alanı (A_wp) [m²]</Label>
+                    <Input
+                      id="waterplaneArea"
+                      type="number"
+                      step="0.1"
+                      value={trimData.waterplaneArea || ''}
+                      onChange={(e) => setTrimData({...trimData, waterplaneArea: parseFloat(e.target.value)})}
+                      placeholder="2500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="waterDensity_tpc">Su Yoğunluğu (ρ_sw) [kg/m³]</Label>
+                    <Input
+                      id="waterDensity_tpc"
+                      type="number"
+                      step="0.1"
+                      value={trimData.waterDensity || ''}
+                      onChange={(e) => setTrimData({...trimData, waterDensity: parseFloat(e.target.value)})}
+                      placeholder="1025"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hesaplama Butonu */}
+              <div className="flex justify-center pt-4">
+                <Button 
+                  onClick={calculateDraftSurvey} 
+                  className="px-8 py-2 bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Hesapla
+                </Button>
+              </div>
+
+              {/* Sonuçlar */}
+              {draftSurveyResults && (
+                <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800">📊 Draft Survey Sonuçları</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="freeboardForward">Baş Freeboard [m]</Label>
-                      <Input
-                        id="freeboardForward"
-                        type="number"
-                        step="0.01"
-                        value={trimData.freeboardForward || ''}
-                        onChange={(e) => setTrimData({...trimData, freeboardForward: parseFloat(e.target.value)})}
-                        placeholder="3.50"
-                      />
+                      <Label className="text-sm font-medium">Ortalama Draft (T_mean)</Label>
+                      <div className="text-lg font-bold text-blue-600">
+                        {draftSurveyResults.meanDraft.toFixed(3)} m
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="freeboardMidships">Orta Freeboard [m]</Label>
-                      <Input
-                        id="freeboardMidships"
-                        type="number"
-                        step="0.01"
-                        value={trimData.freeboardMidships || ''}
-                        onChange={(e) => setTrimData({...trimData, freeboardMidships: parseFloat(e.target.value)})}
-                        placeholder="3.35"
-                      />
+                      <Label className="text-sm font-medium">Displacement (Δ)</Label>
+                      <div className="text-lg font-bold text-green-600">
+                        {draftSurveyResults.displacement.toFixed(0)} ton
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="freeboardAft">Kıç Freeboard [m]</Label>
-                      <Input
-                        id="freeboardAft"
-                        type="number"
-                        step="0.01"
-                        value={trimData.freeboardAft || ''}
-                        onChange={(e) => setTrimData({...trimData, freeboardAft: parseFloat(e.target.value)})}
-                        placeholder="3.20"
-                      />
+                      <Label className="text-sm font-medium">TPC</Label>
+                      <div className="text-lg font-bold text-purple-600">
+                        {draftSurveyResults.tpc.toFixed(2)} ton/cm
+                      </div>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="ballastWeight">Ballast Ağırlığı [ton]</Label>
-                      <Input
-                        id="ballastWeight"
-                        type="number"
-                        value={trimData.ballastWeight || ''}
-                        onChange={(e) => setTrimData({...trimData, ballastWeight: parseFloat(e.target.value)})}
-                        placeholder="2500"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="fuelWeight">Yakıt Ağırlığı [ton]</Label>
-                      <Input
-                        id="fuelWeight"
-                        type="number"
-                        value={trimData.fuelWeight || ''}
-                        onChange={(e) => setTrimData({...trimData, fuelWeight: parseFloat(e.target.value)})}
-                        placeholder="800"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="freshWaterWeight">Tatlı Su Ağırlığı [ton]</Label>
-                      <Input
-                        id="freshWaterWeight"
-                        type="number"
-                        value={trimData.freshWaterWeight || ''}
-                        onChange={(e) => setTrimData({...trimData, freshWaterWeight: parseFloat(e.target.value)})}
-                        placeholder="200"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="airTemperature">Hava Sıcaklığı [°C]</Label>
-                      <Input
-                        id="airTemperature"
-                        type="number"
-                        value={trimData.airTemperature || ''}
-                        onChange={(e) => setTrimData({...trimData, airTemperature: parseFloat(e.target.value)})}
-                        placeholder="15"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {trimResult && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Draft Survey Sonuçları</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{trimResult.draftSurvey.grossDisplacement.toFixed(0)} ton</div>
-                        <div className="text-sm text-muted-foreground">Brüt Deplasman</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{trimResult.draftSurvey.netDisplacement.toFixed(0)} ton</div>
-                        <div className="text-sm text-muted-foreground">Net Deplasman</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{trimResult.draftSurvey.cargoWeight.toFixed(0)} ton</div>
-                        <div className="text-sm text-muted-foreground">Kargo Ağırlığı</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{trimResult.draftSurvey.deadweightUtilization.toFixed(1)}%</div>
-                        <div className="text-sm text-muted-foreground">DWT Kullanımı</div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold">{trimResult.draftSurvey.draftAccuracy.toFixed(1)} cm</div>
-                        <div className="text-sm text-muted-foreground">Draft Hassasiyeti</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold">
-                          <Badge variant={trimResult.draftSurvey.surveyReliability === 'excellent' ? 'default' : 
-                                         trimResult.draftSurvey.surveyReliability === 'good' ? 'secondary' : 'destructive'}>
-                            {trimResult.draftSurvey.surveyReliability.toUpperCase()}
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-muted-foreground">Survey Güvenilirliği</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                </div>
               )}
             </TabsContent>
 
