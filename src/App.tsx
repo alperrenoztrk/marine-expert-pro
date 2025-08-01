@@ -6,6 +6,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SplashScreen } from "@/components/ui/splash-screen";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { useAndroidFeatures } from "@/hooks/useAndroidFeatures";
+import { NeonSoundSettings } from "@/components/NeonSoundSettings";
 import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
@@ -65,6 +66,7 @@ const App = () => {
                   <Route path="/settings" element={<Settings />} />
                 </Routes>
               </BrowserRouter>
+              <NeonSoundSettings />
             </div>
           </LanguageProvider>
         </ThemeProvider>
