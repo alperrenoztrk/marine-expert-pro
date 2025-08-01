@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Package } from "lucide-react";
 import { Link } from "react-router-dom";
-import { CalculationHero } from "@/components/ui/calculation-hero";
-import containerShipAerial from "@/assets/maritime/container-ship-aerial.jpg";
 import { CargoCalculations } from "@/components/calculations/CargoCalculations";
 
 const Cargo = () => {
@@ -21,13 +19,7 @@ const Cargo = () => {
           </Link>
         </div>
 
-        {/* Hero Section */}
-        <CalculationHero
-          title="Kargo Hesaplamaları"
-          description="Yük planlama, konteyner optimizasyonu ve kargo yönetimi"
-          imageSrc={containerShipAerial}
-          imageAlt="Container Ship Aerial View"
-        />
+
 
         {/* Header */}
         <div className="text-center space-y-4">
