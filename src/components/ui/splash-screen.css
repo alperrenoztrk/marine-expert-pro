@@ -3,8 +3,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 9999;
   background: linear-gradient(135deg, #0f172a, #1e293b, #1e40af, #1d4ed8);
   opacity: 0;
@@ -130,6 +130,10 @@
   opacity: 0;
   transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   pointer-events: none;
+  width: 120px;
+  height: 120px;
+  margin: 0;
+  padding: 0;
 }
 
 .main-logo.show {
@@ -144,7 +148,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
 }
 
 .orb-ring {
