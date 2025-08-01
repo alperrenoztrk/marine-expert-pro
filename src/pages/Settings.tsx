@@ -126,8 +126,8 @@ const Settings = () => {
                         </SelectItem>
                         <SelectItem value="orange">
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-400 to-orange-600"></div>
-                            <span>Turuncu Tema</span>
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-400 via-amber-500 to-red-500 animate-pulse"></div>
+                            <span>Premium Turuncu Tema</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="cyberpunk">

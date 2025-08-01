@@ -12,9 +12,30 @@
   overflow: hidden;
 }
 
-/* Orange theme splash screen */
+/* Ultra Premium Orange theme splash screen */
 .orange .splash-screen {
-  background: linear-gradient(135deg, #fff7ed, #fed7aa, #fb923c, #ea580c);
+  background: linear-gradient(135deg, #fff7ed, #fed7aa, #fb923c, #ea580c, #dc2626);
+  position: relative;
+  overflow: hidden;
+}
+
+.orange .splash-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 30% 70%, rgba(251, 146, 60, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, rgba(245, 158, 11, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.2) 0%, transparent 50%);
+  animation: premium-orange-glow 4s ease-in-out infinite;
+}
+
+@keyframes premium-orange-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
 }
 
 /* Cyberpunk theme splash screen */
@@ -136,6 +157,20 @@
 .main-logo.show {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+/* Premium Orange logo effects */
+.orange .main-logo.show {
+  animation: premium-orange-logo 3s ease-in-out infinite;
+}
+
+@keyframes premium-orange-logo {
+  0%, 100% { 
+    filter: drop-shadow(0 0 15px rgba(251, 146, 60, 0.8)) drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+  }
+  50% { 
+    filter: drop-shadow(0 0 25px rgba(251, 146, 60, 1)) drop-shadow(0 0 35px rgba(245, 158, 11, 0.8)) drop-shadow(0 0 45px rgba(251, 191, 36, 0.4));
+  }
 }
 
 /* Cyberpunk logo effects */
