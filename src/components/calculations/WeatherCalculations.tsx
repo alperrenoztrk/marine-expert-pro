@@ -108,6 +108,7 @@ interface MeteoOceanResult {
 
 export const WeatherCalculations = () => {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("wind");
   const [data, setData] = useState<MeteoOceanData>({
     windSpeed: 25, windDirection: 270, shipHeading: 45, shipSpeed: 12,
     waveHeight: 3.5, wavePeriod: 8, waveDirection: 285,
@@ -382,7 +383,7 @@ export const WeatherCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="wind" className="w-full">
+          <Tabs defaultValue="wind" className="w-full" onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="wind">Rüzgar</TabsTrigger>
               <TabsTrigger value="waves">Dalgalar</TabsTrigger>
@@ -731,16 +732,18 @@ export const WeatherCalculations = () => {
             </TabsContent>
           </Tabs>
 
-          <div className="mt-6">
-            <Button onClick={calculate} className="w-full">
-              <Calculator className="mr-2 h-4 w-4" />
-              Meteoroloji & Oşinografi Hesapla
-            </Button>
-          </div>
+          {activeTab !== "clouds" && (
+            <div className="mt-6">
+              <Button onClick={calculate} className="w-full">
+                <Calculator className="mr-2 h-4 w-4" />
+                Meteoroloji & Oşinografi Hesapla
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {result && (
+      {result && activeTab !== "clouds" && (
         <div className="space-y-4">
           {/* Beaufort & Douglas Scales */}
           <Card>
