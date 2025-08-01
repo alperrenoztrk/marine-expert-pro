@@ -160,12 +160,6 @@ const Formulas = () => {
             Asistana Sor
           </h1>
         </div>
-        <p 
-          className="text-xs sm:text-sm text-muted-foreground px-2 leading-relaxed"
-          data-translatable
-        >
-          Maritime mühendisliği konularında AI asistanınız
-        </p>
       </div>
 
       {/* Üst reklam - Sayfa yüklendiğinde */}
