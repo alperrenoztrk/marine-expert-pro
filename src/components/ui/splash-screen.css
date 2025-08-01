@@ -49,48 +49,11 @@
   height: 100%;
 }
 
-<<<<<<< HEAD
 .floating-element {
   position: absolute;
   width: 4px;
   height: 4px;
   background: rgba(255, 255, 255, 0.6);
-=======
-@keyframes waveMove {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* Main Content */
-.splash-screen .splash-content {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0;
-}
-
-/* Logo Container */
-.logo-container {
-  position: relative;
-  margin-bottom: 2rem;
-  transform: scale(0) rotate(-180deg);
-  animation: logoAppear 0.8s ease-out 0.5s forwards;
-}
-
-.logo-circle {
-  position: relative;
-  width: 8rem;
-  height: 8rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
->>>>>>> 5c49e62a5b18aa5f3db16e1091105ae9d31fa5c9
   border-radius: 50%;
   animation: float 6s ease-in-out infinite;
 }
@@ -120,7 +83,7 @@
   }
 }
 
-/* Main Logo */
+/* Main Logo - PERFECTLY CENTERED */
 .main-logo {
   position: fixed;
   top: 50%;
@@ -134,6 +97,9 @@
   height: 120px;
   margin: 0;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main-logo.show {
@@ -257,102 +223,6 @@
   }
 }
 
-/* Floating Elements */
-.floating-ship {
-  position: absolute;
-  top: -1.5rem;
-  right: -1.5rem;
-  opacity: 0;
-  animation: shipFloat 2s ease-in-out infinite, fadeInFloat 0.5s ease-out 1s forwards;
-}
-
-.floating-waves {
-  position: absolute;
-  bottom: -1.5rem;
-  left: -1.5rem;
-  opacity: 0;
-  animation: wavesFloat 3s ease-in-out infinite, fadeInFloat 0.5s ease-out 1.2s forwards;
-}
-
-.floating-compass {
-  position: absolute;
-  top: -1.5rem;
-  left: -1.5rem;
-  opacity: 0;
-  animation: compassFloat 4s ease-in-out infinite, fadeInFloat 0.5s ease-out 1.4s forwards;
-}
-
-@keyframes shipFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-@keyframes wavesFloat {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(15px); }
-}
-
-@keyframes compassFloat {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(15deg); }
-  75% { transform: rotate(-15deg); }
-}
-
-@keyframes fadeInFloat {
-  to {
-    opacity: 1;
-  }
-}
-
-/* App Title */
-.splash-screen .app-title {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: titleAppear 0.6s ease-out 2s forwards;
-  text-align: center;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  padding: 0;
-}
-
-.splash-screen .title-text {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(to right, #ffffff, #a7f3d0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.splash-screen .subtitle-text {
-  font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 300;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-@keyframes titleAppear {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-<<<<<<< HEAD
 /* Loading Bar */
 .loading-container {
   position: absolute;
@@ -362,21 +232,6 @@
   width: 300px;
   opacity: 0;
   animation: loadingAppear 0.5s ease-out 1s forwards;
-=======
-/* Loading Animation */
-.splash-screen .loading-container {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  animation: loadingAppear 0.5s ease-out 1.5s forwards;
-  text-align: center;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
->>>>>>> 5c49e62a5b18aa5f3db16e1091105ae9d31fa5c9
 }
 
 .loading-bar {
@@ -417,21 +272,12 @@
   height: 100%;
   background: linear-gradient(135deg, #0f172a, #1e293b, #1e40af);
   opacity: 0;
-<<<<<<< HEAD
   transition: opacity 0.8s ease-in-out;
   z-index: 20;
 }
 
 .transition-overlay.active {
   opacity: 1;
-=======
-  animation: textFadeIn 0.5s ease-out 2.2s forwards;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
->>>>>>> 5c49e62a5b18aa5f3db16e1091105ae9d31fa5c9
 }
 
 @keyframes loadingAppear {
@@ -451,77 +297,39 @@
   100% { transform: translateX(100%); }
 }
 
-/* Particles */
-.particles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.particle {
-  position: absolute;
-  width: 0.25rem;
-  height: 0.25rem;
-  background: white;
-  border-radius: 50%;
-  opacity: 0;
-  animation: particleFloat 4s linear infinite;
-}
-
-.particle-1 { left: 10%; animation-delay: 0s; }
-.particle-2 { left: 20%; animation-delay: 0.5s; }
-.particle-3 { left: 30%; animation-delay: 1s; }
-.particle-4 { left: 40%; animation-delay: 1.5s; }
-.particle-5 { left: 50%; animation-delay: 2s; }
-.particle-6 { left: 60%; animation-delay: 2.5s; }
-.particle-7 { left: 70%; animation-delay: 3s; }
-.particle-8 { left: 80%; animation-delay: 3.5s; }
-.particle-9 { left: 90%; animation-delay: 4s; }
-.particle-10 { left: 15%; animation-delay: 4.5s; }
-.particle-11 { left: 35%; animation-delay: 5s; }
-.particle-12 { left: 65%; animation-delay: 5.5s; }
-
-@keyframes particleFloat {
-  0% {
-    opacity: 0;
-    transform: translateY(100vh);
-  }
-  10%, 90% {
-    opacity: 0.6;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
-}
-
-/* Mobile Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .logo-circle {
-    width: 6rem;
-    height: 6rem;
+  .main-logo {
+    width: 100px;
+    height: 100px;
   }
   
-  .title-text {
-    font-size: 2rem;
+  .logo-orb {
+    width: 100px;
+    height: 100px;
   }
   
-  .subtitle-text {
-    font-size: 1rem;
+  .orb-ring-1 {
+    width: 100px;
+    height: 100px;
   }
   
-  .progress-bar {
-    width: 12rem;
+  .orb-ring-2 {
+    width: 80px;
+    height: 80px;
   }
-}
-
-/* Dark mode compatibility */
-@media (prefers-color-scheme: dark) {
-  .splash-screen {
-    background: linear-gradient(135deg, #0f172a, #1e293b, #0891b2);
+  
+  .orb-ring-3 {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .orb-center {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .loading-container {
+    width: 250px;
   }
 }
