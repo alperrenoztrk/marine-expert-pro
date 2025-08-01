@@ -1091,6 +1091,22 @@ All colors MUST be HSL.
 .nature .nature-title {
   color: hsl(25 100% 25%) !important;
   text-shadow: 0 2px 4px hsl(25 100% 25% / 0.3) !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  background-image: none !important;
+}
+
+/* Override any gradient backgrounds for nature-title */
+.nature .nature-title.bg-gradient-to-r,
+.nature .nature-title.bg-gradient-to-r.from-blue-600.to-indigo-600,
+.nature .nature-title.bg-gradient-to-r.from-blue-400.to-indigo-400 {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  background-image: none !important;
+  color: hsl(25 100% 25%) !important;
+  text-shadow: 0 2px 4px hsl(25 100% 25% / 0.3) !important;
 }
 
 .nature .text-primary {
