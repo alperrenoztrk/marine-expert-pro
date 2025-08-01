@@ -271,7 +271,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
   };
 
   return (
-    <Card className="shadow-lg border-l-4 border-l-blue-500 mb-6">
+          <Card className="shadow-lg mb-6">
       <CardContent className="space-y-4">
         {/* Quick Questions */}
         <div className="space-y-2">

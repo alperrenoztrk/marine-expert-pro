@@ -174,7 +174,7 @@ const Formulas = () => {
 
       {/* Legacy Gemini Section - Hidden */}
       <div className="space-y-3 sm:space-y-4 hidden">
-        <Card className="shadow-[var(--shadow-card)] border-l-4 border-l-primary/20">
+        <Card className="shadow-[var(--shadow-card)]">
           <CardHeader className="pb-3 sm:pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 sm:gap-3">
