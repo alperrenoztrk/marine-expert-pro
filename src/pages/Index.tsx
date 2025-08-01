@@ -47,7 +47,12 @@ const Index = () => {
       const rect = neonTextRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      setMousePosition({ x, y });
+      
+      // Ensure coordinates are within bounds
+      const clampedX = Math.max(0, Math.min(x, rect.width));
+      const clampedY = Math.max(0, Math.min(y, rect.height));
+      
+      setMousePosition({ x: clampedX, y: clampedY });
     }
   };
 
