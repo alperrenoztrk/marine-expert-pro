@@ -831,15 +831,6 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Ship className="h-6 w-6" />
-            Gelişmiş Trim ve Draft Hesaplamaları
-          </CardTitle>
-          <CardDescription>
-            Draft Survey, Trim Etkileri, Bonjean Curves ve Sounding Tabloları - Tam profesyonel denizcilik hesaplama paketi
-          </CardDescription>
-        </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="flex flex-wrap gap-1 p-2 bg-muted/50 rounded-lg">
