@@ -17,6 +17,32 @@
   background: linear-gradient(135deg, #fff7ed, #fed7aa, #fb923c, #ea580c);
 }
 
+/* Cyberpunk theme splash screen */
+.cyberpunk .splash-screen {
+  background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e, #0f3460);
+  position: relative;
+  overflow: hidden;
+}
+
+.cyberpunk .splash-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 0, 0.2) 0%, transparent 50%);
+  animation: cyberpunk-glow 4s ease-in-out infinite;
+}
+
+@keyframes cyberpunk-glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
 .splash-screen.animate {
   opacity: 1;
 }
@@ -110,6 +136,20 @@
 .main-logo.show {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+/* Cyberpunk logo effects */
+.cyberpunk .main-logo.show {
+  animation: cyberpunk-logo 2s ease-in-out infinite;
+}
+
+@keyframes cyberpunk-logo {
+  0%, 100% { 
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
+  }
+  50% { 
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 1)) drop-shadow(0 0 30px rgba(255, 0, 255, 0.6));
+  }
 }
 
 .logo-orb {

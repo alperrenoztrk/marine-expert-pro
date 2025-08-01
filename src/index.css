@@ -232,6 +232,68 @@ All colors MUST be HSL.
     --sidebar-ring: 25 95% 50%;
   }
 
+  /* Cyberpunk Theme - Hyperrealistic Futuristic */
+  .cyberpunk {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 180 100% 50%;
+    --primary-foreground: 240 10% 4%;
+    --primary-light: 180 100% 70%;
+    --primary-dark: 180 100% 30%;
+
+    --secondary: 300 100% 50%;
+    --secondary-foreground: 240 10% 4%;
+
+    --muted: 240 10% 12%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 60 100% 50%;
+    --accent-foreground: 240 10% 4%;
+
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 240 10% 4%;
+
+    --warning: 45 100% 60%;
+    --warning-foreground: 240 10% 4%;
+
+    --success: 120 100% 50%;
+    --success-foreground: 240 10% 4%;
+
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 180 100% 50%;
+
+    /* Cyberpunk gradients - Hyperrealistic */
+    --gradient-ocean: linear-gradient(135deg, hsl(180 100% 50%), hsl(180 100% 70%));
+    --gradient-deep: linear-gradient(135deg, hsl(300 100% 50%), hsl(180 100% 30%));
+    --gradient-surface: linear-gradient(135deg, hsl(240 10% 12%) 0%, hsl(240 10% 4%) 100%);
+    --gradient-neon: linear-gradient(135deg, hsl(180 100% 50%), hsl(300 100% 50%), hsl(60 100% 50%));
+    --gradient-hologram: linear-gradient(135deg, hsl(180 100% 50% / 0.8), hsl(300 100% 50% / 0.6), hsl(60 100% 50% / 0.4));
+    --gradient-cyber: linear-gradient(135deg, hsl(240 10% 4%), hsl(180 100% 30%), hsl(300 100% 30%), hsl(240 10% 4%));
+    --gradient-matrix: linear-gradient(135deg, hsl(120 100% 40%), hsl(180 100% 50%), hsl(120 100% 60%));
+    
+    /* Cyberpunk shadows with neon glow */
+    --shadow-calculator: 0 8px 32px -4px hsl(180 100% 50% / 0.3), 0 0 20px hsl(180 100% 50% / 0.2);
+    --shadow-card: 0 4px 16px -2px hsl(300 100% 50% / 0.2), 0 0 10px hsl(300 100% 50% / 0.1);
+    --shadow-button: 0 2px 8px -1px hsl(60 100% 50% / 0.3), 0 0 5px hsl(60 100% 50% / 0.2);
+
+    --sidebar-background: 240 10% 6%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 180 100% 50%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 10% 10%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 240 10% 15%;
+    --sidebar-ring: 180 100% 50%;
+  }
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
     .container {
