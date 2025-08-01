@@ -157,7 +157,7 @@ const Formulas = () => {
             className="text-xl sm:text-2xl font-bold text-foreground leading-tight break-words nature-title"
             data-translatable
           >
-            Asistana Sor
+            Mark'a Sor
           </h1>
         </div>
       </div>
