@@ -843,6 +843,9 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
               <TabsTrigger value="performance" className="flex-1 min-w-[120px] text-xs">Performans</TabsTrigger>
               <TabsTrigger value="analysis" className="flex-1 min-w-[120px] text-xs">Analiz</TabsTrigger>
             </TabsList>
+            
+            {/* 2 satır boşluk */}
+            <div className="mt-8"></div>
 
             <TabsContent value="basic" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
