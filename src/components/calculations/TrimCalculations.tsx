@@ -75,6 +75,16 @@ interface TrimData {
   tankArea: number; // Tank area (m²)
   liquidHeight: number; // Liquid height (m)
   liquidDensity: number; // Liquid density (kg/m³)
+  
+  // Trim Effects on Draft Differences
+  weightChange: number; // Weight change (tonnes)
+  weightDistance: number; // Distance from AP (m)
+  trimChange: number; // Trim change (cm)
+  draftDifference: number; // Draft difference (m)
+  newDraft: number; // New draft (m)
+  originalDraft: number; // Original draft (m)
+  draftChange: number; // Draft change (m)
+  measurementPoint: number; // Measurement point (m)
 }
 
 interface TrimResult {
@@ -238,7 +248,15 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     moment: 150,
     tankArea: 50,
     liquidHeight: 2.5,
-    liquidDensity: 1025
+    liquidDensity: 1025,
+    weightChange: 500,
+    weightDistance: 10,
+    trimChange: 25,
+    draftDifference: 0.125,
+    newDraft: 0,
+    originalDraft: 8.0,
+    draftChange: 0.125,
+    measurementPoint: 70
   });
 
   const [trimResult, setTrimResult] = useState<TrimResult | null>(null);
@@ -265,6 +283,12 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     volume: number;
     weight: number;
     moment: number;
+  } | null>(null);
+
+  const [trimEffectsResults, setTrimEffectsResults] = useState<{
+    trimChange: number;
+    draftDifference: number;
+    newDraft: number;
   } | null>(null);
 
   // Calculate current trim
@@ -298,45 +322,23 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
   };
 
   // Calculate Trim Effects on Draft Differences
-  const calculateTrimEffects = (data: TrimData, currentTrim: number) => {
-    const L = data.L;
-    const LCF = data.LCF;
+  const calculateTrimEffects = () => {
+    // Formül 1: Trim Değişimi - ΔT = (W × d) / MCT
+    const trimChange = (trimData.weightChange * trimData.weightDistance) / trimData.MCT;
     
-    // Forward lever arm from LCF
-    const forwardLever = L - LCF;
-    // Aft lever arm from LCF
-    const aftLever = LCF;
-    // Midships lever arm from LCF
-    const midshipsLever = Math.abs(L/2 - LCF);
+    // Formül 2: Draft Farkı - ΔD = ΔT × (x/L)
+    const draftDifference = (trimData.trimChange * trimData.measurementPoint) / trimData.L;
     
-    // Draft changes due to trim (in cm)
-    const forwardDraftChange = -(currentTrim * forwardLever / L) * 100;
-    const aftDraftChange = (currentTrim * aftLever / L) * 100;
-    const midshipsDraftChange = (currentTrim * midshipsLever / L) * 100 * (L/2 > LCF ? -1 : 1);
+    // Formül 3: Yeni Draft - D_new = D_old + ΔD
+    const newDraft = trimData.originalDraft + trimData.draftChange;
     
-    // Maximum draft difference
-    const maximumDraftDifference = Math.abs(currentTrim * 100);
+    setTrimEffectsResults({
+      trimChange: trimChange,
+      draftDifference: draftDifference,
+      newDraft: newDraft
+    });
     
-    // Distribution factor
-    const distributionFactor = L / (2 * Math.max(forwardLever, aftLever));
-    
-    // New hydrostatic properties (simplified)
-    const LCF_new = LCF + (currentTrim * 0.01); // Small adjustment
-    const MCT_new = data.MCT * (1 + Math.abs(currentTrim) * 0.001);
-    const TPC_new = data.TPC * (1 + Math.abs(currentTrim) * 0.0005);
-    
-    return {
-      forwardDraftChange,
-      aftDraftChange,
-      midshipsDraftChange,
-      maximumDraftDifference,
-      distributionFactor,
-      hydrostatic: {
-        LCF_new,
-        MCT_new,
-        TPC_new
-      }
-    };
+    toast.success("Trim etkileri hesaplamaları tamamlandı!");
   };
 
   // Calculate Bonjean Curves
@@ -1121,68 +1123,157 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsContent>
 
             <TabsContent value="trim-effects" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Trim Etkisiyle Draft Farkları
-                  </CardTitle>
-                  <CardDescription>
-                    Trim değişiminin farklı noktalardaki draft değerlerine etkisi
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {trimResult && (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.trimEffects.forwardDraftChange.toFixed(1)} cm</div>
-                          <div className="text-sm text-muted-foreground">Baş Draft Değişimi</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.trimEffects.midshipsDraftChange.toFixed(1)} cm</div>
-                          <div className="text-sm text-muted-foreground">Orta Draft Değişimi</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.trimEffects.aftDraftChange.toFixed(1)} cm</div>
-                          <div className="text-sm text-muted-foreground">Kıç Draft Değişimi</div>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.trimEffects.maximumDraftDifference.toFixed(1)} cm</div>
-                          <div className="text-sm text-muted-foreground">Maksimum Draft Farkı</div>
-                        </div>
-                        <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{trimResult.trimEffects.distributionFactor.toFixed(2)}</div>
-                          <div className="text-sm text-muted-foreground">Dağılım Faktörü</div>
-                        </div>
-                      </div>
+              {/* Formül 1: Trim Değişimi - ΔT = (W × d) / MCT */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-700">📐 Trim Değişimi Hesaplama</h3>
+                <p className="text-sm text-gray-600">ΔT = (W × d) / MCT</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="weightChange">Ağırlık Değişimi W [ton]</Label>
+                    <Input
+                      id="weightChange"
+                      type="number"
+                      step="0.1"
+                      value={trimData.weightChange || ''}
+                      onChange={(e) => setTrimData({...trimData, weightChange: parseFloat(e.target.value)})}
+                      placeholder="500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="weightDistance">Ağırlık Mesafesi d [m]</Label>
+                    <Input
+                      id="weightDistance"
+                      type="number"
+                      step="0.1"
+                      value={trimData.weightDistance || ''}
+                      onChange={(e) => setTrimData({...trimData, weightDistance: parseFloat(e.target.value)})}
+                      placeholder="10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="MCT_trim">MCT [tonne.m/cm]</Label>
+                    <Input
+                      id="MCT_trim"
+                      type="number"
+                      step="0.01"
+                      value={trimData.MCT || ''}
+                      onChange={(e) => setTrimData({...trimData, MCT: parseFloat(e.target.value)})}
+                      placeholder="200"
+                    />
+                  </div>
+                </div>
+              </div>
 
-                      <Separator />
+              <Separator />
 
-                      <div>
-                        <h4 className="font-semibold mb-3">Yeni Hidrostatik Özellikler</h4>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.trimEffects.hydrostatic.LCF_new.toFixed(2)} m</div>
-                            <div className="text-sm text-muted-foreground">Yeni LCF</div>
-                          </div>
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.trimEffects.hydrostatic.MCT_new.toFixed(1)} ton.m/cm</div>
-                            <div className="text-sm text-muted-foreground">Yeni MCT</div>
-                          </div>
-                          <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{trimResult.trimEffects.hydrostatic.TPC_new.toFixed(1)} ton/cm</div>
-                            <div className="text-sm text-muted-foreground">Yeni TPC</div>
-                          </div>
-                        </div>
+              {/* Formül 2: Draft Farkı - ΔD = ΔT × (x/L) */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-green-700">🌊 Draft Farkı Hesaplama</h3>
+                <p className="text-sm text-gray-600">ΔD = ΔT × (x/L)</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="trimChange">Trim Değişimi ΔT [cm]</Label>
+                    <Input
+                      id="trimChange"
+                      type="number"
+                      step="0.01"
+                      value={trimData.trimChange || ''}
+                      onChange={(e) => setTrimData({...trimData, trimChange: parseFloat(e.target.value)})}
+                      placeholder="25"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="measurementPoint">Ölçüm Noktası x [m]</Label>
+                    <Input
+                      id="measurementPoint"
+                      type="number"
+                      step="0.1"
+                      value={trimData.measurementPoint || ''}
+                      onChange={(e) => setTrimData({...trimData, measurementPoint: parseFloat(e.target.value)})}
+                      placeholder="70"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="L_trim">Dikmeler Arası Boy L [m]</Label>
+                    <Input
+                      id="L_trim"
+                      type="number"
+                      value={trimData.L || ''}
+                      onChange={(e) => setTrimData({...trimData, L: parseFloat(e.target.value)})}
+                      placeholder="140"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Formül 3: Yeni Draft - D_new = D_old + ΔD */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-purple-700">📊 Yeni Draft Hesaplama</h3>
+                <p className="text-sm text-gray-600">D_new = D_old + ΔD</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="originalDraft">Orijinal Draft D_old [m]</Label>
+                    <Input
+                      id="originalDraft"
+                      type="number"
+                      step="0.01"
+                      value={trimData.originalDraft || ''}
+                      onChange={(e) => setTrimData({...trimData, originalDraft: parseFloat(e.target.value)})}
+                      placeholder="8.0"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="draftChange">Draft Değişimi ΔD [m]</Label>
+                    <Input
+                      id="draftChange"
+                      type="number"
+                      step="0.001"
+                      value={trimData.draftChange || ''}
+                      onChange={(e) => setTrimData({...trimData, draftChange: parseFloat(e.target.value)})}
+                      placeholder="0.125"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hesaplama Butonu */}
+              <div className="flex justify-center pt-4">
+                <Button 
+                  onClick={calculateTrimEffects} 
+                  className="px-8 py-2 bg-indigo-600 hover:bg-indigo-700 text-white"
+                >
+                  Hesapla
+                </Button>
+              </div>
+
+              {/* Sonuçlar */}
+              {trimEffectsResults && (
+                <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800">📊 Trim Etkileri Sonuçları</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Trim Değişimi (ΔT)</Label>
+                      <div className="text-lg font-bold text-blue-600">
+                        {trimEffectsResults.trimChange.toFixed(2)} cm
                       </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Draft Farkı (ΔD)</Label>
+                      <div className="text-lg font-bold text-green-600">
+                        {trimEffectsResults.draftDifference.toFixed(3)} m
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Yeni Draft (D_new)</Label>
+                      <div className="text-lg font-bold text-purple-600">
+                        {trimEffectsResults.newDraft.toFixed(3)} m
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="bonjean" className="space-y-6">
