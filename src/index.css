@@ -322,6 +322,116 @@ All colors MUST be HSL.
     --sidebar-ring: 60 100% 60%;
   }
 
+  /* Cyberpunk Global Overrides - Tüm ekranı kaplar */
+  .cyberpunk {
+    /* Ana arka plan override'ları */
+    background: hsl(0 0% 3%) !important;
+    color: hsl(60 100% 95%) !important;
+  }
+
+  .cyberpunk * {
+    /* Tüm elementlerin arka planını override et */
+    background-color: inherit;
+  }
+
+  /* Cyberpunk tema için özel arka plan override'ları */
+  .cyberpunk .bg-gradient-to-br,
+  .cyberpunk .bg-gradient-to-r,
+  .cyberpunk .bg-gradient-to-l,
+  .cyberpunk .bg-gradient-to-t,
+  .cyberpunk .bg-gradient-to-b {
+    background: linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 8%), hsl(0 0% 3%)) !important;
+  }
+
+  /* Cyberpunk tema için mavi arka planları override et */
+  .cyberpunk .bg-blue-50,
+  .cyberpunk .bg-blue-100,
+  .cyberpunk .bg-blue-200,
+  .cyberpunk .bg-blue-300,
+  .cyberpunk .bg-blue-400,
+  .cyberpunk .bg-blue-500,
+  .cyberpunk .bg-blue-600,
+  .cyberpunk .bg-blue-700,
+  .cyberpunk .bg-blue-800,
+  .cyberpunk .bg-blue-900 {
+    background-color: hsl(0 0% 8%) !important;
+  }
+
+  /* Cyberpunk tema için beyaz arka planları override et */
+  .cyberpunk .bg-white,
+  .cyberpunk .bg-gray-50,
+  .cyberpunk .bg-gray-100,
+  .cyberpunk .bg-gray-200,
+  .cyberpunk .bg-gray-300 {
+    background-color: hsl(0 0% 8%) !important;
+  }
+
+  /* Cyberpunk tema için indigo arka planları override et */
+  .cyberpunk .bg-indigo-50,
+  .cyberpunk .bg-indigo-100,
+  .cyberpunk .bg-indigo-200,
+  .cyberpunk .bg-indigo-300,
+  .cyberpunk .bg-indigo-400,
+  .cyberpunk .bg-indigo-500,
+  .cyberpunk .bg-indigo-600,
+  .cyberpunk .bg-indigo-700,
+  .cyberpunk .bg-indigo-800,
+  .cyberpunk .bg-indigo-900 {
+    background-color: hsl(0 0% 8%) !important;
+  }
+
+  /* Cyberpunk tema için kart arka planları */
+  .cyberpunk .bg-white\/80,
+  .cyberpunk .bg-white\/90,
+  .cyberpunk .bg-gray-800\/80,
+  .cyberpunk .bg-gray-800\/90 {
+    background-color: hsl(0 0% 8% / 0.9) !important;
+  }
+
+  /* Cyberpunk tema için formül kutucukları */
+  .cyberpunk .bg-gray-50 {
+    background-color: hsl(0 0% 12%) !important;
+  }
+
+  /* Cyberpunk tema için bilgi kutuları */
+  .cyberpunk .bg-blue-50 {
+    background-color: hsl(0 0% 12%) !important;
+  }
+
+  /* Cyberpunk tema için hover efektleri */
+  .cyberpunk .hover\:bg-blue-50:hover,
+  .cyberpunk .hover\:bg-gray-50:hover,
+  .cyberpunk .hover\:bg-white:hover {
+    background-color: hsl(0 0% 12%) !important;
+  }
+
+  /* Cyberpunk tema için border renkleri */
+  .cyberpunk .border-blue-200,
+  .cyberpunk .border-blue-300,
+  .cyberpunk .border-gray-200,
+  .cyberpunk .border-gray-300 {
+    border-color: hsl(0 0% 20%) !important;
+  }
+
+  /* Cyberpunk tema için metin renkleri */
+  .cyberpunk .text-blue-600,
+  .cyberpunk .text-blue-700,
+  .cyberpunk .text-blue-800,
+  .cyberpunk .text-gray-600,
+  .cyberpunk .text-gray-700,
+  .cyberpunk .text-gray-800 {
+    color: hsl(60 100% 95%) !important;
+  }
+
+  /* Cyberpunk tema için gradient metin renkleri */
+  .cyberpunk .bg-gradient-to-r.from-blue-600.to-indigo-600,
+  .cyberpunk .bg-gradient-to-r.from-blue-400.to-indigo-400 {
+    background: linear-gradient(135deg, hsl(60 100% 60%), hsl(45 100% 55%)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+  }
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
     .container {
