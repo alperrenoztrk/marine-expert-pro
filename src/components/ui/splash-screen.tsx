@@ -58,16 +58,16 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
       {/* Floating Icons */}
       <div className={`floating-icons ${showParticles ? 'show' : ''}`}>
         <div className="floating-icon ship-icon">
-          <Ship className="w-10 h-10 text-cyan-300" />
+          <Ship className="w-16 h-16 text-cyan-300" />
         </div>
         <div className="floating-icon anchor-icon">
-          <Anchor className="w-8 h-8 text-blue-300" />
+          <Anchor className="w-12 h-12 text-blue-300" />
         </div>
         <div className="floating-icon compass-icon">
-          <Compass className="w-6 h-6 text-yellow-300" />
+          <Compass className="w-10 h-10 text-yellow-300" />
         </div>
         <div className="floating-icon waves-icon">
-          <Waves className="w-8 h-8 text-indigo-300" />
+          <Waves className="w-12 h-12 text-indigo-300" />
         </div>
       </div>
 
