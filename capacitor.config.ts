@@ -1,25 +1,35 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.maritime.calculator',
-  appName: 'Maritime Calculator',
+  appId: 'app.lovable.c91ef2fa0890438a815184cda6639f91',
+  appName: 'maritime-calculator',
   webDir: 'dist',
   server: {
-    url: 'https://dfc3279a-089d-4d25-bff1-ff197bc24769.lovableproject.com?forceHideBadge=true',
+    url: 'https://c91ef2fa-0890-438a-8151-84cda6639f91.lovableproject.com?forceHideBadge=true',
     cleartext: true
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: 3000,
       backgroundColor: '#1e40af',
       showSpinner: false,
       androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP'
+      androidScaleType: 'CENTER_CROP',
+      splashFullScreen: true,
+      splashImmersive: true
     },
     StatusBar: {
       style: 'DARK',
       backgroundColor: '#1e40af'
     },
+    Keyboard: {
+      resize: 'body',
+      style: 'DARK'
+    },
+    App: {
+      skipBackButton: false
+    },
+    Haptics: {},
     // Firebase & Google Services Configuration
     GoogleAuth: {
       scopes: ['profile', 'email'],

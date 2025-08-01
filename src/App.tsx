@@ -5,7 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SplashScreen } from "@/components/ui/splash-screen";
 import { ThemeProvider } from "@/hooks/useTheme";
-import { useState } from "react";
+import { useAndroidFeatures } from "@/hooks/useAndroidFeatures";
+import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
@@ -29,6 +30,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
+  const { isNative, keyboardVisible } = useAndroidFeatures();
 
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
@@ -40,32 +42,34 @@ const App = () => {
         <ThemeProvider defaultTheme="light">
           <LanguageProvider>
             <Toaster />
-            <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/formulas" element={<Formulas />} />
-          <Route path="/regulations" element={<Regulations />} />
-          <Route path="/stability" element={<Stability />} />
-          <Route path="/navigation" element={<Navigation />} />
-          <Route path="/hydrodynamics" element={<Hydrodynamics />} />
-          <Route path="/engine" element={<Engine />} />
-          <Route path="/cargo" element={<Cargo />} />
-          <Route path="/ballast" element={<Ballast />} />
-          <Route path="/trim-list" element={<TrimList />} />
-          <Route path="/economics" element={<Economics />} />
-          <Route path="/structural" element={<StructuralCalculationsPage />} />
-          <Route path="/safety" element={<SafetyCalculationsPage />} />
-          <Route path="/emissions" element={<EmissionCalculationsPage />} />
-          <Route path="/weather" element={<WeatherCalculationsPage />} />
-          <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/settings" element={<Settings />} />
-                  </Routes>
-        </BrowserRouter>
-      </LanguageProvider>
-      </ThemeProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+            <div className={`min-h-screen ${keyboardVisible ? 'pb-16' : ''} ${isNative ? 'safe-area' : ''}`}>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/formulas" element={<Formulas />} />
+                  <Route path="/regulations" element={<Regulations />} />
+                  <Route path="/stability" element={<Stability />} />
+                  <Route path="/navigation" element={<Navigation />} />
+                  <Route path="/hydrodynamics" element={<Hydrodynamics />} />
+                  <Route path="/engine" element={<Engine />} />
+                  <Route path="/cargo" element={<Cargo />} />
+                  <Route path="/ballast" element={<Ballast />} />
+                  <Route path="/trim-list" element={<TrimList />} />
+                  <Route path="/economics" element={<Economics />} />
+                  <Route path="/structural" element={<StructuralCalculationsPage />} />
+                  <Route path="/safety" element={<SafetyCalculationsPage />} />
+                  <Route path="/emissions" element={<EmissionCalculationsPage />} />
+                  <Route path="/weather" element={<WeatherCalculationsPage />} />
+                  <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Routes>
+              </BrowserRouter>
+            </div>
+          </LanguageProvider>
+        </ThemeProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 
