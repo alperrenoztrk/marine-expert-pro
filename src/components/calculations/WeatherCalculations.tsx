@@ -620,7 +620,7 @@ export const WeatherCalculations = () => {
 
               {/* Tehlikeli Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-red-700 flex items-center gap-2">
+                <h4 className="text-lg font-semibold text-red-700 flex items-center gap-2 neon:text-cyan-400">
                   <AlertTriangle className="h-5 w-5" />
                   Yüksek Riskli Bulutlar
                 </h4>
@@ -635,7 +635,7 @@ export const WeatherCalculations = () => {
 
               {/* Alçak Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-blue-700 flex items-center gap-2">
+                <h4 className="text-lg font-semibold text-blue-700 flex items-center gap-2 neon:text-cyan-400">
                   <Cloud className="h-5 w-5" />
                   Alçak Bulutlar (0-2 km)
                 </h4>
@@ -650,7 +650,7 @@ export const WeatherCalculations = () => {
 
               {/* Orta Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2">
+                <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2 neon:text-cyan-400">
                   <Cloud className="h-5 w-5" />
                   Orta Bulutlar (2-7 km)
                 </h4>
@@ -665,7 +665,7 @@ export const WeatherCalculations = () => {
 
               {/* Yüksek Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-purple-700 flex items-center gap-2">
+                <h4 className="text-lg font-semibold text-purple-700 flex items-center gap-2 neon:text-cyan-400">
                   <Cloud className="h-5 w-5" />
                   Yüksek Bulutlar (5-13 km)
                 </h4>
@@ -680,7 +680,7 @@ export const WeatherCalculations = () => {
 
               {/* Dikey Gelişimli Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-orange-700 flex items-center gap-2">
+                <h4 className="text-lg font-semibold text-orange-700 flex items-center gap-2 neon:text-cyan-400">
                   <TrendingUp className="h-5 w-5" />
                   Dikey Gelişimli Bulutlar
                 </h4>
@@ -692,9 +692,9 @@ export const WeatherCalculations = () => {
               </div>
 
               {/* MGM Kod Referansı */}
-              <Card className="border-indigo-200 bg-indigo-50/50">
+              <Card className="border-indigo-200 bg-indigo-50/50 neon:border-cyan-400 neon:bg-cyan-900/30">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-indigo-800">
+                  <CardTitle className="flex items-center gap-2 text-indigo-800 neon:text-cyan-400">
                     <Navigation className="h-5 w-5" />
                     MGM Bulut Kodları Referansı
                   </CardTitle>
