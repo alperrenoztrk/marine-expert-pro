@@ -125,16 +125,18 @@
 
 /* Main Logo */
 .main-logo {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5) rotate(-180deg);
   z-index: 10;
   opacity: 0;
-  transform: scale(0.5) rotate(-180deg);
   transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .main-logo.show {
   opacity: 1;
-  transform: scale(1) rotate(0deg);
+  transform: translate(-50%, -50%) scale(1) rotate(0deg);
 }
 
 .logo-orb {
