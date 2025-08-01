@@ -19,6 +19,7 @@ interface TrimData {
   LCB: number; // Longitudinal Center of Buoyancy from AP (m)
   MCT: number; // Moment to Change Trim 1 cm (tonne.m/cm)
   TPC: number; // Tonnes per Centimeter immersion
+  GML: number; // Longitudinal metacentric height (m)
   
   // Current condition
   draftForward: number; // Forward draft (m)
@@ -180,24 +181,57 @@ interface TrimCalculationsProps {
 
 export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProps = {}) => {
   const { toast } = useToast();
-  const [trimData, setTrimData] = useState<Partial<TrimData>>({
+  const [trimData, setTrimData] = useState<TrimData>({
+    L: 140,
+    B: 22,
+    displacement: 15000,
+    LCF: 68,
+    LCB: 70,
+    MCT: 180,
+    TPC: 25.5,
+    GML: 150,
+    draftForward: 7.50,
+    draftAft: 7.80,
+    draftMidships: 7.65,
+    weightAdded: 500,
+    weightLCG: 10,
     CB: 0.75,
     waterplaneCoeff: 0.85,
-    waveHeight: 2.0,
-    windSpeed: 25,
-    currentSpeed: 2,
+    trimMomentArm: 5,
     maxAllowableTrim: 1.5,
     surveyType: 'initial',
+    freeboardForward: 2.5,
+    freeboardAft: 2.2,
+    freeboardMidships: 2.35,
+    airTemperature: 25,
+    waterTemperature: 20,
     waterDensity: 1025,
-    airTemperature: 15,
-    waterTemperature: 12,
+    ballastWeight: 2000,
+    fuelWeight: 800,
+    freshWaterWeight: 200,
     tankType: 'cargo',
-    frameSpacing: 0.6,
+    tankNumber: 1,
+    soundingDepth: 500,
+    tankLength: 20,
+    tankWidth: 15,
+    tankHeight: 12,
     trimCorrection: true,
-    heelCorrection: false,
+    heelCorrection: true,
+    stationNumber: 10,
+    waterlineHeight: 8,
+    frameSpacing: 7,
+    waveHeight: 2,
+    windSpeed: 15,
+    currentSpeed: 3
   });
-  const [result, setResult] = useState<TrimResult | null>(null);
+
+  const [trimResult, setTrimResult] = useState<TrimResult | null>(null);
   const [activeTab, setActiveTab] = useState("basic");
+  const [basicTrimResults, setBasicTrimResults] = useState<{
+    trimAngle: number;
+    mct: number;
+    trimChange: number;
+  } | null>(null);
 
   // Calculate current trim
   const calculateCurrentTrim = (draftAft: number, draftForward: number): number => {
@@ -367,16 +401,16 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     
     // Trim correction
     let trimCorrection = 1.0;
-    if (data.trimCorrection && result) {
-      const trimAngle = Math.atan(result.currentTrim / data.L);
+    if (data.trimCorrection && trimResult) {
+      const trimAngle = Math.atan(trimResult.currentTrim / data.L);
       trimCorrection = 1 + (Math.sin(trimAngle) * 0.1); // Simplified correction
       correctedVolume *= trimCorrection;
     }
     
     // Heel correction
     let heelCorrection = 1.0;
-    if (data.heelCorrection && result) {
-      const heelAngle = result.listAngle * Math.PI / 180;
+    if (data.heelCorrection && trimResult) {
+      const heelAngle = trimResult.listAngle * Math.PI / 180;
       heelCorrection = 1 + (Math.sin(heelAngle) * 0.05); // Simplified correction
       correctedVolume *= heelCorrection;
     }
@@ -782,7 +816,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     result.recommendations = advice.recommendations;
     result.warnings = advice.warnings;
     
-    setResult(result);
+    setTrimResult(result);
     
     // Call onCalculationComplete if provided
     if (onCalculationComplete) {
@@ -828,6 +862,25 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     }
   };
 
+  const calculateBasicTrim = () => {
+    // Formül 1: Trim Açısı - θ = arctan((T_a - T_f) / L)
+    const trimAngle = Math.atan((trimData.draftAft - trimData.draftForward) / trimData.L) * (180 / Math.PI);
+    
+    // Formül 2: MCT - MCT = (Δ × GM_L × B²) / (12 × L)
+    const mct = (trimData.displacement * trimData.GML * Math.pow(trimData.B, 2)) / (12 * trimData.L);
+    
+    // Formül 3: Trim Değişimi - ΔT = (W × d) / MCT
+    const trimChange = (trimData.weightAdded * trimData.weightLCG) / mct;
+    
+    setBasicTrimResults({
+      trimAngle: trimAngle,
+      mct: mct,
+      trimChange: trimChange
+    });
+    
+    toast.success("Temel trim hesaplamaları tamamlandı!");
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -848,147 +901,175 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             <div className="mt-12"></div>
 
             <TabsContent value="basic" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="L">Dikmeler Arası Boy (L) [m]</Label>
-                  <Input
-                    id="L"
-                    type="number"
-                    value={trimData.L || ''}
-                    onChange={(e) => setTrimData({...trimData, L: parseFloat(e.target.value)})}
-                    placeholder="140"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="B">Genişlik (B) [m]</Label>
-                  <Input
-                    id="B"
-                    type="number"
-                    value={trimData.B || ''}
-                    onChange={(e) => setTrimData({...trimData, B: parseFloat(e.target.value)})}
-                    placeholder="22"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="displacement">Deplasman [ton]</Label>
-                  <Input
-                    id="displacement"
-                    type="number"
-                    value={trimData.displacement || ''}
-                    onChange={(e) => setTrimData({...trimData, displacement: parseFloat(e.target.value)})}
-                    placeholder="15000"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="LCF">LCF (Kıçtan) [m]</Label>
-                  <Input
-                    id="LCF"
-                    type="number"
-                    value={trimData.LCF || ''}
-                    onChange={(e) => setTrimData({...trimData, LCF: parseFloat(e.target.value)})}
-                    placeholder="68"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="LCB">LCB (Kıçtan) [m]</Label>
-                  <Input
-                    id="LCB"
-                    type="number"
-                    value={trimData.LCB || ''}
-                    onChange={(e) => setTrimData({...trimData, LCB: parseFloat(e.target.value)})}
-                    placeholder="70"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="CB">Blok Katsayısı (CB)</Label>
-                  <Input
-                    id="CB"
-                    type="number"
-                    step="0.01"
-                    value={trimData.CB || ''}
-                    onChange={(e) => setTrimData({...trimData, CB: parseFloat(e.target.value)})}
-                    placeholder="0.75"
-                  />
+              {/* Formül 1: Trim Açısı - θ = arctan((T_a - T_f) / L) */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-700">📐 Trim Açısı Hesaplama</h3>
+                <p className="text-sm text-gray-600">θ = arctan((T_a - T_f) / L)</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="draftAft">Kıç Draft (T_a) [m]</Label>
+                    <Input
+                      id="draftAft"
+                      type="number"
+                      step="0.01"
+                      value={trimData.draftAft || ''}
+                      onChange={(e) => setTrimData({...trimData, draftAft: parseFloat(e.target.value)})}
+                      placeholder="8.20"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="draftForward">Baş Draft (T_f) [m]</Label>
+                    <Input
+                      id="draftForward"
+                      type="number"
+                      step="0.01"
+                      value={trimData.draftForward || ''}
+                      onChange={(e) => setTrimData({...trimData, draftForward: parseFloat(e.target.value)})}
+                      placeholder="7.50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="L">Dikmeler Arası Boy (L) [m]</Label>
+                    <Input
+                      id="L"
+                      type="number"
+                      value={trimData.L || ''}
+                      onChange={(e) => setTrimData({...trimData, L: parseFloat(e.target.value)})}
+                      placeholder="140"
+                    />
+                  </div>
                 </div>
               </div>
 
               <Separator />
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="draftForward">Baş Draft [m]</Label>
-                  <Input
-                    id="draftForward"
-                    type="number"
-                    step="0.01"
-                    value={trimData.draftForward || ''}
-                    onChange={(e) => setTrimData({...trimData, draftForward: parseFloat(e.target.value)})}
-                    placeholder="7.50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="draftMidships">Orta Draft [m]</Label>
-                  <Input
-                    id="draftMidships"
-                    type="number"
-                    step="0.01"
-                    value={trimData.draftMidships || ''}
-                    onChange={(e) => setTrimData({...trimData, draftMidships: parseFloat(e.target.value)})}
-                    placeholder="7.65"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="draftAft">Kıç Draft [m]</Label>
-                  <Input
-                    id="draftAft"
-                    type="number"
-                    step="0.01"
-                    value={trimData.draftAft || ''}
-                    onChange={(e) => setTrimData({...trimData, draftAft: parseFloat(e.target.value)})}
-                    placeholder="7.80"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="TPC">TPC [ton/cm]</Label>
-                  <Input
-                    id="TPC"
-                    type="number"
-                    step="0.1"
-                    value={trimData.TPC || ''}
-                    onChange={(e) => setTrimData({...trimData, TPC: parseFloat(e.target.value)})}
-                    placeholder="25.5"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="MCT">MCT [ton.m/cm]</Label>
-                  <Input
-                    id="MCT"
-                    type="number"
-                    value={trimData.MCT || ''}
-                    onChange={(e) => setTrimData({...trimData, MCT: parseFloat(e.target.value)})}
-                    placeholder="180"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maxAllowableTrim">Max İzin Verilen Trim [m]</Label>
-                  <Input
-                    id="maxAllowableTrim"
-                    type="number"
-                    step="0.1"
-                    value={trimData.maxAllowableTrim || ''}
-                    onChange={(e) => setTrimData({...trimData, maxAllowableTrim: parseFloat(e.target.value)})}
-                    placeholder="1.5"
-                  />
+              {/* Formül 2: MCT - MCT = (Δ × GM_L × B²) / (12 × L) */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-green-700">⚖️ MCT Hesaplama</h3>
+                <p className="text-sm text-gray-600">MCT = (Δ × GM_L × B²) / (12 × L)</p>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="displacement">Deplasman (Δ) [ton]</Label>
+                    <Input
+                      id="displacement"
+                      type="number"
+                      value={trimData.displacement || ''}
+                      onChange={(e) => setTrimData({...trimData, displacement: parseFloat(e.target.value)})}
+                      placeholder="15000"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="GML">GM_L [m]</Label>
+                    <Input
+                      id="GML"
+                      type="number"
+                      step="0.01"
+                      value={trimData.GML || ''}
+                      onChange={(e) => setTrimData({...trimData, GML: parseFloat(e.target.value)})}
+                      placeholder="150"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="B">Genişlik (B) [m]</Label>
+                    <Input
+                      id="B"
+                      type="number"
+                      value={trimData.B || ''}
+                      onChange={(e) => setTrimData({...trimData, B: parseFloat(e.target.value)})}
+                      placeholder="22"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="L_MCT">Dikmeler Arası Boy (L) [m]</Label>
+                    <Input
+                      id="L_MCT"
+                      type="number"
+                      value={trimData.L || ''}
+                      onChange={(e) => setTrimData({...trimData, L: parseFloat(e.target.value)})}
+                      placeholder="140"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <Button onClick={calculateTrim} className="flex items-center gap-2 w-full">
-                <Calculator className="h-4 w-4" />
-                Kapsamlı Trim ve Draft Analizi Yap
-              </Button>
+              <Separator />
+
+              {/* Formül 3: Trim Değişimi - ΔT = (W × d) / MCT */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-purple-700">🔄 Trim Değişimi Hesaplama</h3>
+                <p className="text-sm text-gray-600">ΔT = (W × d) / MCT</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="weightAdded">Ağırlık (W) [ton]</Label>
+                    <Input
+                      id="weightAdded"
+                      type="number"
+                      value={trimData.weightAdded || ''}
+                      onChange={(e) => setTrimData({...trimData, weightAdded: parseFloat(e.target.value)})}
+                      placeholder="500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="weightLCG">Mesafe (d) [m]</Label>
+                    <Input
+                      id="weightLCG"
+                      type="number"
+                      step="0.01"
+                      value={trimData.weightLCG || ''}
+                      onChange={(e) => setTrimData({...trimData, weightLCG: parseFloat(e.target.value)})}
+                      placeholder="10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="MCT">MCT [tonne.m/cm]</Label>
+                    <Input
+                      id="MCT"
+                      type="number"
+                      step="0.01"
+                      value={trimData.MCT || ''}
+                      onChange={(e) => setTrimData({...trimData, MCT: parseFloat(e.target.value)})}
+                      placeholder="200"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hesaplama Butonu */}
+              <div className="flex justify-center pt-4">
+                <Button 
+                  onClick={calculateBasicTrim} 
+                  className="px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Hesapla
+                </Button>
+              </div>
+
+              {/* Sonuçlar */}
+              {basicTrimResults && (
+                <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-800">📊 Hesaplama Sonuçları</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Trim Açısı (θ)</Label>
+                      <div className="text-lg font-bold text-blue-600">
+                        {basicTrimResults.trimAngle.toFixed(4)}°
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">MCT</Label>
+                      <div className="text-lg font-bold text-green-600">
+                        {basicTrimResults.mct.toFixed(2)} tonne.m/cm
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Trim Değişimi (ΔT)</Label>
+                      <div className="text-lg font-bold text-purple-600">
+                        {basicTrimResults.trimChange.toFixed(2)} cm
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="draft-survey" className="space-y-6">
@@ -1113,7 +1194,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                 </CardContent>
               </Card>
 
-              {result && (
+              {trimResult && (
                 <Card>
                   <CardHeader>
                     <CardTitle>Draft Survey Sonuçları</CardTitle>
@@ -1121,33 +1202,33 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.draftSurvey.grossDisplacement.toFixed(0)} ton</div>
+                        <div className="text-xl font-bold">{trimResult.draftSurvey.grossDisplacement.toFixed(0)} ton</div>
                         <div className="text-sm text-muted-foreground">Brüt Deplasman</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.draftSurvey.netDisplacement.toFixed(0)} ton</div>
+                        <div className="text-xl font-bold">{trimResult.draftSurvey.netDisplacement.toFixed(0)} ton</div>
                         <div className="text-sm text-muted-foreground">Net Deplasman</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.draftSurvey.cargoWeight.toFixed(0)} ton</div>
+                        <div className="text-xl font-bold">{trimResult.draftSurvey.cargoWeight.toFixed(0)} ton</div>
                         <div className="text-sm text-muted-foreground">Kargo Ağırlığı</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-xl font-bold">{result.draftSurvey.deadweightUtilization.toFixed(1)}%</div>
+                        <div className="text-xl font-bold">{trimResult.draftSurvey.deadweightUtilization.toFixed(1)}%</div>
                         <div className="text-sm text-muted-foreground">DWT Kullanımı</div>
                       </div>
                     </div>
                     
                     <div className="mt-4 grid grid-cols-2 gap-4">
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold">{result.draftSurvey.draftAccuracy.toFixed(1)} cm</div>
+                        <div className="text-lg font-bold">{trimResult.draftSurvey.draftAccuracy.toFixed(1)} cm</div>
                         <div className="text-sm text-muted-foreground">Draft Hassasiyeti</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
                         <div className="text-lg font-bold">
-                          <Badge variant={result.draftSurvey.surveyReliability === 'excellent' ? 'default' : 
-                                         result.draftSurvey.surveyReliability === 'good' ? 'secondary' : 'destructive'}>
-                            {result.draftSurvey.surveyReliability.toUpperCase()}
+                          <Badge variant={trimResult.draftSurvey.surveyReliability === 'excellent' ? 'default' : 
+                                         trimResult.draftSurvey.surveyReliability === 'good' ? 'secondary' : 'destructive'}>
+                            {trimResult.draftSurvey.surveyReliability.toUpperCase()}
                           </Badge>
                         </div>
                         <div className="text-sm text-muted-foreground">Survey Güvenilirliği</div>
@@ -1170,30 +1251,30 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {result && (
+                  {trimResult && (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.trimEffects.forwardDraftChange.toFixed(1)} cm</div>
+                          <div className="text-xl font-bold">{trimResult.trimEffects.forwardDraftChange.toFixed(1)} cm</div>
                           <div className="text-sm text-muted-foreground">Baş Draft Değişimi</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.trimEffects.midshipsDraftChange.toFixed(1)} cm</div>
+                          <div className="text-xl font-bold">{trimResult.trimEffects.midshipsDraftChange.toFixed(1)} cm</div>
                           <div className="text-sm text-muted-foreground">Orta Draft Değişimi</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.trimEffects.aftDraftChange.toFixed(1)} cm</div>
+                          <div className="text-xl font-bold">{trimResult.trimEffects.aftDraftChange.toFixed(1)} cm</div>
                           <div className="text-sm text-muted-foreground">Kıç Draft Değişimi</div>
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.trimEffects.maximumDraftDifference.toFixed(1)} cm</div>
+                          <div className="text-xl font-bold">{trimResult.trimEffects.maximumDraftDifference.toFixed(1)} cm</div>
                           <div className="text-sm text-muted-foreground">Maksimum Draft Farkı</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.trimEffects.distributionFactor.toFixed(2)}</div>
+                          <div className="text-xl font-bold">{trimResult.trimEffects.distributionFactor.toFixed(2)}</div>
                           <div className="text-sm text-muted-foreground">Dağılım Faktörü</div>
                         </div>
                       </div>
@@ -1204,15 +1285,15 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                         <h4 className="font-semibold mb-3">Yeni Hidrostatik Özellikler</h4>
                         <div className="grid grid-cols-3 gap-4">
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.trimEffects.hydrostatic.LCF_new.toFixed(2)} m</div>
+                            <div className="text-lg font-bold">{trimResult.trimEffects.hydrostatic.LCF_new.toFixed(2)} m</div>
                             <div className="text-sm text-muted-foreground">Yeni LCF</div>
                           </div>
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.trimEffects.hydrostatic.MCT_new.toFixed(1)} ton.m/cm</div>
+                            <div className="text-lg font-bold">{trimResult.trimEffects.hydrostatic.MCT_new.toFixed(1)} ton.m/cm</div>
                             <div className="text-sm text-muted-foreground">Yeni MCT</div>
                           </div>
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.trimEffects.hydrostatic.TPC_new.toFixed(1)} ton/cm</div>
+                            <div className="text-lg font-bold">{trimResult.trimEffects.hydrostatic.TPC_new.toFixed(1)} ton/cm</div>
                             <div className="text-sm text-muted-foreground">Yeni TPC</div>
                           </div>
                         </div>
@@ -1272,38 +1353,38 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                     </div>
                   </div>
 
-                  {result && (
+                  {trimResult && (
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.bonjeanCurves.area.toFixed(2)} m²</div>
+                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.area.toFixed(2)} m²</div>
                           <div className="text-sm text-muted-foreground">Kesit Alanı</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.bonjeanCurves.firstMoment.toFixed(1)} m³</div>
+                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.firstMoment.toFixed(1)} m³</div>
                           <div className="text-sm text-muted-foreground">İlk Moment</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.bonjeanCurves.centroid.toFixed(2)} m</div>
+                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.centroid.toFixed(2)} m</div>
                           <div className="text-sm text-muted-foreground">Ağırlık Merkezi</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.bonjeanCurves.volume.toFixed(1)} m³</div>
+                          <div className="text-xl font-bold">{trimResult.bonjeanCurves.volume.toFixed(1)} m³</div>
                           <div className="text-sm text-muted-foreground">Hacim</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.bonjeanCurves.coefficients.CP.toFixed(3)}</div>
+                          <div className="text-lg font-bold">{trimResult.bonjeanCurves.coefficients.CP.toFixed(3)}</div>
                           <div className="text-sm text-muted-foreground">CP Katsayısı</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.bonjeanCurves.coefficients.CM.toFixed(3)}</div>
+                          <div className="text-lg font-bold">{trimResult.bonjeanCurves.coefficients.CM.toFixed(3)}</div>
                           <div className="text-sm text-muted-foreground">CM Katsayısı</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.bonjeanCurves.coefficients.CWP.toFixed(3)}</div>
+                          <div className="text-lg font-bold">{trimResult.bonjeanCurves.coefficients.CWP.toFixed(3)}</div>
                           <div className="text-sm text-muted-foreground">CWP Katsayısı</div>
                         </div>
                       </div>
@@ -1419,38 +1500,38 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                     </div>
                   </div>
 
-                  {result && (
+                  {trimResult && (
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.soundingTable.tankVolume.toFixed(1)} m³</div>
+                          <div className="text-xl font-bold">{trimResult.soundingTable.tankVolume.toFixed(1)} m³</div>
                           <div className="text-sm text-muted-foreground">Tank Hacmi</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.soundingTable.correctedVolume.toFixed(1)} m³</div>
+                          <div className="text-xl font-bold">{trimResult.soundingTable.correctedVolume.toFixed(1)} m³</div>
                           <div className="text-sm text-muted-foreground">Düzeltilmiş Hacim</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.soundingTable.liquidWeight.toFixed(0)} ton</div>
+                          <div className="text-xl font-bold">{trimResult.soundingTable.liquidWeight.toFixed(0)} ton</div>
                           <div className="text-sm text-muted-foreground">Sıvı Ağırlığı</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-xl font-bold">{result.soundingTable.fillPercentage.toFixed(1)}%</div>
+                          <div className="text-xl font-bold">{trimResult.soundingTable.fillPercentage.toFixed(1)}%</div>
                           <div className="text-sm text-muted-foreground">Doluluk Oranı</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.soundingTable.vcg.toFixed(2)} m</div>
+                          <div className="text-lg font-bold">{trimResult.soundingTable.vcg.toFixed(2)} m</div>
                           <div className="text-sm text-muted-foreground">VCG (Dikey AG)</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.soundingTable.lcg.toFixed(2)} m</div>
+                          <div className="text-lg font-bold">{trimResult.soundingTable.lcg.toFixed(2)} m</div>
                           <div className="text-sm text-muted-foreground">LCG (Boyuna AG)</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.soundingTable.tcg.toFixed(2)} m</div>
+                          <div className="text-lg font-bold">{trimResult.soundingTable.tcg.toFixed(2)} m</div>
                           <div className="text-sm text-muted-foreground">TCG (Enine AG)</div>
                         </div>
                       </div>
@@ -1459,19 +1540,19 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                         <h4 className="font-semibold mb-3">Düzeltme Faktörleri</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.soundingTable.corrections.trimCorrection.toFixed(3)}</div>
+                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.trimCorrection.toFixed(3)}</div>
                             <div className="text-sm text-muted-foreground">Trim Düzeltmesi</div>
                           </div>
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.soundingTable.corrections.heelCorrection.toFixed(3)}</div>
+                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.heelCorrection.toFixed(3)}</div>
                             <div className="text-sm text-muted-foreground">Heel Düzeltmesi</div>
                           </div>
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.soundingTable.corrections.densityCorrection.toFixed(3)}</div>
+                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.densityCorrection.toFixed(3)}</div>
                             <div className="text-sm text-muted-foreground">Yoğunluk Düzeltmesi</div>
                           </div>
                           <div className="text-center p-3 bg-muted rounded-lg">
-                            <div className="text-lg font-bold">{result.soundingTable.corrections.temperatureCorrection.toFixed(3)}</div>
+                            <div className="text-lg font-bold">{trimResult.soundingTable.corrections.temperatureCorrection.toFixed(3)}</div>
                             <div className="text-sm text-muted-foreground">Sıcaklık Düzeltmesi</div>
                           </div>
                         </div>
@@ -1547,7 +1628,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsContent>
 
             <TabsContent value="performance" className="space-y-6">
-              {result && (
+              {trimResult && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader>
@@ -1559,14 +1640,14 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                     <CardContent className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className={`text-2xl font-bold ${getPerformanceColor(result.speedLoss, 'percentage')}`}>
-                            {result.speedLoss.toFixed(1)}%
+                          <div className={`text-2xl font-bold ${getPerformanceColor(trimResult.speedLoss, 'percentage')}`}>
+                            {trimResult.speedLoss.toFixed(1)}%
                           </div>
                           <div className="text-sm text-muted-foreground">Hız Kaybı</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className={`text-2xl font-bold ${getPerformanceColor(result.fuelConsumptionIncrease, 'percentage')}`}>
-                            {result.fuelConsumptionIncrease.toFixed(1)}%
+                          <div className={`text-2xl font-bold ${getPerformanceColor(trimResult.fuelConsumptionIncrease, 'percentage')}`}>
+                            {trimResult.fuelConsumptionIncrease.toFixed(1)}%
                           </div>
                           <div className="text-sm text-muted-foreground">Yakıt Artışı</div>
                         </div>
@@ -1574,14 +1655,14 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                       
                       <div className="grid grid-cols-2 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className={`text-2xl font-bold ${getPerformanceColor(result.maneuverabilityIndex, 'index')}`}>
-                            {result.maneuverabilityIndex.toFixed(1)}/10
+                          <div className={`text-2xl font-bold ${getPerformanceColor(trimResult.maneuverabilityIndex, 'index')}`}>
+                            {trimResult.maneuverabilityIndex.toFixed(1)}/10
                           </div>
                           <div className="text-sm text-muted-foreground">Manevra İndeksi</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className={`text-2xl font-bold ${getPerformanceColor(result.seakeepingIndex, 'index')}`}>
-                            {result.seakeepingIndex.toFixed(1)}/10
+                          <div className={`text-2xl font-bold ${getPerformanceColor(trimResult.seakeepingIndex, 'index')}`}>
+                            {trimResult.seakeepingIndex.toFixed(1)}/10
                           </div>
                           <div className="text-sm text-muted-foreground">Denizcilik İndeksi</div>
                         </div>
@@ -1634,7 +1715,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
             </TabsContent>
 
             <TabsContent value="analysis" className="space-y-6">
-              {result && (
+              {trimResult && (
                 <div className="space-y-6">
                   {/* Primary Results */}
                   <Card>
@@ -1642,8 +1723,8 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                       <CardTitle className="flex items-center gap-2">
                         <CheckCircle className="h-5 w-5" />
                         Kapsamlı Analiz Sonuçları
-                        <Badge className={getStatusColor(result.status)}>
-                          {result.status.toUpperCase()}
+                        <Badge className={getStatusColor(trimResult.status)}>
+                          {trimResult.status.toUpperCase()}
                         </Badge>
                       </CardTitle>
                       <CardDescription>Detaylı trim, draft survey ve tank analizi</CardDescription>
@@ -1653,26 +1734,26 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
                           <div className="text-2xl font-bold">
-                            {result.currentTrim > 0 ? '+' : ''}{result.currentTrim.toFixed(3)}m
+                            {trimResult.currentTrim > 0 ? '+' : ''}{trimResult.currentTrim.toFixed(3)}m
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            Mevcut Trim {result.currentTrim > 0 ? '(Stern)' : '(Head)'}
+                            Mevcut Trim {trimResult.currentTrim > 0 ? '(Stern)' : '(Head)'}
                           </div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
                           <div className="text-2xl font-bold">
-                            {result.newTrimBy > 0 ? '+' : ''}{result.newTrimBy.toFixed(3)}m
+                            {trimResult.newTrimBy > 0 ? '+' : ''}{trimResult.newTrimBy.toFixed(3)}m
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            Yeni Trim {result.newTrimBy > 0 ? '(Stern)' : '(Head)'}
+                            Yeni Trim {trimResult.newTrimBy > 0 ? '(Stern)' : '(Head)'}
                           </div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold">{result.trimChange.toFixed(1)}cm</div>
+                          <div className="text-2xl font-bold">{trimResult.trimChange.toFixed(1)}cm</div>
                           <div className="text-sm text-muted-foreground">Trim Değişimi</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-2xl font-bold">{result.bodilyChange.toFixed(1)}cm</div>
+                          <div className="text-2xl font-bold">{trimResult.bodilyChange.toFixed(1)}cm</div>
                           <div className="text-sm text-muted-foreground">Batma/Çıkma</div>
                         </div>
                       </div>
@@ -1682,19 +1763,19 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                       {/* Draft Information */}
                       <div className="grid grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.newDraftForward.toFixed(3)}m</div>
+                          <div className="text-lg font-bold">{trimResult.newDraftForward.toFixed(3)}m</div>
                           <div className="text-sm text-muted-foreground">Yeni Baş Draft</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.newDraftMidships.toFixed(3)}m</div>
+                          <div className="text-lg font-bold">{trimResult.newDraftMidships.toFixed(3)}m</div>
                           <div className="text-sm text-muted-foreground">Yeni Orta Draft</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.newDraftAft.toFixed(3)}m</div>
+                          <div className="text-lg font-bold">{trimResult.newDraftAft.toFixed(3)}m</div>
                           <div className="text-sm text-muted-foreground">Yeni Kıç Draft</div>
                         </div>
                         <div className="text-center p-3 bg-muted rounded-lg">
-                          <div className="text-lg font-bold">{result.newMeanDraft.toFixed(3)}m</div>
+                          <div className="text-lg font-bold">{trimResult.newMeanDraft.toFixed(3)}m</div>
                           <div className="text-sm text-muted-foreground">Yeni Ortalama Draft</div>
                         </div>
                       </div>
@@ -1706,7 +1787,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                           IMO/SOLAS Uygunluk Analizi
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {Object.entries(result.imoCompliance).map(([key, value]) => (
+                          {Object.entries(trimResult.imoCompliance).map(([key, value]) => (
                             <div key={key} className="flex items-center gap-2">
                               {value ? (
                                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -1726,24 +1807,24 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                       </div>
 
                       {/* Recommendations and Warnings */}
-                      {(result.recommendations.length > 0 || result.warnings.length > 0) && (
+                      {(trimResult.recommendations.length > 0 || trimResult.warnings.length > 0) && (
                         <div className="space-y-4">
-                          {result.recommendations.length > 0 && (
+                          {trimResult.recommendations.length > 0 && (
                             <div>
                               <h4 className="font-semibold mb-2 text-info">Öneriler</h4>
                               <ul className="list-disc list-inside space-y-1">
-                                {result.recommendations.map((rec, index) => (
+                                {trimResult.recommendations.map((rec, index) => (
                                   <li key={index} className="text-sm">{rec}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
                           
-                          {result.warnings.length > 0 && (
+                          {trimResult.warnings.length > 0 && (
                             <div>
                               <h4 className="font-semibold mb-2 text-red-600">Uyarılar</h4>
                               <ul className="list-disc list-inside space-y-1">
-                                {result.warnings.map((warning, index) => (
+                                {trimResult.warnings.map((warning, index) => (
                                   <li key={index} className="text-sm text-red-600">{warning}</li>
                                 ))}
                               </ul>
