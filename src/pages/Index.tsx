@@ -87,13 +87,10 @@ const Index = () => {
         
         <div className="relative bg-card/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-border shadow-lg">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100" data-translatable>
-                Denizcilik Hesaplayıcısı
+            <div className="text-center w-full">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent" data-translatable>
+                Maritime Calculator
               </h1>
-              <p className="text-sm text-muted-foreground" data-translatable>
-                Profesyonel maritim hesaplamalar
-              </p>
             </div>
             
 
