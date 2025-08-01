@@ -260,7 +260,6 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
 
   const quickQuestions = [
     "GM hesaplaması nasıl yapılır?",
-    "200m uzunluk, 32m genişlik, 12m taslak gemi deplasman hesabı",
     "Trim açısı formülü nedir?",
     "Stabilite kriterleri nelerdir?",
     "SFOC hesaplama yöntemi",
@@ -300,7 +299,6 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
 
 Örnekler:
 • 'GM hesaplaması nasıl yapılır?'
-• '200m uzunluk, 32m genişlik, 12m taslak gemi deplasman hesabı'
 • 'KM 15.2m, KG 14.8m olan geminin GM değeri?'
 • 'Stabilite kriterleri nelerdir?'"
             value={question}
