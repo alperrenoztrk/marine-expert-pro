@@ -166,7 +166,7 @@ Türkçe olarak, teknik ama anlaşılır şekilde yanıtla.`
       }
     }
 
-    return `**Maritime Mühendisliği Danışmanı**
+    return `**Asistan**
 
 Size maritime mühendisliği konularında yardımcı olmaya hazırım!
 
@@ -277,9 +277,9 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
         <div className="flex items-center gap-3">
           <Ship className="w-6 h-6 text-info" />
           <div>
-            <CardTitle className="text-xl text-info-muted-foreground">Maritime Mühendisliği Danışmanı</CardTitle>
+            <CardTitle className="text-xl text-info-muted-foreground">Asistan</CardTitle>
             <CardDescription className="text-sm">
-              Kapsamlı maritime hesaplama ve danışmanlık sistemi
+              Maritime mühendisliği konularında yardım
             </CardDescription>
           </div>
         </div>
