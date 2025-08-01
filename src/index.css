@@ -253,6 +253,75 @@ All colors MUST be HSL.
     --sidebar-ring: 25 95% 55%;
   }
 
+  /* Nature Theme - Green & Brown Pattern (Green Focused) */
+  .nature {
+    --background: 120 30% 98%;
+    --foreground: 120 30% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 120 30% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 120 30% 8%;
+
+    --primary: 120 60% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 120 60% 60%;
+    --primary-dark: 120 60% 30%;
+
+    --secondary: 30 50% 40%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 120 30% 95%;
+    --muted-foreground: 120 30% 40%;
+
+    --accent: 90 60% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 15%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 120 30% 90%;
+    --input: 120 30% 90%;
+    --ring: 120 60% 45%;
+
+    /* Nature theme semantic colors */
+    --info: 120 60% 45%;
+    --info-foreground: 0 0% 100%;
+    --info-muted: 120 30% 94%;
+    --info-muted-foreground: 120 30% 40%;
+
+    /* Nature Green & Brown Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(120 60% 45%), hsl(120 60% 60%), hsl(90 60% 50%));
+    --gradient-deep: linear-gradient(135deg, hsl(30 50% 40%), hsl(120 60% 30%), hsl(90 60% 35%));
+    --gradient-surface: linear-gradient(135deg, hsl(120 30% 95%) 0%, hsl(120 30% 98%) 100%);
+    --gradient-forest: linear-gradient(135deg, hsl(120 60% 45%), hsl(90 60% 50%), hsl(60 60% 55%), hsl(30 60% 50%));
+    --gradient-meadow: linear-gradient(135deg, hsl(90 60% 50%), hsl(120 60% 45%), hsl(150 60% 40%), hsl(180 60% 35%));
+    --gradient-spring: linear-gradient(135deg, hsl(120 60% 60%), hsl(90 60% 55%), hsl(60 60% 50%), hsl(30 60% 45%));
+    --gradient-earth: linear-gradient(135deg, hsl(30 50% 40%), hsl(45 50% 45%), hsl(60 50% 50%), hsl(75 50% 55%));
+    --gradient-organic: linear-gradient(135deg, hsl(120 60% 45%), hsl(30 50% 40%), hsl(60 50% 45%), hsl(90 50% 50%));
+    
+    /* Nature Green & Brown Shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(120 60% 45% / 0.15), 0 0 20px hsl(90 60% 50% / 0.1);
+    --shadow-card: 0 4px 16px -2px hsl(120 60% 45% / 0.1), 0 0 10px hsl(90 60% 50% / 0.05);
+    --shadow-button: 0 2px 8px -1px hsl(120 60% 45% / 0.2), 0 0 5px hsl(90 60% 50% / 0.1);
+
+    --sidebar-background: 120 30% 97%;
+    --sidebar-foreground: 120 30% 15%;
+    --sidebar-primary: 120 60% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 120 30% 94%;
+    --sidebar-accent-foreground: 120 30% 15%;
+    --sidebar-border: 120 30% 90%;
+    --sidebar-ring: 120 60% 45%;
+  }
+
   /* Cyberpunk Theme - Yellow & Black Pattern */
   .cyberpunk {
     --background: 0 0% 3%;
@@ -427,6 +496,107 @@ All colors MUST be HSL.
   .cyberpunk .bg-gradient-to-r.from-blue-600.to-indigo-600,
   .cyberpunk .bg-gradient-to-r.from-blue-400.to-indigo-400 {
     background: linear-gradient(135deg, hsl(60 100% 60%), hsl(45 100% 55%)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+  }
+
+  /* Nature Theme Overrides */
+  .nature * {
+    transition: all 0.3s ease;
+  }
+
+  .nature .bg-gradient-to-br,
+  .nature .bg-gradient-to-tr,
+  .nature .bg-gradient-to-tl,
+  .nature .bg-gradient-to-bl {
+    background: var(--gradient-forest) !important;
+  }
+
+  /* Nature tema için mavi arka planları override et */
+  .nature .bg-blue-50,
+  .nature .bg-blue-100,
+  .nature .bg-blue-200,
+  .nature .bg-blue-300,
+  .nature .bg-blue-400,
+  .nature .bg-blue-500,
+  .nature .bg-blue-600,
+  .nature .bg-blue-700,
+  .nature .bg-blue-800,
+  .nature .bg-blue-900 {
+    background-color: hsl(120 30% 95%) !important;
+  }
+
+  /* Nature tema için beyaz arka planları */
+  .nature .bg-white,
+  .nature .bg-gray-50,
+  .nature .bg-gray-100,
+  .nature .bg-gray-200,
+  .nature .bg-gray-300 {
+    background-color: hsl(120 30% 98%) !important;
+  }
+
+  /* Nature tema için indigo arka planları override et */
+  .nature .bg-indigo-50,
+  .nature .bg-indigo-100,
+  .nature .bg-indigo-200,
+  .nature .bg-indigo-300,
+  .nature .bg-indigo-400,
+  .nature .bg-indigo-500,
+  .nature .bg-indigo-600,
+  .nature .bg-indigo-700,
+  .nature .bg-indigo-800,
+  .nature .bg-indigo-900 {
+    background-color: hsl(120 30% 95%) !important;
+  }
+
+  /* Nature tema için kart arka planları */
+  .nature .bg-white\/80,
+  .nature .bg-white\/90,
+  .nature .bg-gray-800\/80,
+  .nature .bg-gray-800\/90 {
+    background-color: hsl(120 30% 98% / 0.9) !important;
+  }
+
+  /* Nature tema için formül kutucukları */
+  .nature .bg-gray-50 {
+    background-color: hsl(120 30% 95%) !important;
+  }
+
+  /* Nature tema için bilgi kutuları */
+  .nature .bg-blue-50 {
+    background-color: hsl(120 30% 95%) !important;
+  }
+
+  /* Nature tema için hover efektleri */
+  .nature .hover\:bg-blue-50:hover,
+  .nature .hover\:bg-gray-50:hover,
+  .nature .hover\:bg-white:hover {
+    background-color: hsl(120 30% 94%) !important;
+  }
+
+  /* Nature tema için border renkleri */
+  .nature .border-blue-200,
+  .nature .border-blue-300,
+  .nature .border-gray-200,
+  .nature .border-gray-300 {
+    border-color: hsl(120 30% 90%) !important;
+  }
+
+  /* Nature tema için metin renkleri */
+  .nature .text-blue-600,
+  .nature .text-blue-700,
+  .nature .text-blue-800,
+  .nature .text-gray-600,
+  .nature .text-gray-700,
+  .nature .text-gray-800 {
+    color: hsl(120 30% 8%) !important;
+  }
+
+  /* Nature tema için gradient metin renkleri */
+  .nature .bg-gradient-to-r.from-blue-600.to-indigo-600,
+  .nature .bg-gradient-to-r.from-blue-400.to-indigo-400 {
+    background: linear-gradient(135deg, hsl(120 60% 45%), hsl(90 60% 50%)) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     color: transparent !important;

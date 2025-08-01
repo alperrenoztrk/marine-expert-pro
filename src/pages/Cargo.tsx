@@ -6,13 +6,13 @@ import { CargoCalculations } from "@/components/calculations/CargoCalculations";
 
 const Cargo = () => {
   return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 nature:from-green-50 nature:to-emerald-100 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
           <Link to="/">
-            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800">
+            <Button variant="outline" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800 nature:hover:bg-green-50">
               <ArrowLeft className="w-4 h-4" />
               <span data-translatable>Ana Sayfa</span>
             </Button>
