@@ -393,238 +393,234 @@ export const WeatherCalculations = () => {
               <TabsTrigger value="clouds">Bulutlar</TabsTrigger>
             </TabsList>
 
-            {activeTab !== "clouds" && (
-              <>
-                <TabsContent value="wind" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="windSpeed">Rüzgar Hızı (knot)</Label>
-                      <Input
-                        id="windSpeed"
-                        type="number"
-                        value={data.windSpeed}
-                        onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="windDirection">Rüzgar Yönü (°)</Label>
-                      <Input
-                        id="windDirection"
-                        type="number"
-                        min="0"
-                        max="360"
-                        value={data.windDirection}
-                        onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipHeading">Gemi Başı (°)</Label>
-                      <Input
-                        id="shipHeading"
-                        type="number"
-                        min="0"
-                        max="360"
-                        value={data.shipHeading}
-                        onChange={(e) => updateData('shipHeading', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipSpeed">Gemi Hızı (knot)</Label>
-                      <Input
-                        id="shipSpeed"
-                        type="number"
-                        value={data.shipSpeed}
-                        onChange={(e) => updateData('shipSpeed', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                  </div>
-                </TabsContent>
+            <TabsContent value="wind" className={`space-y-4 ${activeTab === "clouds" ? "hidden" : ""}`}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="windSpeed">Rüzgar Hızı (knot)</Label>
+                  <Input
+                    id="windSpeed"
+                    type="number"
+                    value={data.windSpeed}
+                    onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="windDirection">Rüzgar Yönü (°)</Label>
+                  <Input
+                    id="windDirection"
+                    type="number"
+                    min="0"
+                    max="360"
+                    value={data.windDirection}
+                    onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="shipHeading">Gemi Başı (°)</Label>
+                  <Input
+                    id="shipHeading"
+                    type="number"
+                    min="0"
+                    max="360"
+                    value={data.shipHeading}
+                    onChange={(e) => updateData('shipHeading', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="shipSpeed">Gemi Hızı (knot)</Label>
+                  <Input
+                    id="shipSpeed"
+                    type="number"
+                    value={data.shipSpeed}
+                    onChange={(e) => updateData('shipSpeed', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
-                <TabsContent value="waves" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="waveHeight">Dalga Yüksekliği (m)</Label>
-                      <Input
-                        id="waveHeight"
-                        type="number"
-                        step="0.1"
-                        value={data.waveHeight}
-                        onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="wavePeriod">Dalga Periyodu (saniye)</Label>
-                      <Input
-                        id="wavePeriod"
-                        type="number"
-                        value={data.wavePeriod}
-                        onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="waveDirection">Dalga Yönü (°)</Label>
-                      <Input
-                        id="waveDirection"
-                        type="number"
-                        min="0"
-                        max="360"
-                        value={data.waveDirection}
-                        onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                  </div>
-                </TabsContent>
+            <TabsContent value="waves" className={`space-y-4 ${activeTab === "clouds" ? "hidden" : ""}`}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="waveHeight">Dalga Yüksekliği (m)</Label>
+                  <Input
+                    id="waveHeight"
+                    type="number"
+                    step="0.1"
+                    value={data.waveHeight}
+                    onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="wavePeriod">Dalga Periyodu (saniye)</Label>
+                  <Input
+                    id="wavePeriod"
+                    type="number"
+                    value={data.wavePeriod}
+                    onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="waveDirection">Dalga Yönü (°)</Label>
+                  <Input
+                    id="waveDirection"
+                    type="number"
+                    min="0"
+                    max="360"
+                    value={data.waveDirection}
+                    onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
-                <TabsContent value="current" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="currentSpeed">Akıntı Hızı (knot)</Label>
-                      <Input
-                        id="currentSpeed"
-                        type="number"
-                        step="0.1"
-                        value={data.currentSpeed}
-                        onChange={(e) => updateData('currentSpeed', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="currentDirection">Akıntı Yönü (°)</Label>
-                      <Input
-                        id="currentDirection"
-                        type="number"
-                        min="0"
-                        max="360"
-                        value={data.currentDirection}
-                        onChange={(e) => updateData('currentDirection', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="currentDepth">Ölçüm Derinliği (m)</Label>
-                      <Input
-                        id="currentDepth"
-                        type="number"
-                        value={data.currentDepth}
-                        onChange={(e) => updateData('currentDepth', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                  </div>
-                </TabsContent>
+            <TabsContent value="current" className={`space-y-4 ${activeTab === "clouds" ? "hidden" : ""}`}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currentSpeed">Akıntı Hızı (knot)</Label>
+                  <Input
+                    id="currentSpeed"
+                    type="number"
+                    step="0.1"
+                    value={data.currentSpeed}
+                    onChange={(e) => updateData('currentSpeed', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="currentDirection">Akıntı Yönü (°)</Label>
+                  <Input
+                    id="currentDirection"
+                    type="number"
+                    min="0"
+                    max="360"
+                    value={data.currentDirection}
+                    onChange={(e) => updateData('currentDirection', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="currentDepth">Ölçüm Derinliği (m)</Label>
+                  <Input
+                    id="currentDepth"
+                    type="number"
+                    value={data.currentDepth}
+                    onChange={(e) => updateData('currentDepth', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
-                <TabsContent value="ship" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="shipLength">Gemi Boyu (m)</Label>
-                      <Input
-                        id="shipLength"
-                        type="number"
-                        value={data.shipLength}
-                        onChange={(e) => updateData('shipLength', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipBeam">Gemi Genişliği (m)</Label>
-                      <Input
-                        id="shipBeam"
-                        type="number"
-                        value={data.shipBeam}
-                        onChange={(e) => updateData('shipBeam', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipDraft">Gemi Draftı (m)</Label>
-                      <Input
-                        id="shipDraft"
-                        type="number"
-                        step="0.1"
-                        value={data.shipDraft}
-                        onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipFreeboard">Gemi Freeboard (m)</Label>
-                      <Input
-                        id="shipFreeboard"
-                        type="number"
-                        step="0.1"
-                        value={data.shipFreeboard}
-                        onChange={(e) => updateData('shipFreeboard', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipDisplacement">Gemi Deplasmanı (ton)</Label>
-                      <Input
-                        id="shipDisplacement"
-                        type="number"
-                        value={data.shipDisplacement}
-                        onChange={(e) => updateData('shipDisplacement', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                  </div>
-                </TabsContent>
+            <TabsContent value="ship" className={`space-y-4 ${activeTab === "clouds" ? "hidden" : ""}`}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="shipLength">Gemi Boyu (m)</Label>
+                  <Input
+                    id="shipLength"
+                    type="number"
+                    value={data.shipLength}
+                    onChange={(e) => updateData('shipLength', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="shipBeam">Gemi Genişliği (m)</Label>
+                  <Input
+                    id="shipBeam"
+                    type="number"
+                    value={data.shipBeam}
+                    onChange={(e) => updateData('shipBeam', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="shipDraft">Gemi Draftı (m)</Label>
+                  <Input
+                    id="shipDraft"
+                    type="number"
+                    step="0.1"
+                    value={data.shipDraft}
+                    onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="shipFreeboard">Gemi Freeboard (m)</Label>
+                  <Input
+                    id="shipFreeboard"
+                    type="number"
+                    step="0.1"
+                    value={data.shipFreeboard}
+                    onChange={(e) => updateData('shipFreeboard', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="shipDisplacement">Gemi Deplasmanı (ton)</Label>
+                  <Input
+                    id="shipDisplacement"
+                    type="number"
+                    value={data.shipDisplacement}
+                    onChange={(e) => updateData('shipDisplacement', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
-                <TabsContent value="environment" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="airDensity">Hava Yoğunluğu (kg/m³)</Label>
-                      <Input
-                        id="airDensity"
-                        type="number"
-                        step="0.1"
-                        value={data.airDensity}
-                        onChange={(e) => updateData('airDensity', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="waterDensity">Su Yoğunluğu (kg/m³)</Label>
-                      <Input
-                        id="waterDensity"
-                        type="number"
-                        step="0.1"
-                        value={data.waterDensity}
-                        onChange={(e) => updateData('waterDensity', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="temperature">Hava Sıcaklığı (°C)</Label>
-                      <Input
-                        id="temperature"
-                        type="number"
-                        value={data.temperature}
-                        onChange={(e) => updateData('temperature', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="barometricPressure">Barometrik Basınç (mbar)</Label>
-                      <Input
-                        id="barometricPressure"
-                        type="number"
-                        value={data.barometricPressure}
-                        onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="leewayAngle">Leeway Açısı (°)</Label>
-                      <Input
-                        id="leewayAngle"
-                        type="number"
-                        step="0.1"
-                        value={data.leewayAngle}
-                        onChange={(e) => updateData('leewayAngle', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="rudderAngle">Dümen Açısı (°)</Label>
-                      <Input
-                        id="rudderAngle"
-                        type="number"
-                        value={data.rudderAngle}
-                        onChange={(e) => updateData('rudderAngle', parseFloat(e.target.value) || 0)}
-                      />
-                    </div>
-                  </div>
-                </TabsContent>
-              </>
-            )}
+            <TabsContent value="environment" className={`space-y-4 ${activeTab === "clouds" ? "hidden" : ""}`}>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="airDensity">Hava Yoğunluğu (kg/m³)</Label>
+                  <Input
+                    id="airDensity"
+                    type="number"
+                    step="0.1"
+                    value={data.airDensity}
+                    onChange={(e) => updateData('airDensity', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="waterDensity">Su Yoğunluğu (kg/m³)</Label>
+                  <Input
+                    id="waterDensity"
+                    type="number"
+                    step="0.1"
+                    value={data.waterDensity}
+                    onChange={(e) => updateData('waterDensity', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="temperature">Hava Sıcaklığı (°C)</Label>
+                  <Input
+                    id="temperature"
+                    type="number"
+                    value={data.temperature}
+                    onChange={(e) => updateData('temperature', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="barometricPressure">Barometrik Basınç (mbar)</Label>
+                  <Input
+                    id="barometricPressure"
+                    type="number"
+                    value={data.barometricPressure}
+                    onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="leewayAngle">Leeway Açısı (°)</Label>
+                  <Input
+                    id="leewayAngle"
+                    type="number"
+                    step="0.1"
+                    value={data.leewayAngle}
+                    onChange={(e) => updateData('leewayAngle', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="rudderAngle">Dümen Açısı (°)</Label>
+                  <Input
+                    id="rudderAngle"
+                    type="number"
+                    value={data.rudderAngle}
+                    onChange={(e) => updateData('rudderAngle', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
             <TabsContent value="clouds" className="space-y-6">
               <div className="text-center mb-6">
