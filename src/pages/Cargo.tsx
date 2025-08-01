@@ -24,7 +24,7 @@ const Cargo = () => {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <Package className="h-12 w-12 text-blue-600 dark:text-blue-400" />
+            <Package className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
               <span data-translatable>Kargo Hesaplamaları</span>
             </h1>

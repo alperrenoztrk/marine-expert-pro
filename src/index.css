@@ -1113,6 +1113,11 @@ All colors MUST be HSL.
   color: hsl(25 100% 25%) !important;
 }
 
+/* Nature theme icons */
+.nature .nature-icon {
+  color: hsl(25 100% 25%) !important;
+}
+
 /* Neon Billboard Effect Styles */
 .neon-billboard {
   position: relative;
