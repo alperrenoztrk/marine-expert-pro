@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +21,9 @@ import React from "react"; // Added missing import for React
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const neonTextRef = useRef<HTMLHeadingElement>(null);
   const { theme } = useTheme();
   
   // Safe hooks with error handling
@@ -37,6 +40,29 @@ const Index = () => {
   })();
   
   const { shouldShowAd, trackInteraction } = safeAdManager;
+
+  // Mouse tracking for neon text
+  const handleMouseMove = (e: React.MouseEvent<HTMLHeadingElement>) => {
+    if (theme === 'neon' && neonTextRef.current) {
+      const rect = neonTextRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      setMousePosition({ x, y });
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (theme === 'neon') {
+      setIsHovering(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (theme === 'neon') {
+      setIsHovering(false);
+      setMousePosition({ x: 0, y: 0 });
+    }
+  };
 
   // Load AdSense script safely
   useEffect(() => {
@@ -112,8 +138,17 @@ const Index = () => {
                   {/* Neon Text Container */}
                   <div className="relative z-10 p-4">
                     <h1 
-                      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold neon-text"
+                      ref={neonTextRef}
+                      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold neon-text neon-text-interactive"
                       data-translatable
+                      onMouseMove={handleMouseMove}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                      style={{
+                        '--mouse-x': `${mousePosition.x}px`,
+                        '--mouse-y': `${mousePosition.y}px`,
+                        '--is-hovering': isHovering ? '1' : '0'
+                      } as React.CSSProperties}
                     >
                       Maritime Calculator
                     </h1>
