@@ -91,7 +91,7 @@ const Index = () => {
             <div className="flex-shrink-0">
               <div className="relative overflow-hidden rounded-lg">
                 <img 
-                  src="/sextant-golden.jpg" 
+                  src="/sextant-golden-real.jpg" 
                   alt="Maritime Calculator Logo" 
                   className="maritime-logo w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300 object-cover object-center"
                   style={{
