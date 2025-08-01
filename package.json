@@ -23,9 +23,9 @@
     "@capacitor-firebase/app": "^6.1.0",
     "@capacitor-firebase/authentication": "^6.1.0",
     "@capacitor-firebase/messaging": "^6.1.0",
-    "@capacitor/android": "^6.1.2",
+    "@capacitor/android": "^7.4.2",
     "@capacitor/app": "^6.0.1",
-    "@capacitor/core": "^6.1.2",
+    "@capacitor/core": "^7.4.2",
     "@capacitor/haptics": "^6.0.1",
     "@capacitor/keyboard": "^6.0.2",
     "@capacitor/splash-screen": "^6.0.2",
@@ -83,7 +83,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.1.2",
+    "@capacitor/cli": "^7.4.2",
     "@eslint/js": "^9.13.0",
     "@types/node": "^22.8.4",
     "@types/react": "^18.3.12",
