@@ -1049,6 +1049,35 @@ All colors MUST be HSL.
   }
 }
 
+/* Logo theme support */
+.nature .maritime-logo {
+  filter: hue-rotate(120deg) saturate(1.2);
+}
+
+.cyberpunk .maritime-logo {
+  filter: hue-rotate(180deg) saturate(1.5) brightness(1.1);
+}
+
+.neon .maritime-logo {
+  filter: drop-shadow(0 0 10px hsl(180 100% 70% / 0.6)) brightness(1.2);
+}
+
+/* Logo animation */
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(1deg); }
+  50% { transform: translateY(-10px) rotate(0deg); }
+  75% { transform: translateY(-5px) rotate(-1deg); }
+}
+
+.maritime-logo {
+  animation: logoFloat 6s ease-in-out infinite;
+}
+
+.maritime-logo:hover {
+  animation-play-state: paused;
+}
+
 
 
 /* Cyberpunk Theme Background Overrides */
