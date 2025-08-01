@@ -849,6 +849,49 @@ All colors MUST be HSL.
     left: 100% !important;
   }
 
+  /* Neon tema için cloud card özel override'ları */
+  .neon .card {
+    background: radial-gradient(ellipse at center, hsl(180 100% 15% / 0.6), hsl(0 0% 8%)) !important;
+    box-shadow: 0 0 25px hsl(180 100% 70% / 0.5), inset 0 0 15px hsl(180 100% 70% / 0.2) !important;
+    border: 1px solid hsl(180 100% 70% / 0.4) !important;
+    backdrop-filter: blur(5px) !important;
+  }
+
+  /* Neon tema için tüm border renkleri */
+  .neon .border-red-500,
+  .neon .border-orange-400,
+  .neon .border-blue-300,
+  .neon .border-gray-300 {
+    border-color: hsl(180 100% 70%) !important;
+  }
+
+  /* Neon tema için tüm bg renkleri */
+  .neon .bg-red-50,
+  .neon .bg-orange-50,
+  .neon .bg-blue-50,
+  .neon .bg-gray-50 {
+    background: radial-gradient(ellipse at center, hsl(180 100% 15% / 0.6), hsl(0 0% 8%)) !important;
+    box-shadow: 0 0 25px hsl(180 100% 70% / 0.5), inset 0 0 15px hsl(180 100% 70% / 0.2) !important;
+    border: 1px solid hsl(180 100% 70% / 0.4) !important;
+    backdrop-filter: blur(5px) !important;
+  }
+
+  /* Neon tema için alert arka planları */
+  .neon .border-red-300,
+  .neon .border-orange-300,
+  .neon .border-blue-300 {
+    border-color: hsl(180 100% 70%) !important;
+  }
+
+  .neon .bg-red-50,
+  .neon .bg-orange-50,
+  .neon .bg-blue-50 {
+    background: radial-gradient(ellipse at center, hsl(180 100% 15% / 0.6), hsl(0 0% 8%)) !important;
+    box-shadow: 0 0 25px hsl(180 100% 70% / 0.5), inset 0 0 15px hsl(180 100% 70% / 0.2) !important;
+    border: 1px solid hsl(180 100% 70% / 0.4) !important;
+    backdrop-filter: blur(5px) !important;
+  }
+
   /* Neon inputs - Futuristic glow inputs */
   .neon input,
   .neon select,
