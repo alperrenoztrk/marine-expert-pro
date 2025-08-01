@@ -1080,8 +1080,8 @@ All colors MUST be HSL.
 
 /* Nature theme title color for contrast */
 .nature .nature-title {
-  color: hsl(220 100% 40%) !important;
-  text-shadow: 0 2px 4px hsl(220 100% 40% / 0.3) !important;
+  color: hsl(25 100% 35%) !important;
+  text-shadow: 0 2px 4px hsl(25 100% 35% / 0.3) !important;
 }
 
 /* Neon Billboard Effect Styles */
