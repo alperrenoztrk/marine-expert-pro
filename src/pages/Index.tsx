@@ -101,8 +101,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex-1 min-w-0">
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed" data-translatable>
-                Gemi mühendisliği, denizcilik ve maritime operasyonlar için kapsamlı hesaplama araçları. 
-                Detaylı açıklamalar ve profesyonel sonuçlar.
+                Uzakyol zabitlerinden denizcilik öğrencilerine – tüm denizciler için pratik hesaplama platformu
               </p>
               <div className="flex items-center gap-2 mt-2 flex-wrap">
                 <Link to="/formulas">
