@@ -317,11 +317,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     rightingMoment: number;
   } | null>(null);
 
-  const [stabilityResults, setStabilityResults] = useState<{
-    GM: number;
-    stabilityMargin: number;
-    status: string;
-  } | null>(null);
+
 
   // Calculate current trim
   const calculateCurrentTrim = (draftAft: number, draftForward: number): number => {
@@ -432,25 +428,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
     toast.success("List hesaplamaları tamamlandı!");
   };
 
-  // Calculate Stability
-  const calculateStability = () => {
-    // Formül 1: GM Hesabı - GM = KB + BM - KG
-    const GM = trimData.KB + trimData.BM - trimData.KG;
-    
-    // Formül 2: Stabilite Marjı - SM = GM / GM_min
-    const stabilityMargin = (GM / trimData.GM_min) * 100;
-    
-    // Formül 3: Stabilite Durumu - Status = f(GM, SM)
-    const status = GM > trimData.GM_min && stabilityMargin > 50 ? 'Güvenli' : 'Kritik';
-    
-    setStabilityResults({
-      GM: GM,
-      stabilityMargin: stabilityMargin,
-      status: status
-    });
-    
-    toast.success("Stabilite hesaplamaları tamamlandı!");
-  };
+
 
   // Calculate trim moment
   const calculateTrimMoment = (weight: number, distance: number, LCF: number): number => {
@@ -871,7 +849,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
               <TabsTrigger value="bonjean" className="flex-1 min-w-[120px] text-xs">Bonjean</TabsTrigger>
               <TabsTrigger value="sounding" className="flex-1 min-w-[120px] text-xs">Sounding</TabsTrigger>
               <TabsTrigger value="list" className="flex-1 min-w-[120px] text-xs">List</TabsTrigger>
-              <TabsTrigger value="stability" className="flex-1 min-w-[120px] text-xs">Stabilite</TabsTrigger>
+
 
 
 
@@ -1807,162 +1785,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
                 )}
               </TabsContent>
 
-              <TabsContent value="stability" className="space-y-6">
-                {/* Formül 1: GM Hesabı - GM = KB + BM - KG */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-blue-700">🛡️ GM Hesabı</h3>
-                  <p className="text-sm text-gray-600">GM = KB + BM - KG</p>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="KB">KB [m]</Label>
-                      <Input
-                        id="KB"
-                        type="number"
-                        step="0.01"
-                        value={trimData.KB || ''}
-                        onChange={(e) => setTrimData({...trimData, KB: parseFloat(e.target.value)})}
-                        placeholder="4.5"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="BM">BM [m]</Label>
-                      <Input
-                        id="BM"
-                        type="number"
-                        step="0.01"
-                        value={trimData.BM || ''}
-                        onChange={(e) => setTrimData({...trimData, BM: parseFloat(e.target.value)})}
-                        placeholder="3.2"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="KG_stability">KG [m]</Label>
-                      <Input
-                        id="KG_stability"
-                        type="number"
-                        step="0.01"
-                        value={trimData.KG || ''}
-                        onChange={(e) => setTrimData({...trimData, KG: parseFloat(e.target.value)})}
-                        placeholder="6.8"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="GM_stability">GM [m]</Label>
-                      <Input
-                        id="GM_stability"
-                        type="number"
-                        step="0.01"
-                        value={trimData.GM || ''}
-                        onChange={(e) => setTrimData({...trimData, GM: parseFloat(e.target.value)})}
-                        placeholder="1.2"
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                <Separator />
-
-                {/* Formül 2: Stabilite Marjı - SM = GM / GM_min */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-green-700">📊 Stabilite Marjı</h3>
-                  <p className="text-sm text-gray-600">SM = GM / GM_min</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="GM_current">Mevcut GM [m]</Label>
-                      <Input
-                        id="GM_current"
-                        type="number"
-                        step="0.01"
-                        value={trimData.GM || ''}
-                        onChange={(e) => setTrimData({...trimData, GM: parseFloat(e.target.value)})}
-                        placeholder="1.2"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="GM_min">Minimum GM [m]</Label>
-                      <Input
-                        id="GM_min"
-                        type="number"
-                        step="0.01"
-                        value={trimData.GM_min || ''}
-                        onChange={(e) => setTrimData({...trimData, GM_min: parseFloat(e.target.value)})}
-                        placeholder="0.15"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Formül 3: Stabilite Durumu - Status = f(GM, SM) */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-purple-700">✅ Stabilite Durumu</h3>
-                  <p className="text-sm text-gray-600">Status = f(GM, SM)</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="GM_status">GM [m]</Label>
-                      <Input
-                        id="GM_status"
-                        type="number"
-                        step="0.01"
-                        value={trimData.GM || ''}
-                        onChange={(e) => setTrimData({...trimData, GM: parseFloat(e.target.value)})}
-                        placeholder="1.2"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="stabilityMargin">Stabilite Marjı [%]</Label>
-                      <Input
-                        id="stabilityMargin"
-                        type="number"
-                        step="0.1"
-                        value={trimData.stabilityMargin || ''}
-                        onChange={(e) => setTrimData({...trimData, stabilityMargin: parseFloat(e.target.value)})}
-                        placeholder="80"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Hesaplama Butonu */}
-                <div className="flex justify-center pt-4">
-                  <Button 
-                    onClick={calculateStability} 
-                    className="px-8 py-2 bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    Hesapla
-                  </Button>
-                </div>
-
-                {/* Sonuçlar */}
-                {stabilityResults && (
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-800">📊 Stabilite Hesaplama Sonuçları</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">GM</Label>
-                        <div className="text-lg font-bold text-blue-600">
-                          {stabilityResults.GM.toFixed(3)} m
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">Stabilite Marjı</Label>
-                        <div className="text-lg font-bold text-green-600">
-                          {stabilityResults.stabilityMargin.toFixed(1)}%
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">Durum</Label>
-                        <div className={`text-lg font-bold ${
-                          stabilityResults.status === 'Güvenli' ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {stabilityResults.status}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </TabsContent>
 
               <TabsContent value="operations" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
