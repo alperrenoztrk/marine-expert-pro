@@ -191,7 +191,7 @@ const Index = () => {
                     </Button>
                   </Link>
                   <Link to="/regulations">
-                    <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-400 nature:text-green-600 nature:hover:bg-green-50">
+                    <Button size="sm" variant="outline" className="gap-2 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-700 cyberpunk:border-emerald-400 cyberpunk:text-emerald-400 cyberpunk:hover:bg-gray-800 nature:border-emerald-400 nature:text-emerald-600 nature:hover:bg-emerald-50">
                       <Shield className="w-4 h-4" />
                       <span data-translatable>Regülasyonlar</span>
                     </Button>
