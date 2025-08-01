@@ -799,7 +799,7 @@ export const TrimCalculations = ({ onCalculationComplete }: TrimCalculationsProp
               <TabsTrigger value="bonjean" className="flex-1 min-w-[120px] text-xs">Bonjean</TabsTrigger>
               <TabsTrigger value="sounding" className="flex-1 min-w-[120px] text-xs">Sounding</TabsTrigger>
 
-              <TabsTrigger value="performance" className="flex-1 min-w-[120px] text-xs">Performans</TabsTrigger>
+
 
             </TabsList>
             
