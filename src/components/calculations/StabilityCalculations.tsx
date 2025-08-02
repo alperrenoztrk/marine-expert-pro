@@ -320,9 +320,59 @@ export const StabilityCalculations = () => {
   };
 
   // 📊 IMO Stability Criteria
+  const calculateArea0to30 = () => {
+    if (!results.GM_corrected || !data.phi) {
+      toast.error("Lütfen önce GM hesaplayın ve φ değerini girin.");
+      return;
+    }
+    
+    // Simplified area calculation for 0-30°
+    const area_0to30 = results.GM_corrected * 30 * (Math.PI / 180) * 0.5; // Simplified trapezoidal rule
+    
+    setResults(prev => ({ 
+      ...prev, 
+      area_0to30
+    }));
+    
+    toast.success(`Area 0-30°: ${area_0to30.toFixed(3)} m.rad`);
+  };
+
+  const calculateArea0to40 = () => {
+    if (!results.GM_corrected || !data.phi) {
+      toast.error("Lütfen önce GM hesaplayın ve φ değerini girin.");
+      return;
+    }
+    
+    // Simplified area calculation for 0-40°
+    const area_0to40 = results.GM_corrected * 40 * (Math.PI / 180) * 0.5; // Simplified trapezoidal rule
+    
+    setResults(prev => ({ 
+      ...prev, 
+      area_0to40
+    }));
+    
+    toast.success(`Area 0-40°: ${area_0to40.toFixed(3)} m.rad`);
+  };
+
+  const calculateArea30to40 = () => {
+    if (!results.area_0to30 || !results.area_0to40) {
+      toast.error("Lütfen önce Area 0-30° ve Area 0-40° hesaplayın.");
+      return;
+    }
+    
+    const area_30to40 = results.area_0to40 - results.area_0to30;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      area_30to40
+    }));
+    
+    toast.success(`Area 30-40°: ${area_30to40.toFixed(3)} m.rad`);
+  };
+
   const calculateIMOCompliance = () => {
     if (!results.area_0to30 || !results.area_0to40 || !results.area_30to40 || !results.GZ_small || results.GM_corrected === undefined) {
-      toast.error("Lütfen önce GZ ve alan hesaplamalarını yapın.");
+      toast.error("Lütfen önce tüm area hesaplamalarını ve GZ hesaplayın.");
       return;
     }
     
@@ -836,7 +886,79 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5" />
-                      IMO Stability Criteria
+                      Area 0-30°: Area ≥ 3.151 m.rad
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateArea0to30} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Area 0-30° Hesapla
+                    </Button>
+                    {results.area_0to30 !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.area_0to30.toFixed(3)} m.rad</div>
+                        <div className="text-sm text-muted-foreground">Area 0-30°</div>
+                        <Badge className={`mt-2 ${results.area_0to30 >= 3.151 ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_0to30 >= 3.151 ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5" />
+                      Area 0-40°: Area ≥ 5.157 m.rad
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateArea0to40} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Area 0-40° Hesapla
+                    </Button>
+                    {results.area_0to40 !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.area_0to40.toFixed(3)} m.rad</div>
+                        <div className="text-sm text-muted-foreground">Area 0-40°</div>
+                        <Badge className={`mt-2 ${results.area_0to40 >= 5.157 ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_0to40 >= 5.157 ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5" />
+                      Area 30-40°: Area ≥ 1.719 m.rad
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateArea30to40} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Area 30-40° Hesapla
+                    </Button>
+                    {results.area_30to40 !== undefined && (
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.area_30to40.toFixed(3)} m.rad</div>
+                        <div className="text-sm text-muted-foreground">Area 30-40°</div>
+                        <Badge className={`mt-2 ${results.area_30to40 >= 1.719 ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_30to40 >= 1.719 ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5" />
+                      IMO Uygunluk Kontrolü
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
