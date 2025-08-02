@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calculator, Move } from "lucide-react";
-import { TrimCalculations } from "./calculations/TrimCalculations";
+import { StabilityCalculations } from "./calculations/StabilityCalculations";
 
 export const TrimCalculationsCard = () => {
   return (
@@ -28,9 +28,9 @@ export const TrimCalculationsCard = () => {
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Trim Hesaplamaları</DialogTitle>
-            </DialogHeader>
-            <TrimCalculations />
+                          <DialogTitle>Stabilite ve Trim Hesaplamaları</DialogTitle>
+          </DialogHeader>
+          <StabilityCalculations />
           </DialogContent>
         </Dialog>
       </CardContent>

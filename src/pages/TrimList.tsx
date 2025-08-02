@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
-import { TrimCalculations } from "@/components/calculations/TrimCalculations";
+import { StabilityCalculations } from "@/components/calculations/StabilityCalculations";
 import { Separator } from "@/components/ui/separator";
 import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
@@ -45,7 +45,7 @@ const TrimList = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <TrimCalculations />
+                <StabilityCalculations />
               </CardContent>
             </Card>
           </div>

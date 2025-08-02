@@ -6,7 +6,6 @@ import { Ship, ChevronDown, ChevronUp, Calculator, BarChart3, Package, Droplets,
 
 // Import all calculation components
 import { StabilityCalculations } from "./calculations/StabilityCalculations";
-import { TrimCalculations } from "./calculations/TrimCalculations";
 import { CargoCalculations } from "./calculations/CargoCalculations";
 import { BallastCalculations } from "./calculations/BallastCalculations";
 import { StructuralCalculations } from "./calculations/StructuralCalculations";
@@ -38,14 +37,10 @@ export const StabilityCalculationsCard = () => {
       {isExpanded && (
         <CardContent className="pt-0">
           <Tabs defaultValue="stability" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-4">
+            <TabsList className="grid w-full grid-cols-4 mb-4">
               <TabsTrigger value="stability" className="flex items-center gap-1">
                 <Ship className="w-3 h-3" />
-                <span className="hidden sm:inline">Stabilite</span>
-              </TabsTrigger>
-              <TabsTrigger value="trim" className="flex items-center gap-1">
-                <BarChart3 className="w-3 h-3" />
-                <span className="hidden sm:inline">Trim</span>
+                <span className="hidden sm:inline">Stabilite & Trim</span>
               </TabsTrigger>
               <TabsTrigger value="cargo" className="flex items-center gap-1">
                 <Package className="w-3 h-3" />
@@ -63,10 +58,6 @@ export const StabilityCalculationsCard = () => {
             
             <TabsContent value="stability">
               <StabilityCalculations />
-            </TabsContent>
-            
-            <TabsContent value="trim">
-              <TrimCalculations />
             </TabsContent>
             
             <TabsContent value="cargo">

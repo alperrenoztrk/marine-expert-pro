@@ -36,6 +36,17 @@ interface StabilityData {
   windPressure: number; // Wind pressure (N/m²)
   windArea: number; // Lateral wind area (m²)
   windHeight: number; // Height of wind center above waterline (m)
+  
+  // Trim and List Parameters
+  GML: number; // Longitudinal metacentric height (m)
+  draftForward: number; // Forward draft (m)
+  draftAft: number; // Aft draft (m)
+  weightAdded: number; // Weight to be added/removed (tonnes)
+  weightLCG: number; // Longitudinal position of weight from AP (m)
+  transverseG: number; // Transverse center of gravity (m)
+  listWeight: number; // List weight (tonnes)
+  listDistance: number; // List distance (m)
+  listAngle: number; // List angle (degrees)
 }
 
 interface GZCurvePoint {
@@ -77,6 +88,13 @@ interface StabilityResult {
   // Wind stability
   windHeelAngle: number;
   windMoment: number;
+  
+  // Trim and List Results
+  trimAngle: number;
+  mct: number;
+  trimChange: number;
+  listAngle: number;
+  listMoment: number;
   
   status: 'excellent' | 'good' | 'acceptable' | 'poor' | 'dangerous';
   imoCompliance: {
@@ -195,6 +213,39 @@ export const StabilityCalculations = () => {
     const compartmentVolume = data.L * data.B * data.T * 0.1; // Assume 10% of ship volume
     const floodingRate = 50; // m³/min (typical)
     return compartmentVolume / floodingRate; // minutes
+  };
+
+  // Trim Angle Calculation - θ = arctan((T_a - T_f) / L)
+  const calculateTrimAngle = (data: StabilityData): number => {
+    return Math.atan((data.draftAft - data.draftForward) / data.L) * (180 / Math.PI);
+  };
+
+  // MCT Calculation - MCT = (Δ × GM_L × B²) / (12 × L)
+  const calculateMCT = (data: StabilityData): number => {
+    return (data.displacement * data.GML * Math.pow(data.B, 2)) / (12 * data.L);
+  };
+
+  // Trim Change Calculation - ΔT = (W × d) / MCT
+  const calculateTrimChange = (data: StabilityData): number => {
+    const mct = calculateMCT(data);
+    return (data.weightAdded * data.weightLCG) / mct;
+  };
+
+  // List Angle Calculation - θ = arctan(TG / GM)
+  const calculateListAngle = (data: StabilityData): number => {
+    const GM = calculateCorrectedGM(data);
+    return Math.atan(data.transverseG / GM) * (180 / Math.PI);
+  };
+
+  // List Moment Calculation - M_list = W × d
+  const calculateListMoment = (data: StabilityData): number => {
+    return data.listWeight * data.listDistance;
+  };
+
+  // Righting Moment Calculation - M_righting = Δ × GM × sin(θ)
+  const calculateRightingMoment = (data: StabilityData): number => {
+    const GM = calculateCorrectedGM(data);
+    return data.displacement * GM * Math.sin(data.listAngle * Math.PI / 180);
   };
 
   // Ship Stiffness Analysis
@@ -344,7 +395,7 @@ export const StabilityCalculations = () => {
     const angleOfList = calculateAngleOfList(data);
     const angleOfLoll = calculateAngleOfLoll(data);
     const shipCharacteristic = analyzeShipCharacteristic(GM_corrected);
-    const rightingMoment = maxGZPoint.moment;
+    const maxGZRightingMoment = maxGZPoint.moment;
     const maxRightingMoment = gzCurve.reduce((max, point) => 
       point.moment > max ? point.moment : max, 0);
     const crossFloodingTime = calculateCrossFloodingTime(data);
@@ -377,6 +428,14 @@ export const StabilityCalculations = () => {
     if (Math.abs(angleOfList) > 5) recommendations.push("Yatma açısı fazla - yük dengesini kontrol edin");
     if (angleOfLoll > 0) recommendations.push("Loll açısı tespit edildi - ACİL durum! GM negatif");
     
+    // Trim and List Calculations
+    const trimAngle = calculateTrimAngle(data);
+    const mct = calculateMCT(data);
+    const trimChange = calculateTrimChange(data);
+    const listAngle = calculateListAngle(data);
+    const listMoment = calculateListMoment(data);
+    const rightingMoment = calculateRightingMoment(data);
+
     const result: StabilityResult = {
       GM,
       GM_corrected,
@@ -392,12 +451,17 @@ export const StabilityCalculations = () => {
       angleOfList,
       angleOfLoll,
       shipCharacteristic,
-      rightingMoment,
+      rightingMoment: maxGZRightingMoment,
       maxRightingMoment,
       crossFloodingTime,
       equalizedAngle,
       windHeelAngle,
       windMoment,
+      trimAngle,
+      mct,
+      trimChange,
+      listAngle,
+      listMoment,
       status,
       imoCompliance,
       recommendations
@@ -629,6 +693,109 @@ export const StabilityCalculations = () => {
                 </div>
               </div>
 
+              <Separator />
+
+              {/* Trim and List Parameters */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-blue-700">📐 Trim ve List Parametreleri</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="GML">GM_L [m]</Label>
+                    <Input
+                      id="GML"
+                      type="number"
+                      step="0.01"
+                      value={stabilityData.GML || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, GML: parseFloat(e.target.value)})}
+                      placeholder="150"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="draftForward">Baş Draft (T_f) [m]</Label>
+                    <Input
+                      id="draftForward"
+                      type="number"
+                      step="0.01"
+                      value={stabilityData.draftForward || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, draftForward: parseFloat(e.target.value)})}
+                      placeholder="7.50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="draftAft">Kıç Draft (T_a) [m]</Label>
+                    <Input
+                      id="draftAft"
+                      type="number"
+                      step="0.01"
+                      value={stabilityData.draftAft || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, draftAft: parseFloat(e.target.value)})}
+                      placeholder="8.20"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="weightAdded">Eklenen Ağırlık (W) [ton]</Label>
+                    <Input
+                      id="weightAdded"
+                      type="number"
+                      step="0.1"
+                      value={stabilityData.weightAdded || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, weightAdded: parseFloat(e.target.value)})}
+                      placeholder="500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="weightLCG">Ağırlık Mesafesi (d) [m]</Label>
+                    <Input
+                      id="weightLCG"
+                      type="number"
+                      step="0.1"
+                      value={stabilityData.weightLCG || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, weightLCG: parseFloat(e.target.value)})}
+                      placeholder="45"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="transverseG">Enine Ağırlık Merkezi TG [m]</Label>
+                    <Input
+                      id="transverseG"
+                      type="number"
+                      step="0.01"
+                      value={stabilityData.transverseG || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, transverseG: parseFloat(e.target.value)})}
+                      placeholder="0.5"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="listWeight">List Ağırlığı W [ton]</Label>
+                    <Input
+                      id="listWeight"
+                      type="number"
+                      step="0.1"
+                      value={stabilityData.listWeight || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, listWeight: parseFloat(e.target.value)})}
+                      placeholder="100"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="listDistance">List Mesafesi d [m]</Label>
+                    <Input
+                      id="listDistance"
+                      type="number"
+                      step="0.01"
+                      value={stabilityData.listDistance || ''}
+                      onChange={(e) => setStabilityData({...stabilityData, listDistance: parseFloat(e.target.value)})}
+                      placeholder="2.0"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-4">
                 <Button onClick={calculateStability} className="flex items-center gap-2">
                   <Calculator className="h-4 w-4" />
@@ -690,6 +857,42 @@ export const StabilityCalculations = () => {
                       <div className="text-center p-3 bg-muted rounded-lg">
                         <div className="text-2xl font-bold">{result.crossFloodingTime.toFixed(0)} dk</div>
                         <div className="text-sm text-muted-foreground">Cross Flooding</div>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Trim and List Results */}
+                    <div>
+                      <h4 className="font-semibold mb-2 flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        Trim ve List Hesaplamaları
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div className="text-center p-3 bg-blue-50 rounded-lg">
+                          <div className="text-2xl font-bold">{result.trimAngle.toFixed(2)}°</div>
+                          <div className="text-sm text-muted-foreground">Trim Açısı</div>
+                        </div>
+                        <div className="text-center p-3 bg-green-50 rounded-lg">
+                          <div className="text-2xl font-bold">{result.mct.toFixed(1)}</div>
+                          <div className="text-sm text-muted-foreground">MCT [ton.m/cm]</div>
+                        </div>
+                        <div className="text-center p-3 bg-purple-50 rounded-lg">
+                          <div className="text-2xl font-bold">{result.trimChange.toFixed(1)}</div>
+                          <div className="text-sm text-muted-foreground">Trim Değişimi [cm]</div>
+                        </div>
+                        <div className="text-center p-3 bg-orange-50 rounded-lg">
+                          <div className="text-2xl font-bold">{result.listAngle.toFixed(2)}°</div>
+                          <div className="text-sm text-muted-foreground">List Açısı</div>
+                        </div>
+                        <div className="text-center p-3 bg-red-50 rounded-lg">
+                          <div className="text-2xl font-bold">{result.listMoment.toFixed(1)}</div>
+                          <div className="text-sm text-muted-foreground">List Moment [ton.m]</div>
+                        </div>
+                        <div className="text-center p-3 bg-indigo-50 rounded-lg">
+                          <div className="text-2xl font-bold">{result.rightingMoment.toFixed(1)}</div>
+                          <div className="text-sm text-muted-foreground">Doğrultma Momenti [ton.m]</div>
+                        </div>
                       </div>
                     </div>
 

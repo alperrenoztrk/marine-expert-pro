@@ -4,7 +4,6 @@ import { Calculator, Ship, Waves, Settings, Package, Droplets, Building, AlertTr
 
 // Import ALL calculation components
 import { StabilityCalculations } from "./calculations/StabilityCalculations";
-import { TrimCalculations } from "./calculations/TrimCalculations";
 import { CargoCalculations } from "./calculations/CargoCalculations";
 import { BallastCalculations } from "./calculations/BallastCalculations";
 import { StructuralCalculations } from "./calculations/StructuralCalculations";
@@ -58,10 +57,7 @@ export const MaritimeCalculator = () => {
             <Droplets className="w-3 h-3" />
             <span>Balast</span>
           </TabsTrigger>
-          <TabsTrigger value="trim" className="text-xs flex-col gap-1 p-2">
-            <Building className="w-3 h-3" />
-            <span>Trim</span>
-          </TabsTrigger>
+
           <TabsTrigger value="structural" className="text-xs flex-col gap-1 p-2">
             <Building className="w-3 h-3" />
             <span>Yapısal</span>
@@ -108,9 +104,7 @@ export const MaritimeCalculator = () => {
           <BallastCalculations />
         </TabsContent>
         
-        <TabsContent value="trim" className="mt-4">
-          <TrimCalculations />
-        </TabsContent>
+
         
         <TabsContent value="structural" className="mt-4">
           <StructuralCalculations />
