@@ -10,68 +10,133 @@ import { Calculator, Ship, TrendingUp, Target, Waves, Package } from "lucide-rea
 import { toast } from "sonner";
 
 interface CalculationData {
-  // Temel Trim Formülleri
-  T_a: number; // Aft draft
-  T_f: number; // Forward draft
-  L: number; // Length
-  delta: number; // Displacement
-  GM_L: number; // Longitudinal metacentric height
-  B: number; // Breadth
-  W: number; // Weight
-  d: number; // Distance
+  // 📐 Temel Trim Formülleri
+  T_a: number; // Aft draft [m]
+  T_f: number; // Forward draft [m]
+  L: number; // Length [m]
+  LPP: number; // Length between perpendiculars [m]
+  delta: number; // Displacement [ton]
+  GM_L: number; // Longitudinal metacentric height [m]
+  B: number; // Breadth [m]
+  W: number; // Weight [ton]
+  d: number; // Distance [m]
+  trim_by_stern: boolean; // Trim by stern (positive) or head (negative)
   
-  // Draft Survey Formülleri
-  T_m: number; // Mid draft
-  V: number; // Volume
-  rho_sw: number; // Seawater density
-  A_wp: number; // Waterplane area
+  // ⚖️ Draft Survey Formülleri
+  T_m: number; // Mid draft [m]
+  T_port: number; // Port draft [m]
+  T_starboard: number; // Starboard draft [m]
+  V: number; // Volume [m³]
+  rho_sw: number; // Seawater density [t/m³]
+  rho_fw: number; // Freshwater density [t/m³]
+  A_wp: number; // Waterplane area [m²]
+  CB: number; // Block coefficient
+  CWP: number; // Waterplane coefficient
   
-  // Bonjean Curves
-  A_x: number; // Area at station x
-  x: number; // Station position
+  // 📊 Bonjean Curves
+  A_x: number; // Area at station x [m²]
+  x: number; // Station position [m]
+  dx: number; // Station interval [m]
+  n_stations: number; // Number of stations
   
-  // Sounding Tabloları
-  tank_L: number; // Tank length
-  tank_B: number; // Tank breadth
-  tank_h: number; // Tank height
-  r: number; // Tank radius
-  theta: number; // Trim angle
-  l: number; // Length for trim correction
+  // 🧮 Sounding Tabloları
+  tank_L: number; // Tank length [m]
+  tank_B: number; // Tank breadth [m]
+  tank_h: number; // Tank height [m]
+  r: number; // Tank radius [m]
+  theta: number; // Trim angle [°]
+  l: number; // Length for trim correction [m]
+  tank_type: 'rectangular' | 'cylindrical' | 'spherical';
+  fill_ratio: number; // Tank fill ratio (0-1)
   
-  // List Hesaplamaları
-  GM: number; // Metacentric height
+  // 🌊 List Hesaplamaları
+  GM: number; // Metacentric height [m]
+  KG: number; // Center of gravity height [m]
+  KB: number; // Center of buoyancy height [m]
+  KM: number; // Metacentric height from keel [m]
+  BM: number; // Metacentric radius [m]
+  list_direction: 'port' | 'starboard';
+  
+  // 🎯 Additional Parameters
+  g: number; // Gravitational acceleration [m/s²]
+  T: number; // Mean draft [m]
+  freeboard: number; // Freeboard [m]
+  depth: number; // Depth [m]
 }
 
 interface CalculationResults {
-  // Temel Trim Formülleri
-  trimAngle: number;
-  mct: number;
-  trimChange: number;
+  // 📐 Temel Trim Formülleri
+  trimAngle: number; // [°]
+  trimAngleRad: number; // [rad]
+  trimByStern: boolean;
+  mct: number; // [ton.m/cm]
+  trimChange: number; // [cm]
+  trimChangeM: number; // [m]
+  trimMoment: number; // [ton.m]
   
-  // Draft Survey Formülleri
-  meanDraft: number;
-  displacement: number;
-  tpc: number;
+  // ⚖️ Draft Survey Formülleri
+  meanDraft: number; // [m]
+  meanDraftCm: number; // [cm]
+  displacement: number; // [ton]
+  displacementFreshwater: number; // [ton]
+  tpc: number; // [ton/cm]
+  tpcFreshwater: number; // [ton/cm]
+  draftMark: string; // Draft mark notation
+  freeboard: number; // [m]
+  depth: number; // [m]
   
-  // Bonjean Curves
-  underwaterVolume: number;
-  lcb: number;
-  moment: number;
+  // 📊 Bonjean Curves
+  underwaterVolume: number; // [m³]
+  lcb: number; // [m]
+  moment: number; // [m³]
+  volumeDisplacement: number; // [m³]
+  areaUnderCurve: number; // [m²]
   
-  // Sounding Tabloları
-  tankVolumeRect: number;
-  tankVolumeCyl: number;
-  trimCorrection: number;
+  // 🧮 Sounding Tabloları
+  tankVolumeRect: number; // [m³]
+  tankVolumeCyl: number; // [m³]
+  tankVolumeSph: number; // [m³]
+  trimCorrection: number; // [m³]
+  tankCapacity: number; // [ton]
+  tankCapacityFreshwater: number; // [ton]
+  fillVolume: number; // [m³]
+  remainingVolume: number; // [m³]
   
-  // List Hesaplamaları
-  listAngle: number;
-  listMoment: number;
+  // 🌊 List Hesaplamaları
+  listAngle: number; // [°]
+  listAngleRad: number; // [rad]
+  listMoment: number; // [ton.m]
+  rightingMoment: number; // [ton.m]
+  listDirection: string;
+  GM_corrected: number; // [m]
+  stabilityIndex: number; // Stability index
+  listStatus: 'safe' | 'warning' | 'dangerous';
+  
+  // 🎯 Additional Results
+  trimStatus: 'excellent' | 'good' | 'acceptable' | 'poor' | 'dangerous';
+  recommendations: string[];
+  calculations: {
+    trimEfficiency: number; // [%]
+    listEfficiency: number; // [%]
+    stabilityMargin: number; // [%]
+  };
 }
 
 export const TrimListCalculations = () => {
   const [data, setData] = useState<Partial<CalculationData>>({
-    rho_sw: 1.025,
-    GM: 1.0
+    // Default values
+    rho_sw: 1.025, // Seawater density [t/m³]
+    rho_fw: 1.000, // Freshwater density [t/m³]
+    GM: 1.0, // Metacentric height [m]
+    g: 9.81, // Gravitational acceleration [m/s²]
+    CB: 0.75, // Block coefficient
+    CWP: 0.85, // Waterplane coefficient
+    dx: 1.0, // Station interval [m]
+    n_stations: 20, // Number of stations
+    tank_type: 'rectangular',
+    fill_ratio: 0.5, // Tank fill ratio
+    list_direction: 'port',
+    trim_by_stern: true
   });
   const [results, setResults] = useState<Partial<CalculationResults>>({});
   const [activeTab, setActiveTab] = useState("trim");
@@ -82,9 +147,42 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen T_a, T_f ve L değerlerini girin.");
       return;
     }
+    
     const trimAngle = Math.atan((data.T_a - data.T_f) / data.L) * (180 / Math.PI);
-    setResults(prev => ({ ...prev, trimAngle }));
-    toast.success(`Trim Açısı: ${trimAngle.toFixed(4)}°`);
+    const trimAngleRad = (trimAngle * Math.PI) / 180;
+    const trimByStern = data.T_a > data.T_f;
+    
+    // Determine trim status
+    let trimStatus: CalculationResults['trimStatus'] = 'excellent';
+    let recommendations: string[] = [];
+    
+    if (Math.abs(trimAngle) <= 0.5) {
+      trimStatus = 'excellent';
+      recommendations.push("Mükemmel trim durumu");
+    } else if (Math.abs(trimAngle) <= 1.0) {
+      trimStatus = 'good';
+      recommendations.push("İyi trim durumu");
+    } else if (Math.abs(trimAngle) <= 2.0) {
+      trimStatus = 'acceptable';
+      recommendations.push("Kabul edilebilir trim");
+    } else if (Math.abs(trimAngle) <= 3.0) {
+      trimStatus = 'poor';
+      recommendations.push("Trim açısı fazla - yük dağılımını kontrol edin");
+    } else {
+      trimStatus = 'dangerous';
+      recommendations.push("ACİL: Trim açısı çok fazla - güvenlik riski!");
+    }
+    
+    setResults(prev => ({ 
+      ...prev, 
+      trimAngle,
+      trimAngleRad,
+      trimByStern,
+      trimStatus,
+      recommendations
+    }));
+    
+    toast.success(`Trim Açısı: ${trimAngle.toFixed(4)}° - ${trimByStern ? 'Kıçtan' : 'Baştan'} trimli`);
   };
 
   const calculateMCT = () => {
@@ -92,9 +190,17 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen Δ, GM_L, B ve L değerlerini girin.");
       return;
     }
+    
     const mct = (data.delta * data.GM_L * Math.pow(data.B, 2)) / (12 * data.L);
-    setResults(prev => ({ ...prev, mct }));
-    toast.success(`MCT: ${mct.toFixed(2)} ton.m/cm`);
+    const trimMoment = data.W ? data.W * (data.d || 0) : 0;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      mct,
+      trimMoment
+    }));
+    
+    toast.success(`MCT: ${mct.toFixed(2)} ton.m/cm - Trim Moment: ${trimMoment.toFixed(1)} ton.m`);
   };
 
   const calculateTrimChange = () => {
@@ -102,9 +208,17 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen W, d değerlerini girin ve önce MCT hesaplayın.");
       return;
     }
+    
     const trimChange = (data.W * data.d) / results.mct;
-    setResults(prev => ({ ...prev, trimChange }));
-    toast.success(`Trim Değişimi: ${trimChange.toFixed(2)} cm`);
+    const trimChangeM = trimChange / 100; // Convert cm to m
+    
+    setResults(prev => ({ 
+      ...prev, 
+      trimChange,
+      trimChangeM
+    }));
+    
+    toast.success(`Trim Değişimi: ${trimChange.toFixed(2)} cm (${trimChangeM.toFixed(3)} m)`);
   };
 
   // ⚖️ Draft Survey Formülleri
@@ -113,9 +227,25 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen T_f, T_m ve T_a değerlerini girin.");
       return;
     }
+    
     const meanDraft = (data.T_f + 4 * data.T_m + data.T_a) / 6;
-    setResults(prev => ({ ...prev, meanDraft }));
-    toast.success(`Ortalama Draft: ${meanDraft.toFixed(3)} m`);
+    const meanDraftCm = meanDraft * 100;
+    const draftMark = `${meanDraft.toFixed(2)}m`;
+    
+    // Calculate freeboard and depth if available
+    const freeboard = data.depth ? data.depth - meanDraft : 0;
+    const depth = data.depth || 0;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      meanDraft,
+      meanDraftCm,
+      draftMark,
+      freeboard,
+      depth
+    }));
+    
+    toast.success(`Ortalama Draft: ${meanDraft.toFixed(3)} m (${meanDraftCm.toFixed(1)} cm)`);
   };
 
   const calculateDisplacement = () => {
@@ -123,9 +253,17 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen V ve ρ_sw değerlerini girin.");
       return;
     }
+    
     const displacement = data.V * data.rho_sw;
-    setResults(prev => ({ ...prev, displacement }));
-    toast.success(`Deplasman: ${displacement.toFixed(2)} ton`);
+    const displacementFreshwater = data.V * (data.rho_fw || 1.000);
+    
+    setResults(prev => ({ 
+      ...prev, 
+      displacement,
+      displacementFreshwater
+    }));
+    
+    toast.success(`Deplasman: ${displacement.toFixed(2)} ton (Deniz suyu) / ${displacementFreshwater.toFixed(2)} ton (Tatlı su)`);
   };
 
   const calculateTPC = () => {
@@ -133,21 +271,39 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen A_wp ve ρ_sw değerlerini girin.");
       return;
     }
+    
     const tpc = (data.A_wp * data.rho_sw) / 100;
-    setResults(prev => ({ ...prev, tpc }));
-    toast.success(`TPC: ${tpc.toFixed(3)} ton/cm`);
+    const tpcFreshwater = (data.A_wp * (data.rho_fw || 1.000)) / 100;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      tpc,
+      tpcFreshwater
+    }));
+    
+    toast.success(`TPC: ${tpc.toFixed(3)} ton/cm (Deniz suyu) / ${tpcFreshwater.toFixed(3)} ton/cm (Tatlı su)`);
   };
 
   // 📊 Bonjean Curves
   const calculateUnderwaterVolume = () => {
-    if (!data.A_x) {
-      toast.error("Lütfen A(x) değerini girin.");
+    if (!data.A_x || !data.dx || !data.n_stations) {
+      toast.error("Lütfen A(x), dx ve n_stations değerlerini girin.");
       return;
     }
-    // Simplified calculation: V = ∫ A(x) dx ≈ A(x) × dx
-    const underwaterVolume = data.A_x * 1; // Assuming dx = 1
-    setResults(prev => ({ ...prev, underwaterVolume }));
-    toast.success(`Su Altı Hacim: ${underwaterVolume.toFixed(2)} m³`);
+    
+    // Enhanced calculation: V = ∫ A(x) dx ≈ Σ A(x) × dx
+    const underwaterVolume = data.A_x * data.dx * data.n_stations;
+    const volumeDisplacement = underwaterVolume * (data.rho_sw || 1.025);
+    const areaUnderCurve = data.A_x * data.dx;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      underwaterVolume,
+      volumeDisplacement,
+      areaUnderCurve
+    }));
+    
+    toast.success(`Su Altı Hacim: ${underwaterVolume.toFixed(2)} m³ - Deplasman: ${volumeDisplacement.toFixed(2)} ton`);
   };
 
   const calculateLCB = () => {
@@ -155,9 +311,17 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen x, A(x) değerlerini girin ve önce Su Altı Hacim hesaplayın.");
       return;
     }
+    
     const lcb = (data.x * data.A_x) / results.underwaterVolume;
-    setResults(prev => ({ ...prev, lcb }));
-    toast.success(`LCB: ${lcb.toFixed(2)} m`);
+    const moment = Math.pow(data.x, 2) * data.A_x;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      lcb,
+      moment
+    }));
+    
+    toast.success(`LCB: ${lcb.toFixed(2)} m - Moment: ${moment.toFixed(2)} m³`);
   };
 
   const calculateMoment = () => {
@@ -176,9 +340,23 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen tank L, B ve h değerlerini girin.");
       return;
     }
+    
     const tankVolumeRect = data.tank_L * data.tank_B * data.tank_h;
-    setResults(prev => ({ ...prev, tankVolumeRect }));
-    toast.success(`Dikdörtgen Tank Hacmi: ${tankVolumeRect.toFixed(2)} m³`);
+    const tankCapacity = tankVolumeRect * (data.rho_sw || 1.025);
+    const tankCapacityFreshwater = tankVolumeRect * (data.rho_fw || 1.000);
+    const fillVolume = tankVolumeRect * (data.fill_ratio || 0.5);
+    const remainingVolume = tankVolumeRect - fillVolume;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      tankVolumeRect,
+      tankCapacity,
+      tankCapacityFreshwater,
+      fillVolume,
+      remainingVolume
+    }));
+    
+    toast.success(`Dikdörtgen Tank Hacmi: ${tankVolumeRect.toFixed(2)} m³ - Kapasite: ${tankCapacity.toFixed(2)} ton`);
   };
 
   const calculateTankVolumeCyl = () => {
@@ -186,9 +364,47 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen r ve h değerlerini girin.");
       return;
     }
+    
     const tankVolumeCyl = Math.PI * Math.pow(data.r, 2) * data.tank_h;
-    setResults(prev => ({ ...prev, tankVolumeCyl }));
-    toast.success(`Silindirik Tank Hacmi: ${tankVolumeCyl.toFixed(2)} m³`);
+    const tankCapacity = tankVolumeCyl * (data.rho_sw || 1.025);
+    const tankCapacityFreshwater = tankVolumeCyl * (data.rho_fw || 1.000);
+    const fillVolume = tankVolumeCyl * (data.fill_ratio || 0.5);
+    const remainingVolume = tankVolumeCyl - fillVolume;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      tankVolumeCyl,
+      tankCapacity,
+      tankCapacityFreshwater,
+      fillVolume,
+      remainingVolume
+    }));
+    
+    toast.success(`Silindirik Tank Hacmi: ${tankVolumeCyl.toFixed(2)} m³ - Kapasite: ${tankCapacity.toFixed(2)} ton`);
+  };
+
+  const calculateTankVolumeSph = () => {
+    if (!data.r) {
+      toast.error("Lütfen r değerini girin.");
+      return;
+    }
+    
+    const tankVolumeSph = (4/3) * Math.PI * Math.pow(data.r, 3);
+    const tankCapacity = tankVolumeSph * (data.rho_sw || 1.025);
+    const tankCapacityFreshwater = tankVolumeSph * (data.rho_fw || 1.000);
+    const fillVolume = tankVolumeSph * (data.fill_ratio || 0.5);
+    const remainingVolume = tankVolumeSph - fillVolume;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      tankVolumeSph,
+      tankCapacity,
+      tankCapacityFreshwater,
+      fillVolume,
+      remainingVolume
+    }));
+    
+    toast.success(`Küresel Tank Hacmi: ${tankVolumeSph.toFixed(2)} m³ - Kapasite: ${tankCapacity.toFixed(2)} ton`);
   };
 
   const calculateTrimCorrection = () => {
@@ -208,19 +424,50 @@ export const TrimListCalculations = () => {
       toast.error("Lütfen W, d, Δ ve GM değerlerini girin.");
       return;
     }
+    
     const listAngle = Math.atan((data.W * data.d) / (data.delta * data.GM)) * (180 / Math.PI);
-    setResults(prev => ({ ...prev, listAngle }));
-    toast.success(`List Açısı: ${listAngle.toFixed(4)}°`);
+    const listAngleRad = (listAngle * Math.PI) / 180;
+    const listDirection = data.list_direction || 'port';
+    const GM_corrected = data.GM || 1.0;
+    const stabilityIndex = GM_corrected / (data.delta || 25000);
+    
+    // Determine list status
+    let listStatus: CalculationResults['listStatus'] = 'safe';
+    if (Math.abs(listAngle) > 15) {
+      listStatus = 'dangerous';
+    } else if (Math.abs(listAngle) > 10) {
+      listStatus = 'warning';
+    }
+    
+    setResults(prev => ({ 
+      ...prev, 
+      listAngle,
+      listAngleRad,
+      listDirection,
+      GM_corrected,
+      stabilityIndex,
+      listStatus
+    }));
+    
+    toast.success(`List Açısı: ${listAngle.toFixed(4)}° - ${listDirection} tarafına`);
   };
 
   const calculateListMoment = () => {
-    if (!data.W || !data.d) {
-      toast.error("Lütfen W ve d değerlerini girin.");
+    if (!data.W || !data.d || !data.delta || !data.GM) {
+      toast.error("Lütfen W, d, Δ ve GM değerlerini girin.");
       return;
     }
+    
     const listMoment = data.W * data.d;
-    setResults(prev => ({ ...prev, listMoment }));
-    toast.success(`List Moment: ${listMoment.toFixed(2)} ton.m`);
+    const rightingMoment = data.delta * data.GM * Math.sin((results.listAngle || 0) * Math.PI / 180);
+    
+    setResults(prev => ({ 
+      ...prev, 
+      listMoment,
+      rightingMoment
+    }));
+    
+    toast.success(`List Moment: ${listMoment.toFixed(2)} ton.m - Doğrultma Momenti: ${rightingMoment.toFixed(2)} ton.m`);
   };
 
   return (
