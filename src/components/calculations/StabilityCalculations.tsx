@@ -97,6 +97,25 @@ interface StabilityData {
   Q_cross: number; // Cross flooding rate [m³/min]
   T_wave: number; // Wave period [s]
   stability_range: number; // Stability range [°]
+  
+  // 🌪️ Wind and Weather Stability - Additional
+  righting_moment: number; // Righting moment [kN.m]
+  area_30to40: number; // Area 30-40° [m.rad]
+  
+  // 🛡️ Damage Stability - Additional
+  KG_old: number; // Original KG [m]
+  delta_old: number; // Original displacement [ton]
+  KM_new: number; // New KM after flooding [m]
+  
+  // 🌾 Grain Stability - Additional
+  phi_allowable: number; // Allowable heel angle [°]
+  GM_standard: number; // Standard GM [m]
+  GM_min: number; // Minimum GM [m]
+  
+  // 📈 GZ Curve Generation - Additional
+  phi_max: number; // Maximum angle for energy calculation [°]
+  reduction_factor: number; // Deck edge reduction factor
+  gz_reduced: number; // Reduced GZ after deck edge immersion [m]
 }
 
 interface StabilityResults {
@@ -171,6 +190,10 @@ interface StabilityResults {
   gz_curve_points: Array<{angle: number, gz: number}>;
   phi_max_gz_calculated: number; // [°]
   gz_max_calculated: number; // [m]
+  gz_reduced_calculated: number; // [m]
+  area_calculated: number; // [m.rad]
+  dynamic_stability_calculated: number; // [m.rad]
+  righting_moment_calculated: number; // [kN.m]
   
   // 🎯 Additional Results
   stability_status: 'excellent' | 'good' | 'acceptable' | 'poor' | 'dangerous';
@@ -180,6 +203,23 @@ interface StabilityResults {
     safety_margin: number; // [%]
     compliance_score: number; // [%]
   };
+  
+  // 🌪️ Wind and Weather Stability - Additional Results
+  area_30to40_calculated: number; // [m.rad]
+  area_30to40_compliance: boolean;
+  
+  // 🛡️ Damage Stability - Additional Results
+  KG_old_calculated: number; // [m]
+  delta_old_calculated: number; // [ton]
+  KM_new_calculated: number; // [m]
+  
+  // 🌾 Grain Stability - Additional Results
+  phi_allowable_calculated: number; // [°]
+  grain_stability_criterion: boolean;
+  
+  // 🔬 Advanced Stability - Additional Results
+  GM_standard_calculated: number; // [m]
+  GM_min_calculated: number; // [m]
 }
 
 export const StabilityCalculations = () => {
@@ -439,10 +479,12 @@ export const StabilityCalculations = () => {
     
     setResults(prev => ({ 
       ...prev, 
-      area_30to40
+      area_30to40,
+      area_30to40_calculated: area_30to40,
+      area_30to40_compliance: area_30to40 >= 1.719
     }));
     
-    toast.success(`Area 30-40°: ${area_30to40.toFixed(3)} m.rad`);
+    toast.success(`Area 30-40°: ${area_30to40.toFixed(3)} m.rad - ${area_30to40 >= 1.719 ? 'UYGUN' : 'UYGUN DEĞİL'}`);
   };
 
   const calculateIMOCompliance = () => {
@@ -735,6 +777,153 @@ export const StabilityCalculations = () => {
     }));
     
     toast.success(`Cross Flooding Time: ${t_cross.toFixed(1)} min`);
+  };
+
+  // 🌪️ Area Requirement 30-40°
+  const calculateAreaRequirement = () => {
+    if (!results.area_30to40_calculated) {
+      toast.error("Lütfen önce Area 30-40° hesaplayın.");
+      return;
+    }
+    
+    const area_requirement = results.area_30to40_calculated >= 1.719;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      area_30to40_compliance: area_requirement
+    }));
+    
+    toast.success(`Area Requirement 30-40°: ${results.area_30to40_calculated.toFixed(3)} m.rad - ${area_requirement ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+  };
+
+  // 🛡️ Downflooding Angle
+  const calculateDownfloodingAngle = () => {
+    if (!data.h_vent || !data.T || !data.B) {
+      toast.error("Lütfen h_vent, T ve B değerlerini girin.");
+      return;
+    }
+    
+    // φ_down = arctan((h_vent - T) / (B/2))
+    const phi_down = Math.atan((data.h_vent - data.T) / (data.B / 2)) * (180 / Math.PI);
+    
+    setResults(prev => ({ 
+      ...prev, 
+      phi_down
+    }));
+    
+    toast.success(`Downflooding Angle: ${phi_down.toFixed(2)}°`);
+  };
+
+  // 🛡️ Equalized Angle
+  const calculateEqualizedAngle = () => {
+    if (!results.heel_angle || !results.t_cross) {
+      toast.error("Lütfen önce Heel Angle ve Cross Flooding Time hesaplayın.");
+      return;
+    }
+    
+    // φ_eq = φ_heel × (1 - e^(-t/t_cross))
+    const phi_eq = results.heel_angle * (1 - Math.exp(-1)); // Simplified with t = t_cross
+    
+    setResults(prev => ({ 
+      ...prev, 
+      phi_eq
+    }));
+    
+    toast.success(`Equalized Angle: ${phi_eq.toFixed(2)}°`);
+  };
+
+  // 🌾 Grain Allowable Heel
+  const calculateGrainAllowableHeel = () => {
+    if (!data.delta || !data.B || !results.GM_corrected) {
+      toast.error("Lütfen Δ, B ve GM değerlerini girin.");
+      return;
+    }
+    
+    // φ_allowable = arctan(M_grain / (Δ × GM))
+    const M_grain = data.delta * 0.05 * (data.B / 2);
+    const phi_allowable = Math.atan(M_grain / (data.delta * results.GM_corrected)) * (180 / Math.PI);
+    const grain_stability_criterion = phi_allowable <= 12;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      phi_allowable_calculated: phi_allowable,
+      grain_stability_criterion
+    }));
+    
+    toast.success(`Grain Allowable Heel: ${phi_allowable.toFixed(2)}° - ${grain_stability_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+  };
+
+  // 🔬 Energy to Heel
+  const calculateEnergyToHeel = () => {
+    if (!results.GZ_small || !data.phi_max) {
+      toast.error("Lütfen önce GZ hesaplayın ve φ_max değerini girin.");
+      return;
+    }
+    
+    // E_heel = ∫GZ dφ (0 to φ_max)
+    const phi_max_rad = (data.phi_max * Math.PI) / 180;
+    const E_heel = results.GZ_small * phi_max_rad; // Simplified integration
+    
+    setResults(prev => ({ 
+      ...prev, 
+      E_heel_calculated: E_heel
+    }));
+    
+    toast.success(`Energy to Heel: ${E_heel.toFixed(3)} m.rad`);
+  };
+
+  // 🔬 GM Standard and Min
+  const calculateGMStandards = () => {
+    if (!results.GM_corrected) {
+      toast.error("Lütfen önce GM hesaplayın.");
+      return;
+    }
+    
+    const GM_standard = 1.0; // Standard GM value
+    const GM_min = 0.15; // Minimum GM value
+    const SI = (results.GM_corrected / GM_standard) * 100;
+    const SM = ((results.GM_corrected - GM_min) / GM_min) * 100;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      GM_standard_calculated: GM_standard,
+      GM_min_calculated: GM_min,
+      SI_calculated: SI,
+      SM_calculated: SM
+    }));
+    
+    toast.success(`GM Standard: ${GM_standard}m - GM Min: ${GM_min}m - SI: ${SI.toFixed(1)}% - SM: ${SM.toFixed(1)}%`);
+  };
+
+  // 📈 GZ Curve Analysis
+  const calculateGZCurveAnalysis = () => {
+    if (!results.gz_curve_points || !results.gz_max_calculated) {
+      toast.error("Lütfen önce GZ Curve hesaplayın.");
+      return;
+    }
+    
+    // Calculate area under curve
+    let area = 0;
+    for (let i = 0; i < results.gz_curve_points.length - 1; i++) {
+      const dphi = (results.gz_curve_points[i + 1].angle - results.gz_curve_points[i].angle) * (Math.PI / 180);
+      const gz_avg = (results.gz_curve_points[i].gz + results.gz_curve_points[i + 1].gz) / 2;
+      area += gz_avg * dphi;
+    }
+    
+    // Calculate dynamic stability
+    const dynamic_stability = area;
+    
+    // Calculate righting moment
+    const righting_moment = results.gz_max_calculated * (data.delta || 25000) * (data.g || 9.81) / 1000;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      area_calculated: area,
+      dynamic_stability_calculated: dynamic_stability,
+      righting_moment_calculated: righting_moment
+    }));
+    
+    toast.success(`GZ Curve Analysis - Area: ${area.toFixed(3)} m.rad - Dynamic Stability: ${dynamic_stability.toFixed(3)} m.rad - Righting Moment: ${righting_moment.toFixed(1)} kN.m`);
   };
 
   return (
@@ -1281,6 +1470,30 @@ export const StabilityCalculations = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Area Requirement: Area_30to40 ≥ 1.719 m.rad
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateAreaRequirement} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Area Requirement Hesapla
+                    </Button>
+                    {results.area_30to40_compliance !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.area_30to40_calculated?.toFixed(3) || '0.000'} m.rad</div>
+                        <div className="text-sm text-muted-foreground">Area 30-40°</div>
+                        <Badge className={`mt-2 ${results.area_30to40_compliance ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_30to40_compliance ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
@@ -1456,6 +1669,52 @@ export const StabilityCalculations = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Grain Allowable Heel: φ_allowable = arctan(M_grain / (Δ × GM))
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="delta_allowable">Δ [ton]</Label>
+                        <Input
+                          id="delta_allowable"
+                          type="number"
+                          value={data.delta || ''}
+                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
+                          placeholder="25000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="B_allowable">B [m]</Label>
+                        <Input
+                          id="B_allowable"
+                          type="number"
+                          value={data.B || ''}
+                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
+                          placeholder="25"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateGrainAllowableHeel} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Grain Allowable Heel Hesapla
+                    </Button>
+                    {results.phi_allowable_calculated !== undefined && (
+                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.phi_allowable_calculated.toFixed(2)}°</div>
+                        <div className="text-sm text-muted-foreground">Allowable Heel</div>
+                        <Badge className={`mt-2 ${results.grain_stability_criterion ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.grain_stability_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
@@ -1533,6 +1792,94 @@ export const StabilityCalculations = () => {
                           <div className="text-lg font-semibold mt-1">@ {results.phi_max_gz_calculated}°</div>
                         )}
                         <div className="text-sm mt-2">GZ Eğrisi 0-90° arası oluşturuldu</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Energy to Heel: E_heel = ∫GZ dφ (0 to φ_max)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="phi_max">φ_max [°]</Label>
+                      <Input
+                        id="phi_max"
+                        type="number"
+                        value={data.phi_max || ''}
+                        onChange={(e) => setData({...data, phi_max: parseFloat(e.target.value)})}
+                        placeholder="30"
+                      />
+                    </div>
+                    <Button onClick={calculateEnergyToHeel} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Energy to Heel Hesapla
+                    </Button>
+                    {results.E_heel_calculated !== undefined && (
+                      <div className="text-center p-3 bg-indigo-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.E_heel_calculated.toFixed(3)} m.rad</div>
+                        <div className="text-sm text-muted-foreground">Energy to Heel</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      GM Standards: SI = (GM_corrected / GM_standard) × 100
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateGMStandards} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      GM Standards Hesapla
+                    </Button>
+                    {results.GM_standard_calculated !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.GM_standard_calculated.toFixed(2)} m</div>
+                        <div className="text-sm text-muted-foreground">GM Standard</div>
+                        {results.GM_min_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">GM Min: {results.GM_min_calculated.toFixed(2)} m</div>
+                        )}
+                        {results.SI_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">SI: {results.SI_calculated.toFixed(1)}%</div>
+                        )}
+                        {results.SM_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">SM: {results.SM_calculated.toFixed(1)}%</div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      GZ Curve Analysis: Area, Dynamic Stability, Righting Moment
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateGZCurveAnalysis} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      GZ Curve Analysis Hesapla
+                    </Button>
+                    {results.area_calculated !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.area_calculated.toFixed(3)} m.rad</div>
+                        <div className="text-sm text-muted-foreground">Area Under Curve</div>
+                        {results.dynamic_stability_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">Dynamic Stability: {results.dynamic_stability_calculated.toFixed(3)} m.rad</div>
+                        )}
+                        {results.righting_moment_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">Righting Moment: {results.righting_moment_calculated.toFixed(1)} kN.m</div>
+                        )}
                       </div>
                     )}
                   </CardContent>
@@ -1679,6 +2026,80 @@ export const StabilityCalculations = () => {
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.t_cross.toFixed(1)} min</div>
                         <div className="text-sm text-muted-foreground">Cross Flooding Time</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Downflooding Angle: φ_down = arctan((h_vent - T) / (B/2))
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="h_vent_down">h_vent [m]</Label>
+                        <Input
+                          id="h_vent_down"
+                          type="number"
+                          value={data.h_vent || ''}
+                          onChange={(e) => setData({...data, h_vent: parseFloat(e.target.value)})}
+                          placeholder="15"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="T_down">T [m]</Label>
+                        <Input
+                          id="T_down"
+                          type="number"
+                          value={data.T || ''}
+                          onChange={(e) => setData({...data, T: parseFloat(e.target.value)})}
+                          placeholder="8"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="B_down">B [m]</Label>
+                        <Input
+                          id="B_down"
+                          type="number"
+                          value={data.B || ''}
+                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
+                          placeholder="25"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateDownfloodingAngle} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Downflooding Angle Hesapla
+                    </Button>
+                    {results.phi_down !== undefined && (
+                      <div className="text-center p-3 bg-red-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.phi_down.toFixed(2)}°</div>
+                        <div className="text-sm text-muted-foreground">Downflooding Angle</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Equalized Angle: φ_eq = φ_heel × (1 - e^(-t/t_cross))
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateEqualizedAngle} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Equalized Angle Hesapla
+                    </Button>
+                    {results.phi_eq !== undefined && (
+                      <div className="text-center p-3 bg-orange-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.phi_eq.toFixed(2)}°</div>
+                        <div className="text-sm text-muted-foreground">Equalized Angle</div>
                       </div>
                     )}
                   </CardContent>
