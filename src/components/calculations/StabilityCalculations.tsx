@@ -116,6 +116,12 @@ interface StabilityData {
   phi_max: number; // Maximum angle for energy calculation [°]
   reduction_factor: number; // Deck edge reduction factor
   gz_reduced: number; // Reduced GZ after deck edge immersion [m]
+  
+  // 🚢 Doğrultucu Moment - Additional
+  H: number; // Height of vessel [m]
+  heel_angle: number; // Heel angle for righting moment [°]
+  draft_calculated: number; // Calculated draft [m]
+  GM_calculated: number; // Calculated GM for righting moment [m]
 }
 
 interface StabilityResults {
@@ -220,6 +226,11 @@ interface StabilityResults {
   // 🔬 Advanced Stability - Additional Results
   GM_standard_calculated: number; // [m]
   GM_min_calculated: number; // [m]
+  
+  // 🚢 Doğrultucu Moment - Additional Results
+  draft_calculated: number; // [m]
+  GM_calculated: number; // [m]
+  righting_moment_special: number; // [ton.m]
 }
 
 export const StabilityCalculations = () => {
@@ -926,6 +937,50 @@ export const StabilityCalculations = () => {
     toast.success(`GZ Curve Analysis - Area: ${area.toFixed(3)} m.rad - Dynamic Stability: ${dynamic_stability.toFixed(3)} m.rad - Righting Moment: ${righting_moment.toFixed(1)} kN.m`);
   };
 
+  // 🚢 Doğrultucu Moment Hesaplama
+  const calculateRightingMoment = () => {
+    if (!data.L || !data.B || !data.H || !data.delta || !data.heel_angle) {
+      toast.error("Lütfen L, B, H, Δ ve yatma açısı değerlerini girin.");
+      return;
+    }
+    
+    // 1. Draft hesaplama (A = L × B × d × density)
+    const density = data.rho_sw || 1.025; // t/m³
+    const draft = data.delta / (data.L * data.B * density);
+    
+    // 2. BM hesaplama (BM = B² / (12 × d))
+    const BM = Math.pow(data.B, 2) / (12 * draft);
+    
+    // 3. KB hesaplama (KB = d / 2)
+    const KB = draft / 2;
+    
+    // 4. KM hesaplama (KM = BM + KB)
+    const KM = BM + KB;
+    
+    // 5. KG hesaplama (KG = H / 2)
+    const KG = data.H / 2;
+    
+    // 6. GM hesaplama (GM = KM - KG)
+    const GM = KM - KG;
+    
+    // 7. Doğrultucu Moment = Δ × GM × tan(φ)
+    const heel_angle_rad = (data.heel_angle * Math.PI) / 180;
+    const righting_moment = data.delta * GM * Math.tan(heel_angle_rad);
+    
+    setResults(prev => ({ 
+      ...prev, 
+      draft_calculated: draft,
+      BM_calculated: BM,
+      KB_calculated: KB,
+      KM_calculated: KM,
+      KG_calculated: KG,
+      GM_calculated: GM,
+      righting_moment_special: righting_moment
+    }));
+    
+    toast.success(`Doğrultucu Moment: ${righting_moment.toFixed(1)} ton.m - GM: ${GM.toFixed(3)}m - Draft: ${draft.toFixed(3)}m`);
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -1200,6 +1255,97 @@ export const StabilityCalculations = () => {
                       <div className="text-center p-3 bg-indigo-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.KG_calculated.toFixed(3)} m</div>
                         <div className="text-sm text-muted-foreground">KG</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Ship className="h-5 w-5" />
+                      Doğrultucu Moment: Δ × GM × tan(φ)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="L_righting">L [m]</Label>
+                        <Input
+                          id="L_righting"
+                          type="number"
+                          value={data.L || ''}
+                          onChange={(e) => setData({...data, L: parseFloat(e.target.value)})}
+                          placeholder="30"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="B_righting">B [m]</Label>
+                        <Input
+                          id="B_righting"
+                          type="number"
+                          value={data.B || ''}
+                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
+                          placeholder="8"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="H_righting">H [m]</Label>
+                        <Input
+                          id="H_righting"
+                          type="number"
+                          value={data.H || ''}
+                          onChange={(e) => setData({...data, H: parseFloat(e.target.value)})}
+                          placeholder="4"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="delta_righting">Δ [ton]</Label>
+                        <Input
+                          id="delta_righting"
+                          type="number"
+                          value={data.delta || ''}
+                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
+                          placeholder="587"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="heel_angle">Yatma Açısı [°]</Label>
+                        <Input
+                          id="heel_angle"
+                          type="number"
+                          step="0.1"
+                          value={data.heel_angle || ''}
+                          onChange={(e) => setData({...data, heel_angle: parseFloat(e.target.value)})}
+                          placeholder="5"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rho_sw_righting">ρ_sw [t/m³]</Label>
+                        <Input
+                          id="rho_sw_righting"
+                          type="number"
+                          step="0.001"
+                          value={data.rho_sw || ''}
+                          onChange={(e) => setData({...data, rho_sw: parseFloat(e.target.value)})}
+                          placeholder="1.025"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateRightingMoment} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Doğrultucu Moment Hesapla
+                    </Button>
+                    {results.righting_moment_special !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.righting_moment_special.toFixed(1)} ton.m</div>
+                        <div className="text-sm text-muted-foreground">Doğrultucu Moment</div>
+                        {results.GM_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">GM: {results.GM_calculated.toFixed(3)} m</div>
+                        )}
+                        {results.draft_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">Draft: {results.draft_calculated.toFixed(3)} m</div>
+                        )}
                       </div>
                     )}
                   </CardContent>
