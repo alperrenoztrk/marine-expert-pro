@@ -299,6 +299,14 @@ const Stability = () => {
                     <strong>New KG after Flooding:</strong><br/>
                     KG_new = (KG_old × Δ_old + KG_flooded × Δ_flooded) / Δ_new
                   </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Cross Flooding Time:</strong><br/>
+                    t_cross = V_compartment / Q_cross
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Downflooding Angle:</strong><br/>
+                    φ_down = arctan((h_vent - T) / (B/2))
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
@@ -309,31 +317,187 @@ const Stability = () => {
                     <strong>Heel Angle:</strong><br/>
                     φ_heel = arctan(M_flooded / (Δ_new × GM_residual))
                   </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Equalized Angle:</strong><br/>
+                    φ_eq = φ_heel × (1 - e^(-t/t_cross))
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Survival Factor:</strong><br/>
+                    SF = GM_residual / GM_original
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Grain Stability */}
+            <div>
+              <h3 className="text-lg font-semibold text-orange-700 mb-3 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                🌾 Grain Stability (SOLAS Ch. VI)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Grain Shift Moment:</strong><br/>
+                    M_grain = Δ × 0.05 × B/2
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Allowable Heel:</strong><br/>
+                    φ_allowable = arctan(M_grain / (Δ × GM))
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Grain Stability Criterion:</strong><br/>
+                    φ_allowable ≤ 12°
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Grain Heel Angle:</strong><br/>
+                    φ_grain = arctan(M_grain / (Δ × GM_corrected))
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Grain Safety Factor:</strong><br/>
+                    SF_grain = 12° / φ_grain
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Grain Compliance:</strong><br/>
+                    φ_grain ≤ 12° (SOLAS Requirement)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Advanced Stability */}
+            <div>
+              <h3 className="text-lg font-semibold text-teal-700 mb-3 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                🔬 Advanced Stability Analysis
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Rolling Period:</strong><br/>
+                    T_roll = 2π × √(k² / (g × GM))
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Natural Period:</strong><br/>
+                    T_natural = 2π × √(k² / (g × GM_corrected))
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Energy to Heel:</strong><br/>
+                    E_heel = ∫GZ dφ (0 to φ_max)
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Stability Index:</strong><br/>
+                    SI = (GM_corrected / GM_standard) × 100
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Safety Margin:</strong><br/>
+                    SM = (GM_corrected - GM_min) / GM_min × 100
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Resonance Check:</strong><br/>
+                    Resonance = T_wave / T_roll ≈ 1
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Stability Range:</strong><br/>
+                    Range = φ_vanishing - φ_list
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Stability Quality:</strong><br/>
+                    Q = Area_0to30 / (GM_corrected × 30°)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* GZ Curve Generation */}
+            <div>
+              <h3 className="text-lg font-semibold text-purple-700 mb-3 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                📈 GZ Curve Generation
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Small Angles (φ ≤ 15°):</strong><br/>
+                    GZ = GM × sin(φ)
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Large Angles (φ > 15°):</strong><br/>
+                    GZ = (KM - KG) × sin(φ)
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Deck Edge Immersion:</strong><br/>
+                    GZ_reduced = GZ × (1 - reduction_factor)
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Area Calculation:</strong><br/>
+                    Area = Σ(GZ_i × Δφ_i)
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Dynamic Stability:</strong><br/>
+                    DS = ∫GZ dφ (0 to φ)
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Righting Moment:</strong><br/>
+                    RM = GZ × Δ × g
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Stability Curve:</strong><br/>
+                    GZ = f(φ, GM, KM, KG, B, T)
+                  </div>
+                  <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
+                    <strong>Curve Analysis:</strong><br/>
+                    Max GZ, Angle of Max GZ, Range
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Symbols Legend */}
-            <div className="mt-6 p-4 bg-blue-50 cyberpunk:bg-gray-800 rounded-lg">
-              <h4 className="font-semibold mb-2">📚 Semboller:</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                <div><strong>GM:</strong> Metacentric height</div>
-                <div><strong>KM:</strong> Metacentric height from keel</div>
-                <div><strong>KG:</strong> Center of gravity height</div>
-                <div><strong>KB:</strong> Center of buoyancy height</div>
-                <div><strong>BM:</strong> Metacentric radius</div>
-                <div><strong>GZ:</strong> Righting arm</div>
-                <div><strong>φ:</strong> Heel angle</div>
-                <div><strong>Δ:</strong> Displacement</div>
-                <div><strong>FSC:</strong> Free surface correction</div>
-                <div><strong>Ixx:</strong> Moment of inertia</div>
-                <div><strong>ρ:</strong> Density</div>
-                <div><strong>g:</strong> Gravitational acceleration</div>
-                <div><strong>T:</strong> Draft</div>
-                <div><strong>B:</strong> Breadth</div>
-                <div><strong>L:</strong> Length</div>
+                          <div className="mt-6 p-4 bg-blue-50 cyberpunk:bg-gray-800 rounded-lg">
+                <h4 className="font-semibold mb-2">📚 Semboller:</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                  <div><strong>GM:</strong> Metacentric height</div>
+                  <div><strong>KM:</strong> Metacentric height from keel</div>
+                  <div><strong>KG:</strong> Center of gravity height</div>
+                  <div><strong>KB:</strong> Center of buoyancy height</div>
+                  <div><strong>BM:</strong> Metacentric radius</div>
+                  <div><strong>GZ:</strong> Righting arm</div>
+                  <div><strong>φ:</strong> Heel angle</div>
+                  <div><strong>Δ:</strong> Displacement</div>
+                  <div><strong>FSC:</strong> Free surface correction</div>
+                  <div><strong>Ixx:</strong> Moment of inertia</div>
+                  <div><strong>ρ:</strong> Density</div>
+                  <div><strong>g:</strong> Gravitational acceleration</div>
+                  <div><strong>T:</strong> Draft</div>
+                  <div><strong>B:</strong> Breadth</div>
+                  <div><strong>L:</strong> Length</div>
+                  <div><strong>k:</strong> Radius of gyration</div>
+                  <div><strong>T_roll:</strong> Rolling period</div>
+                  <div><strong>T_natural:</strong> Natural period</div>
+                  <div><strong>E_heel:</strong> Energy to heel</div>
+                  <div><strong>SI:</strong> Stability index</div>
+                  <div><strong>SM:</strong> Safety margin</div>
+                  <div><strong>Q_cross:</strong> Cross flooding rate</div>
+                  <div><strong>h_vent:</strong> Vent height</div>
+                  <div><strong>M_grain:</strong> Grain shift moment</div>
+                  <div><strong>SF:</strong> Survival factor</div>
+                  <div><strong>φ_eq:</strong> Equalized angle</div>
+                  <div><strong>φ_down:</strong> Downflooding angle</div>
+                </div>
               </div>
-            </div>
 
           </CardContent>
         </Card>

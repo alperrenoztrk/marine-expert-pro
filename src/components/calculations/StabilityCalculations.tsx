@@ -62,6 +62,30 @@ interface StabilityData {
   KG_flooded: number; // KG of flooded compartment [m]
   delta_flooded: number; // Displacement of flooded water [ton]
   M_flooded: number; // Flooding moment [ton.m]
+  Q_cross: number; // Cross flooding rate [m³/min]
+  h_vent: number; // Vent height [m]
+  t_cross: number; // Cross flooding time [min]
+  
+  // 🌾 Grain Stability
+  M_grain: number; // Grain shift moment [ton.m]
+  phi_grain: number; // Grain heel angle [°]
+  SF_grain: number; // Grain safety factor
+  
+  // 🔬 Advanced Stability
+  k: number; // Radius of gyration [m]
+  T_roll: number; // Rolling period [s]
+  T_natural: number; // Natural period [s]
+  E_heel: number; // Energy to heel [m.rad]
+  SI: number; // Stability index [%]
+  SM: number; // Safety margin [%]
+  T_wave: number; // Wave period [s]
+  stability_range: number; // Stability range [°]
+  stability_quality: number; // Stability quality factor
+  
+  // 📈 GZ Curve Generation
+  phi_max_gz: number; // Angle of maximum GZ [°]
+  gz_max: number; // Maximum GZ [m]
+  reduction_factor: number; // Deck edge reduction factor
   
   // 🎯 Additional Parameters
   rho_sw: number; // Seawater density [t/m³]
@@ -116,6 +140,31 @@ interface StabilityResults {
   delta_new: number; // [ton]
   GM_residual: number; // [m]
   heel_angle: number; // [°]
+  t_cross: number; // [min]
+  phi_eq: number; // [°]
+  phi_down: number; // [°]
+  survival_factor: number; // [%]
+  
+  // 🌾 Grain Stability
+  M_grain_calculated: number; // [ton.m]
+  phi_grain_calculated: number; // [°]
+  SF_grain_calculated: number;
+  grain_compliance: boolean;
+  
+  // 🔬 Advanced Stability
+  T_roll_calculated: number; // [s]
+  T_natural_calculated: number; // [s]
+  E_heel_calculated: number; // [m.rad]
+  SI_calculated: number; // [%]
+  SM_calculated: number; // [%]
+  resonance_check: boolean;
+  stability_range_calculated: number; // [°]
+  stability_quality_calculated: number;
+  
+  // 📈 GZ Curve Generation
+  gz_curve_points: Array<{angle: number, gz: number}>;
+  phi_max_gz_calculated: number; // [°]
+  gz_max_calculated: number; // [m]
   
   // 🎯 Additional Results
   stability_status: 'excellent' | 'good' | 'acceptable' | 'poor' | 'dangerous';
@@ -435,16 +484,131 @@ export const StabilityCalculations = () => {
     const GM_residual = (data.KM || 10) - KG_new;
     const heel_angle = Math.atan(data.M_flooded / (delta_new * GM_residual)) * (180 / Math.PI);
     
+    // Cross flooding calculations
+    const Q_cross = data.Q_cross || 50; // Default 50 m³/min
+    const t_cross = data.V_compartment / Q_cross;
+    const phi_eq = heel_angle * (1 - Math.exp(-1)); // Simplified equalization
+    const phi_down = Math.atan(((data.h_vent || 15) - (data.T || 8)) / ((data.B || 25) / 2)) * (180 / Math.PI);
+    const survival_factor = (GM_residual / (results.GM_corrected || 1.0)) * 100;
+    
     setResults(prev => ({ 
       ...prev, 
       flooded_volume,
       delta_new,
       KG_new,
       GM_residual,
-      heel_angle
+      heel_angle,
+      t_cross,
+      phi_eq,
+      phi_down,
+      survival_factor
     }));
     
-    toast.success(`Hasar Sonrası GM: ${GM_residual.toFixed(3)}m - Yatma Açısı: ${heel_angle.toFixed(2)}°`);
+    toast.success(`Hasar Sonrası GM: ${GM_residual.toFixed(3)}m - Yatma Açısı: ${heel_angle.toFixed(2)}° - Cross Flooding: ${t_cross.toFixed(1)} min`);
+  };
+
+  // 🌾 Grain Stability
+  const calculateGrainStability = () => {
+    if (!data.delta || results.GM_corrected === undefined || !data.B) {
+      toast.error("Lütfen Δ, GM ve B değerlerini girin.");
+      return;
+    }
+    
+    const M_grain = data.delta * 0.05 * (data.B / 2);
+    const phi_grain = Math.atan(M_grain / (data.delta * results.GM_corrected)) * (180 / Math.PI);
+    const SF_grain = 12 / phi_grain;
+    const grain_compliance = phi_grain <= 12;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      M_grain_calculated: M_grain,
+      phi_grain_calculated: phi_grain,
+      SF_grain_calculated: SF_grain,
+      grain_compliance
+    }));
+    
+    toast.success(`Tahıl Yatma Açısı: ${phi_grain.toFixed(2)}° - Güvenlik Faktörü: ${SF_grain.toFixed(2)}`);
+  };
+
+  // 🔬 Advanced Stability
+  const calculateAdvancedStability = () => {
+    if (!results.GM_corrected || !data.k || !data.B) {
+      toast.error("Lütfen GM, k (radius of gyration) ve B değerlerini girin.");
+      return;
+    }
+    
+    const k = data.k || data.B * 0.4; // Default radius of gyration
+    const T_roll = 2 * Math.PI * Math.sqrt(Math.pow(k, 2) / ((data.g || 9.81) * results.GM_corrected));
+    const T_natural = 2 * Math.PI * Math.sqrt(Math.pow(k, 2) / ((data.g || 9.81) * results.GM_corrected));
+    const E_heel = results.GZ_small * (data.phi || 15) * (Math.PI / 180); // Simplified energy calculation
+    const SI = (results.GM_corrected / 1.0) * 100; // Standard GM = 1.0m
+    const SM = ((results.GM_corrected - 0.15) / 0.15) * 100; // Minimum GM = 0.15m
+    const T_wave = data.T_wave || 8; // Default wave period
+    const resonance_check = Math.abs(T_wave / T_roll - 1) < 0.2; // Resonance check
+    const stability_range = 90 - (results.angle_of_list || 0); // Simplified range
+    const stability_quality = results.area_0to30 / (results.GM_corrected * 30 * Math.PI / 180);
+    
+    setResults(prev => ({ 
+      ...prev, 
+      T_roll_calculated: T_roll,
+      T_natural_calculated: T_natural,
+      E_heel_calculated: E_heel,
+      SI_calculated: SI,
+      SM_calculated: SM,
+      resonance_check,
+      stability_range_calculated: stability_range,
+      stability_quality_calculated: stability_quality
+    }));
+    
+    toast.success(`Yalpalama Periyodu: ${T_roll.toFixed(1)}s - Stabilite İndeksi: ${SI.toFixed(1)}%`);
+  };
+
+  // 📈 GZ Curve Generation
+  const calculateGZCurve = () => {
+    if (!results.GM_corrected || !data.KM || !data.KG) {
+      toast.error("Lütfen GM, KM ve KG değerlerini girin.");
+      return;
+    }
+    
+    const gz_curve_points = [];
+    let gz_max = 0;
+    let phi_max_gz = 0;
+    
+    for (let angle = 0; angle <= 90; angle += 5) {
+      const angleRad = (angle * Math.PI) / 180;
+      let gz: number;
+      
+      if (angle <= 15) {
+        // Small angle approximation
+        gz = results.GM_corrected * Math.sin(angleRad);
+      } else {
+        // Large angle calculation
+        gz = (data.KM - data.KG) * Math.sin(angleRad);
+        
+        // Deck edge immersion effect (simplified)
+        const deck_edge_angle = Math.atan((data.T || 8) / ((data.B || 25) / 2)) * (180 / Math.PI);
+        if (angle > deck_edge_angle) {
+          const reduction_factor = Math.pow((angle - deck_edge_angle) / 90, 2) * 0.3;
+          gz = gz * (1 - reduction_factor);
+        }
+      }
+      
+      gz_curve_points.push({ angle, gz });
+      
+      if (gz > gz_max) {
+        gz_max = gz;
+        phi_max_gz = angle;
+      }
+    }
+    
+    setResults(prev => ({ 
+      ...prev, 
+      gz_curve_points,
+      gz_max_calculated: gz_max,
+      phi_max_gz_calculated: phi_max_gz
+    }));
+    
+    toast.success(`GZ Eğrisi Oluşturuldu - Max GZ: ${gz_max.toFixed(3)}m @ ${phi_max_gz}°`);
   };
 
   return (
@@ -461,13 +625,15 @@ export const StabilityCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="basic">🎯 Temel</TabsTrigger>
               <TabsTrigger value="gz">🌊 GZ</TabsTrigger>
               <TabsTrigger value="fsc">🔄 FSC</TabsTrigger>
               <TabsTrigger value="wind">🌪️ Rüzgar</TabsTrigger>
               <TabsTrigger value="imo">📊 IMO</TabsTrigger>
               <TabsTrigger value="damage">🛡️ Hasar</TabsTrigger>
+              <TabsTrigger value="grain">🌾 Tahıl</TabsTrigger>
+              <TabsTrigger value="advanced">🔬 Gelişmiş</TabsTrigger>
             </TabsList>
 
             {/* 🎯 Temel Stabilite Formülleri */}
@@ -1000,6 +1166,141 @@ export const StabilityCalculations = () => {
               </div>
             </TabsContent>
 
+            {/* 🌾 Grain Stability */}
+            <TabsContent value="grain" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Grain Stability (SOLAS Ch. VI)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="delta_grain">Δ [ton]</Label>
+                        <Input
+                          id="delta_grain"
+                          type="number"
+                          value={data.delta || ''}
+                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
+                          placeholder="25000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="B_grain">B [m]</Label>
+                        <Input
+                          id="B_grain"
+                          type="number"
+                          value={data.B || ''}
+                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
+                          placeholder="25"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateGrainStability} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Tahıl Stabilitesi Hesapla
+                    </Button>
+                    {results.phi_grain_calculated !== undefined && (
+                      <div className="text-center p-3 bg-orange-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.phi_grain_calculated.toFixed(2)}°</div>
+                        <div className="text-sm text-muted-foreground">Tahıl Yatma Açısı</div>
+                        <Badge className={`mt-2 ${results.grain_compliance ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.grain_compliance ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                        {results.SF_grain_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">SF: {results.SF_grain_calculated.toFixed(2)}</div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* 🔬 Advanced Stability */}
+            <TabsContent value="advanced" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Advanced Stability Analysis
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="k">k (Radius of Gyration) [m]</Label>
+                        <Input
+                          id="k"
+                          type="number"
+                          step="0.1"
+                          value={data.k || ''}
+                          onChange={(e) => setData({...data, k: parseFloat(e.target.value)})}
+                          placeholder="10.0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="T_wave">T_wave (Wave Period) [s]</Label>
+                        <Input
+                          id="T_wave"
+                          type="number"
+                          step="0.1"
+                          value={data.T_wave || ''}
+                          onChange={(e) => setData({...data, T_wave: parseFloat(e.target.value)})}
+                          placeholder="8.0"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateAdvancedStability} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Gelişmiş Stabilite Analizi
+                    </Button>
+                    {results.T_roll_calculated !== undefined && (
+                      <div className="text-center p-3 bg-teal-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.T_roll_calculated.toFixed(1)} s</div>
+                        <div className="text-sm text-muted-foreground">Yalpalama Periyodu</div>
+                        {results.SI_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">SI: {results.SI_calculated.toFixed(1)}%</div>
+                        )}
+                        <Badge className={`mt-2 ${results.resonance_check ? 'bg-red-500' : 'bg-green-500'}`}>
+                          {results.resonance_check ? 'REZONANS' : 'GÜVENLİ'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      GZ Curve Generation
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateGZCurve} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      GZ Eğrisi Oluştur
+                    </Button>
+                    {results.gz_max_calculated !== undefined && (
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.gz_max_calculated.toFixed(3)} m</div>
+                        <div className="text-sm text-muted-foreground">Max GZ</div>
+                        {results.phi_max_gz_calculated !== undefined && (
+                          <div className="text-lg font-semibold mt-1">@ {results.phi_max_gz_calculated}°</div>
+                        )}
+                        <div className="text-sm mt-2">GZ Eğrisi 0-90° arası oluşturuldu</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
             {/* 🛡️ Damage Stability */}
             <TabsContent value="damage" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1052,6 +1353,36 @@ export const StabilityCalculations = () => {
                           value={data.delta_flooded || ''}
                           onChange={(e) => setData({...data, delta_flooded: parseFloat(e.target.value)})}
                           placeholder="425"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="M_flooded">M_flooded [ton.m]</Label>
+                        <Input
+                          id="M_flooded"
+                          type="number"
+                          value={data.M_flooded || ''}
+                          onChange={(e) => setData({...data, M_flooded: parseFloat(e.target.value)})}
+                          placeholder="1000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="Q_cross">Q_cross [m³/min]</Label>
+                        <Input
+                          id="Q_cross"
+                          type="number"
+                          value={data.Q_cross || ''}
+                          onChange={(e) => setData({...data, Q_cross: parseFloat(e.target.value)})}
+                          placeholder="50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="h_vent">h_vent [m]</Label>
+                        <Input
+                          id="h_vent"
+                          type="number"
+                          value={data.h_vent || ''}
+                          onChange={(e) => setData({...data, h_vent: parseFloat(e.target.value)})}
+                          placeholder="15"
                         />
                       </div>
                     </div>
