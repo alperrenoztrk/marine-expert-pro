@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Anchor } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CalculationHero } from "@/components/ui/calculation-hero";
-import { StabilityCalculations } from "@/components/calculations/StabilityCalculations";
+import { TrimListCalculations } from "@/components/calculations/TrimListCalculations";
 import cargoShipOcean from "@/assets/maritime/cargo-ship-ocean.jpg";
 
 const Stability = () => {
@@ -23,8 +23,8 @@ const Stability = () => {
 
         {/* Hero Section */}
         <CalculationHero
-          title="Stabilite Hesaplamaları"
-          description="Gemi dengesi, metacenter ve stabilite analizi"
+          title="Trim ve List Hesaplamaları"
+          description="Gemi duruşu, trim açısı ve list düzeltme hesaplamaları"
           imageSrc={cargoShipOcean}
           imageAlt="Cargo Ship on Ocean"
         />
@@ -34,32 +34,32 @@ const Stability = () => {
           <div className="flex items-center justify-center gap-3">
             <Anchor className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
-              Stabilite Hesaplamaları
+              Trim ve List Hesaplamaları
             </h1>
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Gemi stabilite analizi ve hesaplama araçları
+            Gemi duruşu analizi ve hesaplama araçları
           </p>
         </div>
 
-        {/* Stability Calculations */}
+        {/* Trim and List Calculations */}
         <Card className="bg-white dark:bg-gray-800/80 dark:bg-gray-800/80 dark:bg-gray-800/80 backdrop-blur-sm border-blue-200 shadow-xl dark:shadow-gray-900/50">
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 text-white rounded-t-lg">
             <CardTitle className="text-2xl flex items-center gap-3">
               <Anchor className="h-8 w-8" />
-              Stabilite Hesaplama Modülü
+              Trim ve List Hesaplama Modülü
             </CardTitle>
           </CardHeader>
           
           <CardContent className="p-6">
-            <StabilityCalculations />
+            <TrimListCalculations />
           </CardContent>
         </Card>
 
         {/* Info */}
         <div className="text-center">
           <p className="text-gray-500 text-sm">
-            GM, BM, KB, GZ eğrisi ve stabilite kriterleri hesaplamaları
+            Trim açısı, MCT, list hesaplamaları ve tank hacim hesaplamaları
           </p>
         </div>
 

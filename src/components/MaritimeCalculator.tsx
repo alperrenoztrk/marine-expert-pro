@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calculator, Ship, Waves, Settings, Package, Droplets, Building, AlertTriangle, Wheat, Compass } from "lucide-react";
 
 // Import ALL calculation components
-import { StabilityCalculations } from "./calculations/StabilityCalculations";
+import { TrimListCalculations } from "./calculations/TrimListCalculations";
 import { CargoCalculations } from "./calculations/CargoCalculations";
 import { BallastCalculations } from "./calculations/BallastCalculations";
 import { StructuralCalculations } from "./calculations/StructuralCalculations";
@@ -35,7 +35,7 @@ export const MaritimeCalculator = () => {
         <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:grid-cols-8 h-auto p-1 gap-1">
           <TabsTrigger value="stability" className="text-xs flex-col gap-1 p-2">
             <Calculator className="w-3 h-3" />
-            <span>Stabilite</span>
+            <span>Trim & List</span>
           </TabsTrigger>
           <TabsTrigger value="navigation" className="text-xs flex-col gap-1 p-2">
             <Compass className="w-3 h-3" />
@@ -81,7 +81,7 @@ export const MaritimeCalculator = () => {
         </TabsList>
 
         <TabsContent value="stability" className="mt-4">
-          <StabilityCalculations />
+          <TrimListCalculations />
         </TabsContent>
         
         <TabsContent value="navigation" className="mt-4">

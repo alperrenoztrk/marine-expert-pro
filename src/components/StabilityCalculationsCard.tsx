@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ship, ChevronDown, ChevronUp, Calculator, BarChart3, Package, Droplets, Building } from "lucide-react";
 
 // Import all calculation components
-import { StabilityCalculations } from "./calculations/StabilityCalculations";
+import { TrimListCalculations } from "./calculations/TrimListCalculations";
 import { CargoCalculations } from "./calculations/CargoCalculations";
 import { BallastCalculations } from "./calculations/BallastCalculations";
 import { StructuralCalculations } from "./calculations/StructuralCalculations";
@@ -19,10 +19,10 @@ export const StabilityCalculationsCard = () => {
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2">
             <Ship className="w-6 h-6 text-primary" />
-            Stabilite
+            Trim ve List
           </CardTitle>
           <CardDescription>
-            GM, GZ eğrisi, hasar stabilitesi
+            Trim açısı, MCT, list hesaplamaları
           </CardDescription>
           <div className="flex justify-center mt-2">
             {isExpanded ? (
@@ -40,7 +40,7 @@ export const StabilityCalculationsCard = () => {
             <TabsList className="grid w-full grid-cols-4 mb-4">
               <TabsTrigger value="stability" className="flex items-center gap-1">
                 <Ship className="w-3 h-3" />
-                <span className="hidden sm:inline">Stabilite & Trim</span>
+                <span className="hidden sm:inline">Trim & List</span>
               </TabsTrigger>
               <TabsTrigger value="cargo" className="flex items-center gap-1">
                 <Package className="w-3 h-3" />
@@ -57,7 +57,7 @@ export const StabilityCalculationsCard = () => {
             </TabsList>
             
             <TabsContent value="stability">
-              <StabilityCalculations />
+              <TrimListCalculations />
             </TabsContent>
             
             <TabsContent value="cargo">

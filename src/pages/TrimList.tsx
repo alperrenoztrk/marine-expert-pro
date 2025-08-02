@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
-import { StabilityCalculations } from "@/components/calculations/StabilityCalculations";
+import { TrimListCalculations } from "@/components/calculations/TrimListCalculations";
 import { Separator } from "@/components/ui/separator";
 import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
@@ -45,7 +45,7 @@ const TrimList = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <StabilityCalculations />
+                <TrimListCalculations />
               </CardContent>
             </Card>
           </div>
@@ -121,14 +121,12 @@ const TrimList = () => {
                   <Separator />
 
                   <div>
-                    <h4 className="font-semibold text-sm text-cyan-700 mb-2">🌊 List ve Stabilite</h4>
+                    <h4 className="font-semibold text-sm text-cyan-700 mb-2">🌊 List Hesaplamaları</h4>
                     <div className="space-y-1 text-xs">
                       <p><strong>List Açısı:</strong></p>
                       <p className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-1 rounded">φ = arctan(W × d / (Δ × GM))</p>
-                      <p><strong>Metacentric Height:</strong></p>
-                      <p className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-1 rounded">GM = KB + BM - KG</p>
-                      <p><strong>Righting Moment:</strong></p>
-                      <p className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-1 rounded">GZ = GM × sin(φ)</p>
+                      <p><strong>List Moment:</strong></p>
+                      <p className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-1 rounded">M_list = W × d</p>
                     </div>
                   </div>
 
@@ -136,7 +134,7 @@ const TrimList = () => {
                     <p className="text-xs text-blue-700 dark:text-blue-300 cyberpunk:text-yellow-400">
                       <strong>Semboller:</strong><br/>
                       T: draft, L: boy, W: ağırlık, Δ: deplasман<br/>
-                      GM: metacentric height, LCB: boyuna sürat merkezi<br/>
+                      LCB: boyuna sürat merkezi, MCT: moment to change trim<br/>
                       φ: list açısı, θ: trim açısı, ρ: yoğunluk
                     </p>
                   </div>
@@ -160,23 +158,11 @@ const TrimList = () => {
           className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 neon:bg-slate-900/90 backdrop-blur-sm"
         />
 
-        <DiagramViewer
-          title="GZ Eğrisi (Stabilite Kolu Eğrisi)"
-          description="Stabilite analizi - righting arm eğrisi, kritik açılar ve IMO kriterlerinin değerlendirilmesi"
-          data={{
-            GM: 1.2,
-            displacement: 25000,
-            maxGZ: 0.85,
-            vanishingAngle: 78,
-            loadCondition: "departure"
-          }}
-          diagramType="gz-curve"
-          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 cyberpunk:bg-gray-900/90 neon:bg-slate-900/90 backdrop-blur-sm"
-        />
+
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-          Gemi duruşu analizi, yük dağılımı optimizasyonu ve stabilite kontrolleri
+          Gemi duruşu analizi, trim ve list hesaplamaları, yük dağılımı optimizasyonu
         </div>
       </div>
     </div>
