@@ -432,7 +432,7 @@ const Stability = () => {
                     GZ = GM × sin(φ)
                   </div>
                   <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
-                    <strong>Large Angles (φ > 15°):</strong><br/>
+                    <strong>Large Angles (φ &gt; 15°):</strong><br/>
                     GZ = (KM - KG) × sin(φ)
                   </div>
                   <div className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-2 rounded text-sm">
