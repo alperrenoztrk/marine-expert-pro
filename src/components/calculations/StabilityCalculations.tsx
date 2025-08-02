@@ -91,6 +91,12 @@ interface StabilityData {
   rho_sw: number; // Seawater density [t/m³]
   I_waterplane: number; // Waterplane moment of inertia [m⁴]
   volume_displacement: number; // Volume displacement [m³]
+  weights: number[]; // Array of weights [ton]
+  heights: number[]; // Array of heights [m]
+  tanks: Array<{L: number, B: number, rho: number}>; // Tank information
+  Q_cross: number; // Cross flooding rate [m³/min]
+  T_wave: number; // Wave period [s]
+  stability_range: number; // Stability range [°]
 }
 
 interface StabilityResults {
@@ -230,6 +236,26 @@ export const StabilityCalculations = () => {
     }));
     
     toast.success(`GM: ${GM.toFixed(3)}m - GM_corrected: ${GM_corrected.toFixed(3)}m`);
+  };
+
+  const calculateKG = () => {
+    if (!data.weights || !data.heights) {
+      toast.error("Lütfen ağırlık ve yükseklik değerlerini girin.");
+      return;
+    }
+    
+    // KG = Σ(Wi × zi) / ΣWi
+    const totalWeight = data.weights.reduce((sum, weight) => sum + weight, 0);
+    const weightedSum = data.weights.reduce((sum, weight, index) => 
+      sum + (weight * data.heights[index]), 0);
+    const KG = weightedSum / totalWeight;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      KG_calculated: KG
+    }));
+    
+    toast.success(`KG: ${KG.toFixed(3)}m`);
   };
 
   const calculateKM = () => {
@@ -611,6 +637,106 @@ export const StabilityCalculations = () => {
     toast.success(`GZ Eğrisi Oluşturuldu - Max GZ: ${gz_max.toFixed(3)}m @ ${phi_max_gz}°`);
   };
 
+  // 🔄 Total FSC Calculation
+  const calculateTotalFSC = () => {
+    if (!data.tanks || !data.delta) {
+      toast.error("Lütfen tank bilgilerini ve Δ değerini girin.");
+      return;
+    }
+    
+    // FSC_total = Σ(Ixx_i × ρ_i) / Δ
+    let totalFSC = 0;
+    data.tanks.forEach(tank => {
+      const Ixx = (tank.L * Math.pow(tank.B, 3)) / 12;
+      const fsc = (Ixx * tank.rho) / data.delta;
+      totalFSC += fsc;
+    });
+    
+    setResults(prev => ({ 
+      ...prev, 
+      FSC_total: totalFSC
+    }));
+    
+    toast.success(`Total FSC: ${totalFSC.toFixed(3)}m`);
+  };
+
+  // 🌪️ Weather Criterion
+  const calculateWeatherCriterion = () => {
+    if (!results.wind_heel_angle) {
+      toast.error("Lütfen önce Wind Heel Angle hesaplayın.");
+      return;
+    }
+    
+    const phi_steady = results.wind_heel_angle * 1.5;
+    const weather_criterion = phi_steady <= 25; // Simplified criterion
+    
+    setResults(prev => ({ 
+      ...prev, 
+      weather_criterion
+    }));
+    
+    toast.success(`Weather Criterion: ${phi_steady.toFixed(2)}° - ${weather_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+  };
+
+  // 📊 Range of Stability
+  const calculateStabilityRange = () => {
+    if (!results.vanishing_angle || !results.angle_of_list) {
+      toast.error("Lütfen önce Critical Angles hesaplayın.");
+      return;
+    }
+    
+    const stability_range = results.vanishing_angle - Math.abs(results.angle_of_list);
+    const range_compliance = stability_range >= 60;
+    
+    setResults(prev => ({ 
+      ...prev, 
+      stability_range_calculated: stability_range
+    }));
+    
+    toast.success(`Stability Range: ${stability_range.toFixed(1)}° - ${range_compliance ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+  };
+
+  // 🚨 Vanishing Angle
+  const calculateVanishingAngle = () => {
+    if (!results.gz_curve_points) {
+      toast.error("Lütfen önce GZ Curve hesaplayın.");
+      return;
+    }
+    
+    // Find angle where GZ = 0
+    let vanishing_angle = 90; // Default
+    for (let i = 0; i < results.gz_curve_points.length - 1; i++) {
+      if (results.gz_curve_points[i].gz > 0 && results.gz_curve_points[i + 1].gz <= 0) {
+        vanishing_angle = results.gz_curve_points[i].angle;
+        break;
+      }
+    }
+    
+    setResults(prev => ({ 
+      ...prev, 
+      vanishing_angle
+    }));
+    
+    toast.success(`Vanishing Angle: ${vanishing_angle.toFixed(1)}°`);
+  };
+
+  // 🛡️ Cross Flooding Time
+  const calculateCrossFloodingTime = () => {
+    if (!data.V_compartment || !data.Q_cross) {
+      toast.error("Lütfen V_compartment ve Q_cross değerlerini girin.");
+      return;
+    }
+    
+    const t_cross = data.V_compartment / data.Q_cross; // minutes
+    
+    setResults(prev => ({ 
+      ...prev, 
+      t_cross
+    }));
+    
+    toast.success(`Cross Flooding Time: ${t_cross.toFixed(1)} min`);
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -848,6 +974,47 @@ export const StabilityCalculations = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      KG: KG = Σ(Wi × zi) / ΣWi
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="weights">Ağırlıklar [ton] (virgülle ayırın)</Label>
+                      <Input
+                        id="weights"
+                        type="text"
+                        value={data.weights?.join(', ') || ''}
+                        onChange={(e) => setData({...data, weights: e.target.value.split(',').map(w => parseFloat(w.trim()))})}
+                        placeholder="1000, 2000, 1500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="heights">Yükseklikler [m] (virgülle ayırın)</Label>
+                      <Input
+                        id="heights"
+                        type="text"
+                        value={data.heights?.join(', ') || ''}
+                        onChange={(e) => setData({...data, heights: e.target.value.split(',').map(h => parseFloat(h.trim()))})}
+                        placeholder="5, 8, 12"
+                      />
+                    </div>
+                    <Button onClick={calculateKG} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      KG Hesapla
+                    </Button>
+                    {results.KG_calculated !== undefined && (
+                      <div className="text-center p-3 bg-indigo-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.KG_calculated.toFixed(3)} m</div>
+                        <div className="text-sm text-muted-foreground">KG</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
@@ -981,6 +1148,54 @@ export const StabilityCalculations = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Total FSC: FSC_total = Σ(Ixx_i × ρ_i) / Δ
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="tanks">Tank Bilgileri (JSON format)</Label>
+                      <Input
+                        id="tanks"
+                        type="text"
+                        value={JSON.stringify(data.tanks || [])}
+                        onChange={(e) => {
+                          try {
+                            const tanks = JSON.parse(e.target.value);
+                            setData({...data, tanks});
+                          } catch (error) {
+                            // Invalid JSON, ignore
+                          }
+                        }}
+                        placeholder='[{"L": 20, "B": 15, "rho": 1.025}]'
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="delta_total">Δ [ton]</Label>
+                      <Input
+                        id="delta_total"
+                        type="number"
+                        value={data.delta || ''}
+                        onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
+                        placeholder="25000"
+                      />
+                    </div>
+                    <Button onClick={calculateTotalFSC} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Total FSC Hesapla
+                    </Button>
+                    {results.FSC_total !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.FSC_total.toFixed(3)} m</div>
+                        <div className="text-sm text-muted-foreground">Total FSC</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 
@@ -1035,6 +1250,30 @@ export const StabilityCalculations = () => {
                       <div className="text-center p-3 bg-orange-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.wind_heel_angle.toFixed(2)}°</div>
                         <div className="text-sm text-muted-foreground">Rüzgar Yatma Açısı</div>
+                        <Badge className={`mt-2 ${results.weather_criterion ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.weather_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        </Badge>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Weather Criterion: φ_steady = φ_wind × 1.5
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button onClick={calculateWeatherCriterion} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Weather Criterion Hesapla
+                    </Button>
+                    {results.weather_criterion !== undefined && (
+                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                        <div className="text-2xl font-bold">{(results.wind_heel_angle * 1.5).toFixed(2)}°</div>
+                        <div className="text-sm text-muted-foreground">φ_steady</div>
                         <Badge className={`mt-2 ${results.weather_criterion ? 'bg-green-500' : 'bg-red-500'}`}>
                           {results.weather_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}
                         </Badge>
@@ -1397,6 +1636,49 @@ export const StabilityCalculations = () => {
                         {results.heel_angle !== undefined && (
                           <div className="text-lg font-semibold mt-1">{results.heel_angle.toFixed(2)}°</div>
                         )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Cross Flooding Time: t_cross = V_compartment / Q_cross
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="V_compartment_cross">V_compartment [m³]</Label>
+                        <Input
+                          id="V_compartment_cross"
+                          type="number"
+                          value={data.V_compartment || ''}
+                          onChange={(e) => setData({...data, V_compartment: parseFloat(e.target.value)})}
+                          placeholder="500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="Q_cross_calc">Q_cross [m³/min]</Label>
+                        <Input
+                          id="Q_cross_calc"
+                          type="number"
+                          value={data.Q_cross || ''}
+                          onChange={(e) => setData({...data, Q_cross: parseFloat(e.target.value)})}
+                          placeholder="50"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateCrossFloodingTime} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Cross Flooding Time Hesapla
+                    </Button>
+                    {results.t_cross !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.t_cross.toFixed(1)} min</div>
+                        <div className="text-sm text-muted-foreground">Cross Flooding Time</div>
                       </div>
                     )}
                   </CardContent>
