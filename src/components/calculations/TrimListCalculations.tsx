@@ -6,248 +6,221 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Ship, TrendingUp, Target } from "lucide-react";
+import { Calculator, Ship, TrendingUp, Target, Waves, Package } from "lucide-react";
 import { toast } from "sonner";
 
-interface TrimListData {
-  // Ship Parameters
-  L: number; // Length overall (m)
-  B: number; // Breadth (m)
-  T: number; // Draft (m)
-  displacement: number; // Displacement (tonnes)
-  GML: number; // Longitudinal metacentric height (m)
+interface CalculationData {
+  // Temel Trim Formülleri
+  T_a: number; // Aft draft
+  T_f: number; // Forward draft
+  L: number; // Length
+  delta: number; // Displacement
+  GM_L: number; // Longitudinal metacentric height
+  B: number; // Breadth
+  W: number; // Weight
+  d: number; // Distance
   
-  // Draft Parameters
-  draftForward: number; // Forward draft (m)
-  draftAft: number; // Aft draft (m)
-  draftMid: number; // Mid draft (m)
-  
-  // Trim Parameters
-  weightAdded: number; // Weight to be added/removed (tonnes)
-  weightLCG: number; // Longitudinal position of weight from AP (m)
-  
-  // List Parameters
-  listWeight: number; // List weight (tonnes)
-  listDistance: number; // List distance (m)
-  transverseG: number; // Transverse center of gravity (m)
-  
-  // Tank Parameters
-  tankLength: number; // Tank length (m)
-  tankBreadth: number; // Tank breadth (m)
-  tankHeight: number; // Tank height (m)
-  fillRatio: number; // Tank fill ratio (0-1)
-  
-  // Water Parameters
-  waterDensity: number; // Water density (t/m³)
-}
-
-interface TrimListResult {
-  // Trim Calculations
-  trimAngle: number; // θ = arctan((T_a - T_f) / L)
-  mct: number; // MCT = (Δ × GM_L × B²) / (12 × L)
-  trimChange: number; // ΔT = (W × d) / MCT
-  
-  // Draft Survey Calculations
-  meanDraft: number; // T_mean = (T_f + 4×T_m + T_a) / 6
-  displacement: number; // Δ = V × ρ_sw
-  tpc: number; // TPC = (A_wp × ρ_sw) / 100
+  // Draft Survey Formülleri
+  T_m: number; // Mid draft
+  V: number; // Volume
+  rho_sw: number; // Seawater density
+  A_wp: number; // Waterplane area
   
   // Bonjean Curves
-  underwaterVolume: number; // V = ∫ A(x) dx
-  lcb: number; // LCB = ∫ x × A(x) dx / V
-  moment: number; // M = ∫ x² × A(x) dx
+  A_x: number; // Area at station x
+  x: number; // Station position
   
-  // Sounding Tables
-  tankVolumeRect: number; // V = L × B × h
-  tankVolumeCyl: number; // V = π × r² × h
-  trimCorrection: number; // ΔV = A × tan(θ) × l
+  // Sounding Tabloları
+  tank_L: number; // Tank length
+  tank_B: number; // Tank breadth
+  tank_h: number; // Tank height
+  r: number; // Tank radius
+  theta: number; // Trim angle
+  l: number; // Length for trim correction
   
-  // List Calculations
-  listAngle: number; // φ = arctan(W × d / (Δ × GM))
-  listMoment: number; // M_list = W × d
+  // List Hesaplamaları
+  GM: number; // Metacentric height
+}
+
+interface CalculationResults {
+  // Temel Trim Formülleri
+  trimAngle: number;
+  mct: number;
+  trimChange: number;
   
-  status: 'excellent' | 'good' | 'acceptable' | 'poor' | 'dangerous';
-  recommendations: string[];
+  // Draft Survey Formülleri
+  meanDraft: number;
+  displacement: number;
+  tpc: number;
+  
+  // Bonjean Curves
+  underwaterVolume: number;
+  lcb: number;
+  moment: number;
+  
+  // Sounding Tabloları
+  tankVolumeRect: number;
+  tankVolumeCyl: number;
+  trimCorrection: number;
+  
+  // List Hesaplamaları
+  listAngle: number;
+  listMoment: number;
 }
 
 export const TrimListCalculations = () => {
-  
-  const [trimListData, setTrimListData] = useState<Partial<TrimListData>>({
-    waterDensity: 1.025,
-    tankLength: 20,
-    tankBreadth: 15,
-    tankHeight: 8,
-    fillRatio: 0.5
+  const [data, setData] = useState<Partial<CalculationData>>({
+    rho_sw: 1.025,
+    GM: 1.0
   });
-  const [result, setResult] = useState<TrimListResult | null>(null);
+  const [results, setResults] = useState<Partial<CalculationResults>>({});
   const [activeTab, setActiveTab] = useState("trim");
 
-  // Trim Angle Calculation - θ = arctan((T_a - T_f) / L)
-  const calculateTrimAngle = (data: TrimListData): number => {
-    return Math.atan((data.draftAft - data.draftForward) / data.L) * (180 / Math.PI);
-  };
-
-  // MCT Calculation - MCT = (Δ × GM_L × B²) / (12 × L)
-  const calculateMCT = (data: TrimListData): number => {
-    return (data.displacement * data.GML * Math.pow(data.B, 2)) / (12 * data.L);
-  };
-
-  // Trim Change Calculation - ΔT = (W × d) / MCT
-  const calculateTrimChange = (data: TrimListData): number => {
-    const mct = calculateMCT(data);
-    return (data.weightAdded * data.weightLCG) / mct;
-  };
-
-  // Mean Draft Calculation - T_mean = (T_f + 4×T_m + T_a) / 6
-  const calculateMeanDraft = (data: TrimListData): number => {
-    return (data.draftForward + 4 * data.draftMid + data.draftAft) / 6;
-  };
-
-  // Displacement Calculation - Δ = V × ρ_sw
-  const calculateDisplacement = (data: TrimListData): number => {
-    const underwaterVolume = data.L * data.B * data.T * 0.75; // Simplified volume calculation
-    return underwaterVolume * data.waterDensity;
-  };
-
-  // TPC Calculation - TPC = (A_wp × ρ_sw) / 100
-  const calculateTPC = (data: TrimListData): number => {
-    const waterplaneArea = data.L * data.B * 0.85; // Simplified waterplane area
-    return (waterplaneArea * data.waterDensity) / 100;
-  };
-
-  // Underwater Volume - V = ∫ A(x) dx (simplified)
-  const calculateUnderwaterVolume = (data: TrimListData): number => {
-    return data.L * data.B * data.T * 0.75; // Simplified calculation
-  };
-
-  // LCB Calculation - LCB = ∫ x × A(x) dx / V (simplified)
-  const calculateLCB = (data: TrimListData): number => {
-    return data.L / 2; // Simplified center of buoyancy
-  };
-
-  // Moment Calculation - M = ∫ x² × A(x) dx (simplified)
-  const calculateMoment = (data: TrimListData): number => {
-    return data.L * data.B * data.T * 0.75 * (data.L / 2); // Simplified moment
-  };
-
-  // Tank Volume (Rectangular) - V = L × B × h
-  const calculateTankVolumeRect = (data: TrimListData): number => {
-    return data.tankLength * data.tankBreadth * data.tankHeight;
-  };
-
-  // Tank Volume (Cylindrical) - V = π × r² × h
-  const calculateTankVolumeCyl = (data: TrimListData): number => {
-    const radius = data.tankBreadth / 2;
-    return Math.PI * Math.pow(radius, 2) * data.tankHeight;
-  };
-
-  // Trim Correction - ΔV = A × tan(θ) × l
-  const calculateTrimCorrection = (data: TrimListData): number => {
-    const trimAngle = calculateTrimAngle(data);
-    const trimAngleRad = trimAngle * Math.PI / 180;
-    const area = data.tankLength * data.tankBreadth;
-    return area * Math.tan(trimAngleRad) * data.tankHeight;
-  };
-
-  // List Angle Calculation - φ = arctan(W × d / (Δ × GM))
-  const calculateListAngle = (data: TrimListData): number => {
-    const GM = 1.0; // Simplified GM value
-    return Math.atan((data.listWeight * data.listDistance) / (data.displacement * GM)) * (180 / Math.PI);
-  };
-
-  // List Moment Calculation - M_list = W × d
-  const calculateListMoment = (data: TrimListData): number => {
-    return data.listWeight * data.listDistance;
-  };
-
-  // Main Calculation
-  const calculateTrimList = () => {
-    if (!trimListData.L || !trimListData.B || !trimListData.T || !trimListData.displacement || 
-        !trimListData.GML || !trimListData.draftForward || !trimListData.draftAft || !trimListData.draftMid) {
-      toast.error("Lütfen tüm gerekli değerleri girin.");
+  // 📐 Temel Trim Formülleri
+  const calculateTrimAngle = () => {
+    if (!data.T_a || !data.T_f || !data.L) {
+      toast.error("Lütfen T_a, T_f ve L değerlerini girin.");
       return;
     }
-
-    const data = trimListData as TrimListData;
-    
-    // Calculate all parameters
-    const trimAngle = calculateTrimAngle(data);
-    const mct = calculateMCT(data);
-    const trimChange = calculateTrimChange(data);
-    const meanDraft = calculateMeanDraft(data);
-    const displacement = calculateDisplacement(data);
-    const tpc = calculateTPC(data);
-    const underwaterVolume = calculateUnderwaterVolume(data);
-    const lcb = calculateLCB(data);
-    const moment = calculateMoment(data);
-    const tankVolumeRect = calculateTankVolumeRect(data);
-    const tankVolumeCyl = calculateTankVolumeCyl(data);
-    const trimCorrection = calculateTrimCorrection(data);
-    const listAngle = calculateListAngle(data);
-    const listMoment = calculateListMoment(data);
-    
-    // Status determination
-    let status: TrimListResult['status'] = 'acceptable';
-    let recommendations: string[] = [];
-    
-    if (Math.abs(trimAngle) > 3) {
-      status = 'poor';
-      recommendations.push("Trim açısı fazla - yük dağılımını kontrol edin");
-    }
-    if (Math.abs(listAngle) > 5) {
-      status = 'poor';
-      recommendations.push("List açısı fazla - enine yük dengesini kontrol edin");
-    }
-    if (Math.abs(trimAngle) > 5) {
-      status = 'dangerous';
-      recommendations.push("ACİL: Trim açısı çok fazla - güvenlik riski!");
-    }
-    if (Math.abs(listAngle) > 10) {
-      status = 'dangerous';
-      recommendations.push("ACİL: List açısı çok fazla - güvenlik riski!");
-    }
-    if (Math.abs(trimAngle) <= 1 && Math.abs(listAngle) <= 2) {
-      status = 'excellent';
-      recommendations.push("Mükemmel trim ve list durumu");
-    }
-    if (Math.abs(trimAngle) <= 2 && Math.abs(listAngle) <= 3) {
-      status = 'good';
-      recommendations.push("İyi trim ve list durumu");
-    }
-
-    const result: TrimListResult = {
-      trimAngle,
-      mct,
-      trimChange,
-      meanDraft,
-      displacement,
-      tpc,
-      underwaterVolume,
-      lcb,
-      moment,
-      tankVolumeRect,
-      tankVolumeCyl,
-      trimCorrection,
-      listAngle,
-      listMoment,
-      status,
-      recommendations
-    };
-    
-    setResult(result);
-    
-    toast.success(`Trim ve List Analizi Tamamlandı! Trim: ${trimAngle.toFixed(2)}° - List: ${listAngle.toFixed(2)}°`);
+    const trimAngle = Math.atan((data.T_a - data.T_f) / data.L) * (180 / Math.PI);
+    setResults(prev => ({ ...prev, trimAngle }));
+    toast.success(`Trim Açısı: ${trimAngle.toFixed(4)}°`);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'excellent': return 'bg-green-500';
-      case 'good': return 'bg-blue-500';
-      case 'acceptable': return 'bg-yellow-500';
-      case 'poor': return 'bg-orange-500';
-      case 'dangerous': return 'bg-red-500';
-      default: return 'bg-gray-500';
+  const calculateMCT = () => {
+    if (!data.delta || !data.GM_L || !data.B || !data.L) {
+      toast.error("Lütfen Δ, GM_L, B ve L değerlerini girin.");
+      return;
     }
+    const mct = (data.delta * data.GM_L * Math.pow(data.B, 2)) / (12 * data.L);
+    setResults(prev => ({ ...prev, mct }));
+    toast.success(`MCT: ${mct.toFixed(2)} ton.m/cm`);
+  };
+
+  const calculateTrimChange = () => {
+    if (!data.W || !data.d || !results.mct) {
+      toast.error("Lütfen W, d değerlerini girin ve önce MCT hesaplayın.");
+      return;
+    }
+    const trimChange = (data.W * data.d) / results.mct;
+    setResults(prev => ({ ...prev, trimChange }));
+    toast.success(`Trim Değişimi: ${trimChange.toFixed(2)} cm`);
+  };
+
+  // ⚖️ Draft Survey Formülleri
+  const calculateMeanDraft = () => {
+    if (!data.T_f || !data.T_m || !data.T_a) {
+      toast.error("Lütfen T_f, T_m ve T_a değerlerini girin.");
+      return;
+    }
+    const meanDraft = (data.T_f + 4 * data.T_m + data.T_a) / 6;
+    setResults(prev => ({ ...prev, meanDraft }));
+    toast.success(`Ortalama Draft: ${meanDraft.toFixed(3)} m`);
+  };
+
+  const calculateDisplacement = () => {
+    if (!data.V || !data.rho_sw) {
+      toast.error("Lütfen V ve ρ_sw değerlerini girin.");
+      return;
+    }
+    const displacement = data.V * data.rho_sw;
+    setResults(prev => ({ ...prev, displacement }));
+    toast.success(`Deplasman: ${displacement.toFixed(2)} ton`);
+  };
+
+  const calculateTPC = () => {
+    if (!data.A_wp || !data.rho_sw) {
+      toast.error("Lütfen A_wp ve ρ_sw değerlerini girin.");
+      return;
+    }
+    const tpc = (data.A_wp * data.rho_sw) / 100;
+    setResults(prev => ({ ...prev, tpc }));
+    toast.success(`TPC: ${tpc.toFixed(3)} ton/cm`);
+  };
+
+  // 📊 Bonjean Curves
+  const calculateUnderwaterVolume = () => {
+    if (!data.A_x) {
+      toast.error("Lütfen A(x) değerini girin.");
+      return;
+    }
+    // Simplified calculation: V = ∫ A(x) dx ≈ A(x) × dx
+    const underwaterVolume = data.A_x * 1; // Assuming dx = 1
+    setResults(prev => ({ ...prev, underwaterVolume }));
+    toast.success(`Su Altı Hacim: ${underwaterVolume.toFixed(2)} m³`);
+  };
+
+  const calculateLCB = () => {
+    if (!data.x || !data.A_x || !results.underwaterVolume) {
+      toast.error("Lütfen x, A(x) değerlerini girin ve önce Su Altı Hacim hesaplayın.");
+      return;
+    }
+    const lcb = (data.x * data.A_x) / results.underwaterVolume;
+    setResults(prev => ({ ...prev, lcb }));
+    toast.success(`LCB: ${lcb.toFixed(2)} m`);
+  };
+
+  const calculateMoment = () => {
+    if (!data.x || !data.A_x) {
+      toast.error("Lütfen x ve A(x) değerlerini girin.");
+      return;
+    }
+    const moment = Math.pow(data.x, 2) * data.A_x;
+    setResults(prev => ({ ...prev, moment }));
+    toast.success(`Moment: ${moment.toFixed(2)} m³`);
+  };
+
+  // 🧮 Sounding Tabloları
+  const calculateTankVolumeRect = () => {
+    if (!data.tank_L || !data.tank_B || !data.tank_h) {
+      toast.error("Lütfen tank L, B ve h değerlerini girin.");
+      return;
+    }
+    const tankVolumeRect = data.tank_L * data.tank_B * data.tank_h;
+    setResults(prev => ({ ...prev, tankVolumeRect }));
+    toast.success(`Dikdörtgen Tank Hacmi: ${tankVolumeRect.toFixed(2)} m³`);
+  };
+
+  const calculateTankVolumeCyl = () => {
+    if (!data.r || !data.tank_h) {
+      toast.error("Lütfen r ve h değerlerini girin.");
+      return;
+    }
+    const tankVolumeCyl = Math.PI * Math.pow(data.r, 2) * data.tank_h;
+    setResults(prev => ({ ...prev, tankVolumeCyl }));
+    toast.success(`Silindirik Tank Hacmi: ${tankVolumeCyl.toFixed(2)} m³`);
+  };
+
+  const calculateTrimCorrection = () => {
+    if (!data.tank_L || !data.tank_B || !data.theta || !data.l) {
+      toast.error("Lütfen tank boyutları, θ ve l değerlerini girin.");
+      return;
+    }
+    const area = data.tank_L * data.tank_B;
+    const trimCorrection = area * Math.tan(data.theta * Math.PI / 180) * data.l;
+    setResults(prev => ({ ...prev, trimCorrection }));
+    toast.success(`Trim Düzeltmesi: ${trimCorrection.toFixed(2)} m³`);
+  };
+
+  // 🌊 List Hesaplamaları
+  const calculateListAngle = () => {
+    if (!data.W || !data.d || !data.delta || !data.GM) {
+      toast.error("Lütfen W, d, Δ ve GM değerlerini girin.");
+      return;
+    }
+    const listAngle = Math.atan((data.W * data.d) / (data.delta * data.GM)) * (180 / Math.PI);
+    setResults(prev => ({ ...prev, listAngle }));
+    toast.success(`List Açısı: ${listAngle.toFixed(4)}°`);
+  };
+
+  const calculateListMoment = () => {
+    if (!data.W || !data.d) {
+      toast.error("Lütfen W ve d değerlerini girin.");
+      return;
+    }
+    const listMoment = data.W * data.d;
+    setResults(prev => ({ ...prev, listMoment }));
+    toast.success(`List Moment: ${listMoment.toFixed(2)} ton.m`);
   };
 
   return (
@@ -259,331 +232,739 @@ export const TrimListCalculations = () => {
             Trim ve List Hesaplamaları
           </CardTitle>
           <CardDescription>
-            Gemi duruşu, trim açısı ve list düzeltme hesaplamaları
+            Tüm trim ve list formülleri ayrı ayrı hesaplama butonları ile
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="trim">Trim Hesaplamaları</TabsTrigger>
-              <TabsTrigger value="list">List Hesaplamaları</TabsTrigger>
-              <TabsTrigger value="tanks">Tank Hesaplamaları</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="trim">📐 Temel Trim</TabsTrigger>
+              <TabsTrigger value="draft">⚖️ Draft Survey</TabsTrigger>
+              <TabsTrigger value="bonjean">📊 Bonjean</TabsTrigger>
+              <TabsTrigger value="sounding">🧮 Sounding</TabsTrigger>
+              <TabsTrigger value="list">🌊 List</TabsTrigger>
             </TabsList>
 
+            {/* 📐 Temel Trim Formülleri */}
             <TabsContent value="trim" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="length">Gemi Boyu (L) [m]</Label>
-                  <Input
-                    id="length"
-                    type="number"
-                    value={trimListData.L || ''}
-                    onChange={(e) => setTrimListData({...trimListData, L: parseFloat(e.target.value)})}
-                    placeholder="150"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="breadth">Genişlik (B) [m]</Label>
-                  <Input
-                    id="breadth"
-                    type="number"
-                    value={trimListData.B || ''}
-                    onChange={(e) => setTrimListData({...trimListData, B: parseFloat(e.target.value)})}
-                    placeholder="25"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="draft">Ortalama Su Çekimi (T) [m]</Label>
-                  <Input
-                    id="draft"
-                    type="number"
-                    value={trimListData.T || ''}
-                    onChange={(e) => setTrimListData({...trimListData, T: parseFloat(e.target.value)})}
-                    placeholder="8.5"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="displacement">Deplasman [ton]</Label>
-                  <Input
-                    id="displacement"
-                    type="number"
-                    value={trimListData.displacement || ''}
-                    onChange={(e) => setTrimListData({...trimListData, displacement: parseFloat(e.target.value)})}
-                    placeholder="25000"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="GML">GM_L [m]</Label>
-                  <Input
-                    id="GML"
-                    type="number"
-                    step="0.01"
-                    value={trimListData.GML || ''}
-                    onChange={(e) => setTrimListData({...trimListData, GML: parseFloat(e.target.value)})}
-                    placeholder="150"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="draftForward">Baş Draft (T_f) [m]</Label>
-                  <Input
-                    id="draftForward"
-                    type="number"
-                    step="0.01"
-                    value={trimListData.draftForward || ''}
-                    onChange={(e) => setTrimListData({...trimListData, draftForward: parseFloat(e.target.value)})}
-                    placeholder="7.50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="draftMid">Orta Draft (T_m) [m]</Label>
-                  <Input
-                    id="draftMid"
-                    type="number"
-                    step="0.01"
-                    value={trimListData.draftMid || ''}
-                    onChange={(e) => setTrimListData({...trimListData, draftMid: parseFloat(e.target.value)})}
-                    placeholder="8.00"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="draftAft">Kıç Draft (T_a) [m]</Label>
-                  <Input
-                    id="draftAft"
-                    type="number"
-                    step="0.01"
-                    value={trimListData.draftAft || ''}
-                    onChange={(e) => setTrimListData({...trimListData, draftAft: parseFloat(e.target.value)})}
-                    placeholder="8.20"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="weightAdded">Eklenen Ağırlık (W) [ton]</Label>
-                  <Input
-                    id="weightAdded"
-                    type="number"
-                    step="0.1"
-                    value={trimListData.weightAdded || ''}
-                    onChange={(e) => setTrimListData({...trimListData, weightAdded: parseFloat(e.target.value)})}
-                    placeholder="500"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="weightLCG">Ağırlık Mesafesi (d) [m]</Label>
-                  <Input
-                    id="weightLCG"
-                    type="number"
-                    step="0.1"
-                    value={trimListData.weightLCG || ''}
-                    onChange={(e) => setTrimListData({...trimListData, weightLCG: parseFloat(e.target.value)})}
-                    placeholder="45"
-                  />
-                </div>
-              </div>
-
-              <Button onClick={calculateTrimList} className="flex items-center gap-2">
-                <Calculator className="h-4 w-4" />
-                Trim ve List Analizi
-              </Button>
-
-              {result && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      Trim Hesaplama Sonuçları
-                      <Badge className={getStatusColor(result.status)}>
-                        {result.status.toUpperCase()}
-                      </Badge>
+                      Trim Açısı: θ = arctan((T_a - T_f) / L)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="T_a">T_a (Aft Draft) [m]</Label>
+                        <Input
+                          id="T_a"
+                          type="number"
+                          step="0.01"
+                          value={data.T_a || ''}
+                          onChange={(e) => setData({...data, T_a: parseFloat(e.target.value)})}
+                          placeholder="8.20"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="T_f">T_f (Forward Draft) [m]</Label>
+                        <Input
+                          id="T_f"
+                          type="number"
+                          step="0.01"
+                          value={data.T_f || ''}
+                          onChange={(e) => setData({...data, T_f: parseFloat(e.target.value)})}
+                          placeholder="7.50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="L">L (Length) [m]</Label>
+                        <Input
+                          id="L"
+                          type="number"
+                          value={data.L || ''}
+                          onChange={(e) => setData({...data, L: parseFloat(e.target.value)})}
+                          placeholder="150"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateTrimAngle} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Trim Açısını Hesapla
+                    </Button>
+                    {results.trimAngle !== undefined && (
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.trimAngle.toFixed(2)}°</div>
+                        <div className="text-2xl font-bold">{results.trimAngle.toFixed(4)}°</div>
                         <div className="text-sm text-muted-foreground">Trim Açısı</div>
-                      </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.mct.toFixed(1)}</div>
-                        <div className="text-sm text-muted-foreground">MCT [ton.m/cm]</div>
-                      </div>
-                      <div className="text-center p-3 bg-purple-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.trimChange.toFixed(1)}</div>
-                        <div className="text-sm text-muted-foreground">Trim Değişimi [cm]</div>
-                      </div>
-                      <div className="text-center p-3 bg-orange-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.meanDraft.toFixed(2)}m</div>
-                        <div className="text-sm text-muted-foreground">Ortalama Draft</div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.displacement.toFixed(0)}</div>
-                        <div className="text-sm text-muted-foreground">Deplasman [ton]</div>
-                      </div>
-                      <div className="text-center p-3 bg-cyan-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.tpc.toFixed(2)}</div>
-                        <div className="text-sm text-muted-foreground">TPC [ton/cm]</div>
-                      </div>
-                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.underwaterVolume.toFixed(0)}</div>
-                        <div className="text-sm text-muted-foreground">Su Altı Hacim [m³]</div>
-                      </div>
-                    </div>
-
-                    {result.recommendations.length > 0 && (
-                      <div>
-                        <h4 className="font-semibold mb-2">Öneriler & Uyarılar</h4>
-                        <ul className="list-disc list-inside space-y-1">
-                          {result.recommendations.map((rec, index) => (
-                            <li key={index} className="text-sm">{rec}</li>
-                          ))}
-                        </ul>
                       </div>
                     )}
                   </CardContent>
                 </Card>
-              )}
-            </TabsContent>
 
-            <TabsContent value="list" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="listWeight">List Ağırlığı W [ton]</Label>
-                  <Input
-                    id="listWeight"
-                    type="number"
-                    step="0.1"
-                    value={trimListData.listWeight || ''}
-                    onChange={(e) => setTrimListData({...trimListData, listWeight: parseFloat(e.target.value)})}
-                    placeholder="100"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="listDistance">List Mesafesi d [m]</Label>
-                  <Input
-                    id="listDistance"
-                    type="number"
-                    step="0.01"
-                    value={trimListData.listDistance || ''}
-                    onChange={(e) => setTrimListData({...trimListData, listDistance: parseFloat(e.target.value)})}
-                    placeholder="2.0"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="transverseG">Enine Ağırlık Merkezi TG [m]</Label>
-                  <Input
-                    id="transverseG"
-                    type="number"
-                    step="0.01"
-                    value={trimListData.transverseG || ''}
-                    onChange={(e) => setTrimListData({...trimListData, transverseG: parseFloat(e.target.value)})}
-                    placeholder="0.5"
-                  />
-                </div>
-              </div>
-
-              {result && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Target className="h-5 w-5" />
-                      List Hesaplama Sonuçları
+                      MCT: MCT = (Δ × GM_L × B²) / (12 × L)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-red-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.listAngle.toFixed(2)}°</div>
-                        <div className="text-sm text-muted-foreground">List Açısı</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="delta">Δ (Displacement) [ton]</Label>
+                        <Input
+                          id="delta"
+                          type="number"
+                          value={data.delta || ''}
+                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
+                          placeholder="25000"
+                        />
                       </div>
-                      <div className="text-center p-3 bg-orange-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.listMoment.toFixed(1)}</div>
-                        <div className="text-sm text-muted-foreground">List Moment [ton.m]</div>
+                      <div className="space-y-2">
+                        <Label htmlFor="GM_L">GM_L [m]</Label>
+                        <Input
+                          id="GM_L"
+                          type="number"
+                          step="0.01"
+                          value={data.GM_L || ''}
+                          onChange={(e) => setData({...data, GM_L: parseFloat(e.target.value)})}
+                          placeholder="150"
+                        />
                       </div>
-                      <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.lcb.toFixed(1)}</div>
-                        <div className="text-sm text-muted-foreground">LCB [m]</div>
+                      <div className="space-y-2">
+                        <Label htmlFor="B">B (Breadth) [m]</Label>
+                        <Input
+                          id="B"
+                          type="number"
+                          value={data.B || ''}
+                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
+                          placeholder="25"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="L_mct">L (Length) [m]</Label>
+                        <Input
+                          id="L_mct"
+                          type="number"
+                          value={data.L || ''}
+                          onChange={(e) => setData({...data, L: parseFloat(e.target.value)})}
+                          placeholder="150"
+                        />
                       </div>
                     </div>
+                    <Button onClick={calculateMCT} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      MCT Hesapla
+                    </Button>
+                    {results.mct !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.mct.toFixed(2)}</div>
+                        <div className="text-sm text-muted-foreground">MCT [ton.m/cm]</div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
-              )}
-            </TabsContent>
 
-            <TabsContent value="tanks" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="tankLength">Tank Boyu (L) [m]</Label>
-                  <Input
-                    id="tankLength"
-                    type="number"
-                    value={trimListData.tankLength || ''}
-                    onChange={(e) => setTrimListData({...trimListData, tankLength: parseFloat(e.target.value)})}
-                    placeholder="20"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tankBreadth">Tank Genişliği (B) [m]</Label>
-                  <Input
-                    id="tankBreadth"
-                    type="number"
-                    value={trimListData.tankBreadth || ''}
-                    onChange={(e) => setTrimListData({...trimListData, tankBreadth: parseFloat(e.target.value)})}
-                    placeholder="15"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tankHeight">Tank Yüksekliği (h) [m]</Label>
-                  <Input
-                    id="tankHeight"
-                    type="number"
-                    value={trimListData.tankHeight || ''}
-                    onChange={(e) => setTrimListData({...trimListData, tankHeight: parseFloat(e.target.value)})}
-                    placeholder="8"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="fillRatio">Doluluk Oranı</Label>
-                  <Input
-                    id="fillRatio"
-                    type="number"
-                    step="0.1"
-                    max="1"
-                    min="0"
-                    value={trimListData.fillRatio || ''}
-                    onChange={(e) => setTrimListData({...trimListData, fillRatio: parseFloat(e.target.value)})}
-                    placeholder="0.5"
-                  />
-                </div>
-              </div>
-
-              {result && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Calculator className="h-5 w-5" />
-                      Tank Hesaplama Sonuçları
+                      <Waves className="h-5 w-5" />
+                      Trim Değişimi: ΔT = (W × d) / MCT
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.tankVolumeRect.toFixed(0)}</div>
-                        <div className="text-sm text-muted-foreground">Dikdörtgen Tank Hacmi [m³]</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="W">W (Weight) [ton]</Label>
+                        <Input
+                          id="W"
+                          type="number"
+                          step="0.1"
+                          value={data.W || ''}
+                          onChange={(e) => setData({...data, W: parseFloat(e.target.value)})}
+                          placeholder="500"
+                        />
                       </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.tankVolumeCyl.toFixed(0)}</div>
-                        <div className="text-sm text-muted-foreground">Silindirik Tank Hacmi [m³]</div>
-                      </div>
-                      <div className="text-center p-3 bg-purple-50 rounded-lg">
-                        <div className="text-2xl font-bold">{result.trimCorrection.toFixed(1)}</div>
-                        <div className="text-sm text-muted-foreground">Trim Düzeltmesi [m³]</div>
+                      <div className="space-y-2">
+                        <Label htmlFor="d">d (Distance) [m]</Label>
+                        <Input
+                          id="d"
+                          type="number"
+                          step="0.1"
+                          value={data.d || ''}
+                          onChange={(e) => setData({...data, d: parseFloat(e.target.value)})}
+                          placeholder="45"
+                        />
                       </div>
                     </div>
+                    <Button onClick={calculateTrimChange} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Trim Değişimini Hesapla
+                    </Button>
+                    {results.trimChange !== undefined && (
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.trimChange.toFixed(2)}</div>
+                        <div className="text-sm text-muted-foreground">Trim Değişimi [cm]</div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
-              )}
+              </div>
+            </TabsContent>
+
+            {/* ⚖️ Draft Survey Formülleri */}
+            <TabsContent value="draft" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5" />
+                      Ortalama Draft: T_mean = (T_f + 4×T_m + T_a) / 6
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="T_f_draft">T_f (Forward Draft) [m]</Label>
+                        <Input
+                          id="T_f_draft"
+                          type="number"
+                          step="0.01"
+                          value={data.T_f || ''}
+                          onChange={(e) => setData({...data, T_f: parseFloat(e.target.value)})}
+                          placeholder="7.50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="T_m">T_m (Mid Draft) [m]</Label>
+                        <Input
+                          id="T_m"
+                          type="number"
+                          step="0.01"
+                          value={data.T_m || ''}
+                          onChange={(e) => setData({...data, T_m: parseFloat(e.target.value)})}
+                          placeholder="8.00"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="T_a_draft">T_a (Aft Draft) [m]</Label>
+                        <Input
+                          id="T_a_draft"
+                          type="number"
+                          step="0.01"
+                          value={data.T_a || ''}
+                          onChange={(e) => setData({...data, T_a: parseFloat(e.target.value)})}
+                          placeholder="8.20"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateMeanDraft} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Ortalama Draft Hesapla
+                    </Button>
+                    {results.meanDraft !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.meanDraft.toFixed(3)} m</div>
+                        <div className="text-sm text-muted-foreground">Ortalama Draft</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Ship className="h-5 w-5" />
+                      Displacement: Δ = V × ρ_sw
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="V">V (Volume) [m³]</Label>
+                        <Input
+                          id="V"
+                          type="number"
+                          value={data.V || ''}
+                          onChange={(e) => setData({...data, V: parseFloat(e.target.value)})}
+                          placeholder="25000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rho_sw">ρ_sw (Seawater Density) [t/m³]</Label>
+                        <Input
+                          id="rho_sw"
+                          type="number"
+                          step="0.001"
+                          value={data.rho_sw || ''}
+                          onChange={(e) => setData({...data, rho_sw: parseFloat(e.target.value)})}
+                          placeholder="1.025"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateDisplacement} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Deplasman Hesapla
+                    </Button>
+                    {results.displacement !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.displacement.toFixed(2)}</div>
+                        <div className="text-sm text-muted-foreground">Deplasman [ton]</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      TPC: TPC = (A_wp × ρ_sw) / 100
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="A_wp">A_wp (Waterplane Area) [m²]</Label>
+                        <Input
+                          id="A_wp"
+                          type="number"
+                          value={data.A_wp || ''}
+                          onChange={(e) => setData({...data, A_wp: parseFloat(e.target.value)})}
+                          placeholder="3000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rho_sw_tpc">ρ_sw (Seawater Density) [t/m³]</Label>
+                        <Input
+                          id="rho_sw_tpc"
+                          type="number"
+                          step="0.001"
+                          value={data.rho_sw || ''}
+                          onChange={(e) => setData({...data, rho_sw: parseFloat(e.target.value)})}
+                          placeholder="1.025"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateTPC} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      TPC Hesapla
+                    </Button>
+                    {results.tpc !== undefined && (
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.tpc.toFixed(3)}</div>
+                        <div className="text-sm text-muted-foreground">TPC [ton/cm]</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* 📊 Bonjean Curves */}
+            <TabsContent value="bonjean" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Waves className="h-5 w-5" />
+                      Su Altı Hacim: V = ∫ A(x) dx
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="A_x">A(x) (Area at station x) [m²]</Label>
+                      <Input
+                        id="A_x"
+                        type="number"
+                        value={data.A_x || ''}
+                        onChange={(e) => setData({...data, A_x: parseFloat(e.target.value)})}
+                        placeholder="150"
+                      />
+                    </div>
+                    <Button onClick={calculateUnderwaterVolume} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Su Altı Hacim Hesapla
+                    </Button>
+                    {results.underwaterVolume !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.underwaterVolume.toFixed(2)} m³</div>
+                        <div className="text-sm text-muted-foreground">Su Altı Hacim</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      LCB: LCB = ∫ x × A(x) dx / V
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="x">x (Station position) [m]</Label>
+                        <Input
+                          id="x"
+                          type="number"
+                          value={data.x || ''}
+                          onChange={(e) => setData({...data, x: parseFloat(e.target.value)})}
+                          placeholder="75"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="A_x_lcb">A(x) (Area at station x) [m²]</Label>
+                        <Input
+                          id="A_x_lcb"
+                          type="number"
+                          value={data.A_x || ''}
+                          onChange={(e) => setData({...data, A_x: parseFloat(e.target.value)})}
+                          placeholder="150"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateLCB} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      LCB Hesapla
+                    </Button>
+                    {results.lcb !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.lcb.toFixed(2)} m</div>
+                        <div className="text-sm text-muted-foreground">LCB</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5" />
+                      Moment: M = ∫ x² × A(x) dx
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="x_moment">x (Station position) [m]</Label>
+                        <Input
+                          id="x_moment"
+                          type="number"
+                          value={data.x || ''}
+                          onChange={(e) => setData({...data, x: parseFloat(e.target.value)})}
+                          placeholder="75"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="A_x_moment">A(x) (Area at station x) [m²]</Label>
+                        <Input
+                          id="A_x_moment"
+                          type="number"
+                          value={data.A_x || ''}
+                          onChange={(e) => setData({...data, A_x: parseFloat(e.target.value)})}
+                          placeholder="150"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateMoment} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Moment Hesapla
+                    </Button>
+                    {results.moment !== undefined && (
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.moment.toFixed(2)} m³</div>
+                        <div className="text-sm text-muted-foreground">Moment</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* 🧮 Sounding Tabloları */}
+            <TabsContent value="sounding" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Package className="h-5 w-5" />
+                      Tank Hacmi (Dikdörtgen): V = L × B × h
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="tank_L">L (Tank Length) [m]</Label>
+                        <Input
+                          id="tank_L"
+                          type="number"
+                          value={data.tank_L || ''}
+                          onChange={(e) => setData({...data, tank_L: parseFloat(e.target.value)})}
+                          placeholder="20"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tank_B">B (Tank Breadth) [m]</Label>
+                        <Input
+                          id="tank_B"
+                          type="number"
+                          value={data.tank_B || ''}
+                          onChange={(e) => setData({...data, tank_B: parseFloat(e.target.value)})}
+                          placeholder="15"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tank_h">h (Tank Height) [m]</Label>
+                        <Input
+                          id="tank_h"
+                          type="number"
+                          value={data.tank_h || ''}
+                          onChange={(e) => setData({...data, tank_h: parseFloat(e.target.value)})}
+                          placeholder="8"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateTankVolumeRect} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Dikdörtgen Tank Hacmi Hesapla
+                    </Button>
+                    {results.tankVolumeRect !== undefined && (
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.tankVolumeRect.toFixed(2)} m³</div>
+                        <div className="text-sm text-muted-foreground">Dikdörtgen Tank Hacmi</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      Tank Hacmi (Silindirik): V = π × r² × h
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="r">r (Radius) [m]</Label>
+                        <Input
+                          id="r"
+                          type="number"
+                          step="0.01"
+                          value={data.r || ''}
+                          onChange={(e) => setData({...data, r: parseFloat(e.target.value)})}
+                          placeholder="7.5"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tank_h_cyl">h (Height) [m]</Label>
+                        <Input
+                          id="tank_h_cyl"
+                          type="number"
+                          value={data.tank_h || ''}
+                          onChange={(e) => setData({...data, tank_h: parseFloat(e.target.value)})}
+                          placeholder="8"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateTankVolumeCyl} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Silindirik Tank Hacmi Hesapla
+                    </Button>
+                    {results.tankVolumeCyl !== undefined && (
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.tankVolumeCyl.toFixed(2)} m³</div>
+                        <div className="text-sm text-muted-foreground">Silindirik Tank Hacmi</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Waves className="h-5 w-5" />
+                      Trim Düzeltmesi: ΔV = A × tan(θ) × l
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="tank_L_trim">L (Tank Length) [m]</Label>
+                        <Input
+                          id="tank_L_trim"
+                          type="number"
+                          value={data.tank_L || ''}
+                          onChange={(e) => setData({...data, tank_L: parseFloat(e.target.value)})}
+                          placeholder="20"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tank_B_trim">B (Tank Breadth) [m]</Label>
+                        <Input
+                          id="tank_B_trim"
+                          type="number"
+                          value={data.tank_B || ''}
+                          onChange={(e) => setData({...data, tank_B: parseFloat(e.target.value)})}
+                          placeholder="15"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="theta">θ (Trim Angle) [°]</Label>
+                        <Input
+                          id="theta"
+                          type="number"
+                          step="0.01"
+                          value={data.theta || ''}
+                          onChange={(e) => setData({...data, theta: parseFloat(e.target.value)})}
+                          placeholder="2.5"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="l">l (Length) [m]</Label>
+                        <Input
+                          id="l"
+                          type="number"
+                          value={data.l || ''}
+                          onChange={(e) => setData({...data, l: parseFloat(e.target.value)})}
+                          placeholder="10"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateTrimCorrection} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Trim Düzeltmesi Hesapla
+                    </Button>
+                    {results.trimCorrection !== undefined && (
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.trimCorrection.toFixed(2)} m³</div>
+                        <div className="text-sm text-muted-foreground">Trim Düzeltmesi</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* 🌊 List Hesaplamaları */}
+            <TabsContent value="list" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      List Açısı: φ = arctan(W × d / (Δ × GM))
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="W_list">W (Weight) [ton]</Label>
+                        <Input
+                          id="W_list"
+                          type="number"
+                          step="0.1"
+                          value={data.W || ''}
+                          onChange={(e) => setData({...data, W: parseFloat(e.target.value)})}
+                          placeholder="100"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="d_list">d (Distance) [m]</Label>
+                        <Input
+                          id="d_list"
+                          type="number"
+                          step="0.01"
+                          value={data.d || ''}
+                          onChange={(e) => setData({...data, d: parseFloat(e.target.value)})}
+                          placeholder="2.0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="delta_list">Δ (Displacement) [ton]</Label>
+                        <Input
+                          id="delta_list"
+                          type="number"
+                          value={data.delta || ''}
+                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
+                          placeholder="25000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="GM">GM (Metacentric Height) [m]</Label>
+                        <Input
+                          id="GM"
+                          type="number"
+                          step="0.01"
+                          value={data.GM || ''}
+                          onChange={(e) => setData({...data, GM: parseFloat(e.target.value)})}
+                          placeholder="1.0"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateListAngle} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      List Açısını Hesapla
+                    </Button>
+                    {results.listAngle !== undefined && (
+                      <div className="text-center p-3 bg-red-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.listAngle.toFixed(4)}°</div>
+                        <div className="text-sm text-muted-foreground">List Açısı</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      List Moment: M_list = W × d
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="W_moment">W (Weight) [ton]</Label>
+                        <Input
+                          id="W_moment"
+                          type="number"
+                          step="0.1"
+                          value={data.W || ''}
+                          onChange={(e) => setData({...data, W: parseFloat(e.target.value)})}
+                          placeholder="100"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="d_moment">d (Distance) [m]</Label>
+                        <Input
+                          id="d_moment"
+                          type="number"
+                          step="0.01"
+                          value={data.d || ''}
+                          onChange={(e) => setData({...data, d: parseFloat(e.target.value)})}
+                          placeholder="2.0"
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={calculateListMoment} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      List Moment Hesapla
+                    </Button>
+                    {results.listMoment !== undefined && (
+                      <div className="text-center p-3 bg-orange-50 rounded-lg">
+                        <div className="text-2xl font-bold">{results.listMoment.toFixed(2)}</div>
+                        <div className="text-sm text-muted-foreground">List Moment [ton.m]</div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
