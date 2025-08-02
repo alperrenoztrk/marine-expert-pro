@@ -12,8 +12,9 @@
 ## ✅ **Güncel Durumu (2025):**
 
 ### **🔄 Son Güncellemeler:**
-- ✅ **Trim ve List Hesaplamaları** - Stabilite hesaplamaları kaldırıldı
-- ✅ **Yeni TrimListCalculations Komponenti** - Sadece trim ve list odaklı
+- ✅ **Trim ve List Hesaplamaları** - Tüm formüller ayrı hesapla butonları ile
+- ✅ **5 Ana Kategori** - Temel Trim, Draft Survey, Bonjean, Sounding, List
+- ✅ **Individual Calculate Buttons** - Her formül için ayrı hesapla butonu
 - ✅ **Firebase & Google Services** entegrasyonu
 - ✅ **Google Authentication** tam entegrasyonu  
 - ✅ **Microsoft Translator** otomatik dil algılama
@@ -23,9 +24,9 @@
 
 ### **📊 SHA-1 Hash Durumu:**
 ```
-🏆 Current HEAD: 25410de (Trim ve List Hesaplamaları - Stabilite Kaldırıldı)
+🏆 Current HEAD: 7fdc4b2 (Trim ve List hesaplamaları - Tüm formüller ayrı hesapla butonları ile)
 📅 Last Update: 2 Ağustos 2025
-🔄 Total Commits: 6+ major updates
+🔄 Total Commits: 8+ major updates
 ```
 
 ## 🔧 **Lovable'da Güncelleme Süreci:**
@@ -91,8 +92,9 @@ VITE_FIREBASE_PROJECT_ID=maritime-calculator
 
 ### **✅ Pre-Deployment Kontrol:**
 - [x] Tüm kodlar GitHub'da güncel
-- [x] TrimListCalculations komponenti eklendi
-- [x] Stabilite hesaplamaları kaldırıldı
+- [x] TrimListCalculations komponenti tamamen yenilendi
+- [x] Tüm formüller ayrı hesapla butonları ile eklendi
+- [x] 5 ana kategori implement edildi
 - [x] Firebase konfigürasyonu hazır
 - [x] Google services JSON eklendi
 - [x] Package.json dependencies güncel
@@ -107,7 +109,8 @@ VITE_FIREBASE_PROJECT_ID=maritime-calculator
 - [ ] **Reklamlar** gösteriliyor mu?
 - [ ] **Mobile responsive** görünüm OK?
 - [ ] **Trim ve List hesaplamaları** çalışıyor mu?
-- [ ] **Stabilite hesaplamaları** kaldırıldı mı?
+- [ ] **Individual calculate buttons** çalışıyor mu?
+- [ ] **5 ana kategori** görünüyor mu?
 
 ## 🐛 **Troubleshooting:**
 
@@ -142,6 +145,12 @@ VITE_FIREBASE_PROJECT_ID=maritime-calculator
 ```javascript
 // Çözüm: TrimListCalculations komponenti kontrolü
 // Yeni komponentin doğru import edildiğinden emin ol
+```
+
+**🔘 Problem: Calculate buttons çalışmıyor**
+```javascript
+// Çözüm: Form validation kontrolü
+// Tüm required input'ların doldurulduğundan emin ol
 ```
 
 ### **🔧 Debug Komutları:**
@@ -185,6 +194,7 @@ npm run lint
 3. **Google AdSense** domain approval
 4. **Firebase Auth** redirect URL ekle
 5. **Trim ve List hesaplamaları** test et
+6. **Individual calculate buttons** test et
 
 ### **📱 Mobile App Deployment:**
 1. **Capacitor sync** çalıştır
@@ -214,12 +224,14 @@ npm run lint
 
 **🎉 Maritime Calculator projesi Lovable'da tamamen güncel!**
 
-Tüm geliştirmeler (Trim ve List hesaplamaları, Firebase, Google Auth, Microsoft Translator, Ad Updates) otomatik olarak Lovable'a sync edildi. Projeniz artık production-ready durumda!
+Tüm geliştirmeler (Trim ve List hesaplamaları, Individual calculate buttons, Firebase, Google Auth, Microsoft Translator, Ad Updates) otomatik olarak Lovable'a sync edildi. Projeniz artık production-ready durumda!
 
 **🚀 Live URL:** https://dfc3279a-089d-4d25-bff1-ff197bc24769.lovableproject.com
 
 ### **🆕 Yeni Özellikler:**
-- ✅ **TrimListCalculations** - Yeni odaklanmış hesaplama komponenti
-- ✅ **Stabilite hesaplamaları kaldırıldı** - Sadece trim ve list
-- ✅ **Güncellenmiş formüller** - Kullanıcı isteklerine göre
-- ✅ **Temiz arayüz** - Daha basit ve odaklanmış
+- ✅ **TrimListCalculations** - Tamamen yenilendi
+- ✅ **Individual Calculate Buttons** - Her formül için ayrı hesapla butonu
+- ✅ **5 Ana Kategori** - Temel Trim, Draft Survey, Bonjean, Sounding, List
+- ✅ **Tüm Formüller** - Kullanıcı isteklerine göre implement edildi
+- ✅ **Kullanıcı Dostu Arayüz** - Daha basit ve odaklanmış
+- ✅ **Real-time Results** - Anında sonuç gösterimi
