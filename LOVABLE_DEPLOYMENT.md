@@ -12,6 +12,8 @@
 ## ✅ **Güncel Durumu (2025):**
 
 ### **🔄 Son Güncellemeler:**
+- ✅ **Trim ve List Hesaplamaları** - Stabilite hesaplamaları kaldırıldı
+- ✅ **Yeni TrimListCalculations Komponenti** - Sadece trim ve list odaklı
 - ✅ **Firebase & Google Services** entegrasyonu
 - ✅ **Google Authentication** tam entegrasyonu  
 - ✅ **Microsoft Translator** otomatik dil algılama
@@ -21,9 +23,9 @@
 
 ### **📊 SHA-1 Hash Durumu:**
 ```
-🏆 Current HEAD: 2b8264a (Firebase & Google Services Tam Entegrasyonu)
-📅 Last Update: 26 Temmuz 2025
-🔄 Total Commits: 5+ major updates
+🏆 Current HEAD: 25410de (Trim ve List Hesaplamaları - Stabilite Kaldırıldı)
+📅 Last Update: 2 Ağustos 2025
+🔄 Total Commits: 6+ major updates
 ```
 
 ## 🔧 **Lovable'da Güncelleme Süreci:**
@@ -89,6 +91,8 @@ VITE_FIREBASE_PROJECT_ID=maritime-calculator
 
 ### **✅ Pre-Deployment Kontrol:**
 - [x] Tüm kodlar GitHub'da güncel
+- [x] TrimListCalculations komponenti eklendi
+- [x] Stabilite hesaplamaları kaldırıldı
 - [x] Firebase konfigürasyonu hazır
 - [x] Google services JSON eklendi
 - [x] Package.json dependencies güncel
@@ -102,7 +106,8 @@ VITE_FIREBASE_PROJECT_ID=maritime-calculator
 - [ ] **Language selector** çalışıyor mu?
 - [ ] **Reklamlar** gösteriliyor mu?
 - [ ] **Mobile responsive** görünüm OK?
-- [ ] **Calculations** çalışıyor mu?
+- [ ] **Trim ve List hesaplamaları** çalışıyor mu?
+- [ ] **Stabilite hesaplamaları** kaldırıldı mı?
 
 ## 🐛 **Troubleshooting:**
 
@@ -131,6 +136,12 @@ VITE_FIREBASE_PROJECT_ID=maritime-calculator
 ```javascript
 // Çözüm: Viewport meta tag
 // index.html'de viewport ayarları kontrol et
+```
+
+**🧮 Problem: Trim hesaplamaları çalışmıyor**
+```javascript
+// Çözüm: TrimListCalculations komponenti kontrolü
+// Yeni komponentin doğru import edildiğinden emin ol
 ```
 
 ### **🔧 Debug Komutları:**
@@ -173,6 +184,7 @@ npm run lint
 2. **Live URL** test et
 3. **Google AdSense** domain approval
 4. **Firebase Auth** redirect URL ekle
+5. **Trim ve List hesaplamaları** test et
 
 ### **📱 Mobile App Deployment:**
 1. **Capacitor sync** çalıştır
@@ -202,6 +214,12 @@ npm run lint
 
 **🎉 Maritime Calculator projesi Lovable'da tamamen güncel!**
 
-Tüm geliştirmeler (Firebase, Google Auth, Microsoft Translator, Ad Updates) otomatik olarak Lovable'a sync edildi. Projeniz artık production-ready durumda!
+Tüm geliştirmeler (Trim ve List hesaplamaları, Firebase, Google Auth, Microsoft Translator, Ad Updates) otomatik olarak Lovable'a sync edildi. Projeniz artık production-ready durumda!
 
 **🚀 Live URL:** https://dfc3279a-089d-4d25-bff1-ff197bc24769.lovableproject.com
+
+### **🆕 Yeni Özellikler:**
+- ✅ **TrimListCalculations** - Yeni odaklanmış hesaplama komponenti
+- ✅ **Stabilite hesaplamaları kaldırıldı** - Sadece trim ve list
+- ✅ **Güncellenmiş formüller** - Kullanıcı isteklerine göre
+- ✅ **Temiz arayüz** - Daha basit ve odaklanmış
