@@ -83,8 +83,6 @@ interface StabilityData {
   stability_quality: number; // Stability quality factor
   
   // 📈 GZ Curve Generation
-  phi_max_gz: number; // Angle of maximum GZ [°]
-  gz_max: number; // Maximum GZ [m]
   reduction_factor: number; // Deck edge reduction factor
   
   // 🎯 Additional Parameters
@@ -94,13 +92,9 @@ interface StabilityData {
   weights: number[]; // Array of weights [ton]
   heights: number[]; // Array of heights [m]
   tanks: Array<{L: number, B: number, rho: number}>; // Tank information
-  Q_cross: number; // Cross flooding rate [m³/min]
-  T_wave: number; // Wave period [s]
-  stability_range: number; // Stability range [°]
   
   // 🌪️ Wind and Weather Stability - Additional
   righting_moment: number; // Righting moment [kN.m]
-  area_30to40: number; // Area 30-40° [m.rad]
   
   // 🛡️ Damage Stability - Additional
   KG_old: number; // Original KG [m]
@@ -114,7 +108,6 @@ interface StabilityData {
   
   // 📈 GZ Curve Generation - Additional
   phi_max: number; // Maximum angle for energy calculation [°]
-  reduction_factor: number; // Deck edge reduction factor
   gz_reduced: number; // Reduced GZ after deck edge immersion [m]
   
   // 🚢 Doğrultucu Moment - Additional
@@ -150,6 +143,10 @@ interface StabilityResults {
   weather_criterion: boolean;
   
   // 📊 IMO Stability Criteria
+  area_0to30: number; // Area 0-30° [m.rad]
+  area_0to40: number; // Area 0-40° [m.rad]
+  area_30to40: number; // Area 30-40° [m.rad]
+  KG_calculated: number; // Calculated KG [m]
   imo_compliance: {
     area_0to30: boolean;
     area_0to40: boolean;

@@ -53,7 +53,10 @@ export const TankCalculations = () => {
       moment
     });
     
-    toast.success("Sounding Table hesaplamaları tamamlandı!");
+    toast({
+      title: "Başarılı!",
+      description: "Sounding Table hesaplamaları tamamlandı!"
+    });
   };
 
   return (

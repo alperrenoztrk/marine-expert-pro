@@ -75,7 +75,10 @@ export const HydrostaticsCalculations = () => {
       moment: 0
     });
     
-    toast.success("Draft Survey hesaplamaları tamamlandı!");
+    toast({
+      title: "Başarılı!",
+      description: "Draft Survey hesaplamaları tamamlandı!"
+    });
   };
 
   const calculateBonjeanCurves = () => {
@@ -97,7 +100,10 @@ export const HydrostaticsCalculations = () => {
       tpc: 0
     });
     
-    toast.success("Bonjean Curves hesaplamaları tamamlandı!");
+    toast({
+      title: "Başarılı!",
+      description: "Bonjean Curves hesaplamaları tamamlandı!"
+    });
   };
 
   return (

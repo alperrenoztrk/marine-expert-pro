@@ -57,6 +57,9 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
         </div>
       </div>
 
+      {/* SpongeBob Coral Decorations */}
+      <div className="coral-decoration"></div>
+
       {/* Transition Overlay */}
       <div className={`transition-overlay ${fadeOut ? 'active' : ''}`}></div>
     </div>
