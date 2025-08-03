@@ -501,88 +501,116 @@ All colors MUST be HSL.
     background-color: hsl(120 30% 95%) !important;
   }
 
-  /* SpongeBob Theme - Yellow & Blue Underwater Pattern */
+  /* SpongeBob Theme - Gerçekçi deniz altı dünyası */
   .spongebob {
-    --background: 50 100% 95%;
-    --foreground: 240 100% 15%;
-
-    --card: 50 100% 98%;
-    --card-foreground: 240 100% 15%;
-
-    --popover: 50 100% 98%;
-    --popover-foreground: 240 100% 15%;
-
-    --primary: 50 100% 50%;
-    --primary-foreground: 240 100% 15%;
-    --primary-light: 50 100% 70%;
-    --primary-dark: 50 100% 30%;
-
-    --secondary: 200 100% 50%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 50 100% 90%;
-    --muted-foreground: 240 100% 40%;
-
-    --accent: 350 100% 60%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 100% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --warning: 30 100% 60%;
-    --warning-foreground: 240 100% 15%;
-
-    --success: 150 100% 40%;
-    --success-foreground: 0 0% 100%;
-
-    --border: 50 100% 85%;
-    --input: 50 100% 85%;
-    --ring: 50 100% 50%;
-
-    /* SpongeBob theme semantic colors */
-    --info: 200 100% 50%;
-    --info-foreground: 0 0% 100%;
-    --info-muted: 50 100% 92%;
-    --info-muted-foreground: 240 100% 40%;
-
-    /* SpongeBob Yellow & Blue Underwater Gradients */
-    --gradient-ocean: linear-gradient(135deg, hsl(200 100% 70%), hsl(200 100% 50%), hsl(180 100% 60%));
-    --gradient-deep: linear-gradient(135deg, hsl(50 100% 50%), hsl(50 100% 70%), hsl(30 100% 60%));
-    --gradient-surface: linear-gradient(135deg, hsl(50 100% 95%) 0%, hsl(50 100% 98%) 100%);
-    --gradient-underwater: linear-gradient(135deg, hsl(200 100% 70%), hsl(180 100% 60%), hsl(200 100% 50%), hsl(220 100% 60%));
-    --gradient-bikini: linear-gradient(135deg, hsl(50 100% 60%), hsl(30 100% 60%), hsl(0 100% 70%), hsl(350 100% 60%));
-    --gradient-bubble: linear-gradient(135deg, hsl(200 100% 90% / 0.8), hsl(180 100% 90% / 0.6), hsl(200 100% 80% / 0.4));
-    --gradient-krabby: linear-gradient(135deg, hsl(50 100% 50%), hsl(30 100% 60%), hsl(0 100% 60%), hsl(350 100% 70%));
-    --gradient-jellyfish: linear-gradient(135deg, hsl(300 100% 70%), hsl(280 100% 60%), hsl(260 100% 70%), hsl(240 100% 80%));
-    
-    /* SpongeBob Underwater Shadows */
-    --shadow-calculator: 0 8px 32px -4px hsl(200 100% 50% / 0.3), 0 0 20px hsl(50 100% 50% / 0.2);
-    --shadow-card: 0 4px 16px -2px hsl(200 100% 50% / 0.2), 0 0 10px hsl(50 100% 50% / 0.15);
-    --shadow-button: 0 2px 8px -1px hsl(50 100% 50% / 0.3), 0 0 5px hsl(200 100% 50% / 0.2);
-
-    --sidebar-background: 50 100% 96%;
-    --sidebar-foreground: 240 100% 20%;
-    --sidebar-primary: 50 100% 50%;
-    --sidebar-primary-foreground: 240 100% 15%;
-    --sidebar-accent: 50 100% 92%;
-    --sidebar-accent-foreground: 240 100% 20%;
-    --sidebar-border: 50 100% 85%;
-    --sidebar-ring: 50 100% 50%;
+    background: linear-gradient(135deg, 
+      hsl(200 80% 60%) 0%, 
+      hsl(180 70% 50%) 25%, 
+      hsl(160 60% 40%) 50%, 
+      hsl(140 50% 30%) 75%, 
+      hsl(120 40% 20%) 100%) !important;
+    position: relative !important;
+    overflow: hidden !important;
   }
 
-  /* SpongeBob Theme Overrides */
-  .spongebob * {
-    transition: all 0.3s ease;
+  /* Baloncuk animasyonları */
+  .spongebob::before {
+    content: '' !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+      radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
+      radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+      radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
+      radial-gradient(circle at 10% 30%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+      radial-gradient(circle at 90% 70%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
+      radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
+      radial-gradient(circle at 70% 90%, rgba(255, 255, 255, 0.4) 3px, transparent 3px) !important;
+    background-size: 200px 200px, 150px 150px, 180px 180px, 120px 120px, 160px 160px, 140px 140px, 170px 170px, 130px 130px !important;
+    animation: bubbleFloat 8s linear infinite !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
   }
 
+  /* Mercan dekorasyonları */
+  .spongebob::after {
+    content: '' !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 150px !important;
+    background-image: 
+      /* Mercan 1 */
+      radial-gradient(ellipse 40px 80px at 10% 100%, hsl(0 80% 60%) 0%, hsl(0 60% 40%) 50%, transparent 100%),
+      radial-gradient(ellipse 30px 60px at 15% 100%, hsl(30 80% 60%) 0%, hsl(30 60% 40%) 50%, transparent 100%),
+      /* Mercan 2 */
+      radial-gradient(ellipse 50px 100px at 25% 100%, hsl(60 80% 60%) 0%, hsl(60 60% 40%) 50%, transparent 100%),
+      radial-gradient(ellipse 35px 70px at 30% 100%, hsl(90 80% 60%) 0%, hsl(90 60% 40%) 50%, transparent 100%),
+      /* Mercan 3 */
+      radial-gradient(ellipse 45px 90px at 45% 100%, hsl(120 80% 60%) 0%, hsl(120 60% 40%) 50%, transparent 100%),
+      radial-gradient(ellipse 40px 80px at 50% 100%, hsl(150 80% 60%) 0%, hsl(150 60% 40%) 50%, transparent 100%),
+      /* Mercan 4 */
+      radial-gradient(ellipse 55px 110px at 65% 100%, hsl(180 80% 60%) 0%, hsl(180 60% 40%) 50%, transparent 100%),
+      radial-gradient(ellipse 45px 90px at 70% 100%, hsl(210 80% 60%) 0%, hsl(210 60% 40%) 50%, transparent 100%),
+      /* Mercan 5 */
+      radial-gradient(ellipse 50px 100px at 85% 100%, hsl(240 80% 60%) 0%, hsl(240 60% 40%) 50%, transparent 100%),
+      radial-gradient(ellipse 40px 80px at 90% 100%, hsl(270 80% 60%) 0%, hsl(270 60% 40%) 50%, transparent 100%) !important;
+    background-size: 100% 100% !important;
+    animation: coralSway 6s ease-in-out infinite !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+  }
+
+  /* Baloncuk animasyonu */
+  @keyframes bubbleFloat {
+    0% {
+      transform: translateY(100vh) rotate(0deg) !important;
+    }
+    100% {
+      transform: translateY(-100vh) rotate(360deg) !important;
+    }
+  }
+
+  /* Mercan sallanma animasyonu */
+  @keyframes coralSway {
+    0%, 100% {
+      transform: translateX(0px) rotate(0deg) !important;
+    }
+    25% {
+      transform: translateX(5px) rotate(1deg) !important;
+    }
+    50% {
+      transform: translateX(-3px) rotate(-1deg) !important;
+    }
+    75% {
+      transform: translateX(3px) rotate(0.5deg) !important;
+    }
+  }
+
+  /* SpongeBob tema için özel arka planlar */
   .spongebob .bg-gradient-to-br,
-  .spongebob .bg-gradient-to-tr,
-  .spongebob .bg-gradient-to-tl,
-  .spongebob .bg-gradient-to-bl {
-    background: var(--gradient-underwater) !important;
+  .spongebob .bg-gradient-to-r,
+  .spongebob .bg-gradient-to-l,
+  .spongebob .bg-gradient-to-t,
+  .spongebob .bg-gradient-to-b {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 70%) 0%, 
+      hsl(60 80% 60%) 25%, 
+      hsl(75 70% 50%) 50%, 
+      hsl(90 60% 40%) 75%, 
+      hsl(105 50% 30%) 100%) !important;
+    border: 2px solid hsl(45 80% 50%) !important;
+    box-shadow: 
+      0 4px 15px rgba(45, 90, 70, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   }
 
-  /* SpongeBob tema için mavi arka planları override et */
+  /* SpongeBob tema için mavi arka planlar */
   .spongebob .bg-blue-50,
   .spongebob .bg-blue-100,
   .spongebob .bg-blue-200,
@@ -593,30 +621,30 @@ All colors MUST be HSL.
   .spongebob .bg-blue-700,
   .spongebob .bg-blue-800,
   .spongebob .bg-blue-900 {
-    background-color: hsl(200 100% 85%) !important;
+    background: linear-gradient(135deg, 
+      hsl(200 80% 70%) 0%, 
+      hsl(180 70% 60%) 50%, 
+      hsl(160 60% 50%) 100%) !important;
+    box-shadow: 
+      0 4px 15px rgba(0, 100, 150, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid hsl(200 70% 50%) !important;
   }
 
-  /* SpongeBob tema için beyaz arka planları */
+  /* SpongeBob tema için beyaz arka planlar */
   .spongebob .bg-white,
   .spongebob .bg-gray-50,
   .spongebob .bg-gray-100,
   .spongebob .bg-gray-200,
   .spongebob .bg-gray-300 {
-    background-color: hsl(50 100% 98%) !important;
-  }
-
-  /* SpongeBob tema için indigo arka planları override et */
-  .spongebob .bg-indigo-50,
-  .spongebob .bg-indigo-100,
-  .spongebob .bg-indigo-200,
-  .spongebob .bg-indigo-300,
-  .spongebob .bg-indigo-400,
-  .spongebob .bg-indigo-500,
-  .spongebob .bg-indigo-600,
-  .spongebob .bg-indigo-700,
-  .spongebob .bg-indigo-800,
-  .spongebob .bg-indigo-900 {
-    background-color: hsl(200 100% 85%) !important;
+    background: linear-gradient(135deg, 
+      hsl(45 90% 95%) 0%, 
+      hsl(60 80% 90%) 50%, 
+      hsl(75 70% 85%) 100%) !important;
+    box-shadow: 
+      0 4px 15px rgba(45, 90, 70, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid hsl(45 80% 80%) !important;
   }
 
   /* SpongeBob tema için kart arka planları */
@@ -624,247 +652,160 @@ All colors MUST be HSL.
   .spongebob .bg-white\/90,
   .spongebob .bg-gray-800\/80,
   .spongebob .bg-gray-800\/90 {
-    background-color: hsl(50 100% 98% / 0.9) !important;
+    background: linear-gradient(135deg, 
+      hsla(45, 90%, 95%, 0.95) 0%, 
+      hsla(60, 80%, 90%, 0.9) 50%, 
+      hsla(75, 70%, 85%, 0.85) 100%) !important;
+    box-shadow: 
+      0 8px 32px rgba(45, 90, 70, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid hsla(45, 80%, 80%, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
   }
 
-  /* SpongeBob tema için formül kutucukları */
-  .spongebob .bg-gray-50 {
-    background-color: hsl(50 100% 95%) !important;
+  /* SpongeBob tema için butonlar */
+  .spongebob button,
+  .spongebob .btn {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 70%) 0%, 
+      hsl(60 80% 60%) 50%, 
+      hsl(75 70% 50%) 100%) !important;
+    border: 2px solid hsl(45 80% 50%) !important;
+    box-shadow: 
+      0 4px 15px rgba(45, 90, 70, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    color: hsl(45 20% 20%) !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
   }
 
-  /* SpongeBob tema için bilgi kutuları */
-  .spongebob .bg-blue-50 {
-    background-color: hsl(200 100% 90%) !important;
+  .spongebob button:hover,
+  .spongebob .btn:hover {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 80%) 0%, 
+      hsl(60 80% 70%) 50%, 
+      hsl(75 70% 60%) 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 
+      0 6px 20px rgba(45, 90, 70, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
   }
 
-  /* SpongeBob tema için hover efektleri */
-  .spongebob .hover\:bg-blue-50:hover,
-  .spongebob .hover\:bg-gray-50:hover,
-  .spongebob .hover\:bg-white:hover {
-    background-color: hsl(50 100% 90%) !important;
+  /* SpongeBob tema için input'lar */
+  .spongebob input,
+  .spongebob select,
+  .spongebob textarea {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 95%) 0%, 
+      hsl(60 80% 90%) 50%, 
+      hsl(75 70% 85%) 100%) !important;
+    border: 2px solid hsl(45 80% 70%) !important;
+    box-shadow: 
+      0 2px 10px rgba(45, 90, 70, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    color: hsl(45 20% 20%) !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) !important;
   }
 
-  /* SpongeBob tema için border renkleri */
-  .spongebob .border-blue-200,
-  .spongebob .border-blue-300,
-  .spongebob .border-gray-200,
-  .spongebob .border-gray-300 {
-    border-color: hsl(50 100% 80%) !important;
+  .spongebob input:focus,
+  .spongebob select:focus,
+  .spongebob textarea:focus {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 98%) 0%, 
+      hsl(60 80% 95%) 50%, 
+      hsl(75 70%, 90%) 100%) !important;
+    border-color: hsl(45 80% 60%) !important;
+    box-shadow: 
+      0 4px 15px rgba(45, 90, 70, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
   }
 
-  /* SpongeBob tema için metin renkleri */
-  .spongebob .text-blue-600,
-  .spongebob .text-blue-700,
-  .spongebob .text-blue-800,
-  .spongebob .text-gray-600,
-  .spongebob .text-gray-700,
-  .spongebob .text-gray-800 {
-    color: hsl(240 100% 15%) !important;
+  /* SpongeBob tema için başlıklar */
+  .spongebob h1, 
+  .spongebob h2, 
+  .spongebob h3, 
+  .spongebob h4, 
+  .spongebob h5, 
+  .spongebob h6 {
+    color: hsl(45 20% 20%) !important;
+    text-shadow: 
+      2px 2px 4px rgba(45, 90, 70, 0.3),
+      0 1px 2px rgba(255, 255, 255, 0.5) !important;
   }
 
-  /* SpongeBob tema için gradient metin renkleri */
-  .spongebob .bg-gradient-to-r.from-blue-600.to-indigo-600,
-  .spongebob .bg-gradient-to-r.from-blue-400.to-indigo-400 {
-    background: linear-gradient(135deg, hsl(50 100% 50%), hsl(200 100% 50%)) !important;
+  /* SpongeBob tema için özel logo */
+  .spongebob .maritime-logo {
+    filter: hue-rotate(45deg) saturate(1.5) brightness(1.2) !important;
+    animation: logoFloat 3s ease-in-out infinite !important;
+  }
+
+  /* SpongeBob tema için özel başlık */
+  .spongebob .spongebob-title {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 70%) 0%, 
+      hsl(60 80% 60%) 25%, 
+      hsl(75 70% 50%) 50%, 
+      hsl(90 60% 40%) 75%, 
+      hsl(105 50% 30%) 100%) !important;
     -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
-    color: transparent !important;
+    text-shadow: 
+      2px 2px 4px rgba(45, 90, 70, 0.3),
+      0 1px 2px rgba(255, 255, 255, 0.5) !important;
   }
 
-  /* SpongeBob underwater background effects - Bikini Bottom atmosferi */
-  .spongebob {
-    background: linear-gradient(180deg, 
-      hsl(180 100% 85%) 0%,
-      hsl(190 100% 75%) 20%,
-      hsl(200 100% 65%) 40%,
-      hsl(210 100% 55%) 60%,
-      hsl(220 100% 45%) 80%,
-      hsl(230 100% 35%) 100%
-    ) !important;
-    position: relative;
-    overflow: hidden;
-    min-height: 100vh;
+  /* SpongeBob tema için özel ikonlar */
+  .spongebob .spongebob-icon {
+    filter: hue-rotate(45deg) saturate(1.3) brightness(1.1) !important;
+    animation: iconBounce 2s ease-in-out infinite !important;
   }
 
-  .spongebob::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      radial-gradient(circle at 15% 25%, rgba(255, 255, 0, 0.15) 0%, transparent 25%),
-      radial-gradient(circle at 85% 75%, rgba(255, 193, 7, 0.1) 0%, transparent 30%),
-      radial-gradient(circle at 45% 60%, rgba(0, 150, 255, 0.08) 0%, transparent 35%);
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* Underwater bubbles animation - SpongeBob tarzı baloncuklar */
-  .spongebob::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
-      radial-gradient(circle at 25% 70%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
-      radial-gradient(circle at 40% 85%, rgba(255, 255, 255, 0.7) 3px, transparent 3px),
-      radial-gradient(circle at 55% 95%, rgba(255, 255, 255, 0.5) 1.5px, transparent 1.5px),
-      radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.9) 2.5px, transparent 2.5px),
-      radial-gradient(circle at 85% 90%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
-      radial-gradient(circle at 15% 60%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
-      radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.7) 2px, transparent 2px),
-      radial-gradient(circle at 65% 30%, rgba(255, 255, 255, 0.5) 1.5px, transparent 1.5px),
-      radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.8) 2px, transparent 2px);
-    animation: bubbles-float 8s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  @keyframes bubbles-float {
-    0%, 100% { 
-      transform: translateY(0px) scale(1);
-      opacity: 0.7;
+  @keyframes iconBounce {
+    0%, 100% {
+      transform: translateY(0px) !important;
     }
-    25% { 
-      transform: translateY(-20px) scale(1.1);
-      opacity: 1;
-    }
-    50% { 
-      transform: translateY(-40px) scale(0.9);
-      opacity: 0.8;
-    }
-    75% { 
-      transform: translateY(-15px) scale(1.05);
-      opacity: 0.9;
+    50% {
+      transform: translateY(-5px) !important;
     }
   }
 
-  /* Coral decoration elements - Mercanlar ve deniz yosunları */
-  .spongebob body::before {
-    content: '';
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 200px;
-    background: linear-gradient(180deg, transparent 0%, rgba(255, 105, 180, 0.15) 50%, rgba(255, 20, 147, 0.25) 100%);
-    pointer-events: none;
-    z-index: -1;
+  /* SpongeBob tema için özel scrollbar */
+  .spongebob ::-webkit-scrollbar {
+    width: 12px !important;
   }
 
-  .spongebob body::after {
-    content: '';
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background-image:
-      /* Sol mercan */
-      linear-gradient(0deg, rgba(255, 105, 180, 0.7) 0%, transparent 80%),
-      /* Orta mercan */
-      linear-gradient(5deg, rgba(255, 165, 0, 0.6) 0%, transparent 75%),
-      /* Sağ mercan */
-      linear-gradient(-3deg, rgba(255, 20, 147, 0.8) 0%, transparent 85%),
-      /* Deniz yosunu */
-      linear-gradient(2deg, rgba(34, 139, 34, 0.6) 0%, transparent 60%);
-    background-size: 15px 80px, 20px 100px, 18px 90px, 12px 60px;
-    background-position: 10% bottom, 50% bottom, 85% bottom, 70% bottom;
-    background-repeat: no-repeat;
-    animation: coral-sway 6s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
+  .spongebob ::-webkit-scrollbar-track {
+    background: linear-gradient(135deg, 
+      hsl(45 90% 90%) 0%, 
+      hsl(60 80% 85%) 100%) !important;
+    border-radius: 6px !important;
   }
 
-  @keyframes coral-sway {
-    0%, 100% { 
-      transform: translateX(0px) rotate(0deg);
+  .spongebob ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, 
+      hsl(45 80% 60%) 0%, 
+      hsl(60 70% 50%) 100%) !important;
+    border-radius: 6px !important;
+    border: 2px solid hsl(45 90% 90%) !important;
+  }
+
+  .spongebob ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, 
+      hsl(45 80% 70%) 0%, 
+      hsl(60 70% 60%) 100%) !important;
+  }
+
+  /* SpongeBob tema için mobil optimizasyon */
+  @media (max-width: 768px) {
+    .spongebob::before {
+      background-size: 100px 100px, 75px 75px, 90px 90px, 60px 60px, 80px 80px, 70px 70px, 85px 85px, 65px 65px !important;
     }
-    25% { 
-      transform: translateX(2px) rotate(1deg);
+    
+    .spongebob::after {
+      height: 100px !important;
     }
-    50% { 
-      transform: translateX(-1px) rotate(-0.5deg);
-    }
-    75% { 
-      transform: translateX(1px) rotate(0.5deg);
-    }
-  }
-
-  /* Nature tema için bilgi kutuları */
-  .nature .bg-blue-50 {
-    background-color: hsl(120 30% 95%) !important;
-  }
-
-  /* Nature tema için hover efektleri */
-  .nature .hover\:bg-blue-50:hover,
-  .nature .hover\:bg-gray-50:hover,
-  .nature .hover\:bg-white:hover {
-    background-color: hsl(120 30% 94%) !important;
-  }
-
-  /* Nature tema için border renkleri */
-  .nature .border-blue-200,
-  .nature .border-blue-300,
-  .nature .border-gray-200,
-  .nature .border-gray-300 {
-    border-color: hsl(120 30% 90%) !important;
-  }
-
-  /* Nature tema için metin renkleri */
-  .nature .text-blue-600,
-  .nature .text-blue-700,
-  .nature .text-blue-800,
-  .nature .text-gray-600,
-  .nature .text-gray-700,
-  .nature .text-gray-800 {
-    color: hsl(120 30% 8%) !important;
-  }
-
-  /* Nature tema için gradient metin renkleri */
-  .nature .bg-gradient-to-r.from-blue-600.to-indigo-600,
-  .nature .bg-gradient-to-r.from-blue-400.to-indigo-400 {
-    background: linear-gradient(135deg, hsl(120 70% 40%), hsl(90 70% 45%)) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    color: transparent !important;
-  }
-
-  /* Nature tema için başlık renkleri */
-  .nature h1, .nature h2, .nature h3, .nature h4, .nature h5, .nature h6 {
-    color: hsl(120 70% 40%) !important;
-  }
-
-  /* Nature tema için ana başlık gradient'leri */
-  .nature .text-4xl.font-bold.bg-gradient-to-r {
-    background: linear-gradient(135deg, hsl(120 70% 40%), hsl(90 70% 45%)) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    color: transparent !important;
-  }
-
-  /* Nature tema için nature-title class'ı olan başlıklar */
-  .nature .nature-title {
-    color: hsl(25 100% 25%) !important;
-    text-shadow: 0 2px 4px hsl(25 100% 25% / 0.3) !important;
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    background-clip: unset !important;
-  }
-
-  /* Nature tema için icon renkleri */
-  .nature .text-blue-600, .nature .text-blue-400 {
-    color: hsl(120 70% 40%) !important;
-  }
-
-  /* Nature tema için card başlıkları */
-  .nature .card-title {
-    color: hsl(120 70% 40%) !important;
   }
 
   /* Neon Theme - True Neon Experience with Bright Colors & Glow Effects */
