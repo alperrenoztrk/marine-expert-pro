@@ -176,7 +176,10 @@ export const CargoCalculations = () => {
       }
     });
     
-    toast.success("Kargo işlemleri hesaplamaları tamamlandı!");
+    toast({
+      title: "Başarılı!",
+      description: "Kargo işlemleri hesaplamaları tamamlandı!"
+    });
   };
 
   return (
