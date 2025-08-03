@@ -501,7 +501,7 @@ All colors MUST be HSL.
     background-color: hsl(120 30% 95%) !important;
   }
 
-  /* SpongeBob Theme - Gerçekçi deniz altı dünyası */
+  /* SpongeBob Theme - Çizgi film tarzı deniz altı dünyası */
   .spongebob {
     background: linear-gradient(135deg, 
       hsl(200 80% 60%) 0%, 
@@ -513,7 +513,7 @@ All colors MUST be HSL.
     overflow: hidden !important;
   }
 
-  /* Baloncuk animasyonları */
+  /* Çizgi film tarzı baloncuk animasyonları */
   .spongebob::before {
     content: '' !important;
     position: fixed !important;
@@ -522,95 +522,131 @@ All colors MUST be HSL.
     width: 100% !important;
     height: 100% !important;
     background-image: 
-      radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
-      radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
-      radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
-      radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
-      radial-gradient(circle at 10% 30%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
-      radial-gradient(circle at 90% 70%, rgba(255, 255, 255, 0.4) 3px, transparent 3px),
-      radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.3) 2px, transparent 2px),
-      radial-gradient(circle at 70% 90%, rgba(255, 255, 255, 0.4) 3px, transparent 3px) !important;
-    background-size: 200px 200px, 150px 150px, 180px 180px, 120px 120px, 160px 160px, 140px 140px, 170px 170px, 130px 130px !important;
-    animation: bubbleFloat 8s linear infinite !important;
+      /* Büyük baloncuklar */
+      radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.9) 8px, transparent 8px),
+      radial-gradient(circle at 35% 75%, rgba(255, 255, 255, 0.8) 6px, transparent 6px),
+      radial-gradient(circle at 55% 65%, rgba(255, 255, 255, 0.9) 10px, transparent 10px),
+      radial-gradient(circle at 75% 55%, rgba(255, 255, 255, 0.7) 7px, transparent 7px),
+      radial-gradient(circle at 85% 45%, rgba(255, 255, 255, 0.8) 9px, transparent 9px),
+      /* Orta baloncuklar */
+      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.6) 4px, transparent 4px),
+      radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.7) 5px, transparent 5px),
+      radial-gradient(circle at 65% 15%, rgba(255, 255, 255, 0.8) 6px, transparent 6px),
+      radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.6) 4px, transparent 4px),
+      /* Küçük baloncuklar */
+      radial-gradient(circle at 10% 50%, rgba(255, 255, 255, 0.5) 2px, transparent 2px),
+      radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.6) 3px, transparent 3px),
+      radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.5) 2px, transparent 2px),
+      radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.7) 4px, transparent 4px),
+      radial-gradient(circle at 90% 70%, rgba(255, 255, 255, 0.6) 3px, transparent 3px),
+      /* Ekstra baloncuklar */
+      radial-gradient(circle at 20% 60%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+      radial-gradient(circle at 40% 90%, rgba(255, 255, 255, 0.5) 2px, transparent 2px),
+      radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.6) 3px, transparent 3px),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+      radial-gradient(circle at 95% 20%, rgba(255, 255, 255, 0.5) 2px, transparent 2px) !important;
+    background-size: 300px 300px, 250px 250px, 280px 280px, 200px 200px, 260px 260px, 240px 240px, 270px 270px, 220px 220px, 290px 290px, 180px 180px, 210px 210px, 230px 230px, 240px 240px, 250px 250px, 260px 260px, 270px 270px, 280px 280px, 290px 290px, 300px 300px, 310px 310px !important;
+    animation: spongebobBubbleFloat 12s linear infinite !important;
     pointer-events: none !important;
     z-index: 1 !important;
   }
 
-  /* Mercan dekorasyonları */
+  /* Çizgi film tarzı mercan dekorasyonları */
   .spongebob::after {
     content: '' !important;
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: 150px !important;
+    height: 200px !important;
     background-image: 
-      /* Mercan 1 */
-      radial-gradient(ellipse 40px 80px at 10% 100%, hsl(0 80% 60%) 0%, hsl(0 60% 40%) 50%, transparent 100%),
-      radial-gradient(ellipse 30px 60px at 15% 100%, hsl(30 80% 60%) 0%, hsl(30 60% 40%) 50%, transparent 100%),
-      /* Mercan 2 */
-      radial-gradient(ellipse 50px 100px at 25% 100%, hsl(60 80% 60%) 0%, hsl(60 60% 40%) 50%, transparent 100%),
-      radial-gradient(ellipse 35px 70px at 30% 100%, hsl(90 80% 60%) 0%, hsl(90 60% 40%) 50%, transparent 100%),
-      /* Mercan 3 */
-      radial-gradient(ellipse 45px 90px at 45% 100%, hsl(120 80% 60%) 0%, hsl(120 60% 40%) 50%, transparent 100%),
-      radial-gradient(ellipse 40px 80px at 50% 100%, hsl(150 80% 60%) 0%, hsl(150 60% 40%) 50%, transparent 100%),
-      /* Mercan 4 */
-      radial-gradient(ellipse 55px 110px at 65% 100%, hsl(180 80% 60%) 0%, hsl(180 60% 40%) 50%, transparent 100%),
-      radial-gradient(ellipse 45px 90px at 70% 100%, hsl(210 80% 60%) 0%, hsl(210 60% 40%) 50%, transparent 100%),
-      /* Mercan 5 */
-      radial-gradient(ellipse 50px 100px at 85% 100%, hsl(240 80% 60%) 0%, hsl(240 60% 40%) 50%, transparent 100%),
-      radial-gradient(ellipse 40px 80px at 90% 100%, hsl(270 80% 60%) 0%, hsl(270 60% 40%) 50%, transparent 100%) !important;
+      /* Büyük mercanlar - Çizgi film tarzı */
+      radial-gradient(ellipse 60px 120px at 8% 100%, hsl(0 90% 70%) 0%, hsl(0 80% 60%) 30%, hsl(0 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 50px 100px at 12% 100%, hsl(30 90% 70%) 0%, hsl(30 80% 60%) 30%, hsl(30 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 70px 140px at 20% 100%, hsl(60 90% 70%) 0%, hsl(60 80% 60%) 30%, hsl(60 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 45px 90px at 28% 100%, hsl(90 90% 70%) 0%, hsl(90 80% 60%) 30%, hsl(90 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 80px 160px at 40% 100%, hsl(120 90% 70%) 0%, hsl(120 80% 60%) 30%, hsl(120 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 55px 110px at 48% 100%, hsl(150 90% 70%) 0%, hsl(150 80% 60%) 30%, hsl(150 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 90px 180px at 60% 100%, hsl(180 90% 70%) 0%, hsl(180 80% 60%) 30%, hsl(180 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 65px 130px at 68% 100%, hsl(210 90% 70%) 0%, hsl(210 80% 60%) 30%, hsl(210 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 100px 200px at 80% 100%, hsl(240 90% 70%) 0%, hsl(240 80% 60%) 30%, hsl(240 70% 50%) 60%, transparent 100%),
+      radial-gradient(ellipse 75px 150px at 88% 100%, hsl(270 90% 70%) 0%, hsl(270 80% 60%) 30%, hsl(270 70% 50%) 60%, transparent 100%),
+      /* Küçük mercanlar */
+      radial-gradient(ellipse 30px 60px at 15% 100%, hsl(45 85% 65%) 0%, hsl(45 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 25px 50px at 25% 100%, hsl(75 85% 65%) 0%, hsl(75 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 35px 70px at 35% 100%, hsl(105 85% 65%) 0%, hsl(105 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 20px 40px at 45% 100%, hsl(135 85% 65%) 0%, hsl(135 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 40px 80px at 55% 100%, hsl(165 85% 65%) 0%, hsl(165 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 15px 30px at 65% 100%, hsl(195 85% 65%) 0%, hsl(195 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 45px 90px at 75% 100%, hsl(225 85% 65%) 0%, hsl(225 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 10px 20px at 85% 100%, hsl(255 85% 65%) 0%, hsl(255 75% 55%) 50%, transparent 100%),
+      radial-gradient(ellipse 50px 100px at 95% 100%, hsl(285 85% 65%) 0%, hsl(285 75% 55%) 50%, transparent 100%) !important;
     background-size: 100% 100% !important;
-    animation: coralSway 6s ease-in-out infinite !important;
+    animation: spongebobCoralSway 8s ease-in-out infinite !important;
     pointer-events: none !important;
     z-index: 2 !important;
   }
 
-  /* Baloncuk animasyonu */
-  @keyframes bubbleFloat {
+  /* Çizgi film tarzı baloncuk animasyonu */
+  @keyframes spongebobBubbleFloat {
     0% {
-      transform: translateY(100vh) rotate(0deg) !important;
-    }
-    100% {
-      transform: translateY(-100vh) rotate(360deg) !important;
-    }
-  }
-
-  /* Mercan sallanma animasyonu */
-  @keyframes coralSway {
-    0%, 100% {
-      transform: translateX(0px) rotate(0deg) !important;
+      transform: translateY(100vh) rotate(0deg) scale(1) !important;
+      opacity: 0.8 !important;
     }
     25% {
-      transform: translateX(5px) rotate(1deg) !important;
+      transform: translateY(75vh) rotate(90deg) scale(1.1) !important;
+      opacity: 1 !important;
     }
     50% {
-      transform: translateX(-3px) rotate(-1deg) !important;
+      transform: translateY(50vh) rotate(180deg) scale(0.9) !important;
+      opacity: 0.9 !important;
     }
     75% {
-      transform: translateX(3px) rotate(0.5deg) !important;
+      transform: translateY(25vh) rotate(270deg) scale(1.05) !important;
+      opacity: 1 !important;
+    }
+    100% {
+      transform: translateY(-100vh) rotate(360deg) scale(1) !important;
+      opacity: 0.8 !important;
     }
   }
 
-  /* SpongeBob tema için özel arka planlar */
+  /* Çizgi film tarzı mercan sallanma animasyonu */
+  @keyframes spongebobCoralSway {
+    0%, 100% {
+      transform: translateX(0px) rotate(0deg) scale(1) !important;
+    }
+    25% {
+      transform: translateX(8px) rotate(2deg) scale(1.02) !important;
+    }
+    50% {
+      transform: translateX(-5px) rotate(-1deg) scale(0.98) !important;
+    }
+    75% {
+      transform: translateX(6px) rotate(1.5deg) scale(1.01) !important;
+    }
+  }
+
+  /* SpongeBob tema için çizgi film tarzı arka planlar */
   .spongebob .bg-gradient-to-br,
   .spongebob .bg-gradient-to-r,
   .spongebob .bg-gradient-to-l,
   .spongebob .bg-gradient-to-t,
   .spongebob .bg-gradient-to-b {
     background: linear-gradient(135deg, 
-      hsl(45 90% 70%) 0%, 
-      hsl(60 80% 60%) 25%, 
-      hsl(75 70% 50%) 50%, 
-      hsl(90 60% 40%) 75%, 
-      hsl(105 50% 30%) 100%) !important;
-    border: 2px solid hsl(45 80% 50%) !important;
+      hsl(45 95% 75%) 0%, 
+      hsl(60 90% 70%) 25%, 
+      hsl(75 85% 65%) 50%, 
+      hsl(90 80% 60%) 75%, 
+      hsl(105 75% 55%) 100%) !important;
+    border: 3px solid hsl(45 90% 60%) !important;
     box-shadow: 
-      0 4px 15px rgba(45, 90, 70, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      0 6px 20px rgba(45, 90, 70, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+    border-radius: 15px !important;
   }
 
-  /* SpongeBob tema için mavi arka planlar */
+  /* SpongeBob tema için çizgi film tarzı mavi arka planlar */
   .spongebob .bg-blue-50,
   .spongebob .bg-blue-100,
   .spongebob .bg-blue-200,
@@ -622,106 +658,112 @@ All colors MUST be HSL.
   .spongebob .bg-blue-800,
   .spongebob .bg-blue-900 {
     background: linear-gradient(135deg, 
-      hsl(200 80% 70%) 0%, 
-      hsl(180 70% 60%) 50%, 
-      hsl(160 60% 50%) 100%) !important;
+      hsl(200 90% 75%) 0%, 
+      hsl(180 85% 70%) 50%, 
+      hsl(160 80% 65%) 100%) !important;
     box-shadow: 
-      0 4px 15px rgba(0, 100, 150, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid hsl(200 70% 50%) !important;
+      0 6px 20px rgba(0, 100, 150, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 3px solid hsl(200 85% 60%) !important;
+    border-radius: 12px !important;
   }
 
-  /* SpongeBob tema için beyaz arka planlar */
+  /* SpongeBob tema için çizgi film tarzı beyaz arka planlar */
   .spongebob .bg-white,
   .spongebob .bg-gray-50,
   .spongebob .bg-gray-100,
   .spongebob .bg-gray-200,
   .spongebob .bg-gray-300 {
     background: linear-gradient(135deg, 
-      hsl(45 90% 95%) 0%, 
-      hsl(60 80% 90%) 50%, 
-      hsl(75 70% 85%) 100%) !important;
+      hsl(45 95% 98%) 0%, 
+      hsl(60 90% 95%) 50%, 
+      hsl(75 85% 92%) 100%) !important;
     box-shadow: 
-      0 4px 15px rgba(45, 90, 70, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-    border: 2px solid hsl(45 80% 80%) !important;
+      0 6px 20px rgba(45, 90, 70, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
+    border: 3px solid hsl(45 90% 85%) !important;
+    border-radius: 10px !important;
   }
 
-  /* SpongeBob tema için kart arka planları */
+  /* SpongeBob tema için çizgi film tarzı kart arka planları */
   .spongebob .bg-white\/80,
   .spongebob .bg-white\/90,
   .spongebob .bg-gray-800\/80,
   .spongebob .bg-gray-800\/90 {
     background: linear-gradient(135deg, 
-      hsla(45, 90%, 95%, 0.95) 0%, 
-      hsla(60, 80%, 90%, 0.9) 50%, 
-      hsla(75, 70%, 85%, 0.85) 100%) !important;
+      hsla(45, 95%, 98%, 0.95) 0%, 
+      hsla(60, 90%, 95%, 0.9) 50%, 
+      hsla(75, 85%, 92%, 0.85) 100%) !important;
     box-shadow: 
-      0 8px 32px rgba(45, 90, 70, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-    border: 2px solid hsla(45, 80%, 80%, 0.8) !important;
-    backdrop-filter: blur(10px) !important;
+      0 10px 40px rgba(45, 90, 70, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
+    border: 3px solid hsla(45, 90%, 85%, 0.9) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 18px !important;
   }
 
-  /* SpongeBob tema için butonlar */
+  /* SpongeBob tema için çizgi film tarzı butonlar */
   .spongebob button,
   .spongebob .btn {
     background: linear-gradient(135deg, 
-      hsl(45 90% 70%) 0%, 
-      hsl(60 80% 60%) 50%, 
-      hsl(75 70% 50%) 100%) !important;
-    border: 2px solid hsl(45 80% 50%) !important;
+      hsl(45 95% 75%) 0%, 
+      hsl(60 90% 70%) 50%, 
+      hsl(75 85% 65%) 100%) !important;
+    border: 3px solid hsl(45 90% 60%) !important;
     box-shadow: 
-      0 4px 15px rgba(45, 90, 70, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      0 6px 20px rgba(45, 90, 70, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
     color: hsl(45 20% 20%) !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6) !important;
     transition: all 0.3s ease !important;
     position: relative !important;
+    border-radius: 12px !important;
+    font-weight: bold !important;
   }
 
   .spongebob button:hover,
   .spongebob .btn:hover {
     background: linear-gradient(135deg, 
-      hsl(45 90% 80%) 0%, 
-      hsl(60 80% 70%) 50%, 
-      hsl(75 70% 60%) 100%) !important;
-    transform: translateY(-2px) scale(1.05) !important;
+      hsl(45 95% 85%) 0%, 
+      hsl(60 90% 80%) 50%, 
+      hsl(75 85% 75%) 100%) !important;
+    transform: translateY(-3px) scale(1.08) !important;
     box-shadow: 
-      0 6px 20px rgba(45, 90, 70, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+      0 8px 25px rgba(45, 90, 70, 0.5),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
   }
 
-  /* SpongeBob tema için input'lar */
+  /* SpongeBob tema için çizgi film tarzı input'lar */
   .spongebob input,
   .spongebob select,
   .spongebob textarea {
     background: linear-gradient(135deg, 
-      hsl(45 90% 95%) 0%, 
-      hsl(60 80% 90%) 50%, 
-      hsl(75 70% 85%) 100%) !important;
-    border: 2px solid hsl(45 80% 70%) !important;
+      hsl(45 95% 98%) 0%, 
+      hsl(60 90% 95%) 50%, 
+      hsl(75 85% 92%) 100%) !important;
+    border: 3px solid hsl(45 90% 75%) !important;
     box-shadow: 
-      0 2px 10px rgba(45, 90, 70, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+      0 4px 15px rgba(45, 90, 70, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
     color: hsl(45 20% 20%) !important;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4) !important;
+    border-radius: 10px !important;
   }
 
   .spongebob input:focus,
   .spongebob select:focus,
   .spongebob textarea:focus {
     background: linear-gradient(135deg, 
-      hsl(45 90% 98%) 0%, 
-      hsl(60 80% 95%) 50%, 
-      hsl(75 70%, 90%) 100%) !important;
-    border-color: hsl(45 80% 60%) !important;
+      hsl(45 95% 99%) 0%, 
+      hsl(60 90% 98%) 50%, 
+      hsl(75 85%, 97%) 100%) !important;
+    border-color: hsl(45 90% 65%) !important;
     box-shadow: 
-      0 4px 15px rgba(45, 90, 70, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+      0 6px 20px rgba(45, 90, 70, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.5) !important;
   }
 
-  /* SpongeBob tema için başlıklar */
+  /* SpongeBob tema için çizgi film tarzı başlıklar */
   .spongebob h1, 
   .spongebob h2, 
   .spongebob h3, 
@@ -730,81 +772,102 @@ All colors MUST be HSL.
   .spongebob h6 {
     color: hsl(45 20% 20%) !important;
     text-shadow: 
-      2px 2px 4px rgba(45, 90, 70, 0.3),
-      0 1px 2px rgba(255, 255, 255, 0.5) !important;
+      3px 3px 6px rgba(45, 90, 70, 0.4),
+      0 2px 4px rgba(255, 255, 255, 0.6) !important;
+    font-weight: bold !important;
   }
 
-  /* SpongeBob tema için özel logo */
+  /* SpongeBob tema için çizgi film tarzı özel logo */
   .spongebob .maritime-logo {
-    filter: hue-rotate(45deg) saturate(1.5) brightness(1.2) !important;
-    animation: logoFloat 3s ease-in-out infinite !important;
+    filter: hue-rotate(45deg) saturate(1.8) brightness(1.3) !important;
+    animation: spongebobLogoFloat 4s ease-in-out infinite !important;
+    border-radius: 15px !important;
   }
 
-  /* SpongeBob tema için özel başlık */
+  /* SpongeBob tema için çizgi film tarzı özel başlık */
   .spongebob .spongebob-title {
     background: linear-gradient(135deg, 
-      hsl(45 90% 70%) 0%, 
-      hsl(60 80% 60%) 25%, 
-      hsl(75 70% 50%) 50%, 
-      hsl(90 60% 40%) 75%, 
-      hsl(105 50% 30%) 100%) !important;
+      hsl(45 95% 75%) 0%, 
+      hsl(60 90% 70%) 25%, 
+      hsl(75 85% 65%) 50%, 
+      hsl(90 80% 60%) 75%, 
+      hsl(105 75% 55%) 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
     text-shadow: 
-      2px 2px 4px rgba(45, 90, 70, 0.3),
-      0 1px 2px rgba(255, 255, 255, 0.5) !important;
+      3px 3px 6px rgba(45, 90, 70, 0.4),
+      0 2px 4px rgba(255, 255, 255, 0.6) !important;
+    font-weight: bold !important;
   }
 
-  /* SpongeBob tema için özel ikonlar */
+  /* SpongeBob tema için çizgi film tarzı özel ikonlar */
   .spongebob .spongebob-icon {
-    filter: hue-rotate(45deg) saturate(1.3) brightness(1.1) !important;
-    animation: iconBounce 2s ease-in-out infinite !important;
+    filter: hue-rotate(45deg) saturate(1.5) brightness(1.2) !important;
+    animation: spongebobIconBounce 2.5s ease-in-out infinite !important;
+    border-radius: 8px !important;
   }
 
-  @keyframes iconBounce {
+  @keyframes spongebobIconBounce {
     0%, 100% {
-      transform: translateY(0px) !important;
+      transform: translateY(0px) scale(1) !important;
     }
     50% {
-      transform: translateY(-5px) !important;
+      transform: translateY(-8px) scale(1.1) !important;
     }
   }
 
-  /* SpongeBob tema için özel scrollbar */
+  @keyframes spongebobLogoFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg) !important;
+    }
+    25% {
+      transform: translateY(-5px) rotate(2deg) !important;
+    }
+    50% {
+      transform: translateY(-10px) rotate(0deg) !important;
+    }
+    75% {
+      transform: translateY(-5px) rotate(-2deg) !important;
+    }
+  }
+
+  /* SpongeBob tema için çizgi film tarzı özel scrollbar */
   .spongebob ::-webkit-scrollbar {
-    width: 12px !important;
+    width: 15px !important;
   }
 
   .spongebob ::-webkit-scrollbar-track {
     background: linear-gradient(135deg, 
-      hsl(45 90% 90%) 0%, 
-      hsl(60 80% 85%) 100%) !important;
-    border-radius: 6px !important;
+      hsl(45 95% 95%) 0%, 
+      hsl(60 90% 90%) 100%) !important;
+    border-radius: 8px !important;
+    border: 2px solid hsl(45 90% 85%) !important;
   }
 
   .spongebob ::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, 
-      hsl(45 80% 60%) 0%, 
-      hsl(60 70% 50%) 100%) !important;
-    border-radius: 6px !important;
-    border: 2px solid hsl(45 90% 90%) !important;
+      hsl(45 90% 70%) 0%, 
+      hsl(60 85% 65%) 100%) !important;
+    border-radius: 8px !important;
+    border: 2px solid hsl(45 95% 95%) !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
   }
 
   .spongebob ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, 
-      hsl(45 80% 70%) 0%, 
-      hsl(60 70% 60%) 100%) !important;
+      hsl(45 90% 80%) 0%, 
+      hsl(60 85% 75%) 100%) !important;
   }
 
-  /* SpongeBob tema için mobil optimizasyon */
+  /* SpongeBob tema için çizgi film tarzı mobil optimizasyon */
   @media (max-width: 768px) {
     .spongebob::before {
-      background-size: 100px 100px, 75px 75px, 90px 90px, 60px 60px, 80px 80px, 70px 70px, 85px 85px, 65px 65px !important;
+      background-size: 150px 150px, 125px 125px, 140px 140px, 100px 100px, 130px 130px, 120px 120px, 135px 135px, 110px 110px, 145px 145px, 90px 90px, 105px 105px, 115px 115px, 125px 125px, 135px 135px, 145px 145px, 155px 155px, 165px 165px, 175px 175px, 185px 185px, 195px 195px !important;
     }
     
     .spongebob::after {
-      height: 100px !important;
+      height: 150px !important;
     }
   }
 
