@@ -1067,16 +1067,16 @@ export const NavigationCalculations = () => {
         <CardContent>
           <Tabs defaultValue="route" className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-1">
-              <TabsTrigger value="route" className="text-xs px-2">Rota</TabsTrigger>
-              <TabsTrigger value="current" className="text-xs px-2">Akıntı</TabsTrigger>
-              <TabsTrigger value="compass" className="text-xs px-2">Pusula</TabsTrigger>
-              <TabsTrigger value="radar" className="text-xs px-2">Radar</TabsTrigger>
-              <TabsTrigger value="tidal" className="text-xs px-2">Gelgit</TabsTrigger>
-              <TabsTrigger value="weather" className="text-xs px-2">Hava</TabsTrigger>
-              <TabsTrigger value="port" className="text-xs px-2">Liman</TabsTrigger>
-              <TabsTrigger value="celestial" className="text-xs px-2">Göksel</TabsTrigger>
-              <TabsTrigger value="astronomical" className="text-xs px-2">Astronomik</TabsTrigger>
-              <TabsTrigger value="almanac" className="text-xs px-2">Almanac</TabsTrigger>
+              <TabsTrigger value="route" className="text-xs px-2">Rota<br /></TabsTrigger>
+              <TabsTrigger value="current" className="text-xs px-2">Akıntı<br /></TabsTrigger>
+              <TabsTrigger value="compass" className="text-xs px-2">Pusula<br /></TabsTrigger>
+              <TabsTrigger value="radar" className="text-xs px-2">Radar<br /></TabsTrigger>
+              <TabsTrigger value="tidal" className="text-xs px-2">Gelgit<br /></TabsTrigger>
+              <TabsTrigger value="weather" className="text-xs px-2">Hava<br /></TabsTrigger>
+              <TabsTrigger value="port" className="text-xs px-2">Liman<br /></TabsTrigger>
+              <TabsTrigger value="celestial" className="text-xs px-2">Göksel<br /></TabsTrigger>
+              <TabsTrigger value="astronomical" className="text-xs px-2">Astronomik<br /></TabsTrigger>
+              <TabsTrigger value="almanac" className="text-xs px-2">Almanac<br /></TabsTrigger>
             </TabsList>
 
             <TabsContent value="route" className="space-y-4">
