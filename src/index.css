@@ -501,6 +501,137 @@ All colors MUST be HSL.
     background-color: hsl(120 30% 95%) !important;
   }
 
+  /* SpongeBob Theme - Yellow & Blue Underwater Pattern */
+  .spongebob {
+    --background: 50 100% 95%;
+    --foreground: 240 100% 15%;
+
+    --card: 50 100% 98%;
+    --card-foreground: 240 100% 15%;
+
+    --popover: 50 100% 98%;
+    --popover-foreground: 240 100% 15%;
+
+    --primary: 50 100% 50%;
+    --primary-foreground: 240 100% 15%;
+    --primary-light: 50 100% 70%;
+    --primary-dark: 50 100% 30%;
+
+    --secondary: 200 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 50 100% 90%;
+    --muted-foreground: 240 100% 40%;
+
+    --accent: 350 100% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 30 100% 60%;
+    --warning-foreground: 240 100% 15%;
+
+    --success: 150 100% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 50 100% 85%;
+    --input: 50 100% 85%;
+    --ring: 50 100% 50%;
+
+    /* SpongeBob theme semantic colors */
+    --info: 200 100% 50%;
+    --info-foreground: 0 0% 100%;
+    --info-muted: 50 100% 92%;
+    --info-muted-foreground: 240 100% 40%;
+
+    /* SpongeBob Yellow & Blue Underwater Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(200 100% 70%), hsl(200 100% 50%), hsl(180 100% 60%));
+    --gradient-deep: linear-gradient(135deg, hsl(50 100% 50%), hsl(50 100% 70%), hsl(30 100% 60%));
+    --gradient-surface: linear-gradient(135deg, hsl(50 100% 95%) 0%, hsl(50 100% 98%) 100%);
+    --gradient-underwater: linear-gradient(135deg, hsl(200 100% 70%), hsl(180 100% 60%), hsl(200 100% 50%), hsl(220 100% 60%));
+    --gradient-bikini: linear-gradient(135deg, hsl(50 100% 60%), hsl(30 100% 60%), hsl(0 100% 70%), hsl(350 100% 60%));
+    --gradient-bubble: linear-gradient(135deg, hsl(200 100% 90% / 0.8), hsl(180 100% 90% / 0.6), hsl(200 100% 80% / 0.4));
+    --gradient-krabby: linear-gradient(135deg, hsl(50 100% 50%), hsl(30 100% 60%), hsl(0 100% 60%), hsl(350 100% 70%));
+    --gradient-jellyfish: linear-gradient(135deg, hsl(300 100% 70%), hsl(280 100% 60%), hsl(260 100% 70%), hsl(240 100% 80%));
+    
+    /* SpongeBob Underwater Shadows */
+    --shadow-calculator: 0 8px 32px -4px hsl(200 100% 50% / 0.3), 0 0 20px hsl(50 100% 50% / 0.2);
+    --shadow-card: 0 4px 16px -2px hsl(200 100% 50% / 0.2), 0 0 10px hsl(50 100% 50% / 0.15);
+    --shadow-button: 0 2px 8px -1px hsl(50 100% 50% / 0.3), 0 0 5px hsl(200 100% 50% / 0.2);
+
+    --sidebar-background: 50 100% 96%;
+    --sidebar-foreground: 240 100% 20%;
+    --sidebar-primary: 50 100% 50%;
+    --sidebar-primary-foreground: 240 100% 15%;
+    --sidebar-accent: 50 100% 92%;
+    --sidebar-accent-foreground: 240 100% 20%;
+    --sidebar-border: 50 100% 85%;
+    --sidebar-ring: 50 100% 50%;
+  }
+
+  /* SpongeBob Theme Overrides */
+  .spongebob * {
+    transition: all 0.3s ease;
+  }
+
+  .spongebob .bg-gradient-to-br,
+  .spongebob .bg-gradient-to-tr,
+  .spongebob .bg-gradient-to-tl,
+  .spongebob .bg-gradient-to-bl {
+    background: var(--gradient-underwater) !important;
+  }
+
+  /* SpongeBob tema için mavi arka planları override et */
+  .spongebob .bg-blue-50,
+  .spongebob .bg-blue-100,
+  .spongebob .bg-blue-200,
+  .spongebob .bg-blue-300,
+  .spongebob .bg-blue-400,
+  .spongebob .bg-blue-500,
+  .spongebob .bg-blue-600,
+  .spongebob .bg-blue-700,
+  .spongebob .bg-blue-800,
+  .spongebob .bg-blue-900 {
+    background-color: hsl(200 100% 85%) !important;
+  }
+
+  /* SpongeBob tema için beyaz arka planları */
+  .spongebob .bg-white,
+  .spongebob .bg-gray-50,
+  .spongebob .bg-gray-100,
+  .spongebob .bg-gray-200,
+  .spongebob .bg-gray-300 {
+    background-color: hsl(50 100% 98%) !important;
+  }
+
+  /* SpongeBob tema için indigo arka planları override et */
+  .spongebob .bg-indigo-50,
+  .spongebob .bg-indigo-100,
+  .spongebob .bg-indigo-200,
+  .spongebob .bg-indigo-300,
+  .spongebob .bg-indigo-400,
+  .spongebob .bg-indigo-500,
+  .spongebob .bg-indigo-600,
+  .spongebob .bg-indigo-700,
+  .spongebob .bg-indigo-800,
+  .spongebob .bg-indigo-900 {
+    background-color: hsl(200 100% 85%) !important;
+  }
+
+  /* SpongeBob tema için kart arka planları */
+  .spongebob .bg-white\/80,
+  .spongebob .bg-white\/90,
+  .spongebob .bg-gray-800\/80,
+  .spongebob .bg-gray-800\/90 {
+    background-color: hsl(50 100% 98% / 0.9) !important;
+  }
+
+  /* SpongeBob tema için formül kutucukları */
+  .spongebob .bg-gray-50 {
+    background-color: hsl(120 30% 95%) !important;
+  }
+
   /* Nature tema için bilgi kutuları */
   .nature .bg-blue-50 {
     background-color: hsl(120 30% 95%) !important;
