@@ -629,7 +629,46 @@ All colors MUST be HSL.
 
   /* SpongeBob tema için formül kutucukları */
   .spongebob .bg-gray-50 {
-    background-color: hsl(120 30% 95%) !important;
+    background-color: hsl(50 100% 95%) !important;
+  }
+
+  /* SpongeBob tema için bilgi kutuları */
+  .spongebob .bg-blue-50 {
+    background-color: hsl(200 100% 90%) !important;
+  }
+
+  /* SpongeBob tema için hover efektleri */
+  .spongebob .hover\:bg-blue-50:hover,
+  .spongebob .hover\:bg-gray-50:hover,
+  .spongebob .hover\:bg-white:hover {
+    background-color: hsl(50 100% 90%) !important;
+  }
+
+  /* SpongeBob tema için border renkleri */
+  .spongebob .border-blue-200,
+  .spongebob .border-blue-300,
+  .spongebob .border-gray-200,
+  .spongebob .border-gray-300 {
+    border-color: hsl(50 100% 80%) !important;
+  }
+
+  /* SpongeBob tema için metin renkleri */
+  .spongebob .text-blue-600,
+  .spongebob .text-blue-700,
+  .spongebob .text-blue-800,
+  .spongebob .text-gray-600,
+  .spongebob .text-gray-700,
+  .spongebob .text-gray-800 {
+    color: hsl(240 100% 15%) !important;
+  }
+
+  /* SpongeBob tema için gradient metin renkleri */
+  .spongebob .bg-gradient-to-r.from-blue-600.to-indigo-600,
+  .spongebob .bg-gradient-to-r.from-blue-400.to-indigo-400 {
+    background: linear-gradient(135deg, hsl(50 100% 50%), hsl(200 100% 50%)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
   }
 
   /* Nature tema için bilgi kutuları */
