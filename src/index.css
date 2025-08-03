@@ -655,7 +655,6 @@ All colors MUST be HSL.
   /* Neon body with animated background */
   .neon body {
     background: radial-gradient(ellipse at center, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%) !important;
-    background-attachment: fixed !important;
   }
 
   /* Neon tema için özel arka plan override'ları - Bright neon gradients */
@@ -830,7 +829,6 @@ All colors MUST be HSL.
     text-shadow: 0 0 10px hsl(300 100% 70% / 0.5) !important;
     transition: all 0.3s ease !important;
     position: relative !important;
-    overflow: hidden !important;
   }
 
   .neon button::before,
