@@ -682,7 +682,6 @@ All colors MUST be HSL.
       hsl(230 100% 35%) 100%
     ) !important;
     position: relative;
-    overflow: hidden;
     min-height: 100vh;
   }
 
