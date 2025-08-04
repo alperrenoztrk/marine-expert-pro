@@ -801,6 +801,7 @@ All colors MUST be HSL.
     animation: spongebobIconBounce 2.5s ease-in-out infinite !important;
     border-radius: 8px !important;
   }
+  }
 
   @keyframes spongebobIconBounce {
     0%, 100% {
