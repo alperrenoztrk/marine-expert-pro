@@ -27,6 +27,7 @@ import SafetyCalculationsPage from "./pages/SafetyCalculations";
 import EmissionCalculationsPage from "./pages/EmissionCalculations";
 import WeatherCalculationsPage from "./pages/WeatherCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
+import HydrostaticsStabilityPage from "./pages/HydrostaticsStability";
 import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const App = () => {
                   <Route path="/emissions" element={<EmissionCalculationsPage />} />
                   <Route path="/weather" element={<WeatherCalculationsPage />} />
                   <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
+                  <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>

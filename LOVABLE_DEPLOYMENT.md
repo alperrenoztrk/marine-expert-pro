@@ -2,10 +2,30 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2024-12-19
-- **Sürüm:** v2.1.4
+- **Sürüm:** v2.1.5
 - **Durum:** ✅ Aktif
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🚀 Yeni Hidrostatik ve Stabilite Hesaplamaları Sayfası (2024-12-19)
+- **Yeni Sayfa:** `/hydrostatics-stability` rotası eklendi
+- **Formül Kapsamı:** 26 kategoride 100+ formül
+- **Kategoriler:**
+  - Hidrostatik Temel Formüller (3 kategori)
+  - Stabilite Temel Formüller (3 kategori)
+  - IMO Stabilite Kriterleri (2 kategori)
+  - Trim ve List Hesaplamaları (2 kategori)
+  - Kritik Açılar (3 kategori)
+  - Hasar Stabilitesi (3 kategori)
+  - Tahıl Stabilitesi (3 kategori)
+  - Dinamik Stabilite (4 kategori)
+  - GZ Curve Generation (3 kategori)
+- **Gerçek Formül Notasyonu:** Altçizgi kullanmadan matematiksel notasyon
+- **Renkli Kategoriler:** Her kategori farklı renk teması
+- **Detaylı Sembol Açıklamaları:** Sağ panelde 5 kategoride sembol açıklamaları
+- **Ana Sayfa Entegrasyonu:** Yeni "Hidrostatik & Stabilite" butonu eklendi
+- **Responsive Tasarım:** Mobil ve desktop uyumlu
+- **Tema Uyumluluğu:** Tüm temalarda çalışır
 
 ### 🔧 SpongeBob Teması Görünürlük Düzeltmesi (2024-12-19)
 - **Baloncuk Görünürlüğü:** Opaklık 1.0'a çıkarıldı, boyutlar büyütüldü
@@ -61,6 +81,17 @@
 - **5 kategori** organize edildi
 - **Her hesaplama için ayrı buton** sistemi
 - **Optimize edilmiş input/output** değerleri
+
+## 🆕 Yeni Özellikler
+
+### 📚 Hidrostatik ve Stabilite Formülleri Sayfası
+- **Kapsamlı Formül Koleksiyonu:** 100+ denizcilik formülü
+- **Kategorize Edilmiş İçerik:** 9 ana kategori, 26 alt kategori
+- **Matematiksel Notasyon:** Gerçek formül gösterimi
+- **Sembol Açıklamaları:** Detaylı sembol ve birim açıklamaları
+- **Responsive Tasarım:** Mobil ve desktop uyumlu
+- **Tema Uyumluluğu:** Tüm temalarda çalışır
+- **Kolay Navigasyon:** Ana sayfadan direkt erişim
 
 ## 🏗️ Proje Yapısı
 
