@@ -120,9 +120,9 @@ const HydrostaticsStabilityPage = () => {
                     <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                       <h4 className="font-semibold text-sm mb-2">5. GZ (Righting Arm) Hesaplamaları</h4>
                       <div className="space-y-2 text-sm">
-                        <p><strong>Küçük açılar (φ < 15°):</strong></p>
+                        <p><strong>Küçük açılar (φ {'<'} 15°):</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">GZ = GM × sin(φ)</p>
-                        <p><strong>Büyük açılar (φ > 15°):</strong></p>
+                        <p><strong>Büyük açılar (φ {'>'} 15°):</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">GZ = KN - KG × sin(φ)</p>
                         <p><strong>Righting Moment:</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">Righting Moment = Δ × GZ</p>
@@ -163,7 +163,7 @@ const HydrostaticsStabilityPage = () => {
                         <p><strong>Area 30-40°:</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">Area 30-40° = ∫ GZ dφ (30° to 40°)</p>
                         <p><strong>Minimum GZ:</strong></p>
-                        <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">Minimum GZ = 0.20 m (φ > 30°)</p>
+                        <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">Minimum GZ = 0.20 m (φ {'>'} 30°)</p>
                       </div>
                     </div>
 
@@ -228,7 +228,7 @@ const HydrostaticsStabilityPage = () => {
                       <div className="space-y-2 text-sm">
                         <p><strong>φloll:</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">φloll = arccos(KG / KM)</p>
-                        <p className="text-xs text-gray-600">GM < 0 durumunda</p>
+                        <p className="text-xs text-gray-600">GM {'<'} 0 durumunda</p>
                       </div>
                     </div>
 
@@ -320,7 +320,7 @@ const HydrostaticsStabilityPage = () => {
                       <div className="space-y-2 text-sm">
                         <p><strong>SF:</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">SF = Righting Moment / Grain Shift Moment</p>
-                        <p className="text-xs text-gray-600">SF > 1.06 (SOLAS gereksinimi)</p>
+                        <p className="text-xs text-gray-600">SF {'>'} 1.06 (SOLAS gereksinimi)</p>
                       </div>
                     </div>
                   </div>
@@ -381,7 +381,7 @@ const HydrostaticsStabilityPage = () => {
                   
                   <div className="space-y-3">
                     <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
-                      <h4 className="font-semibold text-sm mb-2">24. Small Angles (φ < 15°)</h4>
+                      <h4 className="font-semibold text-sm mb-2">24. Small Angles (φ {'<'} 15°)</h4>
                       <div className="space-y-2 text-sm">
                         <p><strong>GZ:</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">GZ = GM × sin(φ)</p>
@@ -389,7 +389,7 @@ const HydrostaticsStabilityPage = () => {
                     </div>
 
                     <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
-                      <h4 className="font-semibold text-sm mb-2">25. Large Angles (φ > 15°)</h4>
+                      <h4 className="font-semibold text-sm mb-2">25. Large Angles (φ {'>'} 15°)</h4>
                       <div className="space-y-2 text-sm">
                         <p><strong>GZ:</strong></p>
                         <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">GZ = KN - KG × sin(φ)</p>
