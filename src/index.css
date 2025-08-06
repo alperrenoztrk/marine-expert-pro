@@ -504,11 +504,11 @@ All colors MUST be HSL.
   /* SpongeBob Theme - Çizgi film tarzı deniz altı dünyası */
   .spongebob {
     background: linear-gradient(135deg, 
-      hsl(200 80% 60%) 0%, 
-      hsl(180 70% 50%) 25%, 
-      hsl(160 60% 40%) 50%, 
-      hsl(140 50% 30%) 75%, 
-      hsl(120 40% 20%) 100%) !important;
+      hsl(210 80% 60%) 0%, 
+      hsl(220 70% 50%) 25%, 
+      hsl(230 60% 40%) 50%, 
+      hsl(240 50% 30%) 75%, 
+      hsl(250 40% 20%) 100%) !important;
     position: relative !important;
     overflow: hidden !important;
   }
@@ -628,14 +628,14 @@ All colors MUST be HSL.
   .spongebob .bg-gradient-to-t,
   .spongebob .bg-gradient-to-b {
     background: linear-gradient(135deg, 
-      hsl(45 95% 75%) 0%, 
-      hsl(60 90% 70%) 25%, 
-      hsl(75 85% 65%) 50%, 
-      hsl(90 80% 60%) 75%, 
-      hsl(105 75% 55%) 100%) !important;
-    border: 3px solid hsl(45 90% 60%) !important;
+      hsl(210 95% 75%) 0%, 
+      hsl(220 90% 70%) 25%, 
+      hsl(230 85% 65%) 50%, 
+      hsl(240 80% 60%) 75%, 
+      hsl(250 75% 55%) 100%) !important;
+    border: 3px solid hsl(210 90% 60%) !important;
     box-shadow: 
-      0 6px 20px rgba(45, 90, 70, 0.4),
+      0 6px 20px rgba(0, 100, 150, 0.4),
       inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
     border-radius: 15px !important;
   }
@@ -669,13 +669,13 @@ All colors MUST be HSL.
   .spongebob .bg-gray-200,
   .spongebob .bg-gray-300 {
     background: linear-gradient(135deg, 
-      hsl(45 95% 98%) 0%, 
-      hsl(60 90% 95%) 50%, 
-      hsl(75 85% 92%) 100%) !important;
+      hsl(210 95% 98%) 0%, 
+      hsl(220 90% 95%) 50%, 
+      hsl(230 85% 92%) 100%) !important;
     box-shadow: 
-      0 6px 20px rgba(45, 90, 70, 0.3),
+      0 6px 20px rgba(0, 100, 150, 0.3),
       inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
-    border: 3px solid hsl(45 90% 85%) !important;
+    border: 3px solid hsl(210 90% 85%) !important;
     border-radius: 10px !important;
   }
 
@@ -685,13 +685,13 @@ All colors MUST be HSL.
   .spongebob .bg-gray-800\/80,
   .spongebob .bg-gray-800\/90 {
     background: linear-gradient(135deg, 
-      hsla(45, 95%, 98%, 0.95) 0%, 
-      hsla(60, 90%, 95%, 0.9) 50%, 
-      hsla(75, 85%, 92%, 0.85) 100%) !important;
+      hsla(210, 95%, 98%, 0.95) 0%, 
+      hsla(220, 90%, 95%, 0.9) 50%, 
+      hsla(230, 85%, 92%, 0.85) 100%) !important;
     box-shadow: 
-      0 10px 40px rgba(45, 90, 70, 0.4),
+      0 10px 40px rgba(0, 100, 150, 0.4),
       inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
-    border: 3px solid hsla(45, 90%, 85%, 0.9) !important;
+    border: 3px solid hsla(210, 90%, 85%, 0.9) !important;
     backdrop-filter: blur(15px) !important;
     border-radius: 18px !important;
   }
@@ -700,14 +700,14 @@ All colors MUST be HSL.
   .spongebob button,
   .spongebob .btn {
     background: linear-gradient(135deg, 
-      hsl(45 95% 75%) 0%, 
-      hsl(60 90% 70%) 50%, 
-      hsl(75 85% 65%) 100%) !important;
-    border: 3px solid hsl(45 90% 60%) !important;
+      hsl(210 95% 75%) 0%, 
+      hsl(220 90% 70%) 50%, 
+      hsl(230 85% 65%) 100%) !important;
+    border: 3px solid hsl(210 90% 60%) !important;
     box-shadow: 
-      0 6px 20px rgba(45, 90, 70, 0.4),
+      0 6px 20px rgba(0, 100, 150, 0.4),
       inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
-    color: hsl(45 20% 20%) !important;
+    color: hsl(210 20% 20%) !important;
     text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6) !important;
     transition: all 0.3s ease !important;
     position: relative !important;
@@ -718,12 +718,12 @@ All colors MUST be HSL.
   .spongebob button:hover,
   .spongebob .btn:hover {
     background: linear-gradient(135deg, 
-      hsl(45 95% 85%) 0%, 
-      hsl(60 90% 80%) 50%, 
-      hsl(75 85% 75%) 100%) !important;
+      hsl(210 95% 85%) 0%, 
+      hsl(220 90% 80%) 50%, 
+      hsl(230 85% 75%) 100%) !important;
     transform: translateY(-3px) scale(1.08) !important;
     box-shadow: 
-      0 8px 25px rgba(45, 90, 70, 0.5),
+      0 8px 25px rgba(0, 100, 150, 0.5),
       inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
   }
 
@@ -732,14 +732,14 @@ All colors MUST be HSL.
   .spongebob select,
   .spongebob textarea {
     background: linear-gradient(135deg, 
-      hsl(45 95% 98%) 0%, 
-      hsl(60 90% 95%) 50%, 
-      hsl(75 85% 92%) 100%) !important;
-    border: 3px solid hsl(45 90% 75%) !important;
+      hsl(210 95% 98%) 0%, 
+      hsl(220 90% 95%) 50%, 
+      hsl(230 85% 92%) 100%) !important;
+    border: 3px solid hsl(210 90% 75%) !important;
     box-shadow: 
-      0 4px 15px rgba(45, 90, 70, 0.3),
+      0 4px 15px rgba(0, 100, 150, 0.3),
       inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
-    color: hsl(45 20% 20%) !important;
+    color: hsl(210 20% 20%) !important;
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4) !important;
     border-radius: 10px !important;
   }
@@ -748,12 +748,12 @@ All colors MUST be HSL.
   .spongebob select:focus,
   .spongebob textarea:focus {
     background: linear-gradient(135deg, 
-      hsl(45 95% 99%) 0%, 
-      hsl(60 90% 98%) 50%, 
-      hsl(75 85%, 97%) 100%) !important;
-    border-color: hsl(45 90% 65%) !important;
+      hsl(210 95% 99%) 0%, 
+      hsl(220 90% 98%) 50%, 
+      hsl(230 85%, 97%) 100%) !important;
+    border-color: hsl(210 90% 65%) !important;
     box-shadow: 
-      0 6px 20px rgba(45, 90, 70, 0.4),
+      0 6px 20px rgba(0, 100, 150, 0.4),
       inset 0 2px 0 rgba(255, 255, 255, 0.5) !important;
   }
 
@@ -764,9 +764,9 @@ All colors MUST be HSL.
   .spongebob h4, 
   .spongebob h5, 
   .spongebob h6 {
-    color: hsl(45 20% 20%) !important;
+    color: hsl(210 20% 20%) !important;
     text-shadow: 
-      3px 3px 6px rgba(45, 90, 70, 0.4),
+      3px 3px 6px rgba(0, 100, 150, 0.4),
       0 2px 4px rgba(255, 255, 255, 0.6) !important;
     font-weight: bold !important;
   }
@@ -781,16 +781,16 @@ All colors MUST be HSL.
   /* SpongeBob tema için çizgi film tarzı özel başlık */
   .spongebob .spongebob-title {
     background: linear-gradient(135deg, 
-      hsl(45 95% 75%) 0%, 
-      hsl(60 90% 70%) 25%, 
-      hsl(75 85% 65%) 50%, 
-      hsl(90 80% 60%) 75%, 
-      hsl(105 75% 55%) 100%) !important;
+      hsl(210 95% 75%) 0%, 
+      hsl(220 90% 70%) 25%, 
+      hsl(230 85% 65%) 50%, 
+      hsl(240 80% 60%) 75%, 
+      hsl(250 75% 55%) 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
     text-shadow: 
-      3px 3px 6px rgba(45, 90, 70, 0.4),
+      3px 3px 6px rgba(0, 100, 150, 0.4),
       0 2px 4px rgba(255, 255, 255, 0.6) !important;
     font-weight: bold !important;
   }
@@ -833,25 +833,25 @@ All colors MUST be HSL.
 
   .spongebob ::-webkit-scrollbar-track {
     background: linear-gradient(135deg, 
-      hsl(45 95% 95%) 0%, 
-      hsl(60 90% 90%) 100%) !important;
+      hsl(210 95% 95%) 0%, 
+      hsl(220 90% 90%) 100%) !important;
     border-radius: 8px !important;
-    border: 2px solid hsl(45 90% 85%) !important;
+    border: 2px solid hsl(210 90% 85%) !important;
   }
 
   .spongebob ::-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, 
-      hsl(45 90% 70%) 0%, 
-      hsl(60 85% 65%) 100%) !important;
+      hsl(210 90% 70%) 0%, 
+      hsl(220 85% 65%) 100%) !important;
     border-radius: 8px !important;
-    border: 2px solid hsl(45 95% 95%) !important;
+    border: 2px solid hsl(210 95% 95%) !important;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
   }
 
   .spongebob ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, 
-      hsl(45 90% 80%) 0%, 
-      hsl(60 85% 75%) 100%) !important;
+      hsl(210 90% 80%) 0%, 
+      hsl(220 85% 75%) 100%) !important;
   }
 
   /* SpongeBob tema için çizgi film tarzı mobil optimizasyon */
