@@ -26,7 +26,7 @@ const Settings = () => {
   }, []);
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark" | "cyberpunk" | "neon" | "nature" | "spongebob");
+    setTheme(newTheme as "light" | "dark" | "cyberpunk" | "neon" | "nature");
     
     const themeNames = {
       light: "Açık Tema",
@@ -34,7 +34,7 @@ const Settings = () => {
       cyberpunk: "Cyberpunk Tema",
       neon: "Neon Tema",
       nature: "Doğa Teması",
-      spongebob: "SpongeBob Teması"
+      
     };
     
     toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
@@ -76,13 +76,13 @@ const Settings = () => {
 
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 nature:from-green-50 nature:to-emerald-100 spongebob:from-yellow-50 spongebob:to-blue-100 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 nature:from-green-50 nature:to-emerald-100 p-4">
         <div className="max-w-4xl mx-auto space-y-6">
           
           {/* Back Button */}
           <div className="flex items-center gap-3">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800 nature:hover:bg-green-50 spongebob:hover:bg-yellow-50">
+              <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800 nature:hover:bg-green-50">
                 <ArrowLeft className="w-4 h-4" />
                 <span data-translatable>Ana Sayfa</span>
               </Button>
@@ -106,7 +106,7 @@ const Settings = () => {
           <div className="grid gap-6">
             
             {/* Theme Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 cyberpunk:bg-slate-800 cyberpunk:border-cyan-500 nature:bg-green-50 nature:border-green-200 spongebob:bg-yellow-50 spongebob:border-yellow-300">
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 cyberpunk:bg-slate-800 cyberpunk:border-cyan-500 nature:bg-green-50 nature:border-green-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />
@@ -156,12 +156,6 @@ const Settings = () => {
                           <div className="flex items-center gap-2">
                             <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse shadow-lg shadow-green-500/50"></div>
                             <span>Doğa Teması</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="spongebob">
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 via-blue-400 to-yellow-500 animate-bounce shadow-lg shadow-yellow-500/50"></div>
-                            <span>SpongeBob Teması</span>
                           </div>
                         </SelectItem>
 
