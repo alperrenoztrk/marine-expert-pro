@@ -46,7 +46,7 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
       {/* Main Anchor Logo */}
       <div className={`main-logo ${showLogo ? 'show' : ''}`}>
         <div className="anchor-container">
-          <Anchor className="w-64 h-64 text-white" />
+          <Anchor className="w-64 h-64 text-blue-300" strokeWidth={2.5} />
         </div>
       </div>
 

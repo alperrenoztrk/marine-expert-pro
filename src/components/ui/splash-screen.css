@@ -148,14 +148,23 @@
   align-items: center;
   justify-content: center;
   animation: anchorFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.8)) 
+          drop-shadow(0 0 40px rgba(251, 191, 36, 0.5))
+          drop-shadow(0 0 60px rgba(251, 191, 36, 0.3));
 }
 
 @keyframes anchorFloat {
   0%, 100% {
     transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.8)) 
+            drop-shadow(0 0 40px rgba(251, 191, 36, 0.5))
+            drop-shadow(0 0 60px rgba(251, 191, 36, 0.3));
   }
   50% {
     transform: translateY(-10px) scale(1.05);
+    filter: drop-shadow(0 0 30px rgba(251, 191, 36, 1)) 
+            drop-shadow(0 0 50px rgba(251, 191, 36, 0.7))
+            drop-shadow(0 0 80px rgba(251, 191, 36, 0.4));
   }
 }
 
