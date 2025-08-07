@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Anchor } from "lucide-react";
 import "./splash-screen.css";
 
 interface SplashScreenProps {
@@ -33,7 +32,7 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
   if (!isVisible) return null;
 
   return (
-    <div className={`splash-screen ${isAnimating ? 'animate' : ''} ${fadeOut ? 'fade-out' : ''}`}>
+    <div className={`splash-screen ${isAnimating ? 'animate' : ''} ${fadeOut ? 'fade-out' : ''} relative`}>
       {/* Animated Background */}
       <div className="splash-background">
         <div className="gradient-overlay"></div>
@@ -44,10 +43,15 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
         </div>
       </div>
 
-      {/* Main Anchor Logo */}
-      <div className={`main-logo ${showLogo ? 'show' : ''}`}>
+      {/* Main Sextant Logo (Centered) */}
+      <div className={`main-logo ${showLogo ? 'show' : ''} absolute inset-0 flex flex-col items-center justify-center text-center z-10`}>
         <div className="anchor-container">
-          <Anchor className="w-64 h-64 text-blue-300" strokeWidth={2.5} />
+          <img
+            src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png"
+            alt="Maritime Calculator sextant logo"
+            className="w-40 h-40 md:w-56 md:h-56 object-contain drop-shadow-lg"
+            loading="eager"
+          />
         </div>
         <div className="splash-title">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-teal-300 bg-clip-text text-transparent">
