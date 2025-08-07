@@ -14,6 +14,7 @@ interface LanguageContextType {
   getLanguageName: (code: string) => string;
   isRTL: boolean;
   resetLanguagePreferences: () => void;
+  applyTranslations: (languageCode?: string) => Promise<void>;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -224,8 +225,27 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const textsToTranslate = Array.from(translatableElements).map(el => el.textContent || '');
       const nonEmptyTexts = textsToTranslate.filter(text => text.trim().length > 0);
 
-      // If nothing is explicitly marked translatable, bail silently (app pages may manage their own translations)
+      // If nothing explicitly marked, fallback to common UI elements (opt-out via data-no-translate)
       if (nonEmptyTexts.length === 0 && inputElements.length === 0) {
+        const fallbackSelector = 'h1,h2,h3,h4,h5,h6,p,button,a,label,li,th,td,small,strong,em,span,div';
+        const allCandidates = Array.from(document.querySelectorAll(fallbackSelector))
+          .filter(el => !(el as HTMLElement).dataset.noTranslate)
+          .slice(0, 200) as HTMLElement[]; // cap for performance
+        const texts = allCandidates.map(el => el.textContent || '').map(t => t.trim());
+        const nonEmpty = texts.map((t, i) => ({ t, i })).filter(x => x.t.length > 0);
+        if (nonEmpty.length > 0) {
+          const translated = await translationService.translateBatch(nonEmpty.map(x => x.t), languageCode);
+          nonEmpty.forEach((x, idx) => {
+            const el = allCandidates[x.i];
+            const originalText = (el.dataset.originalText || el.textContent || '').trim();
+            if (!el.dataset.originalText) {
+              el.dataset.originalText = originalText;
+            }
+            const newText = translated[idx]?.translatedText || originalText;
+            el.textContent = newText;
+          });
+        }
+        console.log(`Fallback applied translations to ${nonEmpty.length} elements`);
         return;
       }
 
@@ -238,6 +258,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
           const originalText = textsToTranslate[index];
           if (originalText.trim().length > 0) {
             const translatedText = translatedTexts[textIndex]?.translatedText || originalText;
+            (element as HTMLElement).dataset.originalText = (element as HTMLElement).dataset.originalText || originalText;
             element.textContent = translatedText;
             textIndex++;
           }
@@ -255,6 +276,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
             const originalPh = placeholders[idx];
             if (originalPh.trim().length > 0) {
               const translated = translatedPlaceholders[phIndex]?.translatedText || originalPh;
+              (element as HTMLInputElement | HTMLTextAreaElement).dataset.originalPlaceholder = (element as HTMLInputElement | HTMLTextAreaElement).dataset.originalPlaceholder || originalPh;
               (element as HTMLInputElement | HTMLTextAreaElement).placeholder = translated;
               phIndex++;
             }
@@ -265,8 +287,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       console.log(`Applied translations (lang=${languageCode}) to ${nonEmptyTexts.length} text elements and ${inputElements.length} placeholders`);
     } catch (error) {
       console.error('Error applying translations:', error);
-      // Fallback to page reload if translation fails
-      setTimeout(() => window.location.reload(), 100);
     }
   };
 
@@ -288,7 +308,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const browserLang = translationService.getBrowserLanguage();
       localStorage.setItem('preferredLanguage', browserLang);
       window.location.reload();
-    }
+    },
+    applyTranslations: async (languageCode?: string) => applyTranslationsToCurrentPage(languageCode || (localStorage.getItem('preferredLanguage') || currentLanguage))
   };
 
   return (
