@@ -119,12 +119,12 @@
   }
 }
 
-/* Main Anchor Logo - CENTERED */
-.main-logo {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.5) rotate(-180deg);
+/* Main Anchor Logo - CENTERED WITH HIGHER SPECIFICITY */
+.splash-screen .main-logo {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.5) rotate(-180deg) !important;
   z-index: 10;
   opacity: 0;
   transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -139,9 +139,9 @@
   justify-content: center;
 }
 
-.main-logo.show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1) rotate(0deg);
+.splash-screen .main-logo.show {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) rotate(0deg) !important;
 }
 
 .anchor-container {
