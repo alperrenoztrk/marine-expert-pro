@@ -19,6 +19,13 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Curated Top-25 most spoken languages (ISO codes)
+const TOP_25_LANGUAGE_CODES = [
+  'en', 'zh', 'hi', 'es', 'fr', 'ar', 'bn', 'ru', 'pt', 'ur',
+  'id', 'de', 'ja', 'sw', 'mr', 'te', 'tr', 'ta', 'vi', 'ko',
+  'it', 'fa', 'pl', 'uk', 'nl'
+];
+
 interface LanguageProviderProps {
   children: ReactNode;
 }
@@ -71,7 +78,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     try {
       // Load supported languages
       const languages = await translationService.getSupportedLanguages();
-      setSupportedLanguages(languages);
+      // Filter to top-25 if available
+      const filtered = languages.filter(l => TOP_25_LANGUAGE_CODES.includes(l.language));
+      setSupportedLanguages(filtered.length > 0 ? filtered : languages);
 
       // Always check current browser/system language
       const currentBrowserLang = translationService.getBrowserLanguage();
@@ -107,8 +116,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const finalLang = localStorage.getItem('preferredLanguage') || 'en';
       document.documentElement.dir = rtlLanguages.includes(finalLang) ? 'rtl' : 'ltr';
       document.documentElement.lang = finalLang;
-
-
       
     } catch (error) {
       console.error('Language initialization error:', error);
