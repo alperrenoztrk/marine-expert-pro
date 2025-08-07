@@ -267,12 +267,6 @@ const Index = () => {
                       <span data-translatable>Balast</span>
                     </Button>
                   </Link>
-                  <Link to="/hydrostatics">
-                    <Button size="sm" variant="outline" className="gap-2 border-cyan-300 text-cyan-600 hover:bg-cyan-50 dark:border-cyan-600 dark:text-cyan-400 dark:hover:bg-gray-700 cyberpunk:border-cyan-400 cyberpunk:text-cyan-400 cyberpunk:hover:bg-gray-800 nature:border-cyan-400 nature:text-cyan-600 nature:hover:bg-cyan-50">
-                      <Droplets className="w-4 h-4" />
-                      <span data-translatable>Hidrostatik</span>
-                    </Button>
-                  </Link>
                   <Link to="/tank">
                     <Button size="sm" variant="outline" className="gap-2 border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-600 dark:text-orange-400 dark:hover:bg-gray-700 cyberpunk:border-orange-400 cyberpunk:text-orange-400 cyberpunk:hover:bg-gray-800 nature:border-orange-400 nature:text-orange-600 nature:hover:bg-orange-50">
                       <Droplets className="w-4 h-4" />
