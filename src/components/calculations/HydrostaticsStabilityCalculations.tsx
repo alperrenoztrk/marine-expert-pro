@@ -1,15 +1,73 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle } from "lucide-react";
+import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
+import {
+  ShipGeometry,
+  WeightDistribution,
+  TankData,
+  CompartmentAnalysis,
+  StabilityAnalysis
+} from "../../types/hydrostatic";
 
 export const HydrostaticsStabilityCalculations = () => {
   const { toast } = useToast();
   
+  // Comprehensive hydrostatic calculation states
+  const [geometry, setGeometry] = useState<ShipGeometry>({
+    length: 100,
+    breadth: 20,
+    depth: 10,
+    draft: 6,
+    blockCoefficient: 0.7,
+    waterplaneCoefficient: 0.8,
+    midshipCoefficient: 0.9,
+    prismaticCoefficient: 0.65,
+    verticalPrismaticCoefficient: 0.75
+  });
+
+  const [kg, setKg] = useState<number>(5);
+  const [weightDistribution, setWeightDistribution] = useState<WeightDistribution[]>([
+    { item: 'Hull', weight: 1000, lcg: 50, vcg: 5, tcg: 0, moment: 50000 },
+    { item: 'Machinery', weight: 500, lcg: 30, vcg: 3, tcg: 0, moment: 15000 },
+    { item: 'Cargo', weight: 2000, lcg: 60, vcg: 8, tcg: 0, moment: 120000 }
+  ]);
+
+  const [tanks, setTanks] = useState<TankData[]>([
+    {
+      name: 'Fuel Tank 1',
+      capacity: 100,
+      currentVolume: 50,
+      lcg: 20,
+      vcg: 2,
+      tcg: 5,
+      freeSurfaceEffect: 0.1,
+      fluidDensity: 0.85
+    },
+    {
+      name: 'Ballast Tank 1',
+      capacity: 200,
+      currentVolume: 100,
+      lcg: 80,
+      vcg: 1,
+      tcg: -3,
+      freeSurfaceEffect: 0.05,
+      fluidDensity: 1.025
+    }
+  ]);
+
+  const [floodedCompartments, setFloodedCompartments] = useState<CompartmentAnalysis[]>([]);
+  const [grainShiftMoment, setGrainShiftMoment] = useState<number>(0);
+  const [grainHeelAngle, setGrainHeelAngle] = useState<number>(0);
+
+  const [analysis, setAnalysis] = useState<StabilityAnalysis | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('hydrostatic');
+
   // State for different calculation sections
   const [displacementInputs, setDisplacementInputs] = useState({
     volume: "", waterDensity: "1.025"
@@ -50,6 +108,26 @@ export const HydrostaticsStabilityCalculations = () => {
     kg: "", km: ""
   });
   const [lollResult, setLollResult] = useState<number | null>(null);
+
+  // Perform comprehensive analysis when inputs change
+  useEffect(() => {
+    if (geometry && kg && weightDistribution && tanks) {
+      try {
+        const result = HydrostaticCalculations.performStabilityAnalysis(
+          geometry,
+          kg,
+          weightDistribution,
+          tanks,
+          floodedCompartments,
+          grainShiftMoment,
+          grainHeelAngle
+        );
+        setAnalysis(result);
+      } catch (error) {
+        console.error('Analysis error:', error);
+      }
+    }
+  }, [geometry, kg, weightDistribution, tanks, floodedCompartments, grainShiftMoment, grainHeelAngle]);
 
   // Calculation functions
   const calculateDisplacement = () => {
@@ -563,6 +641,312 @@ export const HydrostaticsStabilityCalculations = () => {
               </div>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      <Separator />
+
+      {/* Kapsamlı Hidrostatik ve Stabilite Analizi */}
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+            <BarChart3 className="h-5 w-5" />
+            Kapsamlı Hidrostatik ve Stabilite Analizi
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {analysis && (
+            <div className="space-y-6">
+              {/* Gemi Geometrisi */}
+              <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Ship className="h-4 w-4" />
+                  Gemi Geometrisi
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label htmlFor="length">Uzunluk (m)</Label>
+                    <Input
+                      id="length"
+                      type="number"
+                      value={geometry.length}
+                      onChange={(e) => setGeometry({ ...geometry, length: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="breadth">Genişlik (m)</Label>
+                    <Input
+                      id="breadth"
+                      type="number"
+                      value={geometry.breadth}
+                      onChange={(e) => setGeometry({ ...geometry, breadth: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="depth">Derinlik (m)</Label>
+                    <Input
+                      id="depth"
+                      type="number"
+                      value={geometry.depth}
+                      onChange={(e) => setGeometry({ ...geometry, depth: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="draft">Draft (m)</Label>
+                    <Input
+                      id="draft"
+                      type="number"
+                      value={geometry.draft}
+                      onChange={(e) => setGeometry({ ...geometry, draft: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* KG Ayarlaması */}
+              <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  KG Ayarlaması
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="kg">KG (m)</Label>
+                    <Input
+                      id="kg"
+                      type="number"
+                      value={kg}
+                      onChange={(e) => setKg(parseFloat(e.target.value))}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hidrostatik Sonuçlar */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <Waves className="h-4 w-4" />
+                    Hidrostatik Sonuçlar
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Deplasman:</span>
+                      <span className="font-medium">{analysis.hydrostatic.displacement.toFixed(2)} t</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Hacim Deplasmanı:</span>
+                      <span className="font-medium">{analysis.hydrostatic.volumeDisplacement.toFixed(2)} m³</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Su Hattı Alanı:</span>
+                      <span className="font-medium">{analysis.hydrostatic.waterplaneArea.toFixed(2)} m²</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Batık Hacim:</span>
+                      <span className="font-medium">{analysis.hydrostatic.immersedVolume.toFixed(2)} m³</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Merkez Noktaları
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>LCB:</span>
+                      <span className="font-medium">{analysis.centers.lcb.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>VCB:</span>
+                      <span className="font-medium">{analysis.centers.vcb.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>LCF:</span>
+                      <span className="font-medium">{analysis.centers.lcf.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>KB:</span>
+                      <span className="font-medium">{analysis.centers.kb.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>KM:</span>
+                      <span className="font-medium">{analysis.centers.km.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>BM:</span>
+                      <span className="font-medium">{analysis.centers.bm.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>KG:</span>
+                      <span className="font-medium">{analysis.centers.kg.toFixed(2)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>GM:</span>
+                      <span className="font-medium">{analysis.centers.gm.toFixed(3)} m</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stabilite Analizi */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-yellow-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Stabilite Verileri
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>GM:</span>
+                      <span className="font-medium">{analysis.stability.gm.toFixed(3)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Maksimum GZ:</span>
+                      <span className="font-medium">{analysis.stability.maxGz.toFixed(3)} m</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Maksimum GZ Açısı:</span>
+                      <span className="font-medium">{analysis.stability.maxGzAngle.toFixed(1)}°</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Kaybolma Açısı:</span>
+                      <span className="font-medium">{analysis.stability.vanishingAngle.toFixed(1)}°</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Güverte Kenar Açısı:</span>
+                      <span className="font-medium">{analysis.stability.deckEdgeAngle.toFixed(1)}°</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Su Alma Açısı:</span>
+                      <span className="font-medium">{analysis.stability.downfloodingAngle.toFixed(1)}°</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Eşitlenme Açısı:</span>
+                      <span className="font-medium">{analysis.stability.equalizedAngle.toFixed(1)}°</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4" />
+                    IMO Kriterleri
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>0-30° Alan:</span>
+                      <span className={`font-medium ${analysis.imoCriteria.area0to30 >= 0.055 ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.area0to30.toFixed(3)} m-rad
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>0-40° Alan:</span>
+                      <span className={`font-medium ${analysis.imoCriteria.area0to40 >= 0.090 ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.area0to40.toFixed(3)} m-rad
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>30-40° Alan:</span>
+                      <span className={`font-medium ${analysis.imoCriteria.area30to40 >= 0.030 ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.area30to40.toFixed(3)} m-rad
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Maksimum GZ:</span>
+                      <span className={`font-medium ${analysis.imoCriteria.maxGz >= 0.20 ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.maxGz.toFixed(3)} m
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Başlangıç GM:</span>
+                      <span className={`font-medium ${analysis.imoCriteria.initialGM >= 0.15 ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.initialGM.toFixed(3)} m
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>IMO Uygunluğu:</span>
+                      <span className={`font-medium ${analysis.imoCriteria.compliance ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.compliance ? 'Uygun' : 'Uygun Değil'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dinamik Stabilite */}
+              <div className="bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  Dinamik Stabilite
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="flex justify-between">
+                    <span>Yalpa Periyodu:</span>
+                    <span className="font-medium">{analysis.dynamicStability.rollingPeriod.toFixed(2)} s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Doğal Periyot:</span>
+                    <span className="font-medium">{analysis.dynamicStability.naturalPeriod.toFixed(2)} s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Stabilite İndeksi:</span>
+                    <span className="font-medium">{analysis.dynamicStability.stabilityIndex.toFixed(3)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Güvenlik Marjı:</span>
+                    <span className="font-medium">{analysis.dynamicStability.safetyMargin.toFixed(1)}°</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Rezonans Kontrolü:</span>
+                    <span className={`font-medium ${analysis.dynamicStability.resonanceCheck ? 'text-red-600' : 'text-green-600'}`}>
+                      {analysis.dynamicStability.resonanceCheck ? 'Rezonans Riski' : 'Güvenli'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Stabilite Aralığı:</span>
+                    <span className="font-medium">{analysis.dynamicStability.stabilityRange.toFixed(1)}°</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Stabilite Kalitesi:</span>
+                    <span className="font-medium">{analysis.dynamicStability.stabilityQuality.toFixed(3)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>GM Standartları:</span>
+                    <span className="font-medium">{analysis.dynamicStability.gmStandards.toFixed(3)} m</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* GZ Eğrisi Görselleştirme */}
+              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  GZ Eğrisi (0-30°)
+                </h4>
+                <div className="h-48 bg-white dark:bg-gray-600 rounded flex items-end justify-center p-4">
+                  <div className="flex items-end space-x-1">
+                    {analysis.stability.gz.slice(0, 31).map((gz, index) => (
+                      <div
+                        key={index}
+                        className="bg-blue-500 rounded-t"
+                        style={{
+                          width: '4px',
+                          height: `${(gz / analysis.stability.maxGz) * 160}px`
+                        }}
+                        title={`${index}°: ${gz.toFixed(3)}m`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-2 text-center text-sm text-gray-600">
+                  GZ Değerleri (0-30°)
+                </div>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
