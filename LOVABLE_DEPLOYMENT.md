@@ -2,33 +2,28 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-07
-- **Sürüm:** v2.3.0
-- **Durum:** ✅ Aktif - Gelişmiş Hidrostatik/Stabilite hesapları eklendi
+- **Sürüm:** v2.3.2
+- **Durum:** ✅ Aktif - Global dil değişimi ve Preview hatası düzeltildi
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### 🚀 Gelişmiş Hidrostatik ve Stabilite Hesaplamaları (2025-08-07)
-- **Yeni Fonksiyonlar:**
-  - GZ eğrisi üretimi: `generateGZCurve(0–90°, adım)`
-  - KN yaklaşık değeri: `calculateKNApprox(φ)`
-  - Doğrultucu moment: `calculateRightingMoment(Δ, GZ)` (kN·m)
-  - Hacim/Su hattı alanından draft: `calculateDraftFromVolumeAndWPA`
-  - Ağırlık kaymasıyla list açısı: `calculateListAngleFromShift`
-  - Loll açısı: `calculateAngleOfLoll`
-  - Rüzgar momenti: `calculateWindMoment(P|v, A, h)` (N·m)
-  - Rüzgar yatma açısı: `calculateWindHeelAngle`
-  - Rüzgar doğrultucu kolu: `calculateWindHeelingArm`
-  - Gelişmiş Serbest Yüzey Düzeltmesi (FSC): `calculateFreeSurfaceCorrectionsAdvanced` (Δ tabanlı)
-- **Mevcut Modüllere Etki:**
-  - `performStabilityAnalysis` artık gelişmiş FSC’yi kullanır
-  - Dinamik stabilite ve GZ ile ilgili değerlendirmelerde daha detaylı çıktı desteği
-- **Performans/Derleme:**
-  - Prod build yeşil (Vite)
+### 🌐 Global Dil Değişimi (2025-08-07)
+- Tüm uygulama genelinde dil değişimi etkin
+- `LanguageContext`:
+  - `changeLanguage` çağrısında sayfa genelinde metin ve placeholder çevirisi uygulanır
+  - `[data-translatable]` yoksa yaygın etiketlerde (h1–h6, p, button, a, label, span, div) sınırlı fallback çeviri yapılır
+  - `applyTranslations()` dışarı açıldı (manuel tetikleme için)
+- `Settings` sayfası tüm API destekli dilleri listeler
 
-### 🧾 Notlar
-- UI tarafında mevcut Stabilite modülleri (rüzgar ve hava kriterleri, list/loll, GZ vs.) yeni yardımcılarla uyumludur.
-- Gerekli görülen yerlerde servis katmanı genişletildi; tip güvenliği korunmuştur.
+### 🧪 Preview Açılış Hatası Düzeltmesi (2025-08-07)
+- Dil başlatmadaki ağır otomatik çeviri çağrıları yumuşatıldı
+- Gereksiz reload fallback’i kaldırıldı; preview’de runtime hata riski azaltıldı
 
 ---
+
+## Önceki Kayıtlar
+
+- 2025-08-07 — v2.3.1: Yüksek doğruluk hidrostatik (KN, Bonjean), gelişmiş FSC, GZ yardımcıları
+- 2025-08-07 — v2.3.0: Gelişmiş hidrostatik/stabilite fonksiyonları
 
 **🎯 Lovable otomatik olarak güncelleniyor! Bu değişiklikler ana dala işlendiğinde Lovable ve bağlı dağıtımlar senkronize olur.**
