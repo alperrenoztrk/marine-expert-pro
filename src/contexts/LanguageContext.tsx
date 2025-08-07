@@ -106,6 +106,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const finalLang = localStorage.getItem('preferredLanguage') || 'en';
       document.documentElement.dir = rtlLanguages.includes(finalLang) ? 'rtl' : 'ltr';
       document.documentElement.lang = finalLang;
+
+      // Proactively apply translations on init if not English
+      if (finalLang && finalLang !== 'en') {
+        try {
+          await applyTranslationsToCurrentPage(finalLang);
+        } catch (e) {
+          // ignore and continue
+        }
+      }
       
     } catch (error) {
       console.error('Language initialization error:', error);
@@ -216,37 +225,57 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   // Apply translations to current page without reload
   const applyTranslationsToCurrentPage = async (languageCode: string) => {
     try {
-      // Find all elements with data-translatable attribute
       const translatableElements = document.querySelectorAll('[data-translatable]');
-      
-      if (translatableElements.length === 0) return;
+      const inputElements = document.querySelectorAll('input[placeholder], textarea[placeholder]');
 
       const textsToTranslate = Array.from(translatableElements).map(el => el.textContent || '');
-      
-      // Filter out empty texts
       const nonEmptyTexts = textsToTranslate.filter(text => text.trim().length > 0);
-      
-      if (nonEmptyTexts.length === 0) return;
 
-      // Translate in batches
-      const translatedTexts = await translationService.translateBatch(nonEmptyTexts, languageCode);
-      
-      // Apply translations
-      let textIndex = 0;
-      translatableElements.forEach((element, index) => {
-        const originalText = textsToTranslate[index];
-        if (originalText.trim().length > 0) {
-          const translatedText = translatedTexts[textIndex];
-          element.textContent = typeof translatedText === 'string' ? translatedText : originalText;
-          textIndex++;
+      // If nothing is explicitly marked translatable, fallback to reload
+      if (nonEmptyTexts.length === 0 && inputElements.length === 0) {
+        // As a reliable fallback, reload so that pages using other hooks can apply
+        setTimeout(() => window.location.reload(), 50);
+        return;
+      }
+
+      // Translate visible texts
+      if (nonEmptyTexts.length > 0) {
+        const translatedTexts = await translationService.translateBatch(nonEmptyTexts, languageCode);
+        // Apply translations
+        let textIndex = 0;
+        translatableElements.forEach((element, index) => {
+          const originalText = textsToTranslate[index];
+          if (originalText.trim().length > 0) {
+            const translatedText = translatedTexts[textIndex]?.translatedText || originalText;
+            element.textContent = translatedText;
+            textIndex++;
+          }
+        });
+      }
+
+      // Translate placeholders
+      if (inputElements.length > 0) {
+        const placeholders = Array.from(inputElements).map(el => (el as HTMLInputElement | HTMLTextAreaElement).placeholder || '');
+        const nonEmptyPlaceholders = placeholders.filter(p => p.trim().length > 0);
+        if (nonEmptyPlaceholders.length > 0) {
+          const translatedPlaceholders = await translationService.translateBatch(nonEmptyPlaceholders, languageCode);
+          let phIndex = 0;
+          inputElements.forEach((element, idx) => {
+            const originalPh = placeholders[idx];
+            if (originalPh.trim().length > 0) {
+              const translated = translatedPlaceholders[phIndex]?.translatedText || originalPh;
+              (element as HTMLInputElement | HTMLTextAreaElement).placeholder = translated;
+              phIndex++;
+            }
+          });
         }
-      });
+      }
 
-      console.log(`Applied ${translatedTexts.length} translations to current page`);
+      console.log(`Applied translations (lang=${languageCode}) to ${nonEmptyTexts.length} text elements and ${inputElements.length} placeholders`);
     } catch (error) {
       console.error('Error applying translations:', error);
       // Fallback to page reload if translation fails
-      setTimeout(() => window.location.reload(), 1000);
+      setTimeout(() => window.location.reload(), 100);
     }
   };
 
@@ -258,17 +287,17 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     changeLanguage,
     translateText,
     translateBatch,
-      autoDetectLanguage,
-  getLanguageName,
-  isRTL,
-  resetLanguagePreferences: () => {
-    localStorage.removeItem('preferredLanguage');
-    localStorage.removeItem('manualLanguageSelection');
-    // Re-detect system language
-    const browserLang = translationService.getBrowserLanguage();
-    localStorage.setItem('preferredLanguage', browserLang);
-    window.location.reload();
-  }
+    autoDetectLanguage,
+    getLanguageName,
+    isRTL,
+    resetLanguagePreferences: () => {
+      localStorage.removeItem('preferredLanguage');
+      localStorage.removeItem('manualLanguageSelection');
+      // Re-detect system language
+      const browserLang = translationService.getBrowserLanguage();
+      localStorage.setItem('preferredLanguage', browserLang);
+      window.location.reload();
+    }
   };
 
   return (
