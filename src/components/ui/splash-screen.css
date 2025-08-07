@@ -119,11 +119,11 @@
   }
 }
 
-/* Main Anchor Logo - MOVED LOWER */
+/* Main Anchor Logo - MOVED TO LOWER-RIGHT */
 .main-logo {
   position: fixed;
-  top: 60%;
-  left: 50%;
+  top: 70%;
+  left: 70%;
   transform: translate(-50%, -50%) scale(0.5) rotate(-180deg);
   z-index: 10;
   opacity: 0;
