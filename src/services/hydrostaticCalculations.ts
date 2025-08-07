@@ -16,7 +16,8 @@ import {
   StabilityAnalysis,
   BonjeanCurve,
   SectionalArea,
-  GZCurvePoint
+  GZCurvePoint,
+  CompartmentAnalysis
 } from '../types/hydrostatic';
 
 export class HydrostaticCalculations {
