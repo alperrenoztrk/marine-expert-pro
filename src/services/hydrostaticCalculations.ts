@@ -25,6 +25,9 @@ export class HydrostaticCalculations {
   private static readonly WATER_DENSITY = 1.025; // t/m³ (seawater)
   private static readonly FRESH_WATER_DENSITY = 1.000; // t/m³
 
+  /** Additional constants for environmental calculations */
+  private static readonly AIR_DENSITY = 1.225; // kg/m³ (sea level) – informational
+
   /**
    * Calculate displacement and volume displacement
    */
@@ -196,6 +199,102 @@ export class HydrostaticCalculations {
     const gz = (km - kg) * Math.sin(angleRad) - 0.5 * geometry.breadth * Math.pow(Math.sin(angleRad), 2);
     
     return Math.max(0, gz); // GZ cannot be negative
+  }
+
+  /**
+   * Generate detailed GZ curve points for a given angle range
+   */
+  static generateGZCurve(
+    geometry: ShipGeometry,
+    kg: number,
+    startAngle: number = 0,
+    endAngle: number = 90,
+    step: number = 1
+  ): GZCurvePoint[] {
+    const points: GZCurvePoint[] = [];
+    for (let angle = startAngle; angle <= endAngle; angle += step) {
+      const gz = this.calculateGZ(geometry, kg, angle);
+      const rightingMoment = gz * this.calculateDisplacement(geometry).displacement * this.GRAVITY;
+      points.push({ angle, gz, rightingMoment });
+    }
+    return points;
+  }
+
+  /**
+   * Approximate KN value at a given angle (for reference-based workflows)
+   * This uses a simplified proxy: KN ≈ KM × sin(φ)
+   */
+  static calculateKNApprox(geometry: ShipGeometry, kg: number, angle: number): number {
+    const km = this.calculateCenterPoints(geometry, kg).km;
+    const angleRad = (angle * Math.PI) / 180;
+    return Math.max(0, km * Math.sin(angleRad));
+  }
+
+  /**
+   * Calculate righting moment from displacement and righting arm
+   */
+  static calculateRightingMoment(displacementTonnes: number, gz: number): number {
+    // Return in kN·m for convenience
+    return (displacementTonnes * this.GRAVITY * gz) / 1_000;
+  }
+
+  /**
+   * Calculate draft from volume and waterplane area (T = V / Awp)
+   */
+  static calculateDraftFromVolumeAndWPA(volume: number, waterplaneArea: number): number {
+    if (waterplaneArea === 0) return 0;
+    return volume / waterplaneArea;
+  }
+
+  /**
+   * Calculate list angle from a transverse weight shift (θ = arctan(W·d / (Δ·GM)))
+   */
+  static calculateListAngleFromShift(weight: number, transverseDistance: number, displacementTonnes: number, gm: number): number {
+    if (displacementTonnes <= 0 || gm <= 0) return 0;
+    const theta = Math.atan((weight * transverseDistance) / (displacementTonnes * gm));
+    return (theta * 180) / Math.PI;
+  }
+
+  /**
+   * Calculate angle of loll (valid for near-zero/negative initial GM): φ_loll = arccos(KG / KM)
+   */
+  static calculateAngleOfLoll(kg: number, km: number): number {
+    if (km <= 0 || kg >= km) return 0;
+    return Math.acos(kg / km) * (180 / Math.PI);
+  }
+
+  /**
+   * Wind heeling moment (simplified): M_wind = 0.5 × ρ_air × v² × A × h  [N·m]
+   * Provide already computed pressure P (N/m²) when available: M = P × A × h
+   */
+  static calculateWindMoment({ pressure, area, height, velocity }:
+    { pressure?: number; area: number; height: number; velocity?: number }): number {
+    if (pressure && pressure > 0) {
+      return pressure * area * height; // N·m
+    }
+    if (velocity && velocity > 0) {
+      // Convert to N·m using AIR_DENSITY
+      const P = 0.5 * this.AIR_DENSITY * velocity * velocity; // N/m²
+      return P * area * height;
+    }
+    return 0;
+  }
+
+  /**
+   * Wind heel angle: tan(φ) = M_wind / (Δ·g·GM)
+   */
+  static calculateWindHeelAngle(momentNewtonMeter: number, displacementTonnes: number, gm: number): number {
+    if (displacementTonnes <= 0 || gm <= 0) return 0;
+    const tanPhi = momentNewtonMeter / (displacementTonnes * this.GRAVITY * gm);
+    return (Math.atan(tanPhi) * 180) / Math.PI;
+  }
+
+  /**
+   * Heeling arm due to wind: H_wind = M_wind / (Δ·g)
+   */
+  static calculateWindHeelingArm(momentNewtonMeter: number, displacementTonnes: number): number {
+    if (displacementTonnes <= 0) return 0;
+    return momentNewtonMeter / (displacementTonnes * this.GRAVITY);
   }
 
   /**
@@ -575,14 +674,39 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate free surface corrections
+   * Calculate free surface corrections (basic)
    */
   static calculateFreeSurfaceCorrections(tanks: TankData[]): FreeSurfaceCorrection[] {
     return tanks.map(tank => {
       const freeSurfaceMoment = tank.currentVolume * Math.pow(tank.tcg, 2);
-      const correction = freeSurfaceMoment / this.calculateDisplacement({} as ShipGeometry).displacement;
+      // Legacy simplistic correction; kept for backward compatibility
+      const correction = freeSurfaceMoment; // dimensionless placeholder
       const totalFSC = correction * tank.fluidDensity;
       
+      return {
+        tankName: tank.name,
+        freeSurfaceMoment,
+        correction,
+        totalFSC
+      };
+    });
+  }
+
+  /**
+   * Calculate free surface corrections (advanced): FSC_i ≈ ρ × i / Δ
+   * Since TankData does not include L and B, fall back to provided freeSurfaceEffect as i proxy when available
+   */
+  static calculateFreeSurfaceCorrectionsAdvanced(
+    geometry: ShipGeometry,
+    tanks: TankData[]
+  ): FreeSurfaceCorrection[] {
+    const displacement = this.calculateDisplacement(geometry).displacement; // tonnes
+    return tanks.map(tank => {
+      // Interpret freeSurfaceEffect as an equivalent moment of inertia surrogate in m^4 when available
+      const iProxy = Math.max(0, tank.freeSurfaceEffect || 0);
+      const freeSurfaceMoment = iProxy; // proxy units
+      const correction = displacement > 0 ? (tank.fluidDensity * iProxy) / displacement : 0; // meters
+      const totalFSC = correction; // keep meters as total correction
       return {
         tankName: tank.name,
         freeSurfaceMoment,
@@ -657,7 +781,8 @@ export class HydrostaticCalculations {
     const damageStability = this.calculateDamageStability(geometry, kg, floodedCompartments);
     const grainStability = this.calculateGrainStability(geometry, grainShiftMoment, grainHeelAngle);
     const dynamicStability = this.calculateDynamicStability(geometry, stability, weightDistribution);
-    const freeSurfaceCorrections = this.calculateFreeSurfaceCorrections(tanks);
+    // Use advanced FSC based on current displacement
+    const freeSurfaceCorrections = this.calculateFreeSurfaceCorrectionsAdvanced(geometry, tanks);
     const draftSurvey = this.calculateDraftSurvey(geometry.draft, geometry.draft, geometry.draft, geometry);
 
     return {
