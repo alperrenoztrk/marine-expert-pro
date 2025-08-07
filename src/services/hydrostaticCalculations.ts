@@ -17,7 +17,9 @@ import {
   BonjeanCurve,
   SectionalArea,
   GZCurvePoint,
-  CompartmentAnalysis
+  CompartmentAnalysis,
+  CrossCurves,
+  BonjeanSet
 } from '../types/hydrostatic';
 
 export class HydrostaticCalculations {
@@ -749,7 +751,69 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Perform complete stability analysis
+   * Calculate GZ using KN cross curves if provided, otherwise fallback
+   */
+  private static calculateGZWithCrossCurves(
+    geometry: ShipGeometry,
+    kg: number,
+    angle: number,
+    crossCurves?: CrossCurves
+  ): number {
+    if (!crossCurves) {
+      return this.calculateGZ(geometry, kg, angle);
+    }
+    // Linear interpolate KN at requested angle
+    const { angles, kn } = crossCurves;
+    if (angles.length !== kn.length || angles.length === 0) {
+      return this.calculateGZ(geometry, kg, angle);
+    }
+    const clampAngle = Math.max(Math.min(angle, angles[angles.length - 1]), angles[0]);
+    // find segment
+    let i = 0;
+    for (; i < angles.length - 1; i++) {
+      if (clampAngle >= angles[i] && clampAngle <= angles[i + 1]) break;
+    }
+    const a0 = angles[i];
+    const a1 = angles[Math.min(i + 1, angles.length - 1)];
+    const k0 = kn[i];
+    const k1 = kn[Math.min(i + 1, kn.length - 1)];
+    const t = a1 === a0 ? 0 : (clampAngle - a0) / (a1 - a0);
+    const knInterp = k0 + t * (k1 - k0);
+    // GZ = KN - KG * sin(φ)
+    const angleRad = (clampAngle * Math.PI) / 180;
+    const gz = knInterp - kg * Math.sin(angleRad);
+    return Math.max(0, gz);
+  }
+
+  /**
+   * Recalculate hydrostatic areas using provided Bonjean set if available
+   */
+  private static buildHydrostaticsWithBonjean(
+    geometry: ShipGeometry,
+    bonjean?: BonjeanSet
+  ): Pick<HydrostaticData, 'bonjeanCurves' | 'sectionalAreas' | 'waterplaneArea' | 'immersedVolume'> {
+    if (!bonjean) {
+      return {
+        bonjeanCurves: this.generateBonjeanCurves(geometry),
+        sectionalAreas: this.generateBonjeanCurves(geometry).map(curve => ({
+          station: curve.station,
+          area: curve.area,
+          moment: curve.moment
+        })),
+        waterplaneArea: this.calculateWaterplaneArea(geometry),
+        immersedVolume: this.calculateImmersedVolume(geometry)
+      };
+    }
+    const sectionalAreas: SectionalArea[] = bonjean.sections;
+    const immersedVolume = sectionalAreas.reduce((sum, s) => sum + s.area * (bonjean.stationSpacing || geometry.length / Math.max(1, sectionalAreas.length - 1)), 0);
+    // Simple proxy for waterplane area from sections near waterline not available; fallback to geometry coefficient
+    const waterplaneArea = this.calculateWaterplaneArea(geometry);
+    const bonjeanCurves: BonjeanCurve[] = sectionalAreas.map((s) => ({ station: s.station, draft: geometry.draft, area: s.area, moment: s.moment } as unknown as BonjeanCurve));
+    return { bonjeanCurves, sectionalAreas, waterplaneArea, immersedVolume };
+  }
+
+  /**
+   * Perform complete stability analysis (with optional high-fidelity inputs)
    */
   static performStabilityAnalysis(
     geometry: ShipGeometry,
@@ -758,30 +822,55 @@ export class HydrostaticCalculations {
     tanks: TankData[],
     floodedCompartments: CompartmentAnalysis[] = [],
     grainShiftMoment: number = 0,
-    grainHeelAngle: number = 0
+    grainHeelAngle: number = 0,
+    options?: {
+      crossCurves?: CrossCurves;
+      bonjean?: BonjeanSet;
+    }
   ): StabilityAnalysis {
+    const hydrostaticGeom = this.buildHydrostaticsWithBonjean(geometry, options?.bonjean);
+
     const hydrostatic = {
       displacement: this.calculateDisplacement(geometry).displacement,
       volumeDisplacement: this.calculateDisplacement(geometry).volumeDisplacement,
-      waterplaneArea: this.calculateWaterplaneArea(geometry),
-      immersedVolume: this.calculateImmersedVolume(geometry),
-      bonjeanCurves: this.generateBonjeanCurves(geometry),
-      sectionalAreas: this.generateBonjeanCurves(geometry).map(curve => ({
-        station: curve.station,
-        area: curve.area,
-        moment: curve.moment
-      }))
+      waterplaneArea: hydrostaticGeom.waterplaneArea,
+      immersedVolume: hydrostaticGeom.immersedVolume,
+      bonjeanCurves: hydrostaticGeom.bonjeanCurves,
+      sectionalAreas: hydrostaticGeom.sectionalAreas
     };
 
     const centers = this.calculateCenterPoints(geometry, kg);
     const coefficients = this.calculateHydrostaticCoefficients(geometry);
-    const stability = this.calculateStabilityData(geometry, kg);
+
+    // If cross curves provided, build stability data using them
+    const angles = Array.from({ length: 91 }, (_, i) => i);
+    const gzValues = angles.map(a => this.calculateGZWithCrossCurves(geometry, kg, a, options?.crossCurves));
+    const rightingMoments = gzValues.map(gz => gz * this.calculateDisplacement(geometry).displacement * this.GRAVITY);
+    let maxGz = 0;
+    let maxGzAngle = 0;
+    let vanishingAngle = 0;
+    gzValues.forEach((gz, idx) => {
+      if (gz > maxGz) { maxGz = gz; maxGzAngle = angles[idx]; }
+      if (gz <= 0 && vanishingAngle === 0 && angles[idx] > 0) { vanishingAngle = angles[idx]; }
+    });
+    const stability = options?.crossCurves ? {
+      gm: this.calculateCenterPoints(geometry, kg).gm,
+      gz: gzValues,
+      rightingMoment: rightingMoments,
+      angles,
+      maxGz,
+      maxGzAngle,
+      vanishingAngle,
+      deckEdgeAngle: this.calculateDeckEdgeAngle(geometry),
+      downfloodingAngle: this.calculateDownfloodingAngle(geometry),
+      equalizedAngle: this.calculateEqualizedAngle(geometry)
+    } as StabilityData : this.calculateStabilityData(geometry, kg);
+
     const imoCriteria = this.calculateIMOStabilityCriteria(stability);
     const trimList = this.calculateTrimAndList(geometry, weightDistribution, tanks);
     const damageStability = this.calculateDamageStability(geometry, kg, floodedCompartments);
     const grainStability = this.calculateGrainStability(geometry, grainShiftMoment, grainHeelAngle);
     const dynamicStability = this.calculateDynamicStability(geometry, stability, weightDistribution);
-    // Use advanced FSC based on current displacement
     const freeSurfaceCorrections = this.calculateFreeSurfaceCorrectionsAdvanced(geometry, tanks);
     const draftSurvey = this.calculateDraftSurvey(geometry.draft, geometry.draft, geometry.draft, geometry);
 

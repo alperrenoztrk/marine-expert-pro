@@ -72,7 +72,7 @@ export interface StabilityData {
 export interface IMOStabilityCriteria {
   area0to30: number; // Area under GZ curve 0-30°
   area0to40: number; // Area under GZ curve 0-40°
-  area30to40: number; // Area under GZ curve 30-40°
+  area30to40: number; // Fark area between 30-40°
   maxGz: number; // Maximum GZ value
   initialGM: number; // Initial GM requirement
   areaRequirement: number; // Area requirement
@@ -154,15 +154,20 @@ export interface TankData {
   lcg: number; // Longitudinal center of gravity
   vcg: number; // Vertical center of gravity
   tcg: number; // Transverse center of gravity
-  freeSurfaceEffect: number; // Free surface effect
+  freeSurfaceEffect: number; // Free surface effect (proxy or i)
   fluidDensity: number; // Fluid density in t/m³
+  // Optional geometry for advanced free-surface correction
+  length?: number; // tank length [m]
+  breadth?: number; // tank breadth [m]
+  height?: number; // tank height [m]
+  fillRatio?: number; // 0-1, approximate fill level
 }
 
 export interface FreeSurfaceCorrection {
   tankName: string;
-  freeSurfaceMoment: number; // Free surface moment
-  correction: number; // Free surface correction
-  totalFSC: number; // Total free surface correction
+  freeSurfaceMoment: number; // Free surface moment (proxy or i)
+  correction: number; // Free surface correction (m)
+  totalFSC: number; // Total free surface correction (m)
 }
 
 export interface DraftSurvey {
@@ -192,4 +197,15 @@ export interface StabilityAnalysis {
   tanks: TankData[];
   freeSurfaceCorrections: FreeSurfaceCorrection[];
   draftSurvey: DraftSurvey;
+}
+
+// High-fidelity optional inputs
+export interface CrossCurves {
+  angles: number[]; // degrees
+  kn: number[]; // meters
+}
+
+export interface BonjeanSet {
+  sections: SectionalArea[]; // at target draft
+  stationSpacing: number; // m, spacing between stations along LBP
 }
