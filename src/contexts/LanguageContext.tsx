@@ -107,14 +107,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       document.documentElement.dir = rtlLanguages.includes(finalLang) ? 'rtl' : 'ltr';
       document.documentElement.lang = finalLang;
 
-      // Proactively apply translations on init if not English
-      if (finalLang && finalLang !== 'en') {
-        try {
-          await applyTranslationsToCurrentPage(finalLang);
-        } catch (e) {
-          // ignore and continue
-        }
-      }
+
       
     } catch (error) {
       console.error('Language initialization error:', error);
@@ -231,10 +224,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const textsToTranslate = Array.from(translatableElements).map(el => el.textContent || '');
       const nonEmptyTexts = textsToTranslate.filter(text => text.trim().length > 0);
 
-      // If nothing is explicitly marked translatable, fallback to reload
+      // If nothing is explicitly marked translatable, bail silently (app pages may manage their own translations)
       if (nonEmptyTexts.length === 0 && inputElements.length === 0) {
-        // As a reliable fallback, reload so that pages using other hooks can apply
-        setTimeout(() => window.location.reload(), 50);
         return;
       }
 
