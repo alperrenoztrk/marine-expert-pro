@@ -48,6 +48,11 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
         <div className="anchor-container">
           <Anchor className="w-64 h-64 text-blue-300" strokeWidth={2.5} />
         </div>
+        <div className="splash-title">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-teal-300 bg-clip-text text-transparent">
+            Maritime Calculator
+          </h1>
+        </div>
       </div>
 
       {/* Loading Bar */}
