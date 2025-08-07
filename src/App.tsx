@@ -44,10 +44,10 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <ThemeProvider defaultTheme="light">
+        <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
           <LanguageProvider>
             <Toaster />
-            <div className={`min-h-screen ${keyboardVisible ? 'pb-16' : ''} ${isNative ? 'safe-area' : ''}`}>
+            <div className={`min-h-screen bg-background text-foreground ${keyboardVisible ? 'pb-16' : ''} ${isNative ? 'safe-area' : ''}`}>
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
