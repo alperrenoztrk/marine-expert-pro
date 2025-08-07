@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/hooks/useTheme";
+import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLanguageFlag } from "@/utils/languages";
-import { toast } from "sonner";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
@@ -83,14 +83,14 @@ const Settings = () => {
           <div className="grid gap-6">
             
             {/* Theme Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 cyberpunk:bg-slate-800 cyberpunk:border-cyan-500 nature:bg-green-50 nature:border-green-200">
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />
                   <span data-translatable>Tema Ayarları</span>
                 </CardTitle>
                 <CardDescription>
-                  <span data-translatable>Arayüz temasını seçin</span>
+                  <span data-translatable>Uygulama tema rengini seçin</span>
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -106,36 +106,34 @@ const Settings = () => {
                       <SelectContent>
                         <SelectItem value="light">
                           <div className="flex items-center gap-2">
-                            <Sun className="w-4 h-4" />
-                            <span>Açık Tema</span>
+                            <Sun className="w-5 h-5" />
+                            <span data-translatable>Açık Tema</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="dark">
                           <div className="flex items-center gap-2">
-                            <Moon className="w-4 h-4" />
-                            <span>Koyu Tema</span>
+                            <Moon className="w-5 h-5" />
+                            <span data-translatable>Koyu Tema</span>
                           </div>
                         </SelectItem>
-
                         <SelectItem value="cyberpunk">
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse"></div>
-                            <span>Cyberpunk Tema</span>
+                            <Zap className="w-5 h-5" />
+                            <span data-translatable>Cyberpunk Tema</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="neon">
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-green-400 animate-pulse shadow-lg shadow-blue-500/50"></div>
-                            <span>Neon Tema</span>
+                            <Globe className="w-5 h-5" />
+                            <span data-translatable>Neon Tema</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="nature">
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse shadow-lg shadow-green-500/50"></div>
-                            <span>Doğa Teması</span>
+                            <Volume2 className="w-5 h-5" />
+                            <span data-translatable>Doğa Teması</span>
                           </div>
                         </SelectItem>
-
                       </SelectContent>
                     </Select>
                   </div>
@@ -145,50 +143,6 @@ const Settings = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Neon Sound Settings - Only visible in neon theme */}
-            {theme === 'neon' && (
-              <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 neon:bg-slate-800 neon:border-cyan-500">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-cyan-400" />
-                    <span>Neon Ses Efektleri</span>
-                  </CardTitle>
-                  <CardDescription>
-                    <span>Neon tema için elektronik ses efektlerini yönetin</span>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <Label htmlFor="neon-sound-toggle">
-                          <span>Ses Efektleri</span>
-                        </Label>
-                        <p className="text-sm text-muted-foreground">
-                          <span>Buton tıklama ve hover ses efektleri</span>
-                        </p>
-                      </div>
-                      <Switch
-                        id="neon-sound-toggle"
-                        checked={neonSoundEnabled}
-                        onCheckedChange={handleNeonSoundToggle}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      {neonSoundEnabled ? (
-                        <Volume2 className="w-4 h-4 text-cyan-400" />
-                      ) : (
-                        <VolumeX className="w-4 h-4 text-gray-400" />
-                      )}
-                      <span>
-                        {neonSoundEnabled ? 'Ses efektleri aktif' : 'Ses efektleri devre dışı'}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Language Settings */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
@@ -212,14 +166,14 @@ const Settings = () => {
                         <SelectValue placeholder="Dil seçin" />
                       </SelectTrigger>
                       <SelectContent>
-                       {supportedLanguages.map((lang) => (
-                         <SelectItem key={lang.language} value={lang.language}>
-                           <div className="flex items-center gap-2">
-                             <span className="text-lg">{getLanguageFlag(lang.language)}</span>
-                             <span>{lang.displayName || getLanguageName(lang.language)}</span>
-                           </div>
-                         </SelectItem>
-                       ))}
+                        {supportedLanguages.map((lang) => (
+                          <SelectItem key={lang.language} value={lang.language}>
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">{getLanguageFlag(lang.language)}</span>
+                              <span>{lang.displayName || getLanguageName(lang.language)}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -230,29 +184,58 @@ const Settings = () => {
               </CardContent>
             </Card>
 
+            {/* Neon Sound Settings */}
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Volume2 className="w-5 h-5" />
+                  <span data-translatable>Neon Ses Efektleri</span>
+                </CardTitle>
+                <CardDescription>
+                  <span data-translatable>Neon efektlerinin sesini açık veya kapatın</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <span data-translatable>Neon Ses Efektleri</span>
+                  <Switch
+                    id="neon-sound"
+                    checked={neonSoundEnabled}
+                    onCheckedChange={handleNeonSoundToggle}
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  <span data-translatable>Seçilen ayar tüm uygulamada geçerli olacaktır</span>
+                </p>
+              </CardContent>
+            </Card>
+
             {/* About Section */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
-                <CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <SettingsIcon className="w-5 h-5" />
                   <span data-translatable>Hakkında</span>
                 </CardTitle>
+                <CardDescription>
+                  <span data-translatable>Uygulama hakkında bilgi alın</span>
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground" data-translatable>Versiyon</span>
-                  <span className="font-medium">1.0.0</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground" data-translatable>Geliştirici</span>
-                  <span className="font-medium">Maritime Calculator Team</span>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    <span data-translatable>Bu uygulama denizcilik hesaplamaları için geliştirilmiştir</span>
-                  </p>
-                </div>
+              <CardContent>
+                <p data-translatable>
+                  Bu uygulama, modern ve kullanıcı dostu bir arayüzle birlikte gelir.
+                  Mobil cihazlarınızda kullanılabilir ve güvenli bir deneyim sunar.
+                </p>
+                <Separator className="my-4" />
+                <p data-translatable>
+                  Versiyon: 1.0.0
+                </p>
+                <p data-translatable>
+                  Geliştirici: Your Name
+                </p>
+                <p data-translatable>
+                  İletişim: your.email@example.com
+                </p>
               </CardContent>
             </Card>
           </div>
