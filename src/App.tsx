@@ -29,6 +29,7 @@ import WeatherCalculationsPage from "./pages/WeatherCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 import HydrostaticsStabilityPage from "./pages/HydrostaticsStability";
 import Settings from "./pages/Settings";
+import { LanguageRouteSync } from "@/components/LanguageRouteSync";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,8 @@ const App = () => {
             <Toaster />
             <div className={`min-h-screen bg-background text-foreground ${keyboardVisible ? 'pb-16' : ''} ${isNative ? 'safe-area' : ''}`}>
               <BrowserRouter>
+                {/* Sync language on route changes */}
+                <LanguageRouteSync />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/formulas" element={<Formulas />} />
