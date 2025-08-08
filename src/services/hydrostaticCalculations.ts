@@ -890,4 +890,94 @@ export class HydrostaticCalculations {
       draftSurvey
     };
   }
+
+  /**
+   * Calculate KG from weight distribution (vertical CG)
+   */
+  static calculateKGFromWeights(weightDistribution: WeightDistribution[]): number {
+    const totalWeight = weightDistribution.reduce((sum, w) => sum + w.weight, 0);
+    if (totalWeight <= 0) return 0;
+    const weightedVCG = weightDistribution.reduce((sum, w) => sum + w.weight * w.vcg, 0);
+    return weightedVCG / totalWeight;
+  }
+
+  /**
+   * Sum total Free Surface Correction (meters)
+   */
+  static calculateTotalFSC(corrections: FreeSurfaceCorrection[]): number {
+    return corrections.reduce((sum, c) => sum + (c.correction || 0), 0);
+  }
+
+  /**
+   * Correct GM with total FSC
+   */
+  static calculateCorrectedGM(gm: number, totalFSC: number): number {
+    return gm - Math.max(0, totalFSC);
+  }
+
+  /**
+   * Analyze GZ curve with standard metrics (areas and maxima)
+   */
+  static analyzeGZCurve(stabilityData: StabilityData): {
+    area0to30: number;
+    area0to40: number;
+    area30to40: number;
+    maxGz: number;
+    maxGzAngle: number;
+    vanishingAngle: number;
+  } {
+    const area0to30 = this.calculateAreaUnderGZCurve(stabilityData.gz, stabilityData.angles, 0, 30);
+    const area0to40 = this.calculateAreaUnderGZCurve(stabilityData.gz, stabilityData.angles, 0, 40);
+    const area30to40 = area0to40 - area0to30;
+    return {
+      area0to30,
+      area0to40,
+      area30to40,
+      maxGz: stabilityData.maxGz,
+      maxGzAngle: stabilityData.maxGzAngle,
+      vanishingAngle: stabilityData.vanishingAngle
+    };
+  }
+
+  /**
+   * Righting moment curve generator (alias for GZ curve with moments)
+   */
+  static generateRightingMomentCurve(geometry: ShipGeometry, kg: number, startAngle = 0, endAngle = 90, step = 1): { angle: number; rightingMoment: number }[] {
+    return this.generateGZCurve(geometry, kg, startAngle, endAngle, step).map(p => ({ angle: p.angle, rightingMoment: p.rightingMoment }));
+  }
+
+  /**
+   * Small-angle GZ (φ < 15°): GZ ≈ GM·sinφ
+   */
+  static calculateSmallAngleGZ(geometry: ShipGeometry, kg: number, angle: number): number {
+    const gm = this.calculateCenterPoints(geometry, kg).gm;
+    const angleRad = (angle * Math.PI) / 180;
+    return Math.max(0, gm * Math.sin(angleRad));
+  }
+
+  /**
+   * Large-angle GZ (wall-sided approximation)
+   */
+  static calculateLargeAngleGZ(geometry: ShipGeometry, kg: number, angle: number): number {
+    return this.calculateGZ(geometry, kg, angle);
+  }
+
+  /**
+   * Simulate tank volume changes and return updated tank set and FSC
+   */
+  static applyTankVolumeChanges(
+    geometry: ShipGeometry,
+    tanks: TankData[],
+    changes: { name: string; deltaVolume: number }[]
+  ): { updatedTanks: TankData[]; freeSurfaceCorrections: FreeSurfaceCorrection[]; totalFSC: number } {
+    const nameToDelta = new Map<string, number>(changes.map(c => [c.name, c.deltaVolume]));
+    const updatedTanks: TankData[] = tanks.map(t => {
+      const delta = nameToDelta.get(t.name) || 0;
+      const newVolume = Math.max(0, Math.min(t.capacity, t.currentVolume + delta));
+      return { ...t, currentVolume: newVolume };
+    });
+    const fsc = this.calculateFreeSurfaceCorrectionsAdvanced(geometry, updatedTanks);
+    const totalFSC = this.calculateTotalFSC(fsc);
+    return { updatedTanks, freeSurfaceCorrections: fsc, totalFSC };
+  }
 }
