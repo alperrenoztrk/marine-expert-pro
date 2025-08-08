@@ -949,6 +949,67 @@ export const HydrostaticsStabilityCalculations = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* İleri Analiz Özeti */}
+      {analysis && (
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+              <BarChart3 className="h-5 w-5" />
+              İleri Analiz Özeti
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {(() => {
+              const kgCalc = HydrostaticCalculations.calculateKGFromWeights(weightDistribution);
+              const fscList = analysis.freeSurfaceCorrections || [];
+              const totalFSC = HydrostaticCalculations.calculateTotalFSC(fscList);
+              const correctedGM = HydrostaticCalculations.calculateCorrectedGM(analysis.stability.gm, totalFSC);
+              const gzSummary = HydrostaticCalculations.analyzeGZCurve(analysis.stability);
+              const rightingMax = Math.max(...analysis.dynamicStability.gzCurve.map(p => p.rightingMoment));
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">KG / GM / FSC</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>KG (ağırlıklardan): <span className="font-mono">{kgCalc.toFixed(3)} m</span></li>
+                      <li>GM (ilk): <span className="font-mono">{analysis.stability.gm.toFixed(3)} m</span></li>
+                      <li>Toplam FSC: <span className="font-mono">{totalFSC.toFixed(3)} m</span></li>
+                      <li>GM (düzeltilmiş): <span className="font-mono">{correctedGM.toFixed(3)} m</span></li>
+                    </ul>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">GZ Eğrisi Özet</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>Alan (0–30°): <span className="font-mono">{gzSummary.area0to30.toFixed(4)} m·rad</span></li>
+                      <li>Alan (0–40°): <span className="font-mono">{gzSummary.area0to40.toFixed(4)} m·rad</span></li>
+                      <li>Alan (30–40°): <span className="font-mono">{gzSummary.area30to40.toFixed(4)} m·rad</span></li>
+                      <li>Max GZ: <span className="font-mono">{gzSummary.maxGz.toFixed(3)} m @ {gzSummary.maxGzAngle}°</span></li>
+                    </ul>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Kritik Açılar</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>Vanishing Angle: <span className="font-mono">{analysis.stability.vanishingAngle}°</span></li>
+                      <li>Deck Edge Angle: <span className="font-mono">{analysis.stability.deckEdgeAngle.toFixed(1)}°</span></li>
+                      <li>Downflooding Angle: <span className="font-mono">{analysis.stability.downfloodingAngle.toFixed(1)}°</span></li>
+                      <li>Equalized Angle: <span className="font-mono">{analysis.stability.equalizedAngle.toFixed(1)}°</span></li>
+                    </ul>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Trim/List ve Momentler</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>Trim Açısı: <span className="font-mono">{analysis.trimList.trimAngle.toFixed(3)}°</span></li>
+                      <li>List Açısı: <span className="font-mono">{analysis.trimList.listAngle.toFixed(3)}°</span></li>
+                      <li>Righting Moment (max): <span className="font-mono">{rightingMax.toFixed(1)} N·m</span></li>
+                    </ul>
+                  </div>
+                </div>
+              );
+            })()}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
