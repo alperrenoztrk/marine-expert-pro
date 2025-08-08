@@ -14,19 +14,26 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // Start animations sequence
-    setTimeout(() => setIsAnimating(true), 100);
-    setTimeout(() => setShowLogo(true), 300);
-    setTimeout(() => setShowParticles(true), 800);
+    // Start animations sequence with cleanup-safe timers
+    const timers: number[] = [];
+
+    timers.push(window.setTimeout(() => setIsAnimating(true), 100));
+    timers.push(window.setTimeout(() => setShowLogo(true), 300));
+    timers.push(window.setTimeout(() => setShowParticles(true), 800));
     
     // Start fade out
-    setTimeout(() => setFadeOut(true), duration - 1000);
+    timers.push(window.setTimeout(() => setFadeOut(true), duration - 1000));
     
-    // Complete splash screen
-    setTimeout(() => {
+    // Complete splash screen: hide self, then notify parent
+    timers.push(window.setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 800);
-    }, duration);
+      timers.push(window.setTimeout(onComplete, 800));
+    }, duration));
+
+    return () => {
+      // Clear all timers on unmount to avoid race conditions
+      timers.forEach(id => clearTimeout(id));
+    };
   }, [onComplete, duration]);
 
   if (!isVisible) return null;

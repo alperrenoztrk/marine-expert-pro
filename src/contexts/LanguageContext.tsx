@@ -232,13 +232,22 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       const textsToTranslate = Array.from(translatableElements).map(el => el.textContent || '');
       const nonEmptyTexts = textsToTranslate.filter(text => text.trim().length > 0);
 
-      // If nothing explicitly marked, fallback to common UI elements (opt-out via data-no-translate)
+      // If nothing explicitly marked, fallback to safe text-only elements (opt-out via data-no-translate)
       if (nonEmptyTexts.length === 0 && inputElements.length === 0) {
-        const fallbackSelector = 'h1,h2,h3,h4,h5,h6,p,button,a,label,li,th,td,small,strong,em,span,div';
-        const allCandidates = Array.from(document.querySelectorAll(fallbackSelector))
-          .filter(el => !(el as HTMLElement).dataset.noTranslate)
-          .slice(0, 200) as HTMLElement[]; // cap for performance
-        const texts = allCandidates.map(el => el.textContent || '').map(t => t.trim());
+        // Exclude generic containers like div/section/nav and only translate leaf nodes to avoid breaking React DOM
+        const fallbackSelector = 'h1,h2,h3,h4,h5,h6,p,button,a,label,li,th,td,small,strong,em,span';
+        const allCandidates = (Array.from(document.querySelectorAll(fallbackSelector)) as HTMLElement[])
+          .filter((el) => {
+            if (el.dataset.noTranslate) return false;
+            // Skip splash screen elements during transition
+            if (el.closest('.splash-screen')) return false;
+            // Only translate leaf nodes (no element children)
+            if (el.childElementCount > 0) return false;
+            return true;
+          })
+          .slice(0, 200); // cap for performance
+
+        const texts = allCandidates.map(el => (el.textContent || '').trim());
         const nonEmpty = texts.map((t, i) => ({ t, i })).filter(x => x.t.length > 0);
         if (nonEmpty.length > 0) {
           const translated = await translationService.translateBatch(nonEmpty.map(x => x.t), languageCode);
@@ -252,7 +261,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
             el.textContent = newText;
           });
         }
-        console.log(`Fallback applied translations to ${nonEmpty.length} elements`);
+        console.log(`Safe fallback applied translations to ${nonEmpty.length} leaf elements`);
         return;
       }
 
