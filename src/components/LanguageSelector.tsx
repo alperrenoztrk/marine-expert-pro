@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Globe, Check } from "lucide-react";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Language {
   code: string;
@@ -45,13 +45,13 @@ const SUPPORTED_LANGUAGES: Language[] = [
 ];
 
 export const LanguageSelector = () => {
-  const { currentLanguage, setLanguage, isTranslating } = useLanguage();
+  const { currentLanguage, changeLanguage, isTranslating } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   const currentLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage) || SUPPORTED_LANGUAGES[0];
 
   const handleLanguageChange = async (langCode: string) => {
-    await setLanguage(langCode);
+    await changeLanguage(langCode);
     setIsOpen(false);
   };
 

@@ -7,18 +7,14 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Globe, Check, Loader2, Zap } from "lucide-react";
-import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { translationService } from "@/services/translationAPI";
 import { SUPPORTED_LANGUAGES, getLanguageInfo } from "@/utils/microsoftTranslator";
 import { toast } from "sonner";
 
 export const AutoLanguageSelector = () => {
-  const { 
-    detectedLanguage, 
-    currentLanguage, 
-    setLanguage, 
-    isTranslating,
-    supportedLanguages 
-  } = useAutoLanguageDetection();
+  const { currentLanguage, changeLanguage, isTranslating } = useLanguage();
+  const [detectedLanguage, setDetectedLanguage] = useState(currentLanguage);
   
   const [isOpen, setIsOpen] = useState(false);
   const [showAutoDetectPrompt, setShowAutoDetectPrompt] = useState(false);
@@ -28,21 +24,24 @@ export const AutoLanguageSelector = () => {
 
   // Otomatik dil algılama önerisi
   useEffect(() => {
+    // Sistem dilini tespit et
+    const sysLang = translationService.getBrowserLanguage();
+    setDetectedLanguage(sysLang);
+
     const timer = setTimeout(() => {
-      if (detectedLanguage !== currentLanguage && detectedLanguage !== 'tr') {
+      if (sysLang !== currentLanguage && sysLang !== 'tr') {
         setShowAutoDetectPrompt(true);
       }
     }, 2000); // 2 saniye sonra öner
 
     return () => clearTimeout(timer);
-  }, [detectedLanguage, currentLanguage]);
+  }, [currentLanguage]);
 
   const handleLanguageChange = async (langCode: string) => {
     try {
-      await setLanguage(langCode);
+      await changeLanguage(langCode);
       setIsOpen(false);
       setShowAutoDetectPrompt(false);
-      
       const langInfo = getLanguageInfo(langCode);
       toast.success(`${langInfo.flag} ${langInfo.name} diline geçildi!`);
     } catch (error) {
