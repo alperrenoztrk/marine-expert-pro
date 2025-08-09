@@ -219,12 +219,7 @@ const Index = () => {
                 
                 {/* Second Row - Other buttons */}
                 <div className="flex gap-2 flex-wrap">
-                  <Link to="/trim-list">
-                    <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-400 nature:text-green-600 nature:hover:bg-green-50">
-                      <Building className="w-4 h-4" />
-                      <span data-translatable>Trim ve List</span>
-                    </Button>
-                  </Link>
+                  {/* Trim ve List butonu kaldırıldı */}
                   {/* Hidrostatik & Stabilite butonu kaldırıldı */}
                   <Link to="/navigation">
                     <Button size="sm" variant="outline" className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-gray-700 cyberpunk:border-yellow-400 cyberpunk:text-yellow-400 cyberpunk:hover:bg-gray-800 nature:border-green-400 nature:text-green-600 nature:hover:bg-green-50">
