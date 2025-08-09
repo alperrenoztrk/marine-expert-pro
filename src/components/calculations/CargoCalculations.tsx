@@ -248,6 +248,48 @@ export const CargoCalculations = () => {
     };
   };
 
+  // Lashing requirement: n >= Force / (SWL * efficiency * sin(angle))
+  const calculateRequiredLashings = (
+    force: number,
+    swl: number,
+    efficiency: number,
+    angleDeg: number
+  ): number => {
+    const angleRad = (angleDeg * Math.PI) / 180;
+    const effective = Math.max(1e-6, swl * Math.max(0.1, efficiency) * Math.max(0.1, Math.sin(angleRad)));
+    return Math.ceil(force / effective);
+  };
+
+  // Simple stowage checks for containers
+  const stowageChecks = () => {
+    const stacks = computeContainerStacks(containers);
+    const over = stacks.filter(s => s.weight > 220); // example limit per bay
+    const byRowBalance = new Map<number, number>();
+    containers.forEach(c => byRowBalance.set(c.row, (byRowBalance.get(c.row) || 0) + c.weight));
+    const rowImbalance = Array.from(byRowBalance.entries()).sort((a,b)=>a[0]-b[0]);
+    return { over, rowImbalance };
+  };
+
+  // Simple loading/discharge sequences (heaviest first / reverse)
+  const buildSequences = () => {
+    const loadSeq = [...containers].sort((a,b)=> b.weight - a.weight).map(c=> `${c.id} (${c.weight.toFixed(1)}t) → Bay ${c.bay}/${c.row}/${c.tier}`);
+    const dischargeSeq = [...containers].sort((a,b)=> a.weight - b.weight).map(c=> `${c.id} (${c.weight.toFixed(1)}t) ← Bay ${c.bay}/${c.row}/${c.tier}`);
+    return { loadSeq, dischargeSeq };
+  };
+
+  const buildManifest = () => {
+    const total = containers.reduce((s,c)=>s+c.weight,0);
+    const teu = containers.reduce((s,c)=> s + (c.type==='40'?2:1), 0);
+    const dgClasses = Array.from(new Set(dgList.map(d=>d.cls).filter(Boolean)));
+    return {
+      totalWeight: total,
+      teu,
+      count20: containers.filter(c=>c.type==='20').length,
+      count40: containers.filter(c=>c.type==='40').length,
+      dgClasses
+    };
+  };
+
   // Draft survey calculation
   const calculateDraftSurvey = (survey: DraftSurveyData, TPC: number = 25): number => {
     // Calculate mean drafts
@@ -729,6 +771,33 @@ export const CargoCalculations = () => {
                       <li><strong>Lashing rods:</strong> Turnbuckle connections</li>
                     </ul>
                   </div>
+
+                  {/* Lashing Calculator */}
+                  {cargoData.cargoWeight && (
+                    <div className="p-4 rounded-lg bg-blue-50 dark:bg-gray-800">
+                      <h4 className="font-semibold mb-3">Lashing Hesabı</h4>
+                      {(() => {
+                        const forces = calculateSecuringForces(cargoData.cargoWeight!);
+                        const swl = 25; // kN per lashing (example)
+                        const eff = 0.85;
+                        const angle = 45;
+                        const needLong = calculateRequiredLashings(forces.longitudinal/1000, swl, eff, angle); // convert to kN
+                        const needTrans = calculateRequiredLashings(forces.transverse/1000, swl, eff, angle);
+                        return (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div className="bg-white dark:bg-gray-700 p-3 rounded">
+                              <div>Boyuna kuvvet: {(forces.longitudinal/1000).toFixed(1)} kN</div>
+                              <div>Gerekli lashing (boyuna): <span className="font-mono">{needLong}</span></div>
+                            </div>
+                            <div className="bg-white dark:bg-gray-700 p-3 rounded">
+                              <div>Enine kuvvet: {(forces.transverse/1000).toFixed(1)} kN</div>
+                              <div>Gerekli lashing (enine): <span className="font-mono">{needTrans}</span></div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -797,23 +866,52 @@ export const CargoCalculations = () => {
 
                   <Separator />
 
-                  <div className="prose max-w-none">
-                    <h4>Yükleme İlkeleri:</h4>
-                    <ul>
-                      <li><strong>Bottom heavy:</strong> Ağır yükler altta</li>
-                      <li><strong>Even distribution:</strong> Dengeli dağılım</li>
-                      <li><strong>Stability first:</strong> Önce stabilite</li>
-                      <li><strong>Trim optimization:</strong> Trim dengesi</li>
-                      <li><strong>Access consideration:</strong> Erişim kolaylığı</li>
-                    </ul>
-                    
-                    <h4>IMDG Code Uygunluk:</h4>
-                    <ul>
-                      <li>Tehlikeli madde segregasyonu</li>
-                      <li>Ventilation requirements</li>
-                      <li>Temperature monitoring</li>
-                      <li>Emergency procedures</li>
-                    </ul>
+                  {/* Stowage & Sequences */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-3 rounded bg-muted">
+                      <h4 className="font-semibold mb-2">Stowage Kontrolleri</h4>
+                      {(() => {
+                        const sc = stowageChecks();
+                        return (
+                          <ul className="text-sm space-y-1">
+                            {sc.over.length === 0 ? (
+                              <li>Bay ağırlıkları limit dahilinde.</li>
+                            ) : sc.over.map(s => (
+                              <li key={s.bay}>Bay {s.bay}: {s.weight.toFixed(1)} t (yüksek)</li>
+                            ))}
+                            <li>Row dağılımı: {stowageChecks().rowImbalance.map(r=>`Row ${r[0]}=${r[1].toFixed(1)}t`).join(', ')}</li>
+                          </ul>
+                        );
+                      })()}
+                    </div>
+                    <div className="p-3 rounded bg-muted">
+                      <h4 className="font-semibold mb-2">Loading Sequence</h4>
+                      <ul className="text-sm space-y-1">
+                        {buildSequences().loadSeq.slice(0,6).map((s,i)=>(<li key={i}>{s}</li>))}
+                      </ul>
+                    </div>
+                    <div className="p-3 rounded bg-muted">
+                      <h4 className="font-semibold mb-2">Discharge Sequence</h4>
+                      <ul className="text-sm space-y-1">
+                        {buildSequences().dischargeSeq.slice(0,6).map((s,i)=>(<li key={i}>{s}</li>))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Manifest */}
+                  <div className="p-3 rounded bg-blue-50 dark:bg-gray-800">
+                    <h4 className="font-semibold mb-2">Cargo Manifest Özeti</h4>
+                    {(() => {
+                      const mf = buildManifest();
+                      return (
+                        <div className="text-sm grid grid-cols-2 md:grid-cols-4 gap-2">
+                          <div>Toplam Ağırlık: <span className="font-mono">{mf.totalWeight.toFixed(1)} t</span></div>
+                          <div>TEU: <span className="font-mono">{mf.teu}</span> (20': {mf.count20}, 40': {mf.count40})</div>
+                          <div>DG Sınıfları: <span className="font-mono">{mf.dgClasses.join(', ') || '-'}</span></div>
+                          <div>Bay sayısı: <span className="font-mono">{new Set(containers.map(c=>c.bay)).size}</span></div>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   <Separator />
