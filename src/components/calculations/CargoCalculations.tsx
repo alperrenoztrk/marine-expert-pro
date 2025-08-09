@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Package, Truck, AlertTriangle, CheckCircle, Wheat, Boxes, DollarSign, Shield, LayoutGrid } from "lucide-react";
+import { Calculator, Package, Truck, AlertTriangle, CheckCircle, Wheat, Boxes, DollarSign, Shield, LayoutGrid, FileDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface CargoData {
@@ -141,6 +141,12 @@ export const CargoCalculations = () => {
     { id: 'DG2', un: '1942', cls: '5.1', bay: 3 }
   ]);
   const [costs, setCosts] = useState<CostInputs>({ freightPerTon: 35, insurancePct: 0.3, cargoValue: 500000, stevedoring: 4500, handling: 1200, storage: 800, documentation: 350 });
+
+  // Lashing calculation state
+  const [lashingMSL, setLashingMSL] = useState<number>(100); // kN per lashing
+  const [lashingAngle, setLashingAngle] = useState<number>(0.8); // angle factor (cos)
+  const [lashingWeight, setLashingWeight] = useState<number | undefined>(undefined); // t
+  const [lashingRequired, setLashingRequired] = useState<number | null>(null);
 
   // Helpers for new tabs
   const computeDistributionCG = (items: DistributionItem[]) => {
@@ -709,6 +715,45 @@ export const CargoCalculations = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lashing Hesabı</CardTitle>
+                  <CardDescription>Kuvvete göre gerekli lashing adedi (basit yaklaşım)</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="space-y-1">
+                      <Label>MSL [kN]</Label>
+                      <Input type="number" value={lashingMSL} onChange={(e)=>setLashingMSL(parseFloat(e.target.value))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Açı Faktörü (cos)</Label>
+                      <Input type="number" step="0.01" value={lashingAngle} onChange={(e)=>setLashingAngle(parseFloat(e.target.value))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Yük Ağırlığı [t] (opsiyonel)</Label>
+                      <Input type="number" step="0.1" value={lashingWeight ?? ''} onChange={(e)=>setLashingWeight(parseFloat(e.target.value))} placeholder={`${cargoData.cargoWeight || ''}`} />
+                    </div>
+                    <div className="flex items-end">
+                      <Button onClick={()=>{
+                        const w = (lashingWeight ?? cargoData.cargoWeight ?? 0);
+                        const forces = calculateSecuringForces(w);
+                        const transverseKN = forces.transverse / 1000;
+                        const capacityPer = (lashingMSL || 0) * (lashingAngle || 1);
+                        const req = capacityPer>0 ? Math.ceil(transverseKN / capacityPer) : 0;
+                        setLashingRequired(req);
+                        toast({ title:'Lashing Hesabı', description:`Enine kuvvet ≈ ${transverseKN.toFixed(1)} kN, Gerekli lashing ≈ ${req}` });
+                      }}><Calculator className="h-4 w-4 mr-1" />Hesapla</Button>
+                    </div>
+                  </div>
+                  {lashingRequired !== null && (
+                    <div className="p-3 rounded bg-muted">
+                      <div className="text-sm">Gerekli lashing adedi: <span className="font-semibold">{lashingRequired}</span></div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="planning" className="space-y-6">
@@ -719,7 +764,7 @@ export const CargoCalculations = () => {
                     Yükleme Planlaması
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                   {result && (
                     <div>
                       <h4 className="font-semibold mb-3">Önerilen Yükleme Sırası</h4>
@@ -753,6 +798,51 @@ export const CargoCalculations = () => {
                       <li>Temperature monitoring</li>
                       <li>Emergency procedures</li>
                     </ul>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Bay Özetleri</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {computeContainerStacks(containers).map((s)=> (
+                        <div key={s.bay} className="p-2 rounded bg-muted text-sm">
+                          <div className="font-medium">Bay {s.bay}</div>
+                          <div>{s.weight.toFixed(1)} t</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Boşaltma Sırası</h4>
+                    <div className="space-y-1">
+                      {[...containers]
+                        .sort((a,b)=> (b.tier - a.tier) || (a.bay - b.bay))
+                        .map((c)=> (
+                          <div key={`dis-${c.id}`} className="text-sm p-2 bg-muted rounded">#{c.id} — Bay {c.bay} Row {c.row} Tier {c.tier}</div>
+                        ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" onClick={()=>{
+                      const manifest = { containers, dangerous_goods: dgList, costs, generated_at: new Date().toISOString() };
+                      const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url; a.download = 'cargo-manifest.json'; a.click();
+                      URL.revokeObjectURL(url);
+                    }}>
+                      <FileDown className="h-4 w-4 mr-1" /> Manifesti Dışa Aktar
+                    </Button>
+                    <Button onClick={()=>{
+                      const summary = dgList.reduce((acc: Record<string, number>, d)=>{ acc[d.cls] = (acc[d.cls]||0)+1; return acc; }, {} as Record<string, number>);
+                      const text = Object.keys(summary).length? Object.entries(summary).map(([cls, n])=>`Class ${cls}: ${n} kalem`).join(' | ') : 'Tehlikeli madde bulunmuyor';
+                      toast({ title: 'Beyanname Özeti', description: text });
+                    }}>
+                      <Calculator className="h-4 w-4 mr-1" /> Beyanname Özeti
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
