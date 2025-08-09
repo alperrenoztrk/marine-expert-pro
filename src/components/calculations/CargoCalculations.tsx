@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Package, Truck, AlertTriangle, CheckCircle, Wheat } from "lucide-react";
+import { Calculator, Package, Truck, AlertTriangle, CheckCircle, Wheat, Boxes, DollarSign, Shield, LayoutGrid } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface CargoData {
@@ -81,6 +81,42 @@ interface GrainStabilityData {
   void_spaces: number; // m³
 }
 
+interface DistributionItem {
+  name: string;
+  weight: number; // t
+  lcg: number; // m
+  tcg: number; // m
+  vcg: number; // m
+}
+
+interface ContainerItem {
+  id: string;
+  type: '20' | '40';
+  weight: number; // t (gross)
+  bay: number;
+  row: number;
+  tier: number;
+  vcg: number; // m (approx)
+  tcg: number; // m (from CL)
+}
+
+interface DangerousGoodsItem {
+  id: string;
+  un: string;
+  cls: string; // IMDG class
+  bay: number;
+}
+
+interface CostInputs {
+  freightPerTon?: number;
+  insurancePct?: number; // % of cargo value
+  cargoValue?: number; // USD
+  stevedoring?: number;
+  handling?: number;
+  storage?: number;
+  documentation?: number;
+}
+
 export const CargoCalculations = () => {
   const { toast } = useToast();
   
@@ -90,6 +126,60 @@ export const CargoCalculations = () => {
   const [grainData, setGrainData] = useState<Partial<GrainStabilityData>>({});
   const [result, setResult] = useState<CargoResult | null>(null);
   const [activeTab, setActiveTab] = useState("loading");
+
+  // New states for extended cargo calculations
+  const [distribution, setDistribution] = useState<DistributionItem[]>([
+    { name: 'Hold#1', weight: 500, lcg: 30, tcg: 0, vcg: 4 },
+    { name: 'Hold#2', weight: 700, lcg: 60, tcg: 0, vcg: 5 },
+  ]);
+  const [containers, setContainers] = useState<ContainerItem[]>([
+    { id: 'C001', type: '20', weight: 24, bay: 3, row: 4, tier: 2, vcg: 8, tcg: 3 },
+    { id: 'C002', type: '40', weight: 28, bay: 5, row: 6, tier: 3, vcg: 10, tcg: -2 }
+  ]);
+  const [dgList, setDgList] = useState<DangerousGoodsItem[]>([
+    { id: 'DG1', un: '1203', cls: '3', bay: 3 },
+    { id: 'DG2', un: '1942', cls: '5.1', bay: 3 }
+  ]);
+  const [costs, setCosts] = useState<CostInputs>({ freightPerTon: 35, insurancePct: 0.3, cargoValue: 500000, stevedoring: 4500, handling: 1200, storage: 800, documentation: 350 });
+
+  // Helpers for new tabs
+  const computeDistributionCG = (items: DistributionItem[]) => {
+    const totalW = items.reduce((s, i) => s + (i.weight || 0), 0);
+    if (totalW <= 0) return { totalW: 0, lcg: 0, tcg: 0, vcg: 0 };
+    const lcg = items.reduce((s, i) => s + i.weight * i.lcg, 0) / totalW;
+    const tcg = items.reduce((s, i) => s + i.weight * i.tcg, 0) / totalW;
+    const vcg = items.reduce((s, i) => s + i.weight * i.vcg, 0) / totalW;
+    return { totalW, lcg, tcg, vcg };
+  };
+
+  const computeContainerStacks = (list: ContainerItem[]) => {
+    const byBay = new Map<number, number>();
+    list.forEach(c => byBay.set(c.bay, (byBay.get(c.bay) || 0) + c.weight));
+    return Array.from(byBay.entries()).map(([bay, wt]) => ({ bay, weight: wt }));
+  };
+
+  const checkDGConflicts = (list: DangerousGoodsItem[]) => {
+    // Simplified segregation: Class 3 and 5.1 should not be in same bay
+    const warnings: string[] = [];
+    const byBay = new Map<number, Set<string>>();
+    list.forEach(d => {
+      const set = byBay.get(d.bay) || new Set<string>();
+      set.add(d.cls);
+      byBay.set(d.bay, set);
+    });
+    byBay.forEach((classes, bay) => {
+      if (classes.has('3') && classes.has('5.1')) warnings.push(`Bay ${bay}: Class 3 ile 5.1 birlikte konulmamalı (IMDG).`);
+    });
+    return warnings;
+  };
+
+  const computeCosts = (c: CostInputs, cargoWeightTon?: number) => {
+    const freight = (c.freightPerTon || 0) * (cargoWeightTon || 0);
+    const insurance = ((c.insurancePct || 0) / 100) * (c.cargoValue || 0);
+    const other = (c.stevedoring || 0) + (c.handling || 0) + (c.storage || 0) + (c.documentation || 0);
+    const total = freight + insurance + other;
+    return { freight, insurance, other, total };
+  };
 
   // Calculate deadweight utilization
   const calculateDWT = (cargoWeight: number, deadweight: number): number => {
@@ -281,12 +371,15 @@ export const CargoCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="loading">Yükleme</TabsTrigger>
               <TabsTrigger value="survey">Draft Survey</TabsTrigger>
-              <TabsTrigger value="grain">Tahıl Stabilitesi</TabsTrigger>
+              <TabsTrigger value="grain">Tahıl</TabsTrigger>
               <TabsTrigger value="securing">Güçlendirme</TabsTrigger>
               <TabsTrigger value="planning">Planlama</TabsTrigger>
+              <TabsTrigger value="distribution"><LayoutGrid className="h-4 w-4 mr-1" />Dağılım</TabsTrigger>
+              <TabsTrigger value="containers"><Boxes className="h-4 w-4 mr-1" />Konteyner</TabsTrigger>
+              <TabsTrigger value="costs"><DollarSign className="h-4 w-4 mr-1" />Maliyet</TabsTrigger>
             </TabsList>
 
             <TabsContent value="loading" className="space-y-6">
@@ -664,6 +757,145 @@ export const CargoCalculations = () => {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* Distribution Tab */}
+            <TabsContent value="distribution" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><LayoutGrid className="h-5 w-5" /> Ağırlık Dağılımı</CardTitle>
+                  <CardDescription>Kargo ağırlık dağılımı ve CG hesaplamaları</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-end">
+                    {distribution.map((it, idx) => (
+                      <div key={idx} className="md:col-span-5 grid grid-cols-5 gap-2">
+                        <Input value={it.name} onChange={(e)=>{
+                          const d=[...distribution]; d[idx]={...it,name:e.target.value}; setDistribution(d);
+                        }} placeholder="Ad" />
+                        <Input type="number" step="0.1" value={it.weight}
+                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,weight:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="Ağırlık [t]" />
+                        <Input type="number" step="0.1" value={it.lcg}
+                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,lcg:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="LCG [m]" />
+                        <Input type="number" step="0.1" value={it.tcg}
+                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,tcg:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="TCG [m]" />
+                        <Input type="number" step="0.1" value={it.vcg}
+                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,vcg:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="VCG [m]" />
+                      </div>
+                    ))}
+                    <div className="md:col-span-5 flex gap-2">
+                      <Button variant="outline" onClick={()=>setDistribution([...distribution,{ name:`Item#${distribution.length+1}`, weight:0, lcg:0, tcg:0, vcg:0 }])}>Satır Ekle</Button>
+                      <Button onClick={()=>{
+                        const cg=computeDistributionCG(distribution); 
+                        toast({ title:'Dağılım CG', description:`Toplam ${cg.totalW.toFixed(1)} t | LCG ${cg.lcg.toFixed(2)} m | TCG ${cg.tcg.toFixed(2)} m | VCG ${cg.vcg.toFixed(2)} m` });
+                      }}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Containers Tab */}
+            <TabsContent value="containers" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Boxes className="h-5 w-5" /> Konteyner Yükleme</CardTitle>
+                  <CardDescription>Konteyner ağırlıkları, bay yükleri ve basit yerleşim kontrolü</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {containers.map((c,idx)=>(
+                    <div key={c.id} className="grid grid-cols-7 gap-2">
+                      <Input value={c.id} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,id:e.target.value}; setContainers(arr);}} />
+                      <Input value={c.type} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,type:(e.target.value==='40'?'40':'20') as any}; setContainers(arr);}} />
+                      <Input type="number" step="0.1" value={c.weight} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,weight:parseFloat(e.target.value)}; setContainers(arr);}} placeholder="Ağırlık [t]" />
+                      <Input type="number" value={c.bay} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,bay:parseInt(e.target.value)}; setContainers(arr);}} placeholder="Bay" />
+                      <Input type="number" value={c.row} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,row:parseInt(e.target.value)}; setContainers(arr);}} placeholder="Row" />
+                      <Input type="number" value={c.tier} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,tier:parseInt(e.target.value)}; setContainers(arr);}} placeholder="Tier" />
+                      <Input type="number" step="0.1" value={c.vcg} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,vcg:parseFloat(e.target.value)}; setContainers(arr);}} placeholder="VCG [m]" />
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={()=>setContainers([...containers,{ id:`C${(Math.random()*10000|0)}`, type:'20', weight:24, bay:1, row:1, tier:1, vcg:8, tcg:0 }])}>Konteyner Ekle</Button>
+                    <Button onClick={()=>{
+                      const stacks=computeContainerStacks(containers);
+                      const warnings = stacks.filter(s=>s.weight>200).map(s=>`Bay ${s.bay}: Yığın ağırlığı ${s.weight.toFixed(1)} t (limitleri kontrol edin)`);
+                      const desc = warnings.length? warnings.join(' | '): 'Bay yükleri kabul edilebilir.';
+                      toast({ title:'Bay Yükleri', description: desc });
+                    }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Shield className="h-5 w-5" /> Tehlikeli Madde (IMDG)</CardTitle>
+                  <CardDescription>Basit segregasyon uyarıları</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {dgList.map((d,idx)=> (
+                    <div key={d.id} className="grid grid-cols-4 gap-2">
+                      <Input value={d.un} onChange={(e)=>{const arr=[...dgList]; arr[idx]={...d,un:e.target.value}; setDgList(arr);}} placeholder="UN" />
+                      <Input value={d.cls} onChange={(e)=>{const arr=[...dgList]; arr[idx]={...d,cls:e.target.value}; setDgList(arr);}} placeholder="Sınıf" />
+                      <Input type="number" value={d.bay} onChange={(e)=>{const arr=[...dgList]; arr[idx]={...d,bay:parseInt(e.target.value)}; setDgList(arr);}} placeholder="Bay" />
+                      <Button variant="outline" onClick={()=>{ const arr=[...dgList]; arr.splice(idx,1); setDgList(arr);}}>Sil</Button>
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={()=>setDgList([...dgList,{ id:`DG${(Math.random()*1000|0)}`, un:'', cls:'', bay:1 }])}>Satır Ekle</Button>
+                    <Button onClick={()=>{
+                      const warns=checkDGConflicts(dgList);
+                      toast({ title: warns.length? 'IMDG Uyarıları':'Uygunluk', description: warns.length? warns.join(' | '): 'Çakışma tespit edilmedi.' });
+                    }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Costs Tab */}
+            <TabsContent value="costs" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><DollarSign className="h-5 w-5" /> Kargo Maliyeti</CardTitle>
+                  <CardDescription>Freight, sigorta ve operasyonel ücretler</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <Label>Freight [$/ton]</Label>
+                      <Input type="number" step="0.01" value={costs.freightPerTon || ''} onChange={(e)=>setCosts({...costs, freightPerTon: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Sigorta [%]</Label>
+                      <Input type="number" step="0.01" value={costs.insurancePct || ''} onChange={(e)=>setCosts({...costs, insurancePct: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Kargo Değeri [$]</Label>
+                      <Input type="number" step="0.01" value={costs.cargoValue || ''} onChange={(e)=>setCosts({...costs, cargoValue: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Stevedoring [$]</Label>
+                      <Input type="number" step="0.01" value={costs.stevedoring || ''} onChange={(e)=>setCosts({...costs, stevedoring: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Handling [$]</Label>
+                      <Input type="number" step="0.01" value={costs.handling || ''} onChange={(e)=>setCosts({...costs, handling: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Storage [$]</Label>
+                      <Input type="number" step="0.01" value={costs.storage || ''} onChange={(e)=>setCosts({...costs, storage: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Documentation [$]</Label>
+                      <Input type="number" step="0.01" value={costs.documentation || ''} onChange={(e)=>setCosts({...costs, documentation: parseFloat(e.target.value)})} />
+                    </div>
+                  </div>
+                  <Button onClick={()=>{
+                    const totals=computeCosts(costs, cargoData.cargoWeight);
+                    toast({ title:'Maliyet Özeti', description:`Freight $${totals.freight.toFixed(2)} | Sigorta $${totals.insurance.toFixed(2)} | Diğer $${totals.other.toFixed(2)} | Toplam $${totals.total.toFixed(2)}` });
+                  }}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
           </Tabs>
         </CardContent>
       </Card>
