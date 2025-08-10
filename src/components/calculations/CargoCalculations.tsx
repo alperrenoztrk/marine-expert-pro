@@ -131,7 +131,9 @@ interface CostInputs {
   cafPct?: number; // Currency adjustment factor %
 }
 
-export const CargoCalculations = () => {
+type CargoCalcProps = { initialTab?: string; singleMode?: boolean };
+
+export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {}) => {
   const { toast } = useToast();
   
   
@@ -139,7 +141,7 @@ export const CargoCalculations = () => {
   const [draftSurvey, setDraftSurvey] = useState<Partial<DraftSurveyData>>({});
   const [grainData, setGrainData] = useState<Partial<GrainStabilityData>>({});
   const [result, setResult] = useState<CargoResult | null>(null);
-  const [activeTab, setActiveTab] = useState("distribution");
+  const [activeTab, setActiveTab] = useState(initialTab || "distribution");
 
   // New states for extended cargo calculations
   const [distribution, setDistribution] = useState<DistributionItem[]>([
@@ -690,15 +692,17 @@ export const CargoCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-7">
-              <TabsTrigger value="distribution"><LayoutGrid className="h-4 w-4 mr-1" />Dağılım</TabsTrigger>
-              <TabsTrigger value="containers"><Boxes className="h-4 w-4 mr-1" />Konteyner</TabsTrigger>
-              <TabsTrigger value="securing"><Shield className="h-4 w-4 mr-1" />Güçlendirme</TabsTrigger>
-              <TabsTrigger value="grain"><Wheat className="h-4 w-4 mr-1" />Tahıl</TabsTrigger>
-              <TabsTrigger value="survey"><Package className="h-4 w-4 mr-1" />Survey</TabsTrigger>
-              <TabsTrigger value="planning"><Truck className="h-4 w-4 mr-1" />Yükleme Planı</TabsTrigger>
-              <TabsTrigger value="costs"><DollarSign className="h-4 w-4 mr-1" />Maliyet</TabsTrigger>
-            </TabsList>
+            {!singleMode && (
+              <TabsList className="grid w-full grid-cols-7">
+                <TabsTrigger value="distribution"><LayoutGrid className="h-4 w-4 mr-1" />Dağılım</TabsTrigger>
+                <TabsTrigger value="containers"><Boxes className="h-4 w-4 mr-1" />Konteyner</TabsTrigger>
+                <TabsTrigger value="securing"><Shield className="h-4 w-4 mr-1" />Güçlendirme</TabsTrigger>
+                <TabsTrigger value="grain"><Wheat className="h-4 w-4 mr-1" />Tahıl</TabsTrigger>
+                <TabsTrigger value="survey"><Package className="h-4 w-4 mr-1" />Survey</TabsTrigger>
+                <TabsTrigger value="planning"><Truck className="h-4 w-4 mr-1" />Yükleme Planı</TabsTrigger>
+                <TabsTrigger value="costs"><DollarSign className="h-4 w-4 mr-1" />Maliyet</TabsTrigger>
+              </TabsList>
+            )}
 
             <TabsContent value="loading" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1302,7 +1306,7 @@ export const CargoCalculations = () => {
               </Card>
             </TabsContent>
 
-            {/* Distribution Tab */}
+            {(singleMode ? activeTab==='distribution' : true) && (
             <TabsContent value="distribution" className="space-y-6">
               {/* Genel kargo girdileri ve hesaplama sonuçları */}
               <Card>
@@ -1543,8 +1547,9 @@ export const CargoCalculations = () => {
               </Card>
 
             </TabsContent>
+            )}
 
-            {/* Containers Tab */}
+            {(singleMode ? activeTab==='containers' : true) && (
             <TabsContent value="containers" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -1611,8 +1616,435 @@ export const CargoCalculations = () => {
                 </CardContent>
               </Card>
             </TabsContent>
+            )}
 
-            {/* Costs Tab */}
+            {(singleMode ? activeTab==='securing' : true) && (
+            <TabsContent value="securing" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Kargo Güçlendirme Sistemleri</CardTitle>
+                  <CardDescription>CSS Code standartlarına uygun güçlendirme</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="prose max-w-none">
+                    <h4>CSS Code Accelerations:</h4>
+                    <ul>
+                      <li><strong>Longitudinal:</strong> 0.3g (fore/aft direction)</li>
+                      <li><strong>Transverse:</strong> 0.5g (port/starboard)</li>
+                      <li><strong>Vertical:</strong> 1.0g (upward direction)</li>
+                    </ul>
+                    
+                    <h4>Güçlendirme Ekipmanları:</h4>
+                    <ul>
+                      <li><strong>Lashing points:</strong> SWL ≥ 1000 kg</li>
+                      <li><strong>Turnbuckles:</strong> Adjustable tension</li>
+                      <li><strong>Wire ropes:</strong> Stainless steel preferred</li>
+                      <li><strong>Chain lashings:</strong> Heavy cargo securing</li>
+                    </ul>
+                    
+                    <h4>Konteyner Güçlendirme:</h4>
+                    <ul>
+                      <li><strong>Twist locks:</strong> Corner fittings</li>
+                      <li><strong>Bridge fittings:</strong> Container guides</li>
+                      <li><strong>Lashing rods:</strong> Turnbuckle connections</li>
+                    </ul>
+                  </div>
+
+                  {/* Toggle advanced */}
+                  {!showAdvanced ? (
+                    <div className="text-xs text-muted-foreground">Gelişmiş ayarlar gizli</div>
+                  ) : null}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lashing Hesabı</CardTitle>
+                  <CardDescription>Kuvvete göre gerekli lashing adedi (basit yaklaşım)</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="space-y-1">
+                      <Label>MSL [kN]</Label>
+                      <Input type="number" value={lashingMSL} onChange={(e)=>setLashingMSL(parseFloat(e.target.value))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Açı Faktörü (cos)</Label>
+                      <Input type="number" step="0.01" value={lashingAngle} onChange={(e)=>setLashingAngle(parseFloat(e.target.value))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Yük Ağırlığı [t] (opsiyonel)</Label>
+                      <Input type="number" step="0.1" value={lashingWeight ?? ''} onChange={(e)=>setLashingWeight(parseFloat(e.target.value))} placeholder={`${cargoData.cargoWeight || ''}`} />
+                    </div>
+                    <div className="flex items-end">
+                      <Button onClick={()=>{ const w=(lashingWeight ?? cargoData.cargoWeight ?? 0); const forces=calculateSecuringForces(w); const transverseKN = forces.transverse / 1000; const capacityPer=(lashingMSL||0)*(lashingAngle||1); const req = capacityPer>0 ? Math.ceil(transverseKN / capacityPer) : 0; setLashingRequired(req); toast({ title:'Lashing Hesabı', description:`Enine kuvvet ≈ ${transverseKN.toFixed(1)} kN, Gerekli lashing ≈ ${req}` }); }}><Calculator className="h-4 w-4 mr-1" />Hesapla</Button>
+                    </div>
+                  </div>
+                  {lashingRequired !== null && (
+                    <div className="p-3 rounded bg-muted">
+                      <div className="text-sm">Gerekli lashing adedi: <span className="font-semibold">{lashingRequired}</span></div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Lashing chain and friction inputs */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gelişmiş Lashing Parametreleri</CardTitle>
+                  <CardDescription>MSL zinciri ve sürtünme katsayısı</CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-6 gap-3 text-sm">
+                  <div>
+                    <Label>Rod MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.rod} onChange={(e)=>setLashingChain({...lashingChain, rod: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>Turnbuckle MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.turnbuckle} onChange={(e)=>setLashingChain({...lashingChain, turnbuckle: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>Padeye MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.padeye} onChange={(e)=>setLashingChain({...lashingChain, padeye: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>Socket MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.socket} onChange={(e)=>setLashingChain({...lashingChain, socket: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>μ (Sürtünme)</Label>
+                    <Input type="number" step="0.01" value={frictionMu} onChange={(e)=>setFrictionMu(parseFloat(e.target.value))} />
+                  </div>
+                  <div className="flex items-end">
+                    <Button variant="outline" onClick={()=> toast({ title:'MSL Zinciri', description:`Etkin MSL ≈ ${chainMSLCapacity()} kN` })}>MSL Kontrol</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            )}
+
+            {(singleMode ? activeTab==='planning' : true) && (
+            <TabsContent value="planning" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Truck className="h-5 w-5" />
+                    Yükleme Planlaması
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Quick Stability Check */}
+                  <div className="p-3 rounded bg-purple-50 dark:bg-gray-800">
+                    <h4 className="font-semibold mb-2">Hızlı Stabilite Kontrolü</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm mb-2">
+                      <div><Label>L (m)</Label><Input aria-label="L (m)" type="number" value={quickGeo.length} onChange={(e)=>setQuickGeo({...quickGeo, length: parseFloat(e.target.value)})} /></div>
+                      <div><Label>B (m)</Label><Input aria-label="B (m)" type="number" value={quickGeo.breadth} onChange={(e)=>setQuickGeo({...quickGeo, breadth: parseFloat(e.target.value)})} /></div>
+                      <div><Label>T (m)</Label><Input aria-label="T (m)" type="number" value={quickGeo.draft} onChange={(e)=>setQuickGeo({...quickGeo, draft: parseFloat(e.target.value)})} /></div>
+                      <div><Label>Cb</Label><Input aria-label="Cb" type="number" step="0.01" value={quickGeo.blockCoefficient} onChange={(e)=>setQuickGeo({...quickGeo, blockCoefficient: parseFloat(e.target.value)})} /></div>
+                    </div>
+                    <Button size="sm" onClick={runQuickStability}><Calculator className="h-4 w-4 mr-1" />Hızlı Kontrol</Button>
+                    {quickStab && (
+                      <div className="mt-2 text-sm">GM ≈ <span className="font-mono">{quickStab.gm.toFixed(3)} m</span> • IMO: <span className={quickStab.imoOK? 'text-green-600':'text-red-600'}>{quickStab.imoOK? 'Uygun':'Değil'}</span></div>
+                    )}
+                  </div>
+
+                  {/* Bay Heatmap */}
+                  <div>
+                    <h4 className="font-semibold mb-2">Bay Isı Haritası</h4>
+                    <BayHeatmap />
+                  </div>
+
+                  {result && (
+                    <div>
+                      <h4 className="font-semibold mb-3">Önerilen Yükleme Sırası</h4>
+                      <div className="space-y-2">
+                        {result.recommendedSequence.map((step, index) => (
+                          <div key={index} className="flex items-start gap-2 p-2 bg-muted rounded">
+                            <Badge variant="outline">{index + 1}</Badge>
+                            <span className="text-sm">{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <Separator />
+
+                  {/* Stowage & Sequences */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-3 rounded bg-muted">
+                      <h4 className="font-semibold mb-2">Stowage Kontrolleri</h4>
+                      {(() => {
+                        const sc = stowageChecks();
+                        return (
+                          <ul className="text-sm space-y-1">
+                            {sc.over.length === 0 ? (
+                              <li>Bay ağırlıkları limit dahilinde.</li>
+                            ) : sc.over.map(s => (
+                              <li key={s.bay}>Bay {s.bay}: {s.weight.toFixed(1)} t (yüksek)</li>
+                            ))}
+                            <li>Row dağılımı: {stowageChecks().rowImbalance.map(r=>`Row ${r[0]}=${r[1].toFixed(1)}t`).join(', ')}</li>
+                            {sc.heavyTop.length>0 && (
+                              <li className="text-orange-600">Heavy-top uyarıları: {sc.heavyTop.slice(0,3).join(' | ')}</li>
+                            )}
+                            {sc.tierIssues.length > 0 && (
+                              <li className="text-red-600">Tier uyarıları: {sc.tierIssues.slice(0,4).join(' | ')}</li>
+                            )}
+                          </ul>
+                        );
+                      })()}
+                    </div>
+                    <div className="p-3 rounded bg-muted">
+                      <h4 className="font-semibold mb-2">Loading Sequence</h4>
+                      <ul className="text-sm space-y-1">
+                        {buildSequences().loadSeq.slice(0,6).map((s,i)=>(<li key={i}>{s}</li>))}
+                      </ul>
+                    </div>
+                    <div className="p-3 rounded bg-muted">
+                      <h4 className="font-semibold mb-2">Discharge Sequence</h4>
+                      <ul className="text-sm space-y-1">
+                        {buildSequences().dischargeSeq.slice(0,6).map((s,i)=>(<li key={i}>{s}</li>))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Manifest */}
+                  <div className="p-3 rounded bg-blue-50 dark:bg-gray-800">
+                    <h4 className="font-semibold mb-2">Cargo Manifest Özeti</h4>
+                    {(() => {
+                      const mf = buildManifest();
+                      return (
+                        <div className="text-sm grid grid-cols-2 md:grid-cols-4 gap-2">
+                          <div>Toplam Ağırlık: <span className="font-mono">{mf.totalWeight.toFixed(1)} t</span></div>
+                          <div>TEU: <span className="font-mono">{mf.teu}</span> (20': {mf.count20}, 40': {mf.count40})</div>
+                          <div>DG Sınıfları: <span className="font-mono">{mf.dgClasses.join(', ') || '-'}</span></div>
+                          <div>Bay sayısı: <span className="font-mono">{new Set(containers.map(c=>c.bay)).size}</span></div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Bay Özetleri</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {computeContainerStacks(containers).map((s)=> (
+                        <div key={s.bay} className="p-2 rounded bg-muted text-sm">
+                          <div className="font-medium">Bay {s.bay}</div>
+                          <div>{s.weight.toFixed(1)} t</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Stowage Planı</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {computeStowagePlan(containers).map((s)=> (
+                        <div key={`sp-${s.bay}`} className="p-2 rounded bg-muted text-xs">
+                          <div className="font-medium">Bay {s.bay}</div>
+                          <div>Adet: {s.count}</div>
+                          <div>Max Tier: {s.maxTier}</div>
+                          <div>Ağırlık: {s.weight.toFixed(1)} t</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Pozisyon / TCG Kontrolü</h4>
+                    {(() => { const b = computeTCGBalance(containers); return (
+                      <div className="grid grid-cols-3 gap-2 text-sm p-2 bg-muted rounded">
+                        <div>Toplam: <span className="font-medium">{b.totalW.toFixed(1)} t</span></div>
+                        <div>TCG Moment: <span className="font-medium">{b.moment.toFixed(1)} t·m</span></div>
+                        <div>Ort. TCG: <span className={`font-medium ${Math.abs(b.avgTCG) < 0.5 ? 'text-green-600' : 'text-red-600'}`}>{b.avgTCG.toFixed(2)} m</span></div>
+                      </div>
+                    ); })()}
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Yükleme Sırası</h4>
+                    <div className="space-y-1">
+                      {[...containers]
+                        .sort((a,b)=> (a.tier - b.tier) || (a.bay - b.bay))
+                        .map((c)=> (
+                          <div key={`load-${c.id}`} className="text-sm p-2 bg-muted rounded">#{c.id} — Bay {c.bay} Row {c.row} Tier {c.tier}</div>
+                        ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Boşaltma Sırası</h4>
+                    <div className="space-y-1">
+                      {[...containers]
+                        .sort((a,b)=> (b.tier - a.tier) || (a.bay - b.bay))
+                        .map((c)=> (
+                          <div key={`dis-${c.id}`} className="text-sm p-2 bg-muted rounded">#{c.id} — Bay {c.bay} Row {c.row} Tier {c.tier}</div>
+                        ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" onClick={()=>{
+                      const manifest = { containers, dangerous_goods: dgList, costs, generated_at: new Date().toISOString() };
+                      const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url; a.download = 'cargo-manifest.json'; a.click();
+                      URL.revokeObjectURL(url);
+                    }}>
+                      <FileDown className="h-4 w-4 mr-1" /> Manifesti Dışa Aktar
+                    </Button>
+                    <Button variant="outline" onClick={()=>{
+                      const header = 'ID,Type,Weight,Bay,Row,Tier,ISO,IMDG,VGM\n';
+                      const rows = containers.map(c=>`${c.id},${c.type},${c.weight},${c.bay},${c.row},${c.tier},${c.isoCode||''},${c.imdgClass||''},${c.vgm||''}`).join('\n');
+                      const blob = new Blob([header+rows], { type: 'text/csv' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a'); a.href=url; a.download='cargo-manifest.csv'; a.click(); URL.revokeObjectURL(url);
+                    }}>
+                      <FileDown className="h-4 w-4 mr-1" /> CSV İndir
+                    </Button>
+                    <Button onClick={()=>{ window.print(); }}>
+                      <FileDown className="h-4 w-4 mr-1" /> Yazdır
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            )}
+
+            {(singleMode ? activeTab==='grain' : true) && (
+            <TabsContent value="grain" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Wheat className="h-5 w-5" />
+                    Tahıl Stabilitesi
+                  </CardTitle>
+                  <CardDescription>
+                    IMO Grain Code uygun hesaplamalar
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Tahıl Türü</Label>
+                      <Input 
+                        value={grainData.grainType || ''}
+                        onChange={(e) => setGrainData({...grainData, grainType: e.target.value})}
+                        placeholder="Buğday, Mısır, Soya vb."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Angle of Repose [°]</Label>
+                      <Input 
+                        type="number"
+                        value={grainData.angle_of_repose || ''}
+                        onChange={(e) => setGrainData({...grainData, angle_of_repose: parseFloat(e.target.value)})}
+                        placeholder="25"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Volumetrik Ağırlık [t/m³]</Label>
+                      <Input 
+                        type="number"
+                        step="0.01"
+                        value={grainData.volumetricWeight || ''}
+                        onChange={(e) => setGrainData({...grainData, volumetricWeight: parseFloat(e.target.value)})}
+                        placeholder="0.75"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Dolu Hacim [m³]</Label>
+                      <Input 
+                        type="number"
+                        value={grainData.filled_volume || ''}
+                        onChange={(e) => setGrainData({...grainData, filled_volume: parseFloat(e.target.value)})}
+                        placeholder="5000"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Trimming/Levelling</Label>
+                      <div className="flex gap-2 text-sm">
+                        <Button variant="outline" size="sm" onClick={()=> setGrainData({...grainData, shifting_moment: (grainData.shifting_moment||0)*0.9 })}>Trimming</Button>
+                        <Button variant="outline" size="sm" onClick={()=> setGrainData({...grainData, shifting_moment: (grainData.shifting_moment||0)*0.8 })}>Levelling</Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-amber-50 rounded-lg">
+                    <h4 className="font-semibold text-amber-800 mb-2">IMO Grain Code Kriterleri</h4>
+                    <ul className="text-sm text-amber-700 space-y-1">
+                      <li>• Tahıl kayması hesabı zorunlu</li>
+                      <li>• Shifting board veya trimming gerekli</li>
+                      <li>• Heeling moment kontrolü</li>
+                      <li>• Stabilite kitapçığında özel prosedür</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            )}
+
+            {(singleMode ? activeTab==='survey' : true) && (
+            <TabsContent value="survey" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Draft Survey Hesaplaması</CardTitle>
+                  <CardDescription>
+                    Yükleme öncesi ve sonrası draft ölçümleri
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-semibold mb-3">Yükleme Öncesi</h4>
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-3 gap-2">
+                          <Input placeholder="Baş" type="number" step="0.01" />
+                          <Input placeholder="Orta" type="number" step="0.01" />
+                          <Input placeholder="Kıç" type="number" step="0.01" />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-3">Yükleme Sonrası</h4>
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-3 gap-2">
+                          <Input placeholder="Baş" type="number" step="0.01" />
+                          <Input placeholder="Orta" type="number" step="0.01" />
+                          <Input placeholder="Kıç" type="number" step="0.01" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold mb-3">Düzeltmeler</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Yoğunluk Düzeltmesi</Label>
+                        <Input type="number" step="0.001" placeholder="0.015" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Trim Düzeltmesi</Label>
+                        <Input type="number" step="0.001" placeholder="0.008" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Deformasyon Düzeltmesi</Label>
+                        <Input type="number" step="0.001" placeholder="0.005" />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            )}
+
+            {(singleMode ? activeTab==='costs' : true) && (
             <TabsContent value="costs" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -1665,7 +2097,7 @@ export const CargoCalculations = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-
+            )}
           </Tabs>
         </CardContent>
       </Card>

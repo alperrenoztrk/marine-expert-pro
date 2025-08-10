@@ -16,6 +16,7 @@ import Navigation from "./pages/Navigation";
 import Hydrodynamics from "./pages/Hydrodynamics";
 import Engine from "./pages/Engine";
 import { CargoCalculations as Cargo } from "./components/calculations/CargoCalculations";
+import CargoMenu from "./pages/CargoMenu";
 import { HydrostaticsCalculations as Hydrostatics } from "./pages/Hydrostatics";
 import { TankCalculations as Tank } from "./pages/TankCalculations";
 import Ballast from "./pages/Ballast";
@@ -84,7 +85,14 @@ const App = () => {
                   <Route path="/navigation" element={<Navigation />} />
                   <Route path="/hydrodynamics" element={<Hydrodynamics />} />
                   <Route path="/engine" element={<Engine />} />
-                            <Route path="/cargo" element={<Cargo />} />
+                  <Route path="/cargo" element={<CargoMenu />} />
+                  <Route path="/cargo/distribution" element={<Cargo initialTab="distribution" singleMode />} />
+                  <Route path="/cargo/containers" element={<Cargo initialTab="containers" singleMode />} />
+                  <Route path="/cargo/securing" element={<Cargo initialTab="securing" singleMode />} />
+                  <Route path="/cargo/planning" element={<Cargo initialTab="planning" singleMode />} />
+                  <Route path="/cargo/grain" element={<Cargo initialTab="grain" singleMode />} />
+                  <Route path="/cargo/survey" element={<Cargo initialTab="survey" singleMode />} />
+                  <Route path="/cargo/costs" element={<Cargo initialTab="costs" singleMode />} />
           <Route path="/hydrostatics" element={<Hydrostatics />} />
           <Route path="/tank" element={<Tank />} />
           <Route path="/ballast" element={<Ballast />} />
