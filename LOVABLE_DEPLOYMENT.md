@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.6
-- **Durum:** ✅ Aktif - Otomatik dil önerisi manuel seçimde kapanır, seans başına tek sefer
+- **Sürüm:** v2.4.7
+- **Durum:** ✅ Aktif - Reklam scriptleri varsayılan kapalı; sadece env ile aktif
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -18,9 +18,14 @@
 - Manuel dil seçimi yapıldığında sistem diline otomatik geçiş kapatıldı; periyodik kontrol kaldırıldı
 - AutoLanguageSelector: manuel seçim olduğunda prompt gösterilmiyor; seans başına en fazla bir kez öneriliyor
 
+### 📢 Reklam Güvenliği (2025-08-10)
+- AdSense loader sadece `VITE_ADS_ENABLED=true` ve geçerli `VITE_ADSENSE_CLIENT` olduğunda çalışır
+- Reklam bileşenleri env kapalıysa render edilmez (gecikmeli script etkisi yok)
+
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.6: Auto-detect prompt session/manuel kısıtları
 - 2025-08-10 — v2.4.5: Dil auto-switch manual iken devre dışı, interval kaldırıldı
 - 2025-08-10 — v2.4.4: Rastgele reload engellendi (reload kaldırıldı)
 - 2025-08-10 — v2.4.3: Kargo sekmeleri görünür, IMDG/lashing güçlendirildi

@@ -73,7 +73,9 @@ const Index = () => {
   useEffect(() => {
     const loadAds = async () => {
       try {
-        await loadAdSenseScript();
+        if (import.meta.env.VITE_ADS_ENABLED === 'true') {
+          await loadAdSenseScript();
+        }
       } catch (error) {
         console.warn('AdSense loading failed:', error);
       }

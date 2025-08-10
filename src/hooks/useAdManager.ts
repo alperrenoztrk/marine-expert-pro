@@ -18,7 +18,7 @@ interface AdManager {
 export const useAdManager = (): AdManager => {
   const [interactionCount, setInteractionCount] = useState(0);
   const [adConfig, setAdConfig] = useState<AdConfig>({
-    enabled: true,
+    enabled: import.meta.env.VITE_ADS_ENABLED === 'true',
     frequency: 3, // Her 3 hesaplamada bir reklam
     positions: ['after-calculation', 'between-cards', 'bottom-page'],
     mobileEnabled: true,
@@ -94,13 +94,16 @@ export const useAdManager = (): AdManager => {
 // AdSense script loader
 export const loadAdSenseScript = () => {
   if (typeof window === 'undefined') return;
+  if (import.meta.env.VITE_ADS_ENABLED !== 'true') return;
+  const clientId = import.meta.env.VITE_ADSENSE_CLIENT;
+  if (!clientId || /X{6,}/.test(clientId)) return; // skip if placeholder or missing
   
   // Zaten yüklenmişse tekrar yükleme
   if (document.querySelector('script[src*="adsbygoogle"]')) return;
 
   const script = document.createElement('script');
   script.async = true;
-  script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX';
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
   script.crossOrigin = 'anonymous';
   
   script.onload = () => {

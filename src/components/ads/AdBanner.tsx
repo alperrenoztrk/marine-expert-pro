@@ -26,8 +26,8 @@ export const AdBanner = ({
 
   useEffect(() => {
     try {
-      // AdSense script'i push et
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
+      // AdSense script'i sadece mevcut ve etkinse push et
+      if (import.meta.env.VITE_ADS_ENABLED === 'true' && typeof window !== 'undefined' && window.adsbygoogle) {
         window.adsbygoogle.push({});
       }
     } catch (error) {
@@ -36,6 +36,8 @@ export const AdBanner = ({
   }, []);
 
   return (
+    <>
+    {import.meta.env.VITE_ADS_ENABLED !== 'true' ? null : (
     <Card className={`p-2 sm:p-3 bg-muted/30 border-dashed ${className}`}>
       <div className="text-center">
         <span className="text-xs text-muted-foreground mb-2 block">Advertisement</span>
@@ -48,7 +50,7 @@ export const AdBanner = ({
               backgroundColor: '#f8f9fa',
               ...style
             }}
-            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Buraya AdSense Publisher ID'niz gelecek
+            data-ad-client={import.meta.env.VITE_ADSENSE_CLIENT || ''}
             data-ad-slot={slot}
             data-ad-format={format}
             data-full-width-responsive={responsive.toString()}
@@ -56,6 +58,8 @@ export const AdBanner = ({
         </div>
       </div>
     </Card>
+    )}
+    </>
   );
 };
 
