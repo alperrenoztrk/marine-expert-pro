@@ -2,42 +2,22 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.11
-- **Durum:** ✅ Aktif - Kargo modülünde tek seferlik kapsamlı iyileştirmeler
+- **Sürüm:** v2.4.12
+- **Durum:** ✅ Aktif - Kargo modülü ileri özellikler eklendi (IMDG+, optimizer+, SF/BM, Grain, Manifest)
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### 📦 Kargo İyileştirmeleri (2025-08-10)
-- IMDG uyarıları genişletildi (sık karşılaşılan sınıf çiftleri)
-- Lashing gelişmiş: μ ve iki borda dağılımı, MSL zinciri kontrolü
-- Stowage kontrolleri: tier limit girişi ve heavy-top uyarıları
-- Hızlı stabilite: L/B/T/Cb ve dağılımdan KG ile GM/IMO hızlı kontrol
-- Konteyner alanları: ISO, IMDG, VGM, reefer/OOG bayrağı altyapısı
-- Maliyet: BAF/CAF ek girdileri ve toplam maliyete dahil edildi
-
-### 🔐 Kimlik Doğrulama (2025-08-10)
-- Ana sayfa header’a `GoogleAuth` bileşeni eklendi (Google ile giriş/çıkış)
-- Mobil ekranlarda ayrıca ayrı blokta gösterim aktifleştirildi
-- OAuth redirect: `/auth/callback`
-
-### 🧭 Kargo Modülü İyileştirmeleri (2025-08-10)
-- Sekme tetikleri eklendi: Konteyner, Güçlendirme, Tahıl, Survey artık erişilebilir
-- IMDG kontrolü genişletildi: yaygın sınıf çiftleri için ayrım uyarıları
-- Lashing hesabı: sürtünme ve her iki bordaya dağılımı içeren gelişmiş hesap
-- Stowage kontrolleri: basit tier ağırlık limit uyarıları
-
-### 🌐 Dil Yönetimi ve Stabilite (2025-08-10)
-- `window.location.reload()` kullanan akışlar kaldırıldı; yerinde çeviri uygulanıyor
-- Manuel dil seçimi yapıldığında sistem diline otomatik geçiş kapatıldı; periyodik kontrol kaldırıldı
-- AutoLanguageSelector: manuel seçim olduğunda prompt gösterilmiyor; seans başına en fazla bir kez öneriliyor
-
-### 📢 Reklam Güvenliği (2025-08-10)
-- AdSense loader sadece `VITE_ADS_ENABLED=true` ve geçerli `VITE_ADSENSE_CLIENT` olduğunda çalışır
-- Reklam bileşenleri env kapalıysa render edilmez (gecikmeli script etkisi yok)
+### 🚢 Kargo İleri Özellikler (2025-08-10)
+- IMDG alanları: sub-risk, segregation group, on-deck-only uyarıları
+- Optimizasyon: reefer tercihli satırlar, DG çakışma kaçınma, heavy-bottom, tier limit kontrolü
+- Yapısal: basit Shear Force/Bending Moment tahmini
+- Grain: trimming/levelling butonları ile shifting moment azaltımı
+- Manifest: CSV indirme ve yazdırma; container satırları genişletildi (ISO/IMDG/VGM)
 
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.11: Kargo tek seferlik iyileştirmeler
 - 2025-08-10 — v2.4.10: GoogleAuth mobil görünür
 - 2025-08-10 — v2.4.9: Google OAuth butonu ana ekrana eklendi
 - 2025-08-10 — v2.4.8: Elle senkronizasyon (redeploy tetikleme)
@@ -46,15 +26,5 @@
 - 2025-08-10 — v2.4.5: Dil auto-switch manual iken devre dışı, interval kaldırıldı
 - 2025-08-10 — v2.4.4: Rastgele reload engellendi (reload kaldırıldı)
 - 2025-08-10 — v2.4.3: Kargo sekmeleri görünür, IMDG/lashing güçlendirildi
-- 2025-08-07 — v2.3.9: Build rozeti
-- 2025-08-07 — v2.3.8: Kargo optimizasyonu & stowage geliştirmeleri
-- 2025-08-07 — v2.3.7: Kargo/Yükleme modülü genişletmesi (Dağılım, Konteyner, DG, Maliyet)
-- 2025-08-07 — v2.3.6: Hydrostatics & Stability butonu geri eklendi
-- 2025-08-07 — v2.3.5: Ana sayfada buton temizliği
-- 2025-08-07 — v2.3.4: İleri Analiz Özeti UI
-- 2025-08-07 — v2.3.3: Kapsamlı hidrostatik/stabilite seti, dil kalıcılığı
-- 2025-08-07 — v2.3.2: Global dil değişimi, preview fix
-- 2025-08-07 — v2.3.1: KN/Bonjean, gelişmiş FSC, GZ yardımcıları
-- 2025-08-07 — v2.3.0: Gelişmiş hidrostatik/stabilite fonksiyonları
 
 **🎯 Lovable otomatik olarak güncelleniyor! Değişiklikler ana dala işlendi ve yeni sürüm etiketi ile senkronize edildi.**

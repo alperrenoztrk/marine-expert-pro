@@ -113,6 +113,9 @@ interface DangerousGoodsItem {
   un: string;
   cls: string; // IMDG class
   bay: number;
+  subRisk?: string;
+  segGroup?: string; // segregation group
+  onDeckOnly?: boolean;
 }
 
 interface CostInputs {
@@ -213,10 +216,13 @@ export const CargoCalculations = () => {
     // Simplified segregation: expand common IMDG conflicts per bay
     const warnings: string[] = [];
     const byBay = new Map<number, Set<string>>();
+    const byBayDG: Record<number, DangerousGoodsItem[]> = {};
     list.forEach(d => {
       const set = byBay.get(d.bay) || new Set<string>();
       set.add(d.cls);
       byBay.set(d.bay, set);
+      byBayDG[d.bay] = byBayDG[d.bay] || [];
+      byBayDG[d.bay].push(d);
     });
     const conflictPairs: Array<[string, string, string]> = [
       ['3', '5.1', 'Class 3 ile 5.1 birlikte konulmamalı (oksitleyici ile yanıcı sıvı)'],
@@ -234,6 +240,9 @@ export const CargoCalculations = () => {
         }
       }
       if (classes.has('1')) warnings.push(`Bay ${bay}: Class 1 (patlayıcılar) özel ayrım gerektirir`);
+      // On deck only
+      const anyOnDeckOnly = (byBayDG[bay]||[]).some(d=> d.onDeckOnly);
+      if (anyOnDeckOnly) warnings.push(`Bay ${bay}: On-deck-only DG tespit edildi (güverteye konumlandırın)`);
     });
     return warnings;
   };
@@ -515,26 +524,47 @@ export const CargoCalculations = () => {
     if (bayCount <= 0 || rowCount <= 0 || tierCount <= 0) return;
     const placed: ContainerItem[] = [];
     const bays = Array.from({ length: bayCount }, () => ({ weight: 0, tiers: Array.from({ length: tierCount }, () => new Array<number>(rowCount).fill(0)) }));
-    const sorted = [...containers].sort((a,b)=> b.weight - a.weight);
+    const sorted = [...containers].sort((a,b)=> b.weight - a.weight); // heavy first
+    // Reefer preference: prefer last rows (near imaginary reefer sockets)
+    const reeferPreferredRows = [rowCount, Math.max(1,rowCount-1)];
+    const dgClassesByBay = new Map<number, Set<string>>();
+    const incompatible = new Set([ '3|5.1','2|3','2|5.1','4.1|5.2','4.3|5.1','6.1|3','8|5.1' ]);
     for (const c of sorted) {
-      // choose bay with minimal weight
-      let bestBay = 0;
-      for (let b=1;b<bayCount;b++) if (bays[b].weight < bays[bestBay].weight) bestBay=b;
-      // choose row with minimal sum at lowest available tier
-      let chosenTier = -1, chosenRow = -1;
-      for (let t=0; t<tierCount && chosenRow<0; t++) {
-        // find row with min weight at this tier
-        let minRow = 0;
-        for (let r=1;r<rowCount;r++) if (bays[bestBay].tiers[t][r] < bays[bestBay].tiers[t][minRow]) minRow=r;
-        chosenTier = t; chosenRow = minRow;
+      let assigned = false;
+      // iterate bays by ascending weight
+      const bayOrder = Array.from({length: bayCount}, (_,i)=>i).sort((i,j)=> bays[i].weight - bays[j].weight);
+      for (const b of bayOrder) {
+        // DG conflict check
+        if (c.imdgClass) {
+          const set = dgClassesByBay.get(b+1) || new Set<string>();
+          let conflict = false;
+          set.forEach(cls => { const key = [cls, c.imdgClass].sort().join('|'); if (incompatible.has(key)) conflict = true; });
+          if (conflict) continue;
+        }
+        for (let t=0; t<tierCount && !assigned; t++) {
+          // heavy-bottom: prefer lower tiers first
+          const rowOrder = c.reefer ? reeferPreferredRows.concat(Array.from({length:rowCount},(_,i)=>i+1).filter(r=>!reeferPreferredRows.includes(r)))
+                                    : Array.from({length:rowCount},(_,i)=>i+1);
+          for (const r of rowOrder) {
+            const rr = r-1;
+            if (bays[b].tiers[t][rr] + c.weight > (tierPermissible[t+1] ?? 90)) continue;
+            const newC: ContainerItem = { ...c, bay: b+1, row: r, tier: t+1 };
+            bays[b].weight += c.weight;
+            bays[b].tiers[t][rr] += c.weight;
+            placed.push(newC);
+            if (c.imdgClass) {
+              const set = dgClassesByBay.get(b+1) || new Set<string>(); set.add(c.imdgClass); dgClassesByBay.set(b+1,set);
+            }
+            assigned = true;
+            break;
+          }
+        }
+        if (assigned) break;
       }
-      const newC: ContainerItem = { ...c, bay: bestBay+1, row: chosenRow+1, tier: chosenTier+1 };
-      bays[bestBay].weight += c.weight;
-      bays[bestBay].tiers[chosenTier][chosenRow] += c.weight;
-      placed.push(newC);
+      if (!assigned) placed.push(c); // fallback keep as-is
     }
     setContainers(placed);
-    toast({ title: 'Yükleme Optimizasyonu', description: 'Konteynerler bay/row/tier bazında dengelendi.' });
+    toast({ title: 'Yükleme Optimizasyonu', description: 'Kısıtlar dikkate alınarak yerleşim güncellendi.' });
   };
 
   const chainMSLCapacity = (): number => {
@@ -867,6 +897,13 @@ export const CargoCalculations = () => {
                         placeholder="5000"
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label>Trimming/Levelling</Label>
+                      <div className="flex gap-2 text-sm">
+                        <Button variant="outline" size="sm" onClick={()=> setGrainData({...grainData, shifting_moment: (grainData.shifting_moment||0)*0.9 })}>Trimming</Button>
+                        <Button variant="outline" size="sm" onClick={()=> setGrainData({...grainData, shifting_moment: (grainData.shifting_moment||0)*0.8 })}>Levelling</Button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="p-4 bg-amber-50 rounded-lg">
@@ -1183,12 +1220,17 @@ export const CargoCalculations = () => {
                     }}>
                       <FileDown className="h-4 w-4 mr-1" /> Manifesti Dışa Aktar
                     </Button>
-                    <Button onClick={()=>{
-                      const summary = dgList.reduce((acc: Record<string, number>, d)=>{ acc[d.cls] = (acc[d.cls]||0)+1; return acc; }, {} as Record<string, number>);
-                      const text = Object.keys(summary).length? Object.entries(summary).map(([cls, n])=>`Class ${cls}: ${n} kalem`).join(' | ') : 'Tehlikeli madde bulunmuyor';
-                      toast({ title: 'Beyanname Özeti', description: text });
+                    <Button variant="outline" onClick={()=>{
+                      const header = 'ID,Type,Weight,Bay,Row,Tier,ISO,IMDG,VGM\n';
+                      const rows = containers.map(c=>`${c.id},${c.type},${c.weight},${c.bay},${c.row},${c.tier},${c.isoCode||''},${c.imdgClass||''},${c.vgm||''}`).join('\n');
+                      const blob = new Blob([header+rows], { type: 'text/csv' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a'); a.href=url; a.download='cargo-manifest.csv'; a.click(); URL.revokeObjectURL(url);
                     }}>
-                      <Calculator className="h-4 w-4 mr-1" /> Beyanname Özeti
+                      <FileDown className="h-4 w-4 mr-1" /> CSV İndir
+                    </Button>
+                    <Button onClick={()=>{ window.print(); }}>
+                      <FileDown className="h-4 w-4 mr-1" /> Yazdır
                     </Button>
                   </div>
                 </CardContent>
@@ -1387,10 +1429,12 @@ export const CargoCalculations = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {dgList.map((d,idx)=> (
-                    <div key={d.id} className="grid grid-cols-4 gap-2">
+                    <div key={d.id} className="grid grid-cols-6 gap-2">
                       <Input value={d.un} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,un:e.target.value}; setDgList(arr); }} placeholder="UN" />
                       <Input value={d.cls} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,cls:e.target.value}; setDgList(arr); }} placeholder="Sınıf" />
                       <Input type="number" value={d.bay} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,bay:parseInt(e.target.value)}; setDgList(arr); }} placeholder="Bay" />
+                      <Input value={d.subRisk||''} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,subRisk:e.target.value}; setDgList(arr); }} placeholder="Sub-risk" />
+                      <Input value={d.segGroup||''} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,segGroup:e.target.value}; setDgList(arr); }} placeholder="Seg. group" />
                       <Button variant="outline" onClick={()=>{ const arr=[...dgList]; arr.splice(idx,1); setDgList(arr); }}>Sil</Button>
                     </div>
                   ))}
@@ -1483,11 +1527,13 @@ export const CargoCalculations = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {dgList.map((d,idx)=> (
-                    <div key={d.id} className="grid grid-cols-4 gap-2">
-                      <Input value={d.un} onChange={(e)=>{const arr=[...dgList]; arr[idx]={...d,un:e.target.value}; setDgList(arr);}} placeholder="UN" />
-                      <Input value={d.cls} onChange={(e)=>{const arr=[...dgList]; arr[idx]={...d,cls:e.target.value}; setDgList(arr);}} placeholder="Sınıf" />
-                      <Input type="number" value={d.bay} onChange={(e)=>{const arr=[...dgList]; arr[idx]={...d,bay:parseInt(e.target.value)}; setDgList(arr);}} placeholder="Bay" />
-                      <Button variant="outline" onClick={()=>{ const arr=[...dgList]; arr.splice(idx,1); setDgList(arr);}}>Sil</Button>
+                    <div key={d.id} className="grid grid-cols-6 gap-2">
+                      <Input value={d.un} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,un:e.target.value}; setDgList(arr); }} placeholder="UN" />
+                      <Input value={d.cls} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,cls:e.target.value}; setDgList(arr); }} placeholder="Sınıf" />
+                      <Input type="number" value={d.bay} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,bay:parseInt(e.target.value)}; setDgList(arr); }} placeholder="Bay" />
+                      <Input value={d.subRisk||''} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,subRisk:e.target.value}; setDgList(arr); }} placeholder="Sub-risk" />
+                      <Input value={d.segGroup||''} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,segGroup:e.target.value}; setDgList(arr); }} placeholder="Seg. group" />
+                      <Button variant="outline" onClick={()=>{ const arr=[...dgList]; arr.splice(idx,1); setDgList(arr); }}>Sil</Button>
                     </div>
                   ))}
                   <div className="flex gap-2">
