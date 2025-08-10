@@ -164,6 +164,27 @@ export const CargoCalculations = () => {
     return Array.from(byBay.entries()).map(([bay, wt]) => ({ bay, weight: wt }));
   };
 
+  // Stowage plan: bay bazında adet, max tier ve toplam ağırlık
+  const computeStowagePlan = (list: ContainerItem[]) => {
+    const byBay = new Map<number, { count: number; maxTier: number; weight: number }>();
+    list.forEach((c) => {
+      const cur = byBay.get(c.bay) || { count: 0, maxTier: 0, weight: 0 };
+      cur.count += 1;
+      cur.maxTier = Math.max(cur.maxTier, c.tier);
+      cur.weight += c.weight;
+      byBay.set(c.bay, cur);
+    });
+    return Array.from(byBay.entries()).map(([bay, v]) => ({ bay, ...v }));
+  };
+
+  // Konteyner pozisyon/TCG dengesi
+  const computeTCGBalance = (list: ContainerItem[]) => {
+    const totalW = list.reduce((s, c) => s + (c.weight || 0), 0);
+    const moment = list.reduce((s, c) => s + (c.weight || 0) * (c.tcg || 0), 0);
+    const avgTCG = totalW > 0 ? moment / totalW : 0;
+    return { totalW, moment, avgTCG };
+  };
+
   const checkDGConflicts = (list: DangerousGoodsItem[]) => {
     // Simplified segregation: Class 3 and 5.1 should not be in same bay
     const warnings: string[] = [];
@@ -811,6 +832,42 @@ export const CargoCalculations = () => {
                           <div>{s.weight.toFixed(1)} t</div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Stowage Planı</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {computeStowagePlan(containers).map((s)=> (
+                        <div key={`sp-${s.bay}`} className="p-2 rounded bg-muted text-xs">
+                          <div className="font-medium">Bay {s.bay}</div>
+                          <div>Adet: {s.count}</div>
+                          <div>Max Tier: {s.maxTier}</div>
+                          <div>Ağırlık: {s.weight.toFixed(1)} t</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Pozisyon / TCG Kontrolü</h4>
+                    {(() => { const b = computeTCGBalance(containers); return (
+                      <div className="grid grid-cols-3 gap-2 text-sm p-2 bg-muted rounded">
+                        <div>Toplam: <span className="font-medium">{b.totalW.toFixed(1)} t</span></div>
+                        <div>TCG Moment: <span className="font-medium">{b.moment.toFixed(1)} t·m</span></div>
+                        <div>Ort. TCG: <span className={`font-medium ${Math.abs(b.avgTCG) < 0.5 ? 'text-green-600' : 'text-red-600'}`}>{b.avgTCG.toFixed(2)} m</span></div>
+                      </div>
+                    ); })()}
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Yükleme Sırası</h4>
+                    <div className="space-y-1">
+                      {[...containers]
+                        .sort((a,b)=> (a.tier - b.tier) || (a.bay - b.bay))
+                        .map((c)=> (
+                          <div key={`load-${c.id}`} className="text-sm p-2 bg-muted rounded">#{c.id} — Bay {c.bay} Row {c.row} Tier {c.tier}</div>
+                        ))}
                     </div>
                   </div>
 
