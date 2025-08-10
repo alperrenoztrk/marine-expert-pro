@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.4
-- **Durum:** ✅ Aktif - Rastgele yeniden yüklemeleri engellemek için reload kaldırıldı
+- **Sürüm:** v2.4.5
+- **Durum:** ✅ Aktif - Dil otomatik değişimi manuel seçimde devre dışı, interval kaldırıldı
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -14,12 +14,13 @@
 - Stowage kontrolleri: basit tier ağırlık limit uyarıları
 
 ### 🌐 Dil Yönetimi ve Stabilite (2025-08-10)
-- `window.location.reload()` kullanan akışlar kaldırıldı (LanguageContext, eski hooklar, debug); yerinde çeviri uygulanıyor
-- Rota değişimlerinde dil senkronizasyonu korunuyor
+- `window.location.reload()` kullanan akışlar kaldırıldı; yerinde çeviri uygulanıyor
+- Manuel dil seçimi yapıldığında sistem diline otomatik geçiş kapatıldı; periyodik kontrol kaldırıldı
 
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.4: Rastgele reload engellendi (reload kaldırıldı)
 - 2025-08-10 — v2.4.3: Kargo sekmeleri görünür, IMDG/lashing güçlendirildi
 - 2025-08-07 — v2.3.9: Build rozeti
 - 2025-08-07 — v2.3.8: Kargo optimizasyonu & stowage geliştirmeleri
