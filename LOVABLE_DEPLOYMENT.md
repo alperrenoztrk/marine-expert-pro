@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.7
-- **Durum:** ✅ Aktif - Reklam scriptleri varsayılan kapalı; sadece env ile aktif
+- **Sürüm:** v2.4.8
+- **Durum:** ✅ Aktif - Elle senkronizasyon (redeploy tetikleme)
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -25,6 +25,7 @@
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.7: Reklam scriptleri varsayılan kapalı
 - 2025-08-10 — v2.4.6: Auto-detect prompt session/manuel kısıtları
 - 2025-08-10 — v2.4.5: Dil auto-switch manual iken devre dışı, interval kaldırıldı
 - 2025-08-10 — v2.4.4: Rastgele reload engellendi (reload kaldırıldı)
