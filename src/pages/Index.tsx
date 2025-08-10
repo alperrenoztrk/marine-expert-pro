@@ -176,6 +176,7 @@ const Index = () => {
                     >
                       Maritime Calculator
                     </h1>
+                    <div className="mt-2 inline-block rounded-full px-3 py-1 text-xs bg-cyan-900/60 text-cyan-200 border border-cyan-500/40">Build v2.3.9</div>
                   </div>
                   
                   {/* Billboard Frame */}
@@ -189,6 +190,9 @@ const Index = () => {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
                   Maritime Calculator
                 </h1>
+              )}
+              {theme !== 'neon' && (
+                <div className="mt-2 inline-block rounded-full px-3 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 border border-gray-300/60 dark:border-gray-600/60">Build v2.3.9</div>
               )}
             </div>
           </div>

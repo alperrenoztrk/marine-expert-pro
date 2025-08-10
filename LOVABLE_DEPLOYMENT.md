@@ -2,20 +2,18 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-07
-- **Sürüm:** v2.3.8
-- **Durum:** ✅ Aktif - Kargo yükleme optimizasyonu ve stowage geliştirmeleri
+- **Sürüm:** v2.3.9
+- **Durum:** ✅ Aktif - Görsel build etiketi eklendi
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### ⚓ Kargo Yükleme Optimizasyonu ve Stowage (2025-08-07)
-- Optimize Yükleme: Basit greedy algoritma ile bay/row/tier bazında dengeleme
-- Stowage kontrolleri: Bay limit uyarıları, row ağırlık dağılımı
-- Yükleme/Boşaltma sıraları: Heaviest‑first ve tersine öneriler
-- Lashing hesabı: CSS kuvvetlerine göre gerekli bağ adedi (SWL/eff/angle)
+### 🏷️ Build Rozeti (2025-08-07)
+- Ana sayfa başlığı altına “Build v2.3.9” rozeti eklendi (neon ve diğer temalar için görünür)
 
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-07 — v2.3.8: Kargo optimizasyonu & stowage geliştirmeleri
 - 2025-08-07 — v2.3.7: Kargo/Yükleme modülü genişletmesi (Dağılım, Konteyner, DG, Maliyet)
 - 2025-08-07 — v2.3.6: Hydrostatics & Stability butonu geri eklendi
 - 2025-08-07 — v2.3.5: Ana sayfada buton temizliği
