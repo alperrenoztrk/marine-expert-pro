@@ -1,18 +1,22 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
-- **Tarih:** 2025-08-07
-- **Sürüm:** v2.3.9
-- **Durum:** ✅ Aktif - Görsel build etiketi eklendi
+- **Tarih:** 2025-08-10
+- **Sürüm:** v2.4.3
+- **Durum:** ✅ Aktif - Kargo sekmeleri görünür, IMDG/lashing kontrolleri güçlendirildi
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### 🏷️ Build Rozeti (2025-08-07)
-- Ana sayfa başlığı altına “Build v2.3.9” rozeti eklendi (neon ve diğer temalar için görünür)
+### 🧭 Kargo Modülü İyileştirmeleri (2025-08-10)
+- Sekme tetikleri eklendi: Konteyner, Güçlendirme, Tahıl, Survey artık erişilebilir
+- IMDG kontrolü genişletildi: yaygın sınıf çiftleri için ayrım uyarıları
+- Lashing hesabı: sürtünme ve her iki bordaya dağılımı içeren gelişmiş hesap
+- Stowage kontrolleri: basit tier ağırlık limit uyarıları
 
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-07 — v2.3.9: Build rozeti
 - 2025-08-07 — v2.3.8: Kargo optimizasyonu & stowage geliştirmeleri
 - 2025-08-07 — v2.3.7: Kargo/Yükleme modülü genişletmesi (Dağılım, Konteyner, DG, Maliyet)
 - 2025-08-07 — v2.3.6: Hydrostatics & Stability butonu geri eklendi

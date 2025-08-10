@@ -188,7 +188,7 @@ export const CargoCalculations = () => {
   };
 
   const checkDGConflicts = (list: DangerousGoodsItem[]) => {
-    // Simplified segregation: Class 3 and 5.1 should not be in same bay
+    // Simplified segregation: expand common IMDG conflicts per bay
     const warnings: string[] = [];
     const byBay = new Map<number, Set<string>>();
     list.forEach(d => {
@@ -196,8 +196,22 @@ export const CargoCalculations = () => {
       set.add(d.cls);
       byBay.set(d.bay, set);
     });
+    const conflictPairs: Array<[string, string, string]> = [
+      ['3', '5.1', 'Class 3 ile 5.1 birlikte konulmamalı (oksitleyici ile yanıcı sıvı)'],
+      ['2', '3', 'Class 2 (gazlar) ile Class 3 (yanıcı sıvılar) ayrı tutulmalı'],
+      ['2', '5.1', 'Class 2 ile 5.1 birlikte istiflenmemeli (oksitleyici etki)'],
+      ['4.1', '5.2', 'Class 4.1 ile 5.2 (organik peroksit) ayrı tutulmalı'],
+      ['4.3', '5.1', 'Class 4.3 (su ile temas halinde tehlikeli gaz) ile 5.1 ayrı tutulmalı'],
+      ['6.1', '3', 'Class 6.1 (zehirli) ile 3 ayrı tutulmalı (sızıntı riski)'],
+      ['8', '5.1', 'Class 8 (aşındırıcı) ile 5.1 ayrı tutulmalı']
+    ];
     byBay.forEach((classes, bay) => {
-      if (classes.has('3') && classes.has('5.1')) warnings.push(`Bay ${bay}: Class 3 ile 5.1 birlikte konulmamalı (IMDG).`);
+      for (const [a,b,msg] of conflictPairs) {
+        if (classes.has(a) && classes.has(b)) {
+          warnings.push(`Bay ${bay}: ${msg}`);
+        }
+      }
+      if (classes.has('1')) warnings.push(`Bay ${bay}: Class 1 (patlayıcılar) özel ayrım gerektirir`);
     });
     return warnings;
   };
@@ -262,6 +276,23 @@ export const CargoCalculations = () => {
     return Math.ceil(force / effective);
   };
 
+  // Advanced lashing considering friction and both-sides distribution
+  const calculateRequiredLashingsAdvanced = (
+    forceKN: number,
+    mslKN: number,
+    efficiency: number,
+    angleDeg: number,
+    frictionMu: number,
+    bothSides: boolean
+  ): number => {
+    const angleRad = (angleDeg * Math.PI) / 180;
+    const verticalComponentCapacity = mslKN * Math.max(0.1, efficiency) * Math.sin(angleRad);
+    const frictionCapacity = frictionMu * (mslKN * Math.max(0.1, efficiency) * Math.cos(angleRad));
+    const perLashingEffective = Math.max(1e-6, verticalComponentCapacity + frictionCapacity);
+    const distributedForce = bothSides ? forceKN / 2 : forceKN;
+    return Math.ceil(distributedForce / perLashingEffective);
+  };
+
   // Simple stowage checks for containers
   const stowageChecks = () => {
     const stacks = computeContainerStacks(containers);
@@ -269,7 +300,17 @@ export const CargoCalculations = () => {
     const byRowBalance = new Map<number, number>();
     containers.forEach(c => byRowBalance.set(c.row, (byRowBalance.get(c.row) || 0) + c.weight));
     const rowImbalance = Array.from(byRowBalance.entries()).sort((a,b)=>a[0]-b[0]);
-    return { over, rowImbalance };
+    // tier stack simple limit check (e.g., 90 t per tier line per bay)
+    const tierIssues: string[] = [];
+    const byBayTierRow = new Map<string, number>();
+    containers.forEach(c => {
+      const key = `${c.bay}-${c.tier}-${c.row}`;
+      byBayTierRow.set(key, (byBayTierRow.get(key) || 0) + c.weight);
+    });
+    byBayTierRow.forEach((w, key) => {
+      if (w > 90) tierIssues.push(`${key.replaceAll('-', ' / ')}: ${w.toFixed(1)} t (tier limit >90t)`);
+    });
+    return { over, rowImbalance, tierIssues };
   };
 
   // Simple loading/discharge sequences (heaviest first / reverse)
@@ -479,8 +520,12 @@ export const CargoCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="distribution"><LayoutGrid className="h-4 w-4 mr-1" />Dağılım</TabsTrigger>
+              <TabsTrigger value="containers"><Boxes className="h-4 w-4 mr-1" />Konteyner</TabsTrigger>
+              <TabsTrigger value="securing"><Shield className="h-4 w-4 mr-1" />Güçlendirme</TabsTrigger>
+              <TabsTrigger value="grain"><Wheat className="h-4 w-4 mr-1" />Tahıl</TabsTrigger>
+              <TabsTrigger value="survey"><Package className="h-4 w-4 mr-1" />Survey</TabsTrigger>
               <TabsTrigger value="planning"><Truck className="h-4 w-4 mr-1" />Yükleme Planı</TabsTrigger>
               <TabsTrigger value="costs"><DollarSign className="h-4 w-4 mr-1" />Maliyet</TabsTrigger>
             </TabsList>
@@ -820,8 +865,10 @@ export const CargoCalculations = () => {
                         const swl = 25; // kN per lashing (example)
                         const eff = 0.85;
                         const angle = 45;
-                        const needLong = calculateRequiredLashings(forces.longitudinal/1000, swl, eff, angle); // convert to kN
-                        const needTrans = calculateRequiredLashings(forces.transverse/1000, swl, eff, angle);
+                        const mu = 0.3; // deck friction approx
+                        const bothSides = true;
+                        const needLong = calculateRequiredLashingsAdvanced(forces.longitudinal/1000, swl, eff, angle, mu, bothSides);
+                        const needTrans = calculateRequiredLashingsAdvanced(forces.transverse/1000, swl, eff, angle, mu, bothSides);
                         return (
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div className="bg-white dark:bg-gray-700 p-3 rounded">
@@ -919,6 +966,9 @@ export const CargoCalculations = () => {
                               <li key={s.bay}>Bay {s.bay}: {s.weight.toFixed(1)} t (yüksek)</li>
                             ))}
                             <li>Row dağılımı: {stowageChecks().rowImbalance.map(r=>`Row ${r[0]}=${r[1].toFixed(1)}t`).join(', ')}</li>
+                            {sc.tierIssues.length > 0 && (
+                              <li className="text-red-600">Tier uyarıları: {sc.tierIssues.slice(0,4).join(' | ')}</li>
+                            )}
                           </ul>
                         );
                       })()}
