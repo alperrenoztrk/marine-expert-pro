@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const LanguageDebug = () => {
-  const { currentLanguage, resetLanguagePreferences } = useLanguage();
+  const { currentLanguage, resetLanguagePreferences, changeLanguage } = useLanguage();
   const [debugInfo, setDebugInfo] = useState<any>({});
   const [isVisible, setIsVisible] = useState(false);
 
@@ -47,10 +47,10 @@ export const LanguageDebug = () => {
     updateDebugInfo();
   };
 
-  const forceLanguageChange = (langCode: string) => {
+  const forceLanguageChange = async (langCode: string) => {
     localStorage.setItem('preferredLanguage', langCode);
     localStorage.setItem('manualLanguageSelection', 'true');
-    window.location.reload();
+    await changeLanguage(langCode);
   };
 
   // Show debug panel only in development or when ?debug=true

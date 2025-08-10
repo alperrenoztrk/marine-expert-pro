@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.3
-- **Durum:** ✅ Aktif - Kargo sekmeleri görünür, IMDG/lashing kontrolleri güçlendirildi
+- **Sürüm:** v2.4.4
+- **Durum:** ✅ Aktif - Rastgele yeniden yüklemeleri engellemek için reload kaldırıldı
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -13,9 +13,14 @@
 - Lashing hesabı: sürtünme ve her iki bordaya dağılımı içeren gelişmiş hesap
 - Stowage kontrolleri: basit tier ağırlık limit uyarıları
 
+### 🌐 Dil Yönetimi ve Stabilite (2025-08-10)
+- `window.location.reload()` kullanan akışlar kaldırıldı (LanguageContext, eski hooklar, debug); yerinde çeviri uygulanıyor
+- Rota değişimlerinde dil senkronizasyonu korunuyor
+
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.3: Kargo sekmeleri görünür, IMDG/lashing güçlendirildi
 - 2025-08-07 — v2.3.9: Build rozeti
 - 2025-08-07 — v2.3.8: Kargo optimizasyonu & stowage geliştirmeleri
 - 2025-08-07 — v2.3.7: Kargo/Yükleme modülü genişletmesi (Dağılım, Konteyner, DG, Maliyet)

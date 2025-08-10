@@ -15,8 +15,19 @@ export const useLanguage = () => {
       if (langCode !== 'tr') {
         await translatePageContent(langCode);
       } else {
-        // Reload page to restore original Turkish content
-        window.location.reload();
+        // Restore original Turkish content without full reload
+        const elementsToTranslate = document.querySelectorAll('[data-translatable]');
+        elementsToTranslate.forEach((el)=>{
+          const html = el as HTMLElement;
+          const original = html.dataset.originalText;
+          if (original) html.textContent = original;
+        });
+        const inputs = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+        inputs.forEach((el)=>{
+          const input = el as HTMLInputElement | HTMLTextAreaElement;
+          const originalPh = input.dataset.originalPlaceholder;
+          if (originalPh) input.placeholder = originalPh;
+        });
       }
     } finally {
       setIsTranslating(false);

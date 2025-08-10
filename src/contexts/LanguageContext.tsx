@@ -323,7 +323,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       // Re-detect system language
       const browserLang = translationService.getBrowserLanguage();
       localStorage.setItem('preferredLanguage', browserLang);
-      window.location.reload();
+      setCurrentLanguage(browserLang);
+      document.documentElement.dir = rtlLanguages.includes(browserLang) ? 'rtl' : 'ltr';
+      document.documentElement.lang = browserLang;
+      // Apply without reload
+      applyTranslationsToCurrentPage(browserLang);
     },
     applyTranslations: async (languageCode?: string) => applyTranslationsToCurrentPage(languageCode || (localStorage.getItem('preferredLanguage') || currentLanguage))
   };

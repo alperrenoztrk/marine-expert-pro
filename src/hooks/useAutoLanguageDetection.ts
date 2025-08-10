@@ -60,8 +60,19 @@ export const useAutoLanguageDetection = (): AutoLanguageDetectionHook => {
       if (lang !== 'tr') {
         await translatePageContent(lang);
       } else {
-        // Türkçe'ye dönerken sayfayı yenile (orijinal içerik)
-        window.location.reload();
+        // Türkçe'ye dönerken sayfayı yenilemeden orijinal içerik geri yükle
+        const elementsToTranslate = document.querySelectorAll('[data-translatable]');
+        elementsToTranslate.forEach((el)=>{
+          const html = el as HTMLElement;
+          const original = html.dataset.originalText;
+          if (original) html.textContent = original;
+        });
+        const inputs = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+        inputs.forEach((el)=>{
+          const input = el as HTMLInputElement | HTMLTextAreaElement;
+          const originalPh = input.dataset.originalPlaceholder;
+          if (originalPh) input.placeholder = originalPh;
+        });
       }
     }
   };
