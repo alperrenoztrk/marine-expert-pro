@@ -15,7 +15,7 @@ import Stability from "./pages/Stability";
 import Navigation from "./pages/Navigation";
 import Hydrodynamics from "./pages/Hydrodynamics";
 import Engine from "./pages/Engine";
-import { CargoCalculations as Cargo } from "./pages/Cargo";
+import { CargoCalculations as Cargo } from "./components/calculations/CargoCalculations";
 import { HydrostaticsCalculations as Hydrostatics } from "./pages/Hydrostatics";
 import { TankCalculations as Tank } from "./pages/TankCalculations";
 import Ballast from "./pages/Ballast";
