@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings } from "lucide-react";
+import { GoogleAuth } from "@/components/auth/GoogleAuth";
 
 
 
@@ -299,8 +300,11 @@ const Index = () => {
               </div>
             </div>
             
-            {/* Settings Button */}
-            <div className="flex-shrink-0">
+            {/* Auth + Settings */}
+            <div className="flex-shrink-0 flex items-center gap-3">
+              <div className="hidden sm:block">
+                <GoogleAuth />
+              </div>
               <Link to="/settings">
                 <Button
                   size="icon"

@@ -2,10 +2,14 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.8
-- **Durum:** ✅ Aktif - Elle senkronizasyon (redeploy tetikleme)
+- **Sürüm:** v2.4.9
+- **Durum:** ✅ Aktif - Google OAuth butonu ana ekrana eklendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🔐 Kimlik Doğrulama (2025-08-10)
+- Ana sayfa header’a `GoogleAuth` bileşeni eklendi (Google ile giriş/çıkış)
+- OAuth redirect: `/auth/callback` (mevcut sayfa)
 
 ### 🧭 Kargo Modülü İyileştirmeleri (2025-08-10)
 - Sekme tetikleri eklendi: Konteyner, Güçlendirme, Tahıl, Survey artık erişilebilir
@@ -25,6 +29,7 @@
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.8: Elle senkronizasyon (redeploy tetikleme)
 - 2025-08-10 — v2.4.7: Reklam scriptleri varsayılan kapalı
 - 2025-08-10 — v2.4.6: Auto-detect prompt session/manuel kısıtları
 - 2025-08-10 — v2.4.5: Dil auto-switch manual iken devre dışı, interval kaldırıldı
