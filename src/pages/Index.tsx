@@ -319,6 +319,11 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Mobile Auth (visible on small screens) */}
+      <div className="sm:hidden mb-4">
+        <GoogleAuth />
+      </div>
+
       {/* Top Page Ad */}
       {shouldShowAd('top-page') && (
         <div className="mb-6">

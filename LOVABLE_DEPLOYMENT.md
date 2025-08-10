@@ -2,14 +2,15 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.9
-- **Durum:** ✅ Aktif - Google OAuth butonu ana ekrana eklendi
+- **Sürüm:** v2.4.10
+- **Durum:** ✅ Aktif - GoogleAuth mobilde de görünür
 
 ## 🔧 Son Yapılan Değişiklikler
 
 ### 🔐 Kimlik Doğrulama (2025-08-10)
 - Ana sayfa header’a `GoogleAuth` bileşeni eklendi (Google ile giriş/çıkış)
-- OAuth redirect: `/auth/callback` (mevcut sayfa)
+- Mobil ekranlarda ayrıca ayrı blokta gösterim aktifleştirildi
+- OAuth redirect: `/auth/callback`
 
 ### 🧭 Kargo Modülü İyileştirmeleri (2025-08-10)
 - Sekme tetikleri eklendi: Konteyner, Güçlendirme, Tahıl, Survey artık erişilebilir
@@ -29,6 +30,7 @@
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.9: Google OAuth butonu ana ekrana eklendi
 - 2025-08-10 — v2.4.8: Elle senkronizasyon (redeploy tetikleme)
 - 2025-08-10 — v2.4.7: Reklam scriptleri varsayılan kapalı
 - 2025-08-10 — v2.4.6: Auto-detect prompt session/manuel kısıtları
