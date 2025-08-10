@@ -2,21 +2,21 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.12
-- **Durum:** ✅ Aktif - Kargo modülü ileri özellikler eklendi (IMDG+, optimizer+, SF/BM, Grain, Manifest)
+- **Sürüm:** v2.4.13
+- **Durum:** ✅ Aktif - Kargo UI/UX geliştirmeleri
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### 🚢 Kargo İleri Özellikler (2025-08-10)
-- IMDG alanları: sub-risk, segregation group, on-deck-only uyarıları
-- Optimizasyon: reefer tercihli satırlar, DG çakışma kaçınma, heavy-bottom, tier limit kontrolü
-- Yapısal: basit Shear Force/Bending Moment tahmini
-- Grain: trimming/levelling butonları ile shifting moment azaltımı
-- Manifest: CSV indirme ve yazdırma; container satırları genişletildi (ISO/IMDG/VGM)
+### 🎛️ Kargo UI/UX (2025-08-10)
+- Üst KPI barı: Toplam ağırlık, TEU, DG sayısı, tahmini maliyet
+- Hızlı işlemler: Optimize/Kontrol/Gelişmiş toggle
+- Bay Isı Haritası görselleştirmesi
+- Erişilebilirlik: aria label’lar, tooltip’ler, gelişmiş içerik gizleme
 
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.12: Kargo ileri özellikler (IMDG+, optimizer+, SF/BM, Grain, Manifest)
 - 2025-08-10 — v2.4.11: Kargo tek seferlik iyileştirmeler
 - 2025-08-10 — v2.4.10: GoogleAuth mobil görünür
 - 2025-08-10 — v2.4.9: Google OAuth butonu ana ekrana eklendi

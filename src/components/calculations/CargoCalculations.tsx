@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
 import type { ShipGeometry } from "@/types/hydrostatic";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CargoData {
   // Ship particulars
@@ -174,6 +175,36 @@ export const CargoCalculations = () => {
 
   // Tier permissible loads (t) simple inputs
   const [tierPermissible, setTierPermissible] = useState<{[tier:number]: number}>({1:90,2:80,3:70,4:60});
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(true);
+
+  const manifestSummary = (()=>{
+    const total = containers.reduce((s,c)=>s+c.weight,0);
+    const teu = containers.reduce((s,c)=> s + (c.type==='40'?2:1), 0);
+    const dgCount = dgList.length;
+    const cost = computeCosts(costs, cargoData.cargoWeight||0);
+    return { total, teu, dgCount, costTotal: cost.total };
+  })();
+
+  const BayHeatmap: React.FC = () => {
+    const stacks = computeContainerStacks(containers);
+    const maxW = Math.max(1, ...stacks.map(s=>s.weight));
+    const bays = [...new Set(containers.map(c=>c.bay))].sort((a,b)=>a-b);
+    return (
+      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+        {bays.map((bay)=>{
+          const w = stacks.find(s=>s.bay===bay)?.weight || 0;
+          const intensity = Math.min(1, w/maxW);
+          const bg = `rgba(99,102,241,${0.15 + intensity*0.65})`;
+          return (
+            <div key={bay} className="rounded p-2 text-center text-xs border" style={{ backgroundColor: bg }}>
+              <div className="font-medium">Bay {bay}</div>
+              <div className="font-mono">{w.toFixed(1)} t</div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Helpers for new tabs
   const computeDistributionCG = (items: DistributionItem[]) => {
@@ -585,6 +616,33 @@ export const CargoCalculations = () => {
 
   return (
     <div className="space-y-6">
+      {/* KPI Summary Bar */}
+      <Card className="bg-muted/40">
+        <CardContent className="py-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge variant="secondary" className="text-xs">Kargo</Badge>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full">
+              <div className="rounded bg-background p-3 text-center">
+                <div className="text-lg font-bold font-mono">{manifestSummary.total.toFixed(1)} t</div>
+                <div className="text-xs text-muted-foreground" data-translatable>Toplam Ağırlık</div>
+              </div>
+              <div className="rounded bg-background p-3 text-center">
+                <div className="text-lg font-bold font-mono">{manifestSummary.teu}</div>
+                <div className="text-xs text-muted-foreground">TEU</div>
+              </div>
+              <div className="rounded bg-background p-3 text-center">
+                <div className="text-lg font-bold font-mono">{manifestSummary.dgCount}</div>
+                <div className="text-xs text-muted-foreground">DG Kalem</div>
+              </div>
+              <div className="rounded bg-background p-3 text-center">
+                <div className="text-lg font-bold font-mono">${manifestSummary.costTotal.toFixed(0)}</div>
+                <div className="text-xs text-muted-foreground">Tahmini Maliyet</div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Back to Home */}
       <div className="flex items-center gap-3">
         <Link to="/">
@@ -593,6 +651,31 @@ export const CargoCalculations = () => {
             <span data-translatable>Ana Sayfa</span>
           </Button>
         </Link>
+        {/* Quick actions */}
+        <div className="ml-auto flex items-center gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="sm" variant="outline" onClick={()=> optimizeStowage(8,8,4)}>
+                  <Calculator className="h-4 w-4 mr-1" />Optimize
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent><div className="text-xs">Kısıtlar ile yerleşimi dengeler</div></TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Button size="sm" variant="outline" onClick={()=>{
+            const sc = stowageChecks();
+            const desc = [
+              sc.over.length? `${sc.over.length} bay limit üstü`:'Bay limitleri uygun',
+              sc.tierIssues.length? `${sc.tierIssues.length} tier uyarısı`: 'Tier uygun',
+              sc.heavyTop.length? `${sc.heavyTop.length} heavy-top`:'Ağırlık dağılımı uygun'
+            ].join(' • ');
+            toast({ title: 'Stowage Kontrol', description: desc });
+          }}>Kontrol</Button>
+          <Button size="sm" variant={showAdvanced? 'secondary':'outline'} onClick={()=> setShowAdvanced(!showAdvanced)}>
+            {showAdvanced? 'Gelişmiş: Açık':'Gelişmiş: Kapalı'}
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -950,34 +1033,10 @@ export const CargoCalculations = () => {
                     </ul>
                   </div>
 
-                  {/* Lashing Calculator */}
-                  {cargoData.cargoWeight && (
-                    <div className="p-4 rounded-lg bg-blue-50 dark:bg-gray-800">
-                      <h4 className="font-semibold mb-3">Lashing Hesabı</h4>
-                      {(() => {
-                        const forces = calculateSecuringForces(cargoData.cargoWeight!);
-                        const swl = 25; // kN per lashing (example)
-                        const eff = 0.85;
-                        const angle = 45;
-                        const mu = 0.3; // deck friction approx
-                        const bothSides = true;
-                        const needLong = calculateRequiredLashingsAdvanced(forces.longitudinal/1000, swl, eff, angle, mu, bothSides);
-                        const needTrans = calculateRequiredLashingsAdvanced(forces.transverse/1000, swl, eff, angle, mu, bothSides);
-                        return (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div className="bg-white dark:bg-gray-700 p-3 rounded">
-                              <div>Boyuna kuvvet: {(forces.longitudinal/1000).toFixed(1)} kN</div>
-                              <div>Gerekli lashing (boyuna): <span className="font-mono">{needLong}</span></div>
-                            </div>
-                            <div className="bg-white dark:bg-gray-700 p-3 rounded">
-                              <div>Enine kuvvet: {(forces.transverse/1000).toFixed(1)} kN</div>
-                              <div>Gerekli lashing (enine): <span className="font-mono">{needTrans}</span></div>
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  )}
+                  {/* Toggle advanced */}
+                  {!showAdvanced ? (
+                    <div className="text-xs text-muted-foreground">Gelişmiş ayarlar gizli</div>
+                  ) : null}
                 </CardContent>
               </Card>
 
@@ -1067,15 +1126,21 @@ export const CargoCalculations = () => {
                   <div className="p-3 rounded bg-purple-50 dark:bg-gray-800">
                     <h4 className="font-semibold mb-2">Hızlı Stabilite Kontrolü</h4>
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm mb-2">
-                      <div><Label>L (m)</Label><Input type="number" value={quickGeo.length} onChange={(e)=>setQuickGeo({...quickGeo, length: parseFloat(e.target.value)})} /></div>
-                      <div><Label>B (m)</Label><Input type="number" value={quickGeo.breadth} onChange={(e)=>setQuickGeo({...quickGeo, breadth: parseFloat(e.target.value)})} /></div>
-                      <div><Label>T (m)</Label><Input type="number" value={quickGeo.draft} onChange={(e)=>setQuickGeo({...quickGeo, draft: parseFloat(e.target.value)})} /></div>
-                      <div><Label>Cb</Label><Input type="number" step="0.01" value={quickGeo.blockCoefficient} onChange={(e)=>setQuickGeo({...quickGeo, blockCoefficient: parseFloat(e.target.value)})} /></div>
+                      <div><Label>L (m)</Label><Input aria-label="L (m)" type="number" value={quickGeo.length} onChange={(e)=>setQuickGeo({...quickGeo, length: parseFloat(e.target.value)})} /></div>
+                      <div><Label>B (m)</Label><Input aria-label="B (m)" type="number" value={quickGeo.breadth} onChange={(e)=>setQuickGeo({...quickGeo, breadth: parseFloat(e.target.value)})} /></div>
+                      <div><Label>T (m)</Label><Input aria-label="T (m)" type="number" value={quickGeo.draft} onChange={(e)=>setQuickGeo({...quickGeo, draft: parseFloat(e.target.value)})} /></div>
+                      <div><Label>Cb</Label><Input aria-label="Cb" type="number" step="0.01" value={quickGeo.blockCoefficient} onChange={(e)=>setQuickGeo({...quickGeo, blockCoefficient: parseFloat(e.target.value)})} /></div>
                     </div>
                     <Button size="sm" onClick={runQuickStability}><Calculator className="h-4 w-4 mr-1" />Hızlı Kontrol</Button>
                     {quickStab && (
                       <div className="mt-2 text-sm">GM ≈ <span className="font-mono">{quickStab.gm.toFixed(3)} m</span> • IMO: <span className={quickStab.imoOK? 'text-green-600':'text-red-600'}>{quickStab.imoOK? 'Uygun':'Değil'}</span></div>
                     )}
+                  </div>
+
+                  {/* Bay Heatmap */}
+                  <div>
+                    <h4 className="font-semibold mb-2">Bay Isı Haritası</h4>
+                    <BayHeatmap />
                   </div>
 
                   {result && (
