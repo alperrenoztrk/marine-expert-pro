@@ -28,9 +28,15 @@ export const AutoLanguageSelector = () => {
     const sysLang = translationService.getBrowserLanguage();
     setDetectedLanguage(sysLang);
 
+    const manual = localStorage.getItem('manualLanguageSelection') === 'true';
+    const alreadyPrompted = sessionStorage.getItem('autoDetectPromptShown') === 'true';
+
+    if (manual || alreadyPrompted) return; // respect manual choice and avoid repeated prompts
+
     const timer = setTimeout(() => {
       if (sysLang !== currentLanguage && sysLang !== 'tr') {
         setShowAutoDetectPrompt(true);
+        sessionStorage.setItem('autoDetectPromptShown', 'true');
       }
     }, 2000); // 2 saniye sonra öner
 
