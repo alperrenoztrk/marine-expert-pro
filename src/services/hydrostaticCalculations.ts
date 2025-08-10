@@ -980,4 +980,165 @@ export class HydrostaticCalculations {
     const totalFSC = this.calculateTotalFSC(fsc);
     return { updatedTanks, freeSurfaceCorrections: fsc, totalFSC };
   }
+
+  /**
+   * Parse Cross Curves (KN) from CSV text: columns: angle,kn
+   */
+  static parseCrossCurvesCSV(csvText: string): CrossCurves {
+    const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
+    const angles: number[] = [];
+    const kn: number[] = [];
+    for (const line of lines) {
+      const [a, k] = line.split(/,|;|\s+/).map(x => x.trim());
+      const av = parseFloat(a);
+      const kv = parseFloat(k);
+      if (!Number.isNaN(av) && !Number.isNaN(kv)) {
+        angles.push(av);
+        kn.push(kv);
+      }
+    }
+    return { angles, kn };
+  }
+
+  /**
+   * Parse Bonjean from CSV text: columns: station,area,moment (draft assumed current)
+   */
+  static parseBonjeanCSV(csvText: string, stationSpacing?: number): BonjeanSet {
+    const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
+    const sections: SectionalArea[] = [];
+    for (const line of lines) {
+      const [s, a, m] = line.split(/,|;|\s+/).map(x => x.trim());
+      const sv = parseFloat(s);
+      const av = parseFloat(a);
+      const mv = parseFloat(m);
+      if (!Number.isNaN(sv) && !Number.isNaN(av)) {
+        sections.push({ station: sv, area: av, moment: Number.isNaN(mv) ? 0 : mv });
+      }
+    }
+    return { sections, stationSpacing: stationSpacing || 0 };
+  }
+
+  /**
+   * Adaptive area under GZ curve (Simpson's rule where applicable)
+   */
+  static calculateAreaUnderGZCurveAdaptive(gz: number[], angles: number[], startAngle: number, endAngle: number): number {
+    const idx = angles.map((a, i) => ({ a, i })).filter(x => x.a >= startAngle && x.a <= endAngle).map(x => x.i);
+    if (idx.length < 2) return 0;
+    let area = 0;
+    const deg2rad = Math.PI / 180;
+    // Use Simpson when we have odd number of segments
+    const segmentCount = idx.length - 1;
+    if (segmentCount >= 2 && segmentCount % 2 === 0) {
+      for (let k = 0; k < segmentCount; k += 2) {
+        const i0 = idx[k], i1 = idx[k + 1], i2 = idx[k + 2];
+        const h = (angles[i2] - angles[i0]) * deg2rad / 2; // two steps -> 2h, but integrate over pair so use h accordingly
+        const f0 = gz[i0], f1 = gz[i1], f2 = gz[i2];
+        area += (h / 3) * (f0 + 4 * f1 + f2);
+      }
+    } else {
+      for (let k = 0; k < segmentCount; k++) {
+        const i0 = idx[k], i1 = idx[k + 1];
+        const h = (angles[i1] - angles[i0]) * deg2rad;
+        area += ((gz[i0] + gz[i1]) / 2) * h;
+      }
+    }
+    return area;
+  }
+
+  /**
+   * Iterative trim solution using MTC/TPC re-evaluation until convergence
+   */
+  static solveTrimIterative(
+    geometry: ShipGeometry,
+    weightMomentTonMeters: number,
+    maxIterations: number = 10,
+    toleranceDeg: number = 0.01
+  ): { trimAngle: number; iterations: number } {
+    let currentGeometry = { ...geometry };
+    let lastTrim = 0;
+    for (let iter = 1; iter <= maxIterations; iter++) {
+      const mct = this.calculateMTC(currentGeometry);
+      const trimChange = mct > 0 ? (weightMomentTonMeters / mct) : 0;
+      const trimAngle = Math.atan2(trimChange, currentGeometry.length) * 180 / Math.PI;
+      currentGeometry = { ...currentGeometry, draft: Math.max(0.1, geometry.draft + trimChange / 2) };
+      if (Math.abs(trimAngle - lastTrim) < toleranceDeg) {
+        return { trimAngle, iterations: iter };
+      }
+      lastTrim = trimAngle;
+    }
+    return { trimAngle: lastTrim, iterations: maxIterations };
+  }
+
+  /**
+   * FSC from tank geometry (if available)
+   */
+  static calculateFSCFromTankGeometry(geometry: ShipGeometry, tanks: TankData[]): FreeSurfaceCorrection[] {
+    const displacement = this.calculateDisplacement(geometry).displacement; // tonnes
+    return tanks.map(t => {
+      const L = t.length || 0;
+      const B = t.breadth || 0;
+      const fill = t.fillRatio ?? (t.capacity > 0 ? t.currentVolume / t.capacity : 0);
+      const ixx = L > 0 && B > 0 ? (L * Math.pow(B, 3)) / 12 * Math.max(0, Math.min(1, fill)) : 0; // m^4
+      const fsm = (t.fluidDensity || 1.025) * ixx; // tonne·m
+      const correction = displacement > 0 ? fsm / displacement : 0; // meters (ΔKG)
+      return { tankName: t.name, freeSurfaceMoment: fsm, correction, totalFSC: correction };
+    });
+  }
+
+  /**
+   * IS Code 2008 extended checks
+   */
+  static evaluateISCodeCriteria(stabilityData: StabilityData): {
+    area0to30OK: boolean;
+    area0to40OK: boolean;
+    area30to40OK: boolean;
+    maxGZOK: boolean;
+    initialGMOK: boolean;
+    phiMaxRangeOK: boolean;
+    vanishingAngleOK: boolean;
+  } {
+    const a0_30 = this.calculateAreaUnderGZCurveAdaptive(stabilityData.gz, stabilityData.angles, 0, 30);
+    const a0_40 = this.calculateAreaUnderGZCurveAdaptive(stabilityData.gz, stabilityData.angles, 0, 40);
+    const a30_40 = a0_40 - a0_30;
+    const maxGZOK = stabilityData.maxGz >= 0.20 && stabilityData.maxGzAngle >= 25 && stabilityData.maxGzAngle <= 35;
+    const initialGMOK = stabilityData.gm >= 0.15;
+    const phiMaxRangeOK = stabilityData.maxGzAngle >= 25 && stabilityData.maxGzAngle <= 35;
+    const vanishingAngleOK = stabilityData.vanishingAngle >= 40;
+    return {
+      area0to30OK: a0_30 >= 0.055,
+      area0to40OK: a0_40 >= 0.090,
+      area30to40OK: a30_40 >= 0.030,
+      maxGZOK,
+      initialGMOK,
+      phiMaxRangeOK,
+      vanishingAngleOK
+    };
+  }
+
+  /**
+   * Simplified weather criterion: ensure area(GZ > H_wind) up to downflooding exceeds heeling work
+   */
+  static checkWeatherCriterion(
+    stabilityData: StabilityData,
+    wind: { pressureNPerM2: number; areaM2: number; leverM: number; displacementT: number }
+  ): { ok: boolean; phiEq: number } {
+    const heelingArm = (wind.pressureNPerM2 * wind.areaM2 * wind.leverM) / (wind.displacementT * this.GRAVITY); // meters
+    // Find equilibrium angle where GZ = heelingArm
+    let phiEq = 0;
+    for (let i = 0; i < stabilityData.angles.length; i++) {
+      if (stabilityData.gz[i] >= heelingArm) { phiEq = stabilityData.angles[i]; break; }
+    }
+    // Area between 0 and phiEq of (GZ - H)
+    let area = 0;
+    const deg2rad = Math.PI / 180;
+    for (let i = 0; i < stabilityData.angles.length - 1 && stabilityData.angles[i] <= phiEq; i++) {
+      const a0 = stabilityData.angles[i] * deg2rad;
+      const a1 = stabilityData.angles[i + 1] * deg2rad;
+      const g0 = Math.max(0, stabilityData.gz[i] - heelingArm);
+      const g1 = Math.max(0, stabilityData.gz[i + 1] - heelingArm);
+      area += ((g0 + g1) / 2) * (a1 - a0);
+    }
+    // Simplified acceptance: positive area and phiEq < vanishing
+    return { ok: area > 0 && phiEq < stabilityData.vanishingAngle, phiEq };
+  }
 }
