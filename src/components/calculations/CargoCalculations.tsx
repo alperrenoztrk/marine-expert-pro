@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { Calculator, Package, Truck, AlertTriangle, CheckCircle, Wheat, Boxes, DollarSign, Shield, LayoutGrid, FileDown, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
+import type { ShipGeometry } from "@/types/hydrostatic";
 
 interface CargoData {
   // Ship particulars
@@ -100,6 +102,10 @@ interface ContainerItem {
   vcg: number; // m (approx)
   tcg: number; // m (from CL)
   imdgClass?: string; // optional DG class for optimization checks
+  isoCode?: string;
+  reefer?: boolean;
+  oog?: boolean;
+  vgm?: number; // Verified Gross Mass
 }
 
 interface DangerousGoodsItem {
@@ -117,6 +123,8 @@ interface CostInputs {
   handling?: number;
   storage?: number;
   documentation?: number;
+  bafPct?: number; // Bunker adjustment factor %
+  cafPct?: number; // Currency adjustment factor %
 }
 
 export const CargoCalculations = () => {
@@ -149,6 +157,20 @@ export const CargoCalculations = () => {
   const [lashingAngle, setLashingAngle] = useState<number>(0.8); // angle factor (cos)
   const [lashingWeight, setLashingWeight] = useState<number | undefined>(undefined); // t
   const [lashingRequired, setLashingRequired] = useState<number | null>(null);
+  const [lashingChain, setLashingChain] = useState<{rod:number;turnbuckle:number;padeye:number;socket:number}>({rod:100,turnbuckle:100,padeye:120, socket:120});
+  const [frictionMu, setFrictionMu] = useState<number>(0.3);
+  const [bothSides, setBothSides] = useState<boolean>(true);
+
+  // Quick stability geometry (optional)
+  const [quickGeo, setQuickGeo] = useState<ShipGeometry>({
+    length: 100, breadth: 20, depth: 10, draft: 6,
+    blockCoefficient: 0.7, waterplaneCoefficient: 0.8,
+    midshipCoefficient: 0.9, prismaticCoefficient: 0.65, verticalPrismaticCoefficient: 0.75
+  });
+  const [quickStab, setQuickStab] = useState<{gm:number; imoOK:boolean} | null>(null);
+
+  // Tier permissible loads (t) simple inputs
+  const [tierPermissible, setTierPermissible] = useState<{[tier:number]: number}>({1:90,2:80,3:70,4:60});
 
   // Helpers for new tabs
   const computeDistributionCG = (items: DistributionItem[]) => {
@@ -219,8 +241,10 @@ export const CargoCalculations = () => {
   const computeCosts = (c: CostInputs, cargoWeightTon?: number) => {
     const freight = (c.freightPerTon || 0) * (cargoWeightTon || 0);
     const insurance = ((c.insurancePct || 0) / 100) * (c.cargoValue || 0);
+    const baf = (c.bafPct || 0) / 100 * freight;
+    const caf = (c.cafPct || 0) / 100 * freight;
     const other = (c.stevedoring || 0) + (c.handling || 0) + (c.storage || 0) + (c.documentation || 0);
-    const total = freight + insurance + other;
+    const total = freight + insurance + other + baf + caf;
     return { freight, insurance, other, total };
   };
 
@@ -308,9 +332,26 @@ export const CargoCalculations = () => {
       byBayTierRow.set(key, (byBayTierRow.get(key) || 0) + c.weight);
     });
     byBayTierRow.forEach((w, key) => {
-      if (w > 90) tierIssues.push(`${key.replaceAll('-', ' / ')}: ${w.toFixed(1)} t (tier limit >90t)`);
+      const tierNum = parseInt(key.split('-')[1]);
+      const limit = tierPermissible[tierNum] ?? 90;
+      if (w > limit) tierIssues.push(`${key.replaceAll('-', ' / ')}: ${w.toFixed(1)} t (limit >${limit}t)`);
     });
-    return { over, rowImbalance, tierIssues };
+    // heavy-top rule: warn if upper tier > lower tier in same bay by >20%
+    const byBayTier = new Map<string, number>();
+    containers.forEach(c => {
+      const k = `${c.bay}-${c.tier}`;
+      byBayTier.set(k, (byBayTier.get(k) || 0) + c.weight);
+    });
+    const heavyTop: string[] = [];
+    const tiers = new Set(containers.map(c=>c.tier));
+    Array.from(new Set(containers.map(c=>c.bay))).forEach(bay => {
+      Array.from(tiers).sort().forEach(t=>{
+        const lower = byBayTier.get(`${bay}-${t}`) || 0;
+        const upper = byBayTier.get(`${bay}-${t+1}`) || 0;
+        if (upper > 0 && lower>0 && upper > lower*1.2) heavyTop.push(`Bay ${bay}: Tier ${t+1} (${upper.toFixed(1)}t) > Tier ${t} (${lower.toFixed(1)}t)`);
+      });
+    });
+    return { over, rowImbalance, tierIssues, heavyTop };
   };
 
   // Simple loading/discharge sequences (heaviest first / reverse)
@@ -494,6 +535,22 @@ export const CargoCalculations = () => {
     }
     setContainers(placed);
     toast({ title: 'Yükleme Optimizasyonu', description: 'Konteynerler bay/row/tier bazında dengelendi.' });
+  };
+
+  const chainMSLCapacity = (): number => {
+    const minMSL = Math.min(lashingChain.rod, lashingChain.turnbuckle, lashingChain.padeye, lashingChain.socket);
+    return minMSL;
+  };
+
+  const runQuickStability = async () => {
+    try {
+      // Compute KG from distribution or cargo inputs
+      let kgVal = 0;
+      const dist = computeDistributionCG(distribution);
+      if (dist.totalW > 0) kgVal = dist.vcg; else kgVal = cargoData.cargoVCG || 6.0;
+      const res = HydrostaticCalculations.performStabilityAnalysis(quickGeo, kgVal, [], []);
+      setQuickStab({ gm: res.stability.gm, imoOK: !!res.imoCriteria?.compliance });
+    } catch(e){ console.error(e); }
   };
 
   return (
@@ -925,6 +982,39 @@ export const CargoCalculations = () => {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Lashing chain and friction inputs */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gelişmiş Lashing Parametreleri</CardTitle>
+                  <CardDescription>MSL zinciri ve sürtünme katsayısı</CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-6 gap-3 text-sm">
+                  <div>
+                    <Label>Rod MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.rod} onChange={(e)=>setLashingChain({...lashingChain, rod: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>Turnbuckle MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.turnbuckle} onChange={(e)=>setLashingChain({...lashingChain, turnbuckle: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>Padeye MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.padeye} onChange={(e)=>setLashingChain({...lashingChain, padeye: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>Socket MSL [kN]</Label>
+                    <Input type="number" value={lashingChain.socket} onChange={(e)=>setLashingChain({...lashingChain, socket: parseFloat(e.target.value)})} />
+                  </div>
+                  <div>
+                    <Label>μ (Sürtünme)</Label>
+                    <Input type="number" step="0.01" value={frictionMu} onChange={(e)=>setFrictionMu(parseFloat(e.target.value))} />
+                  </div>
+                  <div className="flex items-end">
+                    <Button variant="outline" onClick={()=> toast({ title:'MSL Zinciri', description:`Etkin MSL ≈ ${chainMSLCapacity()} kN` })}>MSL Kontrol</Button>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="planning" className="space-y-6">
@@ -936,6 +1026,21 @@ export const CargoCalculations = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Quick Stability Check */}
+                  <div className="p-3 rounded bg-purple-50 dark:bg-gray-800">
+                    <h4 className="font-semibold mb-2">Hızlı Stabilite Kontrolü</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm mb-2">
+                      <div><Label>L (m)</Label><Input type="number" value={quickGeo.length} onChange={(e)=>setQuickGeo({...quickGeo, length: parseFloat(e.target.value)})} /></div>
+                      <div><Label>B (m)</Label><Input type="number" value={quickGeo.breadth} onChange={(e)=>setQuickGeo({...quickGeo, breadth: parseFloat(e.target.value)})} /></div>
+                      <div><Label>T (m)</Label><Input type="number" value={quickGeo.draft} onChange={(e)=>setQuickGeo({...quickGeo, draft: parseFloat(e.target.value)})} /></div>
+                      <div><Label>Cb</Label><Input type="number" step="0.01" value={quickGeo.blockCoefficient} onChange={(e)=>setQuickGeo({...quickGeo, blockCoefficient: parseFloat(e.target.value)})} /></div>
+                    </div>
+                    <Button size="sm" onClick={runQuickStability}><Calculator className="h-4 w-4 mr-1" />Hızlı Kontrol</Button>
+                    {quickStab && (
+                      <div className="mt-2 text-sm">GM ≈ <span className="font-mono">{quickStab.gm.toFixed(3)} m</span> • IMO: <span className={quickStab.imoOK? 'text-green-600':'text-red-600'}>{quickStab.imoOK? 'Uygun':'Değil'}</span></div>
+                    )}
+                  </div>
+
                   {result && (
                     <div>
                       <h4 className="font-semibold mb-3">Önerilen Yükleme Sırası</h4>
@@ -966,6 +1071,9 @@ export const CargoCalculations = () => {
                               <li key={s.bay}>Bay {s.bay}: {s.weight.toFixed(1)} t (yüksek)</li>
                             ))}
                             <li>Row dağılımı: {stowageChecks().rowImbalance.map(r=>`Row ${r[0]}=${r[1].toFixed(1)}t`).join(', ')}</li>
+                            {sc.heavyTop.length>0 && (
+                              <li className="text-orange-600">Heavy-top uyarıları: {sc.heavyTop.slice(0,3).join(' | ')}</li>
+                            )}
                             {sc.tierIssues.length > 0 && (
                               <li className="text-red-600">Tier uyarıları: {sc.tierIssues.slice(0,4).join(' | ')}</li>
                             )}
@@ -1260,10 +1368,12 @@ export const CargoCalculations = () => {
                       <Input type="number" value={c.row} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,row:parseInt(e.target.value)}; setContainers(arr); }} placeholder="Row" />
                       <Input type="number" value={c.tier} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,tier:parseInt(e.target.value)}; setContainers(arr); }} placeholder="Tier" />
                       <Input type="number" step="0.1" value={c.vcg} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,vcg:parseFloat(e.target.value)}; setContainers(arr); }} placeholder="VCG [m]" />
+                      <Input value={c.isoCode||''} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,isoCode:e.target.value}; setContainers(arr); }} placeholder="ISO" />
+                      <Input value={c.imdgClass||''} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,imdgClass:e.target.value}; setContainers(arr); }} placeholder="IMDG" />
                     </div>
                   ))}
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={()=>setContainers([...containers,{ id:`C${(Math.random()*10000|0)}`, type:'20', weight:24, bay:1, row:1, tier:1, vcg:8, tcg:0 }])}>Konteyner Ekle</Button>
+                    <Button variant="outline" onClick={()=>setContainers([...containers,{ id:`C${(Math.random()*10000|0)}`, type:'20', weight:24, bay:1, row:1, tier:1, vcg:8, tcg:0, isoCode:'22G1', vgm:24 }])}>Konteyner Ekle</Button>
                     <Button onClick={()=>{ const stacks=computeContainerStacks(containers); const warnings = stacks.filter(s=>s.weight>200).map(s=>`Bay ${s.bay}: Yığın ağırlığı ${s.weight.toFixed(1)} t (limitleri kontrol edin)`); const desc = warnings.length? warnings.join(' | '): 'Bay yükleri kabul edilebilir.'; toast({ title:'Bay Yükleri', description: desc }); }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
                   </div>
                 </CardContent>
@@ -1355,16 +1465,13 @@ export const CargoCalculations = () => {
                       <Input type="number" value={c.row} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,row:parseInt(e.target.value)}; setContainers(arr);}} placeholder="Row" />
                       <Input type="number" value={c.tier} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,tier:parseInt(e.target.value)}; setContainers(arr);}} placeholder="Tier" />
                       <Input type="number" step="0.1" value={c.vcg} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,vcg:parseFloat(e.target.value)}; setContainers(arr);}} placeholder="VCG [m]" />
+                      <Input value={c.isoCode||''} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,isoCode:e.target.value}; setContainers(arr); }} placeholder="ISO" />
+                      <Input value={c.imdgClass||''} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,imdgClass:e.target.value}; setContainers(arr); }} placeholder="IMDG" />
                     </div>
                   ))}
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={()=>setContainers([...containers,{ id:`C${(Math.random()*10000|0)}`, type:'20', weight:24, bay:1, row:1, tier:1, vcg:8, tcg:0 }])}>Konteyner Ekle</Button>
-                    <Button onClick={()=>{
-                      const stacks=computeContainerStacks(containers);
-                      const warnings = stacks.filter(s=>s.weight>200).map(s=>`Bay ${s.bay}: Yığın ağırlığı ${s.weight.toFixed(1)} t (limitleri kontrol edin)`);
-                      const desc = warnings.length? warnings.join(' | '): 'Bay yükleri kabul edilebilir.';
-                      toast({ title:'Bay Yükleri', description: desc });
-                    }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
+                    <Button variant="outline" onClick={()=>setContainers([...containers,{ id:`C${(Math.random()*10000|0)}`, type:'20', weight:24, bay:1, row:1, tier:1, vcg:8, tcg:0, isoCode:'22G1', vgm:24 }])}>Konteyner Ekle</Button>
+                    <Button onClick={()=>{ const stacks=computeContainerStacks(containers); const warnings = stacks.filter(s=>s.weight>200).map(s=>`Bay ${s.bay}: Yığın ağırlığı ${s.weight.toFixed(1)} t (limitleri kontrol edin)`); const desc = warnings.length? warnings.join(' | '): 'Bay yükleri kabul edilebilir.'; toast({ title:'Bay Yükleri', description: desc }); }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1414,6 +1521,14 @@ export const CargoCalculations = () => {
                     <div className="space-y-1">
                       <Label>Kargo Değeri [$]</Label>
                       <Input type="number" step="0.01" value={costs.cargoValue || ''} onChange={(e)=>setCosts({...costs, cargoValue: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>BAF [%]</Label>
+                      <Input type="number" step="0.01" value={costs.bafPct || ''} onChange={(e)=>setCosts({...costs, bafPct: parseFloat(e.target.value)})} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>CAF [%]</Label>
+                      <Input type="number" step="0.01" value={costs.cafPct || ''} onChange={(e)=>setCosts({...costs, cafPct: parseFloat(e.target.value)})} />
                     </div>
                     <div className="space-y-1">
                       <Label>Stevedoring [$]</Label>

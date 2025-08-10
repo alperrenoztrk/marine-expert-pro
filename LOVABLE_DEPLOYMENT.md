@@ -2,10 +2,18 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-10
-- **Sürüm:** v2.4.10
-- **Durum:** ✅ Aktif - GoogleAuth mobilde de görünür
+- **Sürüm:** v2.4.11
+- **Durum:** ✅ Aktif - Kargo modülünde tek seferlik kapsamlı iyileştirmeler
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 📦 Kargo İyileştirmeleri (2025-08-10)
+- IMDG uyarıları genişletildi (sık karşılaşılan sınıf çiftleri)
+- Lashing gelişmiş: μ ve iki borda dağılımı, MSL zinciri kontrolü
+- Stowage kontrolleri: tier limit girişi ve heavy-top uyarıları
+- Hızlı stabilite: L/B/T/Cb ve dağılımdan KG ile GM/IMO hızlı kontrol
+- Konteyner alanları: ISO, IMDG, VGM, reefer/OOG bayrağı altyapısı
+- Maliyet: BAF/CAF ek girdileri ve toplam maliyete dahil edildi
 
 ### 🔐 Kimlik Doğrulama (2025-08-10)
 - Ana sayfa header’a `GoogleAuth` bileşeni eklendi (Google ile giriş/çıkış)
@@ -30,6 +38,7 @@
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-10 — v2.4.10: GoogleAuth mobil görünür
 - 2025-08-10 — v2.4.9: Google OAuth butonu ana ekrana eklendi
 - 2025-08-10 — v2.4.8: Elle senkronizasyon (redeploy tetikleme)
 - 2025-08-10 — v2.4.7: Reklam scriptleri varsayılan kapalı
