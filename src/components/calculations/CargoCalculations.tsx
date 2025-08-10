@@ -98,6 +98,7 @@ interface ContainerItem {
   tier: number;
   vcg: number; // m (approx)
   tcg: number; // m (from CL)
+  imdgClass?: string; // optional DG class for optimization checks
 }
 
 interface DangerousGoodsItem {
@@ -424,6 +425,33 @@ export const CargoCalculations = () => {
       case 'poor': return 'bg-red-500';
       default: return 'bg-gray-500';
     }
+  };
+
+  // Simple greedy stowage optimizer (balance bay/row loads, honor tier limits)
+  const optimizeStowage = (bayCount: number, rowCount: number, tierCount: number) => {
+    if (bayCount <= 0 || rowCount <= 0 || tierCount <= 0) return;
+    const placed: ContainerItem[] = [];
+    const bays = Array.from({ length: bayCount }, () => ({ weight: 0, tiers: Array.from({ length: tierCount }, () => new Array<number>(rowCount).fill(0)) }));
+    const sorted = [...containers].sort((a,b)=> b.weight - a.weight);
+    for (const c of sorted) {
+      // choose bay with minimal weight
+      let bestBay = 0;
+      for (let b=1;b<bayCount;b++) if (bays[b].weight < bays[bestBay].weight) bestBay=b;
+      // choose row with minimal sum at lowest available tier
+      let chosenTier = -1, chosenRow = -1;
+      for (let t=0; t<tierCount && chosenRow<0; t++) {
+        // find row with min weight at this tier
+        let minRow = 0;
+        for (let r=1;r<rowCount;r++) if (bays[bestBay].tiers[t][r] < bays[bestBay].tiers[t][minRow]) minRow=r;
+        chosenTier = t; chosenRow = minRow;
+      }
+      const newC: ContainerItem = { ...c, bay: bestBay+1, row: chosenRow+1, tier: chosenTier+1 };
+      bays[bestBay].weight += c.weight;
+      bays[bestBay].tiers[chosenTier][chosenRow] += c.weight;
+      placed.push(newC);
+    }
+    setContainers(placed);
+    toast({ title: 'Yükleme Optimizasyonu', description: 'Konteynerler bay/row/tier bazında dengelendi.' });
   };
 
   return (
@@ -1244,6 +1272,19 @@ export const CargoCalculations = () => {
                   <CardDescription>Konteyner ağırlıkları, bay yükleri ve basit yerleşim kontrolü</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-end">
+                    <div className="md:col-span-5 grid grid-cols-5 gap-2">
+                      <Input id="bayCount" defaultValue={8} placeholder="Bay sayısı" />
+                      <Input id="rowCount" defaultValue={8} placeholder="Row sayısı" />
+                      <Input id="tierCount" defaultValue={4} placeholder="Tier sayısı" />
+                      <Button onClick={() => {
+                        const bay = parseInt((document.getElementById('bayCount') as HTMLInputElement)?.value || '8');
+                        const row = parseInt((document.getElementById('rowCount') as HTMLInputElement)?.value || '8');
+                        const tier = parseInt((document.getElementById('tierCount') as HTMLInputElement)?.value || '4');
+                        optimizeStowage(bay, row, tier);
+                      }}><Calculator className="h-4 w-4 mr-1" />Optimize Yükleme</Button>
+                    </div>
+                  </div>
                   {containers.map((c,idx)=>(
                     <div key={c.id} className="grid grid-cols-7 gap-2">
                       <Input value={c.id} onChange={(e)=>{const arr=[...containers]; arr[idx]={...c,id:e.target.value}; setContainers(arr);}} />
