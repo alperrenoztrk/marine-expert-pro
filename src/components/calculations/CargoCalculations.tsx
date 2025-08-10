@@ -125,7 +125,7 @@ export const CargoCalculations = () => {
   const [draftSurvey, setDraftSurvey] = useState<Partial<DraftSurveyData>>({});
   const [grainData, setGrainData] = useState<Partial<GrainStabilityData>>({});
   const [result, setResult] = useState<CargoResult | null>(null);
-  const [activeTab, setActiveTab] = useState("loading");
+  const [activeTab, setActiveTab] = useState("distribution");
 
   // New states for extended cargo calculations
   const [distribution, setDistribution] = useState<DistributionItem[]>([
@@ -398,14 +398,9 @@ export const CargoCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="loading">Yükleme</TabsTrigger>
-              <TabsTrigger value="survey">Draft Survey</TabsTrigger>
-              <TabsTrigger value="grain">Tahıl</TabsTrigger>
-              <TabsTrigger value="securing">Güçlendirme</TabsTrigger>
-              <TabsTrigger value="planning">Planlama</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="distribution"><LayoutGrid className="h-4 w-4 mr-1" />Dağılım</TabsTrigger>
-              <TabsTrigger value="containers"><Boxes className="h-4 w-4 mr-1" />Konteyner</TabsTrigger>
+              <TabsTrigger value="planning"><Truck className="h-4 w-4 mr-1" />Yükleme Planı</TabsTrigger>
               <TabsTrigger value="costs"><DollarSign className="h-4 w-4 mr-1" />Maliyet</TabsTrigger>
             </TabsList>
 
@@ -907,6 +902,137 @@ export const CargoCalculations = () => {
 
             {/* Distribution Tab */}
             <TabsContent value="distribution" className="space-y-6">
+              {/* Genel kargo girdileri ve hesaplama sonuçları */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    Kargo Girdileri ve Hesaplama
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="deadweight">Deadweight [ton]</Label>
+                      <Input id="deadweight" type="number" value={cargoData.deadweight || ''} onChange={(e)=>setCargoData({...cargoData, deadweight: parseFloat(e.target.value)})} placeholder="15000" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cargoWeight">Kargo Ağırlığı [ton]</Label>
+                      <Input id="cargoWeight" type="number" value={cargoData.cargoWeight || ''} onChange={(e)=>setCargoData({...cargoData, cargoWeight: parseFloat(e.target.value)})} placeholder="12000" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lightDisplacement">Light Ship [ton]</Label>
+                      <Input id="lightDisplacement" type="number" value={cargoData.lightDisplacement || ''} onChange={(e)=>setCargoData({...cargoData, lightDisplacement: parseFloat(e.target.value)})} placeholder="5000" />
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="cargoVolume">Kargo Hacmi [m³]</Label>
+                      <Input id="cargoVolume" type="number" value={cargoData.cargoVolume || ''} onChange={(e)=>setCargoData({...cargoData, cargoVolume: parseFloat(e.target.value)})} placeholder="18000" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="stowageFactor">Stowage Factor [m³/ton]</Label>
+                      <Input id="stowageFactor" type="number" step="0.1" value={cargoData.stowageFactor || ''} onChange={(e)=>setCargoData({...cargoData, stowageFactor: parseFloat(e.target.value)})} placeholder="1.5" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="grossTonnage">Gross Tonnage</Label>
+                      <Input id="grossTonnage" type="number" value={cargoData.grossTonnage || ''} onChange={(e)=>setCargoData({...cargoData, grossTonnage: parseFloat(e.target.value)})} placeholder="8500" />
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="cargoLCG">Kargo LCG (Kıçtan) [m]</Label>
+                      <Input id="cargoLCG" type="number" value={cargoData.cargoLCG || ''} onChange={(e)=>setCargoData({...cargoData, cargoLCG: parseFloat(e.target.value)})} placeholder="70" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cargoTCG">Kargo TCG (CL'den) [m]</Label>
+                      <Input id="cargoTCG" type="number" value={cargoData.cargoTCG || ''} onChange={(e)=>setCargoData({...cargoData, cargoTCG: parseFloat(e.target.value)})} placeholder="0" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cargoVCG">Kargo VCG (Baseline'dan) [m]</Label>
+                      <Input id="cargoVCG" type="number" value={cargoData.cargoVCG || ''} onChange={(e)=>setCargoData({...cargoData, cargoVCG: parseFloat(e.target.value)})} placeholder="6.0" />
+                    </div>
+                  </div>
+
+                  <Button onClick={calculateCargo} className="flex items-center gap-2">
+                    <Calculator className="h-4 w-4" />
+                    Kargo Hesapla
+                  </Button>
+
+                  {result && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <CheckCircle className="h-5 w-5" />
+                          Kargo Sonuçları
+                          <Badge className={getStatusColor(result.stabilityStatus)}>
+                            {result.stabilityStatus.toUpperCase()}
+                          </Badge>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">{result.utilizationPercentage.toFixed(1)}%</div>
+                            <div className="text-sm text-muted-foreground">DWT Kullanımı</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">{result.loadedDisplacement.toFixed(0)}</div>
+                            <div className="text-sm text-muted-foreground">Yüklü Deplasman (ton)</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">{result.brokenStowage.toFixed(1)}%</div>
+                            <div className="text-sm text-muted-foreground">Broken Stowage</div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">{result.newKG.toFixed(2)}m</div>
+                            <div className="text-sm text-muted-foreground">Yeni KG</div>
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        <div>
+                          <h4 className="font-semibold mb-2">Güçlendirme Kuvvetleri (CSS Code)</h4>
+                          <div className="grid grid-cols-3 gap-4">
+                            <div className="text-center p-2 bg-muted rounded">
+                              <div className="font-bold">{(result.securityForces.longitudinal/1000).toFixed(0)} kN</div>
+                              <div className="text-xs">Boyuna</div>
+                            </div>
+                            <div className="text-center p-2 bg-muted rounded">
+                              <div className="font-bold">{(result.securityForces.transverse/1000).toFixed(0)} kN</div>
+                              <div className="text-xs">Enine</div>
+                            </div>
+                            <div className="text-center p-2 bg-muted rounded">
+                              <div className="font-bold">{(result.securityForces.vertical/1000).toFixed(0)} kN</div>
+                              <div className="text-xs">Dikey</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {result.recommendations.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold mb-2">Öneriler</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {result.recommendations.map((rec, index) => (
+                                <li key={index} className="text-sm">{rec}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Ağırlık dağılımı ve CG */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><LayoutGrid className="h-5 w-5" /> Ağırlık Dağılımı</CardTitle>
@@ -916,29 +1042,100 @@ export const CargoCalculations = () => {
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-2 items-end">
                     {distribution.map((it, idx) => (
                       <div key={idx} className="md:col-span-5 grid grid-cols-5 gap-2">
-                        <Input value={it.name} onChange={(e)=>{
-                          const d=[...distribution]; d[idx]={...it,name:e.target.value}; setDistribution(d);
-                        }} placeholder="Ad" />
-                        <Input type="number" step="0.1" value={it.weight}
-                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,weight:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="Ağırlık [t]" />
-                        <Input type="number" step="0.1" value={it.lcg}
-                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,lcg:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="LCG [m]" />
-                        <Input type="number" step="0.1" value={it.tcg}
-                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,tcg:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="TCG [m]" />
-                        <Input type="number" step="0.1" value={it.vcg}
-                          onChange={(e)=>{const d=[...distribution]; d[idx]={...it,vcg:parseFloat(e.target.value)}; setDistribution(d);}} placeholder="VCG [m]" />
+                        <Input value={it.name} onChange={(e)=>{ const d=[...distribution]; d[idx]={...it,name:e.target.value}; setDistribution(d); }} placeholder="Ad" />
+                        <Input type="number" step="0.1" value={it.weight} onChange={(e)=>{ const d=[...distribution]; d[idx]={...it,weight:parseFloat(e.target.value)}; setDistribution(d); }} placeholder="Ağırlık [t]" />
+                        <Input type="number" step="0.1" value={it.lcg} onChange={(e)=>{ const d=[...distribution]; d[idx]={...it,lcg:parseFloat(e.target.value)}; setDistribution(d); }} placeholder="LCG [m]" />
+                        <Input type="number" step="0.1" value={it.tcg} onChange={(e)=>{ const d=[...distribution]; d[idx]={...it,tcg:parseFloat(e.target.value)}; setDistribution(d); }} placeholder="TCG [m]" />
+                        <Input type="number" step="0.1" value={it.vcg} onChange={(e)=>{ const d=[...distribution]; d[idx]={...it,vcg:parseFloat(e.target.value)}; setDistribution(d); }} placeholder="VCG [m]" />
                       </div>
                     ))}
                     <div className="md:col-span-5 flex gap-2">
                       <Button variant="outline" onClick={()=>setDistribution([...distribution,{ name:`Item#${distribution.length+1}`, weight:0, lcg:0, tcg:0, vcg:0 }])}>Satır Ekle</Button>
-                      <Button onClick={()=>{
-                        const cg=computeDistributionCG(distribution); 
-                        toast({ title:'Dağılım CG', description:`Toplam ${cg.totalW.toFixed(1)} t | LCG ${cg.lcg.toFixed(2)} m | TCG ${cg.tcg.toFixed(2)} m | VCG ${cg.vcg.toFixed(2)} m` });
-                      }}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
+                      <Button onClick={()=>{ const cg=computeDistributionCG(distribution); toast({ title:'Dağılım CG', description:`Toplam ${cg.totalW.toFixed(1)} t | LCG ${cg.lcg.toFixed(2)} m | TCG ${cg.tcg.toFixed(2)} m | VCG ${cg.vcg.toFixed(2)} m` }); }}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Konteyner Yükleri */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Boxes className="h-5 w-5" /> Konteyner Yükleme</CardTitle>
+                  <CardDescription>Konteyner ağırlıkları, bay yükleri ve basit yerleşim kontrolü</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {containers.map((c,idx)=> (
+                    <div key={c.id} className="grid grid-cols-7 gap-2">
+                      <Input value={c.id} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,id:e.target.value}; setContainers(arr); }} />
+                      <Input value={c.type} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,type:(e.target.value==='40'?'40':'20') as any}; setContainers(arr); }} />
+                      <Input type="number" step="0.1" value={c.weight} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,weight:parseFloat(e.target.value)}; setContainers(arr); }} placeholder="Ağırlık [t]" />
+                      <Input type="number" value={c.bay} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,bay:parseInt(e.target.value)}; setContainers(arr); }} placeholder="Bay" />
+                      <Input type="number" value={c.row} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,row:parseInt(e.target.value)}; setContainers(arr); }} placeholder="Row" />
+                      <Input type="number" value={c.tier} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,tier:parseInt(e.target.value)}; setContainers(arr); }} placeholder="Tier" />
+                      <Input type="number" step="0.1" value={c.vcg} onChange={(e)=>{ const arr=[...containers]; arr[idx]={...c,vcg:parseFloat(e.target.value)}; setContainers(arr); }} placeholder="VCG [m]" />
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={()=>setContainers([...containers,{ id:`C${(Math.random()*10000|0)}`, type:'20', weight:24, bay:1, row:1, tier:1, vcg:8, tcg:0 }])}>Konteyner Ekle</Button>
+                    <Button onClick={()=>{ const stacks=computeContainerStacks(containers); const warnings = stacks.filter(s=>s.weight>200).map(s=>`Bay ${s.bay}: Yığın ağırlığı ${s.weight.toFixed(1)} t (limitleri kontrol edin)`); const desc = warnings.length? warnings.join(' | '): 'Bay yükleri kabul edilebilir.'; toast({ title:'Bay Yükleri', description: desc }); }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tehlikeli Madde (IMDG) */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Shield className="h-5 w-5" /> Tehlikeli Madde (IMDG)</CardTitle>
+                  <CardDescription>Basit segregasyon uyarıları</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {dgList.map((d,idx)=> (
+                    <div key={d.id} className="grid grid-cols-4 gap-2">
+                      <Input value={d.un} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,un:e.target.value}; setDgList(arr); }} placeholder="UN" />
+                      <Input value={d.cls} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,cls:e.target.value}; setDgList(arr); }} placeholder="Sınıf" />
+                      <Input type="number" value={d.bay} onChange={(e)=>{ const arr=[...dgList]; arr[idx]={...d,bay:parseInt(e.target.value)}; setDgList(arr); }} placeholder="Bay" />
+                      <Button variant="outline" onClick={()=>{ const arr=[...dgList]; arr.splice(idx,1); setDgList(arr); }}>Sil</Button>
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={()=>setDgList([...dgList,{ id:`DG${(Math.random()*1000|0)}`, un:'', cls:'', bay:1 }])}>Satır Ekle</Button>
+                    <Button onClick={()=>{ const warns=checkDGConflicts(dgList); toast({ title: warns.length? 'IMDG Uyarıları':'Uygunluk', description: warns.length? warns.join(' | '): 'Çakışma tespit edilmedi.' }); }}><Calculator className="h-4 w-4 mr-1"/>Kontrol</Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Lashing Hesabı */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Lashing Hesabı</CardTitle>
+                  <CardDescription>Kuvvete göre gerekli lashing adedi (basit yaklaşım)</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="space-y-1">
+                      <Label>MSL [kN]</Label>
+                      <Input type="number" value={lashingMSL} onChange={(e)=>setLashingMSL(parseFloat(e.target.value))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Açı Faktörü (cos)</Label>
+                      <Input type="number" step="0.01" value={lashingAngle} onChange={(e)=>setLashingAngle(parseFloat(e.target.value))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Yük Ağırlığı [t] (opsiyonel)</Label>
+                      <Input type="number" step="0.1" value={lashingWeight ?? ''} onChange={(e)=>setLashingWeight(parseFloat(e.target.value))} placeholder={`${cargoData.cargoWeight || ''}`} />
+                    </div>
+                    <div className="flex items-end">
+                      <Button onClick={()=>{ const w=(lashingWeight ?? cargoData.cargoWeight ?? 0); const forces=calculateSecuringForces(w); const transverseKN = forces.transverse / 1000; const capacityPer=(lashingMSL||0)*(lashingAngle||1); const req = capacityPer>0 ? Math.ceil(transverseKN / capacityPer) : 0; setLashingRequired(req); toast({ title:'Lashing Hesabı', description:`Enine kuvvet ≈ ${transverseKN.toFixed(1)} kN, Gerekli lashing ≈ ${req}` }); }}><Calculator className="h-4 w-4 mr-1" />Hesapla</Button>
+                    </div>
+                  </div>
+                  {lashingRequired !== null && (
+                    <div className="p-3 rounded bg-muted">
+                      <div className="text-sm">Gerekli lashing adedi: <span className="font-semibold">{lashingRequired}</span></div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
             </TabsContent>
 
             {/* Containers Tab */}
