@@ -278,7 +278,7 @@ export const CargoCalculations = () => {
     return warnings;
   };
 
-  const computeCosts = (c: CostInputs, cargoWeightTon?: number) => {
+  function computeCosts(c: CostInputs, cargoWeightTon?: number) {
     const freight = (c.freightPerTon || 0) * (cargoWeightTon || 0);
     const insurance = ((c.insurancePct || 0) / 100) * (c.cargoValue || 0);
     const baf = (c.bafPct || 0) / 100 * freight;
@@ -286,7 +286,7 @@ export const CargoCalculations = () => {
     const other = (c.stevedoring || 0) + (c.handling || 0) + (c.storage || 0) + (c.documentation || 0);
     const total = freight + insurance + other + baf + caf;
     return { freight, insurance, other, total };
-  };
+  }
 
   // Calculate deadweight utilization
   const calculateDWT = (cargoWeight: number, deadweight: number): number => {
@@ -374,7 +374,7 @@ export const CargoCalculations = () => {
     byBayTierRow.forEach((w, key) => {
       const tierNum = parseInt(key.split('-')[1]);
       const limit = tierPermissible[tierNum] ?? 90;
-      if (w > limit) tierIssues.push(`${key.replaceAll('-', ' / ')}: ${w.toFixed(1)} t (limit >${limit}t)`);
+      if (w > limit) tierIssues.push(`${key.split('-').join(' / ')}: ${w.toFixed(1)} t (limit >${limit}t)`);
     });
     // heavy-top rule: warn if upper tier > lower tier in same bay by >20%
     const byBayTier = new Map<string, number>();
