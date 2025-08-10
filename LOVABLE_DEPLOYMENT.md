@@ -2,24 +2,23 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-07
-- **Sürüm:** v2.3.7
-- **Durum:** ✅ Aktif - Kargo/Yükleme modülü genişletildi
+- **Sürüm:** v2.3.8
+- **Durum:** ✅ Aktif - Kargo yükleme optimizasyonu ve stowage geliştirmeleri
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### 📦 Kargo ve Yükleme Hesaplamaları (2025-08-07)
-- Yeni sekmeler eklendi:
-  - Dağılım: Kargo ağırlık dağılımı ve CG (LCG/TCG/VCG) hesaplaması
-  - Konteyner: Konteyner ağırlıkları, bay bazında yığın ağırlık kontrolü
-  - Tehlikeli Madde: IMDG basit segregasyon uyarıları (örn. Class 3 vs 5.1)
-  - Maliyet: Freight, sigorta ve operasyonel ücret toplamı
-- Mevcut sekmeler korundu: Yükleme, Draft Survey, Tahıl, Güçlendirme, Planlama
+### ⚓ Kargo Yükleme Optimizasyonu ve Stowage (2025-08-07)
+- Optimize Yükleme: Basit greedy algoritma ile bay/row/tier bazında dengeleme
+- Stowage kontrolleri: Bay limit uyarıları, row ağırlık dağılımı
+- Yükleme/Boşaltma sıraları: Heaviest‑first ve tersine öneriler
+- Lashing hesabı: CSS kuvvetlerine göre gerekli bağ adedi (SWL/eff/angle)
 
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-07 — v2.3.7: Kargo/Yükleme modülü genişletmesi (Dağılım, Konteyner, DG, Maliyet)
 - 2025-08-07 — v2.3.6: Hydrostatics & Stability butonu geri eklendi
-- 2025-08-07 — v2.3.5: Ana sayfada buton kaldırma (temizlik)
+- 2025-08-07 — v2.3.5: Ana sayfada buton temizliği
 - 2025-08-07 — v2.3.4: İleri Analiz Özeti UI
 - 2025-08-07 — v2.3.3: Kapsamlı hidrostatik/stabilite seti, dil kalıcılığı
 - 2025-08-07 — v2.3.2: Global dil değişimi, preview fix
