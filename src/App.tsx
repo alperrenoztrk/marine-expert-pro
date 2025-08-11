@@ -34,14 +34,38 @@ import { LanguageRouteSync } from "@/components/LanguageRouteSync";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(true);
+  const hasLaunched = typeof window !== 'undefined' ? sessionStorage.getItem('hasLaunched') === 'true' : false;
+  const [showSplash, setShowSplash] = useState(!hasLaunched);
   const { isNative, keyboardVisible } = useAndroidFeatures();
   const { frameRate } = useFrameRate(); // Initialize frame rate
 
-  if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
-  }
+  useEffect(() => {
+    const onBeforeUnload = () => console.info('[App] beforeunload fired');
+    const onPageHide = () => console.info('[App] pagehide fired');
+    const onVisibility = () => console.info('[App] visibilitychange:', document.visibilityState);
+    window.addEventListener('beforeunload', onBeforeUnload);
+    window.addEventListener('pagehide', onPageHide);
+    document.addEventListener('visibilitychange', onVisibility);
+    console.info('[App] mounted');
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+      window.removeEventListener('pagehide', onPageHide);
+      document.removeEventListener('visibilitychange', onVisibility);
+      console.info('[App] unmounted');
+    };
+  }, []);
 
+  const handleSplashComplete = () => {
+    try {
+      sessionStorage.setItem('hasLaunched', 'true');
+    } catch {}
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
