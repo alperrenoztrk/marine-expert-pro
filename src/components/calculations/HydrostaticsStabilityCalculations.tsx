@@ -17,7 +17,9 @@ import {
   BonjeanSet
 } from "../../types/hydrostatic";
 
-export const HydrostaticsStabilityCalculations = () => {
+type StabilitySection = 'hydrostatic' | 'stability' | 'trimlist' | 'analysis' | 'bonjean' | 'draft' | 'damage';
+
+export const HydrostaticsStabilityCalculations = ({ singleMode = false, section }: { singleMode?: boolean; section?: StabilitySection }) => {
   const { toast } = useToast();
   
   // Comprehensive hydrostatic calculation states
@@ -270,6 +272,7 @@ export const HydrostaticsStabilityCalculations = () => {
   return (
     <div className="space-y-6">
       {/* Hidrostatik Hesaplamalar */}
+      {(!singleMode || section === 'hydrostatic') && (
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
@@ -388,7 +391,10 @@ export const HydrostaticsStabilityCalculations = () => {
           </div>
         </CardContent>
       </Card>
+      )}
 
+      {(!singleMode || section === 'stability') && (
+      <>
       <Separator />
 
       {/* Stabilite Hesaplamalar */}
@@ -468,11 +474,11 @@ export const HydrostaticsStabilityCalculations = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="angle">Açı (derece)</Label>
+                <Label htmlFor="gz-angle">Açı (°)</Label>
                 <Input
-                  id="angle"
+                  id="gz-angle"
                   type="number"
-                  placeholder="Φ"
+                  placeholder="φ"
                   value={gzInputs.angle}
                   onChange={(e) => setGzInputs(prev => ({ ...prev, angle: e.target.value }))}
                 />
@@ -490,9 +496,12 @@ export const HydrostaticsStabilityCalculations = () => {
           </div>
         </CardContent>
       </Card>
+      </>
+      )}
 
+      {(!singleMode || section === 'trimlist') && (
+      <>
       <Separator />
-
       {/* Trim ve List Hesaplamalar */}
       <Card className="shadow-lg">
         <CardHeader>
@@ -528,7 +537,7 @@ export const HydrostaticsStabilityCalculations = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="length">Uzunluk (m)</Label>
+                <Label htmlFor="length">L - Uzunluk (m)</Label>
                 <Input
                   id="length"
                   type="number"
@@ -564,9 +573,9 @@ export const HydrostaticsStabilityCalculations = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="distance">Mesafe (m)</Label>
+                <Label htmlFor="list-distance">Mesafe (m)</Label>
                 <Input
-                  id="distance"
+                  id="list-distance"
                   type="number"
                   placeholder="d"
                   value={listInputs.distance}
@@ -604,21 +613,7 @@ export const HydrostaticsStabilityCalculations = () => {
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
 
-      <Separator />
-
-      {/* Kritik Açılar */}
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-300">
-            <AlertTriangle className="h-5 w-5" />
-            Kritik Açı Hesaplamalar
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          
           {/* Loll Açısı Hesaplama */}
           <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Loll Açısı (φloll = arccos(KG / KM))</h4>
@@ -657,9 +652,12 @@ export const HydrostaticsStabilityCalculations = () => {
           </div>
         </CardContent>
       </Card>
+      </>
+      )}
 
+      {(!singleMode || section === 'analysis') && (
+      <>
       <Separator />
-
       {/* Kapsamlı Stabilite Analizi */}
       <Card className="shadow-lg">
         <CardHeader>
@@ -753,33 +751,8 @@ export const HydrostaticsStabilityCalculations = () => {
                       <span className="font-medium">{analysis.hydrostatic.volumeDisplacement.toFixed(2)} m³</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Su Hattı Alanı:</span>
+                      <span>WPA:</span>
                       <span className="font-medium">{analysis.hydrostatic.waterplaneArea.toFixed(2)} m²</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Batık Hacim:</span>
-                      <span className="font-medium">{analysis.hydrostatic.immersedVolume.toFixed(2)} m³</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Target className="h-4 w-4" />
-                    Merkez Noktaları
-                  </h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>LCB:</span>
-                      <span className="font-medium">{analysis.centers.lcb.toFixed(2)} m</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>VCB:</span>
-                      <span className="font-medium">{analysis.centers.vcb.toFixed(2)} m</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>LCF:</span>
-                      <span className="font-medium">{analysis.centers.lcf.toFixed(2)} m</span>
                     </div>
                     <div className="flex justify-between">
                       <span>KB:</span>
@@ -793,54 +766,6 @@ export const HydrostaticsStabilityCalculations = () => {
                       <span>BM:</span>
                       <span className="font-medium">{analysis.centers.bm.toFixed(2)} m</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>KG:</span>
-                      <span className="font-medium">{analysis.centers.kg.toFixed(2)} m</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>GM:</span>
-                      <span className="font-medium">{analysis.centers.gm.toFixed(3)} m</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stabilite Analizi */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-yellow-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
-                    Stabilite Verileri
-                  </h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>GM:</span>
-                      <span className="font-medium">{analysis.stability.gm.toFixed(3)} m</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Maksimum GZ:</span>
-                      <span className="font-medium">{analysis.stability.maxGz.toFixed(3)} m</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Maksimum GZ Açısı:</span>
-                      <span className="font-medium">{analysis.stability.maxGzAngle.toFixed(1)}°</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Kaybolma Açısı:</span>
-                      <span className="font-medium">{analysis.stability.vanishingAngle.toFixed(1)}°</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Güverte Kenar Açısı:</span>
-                      <span className="font-medium">{analysis.stability.deckEdgeAngle.toFixed(1)}°</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Su Alma Açısı:</span>
-                      <span className="font-medium">{analysis.stability.downfloodingAngle.toFixed(1)}°</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Eşitlenme Açısı:</span>
-                      <span className="font-medium">{analysis.stability.equalizedAngle.toFixed(1)}°</span>
-                    </div>
                   </div>
                 </div>
 
@@ -851,21 +776,15 @@ export const HydrostaticsStabilityCalculations = () => {
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>0-30° Alan:</span>
+                      <span>Alan (0-30°):</span>
                       <span className={`font-medium ${analysis.imoCriteria.area0to30 >= 0.055 ? 'text-green-600' : 'text-red-600'}`}>
-                        {analysis.imoCriteria.area0to30.toFixed(3)} m-rad
+                        {analysis.imoCriteria.area0to30.toFixed(3)} mrad
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>0-40° Alan:</span>
-                      <span className={`font-medium ${analysis.imoCriteria.area0to40 >= 0.090 ? 'text-green-600' : 'text-red-600'}`}>
-                        {analysis.imoCriteria.area0to40.toFixed(3)} m-rad
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>30-40° Alan:</span>
-                      <span className={`font-medium ${analysis.imoCriteria.area30to40 >= 0.030 ? 'text-green-600' : 'text-red-600'}`}>
-                        {analysis.imoCriteria.area30to40.toFixed(3)} m-rad
+                      <span>Alan (0-40°):</span>
+                      <span className={`font-medium ${analysis.imoCriteria.area0to40 >= 0.09 ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.area0to40.toFixed(3)} mrad
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -882,92 +801,42 @@ export const HydrostaticsStabilityCalculations = () => {
                     </div>
                     <div className="flex justify-between">
                       <span>Weather Criterion:</span>
-                      <span className="font-medium">{analysis.imoCriteria.weatherCriterion.toFixed(3)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>IMO Uygunluğu:</span>
-                      <span className={`font-medium ${analysis.imoCriteria.compliance ? 'text-green-600' : 'text-red-600'}`}>
-                        {analysis.imoCriteria.compliance ? 'Uygun' : 'Uygun Değil'}
+                      <span className={`font-medium ${analysis.imoCriteria.weatherCriterion ? 'text-green-600' : 'text-red-600'}`}>
+                        {analysis.imoCriteria.weatherCriterion ? 'Sağlandı' : 'Sağlanmadı'}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Dinamik Stabilite */}
-              <div className="bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Dinamik Stabilite
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              {/* Dinamik Stabilite ve GZ Eğrisi */}
+              <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Dinamik Stabilite ve GZ Eğrisi</h4>
+                <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>Yalpa Periyodu:</span>
-                    <span className="font-medium">{analysis.dynamicStability.rollingPeriod.toFixed(2)} s</span>
+                    <span>Maksimum Sağlama Momenti:</span>
+                    <span className="font-medium">{Math.max(...analysis.dynamicStability.gzCurve.map(p => p.rightingMoment)).toFixed(0)} kN·m</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Doğal Periyot:</span>
-                    <span className="font-medium">{analysis.dynamicStability.naturalPeriod.toFixed(2)} s</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Stabilite İndeksi:</span>
-                    <span className="font-medium">{analysis.dynamicStability.stabilityIndex.toFixed(3)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Güvenlik Marjı:</span>
-                    <span className="font-medium">{analysis.dynamicStability.safetyMargin.toFixed(1)}°</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Rezonans Kontrolü:</span>
-                    <span className={`font-medium ${analysis.dynamicStability.resonanceCheck ? 'text-red-600' : 'text-green-600'}`}>
-                      {analysis.dynamicStability.resonanceCheck ? 'Rezonans Riski' : 'Güvenli'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Stabilite Aralığı:</span>
-                    <span className="font-medium">{analysis.dynamicStability.stabilityRange.toFixed(1)}°</span>
+                    <span>Vanishing Angle:</span>
+                    <span className="font-medium">{analysis.dynamicStability.vanishingAngle.toFixed(1)}°</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Stabilite Kalitesi:</span>
                     <span className="font-medium">{analysis.dynamicStability.stabilityQuality.toFixed(3)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>GM Standartları:</span>
-                    <span className="font-medium">{analysis.dynamicStability.gmStandards.toFixed(3)} m</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* GZ Eğrisi Görselleştirme */}
-              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  GZ Eğrisi (0-30°)
-                </h4>
-                <div className="h-48 bg-white dark:bg-gray-600 rounded flex items-end justify-center p-4">
-                  <div className="flex items-end space-x-1">
-                    {analysis.stability.gz.slice(0, 31).map((gz, index) => (
-                      <div
-                        key={index}
-                        className="bg-blue-500 rounded-t"
-                        style={{
-                          width: '4px',
-                          height: `${(gz / analysis.stability.maxGz) * 160}px`
-                        }}
-                        title={`${index}°: ${gz.toFixed(3)}m`}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-2 text-center text-sm text-gray-600">
-                  GZ Değerleri (0-30°)
                 </div>
               </div>
             </div>
           )}
         </CardContent>
       </Card>
+      </>
+      )}
 
+      {(!singleMode || section === 'bonjean') && (
+      <>
+      <Separator />
       {/* Bonjean Entegrasyonu */}
       <Card className="shadow-lg">
         <CardHeader>
@@ -981,115 +850,36 @@ export const HydrostaticsStabilityCalculations = () => {
             <Label htmlFor="bonjean-json">Bonjean JSON (sections[], stationSpacing)</Label>
             <textarea
               id="bonjean-json"
-              className="w-full min-h-[120px] rounded border bg-background p-3 text-sm"
+              className="w-full h-40 p-2 rounded bg-white dark:bg-gray-700"
               placeholder='{"sections": [{"station":0,"area":..,"moment":..},...], "stationSpacing": 5}'
               value={bonjeanText}
               onChange={(e) => setBonjeanText(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => {
-                try {
-                  const parsed = JSON.parse(bonjeanText);
-                  if (parsed?.sections && Array.isArray(parsed.sections) && typeof parsed.stationSpacing === 'number') {
-                    setBonjeanSet(parsed);
-                    toast({ title: 'Bonjean uygulandı', description: `İstasyon sayısı: ${parsed.sections.length}` });
-                  } else {
-                    toast({ title: 'Hata', description: 'Geçersiz Bonjean JSON', variant: 'destructive' });
-                  }
-                } catch (e) {
-                  toast({ title: 'Hata', description: 'JSON parse edilemedi', variant: 'destructive' });
+          <div className="flex gap-2">
+            <Button onClick={() => {
+              try {
+                const parsed = JSON.parse(bonjeanText);
+                if (parsed?.sections && Array.isArray(parsed.sections) && typeof parsed.stationSpacing === 'number') {
+                  setBonjeanSet(parsed);
+                  toast({ title: 'Bonjean uygulandı', description: `İstasyon sayısı: ${parsed.sections.length}` });
+                } else {
+                  toast({ title: 'Hata', description: 'Geçersiz Bonjean JSON', variant: 'destructive' });
                 }
-              }}
-            >Uygula</Button>
-            {bonjeanSet && (
-              <span className="text-sm text-muted-foreground">Uygulandı • {bonjeanSet.sections.length} kesit, Δ yeniden hesaplanır</span>
-            )}
+              } catch (e) {
+                toast({ title: 'Hata', description: 'JSON parse edilemedi', variant: 'destructive' });
+              }
+            }}>Uygula</Button>
+            <Button variant="outline" onClick={() => { setBonjeanText(''); setBonjeanSet(undefined); }}>Temizle</Button>
           </div>
         </CardContent>
       </Card>
-
-      {/* Ağırlık ve Tanklar + FSC */}
-      {analysis && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-              <Anchor className="h-5 w-5" />
-              Ağırlık Dağılımı, Tanklar ve Free Surface Correction
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">Ağırlık Dağılımı</h4>
-                <div className="space-y-2">
-                  {weightDistribution.map((w, idx) => (
-                    <div key={idx} className="grid grid-cols-5 gap-2 items-center">
-                      <Input value={w.item} onChange={(e)=>{
-                        const arr=[...weightDistribution]; arr[idx]={...arr[idx], item:e.target.value}; setWeightDistribution(arr);
-                      }} />
-                      <Input type="number" value={w.weight} onChange={(e)=>{
-                        const arr=[...weightDistribution]; arr[idx]={...arr[idx], weight: parseFloat(e.target.value)}; setWeightDistribution(arr);
-                      }} />
-                      <Input type="number" value={w.lcg} onChange={(e)=>{
-                        const arr=[...weightDistribution]; arr[idx]={...arr[idx], lcg: parseFloat(e.target.value)}; setWeightDistribution(arr);
-                      }} />
-                      <Input type="number" value={w.vcg} onChange={(e)=>{
-                        const arr=[...weightDistribution]; arr[idx]={...arr[idx], vcg: parseFloat(e.target.value)}; setWeightDistribution(arr);
-                      }} />
-                      <Input type="number" value={w.tcg} onChange={(e)=>{
-                        const arr=[...weightDistribution]; arr[idx]={...arr[idx], tcg: parseFloat(e.target.value)}; setWeightDistribution(arr);
-                      }} />
-                    </div>
-                  ))}
-                  <div className="flex justify-end">
-                    <Button variant="secondary" onClick={()=> setWeightDistribution(prev=>[...prev, { item:'Yeni', weight:0, lcg:0, vcg:0, tcg:0, moment:0 }])}>Satır Ekle</Button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">Tanklar</h4>
-                <div className="space-y-2">
-                  {tanks.map((t, idx) => (
-                    <div key={idx} className="grid grid-cols-6 gap-2 items-center">
-                      <Input value={t.name} onChange={(e)=>{ const arr=[...tanks]; arr[idx]={...arr[idx], name:e.target.value}; setTanks(arr); }} />
-                      <Input type="number" value={t.currentVolume} onChange={(e)=>{ const arr=[...tanks]; arr[idx]={...arr[idx], currentVolume: parseFloat(e.target.value)}; setTanks(arr); }} />
-                      <Input type="number" value={t.capacity} onChange={(e)=>{ const arr=[...tanks]; arr[idx]={...arr[idx], capacity: parseFloat(e.target.value)}; setTanks(arr); }} />
-                      <Input type="number" value={t.tcg} onChange={(e)=>{ const arr=[...tanks]; arr[idx]={...arr[idx], tcg: parseFloat(e.target.value)}; setTanks(arr); }} />
-                      <Input type="number" value={t.freeSurfaceEffect} onChange={(e)=>{ const arr=[...tanks]; arr[idx]={...arr[idx], freeSurfaceEffect: parseFloat(e.target.value)}; setTanks(arr); }} />
-                      <Input type="number" value={t.fluidDensity} onChange={(e)=>{ const arr=[...tanks]; arr[idx]={...arr[idx], fluidDensity: parseFloat(e.target.value)}; setTanks(arr); }} />
-                    </div>
-                  ))}
-                  <div className="flex justify-end">
-                    <Button variant="secondary" onClick={()=> setTanks(prev=>[...prev, { name:'Yeni Tank', capacity:0, currentVolume:0, lcg:0, vcg:0, tcg:0, freeSurfaceEffect:0, fluidDensity:1.0 }])}>Tank Ekle</Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
-              <h4 className="font-semibold mb-3">FSC Özeti</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  {(analysis.freeSurfaceCorrections || []).map((f)=> (
-                    <div key={f.tankName} className="flex justify-between">
-                      <span>{f.tankName}</span>
-                      <span className="font-mono">{(f.correction||0).toFixed(3)} m</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center justify-between p-3 rounded bg-white dark:bg-gray-600">
-                  <span>Toplam FSC</span>
-                  <span className="font-semibold font-mono">{HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections||[]).toFixed(3)} m</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      </>
       )}
 
+      {(!singleMode || section === 'draft') && (
+      <>
+      <Separator />
       {/* Draft Survey */}
       <Card className="shadow-lg">
         <CardHeader>
@@ -1098,7 +888,7 @@ export const HydrostaticsStabilityCalculations = () => {
             Draft Survey
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
             <div>
               <Label>Ön Draft (m)</Label>
@@ -1142,135 +932,51 @@ export const HydrostaticsStabilityCalculations = () => {
           )}
         </CardContent>
       </Card>
-
-      {/* Hasar Stabilitesi & Bölme Analizi */}
-      {analysis && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-rose-700 dark:text-rose-300">
-              <AlertTriangle className="h-5 w-5" />
-              Hasar Stabilitesi
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
-              <Input placeholder="Bölme" value={newCompartment.compartment} onChange={(e)=> setNewCompartment(p=>({...p, compartment: e.target.value}))} />
-              <Input type="number" placeholder="Flooded V (m³)" value={newCompartment.floodedVolume} onChange={(e)=> setNewCompartment(p=>({...p, floodedVolume: e.target.value}))} />
-              <Input type="number" placeholder="Yeni KG (m)" value={newCompartment.newKG} onChange={(e)=> setNewCompartment(p=>({...p, newKG: e.target.value}))} />
-              <div className="col-span-2 flex justify-end">
-                <Button variant="secondary" onClick={()=>{
-                  const fv = parseFloat(newCompartment.floodedVolume);
-                  const nk = parseFloat(newCompartment.newKG);
-                  if(isNaN(fv) || isNaN(nk) || !newCompartment.compartment){
-                    toast({ title:'Hata', description:'Geçerli bölme/veri girin', variant:'destructive' }); return;
-                  }
-                  const comp: CompartmentAnalysis = { compartment: newCompartment.compartment, floodedVolume: fv, newKG: nk, residualGM: 0, downfloodingAngle: 0 };
-                  setFloodedCompartments(prev=> [...prev, comp]);
-                  setNewCompartment({ compartment:"", floodedVolume:"", newKG:"" });
-                }}>Bölme Ekle</Button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm bg-rose-50 dark:bg-gray-700 p-4 rounded">
-              <div className="flex justify-between"><span>Residual GM</span><span className="font-mono">{analysis.damageStability.residualGM.toFixed(3)} m</span></div>
-              <div className="flex justify-between"><span>Downflooding Angle</span><span className="font-mono">{analysis.damageStability.downfloodingAngle.toFixed(1)}°</span></div>
-              <div className="flex justify-between"><span>Survival Factor</span><span className="font-mono">{analysis.damageStability.survivalFactor.toFixed(3)}</span></div>
-              <div className="flex justify-between"><span>Cross Flooding Time</span><span className="font-mono">{analysis.damageStability.crossFloodingTime.toFixed(0)} dk</span></div>
-              <div className="flex justify-between"><span>Flooded Volume</span><span className="font-mono">{analysis.damageStability.floodedVolume.toFixed(1)} m³</span></div>
-            </div>
-          </CardContent>
-        </Card>
+      </>
       )}
 
-      {/* Tahıl Stabilitesi (SOLAS VI) */}
-      {analysis && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
-              <Zap className="h-5 w-5" />
-              Tahıl Stabilitesi (SOLAS VI)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-              <div>
-                <Label>Shift Moment</Label>
-                <Input type="number" value={grainShiftMoment} onChange={(e)=> setGrainShiftMoment(parseFloat(e.target.value||'0'))} />
-              </div>
-              <div>
-                <Label>Heel Angle (°)</Label>
-                <Input type="number" value={grainHeelAngle} onChange={(e)=> setGrainHeelAngle(parseFloat(e.target.value||'0'))} />
-              </div>
+      {(!singleMode || section === 'damage') && (
+      <>
+      <Separator />
+      {/* Hasar Stabilitesi */}
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-rose-700 dark:text-rose-300">
+            <AlertTriangle className="h-5 w-5" />
+            Hasar Stabilitesi
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
+              <Input placeholder="Bölme adı" value={newCompartment.compartment} onChange={(e)=> setNewCompartment(p=>({...p, compartment:e.target.value}))} />
+              <Input placeholder="Suya gömülen hacim [m³]" value={newCompartment.floodedVolume} onChange={(e)=> setNewCompartment(p=>({...p, floodedVolume:e.target.value}))} />
+              <Input placeholder="Yeni KG [m]" value={newCompartment.newKG} onChange={(e)=> setNewCompartment(p=>({...p, newKG:e.target.value}))} />
+              <Button onClick={()=>{
+                const fv = parseFloat(newCompartment.floodedVolume);
+                const nk = parseFloat(newCompartment.newKG);
+                if(isNaN(fv) || isNaN(nk) || !newCompartment.compartment){
+                  toast({ title:'Hata', description:'Geçerli bölme/veri girin', variant:'destructive' }); return;
+                }
+                const comp: CompartmentAnalysis = { compartment: newCompartment.compartment, floodedVolume: fv, newKG: nk, residualGM: 0, downfloodingAngle: 0 };
+                setFloodedCompartments(prev=> [...prev, comp]);
+                setNewCompartment({ compartment:"", floodedVolume:"", newKG:"" });
+              }}>Bölme Ekle</Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm bg-amber-50 dark:bg-gray-700 p-4 rounded">
-              <div className="flex justify-between"><span>Safety Factor</span><span className="font-mono">{analysis.grainStability.grainSafetyFactor.toFixed(3)}</span></div>
-              <div className="flex justify-between"><span>Allowable Heel</span><span className="font-mono">{analysis.grainStability.grainAllowableHeel.toFixed(1)}°</span></div>
-              <div className="flex justify-between"><span>Criterion</span><span className="font-mono">{analysis.grainStability.grainStabilityCriterion.toFixed(3)}</span></div>
-              <div className="flex justify-between"><span>Uygunluk</span><span className={`font-medium ${analysis.grainStability.compliance ? 'text-green-600' : 'text-red-600'}`}>{analysis.grainStability.compliance ? 'Uygun' : 'Değil'}</span></div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
-      {/* İleri Analiz Özeti */}
-      {analysis && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
-              <BarChart3 className="h-5 w-5" />
-              İleri Analiz Özeti
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {(() => {
-              const kgCalc = HydrostaticCalculations.calculateKGFromWeights(weightDistribution);
-              const fscList = analysis.freeSurfaceCorrections || [];
-              const totalFSC = HydrostaticCalculations.calculateTotalFSC(fscList);
-              const correctedGM = HydrostaticCalculations.calculateCorrectedGM(analysis.stability.gm, totalFSC);
-              const gzSummary = HydrostaticCalculations.analyzeGZCurve(analysis.stability);
-              const rightingMax = Math.max(...analysis.dynamicStability.gzCurve.map(p => p.rightingMoment));
-              return (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">KG / GM / FSC</h4>
-                    <ul className="text-sm space-y-1">
-                      <li>KG (ağırlıklardan): <span className="font-mono">{kgCalc.toFixed(3)} m</span></li>
-                      <li>GM (ilk): <span className="font-mono">{analysis.stability.gm.toFixed(3)} m</span></li>
-                      <li>Toplam FSC: <span className="font-mono">{totalFSC.toFixed(3)} m</span></li>
-                      <li>GM (düzeltilmiş): <span className="font-mono">{correctedGM.toFixed(3)} m</span></li>
-                    </ul>
-                  </div>
-                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">GZ Eğrisi Özet</h4>
-                    <ul className="text-sm space-y-1">
-                      <li>Alan (0–30°): <span className="font-mono">{gzSummary.area0to30.toFixed(4)} m·rad</span></li>
-                      <li>Alan (0–40°): <span className="font-mono">{gzSummary.area0to40.toFixed(4)} m·rad</span></li>
-                      <li>Alan (30–40°): <span className="font-mono">{gzSummary.area30to40.toFixed(4)} m·rad</span></li>
-                      <li>Max GZ: <span className="font-mono">{gzSummary.maxGz.toFixed(3)} m @ {gzSummary.maxGzAngle}°</span></li>
-                    </ul>
-                  </div>
-                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Kritik Açılar</h4>
-                    <ul className="text-sm space-y-1">
-                      <li>Vanishing Angle: <span className="font-mono">{analysis.stability.vanishingAngle}°</span></li>
-                      <li>Deck Edge Angle: <span className="font-mono">{analysis.stability.deckEdgeAngle.toFixed(1)}°</span></li>
-                      <li>Downflooding Angle: <span className="font-mono">{analysis.stability.downfloodingAngle.toFixed(1)}°</span></li>
-                      <li>Equalized Angle: <span className="font-mono">{analysis.stability.equalizedAngle.toFixed(1)}°</span></li>
-                    </ul>
-                  </div>
-                  <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Trim/List ve Momentler</h4>
-                    <ul className="text-sm space-y-1">
-                      <li>Trim Açısı: <span className="font-mono">{analysis.trimList.trimAngle.toFixed(3)}°</span></li>
-                      <li>List Açısı: <span className="font-mono">{analysis.trimList.listAngle.toFixed(3)}°</span></li>
-                      <li>Righting Moment (max): <span className="font-mono">{rightingMax.toFixed(1)} N·m</span></li>
-                    </ul>
-                  </div>
-                </div>
-              );
-            })()}
-          </CardContent>
-        </Card>
+            {analysis && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm bg-rose-50 dark:bg-gray-700 p-4 rounded">
+                <div className="flex justify-between"><span>Residual GM</span><span className="font-mono">{analysis.damageStability.residualGM.toFixed(3)} m</span></div>
+                <div className="flex justify-between"><span>Downflooding Angle</span><span className="font-mono">{analysis.damageStability.downfloodingAngle.toFixed(1)}°</span></div>
+                <div className="flex justify-between"><span>Survival Factor</span><span className="font-mono">{analysis.damageStability.survivalFactor.toFixed(3)}</span></div>
+                <div className="flex justify-between"><span>Cross Flooding Time</span><span className="font-mono">{analysis.damageStability.crossFloodingTime.toFixed(0)} dk</span></div>
+                <div className="flex justify-between"><span>Flooded Volume</span><span className="font-mono">{analysis.damageStability.floodedVolume.toFixed(1)} m³</span></div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      </>
       )}
     </div>
   );

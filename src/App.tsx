@@ -29,6 +29,14 @@ import EmissionCalculationsPage from "./pages/EmissionCalculations";
 import WeatherCalculationsPage from "./pages/WeatherCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 import HydrostaticsStabilityPage from "./pages/HydrostaticsStability";
+import StabilityMenu from "./pages/StabilityMenu";
+import StabilityHydrostaticPage from "./pages/StabilityHydrostatic";
+import StabilityStabilityPage from "./pages/StabilityStability";
+import StabilityTrimListPage from "./pages/StabilityTrimList";
+import StabilityAnalysisPage from "./pages/StabilityAnalysis";
+import StabilityBonjeanPage from "./pages/StabilityBonjean";
+import StabilityDraftPage from "./pages/StabilityDraft";
+import StabilityDamagePage from "./pages/StabilityDamage";
 import Settings from "./pages/Settings";
 import { LanguageRouteSync } from "@/components/LanguageRouteSync";
 
@@ -104,6 +112,14 @@ const App = () => {
                   <Route path="/weather" element={<WeatherCalculationsPage />} />
                   <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
                   <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
+                  <Route path="/stability" element={<StabilityMenu />} />
+                  <Route path="/stability/hydrostatic" element={<StabilityHydrostaticPage />} />
+                  <Route path="/stability/stability" element={<StabilityStabilityPage />} />
+                  <Route path="/stability/trimlist" element={<StabilityTrimListPage />} />
+                  <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
+                  <Route path="/stability/bonjean" element={<StabilityBonjeanPage />} />
+                  <Route path="/stability/draft" element={<StabilityDraftPage />} />
+                  <Route path="/stability/damage" element={<StabilityDamagePage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>
