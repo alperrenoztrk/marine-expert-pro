@@ -1914,80 +1914,8 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
             </TabsContent>
             )}
 
-            {(singleMode ? activeTab==='grain' : true) && (
-            <TabsContent value="grain" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Wheat className="h-5 w-5" />
-                    Tahıl Stabilitesi
-                  </CardTitle>
-                  <CardDescription>
-                    IMO Grain Code uygun hesaplamalar
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Tahıl Türü</Label>
-                      <Input 
-                        value={grainData.grainType || ''}
-                        onChange={(e) => setGrainData({...grainData, grainType: e.target.value})}
-                        placeholder="Buğday, Mısır, Soya vb."
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Angle of Repose [°]</Label>
-                      <Input 
-                        type="number"
-                        value={grainData.angle_of_repose || ''}
-                        onChange={(e) => setGrainData({...grainData, angle_of_repose: parseFloat(e.target.value)})}
-                        placeholder="25"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Volumetrik Ağırlık [t/m³]</Label>
-                      <Input 
-                        type="number"
-                        step="0.01"
-                        value={grainData.volumetricWeight || ''}
-                        onChange={(e) => setGrainData({...grainData, volumetricWeight: parseFloat(e.target.value)})}
-                        placeholder="0.75"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Dolu Hacim [m³]</Label>
-                      <Input 
-                        type="number"
-                        value={grainData.filled_volume || ''}
-                        onChange={(e) => setGrainData({...grainData, filled_volume: parseFloat(e.target.value)})}
-                        placeholder="5000"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Trimming/Levelling</Label>
-                      <div className="flex gap-2 text-sm">
-                        <Button variant="outline" size="sm" onClick={()=> setGrainData({...grainData, shifting_moment: (grainData.shifting_moment||0)*0.9 })}>Trimming</Button>
-                        <Button variant="outline" size="sm" onClick={()=> setGrainData({...grainData, shifting_moment: (grainData.shifting_moment||0)*0.8 })}>Levelling</Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-amber-50 rounded-lg">
-                    <h4 className="font-semibold text-amber-800 mb-2">IMO Grain Code Kriterleri</h4>
-                    <ul className="text-sm text-amber-700 space-y-1">
-                      <li>• Tahıl kayması hesabı zorunlu</li>
-                      <li>• Shifting board veya trimming gerekli</li>
-                      <li>• Heeling moment kontrolü</li>
-                      <li>• Stabilite kitapçığında özel prosedür</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            )}
-
-            {(singleMode ? activeTab==='survey' : true) && (
+            
+              {(singleMode ? activeTab==='survey' : true) && (
             <TabsContent value="survey" className="space-y-6">
               <Card>
                 <CardHeader>
