@@ -660,12 +660,12 @@ export const HydrostaticsStabilityCalculations = () => {
 
       <Separator />
 
-      {/* Kapsamlı Hidrostatik ve Stabilite Analizi */}
+      {/* Kapsamlı Stabilite Analizi */}
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
             <BarChart3 className="h-5 w-5" />
-            Kapsamlı Hidrostatik ve Stabilite Analizi
+            Kapsamlı Stabilite Analizi
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -708,7 +708,7 @@ export const HydrostaticCalculator: React.FC<HydrostaticCalculatorProps> = ({ cl
   return (
     <div className={`max-w-7xl mx-auto p-6 ${className}`}>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Hidrostatik ve Stabilite Hesaplamaları</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Stabilite Hesaplamaları</h1>
         <p className="text-gray-600">Kapsamlı gemi stabilite ve hidrostatik hesaplama sistemi</p>
       </div>
 

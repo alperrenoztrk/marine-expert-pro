@@ -26,7 +26,7 @@ const HydrostaticsStabilityPage = () => {
           <div className="flex items-center justify-center gap-3">
             <Ship className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
-              Hidrostatik ve Stabilite Hesaplamaları
+              Stabilite Hesaplamaları
             </h1>
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -40,7 +40,7 @@ const HydrostaticsStabilityPage = () => {
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-xl">
                 <Calculator className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                Hidrostatik ve Stabilite Hesaplamaları
+                Stabilite Hesaplamaları
               </CardTitle>
               <CardDescription>
                 Gemi güvenliği ve operasyonu için temel hesaplama formülleri ve interaktif hesaplamalar

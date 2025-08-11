@@ -227,7 +227,7 @@ const Index = () => {
                   <Link to="/hydrostatics-stability">
                     <Button size="sm" variant="outline" className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50">
                       <Waves className="w-4 h-4" />
-                      <span data-translatable>Hidrostatik & Stabilite</span>
+                      <span data-translatable>Stabilite</span>
                     </Button>
                   </Link>
                   <Link to="/navigation">
