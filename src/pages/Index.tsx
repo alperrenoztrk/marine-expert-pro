@@ -224,7 +224,7 @@ const Index = () => {
                 {/* Second Row - Other buttons */}
                 <div className="flex gap-2 flex-wrap">
                   {/* Trim ve List butonu kaldırıldı */}
-                  <Link to="/hydrostatics-stability">
+                  <Link to="/stability">
                     <Button size="sm" variant="outline" className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50">
                       <Waves className="w-4 h-4" />
                       <span data-translatable>Stabilite</span>
