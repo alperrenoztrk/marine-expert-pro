@@ -819,7 +819,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
                   </div>
                   <div className="flex justify-between">
                     <span>Vanishing Angle:</span>
-                    <span className="font-medium">{analysis.dynamicStability.vanishingAngle.toFixed(1)}°</span>
+                    <span className="font-medium">{analysis.stability.vanishingAngle.toFixed(1)}°</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Stabilite Kalitesi:</span>
