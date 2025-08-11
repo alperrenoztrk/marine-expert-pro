@@ -37,6 +37,13 @@ import StabilityAnalysisPage from "./pages/StabilityAnalysis";
 import StabilityBonjeanPage from "./pages/StabilityBonjean";
 import StabilityDraftPage from "./pages/StabilityDraft";
 import StabilityDamagePage from "./pages/StabilityDamage";
+import StabilityDisplacementPage from "./pages/StabilityDisplacement";
+import StabilityTPCPage from "./pages/StabilityTPC";
+import StabilityGMPage from "./pages/StabilityGM";
+import StabilityGZPage from "./pages/StabilityGZ";
+import StabilityTrimPage from "./pages/StabilityTrim";
+import StabilityListPage from "./pages/StabilityList";
+import StabilityLollPage from "./pages/StabilityLoll";
 import Settings from "./pages/Settings";
 import { LanguageRouteSync } from "@/components/LanguageRouteSync";
 
@@ -120,6 +127,14 @@ const App = () => {
                   <Route path="/stability/bonjean" element={<StabilityBonjeanPage />} />
                   <Route path="/stability/draft" element={<StabilityDraftPage />} />
                   <Route path="/stability/damage" element={<StabilityDamagePage />} />
+                  <Route path="/stability/displacement" element={<StabilityDisplacementPage />} />
+                  <Route path="/stability/draft-calc" element={<StabilityDraftPage />} />
+                  <Route path="/stability/tpc" element={<StabilityTPCPage />} />
+                  <Route path="/stability/gm" element={<StabilityGMPage />} />
+                  <Route path="/stability/gz" element={<StabilityGZPage />} />
+                  <Route path="/stability/trim" element={<StabilityTrimPage />} />
+                  <Route path="/stability/list" element={<StabilityListPage />} />
+                  <Route path="/stability/loll" element={<StabilityLollPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                 </Routes>

@@ -18,8 +18,9 @@ import {
 } from "../../types/hydrostatic";
 
 type StabilitySection = 'hydrostatic' | 'stability' | 'trimlist' | 'analysis' | 'bonjean' | 'draft' | 'damage';
+type StabilityCalc = 'displacement' | 'draft' | 'tpc' | 'gm' | 'gz' | 'trim' | 'list' | 'loll';
 
-export const HydrostaticsStabilityCalculations = ({ singleMode = false, section }: { singleMode?: boolean; section?: StabilitySection }) => {
+export const HydrostaticsStabilityCalculations = ({ singleMode = false, section, calc }: { singleMode?: boolean; section?: StabilitySection; calc?: StabilityCalc }) => {
   const { toast } = useToast();
   
   // Comprehensive hydrostatic calculation states
@@ -283,6 +284,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
         <CardContent className="space-y-6">
           
           {/* Deplasman Hesaplama */}
+          {(!singleMode || !calc || calc==='displacement') && (
           <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Deplasman Hesaplama (Δ = V × ρsw)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -317,8 +319,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
 
           {/* Draft Hesaplama */}
+          {(!singleMode || !calc || calc==='draft') && (
           <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Draft Hesaplama (T = V / Awp)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -353,8 +357,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
 
           {/* TPC Hesaplama */}
+          {(!singleMode || !calc || calc==='tpc') && (
           <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">TPC Hesaplama (TPC = Awp × ρsw / 100)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -389,6 +395,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
         </CardContent>
       </Card>
       )}
@@ -408,6 +415,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
         <CardContent className="space-y-6">
           
           {/* GM Hesaplama */}
+          {(!singleMode || !calc || calc==='gm') && (
           <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">GM Hesaplama (GM = KB + BM - KG)</h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -458,8 +466,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
 
           {/* GZ Hesaplama */}
+          {(!singleMode || !calc || calc==='gz') && (
           <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">GZ Hesaplama (GZ = GM × sin(φ))</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -494,6 +504,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
         </CardContent>
       </Card>
       </>
@@ -513,6 +524,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
         <CardContent className="space-y-6">
           
           {/* Trim Hesaplama */}
+          {(!singleMode || !calc || calc==='trim') && (
           <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Trim Açısı (Trim = arctan((Ta - Tf) / L))</h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -557,8 +569,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
 
           {/* List Hesaplama */}
+          {(!singleMode || !calc || calc==='list') && (
           <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">List Açısı (List = arctan(W × d / (Δ × GM)))</h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -613,8 +627,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
 
           {/* Loll Açısı Hesaplama */}
+          {(!singleMode || !calc || calc==='loll') && (
           <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Loll Açısı (φloll = arccos(KG / KM))</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -650,6 +666,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section 
               </div>
             )}
           </div>
+          )}
         </CardContent>
       </Card>
       </>

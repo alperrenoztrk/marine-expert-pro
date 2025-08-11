@@ -1,17 +1,42 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Waves, Ship, BarChart3, Ruler, Wheat, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Shield, Waves, Ship, BarChart3, Ruler, AlertTriangle, ArrowLeft, Gauge } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
-  const items = [
-    { to: "/stability/hydrostatic", icon: <Waves className="h-4 w-4" />, label: "Hidrostatik" },
-    { to: "/stability/stability", icon: <Shield className="h-4 w-4" />, label: "Stabilite" },
-    { to: "/stability/trimlist", icon: <Ship className="h-4 w-4" />, label: "Trim & List" },
-    { to: "/stability/analysis", icon: <BarChart3 className="h-4 w-4" />, label: "Analiz Özeti" },
-    { to: "/stability/bonjean", icon: <Ruler className="h-4 w-4" />, label: "Bonjean" },
-    { to: "/stability/draft", icon: <Waves className="h-4 w-4" />, label: "Draft Survey" },
-    { to: "/stability/damage", icon: <AlertTriangle className="h-4 w-4" />, label: "Hasar" },
+  const groups = [
+    {
+      title: 'Hidrostatik',
+      items: [
+        { to: "/stability/displacement", icon: <Gauge className="h-4 w-4" />, label: "Deplasman" },
+        { to: "/stability/draft-calc", icon: <Waves className="h-4 w-4" />, label: "Draft" },
+        { to: "/stability/tpc", icon: <Ruler className="h-4 w-4" />, label: "TPC" },
+      ]
+    },
+    {
+      title: 'Stabilite',
+      items: [
+        { to: "/stability/gm", icon: <Shield className="h-4 w-4" />, label: "GM" },
+        { to: "/stability/gz", icon: <BarChart3 className="h-4 w-4" />, label: "GZ" },
+      ]
+    },
+    {
+      title: 'Trim & List',
+      items: [
+        { to: "/stability/trim", icon: <Ship className="h-4 w-4" />, label: "Trim" },
+        { to: "/stability/list", icon: <Ship className="h-4 w-4" />, label: "List" },
+        { to: "/stability/loll", icon: <AlertTriangle className="h-4 w-4" />, label: "Loll" },
+      ]
+    },
+    {
+      title: 'Gelişmiş',
+      items: [
+        { to: "/stability/analysis", icon: <BarChart3 className="h-4 w-4" />, label: "Analiz" },
+        { to: "/stability/bonjean", icon: <Ruler className="h-4 w-4" />, label: "Bonjean" },
+        { to: "/stability/draft", icon: <Waves className="h-4 w-4" />, label: "Draft Survey" },
+        { to: "/stability/damage", icon: <AlertTriangle className="h-4 w-4" />, label: "Hasar" },
+      ]
+    }
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -23,23 +48,25 @@ export default function StabilityMenu() {
           </Button>
         </Link>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Stabilite Hesaplamaları</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {items.map((it)=> (
-              <Link key={it.to} to={it.to}>
-                <Button variant="outline" className="w-full justify-start gap-2">
-                  {it.icon}
-                  {it.label}
-                </Button>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {groups.map((g)=> (
+        <Card key={g.title}>
+          <CardHeader>
+            <CardTitle>{g.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {g.items.map((it)=> (
+                <Link key={it.to} to={it.to}>
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    {it.icon}
+                    {it.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
