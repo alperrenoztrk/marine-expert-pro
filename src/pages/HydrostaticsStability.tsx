@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Calculator, Ship, Waves, Shield, AlertTriangle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Calculator, Ship, Waves, Shield, AlertTriangle, CheckCircle, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +33,21 @@ const HydrostaticsStabilityPage = () => {
             Gemi geometrisi, stabilite analizi, IMO kriterleri ve güvenlik hesaplamaları
           </p>
         </div>
+
+        {/* Hızlı Butonlar */}
+        <Card className="border-0 bg-white/70 dark:bg-gray-800/70">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <Link to="/stability/hydrostatic"><Button variant="outline" className="w-full justify-start gap-2"><Waves className="h-4 w-4" /> Hidrostatik</Button></Link>
+              <Link to="/stability/stability"><Button variant="outline" className="w-full justify-start gap-2"><Shield className="h-4 w-4" /> Stabilite</Button></Link>
+              <Link to="/stability/trimlist"><Button variant="outline" className="w-full justify-start gap-2"><Ship className="h-4 w-4" /> Trim & List</Button></Link>
+              <Link to="/stability/analysis"><Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4" /> Analiz Özeti</Button></Link>
+              <Link to="/stability/bonjean"><Button variant="outline" className="w-full justify-start gap-2"><Calculator className="h-4 w-4" /> Bonjean</Button></Link>
+              <Link to="/stability/draft"><Button variant="outline" className="w-full justify-start gap-2"><Waves className="h-4 w-4" /> Draft Survey</Button></Link>
+              <Link to="/stability/damage"><Button variant="outline" className="w-full justify-start gap-2"><AlertTriangle className="h-4 w-4" /> Hasar</Button></Link>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Main Content */}
         <div className="max-w-6xl mx-auto">
