@@ -33,6 +33,7 @@ export default function StabilityMenu() {
       ]
     }
   ];
+  const items = groups.flatMap((g)=> g.items);
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -43,25 +44,23 @@ export default function StabilityMenu() {
           </Button>
         </Link>
       </div>
-      {groups.map((g)=> (
-        <Card key={g.title}>
-          <CardHeader>
-            <CardTitle>{g.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2 overflow-x-auto py-1">
-              {g.items.map((it)=> (
-                <Link key={it.to} to={it.to} className="flex-shrink-0">
-                  <Button variant="outline" className="justify-start gap-2 whitespace-nowrap">
-                    {it.icon}
-                    {it.label}
-                  </Button>
-                </Link>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+      <Card>
+        <CardHeader>
+          <CardTitle>Stabilite Hesaplamaları</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2 overflow-x-auto py-1 flex-nowrap">
+            {items.map((it)=> (
+              <Link key={it.to} to={it.to} className="flex-shrink-0">
+                <Button variant="outline" className="justify-start gap-2 whitespace-nowrap">
+                  {it.icon}
+                  {it.label}
+                </Button>
+              </Link>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
