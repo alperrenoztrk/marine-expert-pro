@@ -57,6 +57,7 @@ import SafetyMenu from "./pages/SafetyMenu";
 import EmissionsMenu from "./pages/EmissionsMenu";
 import WeatherMenu from "./pages/WeatherMenu";
 import SpecialShipsMenu from "./pages/SpecialShipsMenu";
+import StabilityAssistantPage from "./pages/StabilityAssistant";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +140,7 @@ const App = () => {
                   <Route path="/stability/bonjean" element={<StabilityBonjeanPage />} />
                   <Route path="/stability/draft" element={<StabilityDraftPage />} />
                   <Route path="/stability/damage" element={<StabilityDamagePage />} />
+                  <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
                   <Route path="/stability/displacement" element={<StabilityDisplacementPage />} />
                   <Route path="/stability/draft-calc" element={<StabilityDraftPage />} />
                   <Route path="/stability/tpc" element={<StabilityTPCPage />} />

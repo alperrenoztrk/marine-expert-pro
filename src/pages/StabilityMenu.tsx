@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Waves, Ship, BarChart3, Ruler, AlertTriangle, ArrowLeft, Gauge } from "lucide-react";
+import { Shield, Waves, Ship, BarChart3, Ruler, AlertTriangle, ArrowLeft, Gauge, Brain } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
@@ -34,6 +34,7 @@ export default function StabilityMenu() {
     }
   ];
   const items = groups.flatMap((g)=> g.items);
+  items.push({ to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" } as any);
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
