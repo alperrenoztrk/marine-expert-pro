@@ -46,6 +46,7 @@ import StabilityListPage from "./pages/StabilityList";
 import StabilityLollPage from "./pages/StabilityLoll";
 import Settings from "./pages/Settings";
 import { LanguageRouteSync } from "@/components/LanguageRouteSync";
+import CalculationsMenu from "./pages/CalculationsMenu";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,7 @@ const App = () => {
                   <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
                   <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
                   <Route path="/stability" element={<StabilityMenu />} />
+                  <Route path="/calculations" element={<CalculationsMenu />} />
                   <Route path="/stability/hydrostatic" element={<StabilityHydrostaticPage />} />
                   <Route path="/stability/stability" element={<StabilityStabilityPage />} />
                   <Route path="/stability/trimlist" element={<StabilityTrimListPage />} />

@@ -214,12 +214,18 @@ const Index = () => {
                       <span data-translatable>Soru Asistanı: Mark</span>
                     </Button>
                   </Link>
-                  <Link to="/regulations">
-                    <Button size="sm" variant="outline" className="gap-2 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-700 cyberpunk:border-emerald-400 cyberpunk:text-emerald-400 cyberpunk:hover:bg-gray-800 nature:border-emerald-400 nature:text-emerald-600 nature:hover:bg-emerald-50">
-                      <Shield className="w-4 h-4" />
-                      <span data-translatable>Regülasyonlar</span>
-                    </Button>
-                  </Link>
+                                     <Link to="/regulations">
+                     <Button size="sm" variant="outline" className="gap-2 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-700 cyberpunk:border-emerald-400 cyberpunk:text-emerald-400 cyberpunk:hover:bg-gray-800 nature:border-emerald-400 nature:text-emerald-600 nature:hover:bg-emerald-50">
+                       <Shield className="w-4 h-4" />
+                       <span data-translatable>Regülasyonlar</span>
+                     </Button>
+                   </Link>
+                   <Link to="/calculations">
+                     <Button size="sm" variant="outline" className="gap-2 border-cyan-300 text-cyan-600 hover:bg-cyan-50 dark:border-cyan-600 dark:text-cyan-400 dark:hover:bg-gray-700">
+                       <BarChart3 className="w-4 h-4" />
+                       <span data-translatable>Hesaplamalar</span>
+                     </Button>
+                   </Link>
                 </div>
                 
                 {/* Second Row - Other buttons */}
