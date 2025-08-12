@@ -49,10 +49,10 @@ export default function StabilityMenu() {
             <CardTitle>{g.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <div className="flex gap-2 overflow-x-auto py-1">
               {g.items.map((it)=> (
-                <Link key={it.to} to={it.to}>
-                  <Button variant="outline" className="w-full justify-start gap-2">
+                <Link key={it.to} to={it.to} className="flex-shrink-0">
+                  <Button variant="outline" className="justify-start gap-2 whitespace-nowrap">
                     {it.icon}
                     {it.label}
                   </Button>
