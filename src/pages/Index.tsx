@@ -238,40 +238,40 @@ const Index = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="min-w-56">
                       <DropdownMenuItem asChild>
-                        <Link to="/stability"><Waves className="mr-2 h-4 w-4" /> Stabilite</Link>
+                        <Link to="/stability">Stabilite</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/navigation"><Compass className="mr-2 h-4 w-4" /> Seyir</Link>
+                        <Link to="/navigation">Seyir</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/hydrodynamics"><Waves className="mr-2 h-4 w-4" /> Hidrodinamik</Link>
+                        <Link to="/hydrodynamics">Hidrodinamik</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/engine"><Cog className="mr-2 h-4 w-4" /> Makine</Link>
+                        <Link to="/engine">Makine</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/cargo"><Package className="mr-2 h-4 w-4" /> Kargo</Link>
+                        <Link to="/cargo">Kargo</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/ballast"><Droplets className="mr-2 h-4 w-4" /> Balast</Link>
+                        <Link to="/ballast">Balast</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/tank"><Droplets className="mr-2 h-4 w-4" /> Tank</Link>
+                        <Link to="/tank">Tank</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/structural"><Building className="mr-2 h-4 w-4" /> Yapısal</Link>
+                        <Link to="/structural">Yapısal</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/safety"><Shield className="mr-2 h-4 w-4" /> Güvenlik</Link>
+                        <Link to="/safety">Güvenlik</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/emissions"><Leaf className="mr-2 h-4 w-4" /> Emisyon</Link>
+                        <Link to="/emissions">Emisyon</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/weather"><Cloud className="mr-2 h-4 w-4" /> Meteoroloji</Link>
+                        <Link to="/weather">Meteoroloji</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/special-ships"><Ship className="mr-2 h-4 w-4" /> Özel Gemiler</Link>
+                        <Link to="/special-ships">Özel Gemiler</Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
