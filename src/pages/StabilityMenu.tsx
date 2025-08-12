@@ -49,9 +49,9 @@ export default function StabilityMenu() {
           <CardTitle>Stabilite Hesaplamaları</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2 overflow-x-auto py-1 flex-nowrap">
+          <div className="flex flex-wrap gap-2 py-1">
             {items.map((it)=> (
-              <Link key={it.to} to={it.to} className="flex-shrink-0">
+              <Link key={it.to} to={it.to}>
                 <Button variant="outline" className="justify-start gap-2 whitespace-nowrap">
                   {it.icon}
                   {it.label}
