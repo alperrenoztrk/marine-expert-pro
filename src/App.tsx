@@ -47,6 +47,16 @@ import StabilityLollPage from "./pages/StabilityLoll";
 import Settings from "./pages/Settings";
 import { LanguageRouteSync } from "@/components/LanguageRouteSync";
 import CalculationsMenu from "./pages/CalculationsMenu";
+import NavigationMenu from "./pages/NavigationMenu";
+import HydrodynamicsMenu from "./pages/HydrodynamicsMenu";
+import EngineMenu from "./pages/EngineMenu";
+import BallastMenu from "./pages/BallastMenu";
+import TankMenu from "./pages/TankMenu";
+import StructuralMenu from "./pages/StructuralMenu";
+import SafetyMenu from "./pages/SafetyMenu";
+import EmissionsMenu from "./pages/EmissionsMenu";
+import WeatherMenu from "./pages/WeatherMenu";
+import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +149,16 @@ const App = () => {
                   <Route path="/stability/loll" element={<StabilityLollPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/navigation-menu" element={<NavigationMenu />} />
+                  <Route path="/hydrodynamics-menu" element={<HydrodynamicsMenu />} />
+                  <Route path="/engine-menu" element={<EngineMenu />} />
+                  <Route path="/ballast-menu" element={<BallastMenu />} />
+                  <Route path="/tank-menu" element={<TankMenu />} />
+                  <Route path="/structural-menu" element={<StructuralMenu />} />
+                  <Route path="/safety-menu" element={<SafetyMenu />} />
+                  <Route path="/emissions-menu" element={<EmissionsMenu />} />
+                  <Route path="/weather-menu" element={<WeatherMenu />} />
+                  <Route path="/special-ships-menu" element={<SpecialShipsMenu />} />
                 </Routes>
               </BrowserRouter>
             </div>
