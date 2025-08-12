@@ -8,6 +8,7 @@ export default function StabilityMenu() {
     {
       title: 'Hidrostatik',
       items: [
+        { to: "/stability/hydrostatic", icon: <Waves className="h-4 w-4" />, label: "Hidrostatik" },
         { to: "/stability/displacement", icon: <Gauge className="h-4 w-4" />, label: "Deplasman" },
         { to: "/stability/draft-calc", icon: <Waves className="h-4 w-4" />, label: "Draft" },
         { to: "/stability/tpc", icon: <Ruler className="h-4 w-4" />, label: "TPC" },
@@ -16,6 +17,7 @@ export default function StabilityMenu() {
     {
       title: 'Stabilite',
       items: [
+        { to: "/stability/stability", icon: <Shield className="h-4 w-4" />, label: "Stabilite" },
         { to: "/stability/gm", icon: <Shield className="h-4 w-4" />, label: "GM" },
         { to: "/stability/gz", icon: <BarChart3 className="h-4 w-4" />, label: "GZ" },
       ]
@@ -23,6 +25,7 @@ export default function StabilityMenu() {
     {
       title: 'Trim & List',
       items: [
+        { to: "/stability/trimlist", icon: <Ship className="h-4 w-4" />, label: "Trim & List" },
         { to: "/stability/trim", icon: <Ship className="h-4 w-4" />, label: "Trim" },
         { to: "/stability/list", icon: <Ship className="h-4 w-4" />, label: "List" },
         { to: "/stability/loll", icon: <AlertTriangle className="h-4 w-4" />, label: "Loll" },
