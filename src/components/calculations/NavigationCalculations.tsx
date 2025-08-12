@@ -199,7 +199,7 @@ interface NavigationResult {
   recommendations: string[];
 }
 
-export const NavigationCalculations = () => {
+export const NavigationCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const [data, setData] = useState<NavigationData>({
     lat1: 0, lon1: 0, lat2: 0, lon2: 0,
     speed: 12, course: 0,
@@ -1065,7 +1065,7 @@ export const NavigationCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="route" className="w-full">
+          <Tabs defaultValue={initialTab || "route"} className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-1">
               <TabsTrigger value="route" className="text-xs px-2">Rota<br /></TabsTrigger>
               <TabsTrigger value="current" className="text-xs px-2">Akıntı<br /></TabsTrigger>

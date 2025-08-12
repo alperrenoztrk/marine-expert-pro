@@ -106,7 +106,7 @@ interface MeteoOceanResult {
   recommendations: string[];
 }
 
-export const WeatherCalculations = () => {
+export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("wind");
   const [data, setData] = useState<MeteoOceanData>({
@@ -383,7 +383,7 @@ export const WeatherCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="wind" className="w-full" onValueChange={setActiveTab}>
+          <Tabs defaultValue={initialTab || "wind"} className="w-full" onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="wind">Rüzgar</TabsTrigger>
               <TabsTrigger value="waves">Dalgalar</TabsTrigger>

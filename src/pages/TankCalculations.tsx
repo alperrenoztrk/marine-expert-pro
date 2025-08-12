@@ -25,9 +25,9 @@ interface TankResults {
   moment: number;
 }
 
-export const TankCalculations = () => {
+export const TankCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('sounding');
+  const [activeTab, setActiveTab] = useState(initialTab || 'sounding');
   const [tankData, setTankData] = useState<TankData>({
     tankArea: 0,
     liquidHeight: 0,

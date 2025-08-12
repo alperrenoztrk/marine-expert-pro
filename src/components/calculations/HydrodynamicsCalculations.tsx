@@ -110,7 +110,7 @@ interface HydrodynamicsResult {
   warnings: string[];
 }
 
-export const HydrodynamicsCalculations = () => {
+export const HydrodynamicsCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   const [data, setData] = useState<HydrodynamicsData>({
     shipLength: 180, shipBeam: 32, shipDraft: 12, displacement: 25000,
@@ -456,7 +456,7 @@ export const HydrodynamicsCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="ship" className="w-full">
+          <Tabs defaultValue={initialTab || "ship"} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="ship">Gemi</TabsTrigger>
               <TabsTrigger value="propulsion">Sevk</TabsTrigger>

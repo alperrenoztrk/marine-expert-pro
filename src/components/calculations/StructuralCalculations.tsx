@@ -56,7 +56,7 @@ interface ShearBendingPoint {
   bendingMoment: number; // kN.m
 }
 
-export const StructuralCalculations = () => {
+export const StructuralCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   
   
@@ -77,7 +77,7 @@ export const StructuralCalculations = () => {
   
   const [result, setResult] = useState<StructuralResult | null>(null);
   const [shearBendingData, setShearBendingData] = useState<ShearBendingPoint[]>([]);
-  const [activeTab, setActiveTab] = useState("loads");
+  const [activeTab, setActiveTab] = useState(initialTab || "loads");
 
   // Calculate distributed weight (ship's own weight)
   const calculateDistributedWeight = (L: number, displacement: number): number => {

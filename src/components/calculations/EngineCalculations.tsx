@@ -142,7 +142,7 @@ interface EngineResult {
   warnings: string[];
 }
 
-export const EngineCalculations = () => {
+export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   const [data, setData] = useState<EngineData>({
     mcrPower: 15000, currentLoad: 75, engineRPM: 120, nominalRPM: 127,
@@ -427,7 +427,7 @@ export const EngineCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="engine" className="w-full">
+          <Tabs defaultValue={initialTab || "engine"} className="w-full">
             <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="engine">Ana Makine</TabsTrigger>
               <TabsTrigger value="fuel">Yakıt Sistemi</TabsTrigger>

@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Fuel, Container, Ship, Truck } from "lucide-react";
 
-export const SpecialShipCalculations = () => {
+export const SpecialShipCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   // Tanker - COW and Inert Gas
   const [cargoTankVolume, setCargoTankVolume] = useState("");
   const [cowRate, setCowRate] = useState("");
@@ -135,7 +135,7 @@ export const SpecialShipCalculations = () => {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="tanker" className="w-full">
+      <Tabs defaultValue={initialTab || "tanker"} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="tanker">Tanker</TabsTrigger>
           <TabsTrigger value="lng">LNG</TabsTrigger>

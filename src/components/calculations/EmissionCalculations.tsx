@@ -96,7 +96,7 @@ interface EmissionResult {
   warnings: string[];
 }
 
-export const EmissionCalculations = () => {
+export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   const [data, setData] = useState<EmissionData>({
     deadweight: 25000, grossTonnage: 18000, shipType: 'Bulk Carrier', buildYear: 2015,
@@ -379,7 +379,7 @@ export const EmissionCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="ship" className="w-full">
+          <Tabs defaultValue={initialTab || "ship"} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="ship">Gemi</TabsTrigger>
               <TabsTrigger value="fuel">Yakıt</TabsTrigger>

@@ -53,7 +53,7 @@ interface BWMCCompliance {
   };
 }
 
-export const BallastCalculations = () => {
+export const BallastCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   
   
@@ -69,7 +69,7 @@ export const BallastCalculations = () => {
   const [operation, setOperation] = useState<Partial<BallastOperation>>({});
   const [result, setResult] = useState<BallastResult | null>(null);
   const [bwmcData, setBwmcData] = useState<Partial<BWMCCompliance>>({});
-  const [activeTab, setActiveTab] = useState("tanks");
+  const [activeTab, setActiveTab] = useState(initialTab || "tanks");
 
   // Calculate total ballast weight
   const calculateTotalBallast = (): number => {
