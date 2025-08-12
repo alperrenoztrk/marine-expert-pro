@@ -247,37 +247,37 @@ const Index = () => {
                         <Link to="/stability">Stabilite</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/navigation">Seyir</Link>
+                        <Link to="/navigation-menu">Seyir</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/hydrodynamics">Hidrodinamik</Link>
+                        <Link to="/hydrodynamics-menu">Hidrodinamik</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/engine">Makine</Link>
+                        <Link to="/engine-menu">Makine</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link to="/cargo">Kargo</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/ballast">Balast</Link>
+                        <Link to="/ballast-menu">Balast</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/tank">Tank</Link>
+                        <Link to="/tank-menu">Tank</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/structural">Yapısal</Link>
+                        <Link to="/structural-menu">Yapısal</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/safety">Güvenlik</Link>
+                        <Link to="/safety-menu">Güvenlik</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/emissions">Emisyon</Link>
+                        <Link to="/emissions-menu">Emisyon</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/weather">Meteoroloji</Link>
+                        <Link to="/weather-menu">Meteoroloji</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/special-ships">Özel Gemiler</Link>
+                        <Link to="/special-ships-menu">Özel Gemiler</Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
