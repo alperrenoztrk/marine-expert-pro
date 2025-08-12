@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HydrostaticsStabilityCalculations } from "@/components/calculations/HydrostaticsStabilityCalculations";
+import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
 const HydrostaticsStabilityPage = () => {
   return (
@@ -219,6 +220,7 @@ const HydrostaticsStabilityPage = () => {
         <div className="text-center text-sm text-gray-500 dark:text-gray-400">
           IMO Resolution A.749(18), IS Code 2008, SOLAS Chapter II-1 uygunluğu
         </div>
+        <StabilityAssistantPopup />
       </div>
     </div>
   );
