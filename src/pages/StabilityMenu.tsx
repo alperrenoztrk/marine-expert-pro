@@ -8,10 +8,7 @@ export default function StabilityMenu() {
     {
       title: 'Hidrostatik',
       items: [
-        { to: "/stability/hydrostatic", icon: <Waves className="h-4 w-4" />, label: "Hidrostatik" },
-        { to: "/stability/displacement", icon: <Gauge className="h-4 w-4" />, label: "Deplasman" },
-        { to: "/stability/draft-calc", icon: <Waves className="h-4 w-4" />, label: "Draft" },
-        { to: "/stability/tpc", icon: <Ruler className="h-4 w-4" />, label: "TPC" },
+        { to: "/stability/hydrostatic", icon: <Waves className="h-4 w-4" />, label: "Hidrostatik" }
       ]
     },
     {
