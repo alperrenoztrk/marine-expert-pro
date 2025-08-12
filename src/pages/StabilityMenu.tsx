@@ -14,9 +14,7 @@ export default function StabilityMenu() {
     {
       title: 'Stabilite',
       items: [
-        { to: "/stability/stability", icon: <Shield className="h-4 w-4" />, label: "Stabilite" },
-        { to: "/stability/gm", icon: <Shield className="h-4 w-4" />, label: "GM" },
-        { to: "/stability/gz", icon: <BarChart3 className="h-4 w-4" />, label: "GZ" },
+        { to: "/stability/stability", icon: <Shield className="h-4 w-4" />, label: "Stabilite" }
       ]
     },
     {
