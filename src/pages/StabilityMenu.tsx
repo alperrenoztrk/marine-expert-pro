@@ -20,10 +20,7 @@ export default function StabilityMenu() {
     {
       title: 'Trim & List',
       items: [
-        { to: "/stability/trimlist", icon: <Ship className="h-4 w-4" />, label: "Trim & List" },
-        { to: "/stability/trim", icon: <Ship className="h-4 w-4" />, label: "Trim" },
-        { to: "/stability/list", icon: <Ship className="h-4 w-4" />, label: "List" },
-        { to: "/stability/loll", icon: <AlertTriangle className="h-4 w-4" />, label: "Loll" },
+        { to: "/stability/trimlist", icon: <Ship className="h-4 w-4" />, label: "Trim & List" }
       ]
     },
     {
