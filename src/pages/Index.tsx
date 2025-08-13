@@ -256,26 +256,23 @@ const Index = () => {
 							{calcRingOpen && (
 								<div className="fixed inset-0 z-50">
 									<div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={()=> setCalcRingOpen(false)} />
-																			<div className="absolute inset-0 flex items-center justify-center">
-											<div className="relative w-full h-full max-w-5xl max-h-[80vh]">
-												{calcItems.map((item, idx) => {
-													const isSm = typeof window !== 'undefined' && window.innerWidth >= 640;
-													const golden = 2.399963229728653; // golden angle radians (~137.5°)
-													const baseR = isSm ? 18 : 14;
-													const stepR = isSm ? 22 : 16;
-													const angle = idx * golden;
-													const r = baseR + idx * stepR;
-													const x = Math.cos(angle) * r;
-													const y = Math.sin(angle) * r;
-													return (
-														<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 top-1/2" style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}>
-															<div className="px-4 py-1.5 rounded-full border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-sm text-foreground shadow-md hover:scale-[1.04] transition whitespace-nowrap opacity-0 animate-in fade-in-50 zoom-in-95 fill-mode-both" style={{ animationDelay: `${idx * 55}ms` }}>
-																{item.label}
-															</div>
-														</Link>
-													);
-												})}
-											<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)} className="absolute right-6 top-6">Kapat</Button>
+																			<div className="absolute inset-0 flex flex-col">
+											<div className="flex items-center justify-between p-4">
+												<h3 className="font-semibold text-base sm:text-lg">Hesaplamalar</h3>
+												<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
+											</div>
+											<div className="flex-1 flex items-center">
+												<div className="w-full overflow-x-auto snap-x snap-mandatory px-6">
+													<div className="flex gap-4">
+														{calcItems.map((item, idx) => (
+															<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="snap-center flex-shrink-0">
+																<div className="w-[240px] sm:w-[300px] h-[160px] sm:h-[200px] rounded-2xl border border-indigo-300 bg-white/95 dark:bg-gray-800/95 shadow-2xl px-4 py-3 flex items-center justify-center text-base sm:text-lg font-medium text-foreground transition-transform hover:-translate-y-1 opacity-0 animate-in fade-in-50 slide-in-from-right-2 fill-mode-both" style={{ animationDelay: `${idx * 60}ms` }}>
+																	{item.label}
+																</div>
+															</Link>
+														))}
+													</div>
+												</div>
 											</div>
 										</div>
 								</div>
