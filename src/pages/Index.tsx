@@ -264,13 +264,22 @@ const Index = () => {
 											</Button>
 											{/* Orbiting items */}
 											{calcItems.map((item, idx) => {
-												const angle = (2 * Math.PI * idx) / calcItems.length;
-												const radius = 130;
+												const isSm = typeof window !== 'undefined' && window.innerWidth >= 640;
+												const outerCount = Math.ceil(calcItems.length / 2);
+												const innerCount = Math.floor(calcItems.length / 2);
+												const onOuter = idx % 2 === 0;
+												const pos = Math.floor(idx / 2);
+												const angle = onOuter
+												  ? (2 * Math.PI * pos) / Math.max(outerCount, 1)
+												  : (2 * Math.PI * pos) / Math.max(innerCount, 1) + (Math.PI / Math.max(innerCount, 1));
+												const outerR = isSm ? 170 : 120;
+												const innerR = isSm ? 120 : 80;
+												const radius = onOuter ? outerR : innerR;
 												const x = Math.cos(angle) * radius;
 												const y = Math.sin(angle) * radius;
 												return (
 													<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 top-1/2" style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}>
-														<div className="px-3 py-1.5 rounded-full border border-indigo-300 bg-white/90 dark:bg-gray-800/90 text-sm text-foreground shadow-md hover:scale-[1.03] transition">
+														<div className="px-3 py-1.5 rounded-full border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-xs text-foreground shadow-md hover:scale-[1.04] transition whitespace-nowrap">
 															{item.label}
 														</div>
 													</Link>
