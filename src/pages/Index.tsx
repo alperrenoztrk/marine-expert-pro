@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3 } from "lucide-react";
-import { GoogleAuth } from "@/components/auth/GoogleAuth";
+// import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
@@ -285,11 +285,8 @@ const Index = () => {
               </div>
             </div>
             
-            {/* Auth + Settings */}
+            {/* Settings */}
             <div className="flex-shrink-0 flex items-center gap-3">
-              <div className="hidden sm:block">
-                <GoogleAuth />
-              </div>
               <Link to="/settings">
                 <Button
                   size="icon"
@@ -319,11 +316,6 @@ const Index = () => {
           <AdBannerInline />
         </div>
       )}
-
-      {/* Mobile Auth at bottom to avoid overlapping buttons */}
-      <div className="sm:hidden mt-6">
-        <GoogleAuth />
-      </div>
 
     </MobileLayout>
   );
