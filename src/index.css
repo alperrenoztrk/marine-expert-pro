@@ -1525,3 +1525,7 @@ All colors MUST be HSL.
     animation-duration: calc(var(--animation-duration) * 4);
   }
 }
+
+/* Hide scrollbars utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

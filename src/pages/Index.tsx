@@ -261,12 +261,12 @@ const Index = () => {
 												<h3 className="font-semibold text-base sm:text-lg">Hesaplamalar</h3>
 												<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
 											</div>
-											<div className="flex-1 flex items-center">
-												<div className="w-full overflow-x-auto snap-x snap-mandatory px-6">
-													<div className="flex gap-4">
+											<div className="flex-1 flex items-stretch">
+												<div className="w-full h-full overflow-x-auto snap-x snap-mandatory px-6 no-scrollbar">
+													<div className="flex gap-4 h-full items-center">
 														{calcItems.map((item, idx) => (
 															<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="snap-center flex-shrink-0">
-																<div className="w-[240px] sm:w-[300px] h-[160px] sm:h-[200px] rounded-2xl border border-indigo-300 bg-white/95 dark:bg-gray-800/95 shadow-2xl px-4 py-3 flex items-center justify-center text-base sm:text-lg font-medium text-foreground transition-transform hover:-translate-y-1 opacity-0 animate-in fade-in-50 slide-in-from-right-2 fill-mode-both" style={{ animationDelay: `${idx * 60}ms` }}>
+																<div className="w-[260px] sm:w-[340px] h-[180px] sm:h-[240px] rounded-2xl border border-indigo-300 bg-white dark:bg-gray-900 shadow-2xl px-5 py-4 flex items-center justify-center text-base sm:text-xl font-semibold text-foreground transition-transform hover:-translate-y-1 opacity-0 animate-in fade-in-50 slide-in-from-right-2 fill-mode-both" style={{ animationDelay: `${idx * 50}ms` }}>
 																	{item.label}
 																</div>
 															</Link>
