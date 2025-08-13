@@ -155,6 +155,45 @@ export default function StabilityAssistantPage() {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handlePaste = (e: React.ClipboardEvent) => {
+    if (isLoading) return;
+    const clipboard = e.clipboardData;
+    if (!clipboard) return;
+
+    const items = clipboard.items;
+    if (!items || items.length === 0) return;
+
+    const imageItems = Array.from(items).filter(
+      (item) => item.kind === 'file' && item.type.startsWith('image/')
+    );
+
+    if (imageItems.length === 0) return;
+
+    // We have image(s) in the clipboard; prevent default text paste behavior
+    e.preventDefault();
+
+    const readers = imageItems.map((item) => {
+      const file = item.getAsFile();
+      if (!file) return Promise.resolve<string | null>(null);
+      return new Promise<string | null>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(readers).then((results) => {
+      const images = results.filter((r): r is string => Boolean(r));
+      if (images.length > 0) {
+        setSelectedImages((prev) => [...prev, ...images]);
+        toast({
+          title: 'Görsel eklendi',
+          description: `${images.length} görsel panodan eklendi.`,
+        });
+      }
+    });
+  };
   const handleSendMessage = async () => {
     if ((!inputMessage.trim() && selectedImages.length === 0) || isLoading) return;
 
@@ -386,7 +425,8 @@ export default function StabilityAssistantPage() {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Stabilite hakkında soru sorun veya görsel yükleyin..."
+                onPaste={handlePaste}
+                placeholder="Stabilite hakkında soru sorun, görsel yükleyin veya yapıştırın..."
                 className="min-h-[50px] resize-none"
                 disabled={isLoading}
               />
