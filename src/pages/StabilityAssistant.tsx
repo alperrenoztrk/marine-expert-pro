@@ -88,9 +88,28 @@ export default function StabilityAssistantPage() {
           quality: 90,
           limit: 5
         });
-        
-        const base64Images = images.photos.map(photo => `data:image/jpeg;base64,${photo.webPath}`);
-        setSelectedImages(prev => [...prev, ...base64Images]);
+        // Convert to base64 data URLs
+        const converted: string[] = [];
+        for (const photo of images.photos) {
+          if (photo?.webPath && photo.webPath.startsWith('data:')) {
+            converted.push(photo.webPath);
+          } else if (photo?.webPath) {
+            try {
+              const file = await fetch(photo.webPath);
+              const blob = await file.blob();
+              const reader = new FileReader();
+              const base64: string = await new Promise((resolve, reject) => {
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = () => reject(new Error('read error'));
+                reader.readAsDataURL(blob);
+              });
+              converted.push(base64);
+            } catch (e) {
+              console.warn('Base64 convert failed, skipping image', e);
+            }
+          }
+        }
+        setSelectedImages(prev => [...prev, ...converted]);
       } else {
         // Fallback to file input for web
         fileInputRef.current?.click();

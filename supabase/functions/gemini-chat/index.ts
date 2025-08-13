@@ -49,22 +49,16 @@ serve(async (req) => {
       );
     }
 
-    const apiKey = Deno.env.get("GEMINI_API_KEY");
-    if (!apiKey) {
-      return new Response(
-        JSON.stringify({ error: "GEMINI_API_KEY missing in Supabase secrets" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const apiKey = Deno.env.get("GEMINI_API_KEY") || 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
 
     const contents = toGeminiContents(messages);
 
     const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents }),
+        body: JSON.stringify({ contents, generationConfig: { temperature: 0.2, maxOutputTokens: 1500 } }),
       }
     );
 
