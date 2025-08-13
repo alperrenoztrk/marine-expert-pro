@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3, ChevronLeft, ChevronRight } from "lucide-react";
+import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 // import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -107,6 +107,22 @@ const Index = () => {
   const [carouselRotation, setCarouselRotation] = useState(0);
 	const rotatePrev = () => setCarouselRotation((deg)=> deg - (360 / calcItems.length));
 	const rotateNext = () => setCarouselRotation((deg)=> deg + (360 / calcItems.length));
+  const [autoSpin, setAutoSpin] = useState(true);
+	const spinRef = useRef<number | null>(null);
+	useEffect(() => {
+		if (!calcRingOpen) return; // only when overlay open
+		let last = performance.now();
+		const step = (now: number) => {
+			if (autoSpin) {
+				const dt = Math.min(32, now - last);
+				last = now;
+				setCarouselRotation((deg)=> deg + (dt * 0.03)); // speed: degrees per ms
+			}
+			spinRef.current = requestAnimationFrame(step);
+		};
+		spinRef.current = requestAnimationFrame(step);
+		return () => { if (spinRef.current) cancelAnimationFrame(spinRef.current); };
+	}, [autoSpin, calcRingOpen]);
   const calcItems = [
     { path: "/stability", label: "Stabilite", Icon: Ship },
     { path: "/navigation-menu", label: "Seyir", Icon: Compass },
@@ -287,9 +303,12 @@ const total = calcItems.length;
 													</div>
 													</div>
 													{/* Controls */}
-																										<div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-4">
+																									<div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-3 sm:gap-4">
 														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); rotatePrev();}}>
 															<ChevronLeft className="w-5 h-5" />
+														</Button>
+														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); setAutoSpin((v)=> !v);}}>
+															{autoSpin ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
 														</Button>
 														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); rotateNext();}}>
 															<ChevronRight className="w-5 h-5" />
