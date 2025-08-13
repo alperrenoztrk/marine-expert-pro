@@ -52,8 +52,13 @@ async function callOpenAI(messages: AIMessage[]): Promise<string> {
 
 export async function callStabilityAssistant(messages: AIMessage[]): Promise<string> {
   try {
+    // Ensure system instruction is always included
+    const withSystem: AIMessage[] = messages.some(m => m.role === 'system')
+      ? messages
+      : [{ role: 'system', content: STABILITY_SYSTEM_PROMPT }, ...messages];
+
     // Always use Gemini via Edge Function (supports images and keeps key server-side)
-    return await callGemini(messages);
+    return await callGemini(withSystem);
   } catch (e) {
     console.error('AI error', e);
     // Local heuristic fallback
