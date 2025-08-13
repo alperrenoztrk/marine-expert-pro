@@ -241,39 +241,48 @@ const Index = () => {
                 {/* Second Row - Other buttons */}
                 <div className="flex gap-2 flex-wrap">
 					<DropdownMenu>
-						{/* Radial Calculations Ring */}
+						{/* Calculations Fullscreen Overlay */}
 						<div className="relative">
 							<Button
 								size="sm"
 								variant="outline"
 								aria-label="Hesaplamalar"
-								onClick={() => setCalcRingOpen((v)=>!v)}
+								onClick={() => setCalcRingOpen(true)}
 								className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
 							>
 								<Calculator className="w-4 h-4" />
 								<span data-translatable>Hesaplamalar</span>
 							</Button>
 							{calcRingOpen && (
-								<div className="pointer-events-auto">
-									{/* Center is the trigger; items positioned absolutely around */}
-									{calcItems.map((item, idx) => {
-										const angle = (2 * Math.PI * idx) / calcItems.length;
-										const radius = 110;
-										const x = Math.cos(angle) * radius;
-										const y = Math.sin(angle) * radius;
-										return (
-											<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute" style={{ transform: `translate(${x}px, ${y}px)` }}>
-												<Button size="sm" variant="outline" className="h-10 w-10 rounded-full p-0 flex items-center justify-center shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur border-primary/30">
-													<item.Icon className="w-4 h-4" />
-												</Button>
-												<div className="absolute left-1/2 -translate-x-1/2 mt-1 text-[10px] whitespace-nowrap bg-white/80 dark:bg-gray-800/80 px-2 py-0.5 rounded border text-muted-foreground">
-													{item.label}
-												</div>
-											</Link>
-										);
-									})}
-									{/* Backdrop to close ring */}
-									<div className="fixed inset-0 z-0" onClick={()=> setCalcRingOpen(false)} />
+								<div className="fixed inset-0 z-50">
+									<div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={()=> setCalcRingOpen(false)} />
+									<div className="absolute inset-0 flex items-center justify-center">
+										<div className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-indigo-400/40 bg-white/10 dark:bg-gray-900/20 shadow-[0_0_80px_rgba(99,102,241,0.35)] animate-in zoom-in-95 duration-200">
+											{/* Center pulsating button */}
+											<Button size="lg" variant="outline" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-14 w-14 p-0 bg-white/90 dark:bg-gray-800/90 border-indigo-300">
+												<Calculator className="w-5 h-5" />
+											</Button>
+											{/* Orbiting items */}
+											{calcItems.map((item, idx) => {
+												const angle = (2 * Math.PI * idx) / calcItems.length;
+												const radius = 130;
+												const x = Math.cos(angle) * radius;
+												const y = Math.sin(angle) * radius;
+												return (
+													<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 top-1/2" style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}>
+														<Button size="sm" variant="outline" className="h-12 w-12 rounded-full p-0 flex items-center justify-center shadow-lg bg-white/90 dark:bg-gray-800/90 border-indigo-300 hover:scale-[1.06] transition">
+															<item.Icon className="w-5 h-5" />
+														</Button>
+														<div className="absolute left-1/2 -translate-x-1/2 mt-1 text-[11px] whitespace-nowrap bg-white/90 dark:bg-gray-800/90 px-2 py-0.5 rounded border text-muted-foreground">
+															{item.label}
+														</div>
+													</Link>
+												);
+											})}
+											{/* Close button */}
+											<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)} className="absolute right-4 top-4">Kapat</Button>
+										</div>
+									</div>
 								</div>
 							)}
 						</div>
