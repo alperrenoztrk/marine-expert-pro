@@ -270,10 +270,7 @@ const Index = () => {
 												const y = Math.sin(angle) * radius;
 												return (
 													<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 top-1/2" style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}>
-														<Button size="sm" variant="outline" className="h-12 w-12 rounded-full p-0 flex items-center justify-center shadow-lg bg-white/90 dark:bg-gray-800/90 border-indigo-300 hover:scale-[1.06] transition">
-															<item.Icon className="w-5 h-5" />
-														</Button>
-														<div className="absolute left-1/2 -translate-x-1/2 mt-1 text-[11px] whitespace-nowrap bg-white/90 dark:bg-gray-800/90 px-2 py-0.5 rounded border text-muted-foreground">
+														<div className="px-3 py-1.5 rounded-full border border-indigo-300 bg-white/90 dark:bg-gray-800/90 text-sm text-foreground shadow-md hover:scale-[1.03] transition">
 															{item.label}
 														</div>
 													</Link>
