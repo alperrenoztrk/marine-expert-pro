@@ -1,6 +1,7 @@
 export interface AIMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
+  images?: string[]; // Base64 encoded images
 }
 
 const STABILITY_SYSTEM_PROMPT = `You are Stability Assistant, a maritime naval-architecture expert specialized in hydrostatics and stability.
@@ -23,7 +24,21 @@ async function callGemini(messages: AIMessage[]): Promise<string> {
   contents.push({ role: 'user', parts: [{ text: sys }] });
   for (const m of messages) {
     if (m.role === 'system') continue;
-    contents.push({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] });
+    const parts: any[] = [{ text: m.content }];
+    
+    // Add images if present
+    if (m.images && m.images.length > 0) {
+      for (const image of m.images) {
+        parts.push({
+          inline_data: {
+            mime_type: "image/jpeg",
+            data: image.split(',')[1] // Remove data:image/jpeg;base64, prefix
+          }
+        });
+      }
+    }
+    
+    contents.push({ role: m.role === 'assistant' ? 'model' : 'user', parts });
   }
   const body = { contents };
   const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}` , {

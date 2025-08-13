@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Brain, User, Bot, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -13,6 +13,7 @@ interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  images?: string[];
 }
 
 export default function StabilityAssistantPage() {
@@ -21,13 +22,15 @@ export default function StabilityAssistantPage() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Merhaba! Ben Stabilite Asistanınızım. Gemi stabilitesi, hidrostatik hesaplamalar, IMO kriterleri ve daha birçok konuda size yardımcı olabilirim. Hangi konuda yardıma ihtiyacınız var?',
+      content: 'Merhaba! Ben Stabilite Asistanınızım. Gemi stabilitesi, hidrostatik hesaplamalar, IMO kriterleri ve daha birçok konuda size yardımcı olabilirim. Görsel yükleyerek gemi planları, hesaplamalar veya diagramları analiz edebilirim. Hangi konuda yardıma ihtiyacınız var?',
       timestamp: new Date()
     }
   ]);
   const [inputMessage, setInputMessage] = useState("");
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -37,27 +40,54 @@ export default function StabilityAssistantPage() {
     scrollToBottom();
   }, [messages]);
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64 = e.target?.result as string;
+          setSelectedImages(prev => [...prev, base64]);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
+    if ((!inputMessage.trim() && selectedImages.length === 0) || isLoading) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: inputMessage,
-      timestamp: new Date()
+      content: inputMessage || "Görsel analizi",
+      timestamp: new Date(),
+      images: selectedImages.length > 0 ? [...selectedImages] : undefined
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
+    setSelectedImages([]);
     setIsLoading(true);
 
     try {
       // Prepare messages for AI API
       const aiMessages: AIMessage[] = messages.map(msg => ({
         role: msg.role,
-        content: msg.content
+        content: msg.content,
+        images: msg.images
       }));
-      aiMessages.push({ role: 'user', content: inputMessage });
+      aiMessages.push({ 
+        role: 'user', 
+        content: inputMessage || "Bu görseli analiz et ve stabilite açısından değerlendir",
+        images: selectedImages.length > 0 ? selectedImages : undefined
+      });
 
       const response = await callStabilityAssistant(aiMessages);
 
@@ -131,6 +161,19 @@ export default function StabilityAssistantPage() {
                     : 'bg-white dark:bg-gray-800 border shadow-sm'
                 }`}
               >
+                {/* Display images if present */}
+                {message.images && message.images.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    {message.images.map((image, idx) => (
+                      <img
+                        key={idx}
+                        src={image}
+                        alt={`Uploaded image ${idx + 1}`}
+                        className="w-full h-32 object-cover rounded-md border"
+                      />
+                    ))}
+                  </div>
+                )}
                 <div className="whitespace-pre-wrap text-sm leading-relaxed">
                   {message.content}
                 </div>
@@ -177,20 +220,62 @@ export default function StabilityAssistantPage() {
       {/* Input Area */}
       <div className="p-4 bg-white dark:bg-gray-800 border-t">
         <div className="max-w-4xl mx-auto">
+          {/* Image Preview */}
+          {selectedImages.length > 0 && (
+            <div className="mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="flex flex-wrap gap-2">
+                {selectedImages.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={image}
+                      alt={`Selected ${index + 1}`}
+                      className="w-16 h-16 object-cover rounded border"
+                    />
+                    <button
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
+                      disabled={isLoading}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <div className="flex gap-3 items-end">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className="hidden"
+              disabled={isLoading}
+            />
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
+              className="h-[50px] px-4"
+            >
+              <ImageIcon className="h-4 w-4" />
+            </Button>
             <div className="flex-1">
               <Input
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Stabilite hakkında soru sorun... (örn: GM hesabı nasıl yapılır?)"
+                placeholder="Stabilite hakkında soru sorun veya görsel yükleyin..."
                 className="min-h-[50px] resize-none"
                 disabled={isLoading}
               />
             </div>
             <Button
               onClick={handleSendMessage}
-              disabled={!inputMessage.trim() || isLoading}
+              disabled={(!inputMessage.trim() && selectedImages.length === 0) || isLoading}
               size="lg"
               className="h-[50px] px-6"
             >
