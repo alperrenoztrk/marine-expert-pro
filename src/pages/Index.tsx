@@ -262,24 +262,31 @@ const Index = () => {
 											<Button size="lg" variant="outline" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-14 w-14 p-0 bg-white/90 dark:bg-gray-800/90 border-indigo-300">
 												<Calculator className="w-5 h-5" />
 											</Button>
-											{/* Orbiting items */}
+											{/* Card fan (playing cards) */}
 											{calcItems.map((item, idx) => {
+												const total = calcItems.length;
+												const mid = (total - 1) / 2;
 												const isSm = typeof window !== 'undefined' && window.innerWidth >= 640;
-												const outerCount = Math.ceil(calcItems.length / 2);
-												const innerCount = Math.floor(calcItems.length / 2);
-												const onOuter = idx % 2 === 0;
-												const pos = Math.floor(idx / 2);
-												const angle = onOuter
-												  ? (2 * Math.PI * pos) / Math.max(outerCount, 1)
-												  : (2 * Math.PI * pos) / Math.max(innerCount, 1) + (Math.PI / Math.max(innerCount, 1));
-												const outerR = isSm ? 170 : 120;
-												const innerR = isSm ? 120 : 80;
-												const radius = onOuter ? outerR : innerR;
-												const x = Math.cos(angle) * radius;
-												const y = Math.sin(angle) * radius;
+												const spreadX = isSm ? 420 : 260; // horizontal spread
+												const arc = isSm ? 110 : 80;       // vertical arc height
+												const maxRot = 18;                   // degrees
+												const denom = Math.max(mid, 1);
+												const t = (idx - mid) / denom;       // [-1, 1]
+												const x = t * (spreadX / 2);
+												const y = - (1 - Math.pow(Math.abs(t), 0.8)) * arc;
+												const rot = t * maxRot;
 												return (
-													<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 top-1/2" style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}>
-														<div className="px-3 py-1.5 rounded-full border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-xs text-foreground shadow-md hover:scale-[1.04] transition whitespace-nowrap">
+													<Link
+														key={item.path}
+														to={item.path}
+														onClick={()=> setCalcRingOpen(false)}
+														className="absolute left-1/2 top-1/2"
+														style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${rot}deg)`, zIndex: 100 + idx }}
+													>
+														<div
+															className="rounded-xl border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-sm text-foreground shadow-xl px-4 py-2 hover:-translate-y-1 transition will-change-transform opacity-0 animate-in fade-in-50 slide-in-from-bottom-2 fill-mode-both"
+															style={{ animationDelay: `${idx * 60}ms` }}
+														>
 															{item.label}
 														</div>
 													</Link>
