@@ -104,6 +104,9 @@ const Index = () => {
   };
 
   const [calcRingOpen, setCalcRingOpen] = useState(false);
+  const [carouselRotation, setCarouselRotation] = useState(0);
+	const rotatePrev = () => setCarouselRotation((deg)=> deg - (360 / calcItems.length));
+	const rotateNext = () => setCarouselRotation((deg)=> deg + (360 / calcItems.length));
   const calcItems = [
     { path: "/stability", label: "Stabilite", Icon: Ship },
     { path: "/navigation-menu", label: "Seyir", Icon: Compass },
@@ -264,10 +267,10 @@ const Index = () => {
 											<div className="flex-1 flex items-stretch">
 												<div className="relative w-full h-full px-4 sm:px-8 select-none">
 													{/* 3D Carousel Container */}
-													<div className="absolute inset-0 perspective-[1200px]">
-														<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d" style={{ transformStyle: 'preserve-3d' }}>
-															{calcItems.map((item, idx) => {
-																const total = calcItems.length;
+																											<div className="absolute inset-0 perspective-[1200px]">
+															<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d transition-transform duration-500 ease-out" style={{ transformStyle: 'preserve-3d', transform: `rotateY(${carouselRotation}deg)` }}>
+																{calcItems.map((item, idx) => {
+const total = calcItems.length;
 																const angle = (360 / total) * idx;
 																const radius = 520; // distance from center
 																return (
@@ -284,11 +287,11 @@ const Index = () => {
 													</div>
 													</div>
 													{/* Controls */}
-													<div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-4">
-														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); const c=document.querySelector('#calc-carousel'); if(c) c.scrollLeft -= 1;}}>
+																										<div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-4">
+														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); rotatePrev();}}>
 															<ChevronLeft className="w-5 h-5" />
 														</Button>
-														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); const c=document.querySelector('#calc-carousel'); if(c) c.scrollLeft += 1;}}>
+														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); rotateNext();}}>
 															<ChevronRight className="w-5 h-5" />
 														</Button>
 													</div>
