@@ -304,11 +304,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Mobile Auth (visible on small screens) */}
-      <div className="sm:hidden mb-4">
-        <GoogleAuth />
-      </div>
-
       {/* Top Page Ad */}
       {shouldShowAd('top-page') && (
         <div className="mb-6">
@@ -324,6 +319,11 @@ const Index = () => {
           <AdBannerInline />
         </div>
       )}
+
+      {/* Mobile Auth at bottom to avoid overlapping buttons */}
+      <div className="sm:hidden mt-6">
+        <GoogleAuth />
+      </div>
 
     </MobileLayout>
   );
