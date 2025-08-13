@@ -103,6 +103,22 @@ const Index = () => {
     toast.success("Favori durumu güncellendi!");
   };
 
+  const [calcRingOpen, setCalcRingOpen] = useState(false);
+  const calcItems = [
+    { path: "/stability", label: "Stabilite", Icon: Ship },
+    { path: "/navigation-menu", label: "Seyir", Icon: Compass },
+    { path: "/hydrodynamics-menu", label: "Hidrodinamik", Icon: Waves },
+    { path: "/engine-menu", label: "Makine", Icon: Cog },
+    { path: "/cargo", label: "Kargo", Icon: Package },
+    { path: "/ballast-menu", label: "Balast", Icon: Droplets },
+    { path: "/tank-menu", label: "Tank", Icon: Package },
+    { path: "/structural-menu", label: "Yapısal", Icon: Building },
+    { path: "/safety-menu", label: "Güvenlik", Icon: Shield },
+    { path: "/emissions-menu", label: "Emisyon", Icon: Leaf },
+    { path: "/weather-menu", label: "Meteoroloji", Icon: Cloud },
+    { path: "/special-ships-menu", label: "Özel Gemiler", Icon: Ship },
+  ];
+
   if (isLoading) {
     return (
       <MobileLayout>
@@ -224,57 +240,44 @@ const Index = () => {
                 
                 {/* Second Row - Other buttons */}
                 <div className="flex gap-2 flex-wrap">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        aria-label="Hesaplamalar"
-                        className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
-                      >
-                        <Calculator className="w-4 h-4" />
-                        <span data-translatable>Hesaplamalar</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="min-w-56">
-                      <DropdownMenuItem asChild>
-                        <Link to="/stability">Stabilite</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/navigation-menu">Seyir</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/hydrodynamics-menu">Hidrodinamik</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/engine-menu">Makine</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/cargo">Kargo</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/ballast-menu">Balast</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/tank-menu">Tank</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/structural-menu">Yapısal</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/safety-menu">Güvenlik</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/emissions-menu">Emisyon</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/weather-menu">Meteoroloji</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/special-ships-menu">Özel Gemiler</Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+					<DropdownMenu>
+						{/* Radial Calculations Ring */}
+						<div className="relative">
+							<Button
+								size="sm"
+								variant="outline"
+								aria-label="Hesaplamalar"
+								onClick={() => setCalcRingOpen((v)=>!v)}
+								className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
+							>
+								<Calculator className="w-4 h-4" />
+								<span data-translatable>Hesaplamalar</span>
+							</Button>
+							{calcRingOpen && (
+								<div className="pointer-events-auto">
+									{/* Center is the trigger; items positioned absolutely around */}
+									{calcItems.map((item, idx) => {
+										const angle = (2 * Math.PI * idx) / calcItems.length;
+										const radius = 110;
+										const x = Math.cos(angle) * radius;
+										const y = Math.sin(angle) * radius;
+										return (
+											<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute" style={{ transform: `translate(${x}px, ${y}px)` }}>
+												<Button size="sm" variant="outline" className="h-10 w-10 rounded-full p-0 flex items-center justify-center shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur border-primary/30">
+													<item.Icon className="w-4 h-4" />
+												</Button>
+												<div className="absolute left-1/2 -translate-x-1/2 mt-1 text-[10px] whitespace-nowrap bg-white/80 dark:bg-gray-800/80 px-2 py-0.5 rounded border text-muted-foreground">
+													{item.label}
+												</div>
+											</Link>
+										);
+									})}
+									{/* Backdrop to close ring */}
+									<div className="fixed inset-0 z-0" onClick={()=> setCalcRingOpen(false)} />
+								</div>
+							)}
+						</div>
+					</DropdownMenu>
                 </div>
               </div>
             </div>
