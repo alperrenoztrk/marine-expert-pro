@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X, Camera, Plus, Pencil, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { callStabilityAssistant, type AIMessage } from "@/services/aiClient";
@@ -118,9 +118,10 @@ export default function StabilityAssistantPage() {
     scrollToBottom();
   }, [messages]);
 
+  const location = useLocation();
   const handleBack = () => {
-		// Try to go back if there is history; otherwise go home
-		if (window.history.length > 1) {
+		const canGoBack = (window.history?.length || 0) > 1 && location.key !== 'default';
+		if (canGoBack) {
 			navigate(-1);
 		} else {
 			navigate('/');
