@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3 } from "lucide-react";
+import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3, ChevronLeft, ChevronRight } from "lucide-react";
 // import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -262,15 +262,35 @@ const Index = () => {
 												<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
 											</div>
 											<div className="flex-1 flex items-stretch">
-												<div className="w-full h-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory px-4 sm:px-8 no-scrollbar">
-													<div className="flex gap-4 h-full items-center">
-														{calcItems.map((item, idx) => (
-															<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="snap-center flex-shrink-0">
-																<div className="w-[85vw] sm:w-[420px] h-[70vh] max-h-[70vh] rounded-3xl border border-indigo-300 bg-white dark:bg-gray-900 shadow-[0_20px_60px_rgba(0,0,0,0.25)] px-6 py-6 flex items-center justify-center text-2xl sm:text-3xl font-extrabold text-foreground transition-transform hover:-translate-y-1 opacity-0 animate-in fade-in-50 slide-in-from-right-2 fill-mode-both" style={{ animationDelay: `${idx * 45}ms` }}>
-																<span className="text-gray-900 dark:text-gray-100">{item.label}</span>
-															</div>
-															</Link>
-														))}
+												<div className="relative w-full h-full px-4 sm:px-8 select-none">
+													{/* 3D Carousel Container */}
+													<div className="absolute inset-0 perspective-[1200px]">
+														<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d" style={{ transformStyle: 'preserve-3d' }}>
+															{calcItems.map((item, idx) => {
+																const total = calcItems.length;
+																const angle = (360 / total) * idx;
+																const radius = 520; // distance from center
+																return (
+																	<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)}
+																		className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+																		style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)`, transformStyle: 'preserve-3d' }}
+																>
+																	<div className="w-[70vw] sm:w-[520px] h-[56vh] sm:h-[64vh] rounded-3xl border border-indigo-300 bg-white/98 dark:bg-gray-900/98 shadow-[0_20px_60px_rgba(0,0,0,0.25)] px-6 py-6 flex items-center justify-center text-3xl sm:text-4xl font-extrabold text-foreground">
+																		<span className="text-gray-900 dark:text-gray-100">{item.label}</span>
+																	</div>
+																</Link>
+															);
+														})}
+													</div>
+													</div>
+													{/* Controls */}
+													<div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-4">
+														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); const c=document.querySelector('#calc-carousel'); if(c) c.scrollLeft -= 1;}}>
+															<ChevronLeft className="w-5 h-5" />
+														</Button>
+														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); const c=document.querySelector('#calc-carousel'); if(c) c.scrollLeft += 1;}}>
+															<ChevronRight className="w-5 h-5" />
+														</Button>
 													</div>
 												</div>
 											</div>
