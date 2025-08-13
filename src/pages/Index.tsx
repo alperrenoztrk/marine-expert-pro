@@ -254,8 +254,8 @@ const Index = () => {
 								<span data-translatable>Hesaplamalar</span>
 							</Button>
 							{calcRingOpen && (
-								<div className="fixed inset-0 z-[999]">
-																			<div className="absolute inset-0 bg-black/70 backdrop-blur-md animate-in fade-in duration-200" onClick={()=> setCalcRingOpen(false)} />
+								<div className="fixed inset-0 z-[9999] pointer-events-auto">
+																			<div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200" />
 																			<div className="absolute inset-0 flex flex-col">
 											<div className="flex items-center justify-between p-4">
 												<h3 className="font-semibold text-base sm:text-lg">Hesaplamalar</h3>
@@ -267,7 +267,7 @@ const Index = () => {
 														{calcItems.map((item, idx) => (
 															<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="snap-center flex-shrink-0">
 																<div className="w-[280px] sm:w-[380px] h-[200px] sm:h-[260px] rounded-2xl border border-indigo-300 bg-white dark:bg-gray-900 shadow-2xl px-6 py-5 flex items-center justify-center text-lg sm:text-2xl font-bold text-foreground transition-transform hover:-translate-y-1 opacity-0 animate-in fade-in-50 slide-in-from-right-2 fill-mode-both" style={{ animationDelay: `${idx * 45}ms` }}>
-																<span className="text-foreground">{item.label}</span>
+																<span className="text-gray-900 dark:text-gray-100">{item.label}</span>
 															</div>
 															</Link>
 														))}
