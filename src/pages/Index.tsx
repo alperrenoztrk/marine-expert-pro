@@ -256,46 +256,30 @@ const Index = () => {
 							{calcRingOpen && (
 								<div className="fixed inset-0 z-50">
 									<div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={()=> setCalcRingOpen(false)} />
-									<div className="absolute inset-0 flex items-center justify-center">
-										<div className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] rounded-full border-2 border-indigo-400/40 bg-white/10 dark:bg-gray-900/20 shadow-[0_0_80px_rgba(99,102,241,0.35)] animate-in zoom-in-95 duration-200">
-											{/* Center pulsating button */}
-											<Button size="lg" variant="outline" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-14 w-14 p-0 bg-white/90 dark:bg-gray-800/90 border-indigo-300">
-												<Calculator className="w-5 h-5" />
-											</Button>
-											{/* Card fan (playing cards) */}
-											{calcItems.map((item, idx) => {
-												const total = calcItems.length;
-												const mid = (total - 1) / 2;
-												const isSm = typeof window !== 'undefined' && window.innerWidth >= 640;
-												const spreadX = isSm ? 420 : 260; // horizontal spread
-												const arc = isSm ? 110 : 80;       // vertical arc height
-												const maxRot = 18;                   // degrees
-												const denom = Math.max(mid, 1);
-												const t = (idx - mid) / denom;       // [-1, 1]
-												const x = t * (spreadX / 2);
-												const y = - (1 - Math.pow(Math.abs(t), 0.8)) * arc;
-												const rot = t * maxRot;
-												return (
-													<Link
-														key={item.path}
-														to={item.path}
-														onClick={()=> setCalcRingOpen(false)}
-														className="absolute left-1/2 top-1/2"
-														style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${rot}deg)`, zIndex: 100 + idx }}
-													>
-														<div
-															className="rounded-xl border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-sm text-foreground shadow-xl px-4 py-2 hover:-translate-y-1 transition will-change-transform opacity-0 animate-in fade-in-50 slide-in-from-bottom-2 fill-mode-both"
-															style={{ animationDelay: `${idx * 60}ms` }}
-														>
-															{item.label}
-														</div>
-													</Link>
-												);
-											})}
-											{/* Close button */}
-											<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)} className="absolute right-4 top-4">Kapat</Button>
+																			<div className="absolute inset-x-0 bottom-0 z-10 rounded-t-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t p-4 sm:p-6 shadow-2xl">
+											<div className="flex items-center justify-between mb-2">
+												<h3 className="font-semibold text-base sm:text-lg">Hesaplamalar</h3>
+												<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
+											</div>
+											<div className="relative h-56 sm:h-72">
+												{calcItems.map((item, idx) => {
+													const n = calcItems.length;
+													const isSm = typeof window !== 'undefined' && window.innerWidth >= 640;
+													const rx = isSm ? 240 : 180;
+													const ry = isSm ? 120 : 90;
+													const angle = Math.PI * (idx/Math.max(n-1,1));
+													const x = Math.cos(angle) * rx;
+													const y = Math.sin(angle) * ry;
+													return (
+														<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 bottom-3 sm:bottom-4" style={{ transform: `translate(calc(-50% + ${x}px), ${-y}px)` }}>
+															<div className="px-4 py-1.5 rounded-full border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-sm text-foreground shadow-md hover:scale-[1.03] transition whitespace-nowrap">
+																{item.label}
+															</div>
+														</Link>
+													);
+												})}
+											</div>
 										</div>
-									</div>
 								</div>
 							)}
 						</div>
