@@ -436,7 +436,7 @@ export default function StabilityAssistantPage() {
                 <div className={`text-xs mt-2 opacity-70 ${
                   message.role === 'user' ? 'text-primary-foreground' : 'text-muted-foreground'
                 }`}>
-                  {message.timestamp.toLocaleTimeString('tr-TR', { 
+                  {new Date(message.timestamp).toLocaleTimeString('tr-TR', { 
                     hour: '2-digit', 
                     minute: '2-digit' 
                   })}
