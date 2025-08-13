@@ -256,28 +256,26 @@ const Index = () => {
 							{calcRingOpen && (
 								<div className="fixed inset-0 z-50">
 									<div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={()=> setCalcRingOpen(false)} />
-																			<div className="absolute inset-x-0 bottom-0 z-10 rounded-t-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t p-4 sm:p-6 shadow-2xl">
-											<div className="flex items-center justify-between mb-2">
-												<h3 className="font-semibold text-base sm:text-lg">Hesaplamalar</h3>
-												<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
-											</div>
-											<div className="relative h-56 sm:h-72">
+																			<div className="absolute inset-0 flex items-center justify-center">
+											<div className="relative w-full h-full max-w-5xl max-h-[80vh]">
 												{calcItems.map((item, idx) => {
-													const n = calcItems.length;
 													const isSm = typeof window !== 'undefined' && window.innerWidth >= 640;
-													const rx = isSm ? 240 : 180;
-													const ry = isSm ? 120 : 90;
-													const angle = Math.PI * (idx/Math.max(n-1,1));
-													const x = Math.cos(angle) * rx;
-													const y = Math.sin(angle) * ry;
+													const golden = 2.399963229728653; // golden angle radians (~137.5°)
+													const baseR = isSm ? 18 : 14;
+													const stepR = isSm ? 22 : 16;
+													const angle = idx * golden;
+													const r = baseR + idx * stepR;
+													const x = Math.cos(angle) * r;
+													const y = Math.sin(angle) * r;
 													return (
-														<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 bottom-3 sm:bottom-4" style={{ transform: `translate(calc(-50% + ${x}px), ${-y}px)` }}>
-															<div className="px-4 py-1.5 rounded-full border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-sm text-foreground shadow-md hover:scale-[1.03] transition whitespace-nowrap">
+														<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)} className="absolute left-1/2 top-1/2" style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}>
+															<div className="px-4 py-1.5 rounded-full border border-indigo-300 bg-white/95 dark:bg-gray-800/95 text-sm text-foreground shadow-md hover:scale-[1.04] transition whitespace-nowrap opacity-0 animate-in fade-in-50 zoom-in-95 fill-mode-both" style={{ animationDelay: `${idx * 55}ms` }}>
 																{item.label}
 															</div>
 														</Link>
 													);
 												})}
+											<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)} className="absolute right-6 top-6">Kapat</Button>
 											</div>
 										</div>
 								</div>
