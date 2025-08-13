@@ -287,7 +287,7 @@ export default function StabilityAssistantPage() {
         </Avatar>
         <div>
           <h1 className="font-semibold text-lg">Stabilite Asistanı</h1>
-          <p className="text-sm text-muted-foreground">Maritime AI Assistant</p>
+
         </div>
       </div>
 
