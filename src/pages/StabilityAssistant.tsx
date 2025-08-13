@@ -2,11 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X } from "lucide-react";
+import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { callStabilityAssistant, type AIMessage } from "@/services/aiClient";
+import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatMessage {
   id: string;
@@ -18,6 +21,7 @@ interface ChatMessage {
 
 export default function StabilityAssistantPage() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -39,6 +43,97 @@ export default function StabilityAssistantPage() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const checkAndRequestPermissions = async () => {
+    if (!Capacitor.isNativePlatform()) {
+      return true; // Web doesn't need permission
+    }
+
+    try {
+      const permissions = await CapacitorCamera.checkPermissions();
+      
+      if (permissions.photos !== 'granted') {
+        const result = await CapacitorCamera.requestPermissions({
+          permissions: ['photos']
+        });
+        
+        if (result.photos !== 'granted') {
+          toast({
+            title: "İzin Gerekli",
+            description: "Fotoğraf galerisine erişim için izin gereklidir.",
+            variant: "destructive"
+          });
+          return false;
+        }
+      }
+      return true;
+    } catch (error) {
+      console.error('Permission error:', error);
+      toast({
+        title: "İzin Hatası",
+        description: "Galeri izni alınamadı.",
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
+  const selectFromGallery = async () => {
+    const hasPermission = await checkAndRequestPermissions();
+    if (!hasPermission) return;
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const images = await CapacitorCamera.pickImages({
+          quality: 90,
+          limit: 5
+        });
+        
+        const base64Images = images.photos.map(photo => `data:image/jpeg;base64,${photo.webPath}`);
+        setSelectedImages(prev => [...prev, ...base64Images]);
+      } else {
+        // Fallback to file input for web
+        fileInputRef.current?.click();
+      }
+    } catch (error) {
+      console.error('Gallery selection error:', error);
+      toast({
+        title: "Galeri Hatası",
+        description: "Fotoğraf seçiminde hata oluştu.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const takePicture = async () => {
+    const hasPermission = await checkAndRequestPermissions();
+    if (!hasPermission) return;
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const image = await CapacitorCamera.getPhoto({
+          quality: 90,
+          allowEditing: false,
+          resultType: CameraResultType.DataUrl,
+          source: CameraSource.Camera
+        });
+        
+        if (image.dataUrl) {
+          setSelectedImages(prev => [...prev, image.dataUrl!]);
+        }
+      } else {
+        // Fallback to file input for web
+        fileInputRef.current?.click();
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      toast({
+        title: "Kamera Hatası",
+        description: "Fotoğraf çekiminde hata oluştu.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -254,15 +349,38 @@ export default function StabilityAssistantPage() {
               className="hidden"
               disabled={isLoading}
             />
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-              className="h-[50px] px-4"
-            >
-              <ImageIcon className="h-4 w-4" />
-            </Button>
+            {Capacitor.isNativePlatform() ? (
+              <>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={selectFromGallery}
+                  disabled={isLoading}
+                  className="h-[50px] px-4"
+                >
+                  <ImageIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={takePicture}
+                  disabled={isLoading}
+                  className="h-[50px] px-4"
+                >
+                  <Camera className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading}
+                className="h-[50px] px-4"
+              >
+                <ImageIcon className="h-4 w-4" />
+              </Button>
+            )}
             <div className="flex-1">
               <Input
                 value={inputMessage}
