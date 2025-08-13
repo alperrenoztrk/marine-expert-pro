@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X, Camera } from "lucide-react";
+import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X, Camera, Plus, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -35,6 +35,80 @@ export default function StabilityAssistantPage() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+	const [threads, setThreads] = useState<Array<{ id: string; title: string; createdAt: number }>>([]);
+	const [activeThreadId, setActiveThreadId] = useState<string>("");
+	
+	// Load/save threads and messages per thread
+	useEffect(() => {
+		try {
+			const savedThreads = localStorage.getItem('stabilityThreads');
+			const savedActive = localStorage.getItem('stabilityActiveThread');
+			if (savedThreads) {
+				const parsed = JSON.parse(savedThreads) as Array<{ id: string; title: string; createdAt: number }>;
+				setThreads(parsed);
+				if (savedActive && parsed.some(t => t.id === savedActive)) {
+					setActiveThreadId(savedActive);
+				}
+			}
+		} catch {}
+	}, []);
+	
+	useEffect(() => {
+		try { localStorage.setItem('stabilityThreads', JSON.stringify(threads)); } catch {}
+	}, [threads]);
+	
+	useEffect(() => {
+		if (!activeThreadId && threads.length > 0) {
+			setActiveThreadId(threads[0].id);
+			return;
+		}
+		try { localStorage.setItem('stabilityActiveThread', activeThreadId); } catch {}
+		// Load messages of active thread
+		if (activeThreadId) {
+			try {
+				const raw = localStorage.getItem(`stabilityThread:${activeThreadId}`);
+				if (raw) {
+					const parsed = JSON.parse(raw) as ChatMessage[];
+					setMessages(parsed);
+				} else {
+					// Seed with greeting
+					setMessages([
+						{ id: '1', role: 'assistant', content: 'Merhaba! Ben Stabilite Asistanınızım...', timestamp: new Date() }
+					]);
+				}
+			} catch {}
+		}
+	}, [activeThreadId]);
+	
+	useEffect(() => {
+		if (activeThreadId) {
+			try { localStorage.setItem(`stabilityThread:${activeThreadId}`, JSON.stringify(messages)); } catch {}
+		}
+	}, [messages, activeThreadId]);
+	
+	const createThread = () => {
+		const id = Date.now().toString();
+		const title = `Sohbet ${threads.length + 1}`;
+		const newThreads = [{ id, title, createdAt: Date.now() }, ...threads];
+		setThreads(newThreads);
+		setActiveThreadId(id);
+	};
+	
+	const renameThread = (id: string) => {
+		const current = threads.find(t => t.id === id);
+		if (!current) return;
+		const title = prompt('Sohbet adını değiştir', current.title) || current.title;
+		setThreads(threads.map(t => t.id === id ? { ...t, title } : t));
+	};
+	
+	const deleteThread = (id: string) => {
+		if (!confirm('Bu sohbeti silmek istiyor musunuz?')) return;
+		setThreads(threads.filter(t => t.id !== id));
+		try { localStorage.removeItem(`stabilityThread:${id}`); } catch {}
+		if (activeThreadId === id) {
+			setActiveThreadId(threads.find(t => t.id !== id)?.id || "");
+		}
+	};
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -298,6 +372,26 @@ export default function StabilityAssistantPage() {
           <h1 className="font-semibold text-lg">Stabilite Asistanı</h1>
 
         </div>
+        <div className="ml-auto flex items-center gap-2">
+			<Button variant="outline" size="sm" onClick={createThread} title="Yeni sohbet">
+				<Plus className="h-4 w-4" />
+			</Button>
+			<div className="flex items-center gap-2 overflow-x-auto max-w-[60vw]">
+				{threads.map(t => (
+					<div key={t.id} className={`flex items-center gap-1 px-2 py-1 rounded border text-sm whitespace-nowrap ${activeThreadId===t.id? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+						<button onClick={()=> setActiveThreadId(t.id)} className="px-1">
+							{t.title}
+						</button>
+						<button onClick={()=> renameThread(t.id)} className="opacity-80">
+							<Pencil className="h-3 w-3" />
+						</button>
+						<button onClick={()=> deleteThread(t.id)} className="opacity-80">
+							<Trash2 className="h-3 w-3" />
+						</button>
+					</div>
+				))}
+			</div>
+		</div>
       </div>
 
       {/* Chat Messages */}
