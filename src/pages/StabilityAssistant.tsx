@@ -44,6 +44,15 @@ export default function StabilityAssistantPage() {
     scrollToBottom();
   }, [messages]);
 
+  const handleBack = () => {
+		// Try to go back if there is history; otherwise go home
+		if (window.history.length > 1) {
+			navigate(-1);
+		} else {
+			navigate('/');
+		}
+	};
+
   const checkAndRequestPermissions = async () => {
     if (!Capacitor.isNativePlatform()) {
       return true; // Web doesn't need permission
@@ -277,7 +286,7 @@ export default function StabilityAssistantPage() {
     <div className="h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <div className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border-b shadow-sm">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+        <Button variant="ghost" size="sm" onClick={handleBack}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <Avatar className="h-10 w-10">
