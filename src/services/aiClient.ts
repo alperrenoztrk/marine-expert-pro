@@ -4,6 +4,8 @@ export interface AIMessage {
   images?: string[]; // Base64 encoded images
 }
 
+import { supabase } from '@/integrations/supabase/client';
+
 const STABILITY_SYSTEM_PROMPT = `You are Stability Assistant, a maritime naval-architecture expert specialized in hydrostatics and stability.
 - Communicate in the user's language (inputs may be Turkish).
 - Guide the user step-by-step for ship stability calculations (GM, GZ, TPC, Trim/List, Draft Survey, IMO intact stability criteria, weather criterion).
@@ -15,40 +17,12 @@ const STABILITY_SYSTEM_PROMPT = `You are Stability Assistant, a maritime naval-a
 - Keep responses concise, actionable, and in bullet points when asking for inputs.`;
 
 async function callGemini(messages: AIMessage[]): Promise<string> {
-  const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
-  if (!apiKey) throw new Error('no-gemini-key');
-  // Map chat history to Gemini contents
-  // Prepend system as first user part (Gemini lacks system role)
-  const contents: any[] = [];
-  const sys = messages.find(m=>m.role==='system')?.content || STABILITY_SYSTEM_PROMPT;
-  contents.push({ role: 'user', parts: [{ text: sys }] });
-  for (const m of messages) {
-    if (m.role === 'system') continue;
-    const parts: any[] = [{ text: m.content }];
-    
-    // Add images if present
-    if (m.images && m.images.length > 0) {
-      for (const image of m.images) {
-        parts.push({
-          inline_data: {
-            mime_type: "image/jpeg",
-            data: image.split(',')[1] // Remove data:image/jpeg;base64, prefix
-          }
-        });
-      }
-    }
-    
-    contents.push({ role: m.role === 'assistant' ? 'model' : 'user', parts });
-  }
-  const body = { contents };
-  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}` , {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+  // Proxy through Supabase Edge Function to keep API key server-side and support images
+  const { data, error } = await supabase.functions.invoke('gemini-chat', {
+    body: { messages },
   });
-  if (!resp.ok) throw new Error(await resp.text());
-  const data = await resp.json();
-  const text = data?.candidates?.[0]?.content?.parts?.map((p: any)=> p.text).join('\n') || '';
+  if (error) throw error;
+  const text = (data?.text || data?.answer || '').toString();
   return text.trim();
 }
 
@@ -78,16 +52,10 @@ async function callOpenAI(messages: AIMessage[]): Promise<string> {
 
 export async function callStabilityAssistant(messages: AIMessage[]): Promise<string> {
   try {
-    // Prefer Gemini
-    const gemKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
-    if (gemKey) {
-      return await callGemini(messages);
-    }
-    // Fallback to OpenAI
-    const openaiKey = (import.meta as any).env?.VITE_OPENAI_API_KEY;
-    if (openaiKey) {
-      return await callOpenAI(messages);
-    }
+    // Always use Gemini via Edge Function (supports images and keeps key server-side)
+    return await callGemini(messages);
+  } catch (e) {
+    console.error('AI error', e);
     // Local heuristic fallback
     const last = messages.filter(m=>m.role==='user').pop()?.content.toLowerCase() || '';
     if (last.includes('gm')) {
@@ -105,8 +73,5 @@ export async function callStabilityAssistant(messages: AIMessage[]): Promise<str
       ].join('\n');
     }
     return 'Hangi hesaplamayı yapmak istersiniz? (GM, GZ, TPC, Trim/List, Draft Survey, IMO kontrol)';
-  } catch (e) {
-    console.error('AI error', e);
-    return 'Asistan şu anda meşgul. Lütfen daha sonra tekrar deneyin veya gerekli verileri manuel girin (örn. GM için KB, BM, KG).';
   }
 }
