@@ -308,40 +308,49 @@ const Index = () => {
 												<div className="absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-12 bg-gradient-to-b from-amber-800 to-amber-900 opacity-80 z-5"></div>
 
 												{/* Life Ring */}
-												<div className="relative w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-full shadow-2xl">
+												<div className="relative w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-full shadow-2xl border-8 border-gray-200">
+													{/* Red stripes - 4 segments */}
+													<div className="absolute inset-0 rounded-full overflow-hidden">
+														{/* Top segment */}
+														<div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 bg-gradient-to-b from-red-500 to-red-600 rounded-t-full transform -translate-y-4"></div>
+														{/* Right segment */}
+														<div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-l from-red-500 to-red-600 rounded-r-full transform translate-x-4"></div>
+														{/* Bottom segment */}
+														<div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-24 bg-gradient-to-t from-red-500 to-red-600 rounded-b-full transform translate-y-4"></div>
+														{/* Left segment */}
+														<div className="absolute left-0 top-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-r from-red-500 to-red-600 rounded-l-full transform -translate-x-4"></div>
+													</div>
+
 													{/* Inner hole */}
-													<div className="absolute inset-16 bg-transparent rounded-full border-4 border-orange-700 shadow-inner"></div>
-													
-													{/* Rope segments around the ring */}
-													{Array.from({ length: 8 }).map((_, i) => (
-														<div
-															key={i}
-															className="absolute w-full h-full"
-															style={{ transform: `rotate(${i * 45}deg)` }}
-														>
-															<div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white rounded-sm shadow-sm"></div>
+													<div className="absolute inset-20 bg-white rounded-full border-4 border-gray-300 shadow-inner">
+														{/* Nautical center design */}
+														<div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-full">
+															{/* Compass background pattern */}
+															<div className="absolute inset-0 opacity-20" style={{
+																background: `radial-gradient(circle, transparent 30%, rgba(0,0,0,0.1) 31%, rgba(0,0,0,0.1) 32%, transparent 33%), 
+																			conic-gradient(from 0deg, transparent 85deg, rgba(0,0,0,0.1) 90deg, transparent 95deg)`
+															}}></div>
 														</div>
-													))}
+													</div>
+													
+													{/* Rope texture around the ring */}
+													<div className="absolute inset-0 rounded-full" style={{
+														background: `conic-gradient(
+															from 0deg,
+															rgba(139,69,19,0.3) 0deg,
+															transparent 5deg,
+															rgba(139,69,19,0.3) 10deg,
+															transparent 15deg
+														)`
+													}}></div>
 
-													{/* Ring texture lines */}
-													<div className="absolute inset-0 rounded-full"
-														style={{
-															background: `conic-gradient(
-																from 0deg,
-																transparent 10deg,
-																rgba(0,0,0,0.1) 15deg,
-																transparent 20deg,
-																transparent 35deg,
-																rgba(0,0,0,0.1) 40deg,
-																transparent 45deg
-															)`
-														}}
-													></div>
-
-													{/* Title on the ring */}
-													<div className="absolute inset-0 flex items-center justify-center">
-														<div className="text-center">
-															<h2 className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg">HESAPLAMALAR</h2>
+													{/* Text labels */}
+													<div className="absolute inset-0 flex flex-col items-center justify-center">
+														<div className="text-center -mt-8">
+															<div className="text-base sm:text-lg font-bold text-gray-800 mb-1">HESAPLAMALAR</div>
+														</div>
+														<div className="text-center mt-8">
+															<div className="text-base sm:text-lg font-bold text-gray-800">CALCULATOR</div>
 														</div>
 													</div>
 
