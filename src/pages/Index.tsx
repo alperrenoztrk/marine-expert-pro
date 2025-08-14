@@ -286,13 +286,19 @@ const Index = () => {
 																																									<div className="absolute inset-0 perspective-[1200px]">
 															<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d" style={{ transformStyle: 'preserve-3d', transform: `rotateX(55deg) rotateZ(-12deg)` }}>
 																<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d transition-transform duration-500 ease-out" style={{ transformStyle: 'preserve-3d', transform: `rotateY(${carouselRotation}deg)` }}>
-																	{Array.from({ length: 24 }).map((_, i) => {
-																		const angle = (360 / 24) * i;
-																		const radius = 520;
+																	{/* Torus illusion: inner and outer rings of ticks */}
+																	{Array.from({ length: 36 }).map((_, i) => {
+																		const angle = (360 / 36) * i;
+																		const inner = 460, outer = 540;
 																		return (
-																			<div key={`tick-${i}`} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)` }}>
-																			<div className="w-1.5 h-1.5 rounded-full bg-indigo-400/60 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-																		</div>
+																			<>
+																			<div key={`tick-in-${i}`} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotateY(${angle}deg) translateZ(${inner}px)` }}>
+																				<div className="w-1 h-1 rounded-full bg-indigo-300/55" />
+																			</div>
+																			<div key={`tick-out-${i}`} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotateY(${angle}deg) translateZ(${outer}px)` }}>
+																				<div className="w-2 h-2 rounded-full bg-indigo-400/70 shadow-[0_0_10px_rgba(99,102,241,0.6)]" />
+																			</div>
+																		</>
 																	);
 																	})}
 																	{calcItems.map((item, idx) => {
@@ -304,7 +310,7 @@ const Index = () => {
 																				className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
 																				style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)`, transformStyle: 'preserve-3d' }}
 																		>
-																			<div className="w-[70vw] sm:w-[520px] h-[56vh] sm:h-[64vh] rounded-3xl border border-indigo-300 bg-white/98 dark:bg-gray-900/98 shadow-[0_20px_60px_rgba(0,0,0,0.25)] px-6 py-6 flex items-center justify-center text-3xl sm:text-4xl font-extrabold text-foreground">
+																			<div className="w-[70vw] sm:w-[520px] h-[56vh] sm:h-[64vh] rounded-3xl border border-indigo-300 bg-white/95 dark:bg-gray-900/95 shadow-[0_20px_60px_rgba(0,0,0,0.25)] px-6 py-6 flex items-center justify-center text-3xl sm:text-4xl font-extrabold text-foreground" style={{ transform: 'translateZ(2px)' }}>
 																				<span className="text-gray-900 dark:text-gray-100">{item.label}</span>
 																			</div>
 																		</Link>
