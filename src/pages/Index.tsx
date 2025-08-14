@@ -273,67 +273,113 @@ const Index = () => {
 								<span data-translatable>Hesaplamalar</span>
 							</Button>
 							{calcRingOpen && (
-								<div className="fixed inset-0 z-[9999] pointer-events-auto">
-																			<div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200" />
-																			<div className="absolute inset-0 flex flex-col">
-											<div className="flex items-center justify-between p-4 sm:p-6">
-												<h3 className="font-semibold text-base sm:text-lg">Hesaplamalar</h3>
-												<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
-											</div>
-											<div className="flex-1 flex items-stretch">
-												<div className="relative w-full h-full px-4 sm:px-8 select-none">
-													{/* 3D Carousel Container */}
-													<div className="absolute inset-0 perspective-[1200px]">
-														<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d" style={{ transformStyle: 'preserve-3d', transform: `rotateX(55deg) rotateZ(-12deg)` }}>
-															<div className="absolute inset-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 preserve-3d transition-transform duration-500 ease-out" style={{ transformStyle: 'preserve-3d', transform: `rotateY(${carouselRotation}deg)` }}>
-																{/* Torus illusion: inner and outer rings of ticks */}
-																{Array.from({ length: 36 }).map((_, i) => {
-																	const angle = (360 / 36) * i;
-																	const inner = 460, outer = 540;
-																	return (
-																		<div key={`tick-${i}`}>
-																			<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotateY(${angle}deg) translateZ(${inner}px)` }}>
-																				<div className="w-1 h-1 rounded-full bg-indigo-300/55" />
-																			</div>
-																			<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ transform: `rotateY(${angle}deg) translateZ(${outer}px)` }}>
-																				<div className="w-2 h-2 rounded-full bg-indigo-400/70 shadow-[0_0_10px_rgba(99,102,241,0.6)]" />
-																			</div>
-																		</div>
-																	);
-																})}
-																{calcItems.map((item, idx) => {
-																	const total = calcItems.length;
-																	const angle = (360 / total) * idx;
-																	const radius = 520; // distance from center
-																	return (
-																		<Link key={item.path} to={item.path} onClick={()=> setCalcRingOpen(false)}
-																			className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-																			style={{ transform: `rotateY(${angle}deg) translateZ(${radius}px)`, transformStyle: 'preserve-3d' }}
-																		>
-																			<div className="w-[70vw] sm:w-[520px] h-[56vh] sm:h-[64vh] rounded-3xl border border-indigo-300 bg-white/95 dark:bg-gray-900/95 shadow-[0_20px_60px_rgba(0,0,0,0.25)] px-6 py-6 flex items-center justify-center text-3xl sm:text-4xl font-extrabold text-foreground" style={{ transform: 'translateZ(2px)' }}>
-																				<span className="text-gray-900 dark:text-gray-100">{item.label}</span>
-																			</div>
-																		</Link>
-																	);
-																})}
-															</div>
+								<div className="fixed inset-0 z-[9999] pointer-events-auto bg-gradient-to-b from-blue-900/80 via-blue-800/70 to-blue-900/80 backdrop-blur-sm">
+									{/* Captain's Bridge Background */}
+									<div className="absolute inset-0 bg-gradient-to-br from-slate-800/40 via-slate-700/30 to-slate-900/50"></div>
+									
+									{/* Wall texture */}
+									<div className="absolute inset-0 opacity-20" style={{
+										backgroundImage: `repeating-linear-gradient(
+											45deg,
+											transparent,
+											transparent 2px,
+											rgba(255,255,255,0.03) 2px,
+											rgba(255,255,255,0.03) 4px
+										)`
+									}}></div>
+
+									<div className="absolute inset-0 flex flex-col">
+										{/* Header */}
+										<div className="flex items-center justify-between p-4 sm:p-6 bg-slate-800/50 border-b border-slate-600/30">
+											<h3 className="font-semibold text-base sm:text-lg text-white">Hesaplamalar</h3>
+											<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
+										</div>
+
+										{/* Life Ring Container */}
+										<div className="flex-1 flex items-center justify-center p-4">
+											<div className="relative">
+												{/* Wall Nail/Hook */}
+												<div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+													<div className="w-4 h-4 bg-gradient-to-b from-yellow-600 to-yellow-800 rounded-full shadow-lg"></div>
+													<div className="w-2 h-6 bg-gradient-to-b from-yellow-700 to-yellow-900 mx-auto rounded-b-sm shadow-md"></div>
+												</div>
+
+												{/* Hanging Rope */}
+												<div className="absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-12 bg-gradient-to-b from-amber-800 to-amber-900 opacity-80 z-5"></div>
+
+												{/* Life Ring */}
+												<div className="relative w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-full shadow-2xl">
+													{/* Inner hole */}
+													<div className="absolute inset-16 bg-transparent rounded-full border-4 border-orange-700 shadow-inner"></div>
+													
+													{/* Rope segments around the ring */}
+													{Array.from({ length: 8 }).map((_, i) => (
+														<div
+															key={i}
+															className="absolute w-full h-full"
+															style={{ transform: `rotate(${i * 45}deg)` }}
+														>
+															<div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-4 bg-white rounded-sm shadow-sm"></div>
+														</div>
+													))}
+
+													{/* Ring texture lines */}
+													<div className="absolute inset-0 rounded-full"
+														style={{
+															background: `conic-gradient(
+																from 0deg,
+																transparent 10deg,
+																rgba(0,0,0,0.1) 15deg,
+																transparent 20deg,
+																transparent 35deg,
+																rgba(0,0,0,0.1) 40deg,
+																transparent 45deg
+															)`
+														}}
+													></div>
+
+													{/* Title on the ring */}
+													<div className="absolute inset-0 flex items-center justify-center">
+														<div className="text-center">
+															<h2 className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg">HESAPLAMALAR</h2>
 														</div>
 													</div>
-													{/* Controls */}
-																									<div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-3 sm:gap-4">
-														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); rotatePrev();}}>
-															<ChevronLeft className="w-5 h-5" />
-														</Button>
-														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); setAutoSpin((v)=> !v);}}>
-															{autoSpin ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-														</Button>
-														<Button size="icon" variant="outline" className="rounded-full h-10 w-10" onClick={(e)=>{e.preventDefault(); rotateNext();}}>
-															<ChevronRight className="w-5 h-5" />
-														</Button>
-													</div>
+
+													{/* Shadow underneath */}
+													<div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-72 h-12 bg-black/30 rounded-full blur-lg"></div>
+												</div>
+
+												{/* Menu Items around the ring */}
+												<div className="absolute inset-0 w-80 h-80 sm:w-96 sm:h-96">
+													{calcItems.map((item, idx) => {
+														const total = calcItems.length;
+														const angle = (360 / total) * idx;
+														const radius = 220;
+														const x = Math.cos((angle - 90) * Math.PI / 180) * radius;
+														const y = Math.sin((angle - 90) * Math.PI / 180) * radius;
+														
+														return (
+															<Link
+																key={item.path}
+																to={item.path}
+																onClick={() => setCalcRingOpen(false)}
+																className="absolute w-24 h-24 sm:w-28 sm:h-28 -translate-x-1/2 -translate-y-1/2 group"
+																style={{
+																	left: `calc(50% + ${x}px)`,
+																	top: `calc(50% + ${y}px)`
+																}}
+															>
+																<div className="w-full h-full bg-white/90 backdrop-blur-sm rounded-xl border border-orange-300 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center gap-1 hover:scale-105 hover:bg-white group-hover:border-orange-500">
+																	<item.Icon className="w-6 h-6 sm:w-7 sm:h-7 text-orange-600 group-hover:text-orange-700" />
+																	<span className="text-xs sm:text-sm font-medium text-gray-800 text-center px-1 leading-tight">{item.label}</span>
+																</div>
+															</Link>
+														);
+													})}
 												</div>
 											</div>
 										</div>
+									</div>
 								</div>
 							)}
 						</div>
