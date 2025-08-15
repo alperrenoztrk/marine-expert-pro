@@ -7,6 +7,7 @@ import { StabilityCalculations } from "@/components/calculations/StabilityCalcul
 import cargoShipOcean from "@/assets/maritime/cargo-ship-ocean.jpg";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
 const Stability = () => {
   return (
@@ -508,6 +509,9 @@ const Stability = () => {
             IMO Resolution A.749(18), IS Code 2008, SOLAS Chapter II-1 uygunluğu
           </p>
         </div>
+
+        {/* Stability Assistant */}
+        <StabilityAssistantPopup />
 
       </div>
     </div>
