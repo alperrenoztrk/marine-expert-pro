@@ -124,6 +124,7 @@ const Index = () => {
 		return () => { if (spinRef.current) cancelAnimationFrame(spinRef.current); };
 	}, [autoSpin, calcRingOpen]);
   const calcItems = [
+    { path: "/calculations", label: "Tüm Hesaplamalar", Icon: Calculator },
     { path: "/stability", label: "Stabilite", Icon: Ship },
     { path: "/navigation-menu", label: "Seyir", Icon: Compass },
     { path: "/hydrodynamics-menu", label: "Hidrodinamik", Icon: Waves },
@@ -135,7 +136,6 @@ const Index = () => {
     { path: "/safety-menu", label: "Güvenlik", Icon: Shield },
     { path: "/emissions-menu", label: "Emisyon", Icon: Leaf },
     { path: "/weather-menu", label: "Meteoroloji", Icon: Cloud },
-    { path: "/special-ships-menu", label: "Özel Gemiler", Icon: Ship },
   ];
 
   if (isLoading) {
