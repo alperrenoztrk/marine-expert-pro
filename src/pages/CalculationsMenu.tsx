@@ -9,7 +9,10 @@ const categories = [
     items: [
       'Kargo (Yük hesaplamaları)',
       'Stabilite (Dengelilik analizi)',
-      'Stabilite Asistanı',
+      'Stabilite Asistanı'
+    ],
+    links: ['/cargo', '/stability', '/stability/assistant'],
+    rules: [
       'Damage Stability Booklet / Damage Control Plan',
       'Grain Loading Manual (Tahıl gemileri)',
       'Timber Deck Cargo Manual (Güverte tomruk)',
@@ -17,8 +20,7 @@ const categories = [
       'Cargo Securing Manual (CSM)',
       'IBC/IGC Stabilite/Yükleme Kitapçıkları (gemi tipine göre)',
       'Polar Water Operational Manual (PWOM)'
-    ],
-    links: ['/cargo', '/stability', '/stability/assistant']
+    ]
   },
   {
     title: 'Kargo',
@@ -106,6 +108,20 @@ export default function CalculationsMenu() {
                       </li>
                     ))}
                   </ul>
+
+                  {category.rules && category.rules.length > 0 && (
+                    <div className="mt-6">
+                      <h3 className="text-xl font-semibold text-white mb-3">Stabilite Kuralları</h3>
+                      <ul className="space-y-2">
+                        {category.rules.map((rule: string, rIndex: number) => (
+                          <li key={rIndex} className="flex items-start gap-3">
+                            <span className="w-1.5 h-1.5 bg-white rounded-full flex-shrink-0 mt-2"></span>
+                            <span className="text-white text-lg">{rule}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
