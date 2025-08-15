@@ -9,7 +9,14 @@ const categories = [
     items: [
       'Kargo (Yük hesaplamaları)',
       'Stabilite (Dengelilik analizi)',
-      'Stabilite Asistanı'
+      'Stabilite Asistanı',
+      'Damage Stability Booklet / Damage Control Plan',
+      'Grain Loading Manual (Tahıl gemileri)',
+      'Timber Deck Cargo Manual (Güverte tomruk)',
+      'Loading Manual / Stability Instrument (Kılavuz + Onay)',
+      'Cargo Securing Manual (CSM)',
+      'IBC/IGC Stabilite/Yükleme Kitapçıkları (gemi tipine göre)',
+      'Polar Water Operational Manual (PWOM)'
     ],
     links: ['/cargo', '/stability', '/stability/assistant']
   },
