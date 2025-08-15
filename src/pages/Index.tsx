@@ -3,10 +3,8 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { Brain, Shield, Settings, Calculator } from "lucide-react";
 // import { GoogleAuth } from "@/components/auth/GoogleAuth";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 
 
 
@@ -103,40 +101,7 @@ const Index = () => {
     toast.success("Favori durumu güncellendi!");
   };
 
-  const [calcRingOpen, setCalcRingOpen] = useState(false);
-  const [carouselRotation, setCarouselRotation] = useState(0);
-	const rotatePrev = () => setCarouselRotation((deg)=> deg - (360 / calcItems.length));
-	const rotateNext = () => setCarouselRotation((deg)=> deg + (360 / calcItems.length));
-  const [autoSpin, setAutoSpin] = useState(true);
-	const spinRef = useRef<number | null>(null);
-	useEffect(() => {
-		if (!calcRingOpen) return; // only when overlay open
-		let last = performance.now();
-		const step = (now: number) => {
-			if (autoSpin) {
-				const dt = Math.min(32, now - last);
-				last = now;
-				setCarouselRotation((deg)=> deg + (dt * 0.03)); // speed: degrees per ms
-			}
-			spinRef.current = requestAnimationFrame(step);
-		};
-		spinRef.current = requestAnimationFrame(step);
-		return () => { if (spinRef.current) cancelAnimationFrame(spinRef.current); };
-	}, [autoSpin, calcRingOpen]);
-  const calcItems = [
-    { path: "/calculations", label: "Tüm Hesaplamalar", Icon: Calculator },
-    { path: "/stability", label: "Stabilite", Icon: Ship },
-    { path: "/navigation-menu", label: "Seyir", Icon: Compass },
-    { path: "/hydrodynamics-menu", label: "Hidrodinamik", Icon: Waves },
-    { path: "/engine-menu", label: "Makine", Icon: Cog },
-    { path: "/cargo", label: "Kargo", Icon: Package },
-    { path: "/ballast-menu", label: "Balast", Icon: Droplets },
-    { path: "/tank-menu", label: "Tank", Icon: Package },
-    { path: "/structural-menu", label: "Yapısal", Icon: Building },
-    { path: "/safety-menu", label: "Güvenlik", Icon: Shield },
-    { path: "/emissions-menu", label: "Emisyon", Icon: Leaf },
-    { path: "/weather-menu", label: "Meteoroloji", Icon: Cloud },
-  ];
+  // Calculations overlay removed; direct navigation is used.
 
   if (isLoading) {
     return (
@@ -259,140 +224,17 @@ const Index = () => {
                 
                 {/* Second Row - Other buttons */}
                 <div className="flex gap-2 flex-wrap">
-					<DropdownMenu>
-						{/* Calculations Fullscreen Overlay */}
-						<div className="relative">
-							<Button
-								size="sm"
-								variant="outline"
-								aria-label="Hesaplamalar"
-								onClick={() => setCalcRingOpen(true)}
-								className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
-							>
-								<Calculator className="w-4 h-4" />
-								<span data-translatable>Hesaplamalar</span>
-							</Button>
-							{calcRingOpen && (
-								<div className="fixed inset-0 z-[9999] pointer-events-auto bg-gradient-to-b from-blue-900/80 via-blue-800/70 to-blue-900/80 backdrop-blur-sm">
-									{/* Captain's Bridge Background */}
-									<div className="absolute inset-0 bg-gradient-to-br from-slate-800/40 via-slate-700/30 to-slate-900/50"></div>
-									
-									{/* Wall texture */}
-									<div className="absolute inset-0 opacity-20" style={{
-										backgroundImage: `repeating-linear-gradient(
-											45deg,
-											transparent,
-											transparent 2px,
-											rgba(255,255,255,0.03) 2px,
-											rgba(255,255,255,0.03) 4px
-										)`
-									}}></div>
-
-									<div className="absolute inset-0 flex flex-col">
-										{/* Header */}
-										<div className="flex items-center justify-between p-4 sm:p-6 bg-slate-800/50 border-b border-slate-600/30">
-											<h3 className="font-semibold text-base sm:text-lg text-white">Hesaplamalar</h3>
-											<Button size="sm" variant="secondary" onClick={()=> setCalcRingOpen(false)}>Kapat</Button>
-										</div>
-
-										{/* Life Ring Container */}
-										<div className="flex-1 flex items-center justify-center p-4">
-											<div className="relative">
-												{/* Wall Nail/Hook */}
-												<div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
-													<div className="w-4 h-4 bg-gradient-to-b from-yellow-600 to-yellow-800 rounded-full shadow-lg"></div>
-													<div className="w-2 h-6 bg-gradient-to-b from-yellow-700 to-yellow-900 mx-auto rounded-b-sm shadow-md"></div>
-												</div>
-
-												{/* Hanging Rope */}
-												<div className="absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-12 bg-gradient-to-b from-amber-800 to-amber-900 opacity-80 z-5"></div>
-
-												{/* Life Ring */}
-												<div className="relative w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-full shadow-2xl border-8 border-gray-200">
-													{/* Red stripes - 4 segments */}
-													<div className="absolute inset-0 rounded-full overflow-hidden">
-														{/* Top segment */}
-														<div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 bg-gradient-to-b from-red-500 to-red-600 rounded-t-full transform -translate-y-4"></div>
-														{/* Right segment */}
-														<div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-l from-red-500 to-red-600 rounded-r-full transform translate-x-4"></div>
-														{/* Bottom segment */}
-														<div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-24 bg-gradient-to-t from-red-500 to-red-600 rounded-b-full transform translate-y-4"></div>
-														{/* Left segment */}
-														<div className="absolute left-0 top-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-r from-red-500 to-red-600 rounded-l-full transform -translate-x-4"></div>
-													</div>
-
-													{/* Inner hole */}
-													<div className="absolute inset-20 bg-white rounded-full border-4 border-gray-300 shadow-inner">
-														{/* Nautical center design */}
-														<div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-full">
-															{/* Compass background pattern */}
-															<div className="absolute inset-0 opacity-20" style={{
-																background: `radial-gradient(circle, transparent 30%, rgba(0,0,0,0.1) 31%, rgba(0,0,0,0.1) 32%, transparent 33%), 
-																			conic-gradient(from 0deg, transparent 85deg, rgba(0,0,0,0.1) 90deg, transparent 95deg)`
-															}}></div>
-														</div>
-													</div>
-													
-													{/* Rope texture around the ring */}
-													<div className="absolute inset-0 rounded-full" style={{
-														background: `conic-gradient(
-															from 0deg,
-															rgba(139,69,19,0.3) 0deg,
-															transparent 5deg,
-															rgba(139,69,19,0.3) 10deg,
-															transparent 15deg
-														)`
-													}}></div>
-
-													{/* Text labels */}
-													<div className="absolute inset-0 flex flex-col items-center justify-center">
-														<div className="text-center -mt-8">
-															<div className="text-base sm:text-lg font-bold text-gray-800 mb-1">HESAPLAMALAR</div>
-														</div>
-														<div className="text-center mt-8">
-															<div className="text-base sm:text-lg font-bold text-gray-800">CALCULATOR</div>
-														</div>
-													</div>
-
-													{/* Shadow underneath */}
-													<div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-72 h-12 bg-black/30 rounded-full blur-lg"></div>
-												</div>
-
-												{/* Menu Items around the ring */}
-												<div className="absolute inset-0 w-80 h-80 sm:w-96 sm:h-96">
-													{calcItems.map((item, idx) => {
-														const total = calcItems.length;
-														const angle = (360 / total) * idx;
-														const radius = 220;
-														const x = Math.cos((angle - 90) * Math.PI / 180) * radius;
-														const y = Math.sin((angle - 90) * Math.PI / 180) * radius;
-														
-														return (
-															<Link
-																key={item.path}
-																to={item.path}
-																onClick={() => setCalcRingOpen(false)}
-																className="absolute w-24 h-24 sm:w-28 sm:h-28 -translate-x-1/2 -translate-y-1/2 group"
-																style={{
-																	left: `calc(50% + ${x}px)`,
-																	top: `calc(50% + ${y}px)`
-																}}
-															>
-																<div className="w-full h-full bg-white/90 backdrop-blur-sm rounded-xl border border-orange-300 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center gap-1 hover:scale-105 hover:bg-white group-hover:border-orange-500">
-																	<item.Icon className="w-6 h-6 sm:w-7 sm:h-7 text-orange-600 group-hover:text-orange-700" />
-																	<span className="text-xs sm:text-sm font-medium text-gray-800 text-center px-1 leading-tight">{item.label}</span>
-																</div>
-															</Link>
-														);
-													})}
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							)}
-						</div>
-					</DropdownMenu>
+					<Link to="/calculations">
+						<Button
+							size="sm"
+							variant="outline"
+							aria-label="Hesaplamalar"
+							className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
+						>
+							<Calculator className="w-4 h-4" />
+							<span data-translatable>Hesaplamalar</span>
+						</Button>
+					</Link>
                 </div>
               </div>
             </div>

@@ -8,9 +8,10 @@ const categories = [
     icon: Ship,
     items: [
       'Kargo (Yük hesaplamaları)',
-      'Stabilite (Dengelilik analizi)'
+      'Stabilite (Dengelilik analizi)',
+      'Stabilite Asistanı'
     ],
-    links: ['/cargo', '/stability']
+    links: ['/cargo', '/stability', '/stability/assistant']
   },
   {
     title: 'Kargo',
