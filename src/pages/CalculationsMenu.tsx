@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lucide-react';
+import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lucide-react';
 
 const categories = [
   {
@@ -46,7 +45,7 @@ const categories = [
       'Emniyet (Güvenlik hesaplamaları)',
       'Yapısal (Yapısal analiz)'
     ],
-    links: ['/safety-calculations', '/structural-calculations']
+    links: ['/safety', '/structural']
   },
   {
     title: 'Operasyonel',
@@ -55,7 +54,7 @@ const categories = [
       'Tank (Tank hesaplamaları)',
       'Balast (Balast suyu yönetimi)'
     ],
-    links: ['/tank-calculations', '/ballast']
+    links: ['/tank', '/ballast']
   }
 ];
 
@@ -64,14 +63,7 @@ export default function CalculationsMenu() {
     <div className="min-h-screen" style={{ backgroundColor: '#1e293b' }}>
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Link to="/">
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Ana Sayfa
-            </Button>
-          </Link>
-        </div>
+        
         
         {/* Title */}
         <div className="text-center mb-12">
