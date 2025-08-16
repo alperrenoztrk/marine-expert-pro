@@ -220,7 +220,7 @@ export function DraftSurveyCalculations() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="drafts" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1">
               <TabsTrigger value="drafts">Draft Okumaları</TabsTrigger>
               <TabsTrigger value="particulars">Gemi Özellikleri</TabsTrigger>
               <TabsTrigger value="density">Yoğunluk Düzeltmeleri</TabsTrigger>
@@ -234,7 +234,7 @@ export function DraftSurveyCalculations() {
                   <Waves className="h-4 w-4" />
                   Draft Okumaları (metre)
                 </h4>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                   <div>
                     <h5 className="font-medium mb-3 text-red-600 dark:text-red-400">Port Tarafı</h5>
                     <div className="space-y-3">
@@ -319,7 +319,7 @@ export function DraftSurveyCalculations() {
             <TabsContent value="particulars" className="space-y-4">
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-4">Gemi Ana Özellikleri</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
                   <div>
                     <Label htmlFor="lbp">LBP (m)</Label>
                     <Input
@@ -409,7 +409,7 @@ export function DraftSurveyCalculations() {
             <TabsContent value="density" className="space-y-4">
               <div className="bg-yellow-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-4">Yoğunluk ve Sıcaklık Düzeltmeleri</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-start">
                   <div>
                     <Label htmlFor="seawater-density">Standart Deniz Suyu Yoğunluğu (ton/m³)</Label>
                     <Input
@@ -446,7 +446,7 @@ export function DraftSurveyCalculations() {
             <TabsContent value="deductions" className="space-y-4">
               <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-4">Çıkarımlar (ton)</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-start">
                   <div>
                     <Label htmlFor="ballast">Balast Suyu</Label>
                     <Input
@@ -490,7 +490,7 @@ export function DraftSurveyCalculations() {
             <TabsContent value="results" className="space-y-4">
               {results && (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
                     <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <Waves className="h-4 w-4" />
@@ -543,7 +543,7 @@ export function DraftSurveyCalculations() {
                       <Calculator className="h-4 w-4" />
                       Deplasman Hesaplamaları
                     </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm items-start">
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span>Ham Deplasman:</span>
