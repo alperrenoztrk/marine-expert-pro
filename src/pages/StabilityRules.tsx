@@ -19,8 +19,8 @@ const sections: RuleSection[] = [
       'Maksimum GZ ≥ 0.20 m ve tepe açısı θ ≥ 30°.',
       'Başlangıç GM (GM0) ≥ 0.15 m (çelik kuru yük, genel kargo vb. için tipik taban değer).',
       'Pozitif stabilite menzili en az 30°; borda kesim hattı (deck edge) tercihen 30°’den sonra batmalı.',
-      'Weather criterion: 26–40 m/s rüzgârda denge açısı θw ≤ 16° veya θdeck’in %80’i (hangisi küçükse).',
-      'Weather criterion: Aynı sınırlayıcı açıya kadar kalan GZ alanı, rüzgâr devirmesine karşı en az %40 fazlalık göstermeli.'
+      'Hava koşulu kriteri (Weather Criterion): 26–40 m/s rüzgârda denge açısı θw ≤ 16° veya θdeck’in %80’i (hangisi küçükse).',
+      'Hava koşulu kriteri (Weather Criterion): Aynı sınırlayıcı açıya kadar kalan GZ alanı, rüzgâr devirmesine karşı en az %40 fazlalık göstermeli.'
     ],
     sources: [
       { label: 'IMO 2008 IS Code (MSC.267(85))', href: 'https://www.imo.org/en/publications' }
@@ -40,9 +40,11 @@ const sections: RuleSection[] = [
   {
     title: 'SOLAS II‑1 — Olasılıksal Hasar Stabilitesi',
     rules: [
-      'A (sağkalım) ≥ R (gerekli) — tüm kıç‑baş hasar senaryolarının ağırlıklı toplamı, gerekli değerden küçük olmamalı.',
+      'Olasılıksal yöntem: A = Σ(s × p). Burada s: hasar sonrası sağkalım katsayısı, p: o hasarın meydana gelme olasılığı (bölme uzunluğu/konumuna bağlı).',
+      'R: Gemi boyuna bağlı olarak yönetmelikte tablolarla verilen “gerekli” değerdir.',
+      'Kriter: A ≥ R sağlanmalıdır; değilse bölümlendirme/stabilite yetersiz kabul edilir.',
       'Hasarlı durumda son durum: serbest yüzey/trim etkileriyle birlikte can salı indirme ve erişim koşulları sağlanmalı.',
-      'Damage Control Plan/Booklet gemide; uzaktan kumandalı vana/su geçmez kapı yerleri ve ölçüm noktaları plan üzerinde gösterilmeli.'
+      'Damage Control Plan/Booklet gemide; su geçmez kapılar ve uzaktan kumandalar ile ölçüm noktaları plan üzerinde gösterilmeli.'
     ],
     sources: [
       { label: 'SOLAS 1974, Bölüm II‑1', href: 'https://www.imo.org/en/publications' }

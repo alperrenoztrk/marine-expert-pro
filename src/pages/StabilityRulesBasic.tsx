@@ -49,7 +49,7 @@ export default function StabilityRulesBasic() {
                   <li>GZ alanları: 0°–30° ≥ 0.055 m·rad; 0°–40° ≥ 0.090 m·rad; 30°–40° ≥ 0.030 m·rad.</li>
                   <li>Maksimum GZ ≥ 0.20 m ve tepe açısı ≥ 30°.</li>
                   <li>Başlangıç <strong>GM ≥ 0.15 m</strong> (kuru yük vb. için tipik taban).</li>
-                  <li><strong>Weather criterion</strong>: Rüzgâr altında kalan alan, rüzgâr devirmesine karşı yeterli olmalı; denge açısı genelde 16° civarını aşmamalıdır.</li>
+                  <li><strong>Hava koşulu kriteri (Weather Criterion)</strong>: Rüzgâr altında kalan alan, rüzgâr devirmesine karşı yeterli olmalı; denge açısı genelde 16° civarını aşmamalıdır.</li>
                 </ul>
                 <p className="mt-2 text-xs">Kaynak: 2008 IS Code (MSC.267(85))</p>
               </section>
