@@ -60,6 +60,7 @@ import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityRules from "./pages/StabilityRules";
 import StabilityRulesBasic from "./pages/StabilityRulesBasic";
+import EconomicsMenu from "./pages/EconomicsMenu";
 
 const queryClient = new QueryClient();
 
@@ -127,6 +128,7 @@ const App = () => {
           <Route path="/ballast" element={<Ballast />} />
           <Route path="/trim-list" element={<TrimList />} />
                   <Route path="/economics" element={<Economics />} />
+                  <Route path="/economics-menu" element={<EconomicsMenu />} />
                   <Route path="/structural" element={<StructuralCalculationsPage />} />
                   <Route path="/safety" element={<SafetyCalculationsPage />} />
                   <Route path="/emissions" element={<EmissionCalculationsPage />} />
