@@ -7,6 +7,7 @@ import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3,
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
+import { DraftSurveyCalculations } from "./DraftSurveyCalculations";
 import {
   ShipGeometry,
   WeightDistribution,
@@ -897,58 +898,8 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       {(!singleMode || section === 'draft') && (
       <>
       <Separator />
-      {/* Draft Survey */}
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-sky-700 dark:text-sky-300">
-            <Waves className="h-5 w-5" />
-            Draft Survey
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
-            <div>
-              <Label>Ön Draft (m)</Label>
-              <Input type="number" value={draftSurveyInputs.forwardDraft} onChange={(e)=> setDraftSurveyInputs(p=>({...p, forwardDraft: e.target.value}))} />
-            </div>
-            <div>
-              <Label>Orta Draft (m)</Label>
-              <Input type="number" value={draftSurveyInputs.midshipDraft} onChange={(e)=> setDraftSurveyInputs(p=>({...p, midshipDraft: e.target.value}))} />
-            </div>
-            <div>
-              <Label>Arka Draft (m)</Label>
-              <Input type="number" value={draftSurveyInputs.aftDraft} onChange={(e)=> setDraftSurveyInputs(p=>({...p, aftDraft: e.target.value}))} />
-            </div>
-            <Button onClick={()=>{
-              const f=parseFloat(draftSurveyInputs.forwardDraft);
-              const m=parseFloat(draftSurveyInputs.midshipDraft);
-              const a=parseFloat(draftSurveyInputs.aftDraft);
-              if([f,m,a].some((x)=> isNaN(x))){
-                toast({ title: 'Hata', description: 'Geçerli draft değerleri girin', variant:'destructive' });
-                return;
-              }
-              const res = HydrostaticCalculations.calculateDraftSurvey(f, m, a, geometry);
-              setDraftSurveyResult(res);
-            }}>Hesapla</Button>
-          </div>
-          {draftSurveyResult && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm bg-sky-50 dark:bg-gray-700 p-4 rounded">
-              <div className="space-y-1">
-                <div className="flex justify-between"><span>Ortalama Draft</span><span className="font-mono">{draftSurveyResult.meanDraft.toFixed(3)} m</span></div>
-                <div className="flex justify-between"><span>Düzelt. Draft</span><span className="font-mono">{draftSurveyResult.correctedDraft.toFixed(3)} m</span></div>
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between"><span>Trim</span><span className="font-mono">{draftSurveyResult.trim.toFixed(3)} m</span></div>
-                <div className="flex justify-between"><span>TPC</span><span className="font-mono">{draftSurveyResult.tpc.toFixed(3)}</span></div>
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between"><span>Deplasman</span><span className="font-mono">{draftSurveyResult.displacement.toFixed(1)} t</span></div>
-                <div className="flex justify-between"><span>LCF</span><span className="font-mono">{draftSurveyResult.lcf.toFixed(2)} m</span></div>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Comprehensive Draft Survey */}
+      <DraftSurveyCalculations />
       </>
       )}
 
