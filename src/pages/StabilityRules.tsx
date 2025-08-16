@@ -9,6 +9,7 @@ interface RuleSection {
   title: string;
   rules: string[];
   sources: { label: string; href: string }[];
+  extras?: { heading: string; items: string[] }[];
 }
 
 const sections: RuleSection[] = [
@@ -66,6 +67,21 @@ const sections: RuleSection[] = [
     rules: [
       'Kargo tipine bağlı intakt ve hasar stabilitesi şartları (survival capability) sağlanmalı.',
       'Her onaylı yükleme durumu için stabilite cihazı ile doğrulama yapılmalı; model/doğrulama sertifikaları güncel olmalı.'
+    ],
+    extras: [
+      {
+        heading: 'Eklenebilecekler',
+        items: [
+          'Sızıntı senaryoları: Kargo sızıntısı halinde serbest yüzey, KG değişimi ve heeling moment etkilerini içeren hassasiyet analizleri.',
+          'Buharlaşma etkileri: Uçucu kargolarda buharlaşmanın kütle/yoğunluk ve KG üzerindeki etkilerini dikkate alan yöntemler.'
+        ]
+      },
+      {
+        heading: 'Güncellenmesi Gerekenler',
+        items: [
+          'Kargo tipleri: Yeni kimyasal ve gaz kargo tipleri için (IBC/IGC son ekleri uyarınca) ilave stabilite gereksinimlerinin eklenmesi.'
+        ]
+      }
     ],
     sources: [
       { label: 'IBC Code / IGC Code', href: 'https://www.imo.org/en/publications' }
@@ -184,6 +200,16 @@ export default function StabilityRules() {
                       <li key={i}>{r}</li>
                     ))}
                   </ul>
+                  {sec.extras?.map((ex) => (
+                    <div key={ex.heading} className="mt-2">
+                      <div className="text-sm font-medium text-foreground">{ex.heading}</div>
+                      <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                        {ex.items.map((it, j) => (
+                          <li key={j}>{it}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                   <div className="text-xs mt-2">
                     Kaynaklar:{' '}
                     {sec.sources.map((s, i) => (
