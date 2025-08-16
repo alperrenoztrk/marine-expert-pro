@@ -88,6 +88,69 @@ const sections: RuleSection[] = [
     sources: [
       { label: 'CSS Code, Annex 13', href: 'https://www.imo.org/en/publications' }
     ]
+  },
+  {
+    title: 'Stockholm Agreement — Ro‑Ro Yolcu (Bölgesel Ek Şartlar)',
+    rules: [
+      'Araç güvertesinde su birikmesi etkisi: hesabında tipik varsayım 0.50 m su yüksekliği (yönergedeki tablolara göre) ve uygun permeabilite ile dikkate alınır.',
+      'Su birikmesi dahil hasar stabilitesi değerlendirmesinde A ≥ R şartı korunmalı; can salı/evakuasyon koşulları sağlanmalı.'
+    ],
+    sources: [
+      { label: 'Stockholm Agreement (Ro‑Ro Passenger Ships)', href: 'https://www.imo.org/en/publications' }
+    ]
+  },
+  {
+    title: 'Balıkçı Gemileri — Güvenlik Kodu (2005/2012) ve Cape Town Agreement',
+    rules: [
+      'Başlangıç GM (GM0) için tipik taban değer ≥ 0.35 m (boy ve tasarıma bağlı idare talimatları esas).',
+      'GZ alan kriterleri çoğunlukla IS Code ile uyumlu (örn. 0°–30° ≥ 0.055 m·rad).',
+      'Düşük serbest borda ve icing riski için ek GM marjı ve operasyon sınırlamaları uygulanmalı.'
+    ],
+    sources: [
+      { label: 'FAO/ILO/IMO Code of Safety for Fishermen & Fishing Vessels (2005/2012)', href: 'https://www.imo.org/en/publications' },
+      { label: 'Cape Town Agreement (2012)', href: 'https://www.imo.org/en/OurWork/Safety/Pages/CTA.aspx' }
+    ]
+  },
+  {
+    title: 'OSV / SPS — Offshore Supply ve Special Purpose Ships',
+    rules: [
+      'IS Code kriterleri taban alınır; yük ve personel yoğunluğuna göre minimum GM genellikle ≥ 0.15 m olarak idarelerce talep edilir.',
+      'Yük güvertesi serbest yüzey ve yüksek KG etkileri için ek marj ve operasyon limitleri uygulanır.'
+    ],
+    sources: [
+      { label: 'OSV Code (2006/2020)', href: 'https://www.imo.org/en/publications' },
+      { label: 'SPS Code (2008)', href: 'https://www.imo.org/en/publications' }
+    ]
+  },
+  {
+    title: 'HSC Code — Yüksek Hızlı Tekneler',
+    rules: [
+      'Yolcu taraflanması/viraj testi altında statik yalpa açısı tipik sınır ≤ 10°.',
+      'Minimum GM çoğu konfigürasyonda ≥ 0.15 m; fakat hız, gövde tipi ve seakeeping gereksinimlerine bağlı özel denge testleri uygulanır.'
+    ],
+    sources: [
+      { label: 'HSC Code (1994/2000)', href: 'https://www.imo.org/en/publications' }
+    ]
+  },
+  {
+    title: 'MODU Code — Mobil Açık Deniz Üniteleri',
+    rules: [
+      'Rüzgâr hızları: işletme durumu için tipik 36 m/s, fırtına/survival durumu için 51.5 m/s eşdeğer rüzgâr; heeling moment buna göre alınır.',
+      'Righting/Heeling moment eğrisi karşılaştırması ile yeterli emniyet marjı gösterilir; pozitif stabilite menzili ve hava boşluğu (air gap) kontrol edilir.'
+    ],
+    sources: [
+      { label: 'MODU Code (2009)', href: 'https://www.imo.org/en/publications' }
+    ]
+  },
+  {
+    title: 'Load Line (LL) — Yükleme Sınırı Sözleşmesi Bağlantıları',
+    rules: [
+      'Minimum fribord ve kaporta/üstyapı bütünlüğü; downflooding açıları ve muhtemel su giriş yolları stabilite analizinde sınırlandırıcıdır.',
+      'Stabilite kitapçığındaki taşma (downflooding) açısı gemi bütünlük şartları ile tutarlı olmalı; LL işaretlemeleri ile çelişmemelidir.'
+    ],
+    sources: [
+      { label: 'International Load Line Convention (1966/1988)', href: 'https://www.imo.org/en/publications' }
+    ]
   }
 ];
 
