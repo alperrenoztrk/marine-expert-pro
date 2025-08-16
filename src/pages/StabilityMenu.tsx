@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Waves, Ship, BarChart3, Ruler, AlertTriangle, ArrowLeft, Gauge, Brain } from "lucide-react";
+import { Shield, Waves, Ship, BarChart3, Ruler, AlertTriangle, ArrowLeft, Gauge, Brain, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
@@ -35,6 +35,7 @@ export default function StabilityMenu() {
   ];
   const items = groups.flatMap((g)=> g.items);
   items.push({ to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" } as any);
+  items.push({ to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" } as any);
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -59,20 +60,6 @@ export default function StabilityMenu() {
                 </Button>
               </Link>
             ))}
-          </div>
-        </CardContent>
-        <CardContent>
-          <div className="mt-2">
-            <h3 className="text-lg font-semibold mb-2">Stabilite Kuralları</h3>
-            <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
-              <li>Damage Stability Booklet / Damage Control Plan</li>
-              <li>Grain Loading Manual (Tahıl gemileri)</li>
-              <li>Timber Deck Cargo Manual (Güverte tomruk)</li>
-              <li>Loading Manual / Stability Instrument (Kılavuz + Onay)</li>
-              <li>Cargo Securing Manual (CSM)</li>
-              <li>IBC/IGC Stabilite/Yükleme Kitapçıkları (gemi tipine göre)</li>
-              <li>Polar Water Operational Manual (PWOM)</li>
-            </ul>
           </div>
         </CardContent>
       </Card>
