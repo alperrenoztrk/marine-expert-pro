@@ -60,6 +60,7 @@ import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import StabilityRules from "./pages/StabilityRules";
+import StabilityRulesBasic from "./pages/StabilityRulesBasic";
 
 const queryClient = new QueryClient();
 
@@ -144,6 +145,7 @@ const App = () => {
                   <Route path="/stability/damage" element={<StabilityDamagePage />} />
                   <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
                   <Route path="/stability/rules" element={<StabilityRules />} />
+                  <Route path="/stability/rules-basic" element={<StabilityRulesBasic />} />
                   <Route path="/stability/displacement" element={<StabilityDisplacementPage />} />
                   <Route path="/stability/draft-calc" element={<StabilityDraftPage />} />
                   <Route path="/stability/tpc" element={<StabilityTPCPage />} />
