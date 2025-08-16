@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lucide-react';
 
 const categories = [
-  { title: 'Stabilite', icon: Ship, link: '/stability-menu' },
+  { title: 'Stabilite', icon: Ship, link: '/stability' },
   { title: 'Kargo', icon: Waves, link: '/cargo' },
   { title: 'Seyir', icon: Compass, link: '/navigation-menu' },
   { title: 'Mali', icon: DollarSign, link: '/economics' },

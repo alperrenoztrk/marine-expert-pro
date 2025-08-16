@@ -49,7 +49,7 @@ export default function StabilityMenu() {
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Stabilite Hesaplamaları</CardTitle>
+          <CardTitle data-no-translate>Stabilite Hesaplamaları</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2 py-1">
