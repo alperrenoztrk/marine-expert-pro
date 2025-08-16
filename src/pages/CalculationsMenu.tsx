@@ -7,13 +7,12 @@ const categories = [
     title: 'Stabilite',
     icon: Ship,
     items: [
-      'Kargo (Yük hesaplamaları)',
       'Stabilite (Dengelilik analizi)',
       'Stabilite Asistanı',
       'Stabilite Kuralları',
       'Stabilite Kuralları (Temel)'
     ],
-    links: ['/cargo', '/stability', '/stability/assistant', '/stability/rules', '/stability/rules-basic']
+    links: ['/stability', '/stability/assistant', '/stability/rules', '/stability/rules-basic']
   },
   {
     title: 'Kargo',
