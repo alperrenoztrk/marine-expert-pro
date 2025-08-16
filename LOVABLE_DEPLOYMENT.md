@@ -1,19 +1,18 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
-- **Tarih:** 2025-08-15
-- **Sürüm:** v2.4.16
-- **Durum:** ✅ Aktif - Hesaplamalar menüsü görsele göre güncellendi; rota linkleri düzeltildi; build başarılı
+- **Tarih:** 2025-08-16
+- **Sürüm:** v2.5.0
+- **Durum:** ✅ Aktif - Ana menü sadeleştirildi, Stabilite asistanı ana sayfadan kaldırıldı, stabilite kuralları sayfaları eklendi/güncellendi, yönlendirmeler düzeltildi
 
 ## 🔧 Son Yapılan Değişiklikler
 
-### 🎨 Arayüz ve Rota Güncellemesi (2025-08-15)
-- "Hesaplamalar" menüsü görsele birebir uyarlandı (geri butonu kaldırıldı).
-- Rota düzeltmeleri: Emniyet → `/safety`, Yapısal → `/structural`, Tank → `/tank`, Balast → `/ballast`.
-- Bağımlılıklar kuruldu ve üretim derlemesi alındı (`npm run build`).
-
-### 🐞 Hata Düzeltmesi (2025-08-10)
-- Tahıl stabilitesi ekranında aynı içerik iki kez görünmesine sebep olan kopya blok kaldırıldı
+### 🎨 Arayüz ve Navigasyon (2025-08-16)
+- Hesaplamalar menüsü yalnızca ana başlıkları gösterecek şekilde sadeleştirildi
+- “Stabilite” linki her zaman stabilite seçenek menüsüne açılıyor
+- Ana sayfadaki global Stabilite Asistanı kaldırıldı (yalnızca ilgili stabilite sayfalarında görünür)
+- “Stabilite Kuralları” ve “Temel Düzey” sayfaları eklendi; sayısal kriterler genişletildi
+- IBC/IGC bölümüne ek notlar (sızıntı, buharlaşma, yeni kargo tipleri) eklendi
 
 ---
 
