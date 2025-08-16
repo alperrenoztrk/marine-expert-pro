@@ -15,10 +15,12 @@ const sections: RuleSection[] = [
   {
     title: '2008 IS Code — Hasarsız (Intakt) Stabilite',
     rules: [
-      'GZ eğrisi alanı: 0°–30° ≥ 0.055 m·rad; 0°–40° ≥ 0.090 m·rad; 30°–40° ≥ 0.030 m·rad.',
-      'Maksimum GZ ≥ 0.20 m ve tepe açısı θ ≥ 30°. ',
-      'Başlangıç GM (GM0) ≥ 0.15 m (genel yolcu/dökme/dry cargo için).',
-      'Weather criterion: Rüzgâr etkisinde denge açısına kadar artık alan şartı sağlanmalı (IS Code ilgili bölümler).'
+      'GZ eğrisi alanı: 0°–30° ≥ 0.055 m·rad; 0°–40° (veya taşma açısına kadar) ≥ 0.090 m·rad; 30°–40° ≥ 0.030 m·rad.',
+      'Maksimum GZ ≥ 0.20 m ve tepe açısı θ ≥ 30°.',
+      'Başlangıç GM (GM0) ≥ 0.15 m (çelik kuru yük, genel kargo vb. için tipik taban değer).',
+      'Pozitif stabilite menzili en az 30°; borda kesim hattı (deck edge) tercihen 30°’den sonra batmalı.',
+      'Weather criterion: 26–40 m/s rüzgârda denge açısı θw ≤ 16° veya θdeck’in %80’i (hangisi küçükse).',
+      'Weather criterion: Aynı sınırlayıcı açıya kadar kalan GZ alanı, rüzgâr devirmesine karşı en az %40 fazlalık göstermeli.'
     ],
     sources: [
       { label: 'IMO 2008 IS Code (MSC.267(85))', href: 'https://www.imo.org/en/publications' }
@@ -27,9 +29,9 @@ const sections: RuleSection[] = [
   {
     title: 'International Grain Code — Tahıl Yükleri',
     rules: [
-      'Düzeltilmiş GM (serbest yüzey + tahıl kayması düzeltmeleri sonrası) GMcorr ≥ 0.30 m.',
-      'Tahıl kayması sonucu denge açısı θ ≤ 12°. ',
-      'Düşey su geçer hattı/drenaj ve boşluk doldurma önlemleri uygulanmalı; onaylı Grain Loading Manual gemide bulundurulmalı.'
+      'Düzeltilmiş GM (GMcorr) ≥ 0.30 m (serbest yüzey ve tahıl kayması düzeltmeleri dahil).',
+      'Tahıl kaymasıyla oluşan denge açısı θ ≤ 12° veya borda kesim hattı batma açısından küçük olanı.',
+      'Her yükleme durumu için onaylı Grain Loading Manual’daki kriterler doğrulanmalı ve DOA (Document of Authorization) gemide bulundurulmalı.'
     ],
     sources: [
       { label: 'International Grain Code', href: 'https://www.imo.org/en/publications' }
@@ -38,9 +40,9 @@ const sections: RuleSection[] = [
   {
     title: 'SOLAS II‑1 — Olasılıksal Hasar Stabilitesi',
     rules: [
-      'A (sağkalım) ≥ R (gerekli) kriteri sağlanmalı; s‑ ve p‑faktörlerine göre hasar senaryoları değerlendirilir.',
-      'Damage Control Plan/Booklet gemide bulunmalı; su geçmez kapılar ve uzaktan kumandalar plan üzerinde gösterilmeli.',
-      'Yükleme durumları için onaylı hasar stabilitesi kontrolü yapılmalı (stability instrument veya eşdeğeri).'
+      'A (sağkalım) ≥ R (gerekli) — tüm kıç‑baş hasar senaryolarının ağırlıklı toplamı, gerekli değerden küçük olmamalı.',
+      'Hasarlı durumda son durum: serbest yüzey/trim etkileriyle birlikte can salı indirme ve erişim koşulları sağlanmalı.',
+      'Damage Control Plan/Booklet gemide; uzaktan kumandalı vana/su geçmez kapı yerleri ve ölçüm noktaları plan üzerinde gösterilmeli.'
     ],
     sources: [
       { label: 'SOLAS 1974, Bölüm II‑1', href: 'https://www.imo.org/en/publications' }
@@ -49,9 +51,9 @@ const sections: RuleSection[] = [
   {
     title: 'Timber Deck Cargo Code — Güverte Tomruk',
     rules: [
-      'Tomruk bağlama/çemberleme MSL esaslı hesaplarla doğrulanmalı.',
-      'Görüş/drenaj ve güverte erişimi sağlanmalı; kötü hava için işletme talimatları uygulanmalı.',
-      'Stabilite marjı, IS Code kriterlerine ilave olarak yükleme konfigürasyonuna göre korunmalı.'
+      'Yığın yüksekliği/eğim ve bağlama (stanchion, tel, çember) MSL esaslı hesaplarla doğrulanmalı.',
+      'Kötü hava için işletme talimatları: güverte drenajı, güverte erişimi ve görüş koşulları sağlanmalı.',
+      'Yükleme örnekleri için IS Code kriterlerine ilave emniyet marjı korunmalı.'
     ],
     sources: [
       { label: '2011 Timber Deck Cargo Code', href: 'https://www.imo.org/en/publications' }
@@ -60,8 +62,8 @@ const sections: RuleSection[] = [
   {
     title: 'IBC/IGC — Kimyasal ve Gaz Tankerleri',
     rules: [
-      'Kargo tipine bağlı intakt/hasar stabilitesi şartları ve tank düzeni sınırlamaları sağlanmalı.',
-      'Her onaylı yükleme durumu için cihazla doğrulama (stability instrument) yapılmalı.'
+      'Kargo tipine bağlı intakt ve hasar stabilitesi şartları (survival capability) sağlanmalı.',
+      'Her onaylı yükleme durumu için stabilite cihazı ile doğrulama yapılmalı; model/doğrulama sertifikaları güncel olmalı.'
     ],
     sources: [
       { label: 'IBC Code / IGC Code', href: 'https://www.imo.org/en/publications' }
@@ -70,21 +72,21 @@ const sections: RuleSection[] = [
   {
     title: 'Polar Code — Kutup Suları Operasyonları',
     rules: [
-      'Buz tutması (icing) ve düşük sıcaklıklar için KG artışı ve stabilite marjı dikkate alınmalıdır.',
-      'PWOM (Polar Water Operational Manual) gemide bulunmalı ve işletme limitleri uygulanmalıdır.'
+      'Buz tutması (icing) için KG artışı muhafaza edilerek yeterli GM ve GZ marjı korunmalı.',
+      'PWOM’da belirtilen operasyon limitleri ve acil durum prosedürleri uygulanmalı.'
     ],
     sources: [
       { label: 'Polar Code (MSC.385(94))', href: 'https://www.imo.org/en/publications' }
     ]
   },
   {
-    title: 'Cargo Securing Manual (CSM) — Bağlama ve İstif',
+    title: 'CSS Code (Annex 13) — CSM Bağlama Hesaplarına Esas Sayılar',
     rules: [
-      'Gemi ivmeleri (CSS Code, Annex 13) ile bağlama hesapları yapılmalı; MSL ve sürtünme katsayıları esas alınmalı.',
-      'Özel/parça yükler, araç ve konteynerler için işletim kuralları uygulanmalı.'
+      'Tipik sürtünme katsayıları: çelik/çelik μ ≈ 0.10; çelik/ahşap μ ≈ 0.30; ahşap/ahşap μ ≈ 0.40; kauçuk/çelik μ ≈ 0.60 (kuru, yağsız yüzey varsayımı).',
+      'MSL (Maximum Securing Load) ve ivme katsayıları (long., transv., vert.) gemi boyu ve servis hızına göre Annex 13 tablolarından seçilir.'
     ],
     sources: [
-      { label: 'CSS Code (Annex 13)', href: 'https://www.imo.org/en/publications' }
+      { label: 'CSS Code, Annex 13', href: 'https://www.imo.org/en/publications' }
     ]
   }
 ];
