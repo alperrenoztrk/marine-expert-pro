@@ -3,10 +3,8 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, Ship, Compass, Waves, Cog, Package, Droplets, Building, Shield, Leaf, Cloud, Settings, Calculator, BarChart3, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { Brain, Shield, Settings, Calculator } from "lucide-react";
 // import { GoogleAuth } from "@/components/auth/GoogleAuth";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 
 
 
@@ -103,6 +101,7 @@ const Index = () => {
     toast.success("Favori durumu güncellendi!");
   };
 
+  // Calculations overlay removed; direct navigation is used.
 
   if (isLoading) {
     return (
@@ -229,6 +228,7 @@ const Index = () => {
 						<Button
 							size="sm"
 							variant="outline"
+							aria-label="Hesaplamalar"
 							className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
 						>
 							<Calculator className="w-4 h-4" />

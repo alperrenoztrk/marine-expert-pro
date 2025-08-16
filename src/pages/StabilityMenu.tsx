@@ -61,6 +61,20 @@ export default function StabilityMenu() {
             ))}
           </div>
         </CardContent>
+        <CardContent>
+          <div className="mt-2">
+            <h3 className="text-lg font-semibold mb-2">Stabilite Kuralları</h3>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+              <li>Damage Stability Booklet / Damage Control Plan</li>
+              <li>Grain Loading Manual (Tahıl gemileri)</li>
+              <li>Timber Deck Cargo Manual (Güverte tomruk)</li>
+              <li>Loading Manual / Stability Instrument (Kılavuz + Onay)</li>
+              <li>Cargo Securing Manual (CSM)</li>
+              <li>IBC/IGC Stabilite/Yükleme Kitapçıkları (gemi tipine göre)</li>
+              <li>Polar Water Operational Manual (PWOM)</li>
+            </ul>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

@@ -8,9 +8,19 @@ const categories = [
     icon: Ship,
     items: [
       'Kargo (Yük hesaplamaları)',
-      'Stabilite (Dengelilik analizi)'
+      'Stabilite (Dengelilik analizi)',
+      'Stabilite Asistanı'
     ],
-    links: ['/cargo', '/stability']
+    links: ['/cargo', '/stability', '/stability/assistant'],
+    rules: [
+      'Damage Stability Booklet / Damage Control Plan',
+      'Grain Loading Manual (Tahıl gemileri)',
+      'Timber Deck Cargo Manual (Güverte tomruk)',
+      'Loading Manual / Stability Instrument (Kılavuz + Onay)',
+      'Cargo Securing Manual (CSM)',
+      'IBC/IGC Stabilite/Yükleme Kitapçıkları (gemi tipine göre)',
+      'Polar Water Operational Manual (PWOM)'
+    ]
   },
   {
     title: 'Kargo',
@@ -60,25 +70,20 @@ const categories = [
 
 export default function CalculationsMenu() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1e293b' }}>
-      <div className="container mx-auto px-6 py-8">
-        {/* Header */}
-        
-        
+    <div className="min-h-screen" style={{ backgroundColor: '#0f2137' }}>
+      <div className="max-w-5xl mx-auto px-6 py-10">
         {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white flex items-center justify-center gap-4">
-            <Anchor className="w-10 h-10" />
-            Denizcilik Hesaplamaları
-          </h1>
+        <div className="flex items-center gap-4 text-white mb-10">
+          <Anchor className="w-10 h-10" />
+          <h1 className="text-4xl font-bold">Denizcilik Hesaplamaları</h1>
         </div>
 
         {/* Categories */}
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="space-y-6">
           {categories.map((category, index) => (
-            <div 
+            <div
               key={index}
-              className="border-2 border-white/20 rounded-2xl p-6 bg-transparent"
+              className="rounded-2xl border border-white/40 p-6 bg-transparent"
             >
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0">
@@ -91,8 +96,8 @@ export default function CalculationsMenu() {
                       <li key={itemIndex} className="flex items-start gap-3">
                         <span className="w-1.5 h-1.5 bg-white rounded-full flex-shrink-0 mt-2"></span>
                         {category.links[itemIndex] ? (
-                          <Link 
-                            to={category.links[itemIndex]} 
+                          <Link
+                            to={category.links[itemIndex]}
                             className="text-white text-lg hover:text-blue-300 transition-colors"
                           >
                             {item}
@@ -103,6 +108,20 @@ export default function CalculationsMenu() {
                       </li>
                     ))}
                   </ul>
+
+                  {category.rules && category.rules.length > 0 && (
+                    <div className="mt-6">
+                      <h3 className="text-xl font-semibold text-white mb-3">Stabilite Kuralları</h3>
+                      <ul className="space-y-2">
+                        {category.rules.map((rule: string, rIndex: number) => (
+                          <li key={rIndex} className="flex items-start gap-3">
+                            <span className="w-1.5 h-1.5 bg-white rounded-full flex-shrink-0 mt-2"></span>
+                            <span className="text-white text-lg">{rule}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
