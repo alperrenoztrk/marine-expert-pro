@@ -59,7 +59,6 @@ import WeatherMenu from "./pages/WeatherMenu";
 import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
-import StabilityRulesPage from "./pages/StabilityRules";
 
 const queryClient = new QueryClient();
 
@@ -143,7 +142,6 @@ const App = () => {
                   <Route path="/stability/draft" element={<StabilityDraftPage />} />
                   <Route path="/stability/damage" element={<StabilityDamagePage />} />
                   <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
-                  <Route path="/stability/rules" element={<StabilityRulesPage />} />
                   <Route path="/stability/displacement" element={<StabilityDisplacementPage />} />
                   <Route path="/stability/draft-calc" element={<StabilityDraftPage />} />
                   <Route path="/stability/tpc" element={<StabilityTPCPage />} />

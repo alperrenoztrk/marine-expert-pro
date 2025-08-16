@@ -35,7 +35,6 @@ export default function StabilityMenu() {
   ];
   const items = groups.flatMap((g)=> g.items);
   items.push({ to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" } as any);
-  items.push({ to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" } as any);
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
