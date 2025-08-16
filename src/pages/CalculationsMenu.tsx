@@ -24,21 +24,22 @@ export default function CalculationsMenu() {
         {/* Categories */}
         <div className="space-y-6">
           {categories.map((category, index) => (
-            <div
+            <Link
               key={index}
-              className="rounded-2xl border border-white/40 p-6 bg-transparent"
+              to={category.link}
+              className="block rounded-2xl border border-white/40 p-6 bg-transparent hover:bg-white/5 transition-colors"
             >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
                   <category.icon className="w-16 h-16 text-white" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
-                  <Link to={category.link} className="text-2xl font-bold text-white hover:text-blue-300 transition-colors" data-no-translate>
+                  <span className="text-2xl font-bold text-white" data-no-translate>
                     {category.title}
-                  </Link>
+                  </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
