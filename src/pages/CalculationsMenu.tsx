@@ -13,7 +13,7 @@ const categories = [
       'Stabilite Kuralları',
       'Stabilite Kuralları (Temel)'
     ],
-    links: ['/cargo', '/stability/stability', '/stability/assistant', '/stability/rules', '/stability/rules-basic']
+    links: ['/cargo', '/stability', '/stability/assistant', '/stability/rules', '/stability/rules-basic']
   },
   {
     title: 'Kargo',
