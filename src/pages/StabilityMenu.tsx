@@ -38,7 +38,7 @@ export default function StabilityMenu() {
   items.push({ to: "/stability/rules", icon: <Shield className="h-4 w-4" />, label: "Kurallar" } as any);
   items.push({ to: "/stability/rules-basic", icon: <Shield className="h-4 w-4" />, label: "Kurallar (Temel)" } as any);
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div key="stability-menu-v2" className="container mx-auto p-6 space-y-6" data-no-translate>
       <div className="flex items-center justify-between">
         <Link to="/">
           <Button variant="ghost" size="sm" className="gap-2">
@@ -55,7 +55,7 @@ export default function StabilityMenu() {
           <div className="flex flex-wrap gap-2 py-1">
             {items.map((it)=> (
               <Link key={it.to} to={it.to}>
-                <Button variant="outline" className="justify-start gap-2 whitespace-nowrap">
+                <Button variant="outline" className="justify-start gap-2 whitespace-nowrap" data-no-translate>
                   {it.icon}
                   {it.label}
                 </Button>
