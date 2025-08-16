@@ -58,7 +58,6 @@ import EmissionsMenu from "./pages/EmissionsMenu";
 import WeatherMenu from "./pages/WeatherMenu";
 import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
-import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import StabilityRules from "./pages/StabilityRules";
 import StabilityRulesBasic from "./pages/StabilityRulesBasic";
 
@@ -167,7 +166,6 @@ const App = () => {
                   <Route path="/weather-menu" element={<WeatherMenu />} />
                   <Route path="/special-ships-menu" element={<SpecialShipsMenu />} />
                 </Routes>
-                <StabilityAssistantPopup />
               </BrowserRouter>
             </div>
           </LanguageProvider>
