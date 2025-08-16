@@ -9,9 +9,10 @@ const categories = [
     items: [
       'Kargo (Yük hesaplamaları)',
       'Stabilite (Dengelilik analizi)',
-      'Stabilite Asistanı'
+      'Stabilite Asistanı',
+      'Stabilite Kuralları'
     ],
-    links: ['/cargo', '/stability', '/stability/assistant']
+    links: ['/cargo', '/stability', '/stability/assistant', '/stability/rules']
   },
   {
     title: 'Kargo',
