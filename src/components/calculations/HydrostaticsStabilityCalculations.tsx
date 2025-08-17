@@ -7,7 +7,7 @@ import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3,
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
-import { DraftSurveyCalculations } from "./DraftSurveyCalculations";
+import DraftSurveyMenu from "./DraftSurveyMenu";
 import {
   ShipGeometry,
   WeightDistribution,
@@ -899,7 +899,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       <>
       <Separator />
       {/* Comprehensive Draft Survey */}
-      <DraftSurveyCalculations />
+      <DraftSurveyMenu />
       </>
       )}
 
