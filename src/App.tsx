@@ -64,6 +64,11 @@ import EconomicsMenu from "./pages/EconomicsMenu";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
 import DraftSurveyCargo from "./pages/DraftSurveyCargo";
 import DraftSurveyBunker from "./pages/DraftSurveyBunker";
+import DraftSurveyBallast from "./pages/DraftSurveyBallast";
+import DraftSurveyPreloading from "./pages/DraftSurveyPreloading";
+import DraftSurveyPostdischarge from "./pages/DraftSurveyPostdischarge";
+import DraftSurveyIntermediate from "./pages/DraftSurveyIntermediate";
+import DraftSurveyComparative from "./pages/DraftSurveyComparative";
 
 const queryClient = new QueryClient();
 
@@ -170,9 +175,14 @@ const App = () => {
                   <Route path="/emissions-menu" element={<EmissionsMenu />} />
                   <Route path="/weather-menu" element={<WeatherMenu />} />
                   <Route path="/special-ships-menu" element={<SpecialShipsMenu />} />
-                  <Route path="/draft-survey-standard" element={<DraftSurveyStandard />} />
-                  <Route path="/draft-survey-cargo" element={<DraftSurveyCargo />} />
-                  <Route path="/draft-survey-bunker" element={<DraftSurveyBunker />} />
+          <Route path="/draft-survey-standard" element={<DraftSurveyStandard />} />
+          <Route path="/draft-survey-cargo" element={<DraftSurveyCargo />} />
+          <Route path="/draft-survey-bunker" element={<DraftSurveyBunker />} />
+          <Route path="/draft-survey-ballast" element={<DraftSurveyBallast />} />
+          <Route path="/draft-survey-preloading" element={<DraftSurveyPreloading />} />
+          <Route path="/draft-survey-postdischarge" element={<DraftSurveyPostdischarge />} />
+          <Route path="/draft-survey-intermediate" element={<DraftSurveyIntermediate />} />
+          <Route path="/draft-survey-comparative" element={<DraftSurveyComparative />} />
                 </Routes>
               </BrowserRouter>
             </div>
