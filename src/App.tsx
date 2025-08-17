@@ -61,6 +61,9 @@ import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityRules from "./pages/StabilityRules";
 import StabilityRulesBasic from "./pages/StabilityRulesBasic";
 import EconomicsMenu from "./pages/EconomicsMenu";
+import DraftSurveyStandard from "./pages/DraftSurveyStandard";
+import DraftSurveyCargo from "./pages/DraftSurveyCargo";
+import DraftSurveyBunker from "./pages/DraftSurveyBunker";
 
 const queryClient = new QueryClient();
 
@@ -167,6 +170,9 @@ const App = () => {
                   <Route path="/emissions-menu" element={<EmissionsMenu />} />
                   <Route path="/weather-menu" element={<WeatherMenu />} />
                   <Route path="/special-ships-menu" element={<SpecialShipsMenu />} />
+                  <Route path="/draft-survey-standard" element={<DraftSurveyStandard />} />
+                  <Route path="/draft-survey-cargo" element={<DraftSurveyCargo />} />
+                  <Route path="/draft-survey-bunker" element={<DraftSurveyBunker />} />
                 </Routes>
               </BrowserRouter>
             </div>
