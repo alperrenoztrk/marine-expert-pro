@@ -2,14 +2,17 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-18
-- **Sürüm:** v2.5.1
-- **Durum:** ✅ Aktif - Stabilite menüsündeki "Stabilite" bağlantısının açılmama sorunu giderildi (eksik rota eklendi)
+- **Sürüm:** v2.5.2
+- **Durum:** ✅ Aktif - Lovable önizleme hatası için yeni sürüm etiketi (v2.5.2) oluşturuldu; `App.tsx` tam rota setiyle yeniden yayınlandı
 
 ## 🔧 Son Yapılan Değişiklikler
 
 ### 🛠️ Rota Düzeltmesi (2025-08-18)
 - “Stabilite” bağlantısı `"/stability/stability"` rotasına gidiyordu ancak rota tanımlı değildi; `src/App.tsx` içine eksik rota eklendi
 - Etki: Stabilite hesaplamaları sayfası artık menüden sorunsuz açılıyor
+
+### 🚀 Lovable Yayını (2025-08-18)
+- v2.5.1 etiketi hatalı derlemeye işaret edebileceği için `v2.5.2` etiketi oluşturuldu ve ana dala bağlandı
 
 ### 🎨 Arayüz ve Navigasyon (2025-08-16)
 - Hesaplamalar menüsü yalnızca ana başlıkları gösterecek şekilde sadeleştirildi
