@@ -54,7 +54,7 @@ export default function StabilityMenu() {
         <CardContent>
           <div className="flex flex-wrap gap-2 py-1">
             {items.map((it)=> (
-              <Link key={it.to} to={it.to} target="_blank" rel="noopener noreferrer">
+              <Link key={it.to} to={it.to}>
                 <Button variant="outline" className="justify-start gap-2 whitespace-nowrap" data-no-translate>
                   {it.icon}
                   {it.label}
