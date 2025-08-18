@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Shield, Waves, Ruler, Activity, Package, LineChart, LifeBuoy, ClipboardCheck } from "lucide-react";
+import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
 export default function Stability2() {
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
@@ -318,7 +319,7 @@ export default function Stability2() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="disp_l">Deplasман [ton]</Label>
+                      <Label htmlFor="disp_l">Deplasman [ton]</Label>
                       <Input
                         id="disp_l"
                         value={longitudinalInputs.displacement}
@@ -1002,6 +1003,11 @@ export default function Stability2() {
         </div>
 
         {selectedModule && renderCalculationModule()}
+
+        {/* Stabilite Asistanı */}
+        <div className="mt-6">
+          <StabilityAssistantPopup />
+        </div>
       </main>
     </div>
   );
