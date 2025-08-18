@@ -69,6 +69,10 @@ import DraftSurveyPreloading from "./pages/DraftSurveyPreloading";
 import DraftSurveyPostdischarge from "./pages/DraftSurveyPostdischarge";
 import DraftSurveyIntermediate from "./pages/DraftSurveyIntermediate";
 import DraftSurveyComparative from "./pages/DraftSurveyComparative";
+import DraftSurveyDensity from "./pages/DraftSurveyDensity";
+import DraftSurveyPort from "./pages/DraftSurveyPort";
+import DraftSurveyAnalysis from "./pages/DraftSurveyAnalysis";
+import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 
 const queryClient = new QueryClient();
 
@@ -183,6 +187,10 @@ const App = () => {
           <Route path="/draft-survey-postdischarge" element={<DraftSurveyPostdischarge />} />
           <Route path="/draft-survey-intermediate" element={<DraftSurveyIntermediate />} />
           <Route path="/draft-survey-comparative" element={<DraftSurveyComparative />} />
+          <Route path="/draft-survey-density" element={<DraftSurveyDensity />} />
+          <Route path="/draft-survey-port" element={<DraftSurveyPort />} />
+          <Route path="/draft-survey-analysis" element={<DraftSurveyAnalysis />} />
+          <Route path="/draft-survey-calculator" element={<DraftSurveyCalculator />} />
                 </Routes>
               </BrowserRouter>
             </div>
