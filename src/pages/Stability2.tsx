@@ -865,6 +865,11 @@ export default function Stability2() {
       <main>
         <h1 className="text-3xl font-bold mb-2" data-no-translate>Stabilite Hesaplamaları</h1>
         <p className="text-muted-foreground mb-6">İleri seviye stabilite hesaplamaları ve analizleri</p>
+        
+        {/* Debug info */}
+        <div className="mb-4 p-2 bg-gray-100 rounded text-sm">
+          Debug: selectedModule = {selectedModule || 'null'}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card 
