@@ -867,7 +867,13 @@ export default function Stability2() {
         <p className="text-muted-foreground mb-6">İleri seviye stabilite hesaplamaları ve analizleri</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('transverse')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Enine Stabilite clicked');
+              setSelectedModule('transverse');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <Waves className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Enine Stabilite</h3>
@@ -875,7 +881,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('longitudinal')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Boyuna Stabilite clicked');
+              setSelectedModule('longitudinal');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <Ruler className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Boyuna Stabilite</h3>
@@ -883,7 +895,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('intact')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Sağlam Stabilite clicked');
+              setSelectedModule('intact');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <Shield className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Sağlam Stabilite</h3>
@@ -891,7 +909,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('damage')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Hasarlı Stabilite clicked');
+              setSelectedModule('damage');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <Activity className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Hasarlı Stabilite</h3>
@@ -899,7 +923,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('dynamic')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Dinamik Stabilite clicked');
+              setSelectedModule('dynamic');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <LineChart className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Dinamik Stabilite</h3>
@@ -907,7 +937,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('loading')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Yükleme & Denge clicked');
+              setSelectedModule('loading');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <Package className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Yükleme & Denge</h3>
@@ -915,7 +951,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('strength')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Boyuna Dayanım clicked');
+              setSelectedModule('strength');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <LifeBuoy className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Boyuna Dayanım</h3>
@@ -923,7 +965,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('loadline')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Load Line clicked');
+              setSelectedModule('loadline');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <Waves className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Load Line</h3>
@@ -931,7 +979,13 @@ export default function Stability2() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedModule('verification')}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow" 
+            onClick={() => {
+              console.log('Doğrulama clicked');
+              setSelectedModule('verification');
+            }}
+          >
             <CardContent className="p-6 text-center">
               <ClipboardCheck className="h-8 w-8 mx-auto mb-3 text-primary" />
               <h3 className="font-medium mb-1">Doğrulama</h3>
