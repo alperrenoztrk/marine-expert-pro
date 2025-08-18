@@ -867,8 +867,10 @@ export default function Stability2() {
         <p className="text-muted-foreground mb-6">İleri seviye stabilite hesaplamaları ve analizleri</p>
         
         {/* Debug info */}
-        <div className="mb-4 p-2 bg-gray-100 rounded text-sm">
-          Debug: selectedModule = {selectedModule || 'null'}
+        <div className="mb-4 p-4 bg-blue-100 border border-blue-300 rounded text-sm">
+          <strong>Debug:</strong> selectedModule = "{selectedModule || 'null'}" | Type: {typeof selectedModule}
+          <br />
+          <strong>Cards rendered:</strong> {selectedModule ? 'Module should be visible below' : 'No module selected'}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
