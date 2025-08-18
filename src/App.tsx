@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { useAndroidFeatures } from "@/hooks/useAndroidFeatures";
 import { useFrameRate } from "@/hooks/useFrameRate";
 import { useState, useEffect } from "react";
+import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
@@ -73,6 +74,7 @@ import DraftSurveyDensity from "./pages/DraftSurveyDensity";
 import DraftSurveyPort from "./pages/DraftSurveyPort";
 import DraftSurveyAnalysis from "./pages/DraftSurveyAnalysis";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
+import Stability2 from "./pages/Stability2";
 
 const queryClient = new QueryClient();
 
@@ -111,7 +113,8 @@ const App = () => {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+        <HelmetProvider>
+          <TooltipProvider>
         <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
           <LanguageProvider>
             <Toaster />
@@ -148,9 +151,9 @@ const App = () => {
                   <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
                   <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
                   <Route path="/stability" element={<StabilityMenu />} />
+                  <Route path="/stability-2" element={<Stability2 />} />
                   <Route path="/calculations" element={<CalculationsMenu />} />
                   <Route path="/stability/hydrostatic" element={<StabilityHydrostaticPage />} />
-                  <Route path="/stability/stability" element={<StabilityStabilityPage />} />
                   <Route path="/stability/trimlist" element={<StabilityTrimListPage />} />
                   <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                   <Route path="/stability/bonjean" element={<StabilityBonjeanPage />} />
@@ -196,7 +199,8 @@ const App = () => {
             </div>
           </LanguageProvider>
         </ThemeProvider>
-      </TooltipProvider>
+        </TooltipProvider>
+        </HelmetProvider>
     </QueryClientProvider>
   );
 };
