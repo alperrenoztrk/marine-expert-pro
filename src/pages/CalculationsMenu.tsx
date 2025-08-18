@@ -28,6 +28,8 @@ export default function CalculationsMenu() {
             <Link
               key={index}
               to={category.link}
+              target={category.link.startsWith('/stability') ? '_blank' : undefined}
+              rel={category.link.startsWith('/stability') ? 'noopener noreferrer' : undefined}
               className="block rounded-2xl border border-white/40 p-6 bg-transparent hover:bg-white/5 transition-colors"
             >
               <div className="flex items-center gap-6">
