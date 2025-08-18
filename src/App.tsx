@@ -12,7 +12,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
-import Stability from "./pages/Stability";
+
 import Navigation from "./pages/Navigation";
 import Hydrodynamics from "./pages/Hydrodynamics";
 import Engine from "./pages/Engine";
@@ -150,7 +150,7 @@ const App = () => {
                   <Route path="/weather" element={<WeatherCalculationsPage />} />
                   <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
                   <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
-                  <Route path="/stability" element={<StabilityMenu />} />
+                  <Route path="/stability" element={<Stability2 />} />
                   <Route path="/stability-2" element={<Stability2 />} />
                   <Route path="/calculations" element={<CalculationsMenu />} />
                   <Route path="/stability/hydrostatic" element={<StabilityHydrostaticPage />} />
