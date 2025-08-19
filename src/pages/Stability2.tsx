@@ -27,23 +27,6 @@ export default function Stability2() {
         <h1 className="text-3xl font-bold mb-2" data-no-translate>Stabilite Hesaplamaları</h1>
         <p className="text-muted-foreground mb-6">İleri seviye stabilite hesaplamaları ve analizleri</p>
 
-        {/* Stabilite Asistanı - Her zaman göster */}
-        <div className="mb-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                AI Stabilite Asistanı
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Stabilite hesaplamaları hakkında sorularınızı sorun ve detaylı açıklamalar alın.
-              </p>
-              <StabilityAssistantPopup />
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Ana Stabilite Kategorileri */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
