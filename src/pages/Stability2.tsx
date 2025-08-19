@@ -50,10 +50,16 @@ export default function Stability2() {
               <div>
                 <div className="font-medium">KMt, KB, BMt, KG, GMt:</div>
                 <div className="text-sm text-muted-foreground">{`(I_{WP}: su hattı alan atâleti, enine)`}</div>
+                <div className="mt-2">
+                  <Button size="sm" variant="outline" onClick={() => window.open('/stability/gm', '_blank')}>GM Hesapla</Button>
+                </div>
               </div>
               <div>
                 <div className="font-medium">GZ eğrisi</div>
                 <div className="text-sm text-muted-foreground">Küçük açılar için; tam eğri hidrost. tablolardan.</div>
+                <div className="mt-2">
+                  <Button size="sm" variant="outline" onClick={() => window.open('/stability/gz', '_blank')}>GZ Hesapla</Button>
+                </div>
               </div>
               <div>
                 <div className="font-medium">Alan kriterleri</div>
@@ -90,6 +96,10 @@ export default function Stability2() {
               <div>
                 <div className="font-medium">Trim ve MCT 1 cm</div>
                 <div className="text-sm text-muted-foreground">(yaklaşık) (Pratikte hidrost. cetvelden alınır.)</div>
+                <div className="mt-2 flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => window.open('/stability/trim', '_blank')}>Trim Hesapla</Button>
+                  <Button size="sm" variant="outline" onClick={() => window.open('/stability/list', '_blank')}>List Hesapla</Button>
+                </div>
               </div>
               <div>
                 <div className="font-medium">Yük/aktarma ile trim</div>
