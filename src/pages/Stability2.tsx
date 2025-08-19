@@ -1002,12 +1002,25 @@ export default function Stability2() {
           </Card>
         </div>
 
-        {selectedModule && renderCalculationModule()}
-
-        {/* Stabilite Asistanı */}
+        {/* Stabilite Asistanı - Her zaman göster */}
         <div className="mt-6">
-          <StabilityAssistantPopup />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                AI Stabilite Asistanı
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Stabilite hesaplamaları hakkında sorularınızı sorun ve detaylı açıklamalar alın.
+              </p>
+              <StabilityAssistantPopup />
+            </CardContent>
+          </Card>
         </div>
+
+        {selectedModule && renderCalculationModule()}
       </main>
     </div>
   );
