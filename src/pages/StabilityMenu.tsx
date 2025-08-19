@@ -27,7 +27,6 @@ export default function StabilityMenu() {
       title: 'Gelişmiş',
       items: [
         { to: "/stability/analysis", icon: <BarChart3 className="h-4 w-4" />, label: "Analiz" },
-        { to: "/stability/bonjean", icon: <Ruler className="h-4 w-4" />, label: "Bonjean" },
         { to: "/stability/draft", icon: <Waves className="h-4 w-4" />, label: "Draft Survey" },
         { to: "/stability/damage", icon: <AlertTriangle className="h-4 w-4" />, label: "Hasar" },
       ]

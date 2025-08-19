@@ -35,7 +35,7 @@ import StabilityHydrostaticPage from "./pages/StabilityHydrostatic";
 import StabilityStabilityPage from "./pages/StabilityStability";
 import StabilityTrimListPage from "./pages/StabilityTrimList";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
-import StabilityBonjeanPage from "./pages/StabilityBonjean";
+// Bonjean sayfası kaldırıldı
 import StabilityDraftPage from "./pages/StabilityDraft";
 import StabilityDamagePage from "./pages/StabilityDamage";
 import StabilityDisplacementPage from "./pages/StabilityDisplacement";
@@ -156,7 +156,6 @@ const App = () => {
                   <Route path="/stability/stability" element={<StabilityStabilityPage />} />
                   <Route path="/stability/trimlist" element={<StabilityTrimListPage />} />
                   <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
-                  <Route path="/stability/bonjean" element={<StabilityBonjeanPage />} />
                   <Route path="/stability/draft" element={<StabilityDraftPage />} />
                   <Route path="/stability/damage" element={<StabilityDamagePage />} />
                   <Route path="/stability/assistant" element={<StabilityAssistantPage />} />

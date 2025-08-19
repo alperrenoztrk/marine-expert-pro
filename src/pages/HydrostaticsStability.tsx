@@ -43,7 +43,7 @@ const HydrostaticsStabilityPage = () => {
               <Link to="/stability/stability"><Button variant="outline" className="w-full justify-start gap-2"><Shield className="h-4 w-4" /> Stabilite</Button></Link>
               <Link to="/stability/trimlist"><Button variant="outline" className="w-full justify-start gap-2"><Ship className="h-4 w-4" /> Trim & List</Button></Link>
               <Link to="/stability/analysis"><Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4" /> Analiz Özeti</Button></Link>
-              <Link to="/stability/bonjean"><Button variant="outline" className="w-full justify-start gap-2"><Calculator className="h-4 w-4" /> Bonjean</Button></Link>
+              {/* Bonjean kaldırıldı */}
               <Link to="/stability/draft"><Button variant="outline" className="w-full justify-start gap-2"><Waves className="h-4 w-4" /> Draft Survey</Button></Link>
               <Link to="/stability/damage"><Button variant="outline" className="w-full justify-start gap-2"><AlertTriangle className="h-4 w-4" /> Hasar</Button></Link>
             </div>
