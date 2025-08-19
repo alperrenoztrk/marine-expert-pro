@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor } from "lucide-react";
+import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor, Brain } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import { useToast } from "@/hooks/use-toast";
 import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
 import DraftSurveyMenu from "./DraftSurveyMenu";
@@ -273,6 +274,18 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
   return (
     <div className="space-y-6">
+      {/* Stabilite Asistanı (inline) */}
+      <Card className="shadow border border-blue-200/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Brain className="h-5 w-5" /> Stabilite Asistanı
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <StabilityAssistantPopup />
+        </CardContent>
+      </Card>
+
       {/* Hidrostatik Hesaplamalar */}
       {(!singleMode || section === 'hydrostatic') && (
       <Card className="shadow-lg">
