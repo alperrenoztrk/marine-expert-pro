@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { HydrostaticsStabilityCalculations } from "@/components/calculations/HydrostaticsStabilityCalculations";
+import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
 export default function StabilityGZPage(){
   const navigate = useNavigate();
@@ -16,6 +17,11 @@ export default function StabilityGZPage(){
         Geri Dön
       </Button>
       <HydrostaticsStabilityCalculations singleMode section="stability" calc="gz" />
+      
+      {/* Stabilite Asistanı */}
+      <div className="mt-6">
+        <StabilityAssistantPopup />
+      </div>
     </div>
   );
 }
