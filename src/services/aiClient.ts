@@ -26,7 +26,7 @@ async function callGemini(messages: AIMessage[]): Promise<string> {
   return text.trim();
 }
 
-// Direct Gemini fallback (browser) if Edge Function is unavailable
+// Direct Gemini (browser) via Google Cloud API Key
 function toGeminiContents(messages: AIMessage[]) {
   const contents: any[] = [];
   const sys = messages.find((m) => m.role === 'system')?.content;
@@ -48,9 +48,11 @@ function toGeminiContents(messages: AIMessage[]) {
 }
 
 async function callGeminiDirect(messages: AIMessage[]): Promise<string> {
+  // Prefer env, fallback to provided Google Cloud API key from user
   const apiKey = ((import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined) || 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
   const contents = toGeminiContents(messages);
-  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+  const model = 'gemini-1.5-flash'; // reliable default
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contents, generationConfig: { temperature: 0.2, maxOutputTokens: 1500 } })
@@ -94,14 +96,15 @@ export async function callStabilityAssistant(messages: AIMessage[]): Promise<str
     ? messages
     : [{ role: 'system', content: STABILITY_SYSTEM_PROMPT }, ...messages];
 
+  // Try Google Cloud Gemini directly first with provided key
   try {
-    return await callGemini(withSystem);
+    return await callGeminiDirect(withSystem);
   } catch (e1) {
-    console.error('Gemini Edge error', e1);
+    console.error('Gemini Direct error', e1);
     try {
-      return await callGeminiDirect(withSystem);
+      return await callGemini(withSystem);
     } catch (e2) {
-      console.error('Gemini Direct error', e2);
+      console.error('Gemini Edge error', e2);
       // Local heuristic fallback
       const last = messages.filter(m=>m.role==='user').pop()?.content.toLowerCase() || '';
       if (last.includes('gm')) {
