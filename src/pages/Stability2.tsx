@@ -49,7 +49,7 @@ export default function Stability2() {
             <div className="space-y-2">
               <div>
                 <div className="font-medium">KMt, KB, BMt, KG, GMt:</div>
-                <div className="text-sm text-muted-foreground">(I_{WP}: su hattı alan atâleti, enine)</div>
+                <div className="text-sm text-muted-foreground">{`(I_{WP}: su hattı alan atâleti, enine)`}</div>
               </div>
               <div>
                 <div className="font-medium">GZ eğrisi</div>
