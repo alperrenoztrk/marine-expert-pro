@@ -163,7 +163,6 @@ import { useToast } from "@/hooks/use-toast";
                <div className="border-b p-4">
                  <DialogHeader>
                    <DialogTitle className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Stabilite Asistanı</DialogTitle>
-                   <DialogDescription>UGI tarzı rehber: GM, TPC, IMO kontrolleri için adım adım yönlendirme</DialogDescription>
                  </DialogHeader>
                </div>
                <div className="flex-1 overflow-auto p-4">
