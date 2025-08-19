@@ -154,81 +154,86 @@ import { useToast } from "@/hooks/use-toast";
                <Brain className="h-5 w-5" />
              </Button>
            </DialogTrigger>
-           <DialogContent className="sm:max-w-2xl">
-             <DialogHeader>
-               <DialogTitle className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Stabilite Asistanı</DialogTitle>
-               <DialogDescription>UGI tarzı rehber: GM, TPC, IMO kontrolleri için adım adım yönlendirme</DialogDescription>
-             </DialogHeader>
+           <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 max-w-none w-screen h-screen sm:rounded-none p-0">
+             <div className="flex flex-col h-full">
+               <div className="border-b p-4">
+                 <DialogHeader>
+                   <DialogTitle className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Stabilite Asistanı</DialogTitle>
+                   <DialogDescription>UGI tarzı rehber: GM, TPC, IMO kontrolleri için adım adım yönlendirme</DialogDescription>
+                 </DialogHeader>
+               </div>
+               <div className="flex-1 overflow-auto p-4">
+                 {/* Quick intents */}
+                 <div className="flex flex-wrap gap-2 mb-3">
+                   <Button variant={mode==='gm'? 'default':'outline'} size="sm" onClick={startGM}><Wand2 className="h-4 w-4 mr-1" /> GM</Button>
+                   <Button variant={mode==='tpc'? 'default':'outline'} size="sm" onClick={startTPC}><Ruler className="h-4 w-4 mr-1" /> TPC</Button>
+                   <Button variant={mode==='imo'? 'default':'outline'} size="sm" onClick={startIMO}><Shield className="h-4 w-4 mr-1" /> IMO</Button>
+                 </div>
 
-             {/* Quick intents */}
-             <div className="flex flex-wrap gap-2 mb-2">
-               <Button variant={mode==='gm'? 'default':'outline'} size="sm" onClick={startGM}><Wand2 className="h-4 w-4 mr-1" /> GM</Button>
-               <Button variant={mode==='tpc'? 'default':'outline'} size="sm" onClick={startTPC}><Ruler className="h-4 w-4 mr-1" /> TPC</Button>
-               <Button variant={mode==='imo'? 'default':'outline'} size="sm" onClick={startIMO}><Shield className="h-4 w-4 mr-1" /> IMO</Button>
-             </div>
-
-             {/* Chat window */}
-             <div className="border rounded p-2 h-60 bg-muted">
-               <ScrollArea className="h-full pr-2">
-                 <div className="space-y-2">
-                   {messages.map((m, i)=> (
-                     <div key={i} className={`text-sm ${m.role==='user'?'text-right':''}`}>
-                       <div className={`inline-flex items-center gap-2`}>
-                         <div className={`inline-block px-2 py-1 rounded ${m.role==='user'?'bg-blue-600 text-white':'bg-white'}`}>{m.content}</div>
-                         <button aria-label="Kopyala" onClick={()=> copyText(m.content)} className="text-xs text-muted-foreground hover:text-foreground">
-                           <Copy className="h-3 w-3" />
-                         </button>
-                       </div>
+                 {/* Chat window */}
+                 <div className="border rounded p-2 h-[50vh] bg-muted">
+                   <ScrollArea className="h-full pr-2">
+                     <div className="space-y-2">
+                       {messages.map((m, i)=> (
+                         <div key={i} className={`text-sm ${m.role==='user'?'text-right':''}`}>
+                           <div className={`inline-flex items-center gap-2`}>
+                             <div className={`inline-block px-2 py-1 rounded ${m.role==='user'?'bg-blue-600 text-white':'bg-white'}`}>{m.content}</div>
+                             <button aria-label="Kopyala" onClick={()=> copyText(m.content)} className="text-xs text-muted-foreground hover:text-foreground">
+                               <Copy className="h-3 w-3" />
+                             </button>
+                           </div>
+                         </div>
+                       ))}
                      </div>
-                   ))}
+                   </ScrollArea>
                  </div>
-               </ScrollArea>
-             </div>
 
-             {/* Guided forms */}
-             {mode==='gm' && (
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 items-end">
-                 <div><Label>KB (m)</Label><Input value={gmKB} onChange={(e)=> setGmKB(e.target.value)} /></div>
-                 <div><Label>BM (m)</Label><Input value={gmBM} onChange={(e)=> setGmBM(e.target.value)} /></div>
-                 <div><Label>KG (m)</Label><Input value={gmKG} onChange={(e)=> setGmKG(e.target.value)} /></div>
-                 <div className="md:col-span-3 text-xs text-muted-foreground">Veya yaklaşık için L,B,T girin:</div>
-                 <div><Label>L (m)</Label><Input value={approxL} onChange={(e)=> setApproxL(e.target.value)} /></div>
-                 <div><Label>B (m)</Label><Input value={approxB} onChange={(e)=> setApproxB(e.target.value)} /></div>
-                 <div><Label>T (m)</Label><Input value={approxT} onChange={(e)=> setApproxT(e.target.value)} /></div>
-                 <div className="md:col-span-3"><Button onClick={computeGM}>Hesapla</Button></div>
-               </div>
-             )}
+                 {/* Guided forms */}
+                 {mode==='gm' && (
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3 items-end">
+                     <div><Label>KB (m)</Label><Input value={gmKB} onChange={(e)=> setGmKB(e.target.value)} /></div>
+                     <div><Label>BM (m)</Label><Input value={gmBM} onChange={(e)=> setGmBM(e.target.value)} /></div>
+                     <div><Label>KG (m)</Label><Input value={gmKG} onChange={(e)=> setGmKG(e.target.value)} /></div>
+                     <div className="md:col-span-3 text-xs text-muted-foreground">Veya yaklaşık için L,B,T girin:</div>
+                     <div><Label>L (m)</Label><Input value={approxL} onChange={(e)=> setApproxL(e.target.value)} /></div>
+                     <div><Label>B (m)</Label><Input value={approxB} onChange={(e)=> setApproxB(e.target.value)} /></div>
+                     <div><Label>T (m)</Label><Input value={approxT} onChange={(e)=> setApproxT(e.target.value)} /></div>
+                     <div className="md:col-span-3"><Button onClick={computeGM}>Hesapla</Button></div>
+                   </div>
+                 )}
 
-             {mode==='tpc' && (
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2 items-end">
-                 <div><Label>Awp (m²)</Label><Input value={tpcAwp} onChange={(e)=> setTpcAwp(e.target.value)} /></div>
-                 <div><Label>ρ (ton/m³)</Label><Input value={tpcRho} onChange={(e)=> setTpcRho(e.target.value)} /></div>
-                 <div><Button onClick={computeTPC}>Hesapla</Button></div>
-               </div>
-             )}
+                 {mode==='tpc' && (
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3 items-end">
+                     <div><Label>Awp (m²)</Label><Input value={tpcAwp} onChange={(e)=> setTpcAwp(e.target.value)} /></div>
+                     <div><Label>ρ (ton/m³)</Label><Input value={tpcRho} onChange={(e)=> setTpcRho(e.target.value)} /></div>
+                     <div><Button onClick={computeTPC}>Hesapla</Button></div>
+                   </div>
+                 )}
 
-             {mode==='imo' && (
-               <div className="space-y-2 mt-2">
-                 <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm">
-                   <div><Label>L</Label><Input value={geo.length} onChange={(e)=> setGeo({...geo, length: parseFloat(e.target.value)})} /></div>
-                   <div><Label>B</Label><Input value={geo.breadth} onChange={(e)=> setGeo({...geo, breadth: parseFloat(e.target.value)})} /></div>
-                   <div><Label>D</Label><Input value={geo.depth} onChange={(e)=> setGeo({...geo, depth: parseFloat(e.target.value)})} /></div>
-                   <div><Label>T</Label><Input value={geo.draft} onChange={(e)=> setGeo({...geo, draft: parseFloat(e.target.value)})} /></div>
-                   <div><Label>Cb</Label><Input value={geo.blockCoefficient} onChange={(e)=> setGeo({...geo, blockCoefficient: parseFloat(e.target.value)})} /></div>
-                   <div><Label>KG</Label><Input value={kg} onChange={(e)=> setKg(e.target.value)} /></div>
+                 {mode==='imo' && (
+                   <div className="space-y-2 mt-3">
+                     <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm">
+                       <div><Label>L</Label><Input value={geo.length} onChange={(e)=> setGeo({...geo, length: parseFloat(e.target.value)})} /></div>
+                       <div><Label>B</Label><Input value={geo.breadth} onChange={(e)=> setGeo({...geo, breadth: parseFloat(e.target.value)})} /></div>
+                       <div><Label>D</Label><Input value={geo.depth} onChange={(e)=> setGeo({...geo, depth: parseFloat(e.target.value)})} /></div>
+                       <div><Label>T</Label><Input value={geo.draft} onChange={(e)=> setGeo({...geo, draft: parseFloat(e.target.value)})} /></div>
+                       <div><Label>Cb</Label><Input value={geo.blockCoefficient} onChange={(e)=> setGeo({...geo, blockCoefficient: parseFloat(e.target.value)})} /></div>
+                       <div><Label>KG</Label><Input value={kg} onChange={(e)=> setKg(e.target.value)} /></div>
+                     </div>
+                     <Button onClick={computeIMO}><Shield className="h-4 w-4 mr-1" /> Kontrol</Button>
+                   </div>
+                 )}
+
+                 {/* Freeform input */}
+                 <div className="flex gap-2 items-end mt-3">
+                   <Textarea value={input} onChange={(e)=> setInput(e.target.value)} placeholder="Örn: GM hesabı yapmak istiyorum" className="min-h-[60px]" />
+                   <div className="flex flex-col gap-2">
+                     <Button variant="outline" size="sm" onClick={pasteIntoInput} className="gap-1"><ClipboardPaste className="h-4 w-4" /> Yapıştır</Button>
+                     <Button variant="outline" size="sm" onClick={()=> copyText(lastAssistant())} disabled={!lastAssistant()} className="gap-1"><Copy className="h-4 w-4" /> Son Yanıtı Kopyala</Button>
+                   </div>
+                   <Button onClick={send} disabled={busy}>{busy? <Loader2 className="h-4 w-4 animate-spin" /> : 'Gönder'}</Button>
                  </div>
-                 <Button onClick={computeIMO}><Shield className="h-4 w-4 mr-1" /> Kontrol</Button>
                </div>
-             )}
-
-             {/* Freeform input */}
-             <div className="flex gap-2 items-end mt-2">
-               <Textarea value={input} onChange={(e)=> setInput(e.target.value)} placeholder="Örn: GM hesabı yapmak istiyorum" className="min-h-[60px]" />
-               <div className="flex flex-col gap-2">
-                 <Button variant="outline" size="sm" onClick={pasteIntoInput} className="gap-1"><ClipboardPaste className="h-4 w-4" /> Yapıştır</Button>
-                 <Button variant="outline" size="sm" onClick={()=> copyText(lastAssistant())} disabled={!lastAssistant()} className="gap-1"><Copy className="h-4 w-4" /> Son Yanıtı Kopyala</Button>
-               </div>
-               <Button onClick={send} disabled={busy}>{busy? <Loader2 className="h-4 w-4 animate-spin" /> : 'Gönder'}</Button>
              </div>
            </DialogContent>
          </Dialog>
