@@ -74,7 +74,7 @@ import DraftSurveyDensity from "./pages/DraftSurveyDensity";
 import DraftSurveyPort from "./pages/DraftSurveyPort";
 import DraftSurveyAnalysis from "./pages/DraftSurveyAnalysis";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
-import Stability2 from "./pages/Stability2";
+// Stability2 removed
 
 const queryClient = new QueryClient();
 
@@ -150,8 +150,7 @@ const App = () => {
                   <Route path="/weather" element={<WeatherCalculationsPage />} />
                   <Route path="/special-ships" element={<SpecialShipCalculationsPage />} />
                   <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
-                  <Route path="/stability" element={<Stability2 />} />
-                  <Route path="/stability-2" element={<Stability2 />} />
+                  <Route path="/stability" element={<StabilityMenu />} />
                   <Route path="/calculations" element={<CalculationsMenu />} />
                   <Route path="/stability/hydrostatic" element={<StabilityHydrostaticPage />} />
                   <Route path="/stability/stability" element={<StabilityStabilityPage />} />
