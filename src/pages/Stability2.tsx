@@ -68,6 +68,9 @@ export default function Stability2() {
               <div>
                 <div className="font-medium">Serbest yüzey düzeltmesi (FSE)</div>
                 <div className="text-sm text-muted-foreground">(I_f: tank serbest yüzey atâleti)</div>
+                <div className="mt-2">
+                  <Button size="sm" variant="outline" onClick={() => window.open('/stability/tpc', '_blank')}>TPC Hesapla</Button>
+                </div>
               </div>
               <div>
                 <div className="font-medium">Yük kayması (shifting)</div>
@@ -108,6 +111,9 @@ export default function Stability2() {
               <div>
                 <div className="font-medium">Uç draft değişimleri (yaklaşık)</div>
               </div>
+              <div className="mt-2">
+                <Button size="sm" variant="outline" onClick={() => window.open('/stability/loll', '_blank')}>Loll Açısı Hesapla</Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -138,6 +144,10 @@ export default function Stability2() {
               <div>
                 <div className="font-medium">Minimum GM / alan limitleri</div>
                 <div className="text-sm text-muted-foreground">(tip ve kurala göre) kontrol edilir.</div>
+              </div>
+              <div className="mt-2 flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => window.open('/stability/stability', '_blank')}>Stabilite Modülü</Button>
+                <Button size="sm" variant="outline" onClick={() => window.open('/stability/analysis', '_blank')}>Analiz Özeti</Button>
               </div>
             </div>
           </CardContent>
@@ -170,6 +180,9 @@ export default function Stability2() {
               <div>
                 <div className="font-medium">Kümülatif indeksler</div>
                 <div className="text-sm text-muted-foreground">(A ≥ R vb.; gemi tipine göre).</div>
+              </div>
+              <div className="mt-2">
+                <Button size="sm" variant="outline" onClick={() => window.open('/stability/damage', '_blank')}>Hasar Hesapla</Button>
               </div>
             </div>
           </CardContent>
@@ -328,6 +341,22 @@ export default function Stability2() {
                 <div className="font-medium">Hidrost. tablo uyumu</div>
                 <div className="text-sm text-muted-foreground">gemi çizelgeleri ↔ ölçümler eşleştirme.</div>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Hızlı Erişim (Hidrostatik hesaplamalar) */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Activity className="h-5 w-5" /> Hızlı Erişim</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={() => window.open('/stability/displacement', '_blank')}>Deplasman</Button>
+              <Button size="sm" variant="outline" onClick={() => window.open('/stability/draft-calc', '_blank')}>Draft</Button>
+              <Button size="sm" variant="outline" onClick={() => window.open('/stability/tpc', '_blank')}>TPC</Button>
+              <Button size="sm" variant="outline" onClick={() => window.open('/stability/hydrostatic', '_blank')}>Hidrostatik Modül</Button>
+              <Button size="sm" variant="outline" onClick={() => window.open('/stability/bonjean', '_blank')}>Bonjean</Button>
             </div>
           </CardContent>
         </Card>
