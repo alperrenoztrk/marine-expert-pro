@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 
  type AssistantMode = 'idle' | 'gm' | 'tpc' | 'imo';
  
- export default function StabilityAssistantPopup(){
+ export default function StabilityAssistantPopup({ variant = 'floating' as 'floating' | 'inline' }){
    const [open, setOpen] = useState(false);
    const [input, setInput] = useState("");
    const [busy, setBusy] = useState(false);
@@ -147,12 +147,16 @@ import { useToast } from "@/hooks/use-toast";
 
    return (
      <div>
-       <div className="fixed bottom-4 right-4 z-40">
+       <div className={variant==='floating' ? "fixed bottom-4 right-4 z-40" : "relative z-0"}>
          <Dialog open={open} onOpenChange={setOpen}>
            <DialogTrigger asChild>
-             <Button className="rounded-full h-12 w-12 p-0 shadow-lg" title="Stabilite Asistanı">
-               <Brain className="h-5 w-5" />
-             </Button>
+             {variant==='floating' ? (
+               <Button className="rounded-full h-12 w-12 p-0 shadow-lg" title="Stabilite Asistanı">
+                 <Brain className="h-5 w-5" />
+               </Button>
+             ) : (
+               <Button variant="outline" className="gap-2"><Brain className="h-4 w-4" /> Stabilite Asistanı</Button>
+             )}
            </DialogTrigger>
            <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 max-w-none w-screen h-screen sm:rounded-none p-0">
              <div className="flex flex-col h-full">

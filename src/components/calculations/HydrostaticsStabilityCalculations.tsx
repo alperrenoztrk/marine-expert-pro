@@ -282,7 +282,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <StabilityAssistantPopup />
+          <StabilityAssistantPopup variant="inline" />
         </CardContent>
       </Card>
 
