@@ -162,7 +162,7 @@ import { useToast } from "@/hooks/use-toast";
              <div className="flex flex-col h-full">
                <div className="border-b p-4">
                  <DialogHeader>
-                   <DialogTitle className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Stabilite Asistanı</DialogTitle>
+                   <DialogTitle className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /></DialogTitle>
                  </DialogHeader>
                </div>
                <div className="flex-1 overflow-auto p-4">

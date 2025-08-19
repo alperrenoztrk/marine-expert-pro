@@ -278,7 +278,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       <Card className="shadow border border-blue-200/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
-            <Brain className="h-5 w-5" /> Stabilite Asistanı
+            <Brain className="h-5 w-5" />
           </CardTitle>
         </CardHeader>
         <CardContent>
