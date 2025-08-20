@@ -1066,25 +1066,27 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
         </CardHeader>
         <CardContent>
           <Tabs defaultValue={initialTab || "route"} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 xl:grid-cols-12 gap-1 h-auto py-2">
-              <TabsTrigger value="route" className="text-xs px-1 py-2 h-auto">Rota</TabsTrigger>
-              <TabsTrigger value="plane-sailing" className="text-xs px-1 py-2 h-auto">Plane Sailing</TabsTrigger>
-              <TabsTrigger value="traverse-sailing" className="text-xs px-1 py-2 h-auto">Traverse</TabsTrigger>
-              <TabsTrigger value="route-plan" className="text-xs px-1 py-2 h-auto">Route Plan</TabsTrigger>
-              <TabsTrigger value="real-time" className="text-xs px-1 py-2 h-auto">Real Time</TabsTrigger>
-              <TabsTrigger value="current-wind" className="text-xs px-1 py-2 h-auto">Current Wind</TabsTrigger>
-              <TabsTrigger value="current" className="text-xs px-1 py-2 h-auto">Akıntı</TabsTrigger>
-              <TabsTrigger value="compass" className="text-xs px-1 py-2 h-auto">Pusula</TabsTrigger>
-              <TabsTrigger value="radar" className="text-xs px-1 py-2 h-auto">Radar</TabsTrigger>
-              <TabsTrigger value="tidal" className="text-xs px-1 py-2 h-auto">Gelgit</TabsTrigger>
-              <TabsTrigger value="weather" className="text-xs px-1 py-2 h-auto">Hava</TabsTrigger>
-              <TabsTrigger value="marine-weather" className="text-xs px-1 py-2 h-auto">Deniz Hava</TabsTrigger>
-              <TabsTrigger value="sunrise-sunset" className="text-xs px-1 py-2 h-auto">Gündoğumu</TabsTrigger>
-              <TabsTrigger value="port" className="text-xs px-1 py-2 h-auto">Liman</TabsTrigger>
-              <TabsTrigger value="celestial" className="text-xs px-1 py-2 h-auto">Göksel</TabsTrigger>
-              <TabsTrigger value="astronomical" className="text-xs px-1 py-2 h-auto">Astronomik</TabsTrigger>
-              <TabsTrigger value="almanac" className="text-xs px-1 py-2 h-auto">Almanac</TabsTrigger>
-            </TabsList>
+            <div className="w-full overflow-x-auto">
+              <TabsList className="inline-flex w-auto min-w-full h-auto py-2 px-2 space-x-1">
+                <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
+                <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
+                <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
+                <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan</TabsTrigger>
+                <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time</TabsTrigger>
+                <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind</TabsTrigger>
+                <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Akıntı</TabsTrigger>
+                <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula</TabsTrigger>
+                <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">Radar</TabsTrigger>
+                <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit</TabsTrigger>
+                <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava</TabsTrigger>
+                <TabsTrigger value="marine-weather" className="text-xs px-3 py-2 whitespace-nowrap">Deniz Hava</TabsTrigger>
+                <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu</TabsTrigger>
+                <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman</TabsTrigger>
+                <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel</TabsTrigger>
+                <TabsTrigger value="astronomical" className="text-xs px-3 py-2 whitespace-nowrap">Astronomik</TabsTrigger>
+                <TabsTrigger value="almanac" className="text-xs px-3 py-2 whitespace-nowrap">Almanac</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="route" className="space-y-4">
               {/* Coordinate Input Section */}
