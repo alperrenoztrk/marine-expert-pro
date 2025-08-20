@@ -1066,8 +1066,13 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
         </CardHeader>
         <CardContent>
           <Tabs defaultValue={initialTab || "route"} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-1">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-1">
               <TabsTrigger value="route" className="text-xs px-2">Rota<br /></TabsTrigger>
+              <TabsTrigger value="plane-sailing" className="text-xs px-2">Plane<br />Sailing</TabsTrigger>
+              <TabsTrigger value="traverse-sailing" className="text-xs px-2">Traverse<br />Sailing</TabsTrigger>
+              <TabsTrigger value="route-plan" className="text-xs px-2">Route<br />Plan</TabsTrigger>
+              <TabsTrigger value="real-time" className="text-xs px-2">Real Time<br />Running</TabsTrigger>
+              <TabsTrigger value="current-wind" className="text-xs px-2">Current &<br />Wind</TabsTrigger>
               <TabsTrigger value="current" className="text-xs px-2">Akıntı<br /></TabsTrigger>
               <TabsTrigger value="compass" className="text-xs px-2">Pusula<br /></TabsTrigger>
               <TabsTrigger value="radar" className="text-xs px-2">Radar<br /></TabsTrigger>
@@ -1184,7 +1189,547 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                      </div>
                    </div>
                  </CardContent>
-               </Card>
+                </Card>
+            </TabsContent>
+
+            <TabsContent value="plane-sailing" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Navigation className="h-5 w-5 text-blue-500" />
+                    Plane Sailing
+                  </CardTitle>
+                  <CardDescription>
+                    Small area navigation calculations using plane trigonometry
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="planeLat1">Başlangıç Enlemi (°)</Label>
+                        <Input
+                          id="planeLat1"
+                          type="number"
+                          step="0.001"
+                          value={data.lat1}
+                          onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                          placeholder="41.0082"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="planeLon1">Başlangıç Boylamı (°)</Label>
+                        <Input
+                          id="planeLon1"
+                          type="number"
+                          step="0.001"
+                          value={data.lon1}
+                          onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                          placeholder="28.9784"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="planeLat2">Varış Enlemi (°)</Label>
+                        <Input
+                          id="planeLat2"
+                          type="number"
+                          step="0.001"
+                          value={data.lat2}
+                          onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                          placeholder="41.1000"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="planeLon2">Varış Boylamı (°)</Label>
+                        <Input
+                          id="planeLon2"
+                          type="number"
+                          step="0.001"
+                          value={data.lon2}
+                          onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                          placeholder="29.0000"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <h4 className="font-semibold mb-2">Plane Sailing Formülleri:</h4>
+                    <div className="text-sm space-y-1">
+                      <p>• dLat = (Lat2 - Lat1) × 60 nm</p>
+                      <p>• Departure = (Lon2 - Lon1) × 60 × cos(Mean Lat) nm</p>
+                      <p>• Distance = √(dLat² + Departure²)</p>
+                      <p>• Course = arctan(Departure / dLat)</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="traverse-sailing" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <MapPin className="h-5 w-5 text-green-500" />
+                    Traverse Sailing
+                  </CardTitle>
+                  <CardDescription>
+                    Multi-leg voyage calculations with different courses and distances
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="leg1Course">1. Ayak Rotası (°)</Label>
+                        <Input
+                          id="leg1Course"
+                          type="number"
+                          step="0.1"
+                          value={data.course}
+                          onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                          placeholder="090"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="leg1Distance">1. Ayak Mesafesi (nm)</Label>
+                        <Input
+                          id="leg1Distance"
+                          type="number"
+                          step="0.1"
+                          defaultValue="10"
+                          placeholder="10"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="leg2Course">2. Ayak Rotası (°)</Label>
+                        <Input
+                          id="leg2Course"
+                          type="number"
+                          step="0.1"
+                          defaultValue="135"
+                          placeholder="135"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="leg2Distance">2. Ayak Mesafesi (nm)</Label>
+                        <Input
+                          id="leg2Distance"
+                          type="number"
+                          step="0.1"
+                          defaultValue="15"
+                          placeholder="15"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="leg3Course">3. Ayak Rotası (°)</Label>
+                        <Input
+                          id="leg3Course"
+                          type="number"
+                          step="0.1"
+                          defaultValue="180"
+                          placeholder="180"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="leg3Distance">3. Ayak Mesafesi (nm)</Label>
+                        <Input
+                          id="leg3Distance"
+                          type="number"
+                          step="0.1"
+                          defaultValue="8"
+                          placeholder="8"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <h4 className="font-semibold mb-2">Traverse Sailing Hesaplamaları:</h4>
+                    <div className="text-sm space-y-1">
+                      <p>• Her ayak için dLat ve Departure hesaplanır</p>
+                      <p>• Toplam dLat = Σ (Distance × cos(Course))</p>
+                      <p>• Toplam Departure = Σ (Distance × sin(Course))</p>
+                      <p>• Final Course = arctan(Total Departure / Total dLat)</p>
+                      <p>• Total Distance = √(Total dLat² + Total Departure²)</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="route-plan" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Target className="h-5 w-5 text-purple-500" />
+                    Route Planning
+                  </CardTitle>
+                  <CardDescription>
+                    Comprehensive voyage planning with waypoints and ETA calculations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="departure">Çıkış Limanı</Label>
+                        <Input
+                          id="departure"
+                          type="text"
+                          defaultValue="İstanbul"
+                          placeholder="İstanbul"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="destination">Varış Limanı</Label>
+                        <Input
+                          id="destination"
+                          type="text"
+                          defaultValue="İzmir"
+                          placeholder="İzmir"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="plannedSpeed">Planlanan Hız (knot)</Label>
+                        <Input
+                          id="plannedSpeed"
+                          type="number"
+                          step="0.1"
+                          value={data.speed}
+                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          placeholder="12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="departureTime">Çıkış Zamanı</Label>
+                        <Input
+                          id="departureTime"
+                          type="time"
+                          defaultValue="08:00"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fuelCapacity">Yakıt Kapasitesi (ton)</Label>
+                        <Input
+                          id="fuelCapacity"
+                          type="number"
+                          step="0.1"
+                          defaultValue="50"
+                          placeholder="50"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">Waypoints</h4>
+                      <div className="grid grid-cols-4 gap-2 text-sm font-medium">
+                        <div>Waypoint</div>
+                        <div>Enlem (°)</div>
+                        <div>Boylam (°)</div>
+                        <div>ETA</div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        <Input defaultValue="WP1" placeholder="WP1" />
+                        <Input type="number" step="0.001" placeholder="41.0500" />
+                        <Input type="number" step="0.001" placeholder="29.0000" />
+                        <Input type="time" defaultValue="12:00" />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        <Input defaultValue="WP2" placeholder="WP2" />
+                        <Input type="number" step="0.001" placeholder="40.5000" />
+                        <Input type="number" step="0.001" placeholder="28.0000" />
+                        <Input type="time" defaultValue="18:00" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                    <h4 className="font-semibold mb-2">Route Planning Faktörleri:</h4>
+                    <div className="text-sm space-y-1">
+                      <p>• Hava durumu koşulları</p>
+                      <p>• Trafik ayrımı şemaları</p>
+                      <p>• Pilot biniş noktaları</p>
+                      <p>• Yakıt tüketimi ve menzil</p>
+                      <p>• Liman kısıtlamaları ve gelgit</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="real-time" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Clock className="h-5 w-5 text-orange-500" />
+                    Real Time Running
+                  </CardTitle>
+                  <CardDescription>
+                    Live position updates and course adjustments during voyage
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="currentPosition">Mevcut Konum (GPS)</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Input
+                            type="number"
+                            step="0.0001"
+                            value={data.lat1}
+                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            placeholder="Enlem"
+                          />
+                          <Input
+                            type="number"
+                            step="0.0001"
+                            value={data.lon1}
+                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            placeholder="Boylam"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="actualSpeed">Gerçek Hız (SOG)</Label>
+                        <Input
+                          id="actualSpeed"
+                          type="number"
+                          step="0.1"
+                          value={data.speed}
+                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          placeholder="12.5"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="courseOverGround">Course Over Ground (°)</Label>
+                        <Input
+                          id="courseOverGround"
+                          type="number"
+                          step="0.1"
+                          value={data.course}
+                          onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                          placeholder="090"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="heading">Heading (°)</Label>
+                        <Input
+                          id="heading"
+                          type="number"
+                          step="0.1"
+                          defaultValue="092"
+                          placeholder="092"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="setDrift">Set & Drift</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Input
+                            type="number"
+                            step="1"
+                            value={data.currentSet}
+                            onChange={(e) => updateData('currentSet', parseFloat(e.target.value) || 0)}
+                            placeholder="Set (°)"
+                          />
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={data.currentDrift}
+                            onChange={(e) => updateData('currentDrift', parseFloat(e.target.value) || 0)}
+                            placeholder="Drift (kn)"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="nextWaypoint">Sonraki Waypoint</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Input
+                            type="number"
+                            step="0.001"
+                            value={data.lat2}
+                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            placeholder="Enlem"
+                          />
+                          <Input
+                            type="number"
+                            step="0.001"
+                            value={data.lon2}
+                            onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                            placeholder="Boylam"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="timeToWaypoint">Waypoint'e Süre</Label>
+                        <Input
+                          id="timeToWaypoint"
+                          type="text"
+                          readOnly
+                          defaultValue="02:30"
+                          className="bg-gray-50 dark:bg-gray-800"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                    <h4 className="font-semibold mb-2">Real Time Monitoring:</h4>
+                    <div className="text-sm space-y-1">
+                      <p>• GPS pozisyon güncellemeleri</p>
+                      <p>• Rota sapması uyarıları</p>
+                      <p>• ETA revizyonları</p>
+                      <p>• Hız optimizasyonu önerileri</p>
+                      <p>• Otomatik log girişleri</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="current-wind" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Wind className="h-5 w-5 text-cyan-500" />
+                    Current & Wind Sailing
+                  </CardTitle>
+                  <CardDescription>
+                    Combined effects of current and wind on vessel navigation
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="font-semibold flex items-center gap-2">
+                          <Waves className="h-4 w-4 text-blue-500" />
+                          Akıntı Verileri
+                        </h4>
+                        <div className="space-y-2">
+                          <Label htmlFor="currentDirection">Akıntı Doğrultusu (°)</Label>
+                          <Input
+                            id="currentDirection"
+                            type="number"
+                            step="1"
+                            value={data.currentSet}
+                            onChange={(e) => updateData('currentSet', parseFloat(e.target.value) || 0)}
+                            placeholder="090"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="currentRate">Akıntı Hızı (knot)</Label>
+                          <Input
+                            id="currentRate"
+                            type="number"
+                            step="0.1"
+                            value={data.currentDrift}
+                            onChange={(e) => updateData('currentDrift', parseFloat(e.target.value) || 0)}
+                            placeholder="2.5"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="tidalState">Gelgit Durumu</Label>
+                          <select className="w-full p-2 border rounded-md">
+                            <option value="flood">Flood Tide (Yükseliş)</option>
+                            <option value="ebb">Ebb Tide (Alçalış)</option>
+                            <option value="slack">Slack Water (Durgun)</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <h4 className="font-semibold flex items-center gap-2">
+                          <Wind className="h-4 w-4 text-gray-500" />
+                          Rüzgar Verileri
+                        </h4>
+                        <div className="space-y-2">
+                          <Label htmlFor="windDir">Rüzgar Doğrultusu (°)</Label>
+                          <Input
+                            id="windDir"
+                            type="number"
+                            step="1"
+                            value={data.windDirection}
+                            onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                            placeholder="270"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="windSpd">Rüzgar Hızı (knot)</Label>
+                          <Input
+                            id="windSpd"
+                            type="number"
+                            step="1"
+                            value={data.windSpeed}
+                            onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                            placeholder="15"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="leeway">Leeway Açısı (°)</Label>
+                          <Input
+                            id="leeway"
+                            type="number"
+                            step="0.1"
+                            value={data.leewayAngle}
+                            onChange={(e) => updateData('leewayAngle', parseFloat(e.target.value) || 0)}
+                            placeholder="3.0"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="vesselSpeed">Gemi Hızı (STW)</Label>
+                        <Input
+                          id="vesselSpeed"
+                          type="number"
+                          step="0.1"
+                          value={data.speed}
+                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          placeholder="12.0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="desiredTrack">İstenen Track (°)</Label>
+                        <Input
+                          id="desiredTrack"
+                          type="number"
+                          step="0.1"
+                          value={data.course}
+                          onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                          placeholder="090"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="courseToSteer">Steering Course (°)</Label>
+                        <Input
+                          id="courseToSteer"
+                          type="number"
+                          step="0.1"
+                          readOnly
+                          defaultValue="087"
+                          className="bg-gray-50 dark:bg-gray-800"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
+                    <h4 className="font-semibold mb-2">Current & Wind Triangle:</h4>
+                    <div className="text-sm space-y-1">
+                      <p>• Course to Steer = Track ± (Leeway + Current Correction)</p>
+                      <p>• Ground Speed = √((STW + Current)² - 2×STW×Current×cos(angle))</p>
+                      <p>• Drift Angle = arcsin(Current×sin(angle)/Ground Speed)</p>
+                      <p>• Combined effect includes both current set/drift and wind leeway</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="current" className="space-y-4">
