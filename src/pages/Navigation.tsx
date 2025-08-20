@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Compass } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { NavigationCalculations } from "@/components/calculations/NavigationCalculations";
 
 const Navigation = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialTab = searchParams.get("tab") || undefined;
   return (
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -34,7 +37,7 @@ const Navigation = () => {
         </div>
 
         {/* Navigation Calculations */}
-        <NavigationCalculations />
+        <NavigationCalculations initialTab={initialTab} />
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500 dark:text-gray-400">
