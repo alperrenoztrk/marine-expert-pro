@@ -1078,6 +1078,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               <TabsTrigger value="radar" className="text-xs px-2">Radar<br /></TabsTrigger>
               <TabsTrigger value="tidal" className="text-xs px-2">Gelgit<br /></TabsTrigger>
               <TabsTrigger value="weather" className="text-xs px-2">Hava<br /></TabsTrigger>
+              <TabsTrigger value="marine-weather" className="text-xs px-2">Deniz<br />Hava</TabsTrigger>
+              <TabsTrigger value="sunrise-sunset" className="text-xs px-2">Gündoğumu<br />Batımı</TabsTrigger>
               <TabsTrigger value="port" className="text-xs px-2">Liman<br /></TabsTrigger>
               <TabsTrigger value="celestial" className="text-xs px-2">Göksel<br /></TabsTrigger>
               <TabsTrigger value="astronomical" className="text-xs px-2">Astronomik<br /></TabsTrigger>
@@ -2404,6 +2406,372 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               </Card>
             </TabsContent>
 
+            {/* Marine Weather Tab */}
+            <TabsContent value="marine-weather" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Wind className="h-5 w-5 text-blue-500" />
+                    Deniz Hava Durumu
+                  </CardTitle>
+                  <CardDescription>
+                    Denizcilik için meteoroloji hesaplamaları ve hava durumu analizi
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Wind Data */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Wind className="h-4 w-4 text-blue-500" />
+                          Rüzgar Verileri
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <Label htmlFor="windDir">Rüzgar Yönü (°)</Label>
+                            <Input
+                              id="windDir"
+                              type="number"
+                              value={data.windDirection}
+                              onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                              placeholder="270"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="windSpd">Rüzgar Hızı (knot)</Label>
+                            <Input
+                              id="windSpd"
+                              type="number"
+                              value={data.windSpeed}
+                              onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                              placeholder="15"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="barPressure">Hava Basıncı (hPa)</Label>
+                            <Input
+                              id="barPressure"
+                              type="number"
+                              value={data.barometricPressure}
+                              onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
+                              placeholder="1013"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Wave Data */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Waves className="h-4 w-4 text-cyan-500" />
+                          Dalga Verileri
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <Label htmlFor="waveHgt">Dalga Yüksekliği (m)</Label>
+                            <Input
+                              id="waveHgt"
+                              type="number"
+                              step="0.1"
+                              value={data.waveHeight}
+                              onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
+                              placeholder="2.5"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="wavePer">Dalga Periyodu (s)</Label>
+                            <Input
+                              id="wavePer"
+                              type="number"
+                              value={data.wavePeriod}
+                              onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
+                              placeholder="6"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="waveDir">Dalga Yönü (°)</Label>
+                            <Input
+                              id="waveDir"
+                              type="number"
+                              value={data.waveDirection}
+                              onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
+                              placeholder="270"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Weather Analysis Results */}
+                  {result && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Card className="bg-blue-50 dark:bg-blue-900/20">
+                        <CardContent className="pt-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-600">
+                              {result.beaufortScale}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Beaufort Skalası</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="bg-cyan-50 dark:bg-cyan-900/20">
+                        <CardContent className="pt-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-cyan-600">
+                              {result.seaState}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Douglas Deniz Durumu</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="bg-orange-50 dark:bg-orange-900/20">
+                        <CardContent className="pt-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-orange-600">
+                              {result.weatherDelay}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Hava Gecikmesi (saat)</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+
+                  {/* Weather Scales Reference */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card className="bg-muted/30">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm">Beaufort Rüzgar Skalası</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex justify-between"><span>0 (Sakin)</span><span>&lt; 1 knot</span></div>
+                          <div className="flex justify-between"><span>1 (Hafif)</span><span>1-3 knot</span></div>
+                          <div className="flex justify-between"><span>2 (Hafif)</span><span>4-6 knot</span></div>
+                          <div className="flex justify-between"><span>3 (Hafif)</span><span>7-10 knot</span></div>
+                          <div className="flex justify-between"><span>4 (Orta)</span><span>11-16 knot</span></div>
+                          <div className="flex justify-between"><span>5 (Taze)</span><span>17-21 knot</span></div>
+                          <div className="flex justify-between"><span>6 (Kuvvetli)</span><span>22-27 knot</span></div>
+                          <div className="flex justify-between"><span>7 (Sert)</span><span>28-33 knot</span></div>
+                          <div className="flex justify-between"><span>8 (Fırtına)</span><span>34-40 knot</span></div>
+                          <div className="flex justify-between"><span>9+ (Şiddetli)</span><span>&gt; 41 knot</span></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-muted/30">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm">Douglas Deniz Durumu Skalası</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex justify-between"><span>0 (Sakin)</span><span>&lt; 0.1m</span></div>
+                          <div className="flex justify-between"><span>1 (Çok hafif)</span><span>0.1-0.5m</span></div>
+                          <div className="flex justify-between"><span>2 (Hafif)</span><span>0.5-1.25m</span></div>
+                          <div className="flex justify-between"><span>3 (Hafif)</span><span>1.25-2.5m</span></div>
+                          <div className="flex justify-between"><span>4 (Orta)</span><span>2.5-4m</span></div>
+                          <div className="flex justify-between"><span>5 (Kabaca)</span><span>4-6m</span></div>
+                          <div className="flex justify-between"><span>6 (Çok kabaca)</span><span>6-9m</span></div>
+                          <div className="flex justify-between"><span>7 (Yüksek)</span><span>9-14m</span></div>
+                          <div className="flex justify-between"><span>8 (Çok yüksek)</span><span>&gt; 14m</span></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Sunrise/Sunset Tab */}
+            <TabsContent value="sunrise-sunset" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sunrise className="h-5 w-5 text-orange-500" />
+                    Gündoğumu/Gün Batımı Tabloları
+                  </CardTitle>
+                  <CardDescription>
+                    Astronomik twilight zamanları ve güneş konumu hesaplamaları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Location Input */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-green-500" />
+                          Konum Bilgileri
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <Label htmlFor="obsLat">Gözlemci Enlemi (°)</Label>
+                            <Input
+                              id="obsLat"
+                              type="number"
+                              step="0.001"
+                              value={data.observerLatitude}
+                              onChange={(e) => updateData('observerLatitude', parseFloat(e.target.value) || 0)}
+                              placeholder="41.0082"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="obsLon">Gözlemci Boylamı (°)</Label>
+                            <Input
+                              id="obsLon"
+                              type="number"
+                              step="0.001"
+                              value={data.observerLongitude}
+                              onChange={(e) => updateData('observerLongitude', parseFloat(e.target.value) || 0)}
+                              placeholder="28.9784"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="calcDate">Tarih</Label>
+                            <Input
+                              id="calcDate"
+                              type="date"
+                              value={data.date}
+                              onChange={(e) => updateData('date', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="timeZone">Saat Dilimi (UTC+)</Label>
+                            <Input
+                              id="timeZone"
+                              type="number"
+                              value={data.timeZone}
+                              onChange={(e) => updateData('timeZone', parseFloat(e.target.value) || 0)}
+                              placeholder="3"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Sun Times Results */}
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Sun className="h-4 w-4 text-yellow-500" />
+                          Güneş Zamanları
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {result?.twilightTimes && (
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between p-2 bg-orange-50 dark:bg-orange-900/20 rounded">
+                              <span className="flex items-center gap-2">
+                                <Sunrise className="h-3 w-3" />
+                                Gündoğumu
+                              </span>
+                              <span className="font-mono">{result.twilightTimes.sunrise}</span>
+                            </div>
+                            <div className="flex justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                              <span>Sivil Alacakaranlık Başı</span>
+                              <span className="font-mono">{result.twilightTimes.civilTwilightBegin}</span>
+                            </div>
+                            <div className="flex justify-between p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded">
+                              <span>Denizcilik Alacakaranlık Başı</span>
+                              <span className="font-mono">{result.twilightTimes.nauticalTwilightBegin}</span>
+                            </div>
+                            <div className="flex justify-between p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                              <span>Astronomik Alacakaranlık Başı</span>
+                              <span className="font-mono">{result.twilightTimes.astronomicalTwilightBegin}</span>
+                            </div>
+                            <Separator />
+                            <div className="flex justify-between p-2 bg-purple-50 dark:bg-purple-900/20 rounded">
+                              <span>Astronomik Alacakaranlık Sonu</span>
+                              <span className="font-mono">{result.twilightTimes.astronomicalTwilightEnd}</span>
+                            </div>
+                            <div className="flex justify-between p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded">
+                              <span>Denizcilik Alacakaranlık Sonu</span>
+                              <span className="font-mono">{result.twilightTimes.nauticalTwilightEnd}</span>
+                            </div>
+                            <div className="flex justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                              <span>Sivil Alacakaranlık Sonu</span>
+                              <span className="font-mono">{result.twilightTimes.civilTwilightEnd}</span>
+                            </div>
+                            <div className="flex justify-between p-2 bg-orange-50 dark:bg-orange-900/20 rounded">
+                              <span className="flex items-center gap-2">
+                                <Sunset className="h-3 w-3" />
+                                Gün Batımı
+                              </span>
+                              <span className="font-mono">{result.twilightTimes.sunset}</span>
+                            </div>
+                            <Separator />
+                            <div className="flex justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded">
+                              <span>Gündüz Süresi</span>
+                              <span className="font-mono">{result.twilightTimes.daylightDuration.toFixed(1)} saat</span>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Sun Position */}
+                  {result?.sunPosition && (
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Sun className="h-4 w-4 text-yellow-500" />
+                          Güneş Konumu (Şu Anki)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="text-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                            <div className="text-xl font-bold text-yellow-600">
+                              {result.sunPosition.altitude.toFixed(1)}°
+                            </div>
+                            <div className="text-sm text-muted-foreground">Yükseklik</div>
+                          </div>
+                          <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <div className="text-xl font-bold text-orange-600">
+                              {result.sunPosition.azimuth.toFixed(1)}°
+                            </div>
+                            <div className="text-sm text-muted-foreground">Azimut</div>
+                          </div>
+                          <div className="text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                            <div className="text-xl font-bold text-red-600">
+                              {result.sunPosition.declination.toFixed(1)}°
+                            </div>
+                            <div className="text-sm text-muted-foreground">Deklinasyon</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Information */}
+                  <Card className="bg-muted/30">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Alacakaranlık Tanımları</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-xs">
+                        <p><strong>Sivil Alacakaranlık:</strong> Güneş ufkunun 6° altında, normal dış mekan faaliyetleri mümkün</p>
+                        <p><strong>Denizcilik Alacakaranlık:</strong> Güneş ufkunun 12° altında, deniz ufku görülebilir</p>
+                        <p><strong>Astronomik Alacakaranlık:</strong> Güneş ufkunun 18° altında, gerçek gece karanlığı</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Almanac Tab */}
             <TabsContent value="almanac" className="space-y-4">
               <div className="space-y-4">
@@ -2544,14 +2912,18 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
 
                     <Separator />
 
-                    {/* Additional Resources */}
+                    {/* Navigation to other tabs */}
                     <div className="space-y-3">
-                      <h4 className="font-medium">Ek Kaynaklar</h4>
+                      <h4 className="font-medium">İlgili Hesaplamalar</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => window.open('https://aa.usno.navy.mil/data/RS_OneYear', '_blank')}
+                          onClick={() => {
+                            const tabs = document.querySelector('[role="tablist"]');
+                            const sunsetTab = tabs?.querySelector('[value="sunrise-sunset"]') as HTMLButtonElement;
+                            if (sunsetTab) sunsetTab.click();
+                          }}
                         >
                           <Sunrise className="h-4 w-4 mr-2" />
                           Gündoğumu/Batımı Tabloları
@@ -2559,7 +2931,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => window.open('https://www.nhc.noaa.gov/marine/', '_blank')}
+                          onClick={() => {
+                            const tabs = document.querySelector('[role="tablist"]');
+                            const weatherTab = tabs?.querySelector('[value="marine-weather"]') as HTMLButtonElement;
+                            if (weatherTab) weatherTab.click();
+                          }}
                         >
                           <Wind className="h-4 w-4 mr-2" />
                           Deniz Hava Durumu
