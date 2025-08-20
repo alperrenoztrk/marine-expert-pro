@@ -1,9 +1,9 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
-- **Tarih:** 2025-08-18
-- **Sürüm:** v2.5.2
-- **Durum:** ✅ Aktif - Lovable önizleme hatası için yeni sürüm etiketi (v2.5.2) oluşturuldu; `App.tsx` tam rota setiyle yeniden yayınlandı
+- **Tarih:** 2025-08-20
+- **Sürüm:** v2.5.3
+- **Durum:** ✅ Aktif - Stabilite mimarisi sadeleştirildi (Stability 2 kaldırıldı), Bonjean menüden çıkarıldı, Stabilite Asistanı (tam ekran + inline), Google Cloud Gemini ana akışa alındı
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -14,12 +14,11 @@
 ### 🚀 Lovable Yayını (2025-08-18)
 - v2.5.1 etiketi hatalı derlemeye işaret edebileceği için `v2.5.2` etiketi oluşturuldu ve ana dala bağlandı
 
-### 🎨 Arayüz ve Navigasyon (2025-08-16)
-- Hesaplamalar menüsü yalnızca ana başlıkları gösterecek şekilde sadeleştirildi
-- “Stabilite” linki her zaman stabilite seçenek menüsüne açılıyor
-- Ana sayfadaki global Stabilite Asistanı kaldırıldı (yalnızca ilgili stabilite sayfalarında görünür)
-- “Stabilite Kuralları” ve “Temel Düzey” sayfaları eklendi; sayısal kriterler genişletildi
-- IBC/IGC bölümüne ek notlar (sızıntı, buharlaşma, yeni kargo tipleri) eklendi
+### 🧭 Stabilite ve Navigasyon Güncellemeleri (2025-08-20)
+- Stability 2 sayfası kaldırıldı; `/stability` artık `StabilityMenu` açıyor
+- Bonjean, stabilite menüsünden ve hızlı bağlantılardan kaldırıldı (rota erişimi kapatıldı)
+- Stabilite Asistanı tam ekran ve inline tetikleme ile güncellendi; başlıklar sadeleştirildi
+- Asistan, Google Cloud Gemini (1.5 Flash) doğrudan çağrımıyla çalışıyor, Edge Function fallback korunuyor
 
 ---
 
