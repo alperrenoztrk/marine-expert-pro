@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-20
-- **Sürüm:** v2.5.3
-- **Durum:** ✅ Aktif - Stabilite mimarisi sadeleştirildi (Stability 2 kaldırıldı), Bonjean menüden çıkarıldı, Stabilite Asistanı (tam ekran + inline), Google Cloud Gemini ana akışa alındı
+- **Sürüm:** v2.5.4
+- **Durum:** ✅ Aktif - Seyir bölümüne Almanak sekmesi ve Navigation Menu → Almanak kısayolu eklendi. Navigation sayfası `?tab=` desteği aldı (derin bağlantı).
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -19,6 +19,11 @@
 - Bonjean, stabilite menüsünden ve hızlı bağlantılardan kaldırıldı (rota erişimi kapatıldı)
 - Stabilite Asistanı tam ekran ve inline tetikleme ile güncellendi; başlıklar sadeleştirildi
 - Asistan, Google Cloud Gemini (1.5 Flash) doğrudan çağrımıyla çalışıyor, Edge Function fallback korunuyor
+
+### 📚 Almanak Eklentisi (2025-08-20)
+- `NavigationCalculations` bileşeninde “Almanac” sekmesi zenginleştirildi (PDF bağlantıları, hızlı tablolar)
+- `Navigation` sayfası `?tab=` sorgu parametresinden başlangıç sekmesini alacak şekilde güncellendi
+- `NavigationMenu` içine “Almanak” hızlı bağlantısı eklendi
 
 ---
 
