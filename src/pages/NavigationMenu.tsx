@@ -6,11 +6,23 @@ import { ArrowLeft, Compass, Map, Clock, Ruler, Anchor, Book } from "lucide-reac
 export default function NavigationMenu(){
   const items = [
     { to: "/navigation", icon: <Compass className="h-4 w-4" />, label: "Seyir Ana Sayfa" },
-    { to: "/navigation", icon: <Map className="h-4 w-4" />, label: "Rota / Mesafe" },
-    { to: "/navigation", icon: <Clock className="h-4 w-4" />, label: "ETA / ETD" },
-    { to: "/navigation", icon: <Ruler className="h-4 w-4" />, label: "Paralel Seyir" },
-    { to: "/navigation", icon: <Anchor className="h-4 w-4" />, label: "Demirleme" },
-    { to: "/navigation?tab=almanac", icon: <Book className="h-4 w-4" />, label: "Almanak" },
+    { to: "/navigation?tab=route", icon: <Map className="h-4 w-4" />, label: "Rota" },
+    { to: "/navigation?tab=plane-sailing", icon: <Ruler className="h-4 w-4" />, label: "Plane Sailing" },
+    { to: "/navigation?tab=traverse", icon: <Compass className="h-4 w-4" />, label: "Traverse" },
+    { to: "/navigation?tab=route-plan", icon: <Map className="h-4 w-4" />, label: "Route Plan" },
+    { to: "/navigation?tab=real-time", icon: <Clock className="h-4 w-4" />, label: "Real Time" },
+    { to: "/navigation?tab=current-wind", icon: <Clock className="h-4 w-4" />, label: "Current Wind" },
+    { to: "/navigation?tab=current", icon: <Clock className="h-4 w-4" />, label: "Akıntı" },
+    { to: "/navigation?tab=compass", icon: <Compass className="h-4 w-4" />, label: "Pusula" },
+    { to: "/navigation?tab=radar", icon: <Compass className="h-4 w-4" />, label: "Radar" },
+    { to: "/navigation?tab=tide", icon: <Clock className="h-4 w-4" />, label: "Gelgit" },
+    { to: "/navigation?tab=weather", icon: <Clock className="h-4 w-4" />, label: "Hava" },
+    { to: "/navigation?tab=marine-weather", icon: <Clock className="h-4 w-4" />, label: "Deniz Hava" },
+    { to: "/navigation?tab=sunrise", icon: <Clock className="h-4 w-4" />, label: "Gündoğumu" },
+    { to: "/navigation?tab=port", icon: <Anchor className="h-4 w-4" />, label: "Liman" },
+    { to: "/navigation?tab=celestial", icon: <Book className="h-4 w-4" />, label: "Göksel" },
+    { to: "/navigation?tab=astronomical", icon: <Book className="h-4 w-4" />, label: "Astronomik" },
+    { to: "/navigation?tab=almanac", icon: <Book className="h-4 w-4" />, label: "Almanac" },
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
