@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
 import type { ShipGeometry } from "@/types/hydrostatic";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+// removed tooltip quick actions
 
 interface CargoData {
   // Ship particulars
@@ -570,32 +570,7 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
 
   return (
     <div className="space-y-6">
-      {/* KPI Summary Bar */}
-      <Card className="bg-muted/40">
-        <CardContent className="py-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="secondary" className="text-xs">Kargo</Badge>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full">
-              <div className="rounded bg-background p-3 text-center">
-                <div className="text-lg font-bold font-mono">{manifestSummary.total.toFixed(1)} t</div>
-                <div className="text-xs text-muted-foreground" data-translatable>Toplam Ağırlık</div>
-              </div>
-              <div className="rounded bg-background p-3 text-center">
-                <div className="text-lg font-bold font-mono">{manifestSummary.teu}</div>
-                <div className="text-xs text-muted-foreground">TEU</div>
-              </div>
-              <div className="rounded bg-background p-3 text-center">
-                <div className="text-lg font-bold font-mono">{manifestSummary.dgCount}</div>
-                <div className="text-xs text-muted-foreground">DG Kalem</div>
-              </div>
-              <div className="rounded bg-background p-3 text-center">
-                <div className="text-lg font-bold font-mono">${manifestSummary.costTotal.toFixed(0)}</div>
-                <div className="text-xs text-muted-foreground">Tahmini Maliyet</div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      
 
       {/* Back controls */}
       <div className="flex items-center gap-3">
