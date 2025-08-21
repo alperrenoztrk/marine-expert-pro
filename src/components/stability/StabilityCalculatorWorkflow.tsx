@@ -162,7 +162,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <Label htmlFor="lpp">LPP (m)</Label>
+            <Label htmlFor="lpp">LBP (m)</Label>
             <Input id="lpp" type="number" value={vessel?.Lpp || ''} onChange={e => vessel && setVessel({
             ...vessel,
             Lpp: parseFloat(e.target.value) || 0
