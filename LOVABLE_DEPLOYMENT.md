@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-20
-- **Sürüm:** v2.5.4
-- **Durum:** ✅ Aktif - Seyir bölümüne Almanak sekmesi ve Navigation Menu → Almanak kısayolu eklendi. Navigation sayfası `?tab=` desteği aldı (derin bağlantı).
+- **Sürüm:** v2.5.6
+- **Durum:** ✅ Aktif — Seyir bölümüne Almanak sekmesi ve menü kısayolu, Navigation `?tab=` derin bağlantı, Stabilite menüsü domain başlıklarıyla yeniden düzenlendi
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -24,6 +24,10 @@
 - `NavigationCalculations` bileşeninde “Almanac” sekmesi zenginleştirildi (PDF bağlantıları, hızlı tablolar)
 - `Navigation` sayfası `?tab=` sorgu parametresinden başlangıç sekmesini alacak şekilde güncellendi
 - `NavigationMenu` içine “Almanak” hızlı bağlantısı eklendi
+
+### 🗂️ Stabilite Menü Reorganizasyonu (2025-08-20)
+- `StabilityMenu` yeniden düzenlendi: Enine, Boyuna, Intact, Damage, Dinamik, Yükleme & Denge, Boyuna Dayanım, Hat Başlıkları, Doğrulama & Kalibrasyon başlıkları altında gruplandı
+- Var olan sayfalara mantıklı bağlantılarla yönlendirildi (ör. Dinamik → Analiz/GZ, Yükleme & Denge → Kargo/Balast)
 
 ---
 
