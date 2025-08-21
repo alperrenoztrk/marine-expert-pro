@@ -10,43 +10,31 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Ship, 
-  Upload, 
-  Calculator, 
-  BarChart3, 
-  CheckCircle, 
-  AlertTriangle, 
-  Download,
-  RefreshCw,
-  Eye,
-  Settings
-} from 'lucide-react';
+import { Ship, Upload, Calculator, BarChart3, CheckCircle, AlertTriangle, Download, RefreshCw, Eye, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { StabilityCalculationEngine } from '../../services/stabilityCalculationEngine';
 import { VesselData, LoadingCase } from '../../types/vessel';
-
 type WorkflowStep = 'vessel' | 'loading' | 'calculate' | 'curve' | 'criteria' | 'results';
-
 interface StabilityCalculatorWorkflowProps {
   className?: string;
 }
-
 export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowProps> = ({
   className = ''
 }) => {
-  const { toast } = useToast();
-  
+  const {
+    toast
+  } = useToast();
+
   // Workflow state
   const [currentStep, setCurrentStep] = useState<WorkflowStep>('vessel');
   const [completedSteps, setCompletedSteps] = useState<WorkflowStep[]>([]);
-  
+
   // Data states
   const [vessel, setVessel] = useState<VesselData | null>(null);
   const [loading, setLoading] = useState<LoadingCase | null>(null);
   const [results, setResults] = useState<any>(null);
   const [calculating, setCalculating] = useState(false);
-  
+
   // Example vessel data for quick start
   const [exampleVessel] = useState<VesselData>({
     name: 'MV Example',
@@ -69,58 +57,54 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         'T=6.0': [0.0, 0.17, 0.33, 0.48, 0.60, 0.68, 0.70]
       }
     },
-    tanks: [
-      {
-        id: 'FO1',
-        rho: 0.85,
-        capacity_m3: 200.0,
-        fsm_table: [[0, 0], [25, 0.6], [50, 1.0], [75, 0.7], [100, 0]],
-        lcg: 20.0,
-        tcg: 4.0,
-        vcg: 3.0
-      },
-      {
-        id: 'DB_Port',
-        rho: 1.025,
-        capacity_m3: 300.0,
-        fsm_table: [[0, 0], [25, 0.8], [50, 1.2], [75, 0.9], [100, 0]],
-        lcg: 80.0,
-        tcg: -5.0,
-        vcg: 2.0
-      }
-    ],
+    tanks: [{
+      id: 'FO1',
+      rho: 0.85,
+      capacity_m3: 200.0,
+      fsm_table: [[0, 0], [25, 0.6], [50, 1.0], [75, 0.7], [100, 0]],
+      lcg: 20.0,
+      tcg: 4.0,
+      vcg: 3.0
+    }, {
+      id: 'DB_Port',
+      rho: 1.025,
+      capacity_m3: 300.0,
+      fsm_table: [[0, 0], [25, 0.8], [50, 1.2], [75, 0.9], [100, 0]],
+      lcg: 80.0,
+      tcg: -5.0,
+      vcg: 2.0
+    }],
     downflooding_angle_deg: 52.0
   });
-
   const [exampleLoading] = useState<LoadingCase>({
     name: 'Example Loading',
-    items: [
-      {
-        name: 'Cargo Hold 1',
-        weight: 1200.0,
-        lcg: 40.0,
-        tcg: 0.0,
-        vcg: 4.0
-      },
-      {
-        name: 'Deck Cargo',
-        weight: 300.0,
-        lcg: 80.0,
-        tcg: 1.0,
-        vcg: 10.0
-      }
-    ],
-    tanks: [
-      { id: 'FO1', fill_percent: 60 },
-      { id: 'DB_Port', fill_percent: 30 }
-    ]
+    items: [{
+      name: 'Cargo Hold 1',
+      weight: 1200.0,
+      lcg: 40.0,
+      tcg: 0.0,
+      vcg: 4.0
+    }, {
+      name: 'Deck Cargo',
+      weight: 300.0,
+      lcg: 80.0,
+      tcg: 1.0,
+      vcg: 10.0
+    }],
+    tanks: [{
+      id: 'FO1',
+      fill_percent: 60
+    }, {
+      id: 'DB_Port',
+      fill_percent: 30
+    }]
   });
 
   // Step progress calculation
   const getProgress = () => {
     const steps: WorkflowStep[] = ['vessel', 'loading', 'calculate', 'curve', 'criteria', 'results'];
     const currentIndex = steps.indexOf(currentStep);
-    return ((currentIndex + 1) / steps.length) * 100;
+    return (currentIndex + 1) / steps.length * 100;
   };
 
   // Load example data
@@ -144,14 +128,12 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
       });
       return;
     }
-
     setCalculating(true);
     try {
       const calculationResults = StabilityCalculationEngine.performCompleteAnalysis(vessel, loading);
       setResults(calculationResults);
       setCompletedSteps(prev => [...new Set([...prev, 'calculate' as WorkflowStep, 'curve' as WorkflowStep, 'criteria' as WorkflowStep])]);
       setCurrentStep('results');
-      
       toast({
         title: 'Calculations Complete',
         description: 'Stability analysis has been completed successfully.',
@@ -170,8 +152,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
   };
 
   // Render different workflow steps
-  const renderVesselStep = () => (
-    <Card>
+  const renderVesselStep = () => <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Ship className="h-5 w-5" />
@@ -182,46 +163,34 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="lpp">LPP (m)</Label>
-            <Input
-              id="lpp"
-              type="number"
-              value={vessel?.Lpp || ''}
-              onChange={(e) => vessel && setVessel({...vessel, Lpp: parseFloat(e.target.value) || 0})}
-              placeholder="120.0"
-            />
+            <Input id="lpp" type="number" value={vessel?.Lpp || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            Lpp: parseFloat(e.target.value) || 0
+          })} placeholder="120.0" />
           </div>
           <div>
             <Label htmlFor="breadth">Breadth (m)</Label>
-            <Input
-              id="breadth"
-              type="number"
-              value={vessel?.B || ''}
-              onChange={(e) => vessel && setVessel({...vessel, B: parseFloat(e.target.value) || 0})}
-              placeholder="20.0"
-            />
+            <Input id="breadth" type="number" value={vessel?.B || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            B: parseFloat(e.target.value) || 0
+          })} placeholder="20.0" />
           </div>
-          <div>
+          <div className="bg-left-bottom ">
             <Label htmlFor="depth">Depth (m)</Label>
-            <Input
-              id="depth"
-              type="number"
-              value={vessel?.D || ''}
-              onChange={(e) => vessel && setVessel({...vessel, D: parseFloat(e.target.value) || 0})}
-              placeholder="12.0"
-            />
+            <Input id="depth" type="number" value={vessel?.D || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            D: parseFloat(e.target.value) || 0
+          })} placeholder="12.0" />
           </div>
           <div>
             <Label htmlFor="kg">Lightship KG (m)</Label>
-            <Input
-              id="kg"
-              type="number"
-              value={vessel?.lightship.KG || ''}
-              onChange={(e) => vessel && setVessel({
-                ...vessel, 
-                lightship: {...vessel.lightship, KG: parseFloat(e.target.value) || 0}
-              })}
-              placeholder="6.5"
-            />
+            <Input id="kg" type="number" value={vessel?.lightship.KG || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            lightship: {
+              ...vessel.lightship,
+              KG: parseFloat(e.target.value) || 0
+            }
+          })} placeholder="6.5" />
           </div>
         </div>
 
@@ -235,19 +204,14 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
           </p>
         </div>
 
-        {vessel && (
-          <div className="mt-4">
+        {vessel && <div className="mt-4">
             <Badge variant="outline" className="bg-green-50">
               ✓ Vessel data loaded: {vessel.name}
             </Badge>
-          </div>
-        )}
+          </div>}
       </CardContent>
-    </Card>
-  );
-
-  const renderLoadingStep = () => (
-    <Card>
+    </Card>;
+  const renderLoadingStep = () => <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Settings className="h-5 w-5" />
@@ -255,19 +219,16 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {loading && (
-          <>
+        {loading && <>
             <div>
               <h4 className="font-semibold mb-2">Loading Items</h4>
               <div className="space-y-2">
-                {loading.items.map((item, index) => (
-                  <div key={index} className="grid grid-cols-4 gap-2 p-2 bg-gray-50 rounded">
+                {loading.items.map((item, index) => <div key={index} className="grid grid-cols-4 gap-2 p-2 bg-gray-50 rounded">
                     <span className="font-medium">{item.name}</span>
                     <span>{item.weight} t</span>
                     <span>LCG: {item.lcg}m</span>
                     <span>VCG: {item.vcg}m</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
 
@@ -276,12 +237,10 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
             <div>
               <h4 className="font-semibold mb-2">Tank Fillings</h4>
               <div className="space-y-2">
-                {loading.tanks.map((tank, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-blue-50 rounded">
+                {loading.tanks.map((tank, index) => <div key={index} className="flex justify-between items-center p-2 bg-blue-50 rounded">
                     <span className="font-medium">{tank.id}</span>
                     <Badge variant="secondary">{tank.fill_percent}% full</Badge>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
 
@@ -290,14 +249,10 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
                 ✓ Loading condition configured
               </Badge>
             </div>
-          </>
-        )}
+          </>}
       </CardContent>
-    </Card>
-  );
-
-  const renderCalculateStep = () => (
-    <Card>
+    </Card>;
+  const renderCalculateStep = () => <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calculator className="h-5 w-5" />
@@ -305,27 +260,17 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button 
-          onClick={performCalculations} 
-          disabled={!vessel || !loading || calculating}
-          className="w-full"
-          size="lg"
-        >
-          {calculating ? (
-            <>
+        <Button onClick={performCalculations} disabled={!vessel || !loading || calculating} className="w-full" size="lg">
+          {calculating ? <>
               <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
               Calculating...
-            </>
-          ) : (
-            <>
+            </> : <>
               <Calculator className="h-4 w-4 mr-2" />
               Perform Complete Analysis
-            </>
-          )}
+            </>}
         </Button>
 
-        {results && (
-          <div className="space-y-3 mt-4">
+        {results && <div className="space-y-3 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-blue-50 p-3 rounded">
                 <div className="text-sm text-blue-600">Total Displacement</div>
@@ -337,26 +282,18 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
               </div>
             </div>
 
-            {results.warnings.length > 0 && (
-              <Alert className="border-orange-200 bg-orange-50">
+            {results.warnings.length > 0 && <Alert className="border-orange-200 bg-orange-50">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
                   <div className="space-y-1">
-                    {results.warnings.map((warning: string, i: number) => (
-                      <div key={i} className="text-sm">{warning}</div>
-                    ))}
+                    {results.warnings.map((warning: string, i: number) => <div key={i} className="text-sm">{warning}</div>)}
                   </div>
                 </AlertDescription>
-              </Alert>
-            )}
-          </div>
-        )}
+              </Alert>}
+          </div>}
       </CardContent>
-    </Card>
-  );
-
-  const renderResultsStep = () => (
-    <Card>
+    </Card>;
+  const renderResultsStep = () => <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BarChart3 className="h-5 w-5" />
@@ -364,8 +301,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {results && (
-          <Tabs defaultValue="summary">
+        {results && <Tabs defaultValue="summary">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="summary">Summary</TabsTrigger>
               <TabsTrigger value="criteria">Criteria</TabsTrigger>
@@ -395,8 +331,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
 
             <TabsContent value="criteria" className="space-y-4">
               <div className="space-y-2">
-                {results.criteriaResults.compliance.map((criterion: any, index: number) => (
-                  <div key={index} className="flex justify-between items-center p-3 border rounded">
+                {results.criteriaResults.compliance.map((criterion: any, index: number) => <div key={index} className="flex justify-between items-center p-3 border rounded">
                     <div>
                       <div className="font-medium">{criterion.name}</div>
                       <div className="text-sm text-muted-foreground">
@@ -404,14 +339,9 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
                       </div>
                     </div>
                     <Badge variant={criterion.passed ? 'default' : 'destructive'}>
-                      {criterion.passed ? (
-                        <><CheckCircle className="h-3 w-3 mr-1" />PASS</>
-                      ) : (
-                        <><AlertTriangle className="h-3 w-3 mr-1" />FAIL</>
-                      )}
+                      {criterion.passed ? <><CheckCircle className="h-3 w-3 mr-1" />PASS</> : <><AlertTriangle className="h-3 w-3 mr-1" />FAIL</>}
                     </Badge>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </TabsContent>
 
@@ -424,8 +354,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
                 </div>
               </div>
             </TabsContent>
-          </Tabs>
-        )}
+          </Tabs>}
 
         <Separator />
 
@@ -440,11 +369,8 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
           </Button>
         </div>
       </CardContent>
-    </Card>
-  );
-
-  return (
-    <div className={`space-y-6 ${className}`}>
+    </Card>;
+  return <div className={`space-y-6 ${className}`}>
       {/* Progress Header */}
       <Card>
         <CardHeader className="pb-2">
@@ -456,18 +382,10 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         </CardHeader>
         <CardContent className="pt-2">
           <div className="flex flex-wrap gap-2">
-            {(['vessel', 'loading', 'calculate', 'curve', 'criteria', 'results'] as WorkflowStep[]).map((step) => (
-              <Button
-                key={step}
-                variant={currentStep === step ? 'default' : completedSteps.includes(step) ? 'secondary' : 'outline'}
-                size="sm"
-                onClick={() => setCurrentStep(step)}
-                className="capitalize"
-              >
+            {(['vessel', 'loading', 'calculate', 'curve', 'criteria', 'results'] as WorkflowStep[]).map(step => <Button key={step} variant={currentStep === step ? 'default' : completedSteps.includes(step) ? 'secondary' : 'outline'} size="sm" onClick={() => setCurrentStep(step)} className="capitalize">
                 {completedSteps.includes(step) && <CheckCircle className="h-3 w-3 mr-1" />}
                 {step.replace(/([A-Z])/g, ' $1')}
-              </Button>
-            ))}
+              </Button>)}
           </div>
         </CardContent>
       </Card>
@@ -477,8 +395,6 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
       {currentStep === 'loading' && renderLoadingStep()}
       {currentStep === 'calculate' && renderCalculateStep()}
       {(currentStep === 'curve' || currentStep === 'criteria' || currentStep === 'results') && renderResultsStep()}
-    </div>
-  );
+    </div>;
 };
-
 export default StabilityCalculatorWorkflow;
