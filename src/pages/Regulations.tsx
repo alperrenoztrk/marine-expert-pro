@@ -409,11 +409,11 @@ const Regulations = () => {
           </CardContent>
         </Card>
 
-                <Tabs defaultValue="chapters" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="chapters">SOLAS 2020</TabsTrigger>
-            <TabsTrigger value="uscg">COLREG</TabsTrigger>
-            <TabsTrigger value="amendments">2024 Updates</TabsTrigger>
+        <Tabs defaultValue="chapters" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 h-auto p-1">
+            <TabsTrigger value="chapters" className="data-[state=active]:bg-background data-[state=active]:text-foreground">SOLAS 2020</TabsTrigger>
+            <TabsTrigger value="uscg" className="data-[state=active]:bg-background data-[state=active]:text-foreground">COLREG</TabsTrigger>
+            <TabsTrigger value="amendments" className="data-[state=active]:bg-background data-[state=active]:text-foreground">2024 Updates</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
