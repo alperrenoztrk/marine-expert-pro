@@ -7,13 +7,17 @@ export default function StabilityCalculatorPage() {
   const navigate = useNavigate();
   
   const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate('/stability');
+    navigate('/stability');
   };
 
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="gap-2 hover:bg-primary hover:text-primary-foreground transition-colors mb-4" 
+        onClick={handleBack}
+      >
         <ArrowLeft className="h-4 w-4" />
         Geri Dön
       </Button>
