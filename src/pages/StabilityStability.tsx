@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -5,7 +6,6 @@ import { HydrostaticsStabilityCalculations } from "@/components/calculations/Hyd
 import { BasicStabilityCalculations } from "@/components/calculations/BasicStabilityCalculations";
 import { AdvancedStabilityWizard } from "@/components/calculations/AdvancedStabilityWizard";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
 export default function StabilityStabilityPage(){
