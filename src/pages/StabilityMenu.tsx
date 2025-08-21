@@ -1,10 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Waves, Ship, BarChart3, AlertTriangle, ArrowLeft, Brain, BookOpen, Activity, Package, Droplets, Building, Route } from "lucide-react";
+import { Shield, Waves, Ship, BarChart3, AlertTriangle, ArrowLeft, Brain, BookOpen, Activity, Package, Droplets, Building, Route, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
   const groups = [
+    // Kapsamlı Hesaplayıcı (Yeni)
+    {
+      title: 'Kapsamlı Stabilite Analizi',
+      items: [
+        { to: "/stability/calculator", icon: <Calculator className="h-4 w-4" />, label: "Tam Stabilite Hesaplayıcısı", featured: true }
+      ]
+    },
     // Hidrostatik (korunuyor)
     {
       title: 'Hidrostatik',
@@ -95,15 +102,32 @@ export default function StabilityMenu() {
           <CardTitle data-no-translate>Stabilite Hesaplamaları</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2 py-1">
-            {items.map((it)=> (
-              <Link key={it.to} to={it.to}>
-                <Button variant="outline" className="justify-start gap-2 whitespace-nowrap" data-no-translate>
-                  {it.icon}
-                  {it.label}
+          <div className="space-y-4">
+            {/* Featured Calculator */}
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 p-4 rounded-lg border-2 border-blue-200">
+              <h3 className="font-semibold text-blue-800 mb-2">🚀 Yeni: Kapsamlı Stabilite Hesaplayıcısı</h3>
+              <p className="text-sm text-blue-600 mb-3">
+                Gemi verisi, yükleme durumu, IMO kriterleri ve GZ eğrisi analizi - tek platformda!
+              </p>
+              <Link to="/stability/calculator">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Calculator className="h-4 w-4 mr-2" />
+                  Başlat
                 </Button>
               </Link>
-            ))}
+            </div>
+            
+            {/* All Items */}
+            <div className="flex flex-wrap gap-2 py-1">
+              {items.map((it)=> (
+                <Link key={it.to} to={it.to}>
+                  <Button variant="outline" className="justify-start gap-2 whitespace-nowrap" data-no-translate>
+                    {it.icon}
+                    {it.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>

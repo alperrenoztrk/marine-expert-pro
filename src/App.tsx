@@ -61,6 +61,7 @@ import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityRules from "./pages/StabilityRules";
 import StabilityRulesBasic from "./pages/StabilityRulesBasic";
+import StabilityCalculatorPage from "./pages/StabilityCalculatorPage";
 import EconomicsMenu from "./pages/EconomicsMenu";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
 import DraftSurveyCargo from "./pages/DraftSurveyCargo";
@@ -169,6 +170,7 @@ const App = () => {
                   <Route path="/stability/trim" element={<StabilityTrimPage />} />
                   <Route path="/stability/list" element={<StabilityListPage />} />
                   <Route path="/stability/loll" element={<StabilityLollPage />} />
+                  <Route path="/stability/calculator" element={<StabilityCalculatorPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/navigation-menu" element={<NavigationMenu />} />
