@@ -5,6 +5,8 @@ export interface VesselData {
   Lpp: number; // Length Between Perpendiculars
   B: number;   // Breadth
   D: number;   // Depth
+  DWT?: number; // Deadweight tonnage (optional)
+  maxDisplacement?: number; // Maximum displacement (optional)
   lightship: LightshipData;
   hydrostatics: HydrostaticTables;
   tanks: TankGeometry[];

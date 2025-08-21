@@ -41,6 +41,8 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
     Lpp: 120.0,
     B: 20.0,
     D: 12.0,
+    DWT: 8000.0,
+    maxDisplacement: 11500.0,
     lightship: {
       weight: 3500.0,
       KG: 6.5,
@@ -160,7 +162,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="lpp">LBP (m)</Label>
             <Input id="lpp" type="number" value={vessel?.Lpp || ''} onChange={e => vessel && setVessel({
@@ -175,12 +177,25 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
             B: parseFloat(e.target.value) || 0
           })} placeholder="20.0" />
           </div>
-          <div className="bg-left-bottom ">
-            <Label htmlFor="depth">DEPTH </Label>
+          <div>
+            <Label htmlFor="depth">DEPTH (m)</Label>
             <Input id="depth" type="number" value={vessel?.D || ''} onChange={e => vessel && setVessel({
             ...vessel,
             D: parseFloat(e.target.value) || 0
           })} placeholder="12.0" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <Label htmlFor="lightship-weight">Lightship Weight (t)</Label>
+            <Input id="lightship-weight" type="number" value={vessel?.lightship.weight || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            lightship: {
+              ...vessel.lightship,
+              weight: parseFloat(e.target.value) || 0
+            }
+          })} placeholder="3500" />
           </div>
           <div>
             <Label htmlFor="kg">Lightship KG (m)</Label>
@@ -191,6 +206,50 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
               KG: parseFloat(e.target.value) || 0
             }
           })} placeholder="6.5" />
+          </div>
+          <div>
+            <Label htmlFor="lcg">Lightship LCG (m)</Label>
+            <Input id="lcg" type="number" value={vessel?.lightship.LCG || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            lightship: {
+              ...vessel.lightship,
+              LCG: parseFloat(e.target.value) || 0
+            }
+          })} placeholder="60.0" />
+          </div>
+          <div>
+            <Label htmlFor="tcg">Lightship TCG (m)</Label>
+            <Input id="tcg" type="number" value={vessel?.lightship.TCG || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            lightship: {
+              ...vessel.lightship,
+              TCG: parseFloat(e.target.value) || 0
+            }
+          })} placeholder="0.0" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div>
+            <Label htmlFor="dwt">Deadweight (DWT) (t)</Label>
+            <Input id="dwt" type="number" value={vessel?.DWT || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            DWT: parseFloat(e.target.value) || 0
+          })} placeholder="8000" />
+          </div>
+          <div>
+            <Label htmlFor="max-displacement">Max Displacement (t)</Label>
+            <Input id="max-displacement" type="number" value={vessel?.maxDisplacement || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            maxDisplacement: parseFloat(e.target.value) || 0
+          })} placeholder="11500" />
+          </div>
+          <div>
+            <Label htmlFor="downflooding">Downflooding Angle (°)</Label>
+            <Input id="downflooding" type="number" value={vessel?.downflooding_angle_deg || ''} onChange={e => vessel && setVessel({
+            ...vessel,
+            downflooding_angle_deg: parseFloat(e.target.value) || 0
+          })} placeholder="52.0" />
           </div>
         </div>
 
