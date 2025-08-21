@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor, Brain } from "lucide-react";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Separator } from "@/components/ui/separator";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import { useToast } from "@/hooks/use-toast";
@@ -853,6 +854,39 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                 </div>
               </div>
 
+              {/* Free Surface Correction ve Düzeltilmiş GM */}
+              <div className="bg-amber-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Anchor className="h-4 w-4" />
+                  Free Surface Correction (FSC)
+                </h4>
+                <div className="overflow-x-auto text-sm">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left opacity-70">
+                        <th className="py-1 pr-4">Tank</th>
+                        <th className="py-1 pr-4">FSM (proxy)</th>
+                        <th className="py-1 pr-4">Düzeltme (m)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analysis.freeSurfaceCorrections.map((f,i)=> (
+                        <tr key={i} className="border-t border-amber-200/40">
+                          <td className="py-1 pr-4">{f.tankName}</td>
+                          <td className="py-1 pr-4">{(f.freeSurfaceMoment ?? 0).toFixed(4)}</td>
+                          <td className="py-1 pr-4">{(f.correction ?? 0).toFixed(4)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+                  <div className="flex justify-between"><span>Toplam FSC</span><span className="font-mono">{HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections).toFixed(4)} m</span></div>
+                  <div className="flex justify-between"><span>Başlangıç GM</span><span className="font-mono">{analysis.stability.gm.toFixed(3)} m</span></div>
+                  <div className="flex justify-between"><span>Düzeltilmiş GM</span><span className="font-mono">{HydrostaticCalculations.calculateCorrectedGM(analysis.stability.gm, HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections)).toFixed(3)} m</span></div>
+                </div>
+              </div>
+
               {/* Dinamik Stabilite ve GZ Eğrisi */}
               <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Dinamik Stabilite ve GZ Eğrisi</h4>
@@ -869,6 +903,31 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     <span>Stabilite Kalitesi:</span>
                     <span className="font-medium">{analysis.dynamicStability.stabilityQuality.toFixed(3)}</span>
                   </div>
+                </div>
+              </div>
+
+              {/* GZ Eğrisi Grafiği ve Metrix */}
+              <div className="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">GZ Eğrisi ve Sağlama Momenti</h4>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer>
+                    <LineChart data={analysis.dynamicStability.gzCurve} margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="angle" label={{ value: '°', position: 'insideBottomRight', offset: -4 }} />
+                      <YAxis yAxisId="left" label={{ value: 'GZ (m)', angle: -90, position: 'insideLeft' }} />
+                      <YAxis yAxisId="right" orientation="right" label={{ value: 'RM (kN·m)', angle: -90, position: 'insideRight' }} />
+                      <Tooltip />
+                      <Legend />
+                      <Line yAxisId="left" type="monotone" dataKey="gz" name="GZ (m)" stroke="#10b981" dot={false} />
+                      <Line yAxisId="right" type="monotone" dataKey="rightingMoment" name="Sağlama Momenti (kN·m)" stroke="#6366f1" dot={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-sm">
+                  <div className="flex justify-between"><span>Max GZ</span><span className="font-mono">{analysis.stability.maxGz.toFixed(3)} m</span></div>
+                  <div className="flex justify-between"><span>Max GZ Açısı</span><span className="font-mono">{analysis.stability.maxGzAngle.toFixed(1)}°</span></div>
+                  <div className="flex justify-between"><span>Area 0-30°</span><span className="font-mono">{HydrostaticCalculations.calculateAreaUnderGZCurveAdaptive(analysis.stability.gz, analysis.stability.angles, 0, 30).toFixed(3)} mrad</span></div>
+                  <div className="flex justify-between"><span>Area 0-40°</span><span className="font-mono">{HydrostaticCalculations.calculateAreaUnderGZCurveAdaptive(analysis.stability.gz, analysis.stability.angles, 0, 40).toFixed(3)} mrad</span></div>
                 </div>
               </div>
 
