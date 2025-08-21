@@ -176,7 +176,7 @@ export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowPr
           })} placeholder="20.0" />
           </div>
           <div className="bg-left-bottom ">
-            <Label htmlFor="depth">Lightship </Label>
+            <Label htmlFor="depth">DEPTH </Label>
             <Input id="depth" type="number" value={vessel?.D || ''} onChange={e => vessel && setVessel({
             ...vessel,
             D: parseFloat(e.target.value) || 0
