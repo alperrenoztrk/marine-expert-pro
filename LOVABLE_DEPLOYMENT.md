@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-20
-- **Sürüm:** v2.5.6
-- **Durum:** ✅ Aktif — Seyir bölümüne Almanak sekmesi ve menü kısayolu, Navigation `?tab=` derin bağlantı, Stabilite menüsü domain başlıklarıyla yeniden düzenlendi
+- **Sürüm:** v2.5.8
+- **Durum:** ✅ Aktif — Stabilite’de Temel/Gelişmiş modları eklendi; Gelişmiş profil sihirbazı (tek seferlik) ve localStorage kalıcılık; Kargo üst KPI şeridi kaldırıldı
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -26,6 +26,12 @@
 - `NavigationMenu` içine “Almanak” hızlı bağlantısı eklendi
 
 ### 🗂️ Stabilite Menü Reorganizasyonu (2025-08-20)
+- ### ⚓ Stabilite Modları (2025-08-20)
+- Temel: GM, KM, BM, TPC, draft değişimi, LCG hızlı hesaplamaları
+- Gelişmiş: Gemi profili sihirbazı (L,B,D,T,Cb,Cwp,tanklar), tek seferlik veri, gelişmiş hesaplamalarda kullanım
+
+- ### 📦 Kargo Temizliği (2025-08-20)
+- Üst KPI barı (Kargo/Toplam Ağırlık/TEU/DG/Tahmini Maliyet) kaldırıldı
 - `StabilityMenu` yeniden düzenlendi: Enine, Boyuna, Intact, Damage, Dinamik, Yükleme & Denge, Boyuna Dayanım, Hat Başlıkları, Doğrulama & Kalibrasyon başlıkları altında gruplandı
 - Var olan sayfalara mantıklı bağlantılarla yönlendirildi (ör. Dinamik → Analiz/GZ, Yükleme & Denge → Kargo/Balast)
 
