@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Compass, Map, Clock, Ruler, Anchor } from "lucide-react";
+import { ArrowLeft, Compass, Map, Clock, Ruler, Anchor, Book } from "lucide-react";
 
 export default function NavigationMenu(){
   const items = [
@@ -10,6 +10,7 @@ export default function NavigationMenu(){
     { to: "/navigation", icon: <Clock className="h-4 w-4" />, label: "ETA / ETD" },
     { to: "/navigation", icon: <Ruler className="h-4 w-4" />, label: "Paralel Seyir" },
     { to: "/navigation", icon: <Anchor className="h-4 w-4" />, label: "Demirleme" },
+    { to: "/navigation?tab=almanac", icon: <Book className="h-4 w-4" />, label: "Almanak" },
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
