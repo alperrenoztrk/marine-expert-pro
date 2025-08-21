@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-20
-- **Sürüm:** v2.5.8
-- **Durum:** ✅ Aktif — Stabilite’de Temel/Gelişmiş modları eklendi; Gelişmiş profil sihirbazı (tek seferlik) ve localStorage kalıcılık; Kargo üst KPI şeridi kaldırıldı
+- **Sürüm:** v2.5.9
+- **Durum:** ✅ Aktif — Stabilite seçim ekranı ve gelişmiş sihirbazda iyileştirmeler; dağıtım tetikleme
 
 ## 🔧 Son Yapılan Değişiklikler
 
