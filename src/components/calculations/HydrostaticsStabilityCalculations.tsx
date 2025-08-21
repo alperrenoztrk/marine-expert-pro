@@ -16,8 +16,10 @@ import {
   CompartmentAnalysis,
   StabilityAnalysis,
   DraftSurvey,
-  BonjeanSet
+  BonjeanSet,
+  CrossCurves
 } from "../../types/hydrostatic";
+
 
 type StabilitySection = 'hydrostatic' | 'stability' | 'trimlist' | 'analysis' | 'bonjean' | 'draft' | 'damage';
 type StabilityCalc = 'displacement' | 'draft' | 'tpc' | 'gm' | 'gz' | 'trim' | 'list' | 'loll';
@@ -79,6 +81,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   const [bonjeanText, setBonjeanText] = useState<string>("");
   const [bonjeanSet, setBonjeanSet] = useState<BonjeanSet | undefined>(undefined);
 
+  // Cross curves (KN) entegrasyonu
+  const [crossCurvesText, setCrossCurvesText] = useState<string>("");
+  const [crossCurvesSet, setCrossCurvesSet] = useState<CrossCurves | undefined>(undefined);
+
   // Draft survey
   const [draftSurveyInputs, setDraftSurveyInputs] = useState<{ forwardDraft: string; midshipDraft: string; aftDraft: string }>({ forwardDraft: "", midshipDraft: "", aftDraft: "" });
   const [draftSurveyResult, setDraftSurveyResult] = useState<DraftSurvey | null>(null);
@@ -127,10 +133,17 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   });
   const [lollResult, setLollResult] = useState<number | null>(null);
 
+  // Weather criterion girdileri ve sonucu
+  const [weatherInputs, setWeatherInputs] = useState<{ pressure: string; area: string; lever: string }>({ pressure: "", area: "", lever: "" });
+  const [weatherResult, setWeatherResult] = useState<{ ok: boolean; phiEq: number } | null>(null);
+
   // Perform comprehensive analysis when inputs change
   useEffect(() => {
     if (geometry && kg && weightDistribution && tanks) {
       try {
+        const options: { crossCurves?: CrossCurves; bonjean?: BonjeanSet } = {};
+        if (crossCurvesSet) options.crossCurves = crossCurvesSet;
+        if (bonjeanSet) options.bonjean = bonjeanSet;
         const result = HydrostaticCalculations.performStabilityAnalysis(
           geometry,
           kg,
@@ -139,14 +152,14 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           floodedCompartments,
           grainShiftMoment,
           grainHeelAngle,
-          bonjeanSet ? { bonjean: bonjeanSet } : undefined
+          (crossCurvesSet || bonjeanSet) ? options : undefined
         );
         setAnalysis(result);
       } catch (error) {
         console.error('Analysis error:', error);
       }
     }
-  }, [geometry, kg, weightDistribution, tanks, floodedCompartments, grainShiftMoment, grainHeelAngle]);
+  }, [geometry, kg, weightDistribution, tanks, floodedCompartments, grainShiftMoment, grainHeelAngle, crossCurvesSet, bonjeanSet]);
 
   // Calculation functions
   const calculateDisplacement = () => {
@@ -856,6 +869,83 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     <span>Stabilite Kalitesi:</span>
                     <span className="font-medium">{analysis.dynamicStability.stabilityQuality.toFixed(3)}</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Cross Curves (KN) ve Weather Criterion */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3">Cross Curves (KN) CSV</h4>
+                  <p className="text-xs mb-2 opacity-80">Format: angle,kn satırları</p>
+                  <textarea
+                    className="w-full h-32 p-2 rounded bg-white dark:bg-gray-700"
+                    placeholder={"0,0\n10,0.1\n20,0.3\n30,0.55"}
+                    value={crossCurvesText}
+                    onChange={(e)=>setCrossCurvesText(e.target.value)}
+                  />
+                  <div className="flex gap-2 mt-2">
+                    <Button variant="default" onClick={() => {
+                      try {
+                        const parsed = HydrostaticCalculations.parseCrossCurvesCSV(crossCurvesText);
+                        if (parsed.angles?.length > 0 && parsed.kn?.length === parsed.angles.length) {
+                          setCrossCurvesSet(parsed);
+                          toast({ title: 'KN yüklendi', description: `${parsed.angles.length} açı okundu` });
+                        } else {
+                          toast({ title: 'Hata', description: 'Geçersiz KN CSV', variant: 'destructive' });
+                        }
+                      } catch (e) {
+                        toast({ title: 'Hata', description: 'CSV parse edilemedi', variant: 'destructive' });
+                      }
+                    }}>Uygula</Button>
+                    <Button variant="outline" onClick={() => { setCrossCurvesText(''); setCrossCurvesSet(undefined); }}>Temizle</Button>
+                  </div>
+                </div>
+
+                <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3">Weather Criterion (Basitleştirilmiş)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-end">
+                    <div>
+                      <Label>Baskı P (N/m²)</Label>
+                      <Input type="number" value={weatherInputs.pressure} onChange={(e)=> setWeatherInputs(p=>({...p, pressure:e.target.value}))} />
+                    </div>
+                    <div>
+                      <Label>Alan A (m²)</Label>
+                      <Input type="number" value={weatherInputs.area} onChange={(e)=> setWeatherInputs(p=>({...p, area:e.target.value}))} />
+                    </div>
+                    <div>
+                      <Label>Kaldıraç h (m)</Label>
+                      <Input type="number" value={weatherInputs.lever} onChange={(e)=> setWeatherInputs(p=>({...p, lever:e.target.value}))} />
+                    </div>
+                    <Button className="w-full mt-2 md:mt-0" onClick={() => {
+                      const pressure = parseFloat(weatherInputs.pressure);
+                      const area = parseFloat(weatherInputs.area);
+                      const lever = parseFloat(weatherInputs.lever);
+                      if (analysis && ![pressure, area, lever].some(isNaN)) {
+                        const res = HydrostaticCalculations.checkWeatherCriterion(analysis.stability, {
+                          pressureNPerM2: pressure,
+                          areaM2: area,
+                          leverM: lever,
+                          displacementT: analysis.hydrostatic.displacement
+                        });
+                        setWeatherResult(res);
+                        toast({ title: 'Weather Criterion', description: res.ok ? 'Sağlandı' : 'Sağlanmadı' });
+                      } else {
+                        toast({ title: 'Hata', description: 'Geçerli değerler girin', variant: 'destructive' });
+                      }
+                    }}>Değerlendir</Button>
+                  </div>
+                  {weatherResult && (
+                    <div className="mt-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Sonuç:</span>
+                        <span className={`font-medium ${weatherResult.ok ? 'text-green-600' : 'text-red-600'}`}>{weatherResult.ok ? 'Sağlandı' : 'Sağlanmadı'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Denge Açısı φ_eq:</span>
+                        <span className="font-medium">{weatherResult.phiEq.toFixed(1)}°</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
