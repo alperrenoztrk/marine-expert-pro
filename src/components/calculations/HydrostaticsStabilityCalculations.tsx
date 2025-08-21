@@ -20,6 +20,7 @@ import {
   BonjeanSet,
   CrossCurves
 } from "../../types/hydrostatic";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 
 type StabilitySection = 'hydrostatic' | 'stability' | 'trimlist' | 'analysis' | 'bonjean' | 'draft' | 'damage';
