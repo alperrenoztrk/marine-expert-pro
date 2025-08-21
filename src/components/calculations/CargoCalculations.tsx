@@ -178,7 +178,6 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
 
   // Tier permissible loads (t) simple inputs
   const [tierPermissible, setTierPermissible] = useState<{[tier:number]: number}>({1:90,2:80,3:70,4:60});
-  const [showAdvanced, setShowAdvanced] = useState<boolean>(true);
 
   const manifestSummary = (()=>{
     const total = containers.reduce((s,c)=>s+c.weight,0);
@@ -553,54 +552,6 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
     }
   };
 
-  // Simple greedy stowage optimizer (balance bay/row loads, honor tier limits)
-  const optimizeStowage = (bayCount: number, rowCount: number, tierCount: number) => {
-    if (bayCount <= 0 || rowCount <= 0 || tierCount <= 0) return;
-    const placed: ContainerItem[] = [];
-    const bays = Array.from({ length: bayCount }, () => ({ weight: 0, tiers: Array.from({ length: tierCount }, () => new Array<number>(rowCount).fill(0)) }));
-    const sorted = [...containers].sort((a,b)=> b.weight - a.weight); // heavy first
-    // Reefer preference: prefer last rows (near imaginary reefer sockets)
-    const reeferPreferredRows = [rowCount, Math.max(1,rowCount-1)];
-    const dgClassesByBay = new Map<number, Set<string>>();
-    const incompatible = new Set([ '3|5.1','2|3','2|5.1','4.1|5.2','4.3|5.1','6.1|3','8|5.1' ]);
-    for (const c of sorted) {
-      let assigned = false;
-      // iterate bays by ascending weight
-      const bayOrder = Array.from({length: bayCount}, (_,i)=>i).sort((i,j)=> bays[i].weight - bays[j].weight);
-      for (const b of bayOrder) {
-        // DG conflict check
-        if (c.imdgClass) {
-          const set = dgClassesByBay.get(b+1) || new Set<string>();
-          let conflict = false;
-          set.forEach(cls => { const key = [cls, c.imdgClass].sort().join('|'); if (incompatible.has(key)) conflict = true; });
-          if (conflict) continue;
-        }
-        for (let t=0; t<tierCount && !assigned; t++) {
-          // heavy-bottom: prefer lower tiers first
-          const rowOrder = c.reefer ? reeferPreferredRows.concat(Array.from({length:rowCount},(_,i)=>i+1).filter(r=>!reeferPreferredRows.includes(r)))
-                                    : Array.from({length:rowCount},(_,i)=>i+1);
-          for (const r of rowOrder) {
-            const rr = r-1;
-            if (bays[b].tiers[t][rr] + c.weight > (tierPermissible[t+1] ?? 90)) continue;
-            const newC: ContainerItem = { ...c, bay: b+1, row: r, tier: t+1 };
-            bays[b].weight += c.weight;
-            bays[b].tiers[t][rr] += c.weight;
-            placed.push(newC);
-            if (c.imdgClass) {
-              const set = dgClassesByBay.get(b+1) || new Set<string>(); set.add(c.imdgClass); dgClassesByBay.set(b+1,set);
-            }
-            assigned = true;
-            break;
-          }
-        }
-        if (assigned) break;
-      }
-      if (!assigned) placed.push(c); // fallback keep as-is
-    }
-    setContainers(placed);
-    toast({ title: 'Yükleme Optimizasyonu', description: 'Kısıtlar dikkate alınarak yerleşim güncellendi.' });
-  };
-
   const chainMSLCapacity = (): number => {
     const minMSL = Math.min(lashingChain.rod, lashingChain.turnbuckle, lashingChain.padeye, lashingChain.socket);
     return minMSL;
@@ -661,31 +612,6 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
             </Button>
           </Link>
         )}
-        {/* Quick actions */}
-        <div className="ml-auto flex items-center gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="sm" variant="outline" onClick={()=> optimizeStowage(8,8,4)}>
-                  <Calculator className="h-4 w-4 mr-1" />Optimize
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent><div className="text-xs">Kısıtlar ile yerleşimi dengeler</div></TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <Button size="sm" variant="outline" onClick={()=>{
-            const sc = stowageChecks();
-            const desc = [
-              sc.over.length? `${sc.over.length} bay limit üstü`:'Bay limitleri uygun',
-              sc.tierIssues.length? `${sc.tierIssues.length} tier uyarısı`: 'Tier uygun',
-              sc.heavyTop.length? `${sc.heavyTop.length} heavy-top`:'Ağırlık dağılımı uygun'
-            ].join(' • ');
-            toast({ title: 'Stowage Kontrol', description: desc });
-          }}>Kontrol</Button>
-          <Button size="sm" variant={showAdvanced? 'secondary':'outline'} onClick={()=> setShowAdvanced(!showAdvanced)}>
-            {showAdvanced? 'Gelişmiş: Açık':'Gelişmiş: Kapalı'}
-          </Button>
-        </div>
       </div>
 
       <Card>
@@ -1044,11 +970,6 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
                       <li><strong>Lashing rods:</strong> Turnbuckle connections</li>
                     </ul>
                   </div>
-
-                  {/* Toggle advanced */}
-                  {!showAdvanced ? (
-                    <div className="text-xs text-muted-foreground">Gelişmiş ayarlar gizli</div>
-                  ) : null}
                 </CardContent>
               </Card>
 
