@@ -433,7 +433,7 @@ const Regulations = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => window.open('https://share.google/c37tG0ULCekKFUn07', '_blank')}
+                      onClick={() => window.open('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf', '_blank')}
                       className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 cyberpunk:bg-yellow-600 cyberpunk:text-black cyberpunk:hover:bg-yellow-700"
                     >
                       <Download className="h-4 w-4" />
@@ -453,11 +453,11 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://share.google/c37tG0ULCekKFUn07', '_blank')}
+                        onClick={() => window.open('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf', '_blank')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        SOLAS 2020 Edition (Google Drive)
+                        SOLAS 2020 Edition (PDF)
                       </Button>
                       <Button
                         variant="outline"
@@ -570,11 +570,11 @@ const Regulations = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => window.open('/USCG-Navigation-Rules.pdf', '_blank')}
+                      onClick={() => window.open('/COLREG-Navigation-Rules.pdf')}
                       className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
                     >
                       <Download className="h-4 w-4" />
-                      Download COLREG PDF
+                      Open COLREG PDF
                     </Button>
                   </div>
                 </div>
@@ -590,7 +590,7 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('/USCG-Navigation-Rules.pdf', '_blank')}
+                        onClick={() => window.open('/COLREG-Navigation-Rules.pdf')}
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
