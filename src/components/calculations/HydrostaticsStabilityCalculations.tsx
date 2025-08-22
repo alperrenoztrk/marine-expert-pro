@@ -216,6 +216,28 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   const [weatherInputs, setWeatherInputs] = useState<{ pressure: string; area: string; lever: string }>({ pressure: "", area: "", lever: "" });
   const [weatherResult, setWeatherResult] = useState<{ ok: boolean; phiEq: number } | null>(null);
 
+  // Missing state variables
+  const [gzInputs, setGzInputs] = useState({ gm: "", angle: "" });
+  const [gzResult, setGzResult] = useState<number | null>(null);
+  
+  const [trimInputs, setTrimInputs] = useState({ ta: "", tf: "", length: "" });
+  const [trimResult, setTrimResult] = useState<number | null>(null);
+  
+  const [listInputs, setListInputs] = useState({ weight: "", distance: "", displacement: "", gm: "" });
+  const [listResult, setListResult] = useState<number | null>(null);
+  
+  const [tpcInputs, setTpcInputs] = useState({ waterplaneArea: "", density: "1.025" });
+  const [tpcResult, setTpcResult] = useState<number | null>(null);
+  
+  const [lollInputs, setLollInputs] = useState({ kg: "", km: "" });
+  const [lollResult, setLollResult] = useState<number | null>(null);
+  
+  const [displacementInputs, setDisplacementInputs] = useState({ volume: "", waterDensity: "1.025" });
+  const [displacementResult, setDisplacementResult] = useState<number | null>(null);
+  
+  const [draftInputs, setDraftInputs] = useState({ volume: "", waterplaneArea: "" });
+  const [draftResult, setDraftResult] = useState<number | null>(null);
+
   // Perform comprehensive analysis when inputs change
   useEffect(() => {
     if (geometry && kg && weightDistribution && tanks) {
@@ -369,6 +391,35 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
     const lollAngle = Math.acos(kg / km) * (180 / Math.PI);
     setLollResult(lollAngle);
     toast({ title: "Hesaplama Tamamlandı", description: `Loll Açısı: ${lollAngle.toFixed(2)}°` });
+  };
+
+  // Missing calculation functions
+  const calculateDisplacement = () => {
+    const volume = parseFloat(displacementInputs.volume);
+    const waterDensity = parseFloat(displacementInputs.waterDensity);
+    
+    if (isNaN(volume) || isNaN(waterDensity)) {
+      toast({ title: "Hata", description: "Lütfen geçerli sayısal değerler girin", variant: "destructive" });
+      return;
+    }
+    
+    const displacement = volume * waterDensity;
+    setDisplacementResult(displacement);
+    toast({ title: "Hesaplama Tamamlandı", description: `Deplasman: ${displacement.toFixed(2)} ton` });
+  };
+
+  const calculateDraft = () => {
+    const volume = parseFloat(draftInputs.volume);
+    const waterplaneArea = parseFloat(draftInputs.waterplaneArea);
+    
+    if (isNaN(volume) || isNaN(waterplaneArea) || waterplaneArea === 0) {
+      toast({ title: "Hata", description: "Lütfen geçerli sayısal değerler girin", variant: "destructive" });
+      return;
+    }
+    
+    const draft = volume / waterplaneArea;
+    setDraftResult(draft);
+    toast({ title: "Hesaplama Tamamlandı", description: `Draft: ${draft.toFixed(3)} m` });
   };
 
   return (
