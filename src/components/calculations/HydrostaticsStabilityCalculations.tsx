@@ -1,3 +1,4 @@
+import { ComprehensiveMaritimeCalculations } from "./ComprehensiveMaritimeCalculations";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,46 +95,122 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   // Hasar stabilitesi giriş satırı
   const [newCompartment, setNewCompartment] = useState<{ compartment: string; floodedVolume: string; newKG: string }>({ compartment: "", floodedVolume: "", newKG: "" });
 
-  // State for different calculation sections
-  const [displacementInputs, setDisplacementInputs] = useState({
-    volume: "", waterDensity: "1.025"
+  // 1. Hogging/Sagging Detection
+  const [hoggingSaggingInputs, setHoggingSaggingInputs] = useState({
+    draftForward: "", draftAft: "", draftMidship: ""
   });
-  const [displacementResult, setDisplacementResult] = useState<number | null>(null);
+  const [hoggingSaggingResult, setHoggingSaggingResult] = useState<{type: string, difference: number} | null>(null);
 
-  const [draftInputs, setDraftInputs] = useState({
-    volume: "", waterplaneArea: ""
-  });
-  const [draftResult, setDraftResult] = useState<number | null>(null);
-
+  // 2. GM ve KG Hesapları
   const [gmInputs, setGmInputs] = useState({
     kb: "", bm: "", kg: ""
   });
   const [gmResult, setGmResult] = useState<number | null>(null);
 
-  const [gzInputs, setGzInputs] = useState({
-    gm: "", angle: ""
+  const [newKGInputs, setNewKGInputs] = useState({
+    totalMoment: "", totalWeight: ""
   });
-  const [gzResult, setGzResult] = useState<number | null>(null);
+  const [newKGResult, setNewKGResult] = useState<number | null>(null);
 
-  const [trimInputs, setTrimInputs] = useState({
-    ta: "", tf: "", length: ""
+  const [heelAngleInputs, setHeelAngleInputs] = useState({
+    gz: "", gm: "", heelingMoment: "", displacement: ""
   });
-  const [trimResult, setTrimResult] = useState<number | null>(null);
+  const [heelAngleResult, setHeelAngleResult] = useState<number | null>(null);
 
-  const [listInputs, setListInputs] = useState({
-    weight: "", distance: "", displacement: "", gm: ""
+  const [craneGMInputs, setCraneGMInputs] = useState({
+    weight: "", leverArm: "", displacement: ""
   });
-  const [listResult, setListResult] = useState<number | null>(null);
+  const [craneGMResult, setCraneGMResult] = useState<number | null>(null);
 
-  const [tpcInputs, setTpcInputs] = useState({
-    waterplaneArea: "", density: "1.025"
+  const [drydockGMInputs, setDrydockGMInputs] = useState({
+    pressure: "", km: "", displacement: ""
   });
-  const [tpcResult, setTpcResult] = useState<number | null>(null);
+  const [drydockGMResult, setDrydockGMResult] = useState<number | null>(null);
 
-  const [lollInputs, setLollInputs] = useState({
-    kg: "", km: ""
+  // 3. Boyuna Denge Hesapları
+  const [trimChangeInputs, setTrimChangeInputs] = useState({
+    totalMoment: "", mct: ""
   });
-  const [lollResult, setLollResult] = useState<number | null>(null);
+  const [trimChangeResult, setTrimChangeResult] = useState<number | null>(null);
+
+  const [parallelSinkageInputs, setParallelSinkageInputs] = useState({
+    loadedWeight: "", tpc: ""
+  });
+  const [parallelSinkageResult, setParallelSinkageResult] = useState<number | null>(null);
+
+  const [draftCorrectionInputs, setDraftCorrectionInputs] = useState({
+    trim: "", distance: "", lbp: ""
+  });
+  const [draftCorrectionResult, setDraftCorrectionResult] = useState<number | null>(null);
+
+  // 4. Draft Survey
+  const [mmmDraftInputs, setMmmDraftInputs] = useState({
+    draftForward: "", draftAft: "", draftMidship: ""
+  });
+  const [mmmDraftResult, setMmmDraftResult] = useState<number | null>(null);
+
+  const [trimCorrection1Inputs, setTrimCorrection1Inputs] = useState({
+    trim: "", lcf: "", tpc: "", lbp: ""
+  });
+  const [trimCorrection1Result, setTrimCorrection1Result] = useState<number | null>(null);
+
+  const [trimCorrection2Inputs, setTrimCorrection2Inputs] = useState({
+    trim: "", mct: "", lbp: ""
+  });
+  const [trimCorrection2Result, setTrimCorrection2Result] = useState<number | null>(null);
+
+  const [densityCorrectionInputs, setDensityCorrectionInputs] = useState({
+    displacement: "", actualDensity: "1.025"
+  });
+  const [densityCorrectionResult, setDensityCorrectionResult] = useState<number | null>(null);
+
+  // 5. Duba ve Yoğunluk Hesapları
+  const [blockCoefficientInputs, setBlockCoefficientInputs] = useState({
+    volume: "", length: "", breadth: "", draft: ""
+  });
+  const [blockCoefficientResult, setBlockCoefficientResult] = useState<number | null>(null);
+
+  const [fwaInputs, setFwaInputs] = useState({
+    displacement: "", tpc: ""
+  });
+  const [fwaResult, setFwaResult] = useState<number | null>(null);
+
+  const [densityChangeInputs, setDensityChangeInputs] = useState({
+    displacement: "", newDensity: "", oldDensity: "1.025"
+  });
+  const [densityChangeResult, setDensityChangeResult] = useState<number | null>(null);
+
+  // 6. SOLAS Stabilite Kriterleri
+  const [grainHeelInputs, setGrainHeelInputs] = useState({
+    ghm: "", displacement: "", gm: ""
+  });
+  const [grainHeelResult, setGrainHeelResult] = useState<number | null>(null);
+
+  const [gzLeverInputs, setGzLeverInputs] = useState({
+    kn: "", kg: "", angle: ""
+  });
+  const [gzLeverResult, setGzLeverResult] = useState<number | null>(null);
+
+  const [freeSurfaceInputs, setFreeSurfaceInputs] = useState({
+    length: "", breadth: "", volume: ""
+  });
+  const [freeSurfaceResult, setFreeSurfaceResult] = useState<number | null>(null);
+
+  const [rollPeriodInputs, setRollPeriodInputs] = useState({
+    cb: "", breadth: "", gm: ""
+  });
+  const [rollPeriodResult, setRollPeriodResult] = useState<number | null>(null);
+
+  // 7. Yük Hesapları
+  const [loadHeightInputs, setLoadHeightInputs] = useState({
+    sf: "", pl: ""
+  });
+  const [loadHeightResult, setLoadHeightResult] = useState<number | null>(null);
+
+  const [temperatureDensityInputs, setTemperatureDensityInputs] = useState({
+    oldDensity: "", oldTemperature: "", newTemperature: "", coefficient: "0.0007"
+  });
+  const [temperatureDensityResult, setTemperatureDensityResult] = useState<number | null>(null);
 
   // Weather criterion girdileri ve sonucu
   const [weatherInputs, setWeatherInputs] = useState<{ pressure: string; area: string; lever: string }>({ pressure: "", area: "", lever: "" });
@@ -164,32 +241,39 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   }, [geometry, kg, weightDistribution, tanks, floodedCompartments, grainShiftMoment, grainHeelAngle, crossCurvesSet, bonjeanSet]);
 
   // Calculation functions
-  const calculateDisplacement = () => {
-    const v = parseFloat(displacementInputs.volume);
-    const rho = parseFloat(displacementInputs.waterDensity);
+  
+  // 1. Hogging/Sagging Detection
+  const calculateHoggingSagging = () => {
+    const dF = parseFloat(hoggingSaggingInputs.draftForward);
+    const dA = parseFloat(hoggingSaggingInputs.draftAft);
+    const dM = parseFloat(hoggingSaggingInputs.draftMidship);
     
-    if (isNaN(v) || isNaN(rho)) {
+    if (isNaN(dF) || isNaN(dA) || isNaN(dM)) {
       toast({ title: "Hata", description: "Lütfen geçerli sayısal değerler girin", variant: "destructive" });
       return;
     }
     
-    const displacement = v * rho;
-    setDisplacementResult(displacement);
-    toast({ title: "Hesaplama Tamamlandı", description: `Deplasman: ${displacement.toFixed(2)} ton` });
+    const meanDraft = (dF + dA) / 2;
+    const difference = dM - meanDraft;
+    const type = difference > 0 ? "Hogging" : "Sagging";
+    
+    setHoggingSaggingResult({ type, difference: Math.abs(difference) });
+    toast({ title: "Hesaplama Tamamlandı", description: `${type}: ${Math.abs(difference).toFixed(3)} m` });
   };
 
-  const calculateDraft = () => {
-    const v = parseFloat(draftInputs.volume);
-    const awp = parseFloat(draftInputs.waterplaneArea);
+  // 2. Yeni KG Hesaplama
+  const calculateNewKG = () => {
+    const totalMoment = parseFloat(newKGInputs.totalMoment);
+    const totalWeight = parseFloat(newKGInputs.totalWeight);
     
-    if (isNaN(v) || isNaN(awp)) {
+    if (isNaN(totalMoment) || isNaN(totalWeight) || totalWeight === 0) {
       toast({ title: "Hata", description: "Lütfen geçerli sayısal değerler girin", variant: "destructive" });
       return;
     }
     
-    const draft = v / awp;
-    setDraftResult(draft);
-    toast({ title: "Hesaplama Tamamlandı", description: `Draft: ${draft.toFixed(3)} m` });
+    const newKG = totalMoment / totalWeight;
+    setNewKGResult(newKG);
+    toast({ title: "Hesaplama Tamamlandı", description: `Yeni KG: ${newKG.toFixed(3)} m` });
   };
 
   const calculateGM = () => {
@@ -289,11 +373,15 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
   return (
     <div className="space-y-6">
-      {/* Stabilite Asistanı (inline) */}
+      {/* Kapsamlı Denizcilik Hesaplamaları */}
+      <ComprehensiveMaritimeCalculations />
+      
+      {/* Stabilite Asistanı */}
       <Card className="shadow border border-blue-200/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
             <Brain className="h-5 w-5" />
+            Stabilite Asistanı
           </CardTitle>
         </CardHeader>
         <CardContent>
