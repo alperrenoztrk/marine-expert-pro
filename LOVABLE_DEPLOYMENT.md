@@ -1,9 +1,9 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
-- **Tarih:** 2025-08-20
-- **Sürüm:** v2.5.9
-- **Durum:** ✅ Aktif — Stabilite seçim ekranı ve gelişmiş sihirbazda iyileştirmeler; dağıtım tetikleme
+- **Tarih:** 2025-08-22
+- **Sürüm:** v2.5.10
+- **Durum:** ✅ Aktif — Gelişmiş stabilite sihirbazı hedef-temelli ("Neyi öğrenmek istiyorsunuz?") akışa geçirildi; GM, GZ, Trim, List, Loll için dinamik giriş/çıktı; gemi profili opsiyonel
 
 ## 🔧 Son Yapılan Değişiklikler
 
