@@ -2,8 +2,8 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-08-22
-- **Sürüm:** v2.5.10
-- **Durum:** ✅ Aktif — Gelişmiş stabilite sihirbazı hedef-temelli ("Neyi öğrenmek istiyorsunuz?") akışa geçirildi; GM, GZ, Trim, List, Loll için dinamik giriş/çıktı; gemi profili opsiyonel
+- **Sürüm:** v2.5.11
+- **Durum:** ✅ Aktif — Lovable yeniden dağıtım tetikleme; hedef-temelli sihirbaz metinleri ve yardımcı ipuçları küçük iyileştirmeler
 
 ## 🔧 Son Yapılan Değişiklikler
 
@@ -38,6 +38,7 @@
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-22 — v2.5.10: Hedef-temelli sihirbaz, dinamik giriş/çıktı; profil opsiyonel
 - 2025-08-16 — v2.5.0: Ana menü sadeleştirildi, Stabilite asistanı ana sayfadan kaldırıldı, stabilite kuralları sayfaları eklendi/güncellendi, yönlendirmeler düzeltildi
 - 2025-08-15 — v2.4.16: Hesaplamalar menüsü ve rota düzeltmeleri
 - 2025-08-10 — v2.4.15: Tahıl stabilitesi bölümündeki tekrar kaldırıldı
