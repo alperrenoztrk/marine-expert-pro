@@ -19,6 +19,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import jsPDF from 'jspdf';
+import { Capacitor } from '@capacitor/core';
 
 interface SOLASChapter {
   id: string;
@@ -50,6 +51,31 @@ const Regulations = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<string>("chapters");
+
+  const openExternal = async (url: string) => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const { App } = await import('@capacitor/app');
+        await App.openUrl({ url });
+      } else {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      window.location.href = url;
+    }
+  };
+
+  const openAsset = async (path: string) => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        window.location.href = path;
+      } else {
+        window.open(path, '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      window.open(path, '_blank');
+    }
+  };
 
   const solasChapters: SOLASChapter[] = [
     {
@@ -433,7 +459,7 @@ const Regulations = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => window.open('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf', '_blank')}
+                      onClick={() => openExternal('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf')}
                       className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 cyberpunk:bg-yellow-600 cyberpunk:text-black cyberpunk:hover:bg-yellow-700"
                     >
                       <Download className="h-4 w-4" />
@@ -453,7 +479,7 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf', '_blank')}
+                        onClick={() => openExternal('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
                       >
                         <Download className="h-4 w-4 mr-2" />
@@ -462,7 +488,7 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://www.imo.org/en/OurWork/Safety/Pages/SOLAS-amendments.aspx', '_blank')}
+                        onClick={() => openExternal('https://www.imo.org/en/OurWork/Safety/Pages/SOLAS-amendments.aspx')}
                         className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
                       >
                         <AlertTriangle className="h-4 w-4 mr-2" />
@@ -570,7 +596,7 @@ const Regulations = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => window.open('/COLREG-Navigation-Rules.pdf')}
+                      onClick={() => openAsset('/COLREG-Navigation-Rules.pdf')}
                       className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
                     >
                       <Download className="h-4 w-4" />
@@ -590,7 +616,7 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('/COLREG-Navigation-Rules.pdf')}
+                        onClick={() => openAsset('/COLREG-Navigation-Rules.pdf')}
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
@@ -599,7 +625,7 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open('https://www.navcen.uscg.gov/', '_blank')}
+                        onClick={() => openExternal('https://www.navcen.uscg.gov/')}
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <AlertTriangle className="h-4 w-4 mr-2" />
