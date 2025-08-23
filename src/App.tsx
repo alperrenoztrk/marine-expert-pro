@@ -31,20 +31,7 @@ import WeatherCalculationsPage from "./pages/WeatherCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 import HydrostaticsStabilityPage from "./pages/HydrostaticsStability";
 import StabilityMenu from "./pages/StabilityMenu";
-import StabilityHydrostaticPage from "./pages/StabilityHydrostatic";
-import StabilityStabilityPage from "./pages/StabilityStability";
-import StabilityTrimListPage from "./pages/StabilityTrimList";
-import StabilityAnalysisPage from "./pages/StabilityAnalysis";
-// Bonjean sayfası kaldırıldı
-import StabilityDraftPage from "./pages/StabilityDraft";
-import StabilityDamagePage from "./pages/StabilityDamage";
-import StabilityDisplacementPage from "./pages/StabilityDisplacement";
-import StabilityTPCPage from "./pages/StabilityTPC";
-import StabilityGMPage from "./pages/StabilityGM";
-import StabilityGZPage from "./pages/StabilityGZ";
-import StabilityTrimPage from "./pages/StabilityTrim";
-import StabilityListPage from "./pages/StabilityList";
-import StabilityLollPage from "./pages/StabilityLoll";
+// Removed detailed stability pages
 import Settings from "./pages/Settings";
 import { LanguageRouteSync } from "@/components/LanguageRouteSync";
 import CalculationsMenu from "./pages/CalculationsMenu";
@@ -60,8 +47,7 @@ import WeatherMenu from "./pages/WeatherMenu";
 import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityRules from "./pages/StabilityRules";
-import StabilityRulesBasic from "./pages/StabilityRulesBasic";
-import StabilityCalculatorPage from "./pages/StabilityCalculatorPage";
+// Removed StabilityRulesBasic and StabilityCalculatorPage imports
 import EconomicsMenu from "./pages/EconomicsMenu";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
 import DraftSurveyCargo from "./pages/DraftSurveyCargo";
@@ -153,24 +139,9 @@ const App = () => {
                   <Route path="/hydrostatics-stability" element={<HydrostaticsStabilityPage />} />
                   <Route path="/stability" element={<StabilityMenu />} />
                   <Route path="/calculations" element={<CalculationsMenu />} />
-                  <Route path="/stability/hydrostatic" element={<StabilityHydrostaticPage />} />
-                  <Route path="/stability/stability" element={<StabilityStabilityPage />} />
-                  <Route path="/stability/trimlist" element={<StabilityTrimListPage />} />
-                  <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
-                  <Route path="/stability/draft" element={<StabilityDraftPage />} />
-                  <Route path="/stability/damage" element={<StabilityDamagePage />} />
+                  {/* Keep only Assistant and Rules under stability */}
                   <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
                   <Route path="/stability/rules" element={<StabilityRules />} />
-                  <Route path="/stability/rules-basic" element={<StabilityRulesBasic />} />
-                  <Route path="/stability/displacement" element={<StabilityDisplacementPage />} />
-                  <Route path="/stability/draft-calc" element={<StabilityDraftPage />} />
-                  <Route path="/stability/tpc" element={<StabilityTPCPage />} />
-                  <Route path="/stability/gm" element={<StabilityGMPage />} />
-                  <Route path="/stability/gz" element={<StabilityGZPage />} />
-                  <Route path="/stability/trim" element={<StabilityTrimPage />} />
-                  <Route path="/stability/list" element={<StabilityListPage />} />
-                  <Route path="/stability/loll" element={<StabilityLollPage />} />
-                  <Route path="/stability/calculator" element={<StabilityCalculatorPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/navigation-menu" element={<NavigationMenu />} />

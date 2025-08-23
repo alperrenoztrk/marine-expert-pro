@@ -251,12 +251,12 @@
         <h2>Sight Reduction Tables</h2>
         
         <div class="table-navigation">
-            <button onclick="showTable('lat0-15')" class="active">Lat 0°-15°</button>
-            <button onclick="showTable('lat15-30')">Lat 15°-30°</button>
-            <button onclick="showTable('lat30-45')">Lat 30°-45°</button>
-            <button onclick="showTable('lat45-60')">Lat 45°-60°</button>
-            <button onclick="showTable('lat60-75')">Lat 60°-75°</button>
-            <button onclick="showTable('lat75-90')">Lat 75°-90°</button>
+            <button onclick="showTable('lat0-15', event)" class="active">Lat 0°-15°</button>
+            <button onclick="showTable('lat15-30', event)">Lat 15°-30°</button>
+            <button onclick="showTable('lat30-45', event)">Lat 30°-45°</button>
+            <button onclick="showTable('lat45-60', event)">Lat 45°-60°</button>
+            <button onclick="showTable('lat60-75', event)">Lat 60°-75°</button>
+            <button onclick="showTable('lat75-90', event)">Lat 75°-90°</button>
         </div>
 
         <!-- Latitude 0°-15° Tables -->
@@ -607,7 +607,8 @@
     </div>
 
     <script>
-        function showTable(tableId) {
+        function showTable(tableId, event) {
+            const evt = event || window.event;
             // Tüm tabloları gizle
             const tables = document.querySelectorAll('.table-section');
             tables.forEach(table => table.classList.remove('active'));
@@ -620,7 +621,9 @@
             document.getElementById(tableId).classList.add('active');
             
             // Tıklanan butona active sınıfı ekle
-            event.target.classList.add('active');
+            if (evt && evt.target) {
+                evt.target.classList.add('active');
+            }
         }
 
         function calculateAdvancedSight() {

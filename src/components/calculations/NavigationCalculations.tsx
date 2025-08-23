@@ -2801,15 +2801,12 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         <p className="text-sm text-muted-foreground mb-3">
                           Güncel yıl için astronomi verileri, güneş, ay ve gezegen pozisyonları
                         </p>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="w-full"
-                          onClick={() => window.open('https://thenauticalalmanac.com/TNARegular/2025_Nautical_Almanac.pdf', '_blank')}
-                          >
+                        <Button asChild variant="outline" size="sm" className="w-full">
+                          <a href="https://thenauticalalmanac.com/TNARegular/2025_Nautical_Almanac.pdf" target="_blank" rel="noopener noreferrer">
                             <Globe className="h-4 w-4 mr-2" />
                             PDF İndir
-                          </Button>
+                          </a>
+                        </Button>
                         </CardContent>
                       </Card>
 
@@ -2824,14 +2821,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           <p className="text-sm text-muted-foreground mb-3">
                             HO 229, HO 249 tabloları ve göksel navigasyon hesaplamaları
                           </p>
-                                                  <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="w-full"
-                          onClick={() => window.open('/sight-reduction-guide.html', '_blank')}
-                        >
-                          <Calculator className="h-4 w-4 mr-2" />
-                          İnteraktif Tablolar
+                                                  <Button asChild variant="outline" size="sm" className="w-full">
+                          <a href="/sight-reduction-guide.html" rel="noopener noreferrer">
+                            <Calculator className="h-4 w-4 mr-2" />
+                            İnteraktif Tablolar
+                          </a>
                         </Button>
                         </CardContent>
                       </Card>

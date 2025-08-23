@@ -39,13 +39,8 @@ const HydrostaticsStabilityPage = () => {
         <Card className="border-0 bg-white/70 dark:bg-gray-800/70">
           <CardContent className="pt-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              <Link to="/stability/hydrostatic"><Button variant="outline" className="w-full justify-start gap-2"><Waves className="h-4 w-4" /> Hidrostatik</Button></Link>
-              <Link to="/stability/stability"><Button variant="outline" className="w-full justify-start gap-2"><Shield className="h-4 w-4" /> Stabilite</Button></Link>
-              <Link to="/stability/trimlist"><Button variant="outline" className="w-full justify-start gap-2"><Ship className="h-4 w-4" /> Trim & List</Button></Link>
-              <Link to="/stability/analysis"><Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4" /> Analiz Özeti</Button></Link>
-              {/* Bonjean kaldırıldı */}
-              <Link to="/stability/draft"><Button variant="outline" className="w-full justify-start gap-2"><Waves className="h-4 w-4" /> Draft Survey</Button></Link>
-              <Link to="/stability/damage"><Button variant="outline" className="w-full justify-start gap-2"><AlertTriangle className="h-4 w-4" /> Hasar</Button></Link>
+              <Link to="/stability/assistant"><Button variant="outline" className="w-full justify-start gap-2"><Shield className="h-4 w-4" /> Asistan</Button></Link>
+              <Link to="/stability/rules"><Button variant="outline" className="w-full justify-start gap-2"><BookOpen className="h-4 w-4" /> Kurallar</Button></Link>
             </div>
           </CardContent>
         </Card>
