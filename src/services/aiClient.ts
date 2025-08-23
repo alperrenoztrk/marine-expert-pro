@@ -107,7 +107,7 @@ async function callOpenAI(messages: AIMessage[]): Promise<string> {
 }
 
 export async function callMaritimeRegulationsAssistant(messages: AIMessage[]): Promise<string> {
-  // Ensure system instruction is always included
+  // Ensure system instruction is always included for maritime regulations guidance
   const withSystem: AIMessage[] = messages.some(m => m.role === 'system')
     ? messages
     : [{ role: 'system', content: MARITIME_REGULATIONS_SYSTEM_PROMPT }, ...messages];
