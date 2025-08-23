@@ -443,70 +443,7 @@ const Regulations = () => {
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 dark:border-blue-800 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-gray-700">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="flex items-center gap-2">
-                      <Ship className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      SOLAS 2020 Edition
-                    </CardTitle>
-                    <CardDescription>
-                      International Convention for the Safety of Life at Sea - 2020 Edition
-                    </CardDescription>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => openExternal('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf')}
-                      className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 cyberpunk:bg-yellow-600 cyberpunk:text-black cyberpunk:hover:bg-yellow-700"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download SOLAS 2020 PDF
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 bg-card/80 rounded-lg border border-border">
-                    <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                      <FileText className="h-5 w-5" />
-                      SOLAS 2020 Resources
-                    </h4>
-                    <div className="grid gap-3 md:grid-cols-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openExternal('https://armcol.org/wp-content/uploads/2024/08/1016-SOLAS-CONSOLIDATED-EDITION-2020.pdf')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        SOLAS 2020 Edition (PDF)
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openExternal('https://www.imo.org/en/OurWork/Safety/Pages/SOLAS-amendments.aspx')}
-                        className="justify-start text-blue-700 border-blue-300 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:text-yellow-400 cyberpunk:border-yellow-400 cyberpunk:hover:bg-gray-800"
-                      >
-                        <AlertTriangle className="h-4 w-4 mr-2" />
-                        Latest SOLAS Amendments
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="text-sm text-blue-800 bg-blue-100/50 p-3 rounded cyberpunk:text-yellow-400 cyberpunk:bg-gray-800">
-                    <p className="font-medium mb-1">📋 Available SOLAS 2020 Resources:</p>
-                    <p>• SOLAS 2020 Edition (Google Drive)</p>
-                    <p>• Latest amendments and updates</p>
-                    <p>• Historical amendments and related codes</p>
-                    <p className="mt-2 text-xs">Not: En güncel 2024 versiyonu IMO'dan satın alınabilir.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+
 
             <div className="grid gap-4">
               {filteredChapters.map((chapter) => (
