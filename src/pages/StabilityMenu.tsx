@@ -18,16 +18,6 @@ export default function StabilityMenu() {
   ];
   const items = groups.flatMap((g)=> g.items);
 
-  // Category headings only (placeholders for now)
-  const categories = [
-    { title: 'Enine Stabilite' },
-    { title: 'Boyuna Stabilite' },
-    { title: 'GZ Eğrisi ve IMO Kriterleri' },
-    { title: 'Hasarlı Stabilite' },
-    { title: 'Tahıl Stabilitesi' },
-    { title: 'Dinamik Stabilite' },
-    { title: 'Trim ve Stabilite' },
-  ];
 
   const [open, setOpen] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -121,14 +111,6 @@ export default function StabilityMenu() {
               </div>
             </div>
 
-            {/* Category headings only */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {categories.map((cat) => (
-                <div key={cat.title} className="rounded-md border p-4 bg-background/60">
-                  <div className="text-base font-semibold">{cat.title}</div>
-                </div>
-              ))}
-            </div>
 
             {/* All Items (Assistant, Rules) */}
             <div className="flex flex-wrap gap-2 py-1">
