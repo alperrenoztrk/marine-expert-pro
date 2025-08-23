@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, Waves, Ship, BarChart3, AlertTriangle, ArrowLeft, Brain, BookOpen, Activity, Package, Droplets, Building, Route, Calculator } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 
 export default function StabilityMenu() {
+  const navigate = useNavigate();
   const groups = [
     {
       title: 'Stabilite',
@@ -46,12 +47,17 @@ export default function StabilityMenu() {
   }, [open]);
 
   const optionButtons = [
-    { key: 'athwartship', label: 'Enine Stabilite' },
-    { key: 'longitudinal', label: 'Boyuna Stabilite' },
-    { key: 'gz-imo', label: 'GZ / IMO Kriterleri' },
-    { key: 'damage', label: 'Hasarlı Stabilite' },
-    { key: 'grain', label: 'Tahıl Stabilitesi' },
+    { key: 'athwartship', label: 'Enine Stabilite', to: '/stability/athwartship' },
+    { key: 'longitudinal', label: 'Boyuna Stabilite', to: '/stability/longitudinal' },
+    { key: 'gz-imo', label: 'GZ / IMO Kriterleri', to: '/stability/gz-imo' },
+    { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
+    { key: 'grain', label: 'Tahıl Stabilitesi', to: '/stability/grain' },
   ];
+
+  const handleSelect = (to: string) => {
+    setOpen(false);
+    navigate(to);
+  };
 
   return (
     <div key="stability-menu-v2" className="container mx-auto p-6 space-y-6" data-no-translate>
@@ -103,7 +109,7 @@ export default function StabilityMenu() {
                             variant="outline"
                             className="justify-start gap-2 data-[state=open]:bg-accent"
                             style={{ transitionDelay: `${idx * 60}ms` }}
-                            onClick={() => setOpen(false)}
+                            onClick={() => handleSelect(opt.to)}
                           >
                             {opt.label}
                           </Button>
