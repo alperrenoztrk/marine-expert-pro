@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { ShipGeometry } from "@/types/hydrostatic";
+import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 export default function StabilityLongitudinal() {
   const navigate = useNavigate();
@@ -34,6 +37,11 @@ export default function StabilityLongitudinal() {
     const res = HydrostaticUtils.calculateLargeAngleStability(geometry, kg, angle);
     setResult(res);
   };
+
+  const chartData = useMemo(() => {
+    const points = HydrostaticCalculations.generateGZCurve(geometry, kg, 0, 90, 1);
+    return points.map((p) => ({ angle: p.angle, gz: Number(p.gz.toFixed(3)) }));
+  }, [geometry, kg]);
 
   return (
     <div className="container mx-auto p-6 space-y-4">
@@ -98,6 +106,16 @@ export default function StabilityLongitudinal() {
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
             <Button variant="ghost" onClick={() => setResult(null)}>Temizle</Button>
           </div>
+
+          <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-56">
+            <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+              <CartesianGrid strokeDasharray="4 4" />
+              <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
+              <YAxis tickFormatter={(v) => `${v} m`} />
+              <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
+              <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ChartContainer>
 
           {result && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">

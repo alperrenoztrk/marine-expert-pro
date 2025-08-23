@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { ShipGeometry } from "@/types/hydrostatic";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 export default function StabilityAthwartship() {
   const navigate = useNavigate();
@@ -33,6 +35,20 @@ export default function StabilityAthwartship() {
     const res = HydrostaticUtils.calculateSmallAngleStability(geometry, kg);
     setResult(res);
   };
+
+  const chartData = useMemo(() => {
+    if (!result) return [] as { angle: number; gz: number }[];
+    const points: { angle: number; gz: number }[] = [];
+    for (let a = 0; a <= 60; a += 1) {
+      const rad = (a * Math.PI) / 180;
+      // Small-angle approximation for <=15°, wall-sided like term for larger
+      const gz = a <= 15
+        ? result.gm * Math.sin(rad)
+        : result.gm * Math.sin(rad) - 0.5 * geometry.breadth * Math.pow(Math.sin(rad), 2);
+      points.push({ angle: a, gz: Math.max(0, Number(gz.toFixed(3))) });
+    }
+    return points;
+  }, [result, geometry.breadth]);
 
   return (
     <div className="container mx-auto p-6 space-y-4">
@@ -95,18 +111,30 @@ export default function StabilityAthwartship() {
           </div>
 
           {result && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
-              <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">GM</div>
-                <div className="text-xl font-semibold">{result.gm.toFixed(3)} m</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">Pozitif Stabilite Aralığı</div>
-                <div className="text-xl font-semibold">{result.stabilityRange.toFixed(1)}°</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">Doğal Periyot</div>
-                <div className="text-xl font-semibold">{result.naturalPeriod.toFixed(2)} s</div>
+            <div className="space-y-4">
+              <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-56">
+                <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+                  <CartesianGrid strokeDasharray="4 4" />
+                  <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
+                  <YAxis tickFormatter={(v) => `${v} m`} />
+                  <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
+                  <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ChartContainer>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">GM</div>
+                  <div className="text-xl font-semibold">{result.gm.toFixed(3)} m</div>
+                </div>
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">Pozitif Stabilite Aralığı</div>
+                  <div className="text-xl font-semibold">{result.stabilityRange.toFixed(1)}°</div>
+                </div>
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">Doğal Periyot</div>
+                  <div className="text-xl font-semibold">{result.naturalPeriod.toFixed(2)} s</div>
+                </div>
               </div>
             </div>
           )}
