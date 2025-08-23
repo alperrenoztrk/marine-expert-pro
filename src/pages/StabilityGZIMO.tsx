@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useMemo, useState } from "react";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 export default function StabilityGZIMO() {
   const navigate = useNavigate();
@@ -42,6 +44,11 @@ export default function StabilityGZIMO() {
     if (!imo) return '';
     return imo.compliance ? 'Uygun' : 'Uygun değil';
   }, [imo]);
+
+  const chartData = useMemo(() => {
+    if (!data) return [] as { angle: number; gz: number }[];
+    return data.angles.map((a, i) => ({ angle: a, gz: Number(data.gz[i].toFixed(3)) }));
+  }, [data]);
 
   return (
     <div className="container mx-auto p-6 space-y-4">
@@ -89,6 +96,19 @@ export default function StabilityGZIMO() {
 
           {data && imo && (
             <div className="space-y-4">
+              <ChartContainer
+                config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }}
+                className="w-full h-60"
+              >
+                <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+                  <CartesianGrid strokeDasharray="4 4" />
+                  <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
+                  <YAxis tickFormatter={(v) => `${v} m`} />
+                  <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
+                  <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ChartContainer>
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-md border p-3">
                   <div className="text-xs text-muted-foreground">Maks GZ</div>
