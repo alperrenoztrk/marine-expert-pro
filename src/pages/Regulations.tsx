@@ -55,8 +55,8 @@ const Regulations = () => {
   const openExternal = async (url: string) => {
     try {
       if (Capacitor.isNativePlatform()) {
-        const { App } = await import('@capacitor/app');
-        await App.openUrl({ url });
+        const { Browser } = await import('@capacitor/browser');
+        await Browser.open({ url });
       } else {
         window.open(url, '_blank', 'noopener,noreferrer');
       }
