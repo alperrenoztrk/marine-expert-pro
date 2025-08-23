@@ -71,23 +71,27 @@ export const UnifiedMaritimeAssistant = () => {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `Sen deneyimli bir Maritime Mühendisliği uzmanısın. Maritime mühendisliği, gemi inşaatı, denizcilik ve okyanus mühendisliği konularında yardım ediyorsun.
+              text: `Sen "Mark" adlı bir Denizcilik Regülasyon Rehberi asistanısın. Gemilerde hangi bilgiye nereden ulaşılması gerektiğini, hangi kitabın/cildin/tablonun kullanılacağını ve pratik erişim yolunu tarif edersin.
+
+Önceliklerin:
+- IS Code, SOLAS, MARPOL, COLREG, IAMSAR, STCW, LOAD LINE, IMDG Code, Grain Code, ALRS (Admiralty List of Radio Signals), NP/NP5011, NP100 vb. kaynaklara yönlendir.
+- Soruya "Hangi kaynaktan, hangi cilt/bölüm/başlık?" şeklinde net yanıt ver.
+- Gerekirse sayfa/bölüm örnekleri (ör: ALRS Vol 3, Radiofacsimile/WeatherFax Schedules) belirt.
+- Yanıtta kısalık ve netlik: önce Kaynak/Cilt, sonra erişim yöntemi ve notlar.
 
 Soru: ${prompt}
 
-Yanıtını şu şekilde organize et:
-- **Açıklama**: Temel açıklama
-- **Formüller**: Kullanılan formüller (varsa)
-- **Hesaplama**: Pratik hesaplama adımları (varsa)
-- **Standartlar**: IMO/SOLAS standartları (varsa)
-- **Öneriler**: Pratik öneriler
+Yanıtını şu şablonda ver:
+- **Kaynak**: (kitap/kod adı, cilt/bölüm)
+- **Erişim**: (nereden/nasıl bulunur; dizin, konu başlığı, tablo/ek örneği)
+- **Not**: (kısa uyarı/istisna/ilgili başka kaynak)
 
-Türkçe olarak, teknik ama anlaşılır şekilde yanıtla.`
+Türkçe, düzenli ve kısa yanıtla.`
             }]
           }],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1500,
+            temperature: 0.2,
+            maxOutputTokens: 800,
           }
         })
       });
@@ -110,6 +114,55 @@ Türkçe olarak, teknik ama anlaşılır şekilde yanıtla.`
   const getLocalKnowledge = (question: string): string => {
     const lowerQuestion = question.toLowerCase();
     
+    const mapping: Array<{ test: RegExp; answer: string }> = [
+      {
+        test: /(weather\s*fax|radiofax|weatherfax|fax\s*mesaj|hava\s*faks|radiofacsimile|facsimile)/i,
+        answer: `- **Kaynak**: Admiralty List of Radio Signals (ALRS) — Cilt 3 (Vol. 3): Maritime Safety Information Services — Radiofacsimile (Weather Fax) yayınları
+- **Erişim**: ALRS Vol 3 içinde “Radiofacsimile/Weather Fax Schedules” başlığı; istasyon listesi ve frekanslar. Dizin: "Radiofacsimile" veya "Weather" → ilgili tablo/ek.
+- **Not**: Bazı bölgeler için NAVAREA duyuruları ve Deniz Meteoroloji yayın planları (sched) de kontrol edilir.`
+      },
+      {
+        test: /(navtex)/i,
+        answer: `- **Kaynak**: ALRS — Cilt 3 (Vol. 3): Maritime Safety Information — NAVTEX yayın istasyonları ve frekanslar
+- **Erişim**: “NAVTEX Stations” tablosu; istasyon kimliği, MSC frekansları (518/490/4209.5 kHz), program saatleri
+- **Not**: NAVAREA/METAREA bülten kesitlerini ve yerel dil yayınlarını kontrol edin.`
+      },
+      {
+        test: /(vhf|port operations|liman\s*iletişim|pilotage)/i,
+        answer: `- **Kaynak**: ALRS — Cilt 6 (Vol. 6): Pilotage, Port Operations and Services
+- **Erişim**: Liman bazlı VHF kanalları, manevra/rehberlik/servis bilgileri. Dizin: Liman adı → VHF Kanal/Telsiz Çağrı işaretleri.
+- **Not**: Deniz Rehberi/NP (Sailing Directions) ilgili cilt ile tamamlayın.`
+      },
+      {
+        test: /(distress|gmdss|tehlike|acil|epirb|sart|dsC)/i,
+        answer: `- **Kaynak**: ALRS — Cilt 5 (Vol. 5): Global Maritime Distress and Safety System (GMDSS)
+- **Erişim**: Tehlike/Emniyet prosedürleri, DSC, EPIRB, SART, Inmarsat/MF/HF çağrıları, MMSI ve MRCC iletişim bilgileri
+- **Not**: IAMSAR Cilt 3 operasyon rehberi ile birlikte kullanın.`
+      },
+      {
+        test: /(advisory|warning|msi|metarea|navarea)/i,
+        answer: `- **Kaynak**: ALRS — Cilt 3 (Vol. 3): Maritime Safety Information Services (NAVAREA/METAREA)
+- **Erişim**: NAVAREA koordinatörleri, yayın kanalları/sıklıkları, MSI dağıtım yolları
+- **Not**: NAVTEX/RADIOFAX planları ve SafetyNET ile birlikte kontrol edin.`
+      },
+      {
+        test: /(colreg|ışıklar|seyir\s*fenerleri|ışık karakteri)/i,
+        answer: `- **Kaynak**: COLREG ve Admiralty List of Lights (Aids to Navigation) — Bölgesel ciltler
+- **Erişim**: Fener/şamandıra ışık karakterleri, sektörel aralıklar. Dizin: Coğrafi bölge/ışık numarası
+- **Not**: Elektronik Harita (ENC) ve NP5011 (Semboller ve Kısaltmalar) ile teyit edin.`
+      },
+      {
+        test: /(load\s*line|fribord|serbest\s*bord|assignments)/i,
+        answer: `- **Kaynak**: International Load Line Convention + Bayrak Devleti kılavuzları
+- **Erişim**: Serbest borda işaretleri ve hesap metodolojisi; sınıflandırma cemiyeti kuralları
+- **Not**: Stabilite Kitapçığı ve Freeboard Calculation dosyalarıyla uyum şart.`
+      }
+    ];
+
+    for (const m of mapping) {
+      if (m.test.test(question)) return m.answer;
+    }
+
     const knowledge = {
       "gm": `**GM (Metasantrik Yükseklik) Hesaplaması**
 

@@ -1,7 +1,7 @@
 {
   "name": "maritime-calculator",
   "private": true,
-  "version": "2.5.11",
+  "version": "2.5.14",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,9 +14,10 @@
     "cap:open:android": "npx cap open android",
     "cap:run:android": "npx cap run android",
     "build:android": "npm run build && npx cap sync && npx cap open android",
-    "build:prod": "vite build --mode production && npx cap sync --config capacitor.config.prod.ts",
+    "build:prod": "vite build --mode production && npx cap sync",
     "cap:add:firebase": "npm install @capacitor-firebase/app @capacitor-firebase/authentication @capacitor-firebase/messaging",
-    "android:build": "npm run build && npx cap sync && cd android && ./gradlew assembleDebug"
+    "android:build": "npm run build && npx cap sync && cd android && ./gradlew assembleDebug",
+    "lovable:update": "node scripts/lovable-update.cjs && npm run build:prod"
   },
   "dependencies": {
     "@capacitor-community/admob": "^6.0.1",

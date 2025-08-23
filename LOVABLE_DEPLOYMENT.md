@@ -1,11 +1,26 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
+- **Tarih:** 2025-08-23
+- **Sürüm:** v2.5.14
+- **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
+
 - **Tarih:** 2025-08-22
-- **Sürüm:** v2.5.11
-- **Durum:** ✅ Aktif — Lovable yeniden dağıtım tetikleme; hedef-temelli sihirbaz metinleri ve yardımcı ipuçları küçük iyileştirmeler
+- **Sürüm:** v2.5.13
+- **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🧭 Mark — Regülasyon Rehberi Odak (2025-08-22)
+- Persona: Yanıt formatı “Kaynak / Erişim / Not” olacak şekilde revize edildi
+- Yerel bilgi eşlemeleri: Weather Fax → ALRS Vol 3; NAVTEX → ALRS Vol 3; VHF/liman → ALRS Vol 6; GMDSS → ALRS Vol 5 vb.
+- Ana sayfa: Buton etiketi “Regülasyon Rehberi: Mark” olarak güncellendi
+- Derleme ve doğrulama yapıldı
+
+### 🧮 Stabilite Hesaplamaları UI Senkronizasyonu (2025-08-22)
+- `ComprehensiveMaritimeCalculations.tsx`: Tüm formül bölümlerine “Amaç” açıklamaları eklendi
+- Sekme etiketleri listede verilen başlıklarla uyumlu hale getirildi (Enine/ Boyuna/ Duba ve Yoğunluk/ SOLAS/ Yük)
+- Derleme doğrulandı (vite build)
 
 ### 🛠️ Rota Düzeltmesi (2025-08-18)
 - “Stabilite” bağlantısı `"/stability/stability"` rotasına gidiyordu ancak rota tanımlı değildi; `src/App.tsx` içine eksik rota eklendi
@@ -38,6 +53,7 @@
 ---
 
 ## Önceki Kayıtlar
+- 2025-08-22 — v2.5.12: Formüller “Amaç” açıklamaları + sekme eşleştirme; Lovable senkron
 - 2025-08-22 — v2.5.10: Hedef-temelli sihirbaz, dinamik giriş/çıktı; profil opsiyonel
 - 2025-08-16 — v2.5.0: Ana menü sadeleştirildi, Stabilite asistanı ana sayfadan kaldırıldı, stabilite kuralları sayfaları eklendi/güncellendi, yönlendirmeler düzeltildi
 - 2025-08-15 — v2.4.16: Hesaplamalar menüsü ve rota düzeltmeleri

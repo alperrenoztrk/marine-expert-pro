@@ -494,12 +494,12 @@ export const ComprehensiveMaritimeCalculations = () => {
       <Tabs defaultValue="hogging" className="w-full">
         <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="hogging">1. Giriş</TabsTrigger>
-          <TabsTrigger value="transverse">2. Enine</TabsTrigger>
-          <TabsTrigger value="longitudinal">3. Boyuna</TabsTrigger>
+          <TabsTrigger value="transverse">2. Enine Denge Hesapları</TabsTrigger>
+          <TabsTrigger value="longitudinal">3. Boyuna Denge Hesapları</TabsTrigger>
           <TabsTrigger value="draft">4. Draft Survey</TabsTrigger>
-          <TabsTrigger value="density">5. Duba</TabsTrigger>
-          <TabsTrigger value="solas">6. SOLAS</TabsTrigger>
-          <TabsTrigger value="load">7. Yük</TabsTrigger>
+          <TabsTrigger value="density">5. Duba ve Yoğunluk Hesapları</TabsTrigger>
+          <TabsTrigger value="solas">6. SOLAS Stabilite Kriterleri</TabsTrigger>
+          <TabsTrigger value="load">7. Yük Hesapları</TabsTrigger>
         </TabsList>
 
         {/* 1. Giriş - Hogging ve Sagging Tespiti */}
@@ -514,6 +514,7 @@ export const ComprehensiveMaritimeCalculations = () => {
             <CardContent className="space-y-4">
               <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Hogging/Sagging = (dF + dA)/2 ile dM karşılaştırılır</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin vasat draftının baş/kıç draft ortalamasından büyük (Hogging) veya küçük (Sagging) olup olmadığını belirler.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Baş Draft (dF) - m</Label>
@@ -574,6 +575,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* GM Hesaplama */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">GM = KM - KG</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin metasantr yüksekliğini (GM) bulmak için kullanılır. GM &gt; 0 kararlı dengeyi gösterir.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>KB (m)</Label>
@@ -620,6 +622,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Yeni KG Hesaplama */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Yeni KG = Toplam Moment / Toplam Ağırlık</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Yükleme/tahliye sonrası ağırlık merkezinin yeni konumunu hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                   <div>
                     <Label>Toplam Moment (ton.m)</Label>
@@ -654,6 +657,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Meyil Açısı Hesaplama */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Meyil Açısı (θ) = tan⁻¹(GZ/GM) veya tan⁻¹(Yatırıcı Moment / Δ×GM)</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin yatma açısını derece cinsinden bulur.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
                     <Label>GZ (m) - opsiyonel</Label>
@@ -706,6 +710,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Bumba ile Kaldırma Sonrası GM Değişimi */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Bumba GM Değişimi = w × Yük Kolu / Δ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Vinç/bumba operasyonları sonrası GM'deki değişimi hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Ağırlık (w) - ton</Label>
@@ -749,6 +754,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Havuzlamada Kritik GM */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Kritik GM = P × KM / Δ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Havuzda kıç topuğun takaryaya temas ettiği andaki GM kaybını hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Basınç (P) - ton</Label>
@@ -806,6 +812,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Trim Değişimi */}
               <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Trim Değişimi = Toplam Moment / MCT</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Yükleme/tahliye sonrası trim değişimini santimetre cinsinden bulur.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                   <div>
                     <Label>Toplam Moment (ton.m)</Label>
@@ -840,6 +847,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Paralel Batma/Çıkma */}
               <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Paralel Batma = Yüklenen Yük / TPC</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin TPC değerine göre draft artış/azalışını hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                   <div>
                     <Label>Yüklenen Yük (ton)</Label>
@@ -874,6 +882,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Draft Düzeltmesi */}
               <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Draft Düzeltmesi = Trim × Mesafe / LBP</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Draft markalarının dikmelerle uyumsuzluğunda gerçek draftı bulur.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Trim (m)</Label>
@@ -931,6 +940,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* MMM Draft */}
               <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">MMM = (dF + dA + 6dM) / 8</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Üç noktadan alınan draftların ağırlıklı ortalamasını hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Baş Draft (dF) - m</Label>
@@ -974,6 +984,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* 1. Trim Düzeltmesi */}
               <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">1. Trim Düzeltmesi = Trim × LCF × TPC × 100 / LBP</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Trim etkisini deplasmanda düzeltir.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
                     <Label>Trim (m)</Label>
@@ -1026,6 +1037,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* 2. Trim Düzeltmesi */}
               <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">2. Trim Düzeltmesi = Trim² × MCT × 50 / LBP</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Trim karesinin deplasmandaki etkisini hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Trim (m)</Label>
@@ -1069,6 +1081,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Yoğunluk Düzeltmesi */}
               <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Yoğunluk Düzeltmesi = Δ × (ρgerçek/1.025 - 1)</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Deniz suyu yoğunluğu farkını deplasmanda düzeltir.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                   <div>
                     <Label>Deplasman (Δ) - ton</Label>
@@ -1117,6 +1130,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Blok Katsayısı */}
               <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Cb = V / (L × B × d)</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin su altı hacminin dolgunluğunu ölçer.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
                     <Label>Hacim (V) - m³</Label>
@@ -1169,6 +1183,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* FWA */}
               <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">FWA = Δ / (4 × TPC)</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Tatlı suda draft artışını milimetre cinsinden hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                   <div>
                     <Label>Deplasman (Δ) - ton</Label>
@@ -1203,6 +1218,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Yoğunluk Değişiminde Deplasman */}
               <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Yeni Deplasman = Δ × ρyeni / ρeski</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Farklı yoğunluktaki sularda deplasman değişimini bulur.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Deplasman (Δ) - ton</Label>
@@ -1260,6 +1276,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Kümelenme Açısı */}
               <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">θ = 57.3 × GHM / (Δ × GM) - SOLAS Limit: 12°</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Tahıl yükünün kayma açısını kontrol eder (SOLAS limit: 12°).</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>GHM (ton.m)</Label>
@@ -1306,6 +1323,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* GZ Kolu */}
               <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">GZ = KN - KG × sin θ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Belirli bir meyil açısındaki doğrultucu moment kolunu hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>KN (m)</Label>
@@ -1349,6 +1367,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Serbest Yüzey Etkisi */}
               <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">FSM = L × B³ / (12 × V)</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Tanklardaki sıvı hareketinin GM'de yarattığı azalmayı hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Uzunluk (L) - m</Label>
@@ -1392,6 +1411,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Yalpa Periyodu */}
               <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">T = Cb × B / √GM</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin doğal yalpa süresini saniye cinsinden bulur.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
                     <Label>Cb</Label>
@@ -1449,6 +1469,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Müsaade Edilen Yük Yüksekliği */}
               <div className="bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Yükseklik = SF × PL</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Ambar tabanına uygulanabilecek maksimum yük basıncını belirler.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                   <div>
                     <Label>SF (Güvenlik Faktörü)</Label>
@@ -1483,6 +1504,7 @@ export const ComprehensiveMaritimeCalculations = () => {
               {/* Sıcaklıkla Yoğunluk Değişimi */}
               <div className="bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Dyeni = Deski - [(Tyeni - Teski) × Katsayı]</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Sıcaklık değişimi ile yoğunluk değişimini hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                   <div>
                     <Label>Eski Yoğunluk (ton/m³)</Label>

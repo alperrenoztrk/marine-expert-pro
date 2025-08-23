@@ -63,7 +63,7 @@ npm install
 npm run build
 
 # 3. Deploy to Lovable
-# 🔗 URL: https://dfc3279a-089d-4d25-bff1-ff197bc24769.lovableproject.com
+# 🔗 URL: https://c91ef2fa-0890-438a-8151-84cda6639f91.lovableproject.com
 ```
 
 ### **🔧 Environment Setup:**

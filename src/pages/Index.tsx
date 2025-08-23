@@ -211,7 +211,7 @@ const Index = () => {
                   <Link to="/formulas">
                     <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-400 dark:hover:bg-gray-700 cyberpunk:border-purple-400 cyberpunk:text-purple-400 cyberpunk:hover:bg-gray-800 nature:border-purple-400 nature:text-purple-600 nature:hover:bg-purple-50">
                       <Brain className="w-4 h-4" />
-                      <span data-translatable>Soru Asistanı: Mark</span>
+                      <span data-translatable>Regülasyon Rehberi: Mark</span>
                     </Button>
                   </Link>
                                      <Link to="/regulations">
