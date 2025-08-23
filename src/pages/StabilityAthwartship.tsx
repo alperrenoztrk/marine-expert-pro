@@ -1,17 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
 
 export default function StabilityAthwartship() {
   const navigate = useNavigate();
+  const chartRef = useRef<HTMLDivElement>(null);
   const [geometry, setGeometry] = useState<ShipGeometry>({
     length: 180,
     breadth: 30,
@@ -25,6 +28,7 @@ export default function StabilityAthwartship() {
   });
   const [kg, setKg] = useState<number>(12);
   const [result, setResult] = useState<{ gm: number; stabilityRange: number; naturalPeriod: number } | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -32,6 +36,12 @@ export default function StabilityAthwartship() {
   };
 
   const handleCalculate = () => {
+    const v = HydrostaticUtils.validateShipGeometry(geometry);
+    setErrors(v.errors);
+    if (!v.isValid) {
+      setResult(null);
+      return;
+    }
     const res = HydrostaticUtils.calculateSmallAngleStability(geometry, kg);
     setResult(res);
   };
@@ -50,6 +60,16 @@ export default function StabilityAthwartship() {
     return points;
   }, [result, geometry.breadth]);
 
+  const handleExportPng = async () => {
+    if (chartRef.current) await exportNodeToPng(chartRef.current, 'gz-athwartship.png');
+  };
+
+  const handleExportCsv = () => {
+    if (!result) return;
+    const rows = chartData.map((r) => ({ angle: r.angle, gz: r.gz }));
+    exportToCsv(rows, 'gz-athwartship.csv');
+  };
+
   return (
     <div className="container mx-auto p-6 space-y-4">
       <Button variant="outline" size="sm" className="gap-2" onClick={() => navigate('/stability')}>
@@ -62,6 +82,17 @@ export default function StabilityAthwartship() {
           <CardTitle>Enine Stabilite (Küçük Açılar)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!!errors.length && (
+            <Alert variant="destructive">
+              <AlertTitle>Girdi Hatası</AlertTitle>
+              <AlertDescription>
+                <ul className="list-disc ml-4">
+                  {errors.map((e, i) => (<li key={i}>{e}</li>))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div>
               <Label>Uzunluk LBP (m)</Label>
@@ -105,22 +136,26 @@ export default function StabilityAthwartship() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
-            <Button variant="ghost" onClick={() => setResult(null)}>Temizle</Button>
+            <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
+            <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
+            <Button variant="ghost" onClick={() => { setResult(null); setErrors([]); }}>Temizle</Button>
           </div>
 
           {result && (
             <div className="space-y-4">
-              <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-56">
-                <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
-                  <CartesianGrid strokeDasharray="4 4" />
-                  <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
-                  <YAxis tickFormatter={(v) => `${v} m`} />
-                  <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
-                  <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ChartContainer>
+              <div ref={chartRef}>
+                <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-56">
+                  <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+                    <CartesianGrid strokeDasharray="4 4" />
+                    <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
+                    <YAxis tickFormatter={(v) => `${v} m`} />
+                    <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
+                    <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ChartContainer>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
                 <div className="rounded-md border p-3">

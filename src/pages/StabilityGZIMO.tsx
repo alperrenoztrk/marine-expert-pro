@@ -1,17 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
+import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
 
 export default function StabilityGZIMO() {
   const navigate = useNavigate();
+  const chartRef = useRef<HTMLDivElement>(null);
   const [geometry, setGeometry] = useState<ShipGeometry>({
     length: 180,
     breadth: 30,
@@ -27,6 +31,7 @@ export default function StabilityGZIMO() {
 
   const [data, setData] = useState<ReturnType<typeof HydrostaticCalculations.calculateStabilityData> | null>(null);
   const [imo, setImo] = useState<ReturnType<typeof HydrostaticCalculations.calculateIMOStabilityCriteria> | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -34,6 +39,13 @@ export default function StabilityGZIMO() {
   };
 
   const handleCalculate = () => {
+    const v = HydrostaticUtils.validateShipGeometry(geometry);
+    setErrors(v.errors);
+    if (!v.isValid) {
+      setData(null);
+      setImo(null);
+      return;
+    }
     const stability = HydrostaticCalculations.calculateStabilityData(geometry, kg);
     const imoCriteria = HydrostaticCalculations.calculateIMOStabilityCriteria(stability);
     setData(stability);
@@ -50,6 +62,15 @@ export default function StabilityGZIMO() {
     return data.angles.map((a, i) => ({ angle: a, gz: Number(data.gz[i].toFixed(3)) }));
   }, [data]);
 
+  const handleExportPng = async () => {
+    if (chartRef.current) await exportNodeToPng(chartRef.current, 'gz-curve.png');
+  };
+
+  const handleExportCsv = () => {
+    if (!data) return;
+    exportToCsv(data.angles.map((a, i) => ({ angle: a, gz: data.gz[i], moment_kNm: data.rightingMoment[i] / 1000 })), 'gz-curve.csv');
+  };
+
   return (
     <div className="container mx-auto p-6 space-y-4">
       <Button variant="outline" size="sm" className="gap-2" onClick={() => navigate('/stability')}>
@@ -62,6 +83,17 @@ export default function StabilityGZIMO() {
           <CardTitle>GZ Eğrisi ve IMO Kriterleri</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!!errors.length && (
+            <Alert variant="destructive">
+              <AlertTitle>Girdi Hatası</AlertTitle>
+              <AlertDescription>
+                <ul className="list-disc ml-4">
+                  {errors.map((e, i) => (<li key={i}>{e}</li>))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div>
               <Label>Uzunluk LBP (m)</Label>
@@ -89,25 +121,29 @@ export default function StabilityGZIMO() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
-            <Button variant="ghost" onClick={() => { setData(null); setImo(null); }}>Temizle</Button>
+            <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
+            <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
+            <Button variant="ghost" onClick={() => { setData(null); setImo(null); setErrors([]); }}>Temizle</Button>
           </div>
 
           {data && imo && (
             <div className="space-y-4">
-              <ChartContainer
-                config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }}
-                className="w-full h-60"
-              >
-                <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
-                  <CartesianGrid strokeDasharray="4 4" />
-                  <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
-                  <YAxis tickFormatter={(v) => `${v} m`} />
-                  <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
-                  <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ChartContainer>
+              <div ref={chartRef}>
+                <ChartContainer
+                  config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }}
+                  className="w-full h-60"
+                >
+                  <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+                    <CartesianGrid strokeDasharray="4 4" />
+                    <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
+                    <YAxis tickFormatter={(v) => `${v} m`} />
+                    <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
+                    <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ChartContainer>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-md border p-3">
