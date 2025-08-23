@@ -6,15 +6,31 @@ export interface AIMessage {
 
 import { supabase } from '@/integrations/supabase/client';
 
-const STABILITY_SYSTEM_PROMPT = `You are Stability Assistant, a maritime naval-architecture expert specialized in hydrostatics and stability.
-- Communicate in the user's language (inputs may be Turkish).
-- Guide the user step-by-step for ship stability calculations (GM, GZ, TPC, Trim/List, Draft Survey, IMO intact stability criteria, weather criterion).
-- For GM: ask for KB, BM, KG if known; or for geometry to estimate KB and BM; then compute GM = KB + BM - KG.
-- For TPC: ask Awp and water density (ρ), then TPC = Awp * ρ / 100.
-- For IMO intact stability checks: request GZ curve or use approximations; explain required thresholds (area 0–30≥0.055 mrad, 0–40≥0.09 mrad, max GZ≥0.20 m, initial GM≥0.15 m; note ship-type variations).
-- For cargo/tanker/ro-ro/passenger, remind relevant special checks (grain, FSC, weather criterion).
-- Always explicitly list the inputs you need and provide example values.
-- Keep responses concise, actionable, and in bullet points when asking for inputs.`;
+const MARITIME_REGULATIONS_SYSTEM_PROMPT = `You are Mark, a maritime regulations and information guidance expert specialized in helping seafarers find the correct maritime publications, regulations, and references.
+
+MAIN ROLE: Guide users to the correct maritime publications, books, codes, and references for specific information needs.
+
+EXPERTISE AREAS:
+- IMO Publications (SOLAS, MARPOL, STCW, etc.)
+- Navigation Publications (ALRS, NP, List of Lights, etc.)
+- Safety Publications (LSA Code, FSS Code, etc.)
+- Cargo Publications (IMSBC Code, IBC Code, etc.)
+- Communication Publications (GMDSS, Radio Regulations, etc.)
+- Port State Control Guidelines (PSC, MOU)
+- Flag State Requirements
+- Classification Society Rules
+
+RESPONSE STYLE:
+- Always specify the exact publication, volume, chapter, or section
+- Provide publication codes/numbers when available
+- Explain WHY that specific publication is authoritative
+- Include any relevant updates or amendments
+- Communicate in the user's language (Turkish/English)
+
+EXAMPLE FORMAT:
+"Weather fax frekansları için → ALRS Volume 3 (Radio Weather Services) kullanılır çünkü bu yayın tüm meteorolojik radyo istasyonlarının frekans, program ve teknik bilgilerini içerir."
+
+Keep responses precise, authoritative, and cite specific sources.`;
 
 async function callGemini(messages: AIMessage[]): Promise<string> {
   // Proxy through Supabase Edge Function to keep API key server-side and support images
@@ -78,7 +94,7 @@ async function callOpenAI(messages: AIMessage[]): Promise<string> {
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
-        { role: 'system', content: STABILITY_SYSTEM_PROMPT },
+        { role: 'system', content: MARITIME_REGULATIONS_SYSTEM_PROMPT },
         ...messages
       ],
       temperature: 0.2,
@@ -90,11 +106,11 @@ async function callOpenAI(messages: AIMessage[]): Promise<string> {
   return text.trim();
 }
 
-export async function callStabilityAssistant(messages: AIMessage[]): Promise<string> {
+export async function callMaritimeRegulationsAssistant(messages: AIMessage[]): Promise<string> {
   // Ensure system instruction is always included
   const withSystem: AIMessage[] = messages.some(m => m.role === 'system')
     ? messages
-    : [{ role: 'system', content: STABILITY_SYSTEM_PROMPT }, ...messages];
+    : [{ role: 'system', content: MARITIME_REGULATIONS_SYSTEM_PROMPT }, ...messages];
 
   // Try Google Cloud Gemini directly first with provided key
   try {
@@ -105,23 +121,48 @@ export async function callStabilityAssistant(messages: AIMessage[]): Promise<str
       return await callGemini(withSystem);
     } catch (e2) {
       console.error('Gemini Edge error', e2);
-      // Local heuristic fallback
+      // Local heuristic fallback for regulations queries
       const last = messages.filter(m=>m.role==='user').pop()?.content.toLowerCase() || '';
-      if (last.includes('gm')) {
+      
+      if (last.includes('weather fax') || last.includes('alrs')) {
         return [
-          'GM hesabı için gerekli veriler:',
-          '- KB (m), BM (m), KG (m)',
-          '- Yoksa: L, B, T ile KB≈T/2, BM≈B²/(12T) varsayımları',
-          'Lütfen KB, BM, KG veya L,B,T değerlerini paylaşın.'
+          '🌊 Weather Fax Frekansları:',
+          '→ ALRS Volume 3 (Radio Weather Services)',
+          '• Tüm meteorolojik radyo istasyonlarının frekans bilgileri',
+          '• Yayın programları ve teknik detaylar',
+          '• IMO tarafından onaylanmış resmi kaynak'
         ].join('\n');
       }
-      if (last.includes('tpc')) {
+      
+      if (last.includes('solas') || last.includes('güvenlik')) {
         return [
-          'TPC = Awp × ρ / 100',
-          'Gerekli veriler: Awp (m²), ρ (ton/m³, deniz suyu ≈ 1.025)'
+          '⚓ SOLAS Konvansiyonu:',
+          '→ IMO SOLAS 2020 Edition + Amendments',
+          '• Denizde İnsan Hayatının Güvenliği',
+          '• Tüm güvenlik prosedürleri ve ekipmanları',
+          '• Zorunlu kontrol listeleri'
         ].join('\n');
       }
-      return 'Hangi hesaplamayı yapmak istersiniz? (GM, GZ, TPC, Trim/List, Draft Survey, IMO kontrol)';
+      
+      if (last.includes('marpol') || last.includes('kirlilik')) {
+        return [
+          '🛢️ MARPOL Konvansiyonu:',
+          '→ IMO MARPOL 73/78 Consolidated Edition',
+          '• Gemilerden Kaynaklanan Kirlilik Önleme',
+          '• Annex I-VI detayları',
+          '• Oil Record Book gereksinimleri'
+        ].join('\n');
+      }
+      
+      return [
+        '📚 Maritime Regulations Assistant - Mark',
+        'Hangi konuda bilgi arıyorsunuz?',
+        '• Navigation (ALRS, NP, List of Lights)',
+        '• Safety (SOLAS, LSA Code, FSS Code)', 
+        '• Environment (MARPOL, Ballast Water)',
+        '• Cargo (IMSBC, IBC, Grain Code)',
+        '• Communication (GMDSS, Radio Regs)'
+      ].join('\n');
     }
   }
 }

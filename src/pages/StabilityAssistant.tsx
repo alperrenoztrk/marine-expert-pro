@@ -6,7 +6,7 @@ import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X, Camera, Plus,
 import { useNavigate, useLocation } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { callStabilityAssistant, type AIMessage } from "@/services/aiClient";
+import { callMaritimeRegulationsAssistant, type AIMessage } from "@/services/aiClient";
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { useToast } from "@/hooks/use-toast";
@@ -26,7 +26,7 @@ export default function StabilityAssistantPage() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Merhaba! Ben Stabilite Asistanınızım. Gemi stabilitesi, hidrostatik hesaplamalar, IMO kriterleri ve daha birçok konuda size yardımcı olabilirim. Görsel yükleyerek gemi planları, hesaplamalar veya diagramları analiz edebilirim. Hangi konuda yardıma ihtiyacınız var?',
+      content: 'Merhaba! Ben Mark, maritime regülasyonlar rehberinizim. Gemilerde hangi bilgiye nereden ulaşılması gerektiği konusunda size yardımcı olabilirim. Örneğin weather fax, ALRS, SOLAS, MARPOL gibi yayınlar hakkında sorular sorabilirsiniz. Hangi konuda bilgi arıyorsunuz?',
       timestamp: new Date()
     }
   ]);
@@ -73,7 +73,7 @@ export default function StabilityAssistantPage() {
 				} else {
 					// Seed with greeting
 					setMessages([
-						{ id: '1', role: 'assistant', content: 'Merhaba! Ben Stabilite Asistanınızım...', timestamp: new Date() }
+						{ id: '1', role: 'assistant', content: 'Merhaba! Ben Mark, maritime regülasyonlar rehberinizim. Gemilerde hangi bilgiye nereden ulaşılması gerektiği konusunda size yardımcı olabilirim.', timestamp: new Date() }
 					]);
 				}
 			} catch {}
@@ -326,7 +326,7 @@ export default function StabilityAssistantPage() {
         images: selectedImages.length > 0 ? selectedImages : undefined
       });
 
-      const response = await callStabilityAssistant(aiMessages);
+      const response = await callMaritimeRegulationsAssistant(aiMessages);
 
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -370,7 +370,7 @@ export default function StabilityAssistantPage() {
           </AvatarFallback>
         </Avatar>
         <div>
-          <h1 className="font-semibold text-lg">Stabilite Asistanı</h1>
+          <h1 className="font-semibold text-lg">Mark - Regülasyonlar Rehberi</h1>
 
         </div>
         <div className="ml-auto flex items-center gap-2">
@@ -549,7 +549,7 @@ export default function StabilityAssistantPage() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 onPaste={handlePaste}
-                placeholder="Stabilite hakkında soru sorun, görsel yükleyin veya yapıştırın..."
+                placeholder="Maritime regülasyonlar hakkında soru sorun, görsel yükleyin..."
                 className="min-h-[50px] resize-none"
                 disabled={isLoading}
               />
@@ -573,34 +573,34 @@ export default function StabilityAssistantPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("GM hesabı nasıl yapılır?")}
+              onClick={() => setInputMessage("Weather fax için ALRS'nin hangi cildi kullanılır?")}
               disabled={isLoading}
             >
-              GM Hesabı
+              Weather Fax
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("IMO stabilite kriterlerini açıkla")}
+              onClick={() => setInputMessage("SOLAS hangi konuları kapsar?")}
               disabled={isLoading}
             >
-              IMO Kriterleri
+              SOLAS
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("TPC nedir ve nasıl hesaplanır?")}
+              onClick={() => setInputMessage("MARPOL Annex I nedir?")}
               disabled={isLoading}
             >
-              TPC Hesabı
+              MARPOL
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("Gemi stabilitesi nedir?")}
+              onClick={() => setInputMessage("Port State Control için hangi kılavuz kullanılır?")}
               disabled={isLoading}
             >
-              Stabilite Nedir?
+              PSC Kılavuzu
             </Button>
           </div>
         </div>
