@@ -31,10 +31,32 @@ export default function StabilityLongitudinal() {
   const [angle, setAngle] = useState<number>(20);
   const [result, setResult] = useState<{ gz: number; rightingMoment: number; stabilityIndex: number } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
+  
+  // Longitudinal stability example data
+  const exampleData = {
+    length: 180,
+    breadth: 30,
+    depth: 18,
+    draft: 12,
+    blockCoefficient: 0.75,
+    waterplaneCoefficient: 0.85,
+    midshipCoefficient: 0.98,
+    prismaticCoefficient: 0.77,
+    verticalPrismaticCoefficient: 0.75,
+    kg: 13.5
+  };
 
   const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
     setGeometry((prev) => ({ ...prev, [key]: isNaN(value) ? 0 : value }));
+  };
+
+  const loadExampleData = () => {
+    setGeometry(exampleData);
+    setKg(exampleData.kg);
+    setAngle(20);
+    setErrors([]);
+    setResult(null);
   };
 
   const handleCalculate = () => {
@@ -133,6 +155,7 @@ export default function StabilityLongitudinal() {
 
           <div className="flex flex-wrap gap-2">
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
+            <Button variant="secondary" onClick={loadExampleData}>Örnek Veri Yükle</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
             <Button variant="ghost" onClick={() => { setResult(null); setErrors([]); }}>Temizle</Button>
@@ -151,21 +174,44 @@ export default function StabilityLongitudinal() {
           </div>
 
           {result && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
-              <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">GZ</div>
-                <div className="text-xl font-semibold">{result.gz.toFixed(3)} m</div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">GZ</div>
+                  <div className="text-xl font-semibold">{result.gz.toFixed(3)} m</div>
+                </div>
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">Doğrultucu Moment</div>
+                  <div className="text-xl font-semibold">{result.rightingMoment.toFixed(0)} kNm</div>
+                </div>
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">Stabilite İndeksi</div>
+                  <div className="text-xl font-semibold">{result.stabilityIndex.toFixed(3)}</div>
+                </div>
               </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">Doğrultucu Moment</div>
-                <div className="text-xl font-semibold">{result.rightingMoment.toFixed(0)} kNm</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">Stabilite İndeksi</div>
-                <div className="text-xl font-semibold">{result.stabilityIndex.toFixed(3)}</div>
+              
+              <div className="bg-muted/50 rounded-lg p-4">
+                <h4 className="font-semibold mb-2">📈 Özet Sonuçlar</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>Deplasman: {(geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025).toFixed(0)} ton</div>
+                  <div>LCG: {(geometry.length * 0.485).toFixed(1)} m (yaklaşık)</div>
+                  <div>Trim açısı: {angle}°</div>
+                  <div>GM boyuna: {(result.gz / Math.sin(angle * Math.PI / 180)).toFixed(2)} m (tahmini)</div>
+                </div>
               </div>
             </div>
           )}
+          
+          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-4">
+            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">ℹ️ Boyuna Stabilite Bilgileri</h4>
+            <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
+              <div><strong>Trim:</strong> Trim = (T_kıç - T_baş) / LBP</div>
+              <div><strong>MCT (Moment to Change Trim):</strong> MCT = (Δ × GM_L × B²) / (12 × L)</div>
+              <div><strong>Trim değişimi:</strong> ΔTrim = (W × d) / MCT</div>
+              <div><strong>LCF:</strong> Longitudinal Center of Flotation - trim ekseni</div>
+              <div><strong>LCG:</strong> Longitudinal Center of Gravity - ağırlık merkezi</div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
