@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Gauge, Ruler, Timer, Waves } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -144,7 +144,7 @@ export default function StabilityAthwartship() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 sticky top-0 z-10 bg-white/70 dark:bg-slate-900/50 backdrop-blur px-2 py-2 rounded-md border">
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
@@ -173,7 +173,7 @@ export default function StabilityAthwartship() {
           {result && (
             <div className="space-y-4">
               <div ref={chartRef}>
-                <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-56">
+                <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-72">
                   <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
                     <CartesianGrid strokeDasharray="4 4" />
                     <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
@@ -185,21 +185,33 @@ export default function StabilityAthwartship() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-2">
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">GM</div>
-                  <div className="text-xl font-semibold">{result.gm.toFixed(3)} m</div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">GM</div>
+                    <div className="text-xl font-semibold">{result.gm.toFixed(3)} m</div>
+                  </div>
+                  <Gauge className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">Pozitif Stabilite Aralığı</div>
-                  <div className="text-xl font-semibold">{result.stabilityRange.toFixed(1)}°</div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Pozitif Stabilite Aralığı</div>
+                    <div className="text-xl font-semibold">{result.stabilityRange.toFixed(1)}°</div>
+                  </div>
+                  <Waves className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">Doğal Periyot</div>
-                  <div className="text-xl font-semibold">{result.naturalPeriod.toFixed(2)} s</div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Doğal Periyot</div>
+                    <div className="text-xl font-semibold">{result.naturalPeriod.toFixed(2)} s</div>
+                  </div>
+                  <Timer className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">Güverte Kenarı Dalma</div>
-                  <div className="text-xl font-semibold">{result.deckEdgeAngle.toFixed(1)}°</div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Güverte Kenarı Dalma</div>
+                    <div className="text-xl font-semibold">{result.deckEdgeAngle.toFixed(1)}°</div>
+                  </div>
+                  <Ruler className="h-6 w-6 text-muted-foreground" />
                 </div>
               </div>
             </div>

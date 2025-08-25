@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Gauge, Activity, TrendingUp, Ruler } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,6 +74,7 @@ export default function StabilityLongitudinal() {
     const points = HydrostaticCalculations.generateGZCurve(geometry, kg, 0, 90, 1);
     return points.map((p) => ({ angle: p.angle, gz: Number(p.gz.toFixed(3)) }));
   }, [geometry, kg]);
+  const centers = useMemo(() => HydrostaticCalculations.calculateCenterPoints(geometry, kg), [geometry, kg]);
 
   const handleExportPng = async () => {
     if (chartRef.current) await exportNodeToPng(chartRef.current, 'gz-longitudinal.png');
@@ -153,7 +154,7 @@ export default function StabilityLongitudinal() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 sticky top-0 z-10 bg-white/70 dark:bg-slate-900/50 backdrop-blur px-2 py-2 rounded-md border">
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
             <Button variant="secondary" onClick={loadExampleData}>Örnek Veri Yükle</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
@@ -162,7 +163,7 @@ export default function StabilityLongitudinal() {
           </div>
 
           <div ref={chartRef}>
-            <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-56">
+            <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-72">
               <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
                 <CartesianGrid strokeDasharray="4 4" />
                 <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
@@ -175,18 +176,34 @@ export default function StabilityLongitudinal() {
 
           {result && (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">GZ</div>
-                  <div className="text-xl font-semibold">{result.gz.toFixed(3)} m</div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">GZ</div>
+                    <div className="text-xl font-semibold">{result.gz.toFixed(3)} m</div>
+                  </div>
+                  <Gauge className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">Doğrultucu Moment</div>
-                  <div className="text-xl font-semibold">{result.rightingMoment.toFixed(0)} kNm</div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Doğrultucu Moment</div>
+                    <div className="text-xl font-semibold">{result.rightingMoment.toFixed(0)} kNm</div>
+                  </div>
+                  <Activity className="h-6 w-6 text-muted-foreground" />
                 </div>
-                <div className="rounded-md border p-3">
-                  <div className="text-xs text-muted-foreground">Stabilite İndeksi</div>
-                  <div className="text-xl font-semibold">{result.stabilityIndex.toFixed(3)}</div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Stabilite İndeksi</div>
+                    <div className="text-xl font-semibold">{result.stabilityIndex.toFixed(3)}</div>
+                  </div>
+                  <TrendingUp className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <div className="rounded-md border p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">GM Boyuna (GMl)</div>
+                    <div className="text-xl font-semibold">{centers.gml.toFixed(2)} m</div>
+                  </div>
+                  <Ruler className="h-6 w-6 text-muted-foreground" />
                 </div>
               </div>
               
@@ -196,7 +213,7 @@ export default function StabilityLongitudinal() {
                   <div>Deplasman: {(geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025).toFixed(0)} ton</div>
                   <div>LCG: {(geometry.length * 0.485).toFixed(1)} m (yaklaşık)</div>
                   <div>Trim açısı: {angle}°</div>
-                  <div>GM boyuna: {(result.gz / Math.sin(angle * Math.PI / 180)).toFixed(2)} m (tahmini)</div>
+                  <div>GM boyuna (GMl): {centers.gml.toFixed(2)} m</div>
                 </div>
               </div>
             </div>

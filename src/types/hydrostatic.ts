@@ -40,15 +40,23 @@ export interface CenterPoints {
   lcf: number; // Longitudinal Center of Flotation
   vcf: number; // Vertical Center of Flotation
   kb: number; // Center of Buoyancy above keel
-  km: number; // Metacentric height
-  bm: number; // Metacentric radius
+  // Transverse metacentric values (default legacy km/bm/gm map to transverse)
+  km: number; // Transverse metacentric height (KMt)
+  bm: number; // Transverse metacentric radius (BMt)
   kg: number; // Center of Gravity above keel
-  gm: number; // Metacentric height
+  gm: number; // Transverse metacentric height GMt (legacy alias)
+  // Explicit transverse and longitudinal breakdown
+  kmt: number; // KM (transverse)
+  bmt: number; // BM (transverse)
+  gmt: number; // GM (transverse)
+  kml: number; // KM (longitudinal)
+  bml: number; // BM (longitudinal)
+  gml: number; // GM (longitudinal)
 }
 
 export interface HydrostaticCoefficients {
   tpc: number; // Tonnes Per Centimeter immersion
-  mtc: number; // Moment to Change Trim
+  mtc1cm: number; // Moment to Change Trim by 1 cm (t-m/cm)
   lcf: number; // Longitudinal Center of Flotation
   wpa: number; // Waterplane Area
   kb: number; // Center of Buoyancy
@@ -85,7 +93,7 @@ export interface TrimAndList {
   trimChange: number; // Trim change in meters
   listAngle: number; // List angle in degrees
   listMoment: number; // List moment
-  mct: number; // Moment to Change Trim
+  mct1cm: number; // Moment to Change Trim by 1 cm (t-m/cm)
   trimCorrection: number; // Trim correction
   listCorrection: number; // List correction
   draftCorrection: number; // Draft reading correction

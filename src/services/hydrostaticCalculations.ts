@@ -95,21 +95,34 @@ export class HydrostaticCalculations {
     const lcf = geometry.length * 0.5; // Simplified LCF calculation
     const vcf = 0; // VCF is at waterline
     const kb = geometry.draft * 0.5; // Simplified KB calculation
-    const bm = this.calculateBM(geometry);
-    const km = kb + bm;
-    const gm = km - kg;
-    
-    return { lcb, vcb, lcf, vcf, kb, km, bm, kg, gm };
+    const bmt = this.calculateBMT(geometry);
+    const bml = this.calculateBML(geometry);
+    const kmt = kb + bmt;
+    const kml = kb + bml;
+    const gmt = kmt - kg;
+    const gml = kml - kg;
+    // Legacy aliases map to transverse values
+    const bm = bmt;
+    const km = kmt;
+    const gm = gmt;
+    return { lcb, vcb, lcf, vcf, kb, km, bm, kg, gm, kmt, bmt, gmt, kml, bml, gml } as CenterPoints;
   }
 
   /**
    * Calculate BM (Metacentric radius)
    */
-  private static calculateBM(geometry: ShipGeometry): number {
-    const momentOfInertia = (geometry.length * Math.pow(geometry.breadth, 3)) / 12;
+  private static calculateBMT(geometry: ShipGeometry): number {
+    // Transverse waterplane second moment (about centerline): I_T ≈ Cw * L * B^3 / 12
+    const it = geometry.waterplaneCoefficient * (geometry.length * Math.pow(geometry.breadth, 3)) / 12;
     const volumeDisplacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient;
-    
-    return momentOfInertia / volumeDisplacement;
+    return volumeDisplacement > 0 ? it / volumeDisplacement : 0;
+  }
+
+  private static calculateBML(geometry: ShipGeometry): number {
+    // Longitudinal waterplane second moment (about transverse axis through LCF): I_L ≈ Cw * B * L^3 / 12
+    const il = geometry.waterplaneCoefficient * (geometry.breadth * Math.pow(geometry.length, 3)) / 12;
+    const volumeDisplacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient;
+    return volumeDisplacement > 0 ? il / volumeDisplacement : 0;
   }
 
   /**
@@ -118,23 +131,24 @@ export class HydrostaticCalculations {
   static calculateHydrostaticCoefficients(geometry: ShipGeometry): HydrostaticCoefficients {
     const wpa = this.calculateWaterplaneArea(geometry);
     const tpc = wpa * this.WATER_DENSITY / 100; // TPC in tonnes per cm
-    const mtc = this.calculateMTC(geometry);
+    const mtc1cm = this.calculateMCT1cm(geometry, /* kg */ 0); // kg will be subtracted later if needed
     const lcf = geometry.length * 0.5; // Simplified LCF
     const kb = geometry.draft * 0.5; // Simplified KB
-    const bm = this.calculateBM(geometry);
+    const bm = this.calculateBMT(geometry);
     const km = kb + bm;
-    
-    return { tpc, mtc, lcf, wpa, kb, km, bm };
+    return { tpc, mtc1cm, lcf, wpa, kb, km, bm } as HydrostaticCoefficients;
   }
 
   /**
    * Calculate MTC (Moment to Change Trim)
    */
-  private static calculateMTC(geometry: ShipGeometry): number {
-    const momentOfInertia = (geometry.breadth * Math.pow(geometry.length, 3)) / 12;
-    const volumeDisplacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient;
-    
-    return momentOfInertia / volumeDisplacement;
+  private static calculateMCT1cm(geometry: ShipGeometry, kg: number): number {
+    // MCT1cm (t-m/cm) ≈ (Δ · GM_l) / (100 · L)
+    const { displacement } = this.calculateDisplacement(geometry); // tonnes
+    const centers = this.calculateCenterPoints(geometry, kg);
+    const gml = centers.gml; // meters
+    if (geometry.length <= 0) return 0;
+    return (displacement * gml) / (100 * geometry.length);
   }
 
   /**
@@ -174,7 +188,7 @@ export class HydrostaticCalculations {
     downfloodingAngle = this.calculateDownfloodingAngle(geometry);
     equalizedAngle = this.calculateEqualizedAngle(geometry);
     
-    const gm = this.calculateCenterPoints(geometry, kg).gm;
+    const gm = this.calculateCenterPoints(geometry, kg).gmt;
     
     return {
       gm,
@@ -195,7 +209,7 @@ export class HydrostaticCalculations {
    */
   private static calculateGZ(geometry: ShipGeometry, kg: number, angle: number): number {
     const angleRad = (angle * Math.PI) / 180;
-    const km = this.calculateCenterPoints(geometry, kg).km;
+    const km = this.calculateCenterPoints(geometry, kg).kmt; // transverse KM
     
     // Simplified GZ calculation using wall-sided formula
     const gz = (km - kg) * Math.sin(angleRad) - 0.5 * geometry.breadth * Math.pow(Math.sin(angleRad), 2);
@@ -406,11 +420,13 @@ export class HydrostaticCalculations {
     const totalWeight = weightDistribution.reduce((sum, item) => sum + item.weight, 0);
     const totalMoment = weightDistribution.reduce((sum, item) => sum + item.moment, 0);
     
-    const trimAngle = Math.atan2(totalMoment, totalWeight * geometry.length) * 180 / Math.PI;
-    const trimChange = Math.abs(totalMoment) / this.calculateMTC(geometry);
+    // MCT1cm in t-m per cm; totalMoment assumed t-m
+    const mtc1cm = this.calculateMCT1cm(geometry, 0);
+    const trimChange = mtc1cm > 0 ? (Math.abs(totalMoment) / mtc1cm) / 100 : 0; // meters
+    const trimAngle = Math.atan2(trimChange, geometry.length) * 180 / Math.PI;
     const listAngle = this.calculateListAngle(weightDistribution, tanks);
     const listMoment = this.calculateListMoment(weightDistribution, tanks);
-    const mct = this.calculateMTC(geometry);
+    const mct1cmValue = mtc1cm;
     
     const trimCorrection = this.calculateTrimCorrection(geometry, trimAngle);
     const listCorrection = this.calculateListCorrection(geometry, listAngle);
@@ -421,7 +437,7 @@ export class HydrostaticCalculations {
       trimChange,
       listAngle,
       listMoment,
-      mct,
+      mct1cm: mct1cmValue,
       trimCorrection,
       listCorrection,
       draftCorrection
@@ -839,12 +855,15 @@ export class HydrostaticCalculations {
       sectionalAreas: hydrostaticGeom.sectionalAreas
     };
 
+    const freeSurfaceCorrections = this.calculateFreeSurfaceCorrectionsAdvanced(geometry, tanks);
+    const totalFSC = this.calculateTotalFSC(freeSurfaceCorrections);
+    const kgCorrected = kg + Math.max(0, totalFSC);
     const centers = this.calculateCenterPoints(geometry, kg);
     const coefficients = this.calculateHydrostaticCoefficients(geometry);
 
     // If cross curves provided, build stability data using them
     const angles = Array.from({ length: 91 }, (_, i) => i);
-    const gzValues = angles.map(a => this.calculateGZWithCrossCurves(geometry, kg, a, options?.crossCurves));
+    const gzValues = angles.map(a => this.calculateGZWithCrossCurves(geometry, kgCorrected, a, options?.crossCurves));
     const rightingMoments = gzValues.map(gz => gz * this.calculateDisplacement(geometry).displacement * this.GRAVITY);
     let maxGz = 0;
     let maxGzAngle = 0;
@@ -854,7 +873,7 @@ export class HydrostaticCalculations {
       if (gz <= 0 && vanishingAngle === 0 && angles[idx] > 0) { vanishingAngle = angles[idx]; }
     });
     const stability = options?.crossCurves ? {
-      gm: this.calculateCenterPoints(geometry, kg).gm,
+      gm: this.calculateCenterPoints(geometry, kgCorrected).gmt,
       gz: gzValues,
       rightingMoment: rightingMoments,
       angles,
@@ -864,14 +883,13 @@ export class HydrostaticCalculations {
       deckEdgeAngle: this.calculateDeckEdgeAngle(geometry),
       downfloodingAngle: this.calculateDownfloodingAngle(geometry),
       equalizedAngle: this.calculateEqualizedAngle(geometry)
-    } as StabilityData : this.calculateStabilityData(geometry, kg);
+    } as StabilityData : this.calculateStabilityData(geometry, kgCorrected);
 
     const imoCriteria = this.calculateIMOStabilityCriteria(stability);
     const trimList = this.calculateTrimAndList(geometry, weightDistribution, tanks);
     const damageStability = this.calculateDamageStability(geometry, kg, floodedCompartments);
     const grainStability = this.calculateGrainStability(geometry, grainShiftMoment, grainHeelAngle);
     const dynamicStability = this.calculateDynamicStability(geometry, stability, weightDistribution);
-    const freeSurfaceCorrections = this.calculateFreeSurfaceCorrectionsAdvanced(geometry, tanks);
     const draftSurvey = this.calculateDraftSurvey(geometry.draft, geometry.draft, geometry.draft, geometry);
 
     return {

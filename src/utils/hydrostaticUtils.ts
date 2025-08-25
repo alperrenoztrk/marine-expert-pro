@@ -317,18 +317,17 @@ export class HydrostaticUtils {
    */
   private static calculateKM(geometry: ShipGeometry): number {
     const kb = geometry.draft * 0.5; // Simplified KB calculation
-    const bm = this.calculateBM(geometry);
+    const bm = this.calculateBMT(geometry);
     return kb + bm;
   }
 
   /**
    * Calculate BM
    */
-  private static calculateBM(geometry: ShipGeometry): number {
-    const momentOfInertia = (geometry.length * Math.pow(geometry.breadth, 3)) / 12;
+  private static calculateBMT(geometry: ShipGeometry): number {
+    const it = geometry.waterplaneCoefficient * (geometry.length * Math.pow(geometry.breadth, 3)) / 12;
     const volumeDisplacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient;
-    
-    return momentOfInertia / volumeDisplacement;
+    return volumeDisplacement > 0 ? it / volumeDisplacement : 0;
   }
 
   /**
