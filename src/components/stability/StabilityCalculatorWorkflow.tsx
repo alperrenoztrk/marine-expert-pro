@@ -1,459 +1,451 @@
-// Comprehensive Stability Calculator - Step-by-step Workflow UI
+import React, { useState, useCallback } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Download, Calculator, Ship, BarChart3, Settings, FileText } from "lucide-react";
+import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
+import { ShipGeometry } from "../../types/hydrostatic";
+import { useToast } from "@/hooks/use-toast";
+import { EnhancedStabilityChart } from "./EnhancedStabilityChart";
+import { StabilityProfileManager } from "./StabilityProfileManager";
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Ship, Upload, Calculator, BarChart3, CheckCircle, AlertTriangle, Download, RefreshCw, Eye, Settings } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { StabilityCalculationEngine } from '../../services/stabilityCalculationEngine';
-import { VesselData, LoadingCase } from '../../types/vessel';
-type WorkflowStep = 'vessel' | 'loading' | 'calculate' | 'curve' | 'criteria' | 'results';
-interface StabilityCalculatorWorkflowProps {
-  className?: string;
-}
-export const StabilityCalculatorWorkflow: React.FC<StabilityCalculatorWorkflowProps> = ({
-  className = ''
-}) => {
-  const {
-    toast
-  } = useToast();
+export const StabilityCalculatorWorkflow: React.FC = () => {
+  const { toast } = useToast();
+  const [geometry, setGeometry] = useState<ShipGeometry>({
+    length: 150,
+    breadth: 25,
+    depth: 12,
+    draft: 8.5,
+    blockCoefficient: 0.82,
+    waterplaneCoefficient: 0.85,
+    midshipCoefficient: 0.98,
+    prismaticCoefficient: 0.75,
+    verticalPrismaticCoefficient: 0.85
+  });
 
-  // Workflow state
-  const [currentStep, setCurrentStep] = useState<WorkflowStep>('vessel');
-  const [completedSteps, setCompletedSteps] = useState<WorkflowStep[]>([]);
-
-  // Data states
-  const [vessel, setVessel] = useState<VesselData | null>(null);
-  const [loading, setLoading] = useState<LoadingCase | null>(null);
+  const [kg, setKg] = useState(7.5);
   const [results, setResults] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("input");
   const [calculating, setCalculating] = useState(false);
 
-  // Example vessel data for quick start
-  const [exampleVessel] = useState<VesselData>({
-    name: 'MV Example',
-    Lpp: 120.0,
-    B: 20.0,
-    D: 12.0,
-    DWT: 8000.0,
-    maxDisplacement: 11500.0,
-    lightship: {
-      weight: 3500.0,
-      KG: 6.5,
-      LCG: 60.0,
-      TCG: 0.0
-    },
-    hydrostatics: {
-      T_values: [4.0, 5.0, 6.0, 7.0, 8.0],
-      Delta: [5000, 6000, 7100, 8300, 9600],
-      KB: [2.8, 3.0, 3.2, 3.4, 3.6],
-      KMt: [7.2, 7.0, 6.85, 6.75, 6.7],
-      KN: {
-        phi_deg: [0, 10, 20, 30, 40, 50, 60],
-        'T=6.0': [0.0, 0.17, 0.33, 0.48, 0.60, 0.68, 0.70]
-      }
-    },
-    tanks: [{
-      id: 'FO1',
-      rho: 0.85,
-      capacity_m3: 200.0,
-      fsm_table: [[0, 0], [25, 0.6], [50, 1.0], [75, 0.7], [100, 0]],
-      lcg: 20.0,
-      tcg: 4.0,
-      vcg: 3.0
-    }, {
-      id: 'DB_Port',
-      rho: 1.025,
-      capacity_m3: 300.0,
-      fsm_table: [[0, 0], [25, 0.8], [50, 1.2], [75, 0.9], [100, 0]],
-      lcg: 80.0,
-      tcg: -5.0,
-      vcg: 2.0
-    }],
-    downflooding_angle_deg: 52.0
-  });
-  const [exampleLoading] = useState<LoadingCase>({
-    name: 'Example Loading',
-    items: [{
-      name: 'Cargo Hold 1',
-      weight: 1200.0,
-      lcg: 40.0,
-      tcg: 0.0,
-      vcg: 4.0
-    }, {
-      name: 'Deck Cargo',
-      weight: 300.0,
-      lcg: 80.0,
-      tcg: 1.0,
-      vcg: 10.0
-    }],
-    tanks: [{
-      id: 'FO1',
-      fill_percent: 60
-    }, {
-      id: 'DB_Port',
-      fill_percent: 30
-    }]
-  });
+  const handleInputChange = useCallback((field: keyof ShipGeometry, value: number) => {
+    setGeometry(prev => ({ ...prev, [field]: value }));
+  }, []);
 
-  // Step progress calculation
-  const getProgress = () => {
-    const steps: WorkflowStep[] = ['vessel', 'loading', 'calculate', 'curve', 'criteria', 'results'];
-    const currentIndex = steps.indexOf(currentStep);
-    return (currentIndex + 1) / steps.length * 100;
-  };
-
-  // Load example data
-  const loadExampleData = () => {
-    setVessel(exampleVessel);
-    setLoading(exampleLoading);
-    setCompletedSteps(['vessel', 'loading']);
-    toast({
-      title: 'Example Data Loaded',
-      description: 'Sample vessel and loading data has been loaded for testing.'
-    });
-  };
-
-  // Perform calculations
-  const performCalculations = async () => {
-    if (!vessel || !loading) {
-      toast({
-        title: 'Missing Data',
-        description: 'Please complete vessel and loading data first.',
-        variant: 'destructive'
-      });
-      return;
-    }
+  const performCalculations = useCallback(async () => {
     setCalculating(true);
     try {
-      const calculationResults = StabilityCalculationEngine.performCompleteAnalysis(vessel, loading);
-      setResults(calculationResults);
-      setCompletedSteps(prev => [...new Set([...prev, 'calculate' as WorkflowStep, 'curve' as WorkflowStep, 'criteria' as WorkflowStep])]);
-      setCurrentStep('results');
+      // Perform comprehensive stability analysis
+      const displacement = HydrostaticCalculations.calculateDisplacement(geometry);
+      const centers = HydrostaticCalculations.calculateCenterPoints(geometry, kg);
+      const stability = HydrostaticCalculations.calculateStabilityData(geometry, kg);
+      const imoCriteria = HydrostaticCalculations.calculateIMOStabilityCriteria(stability);
+      const coefficients = HydrostaticCalculations.calculateHydrostaticCoefficients(geometry);
+      
+      // Generate detailed GZ curve data
+      const gzCurveData = stability.angles.map((angle, index) => ({
+        angle,
+        gz: stability.gz[index],
+        rightingMoment: stability.rightingMoment[index] / 1000, // Convert to kN·m
+        kn: HydrostaticCalculations.calculateKNApprox(geometry, kg, angle)
+      }));
+
+      // Calculate critical points
+      const criticalPoints = {
+        maxGZ: { angle: stability.maxGzAngle, value: stability.maxGz },
+        vanishingAngle: stability.vanishingAngle,
+        deckEdgeAngle: stability.deckEdgeAngle,
+        downfloodingAngle: stability.downfloodingAngle
+      };
+
+      const newResults = {
+        geometry,
+        kg,
+        displacement,
+        centers,
+        stability,
+        imoCriteria,
+        coefficients,
+        gzCurveData,
+        criticalPoints,
+        timestamp: Date.now()
+      };
+
+      setResults(newResults);
+      setActiveTab("results");
+
       toast({
-        title: 'Calculations Complete',
-        description: 'Stability analysis has been completed successfully.',
-        className: 'bg-green-50 border-green-200'
+        title: "Calculations Complete",
+        description: `Stability analysis completed. IMO compliance: ${imoCriteria.compliance ? 'PASS' : 'FAIL'}`
       });
+
     } catch (error) {
-      console.error('Calculation error:', error);
       toast({
-        title: 'Calculation Error',
-        description: 'An error occurred during calculations. Please check your data.',
-        variant: 'destructive'
+        title: "Calculation Error",
+        description: "Please check your input values and try again",
+        variant: "destructive"
       });
     } finally {
       setCalculating(false);
     }
-  };
+  }, [geometry, kg, toast]);
 
-  // Render different workflow steps
-  const renderVesselStep = () => <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Ship className="h-5 w-5" />
-          Step 1: Vessel Data
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="lpp">LBP (m)</Label>
-            <Input id="lpp" type="number" value={vessel?.Lpp || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            Lpp: parseFloat(e.target.value) || 0
-          })} placeholder="120.0" />
-          </div>
-          <div>
-            <Label htmlFor="breadth">Breadth (m)</Label>
-            <Input id="breadth" type="number" value={vessel?.B || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            B: parseFloat(e.target.value) || 0
-          })} placeholder="20.0" />
-          </div>
-          <div>
-            <Label htmlFor="depth">DEPTH (m)</Label>
-            <Input id="depth" type="number" value={vessel?.D || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            D: parseFloat(e.target.value) || 0
-          })} placeholder="12.0" />
-          </div>
-        </div>
+  const handleLoadProfile = useCallback((newGeometry: ShipGeometry, newKg: number) => {
+    setGeometry(newGeometry);
+    setKg(newKg);
+    setResults(null); // Clear previous results
+  }, []);
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <Label htmlFor="lightship-weight">Lightship Weight (t)</Label>
-            <Input id="lightship-weight" type="number" value={vessel?.lightship.weight || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            lightship: {
-              ...vessel.lightship,
-              weight: parseFloat(e.target.value) || 0
-            }
-          })} placeholder="3500" />
-          </div>
-          <div>
-            <Label htmlFor="kg">Lightship KG (m)</Label>
-            <Input id="kg" type="number" value={vessel?.lightship.KG || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            lightship: {
-              ...vessel.lightship,
-              KG: parseFloat(e.target.value) || 0
-            }
-          })} placeholder="6.5" />
-          </div>
-          <div>
-            <Label htmlFor="lcg">Lightship LCG (m)</Label>
-            <Input id="lcg" type="number" value={vessel?.lightship.LCG || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            lightship: {
-              ...vessel.lightship,
-              LCG: parseFloat(e.target.value) || 0
-            }
-          })} placeholder="60.0" />
-          </div>
-          <div>
-            <Label htmlFor="tcg">Lightship TCG (m)</Label>
-            <Input id="tcg" type="number" value={vessel?.lightship.TCG || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            lightship: {
-              ...vessel.lightship,
-              TCG: parseFloat(e.target.value) || 0
-            }
-          })} placeholder="0.0" />
-          </div>
-        </div>
+  const exportResults = useCallback(() => {
+    if (!results) return;
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="dwt">Deadweight (DWT) (t)</Label>
-            <Input id="dwt" type="number" value={vessel?.DWT || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            DWT: parseFloat(e.target.value) || 0
-          })} placeholder="8000" />
-          </div>
-          <div>
-            <Label htmlFor="max-displacement">Max Displacement (t)</Label>
-            <Input id="max-displacement" type="number" value={vessel?.maxDisplacement || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            maxDisplacement: parseFloat(e.target.value) || 0
-          })} placeholder="11500" />
-          </div>
-          <div>
-            <Label htmlFor="downflooding">Downflooding Angle (°)</Label>
-            <Input id="downflooding" type="number" value={vessel?.downflooding_angle_deg || ''} onChange={e => vessel && setVessel({
-            ...vessel,
-            downflooding_angle_deg: parseFloat(e.target.value) || 0
-          })} placeholder="52.0" />
-          </div>
-        </div>
+    const exportData = {
+      ...results,
+      exportedAt: new Date().toISOString(),
+      calculationSummary: {
+        vesselName: `Vessel_${geometry.length}x${geometry.breadth}`,
+        displacement: results.displacement.displacement,
+        gm: results.centers.gmt,
+        maxGZ: results.stability.maxGz,
+        imoCompliance: results.imoCriteria.compliance
+      }
+    };
 
-        <div className="space-y-2">
-          <Button onClick={loadExampleData} variant="outline" className="w-full">
-            <Upload className="h-4 w-4 mr-2" />
-            Load Example Vessel Data
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            Load sample vessel data including hydrostatic tables and tank geometry
-          </p>
-        </div>
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: 'application/json'
+    });
 
-        {vessel && <div className="mt-4">
-            <Badge variant="outline" className="bg-green-50">
-              ✓ Vessel data loaded: {vessel.name}
-            </Badge>
-          </div>}
-      </CardContent>
-    </Card>;
-  const renderLoadingStep = () => <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          Step 2: Loading Condition
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {loading && <>
-            <div>
-              <h4 className="font-semibold mb-2">Loading Items</h4>
-              <div className="space-y-2">
-                {loading.items.map((item, index) => <div key={index} className="grid grid-cols-4 gap-2 p-2 bg-gray-50 rounded">
-                    <span className="font-medium">{item.name}</span>
-                    <span>{item.weight} t</span>
-                    <span>LCG: {item.lcg}m</span>
-                    <span>VCG: {item.vcg}m</span>
-                  </div>)}
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `stability_analysis_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Results Exported",
+      description: "Stability analysis exported to JSON file"
+    });
+  }, [results, geometry, toast]);
+
+  return (
+    <div className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="input">Ship Data</TabsTrigger>
+          <TabsTrigger value="profiles">Profiles</TabsTrigger>
+          <TabsTrigger value="calculate">Calculate</TabsTrigger>
+          <TabsTrigger value="results">Results</TabsTrigger>
+          <TabsTrigger value="chart">GZ Chart</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="input" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Ship className="h-5 w-5" />
+                Ship Geometry
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="length">Length (L) [m]</Label>
+                  <Input
+                    id="length"
+                    type="number"
+                    value={geometry.length}
+                    onChange={(e) => handleInputChange('length', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="breadth">Breadth (B) [m]</Label>
+                  <Input
+                    id="breadth"
+                    type="number"
+                    value={geometry.breadth}
+                    onChange={(e) => handleInputChange('breadth', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="depth">Depth (D) [m]</Label>
+                  <Input
+                    id="depth"
+                    type="number"
+                    value={geometry.depth}
+                    onChange={(e) => handleInputChange('depth', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="draft">Draft (T) [m]</Label>
+                  <Input
+                    id="draft"
+                    type="number"
+                    value={geometry.draft}
+                    onChange={(e) => handleInputChange('draft', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="kg">KG [m]</Label>
+                  <Input
+                    id="kg"
+                    type="number"
+                    value={kg}
+                    onChange={(e) => setKg(parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="blockCoefficient">Block Coefficient (Cb)</Label>
+                  <Input
+                    id="blockCoefficient"
+                    type="number"
+                    step="0.01"
+                    value={geometry.blockCoefficient}
+                    onChange={(e) => handleInputChange('blockCoefficient', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="waterplaneCoefficient">Waterplane Coefficient (Cw)</Label>
+                  <Input
+                    id="waterplaneCoefficient"
+                    type="number"
+                    step="0.01"
+                    value={geometry.waterplaneCoefficient}
+                    onChange={(e) => handleInputChange('waterplaneCoefficient', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="midshipCoefficient">Midship Coefficient (Cm)</Label>
+                  <Input
+                    id="midshipCoefficient"
+                    type="number"
+                    step="0.01"
+                    value={geometry.midshipCoefficient}
+                    onChange={(e) => handleInputChange('midshipCoefficient', parseFloat(e.target.value))}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="prismaticCoefficient">Prismatic Coefficient (Cp)</Label>
+                  <Input
+                    id="prismaticCoefficient"
+                    type="number"
+                    step="0.01"
+                    value={geometry.prismaticCoefficient}
+                    onChange={(e) => handleInputChange('prismaticCoefficient', parseFloat(e.target.value))}
+                  />
+                </div>
               </div>
-            </div>
-
-            <Separator />
-
-            <div>
-              <h4 className="font-semibold mb-2">Tank Fillings</h4>
-              <div className="space-y-2">
-                {loading.tanks.map((tank, index) => <div key={index} className="flex justify-between items-center p-2 bg-blue-50 rounded">
-                    <span className="font-medium">{tank.id}</span>
-                    <Badge variant="secondary">{tank.fill_percent}% full</Badge>
-                  </div>)}
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <Badge variant="outline" className="bg-green-50">
-                ✓ Loading condition configured
-              </Badge>
-            </div>
-          </>}
-      </CardContent>
-    </Card>;
-  const renderCalculateStep = () => <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calculator className="h-5 w-5" />
-          Step 3: Calculate Stability
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Button onClick={performCalculations} disabled={!vessel || !loading || calculating} className="w-full" size="lg">
-          {calculating ? <>
-              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              Calculating...
-            </> : <>
-              <Calculator className="h-4 w-4 mr-2" />
-              Perform Complete Analysis
-            </>}
-        </Button>
-
-        {results && <div className="space-y-3 mt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-3 rounded">
-                <div className="text-sm text-blue-600">Total Displacement</div>
-                <div className="text-xl font-bold">{results.loadingSummary.total_displacement.toFixed(0)} t</div>
-              </div>
-              <div className="bg-green-50 p-3 rounded">
-                <div className="text-sm text-green-600">GM (Corrected)</div>
-                <div className="text-xl font-bold">{results.GM_t.toFixed(3)} m</div>
-              </div>
-            </div>
-
-            {results.warnings.length > 0 && <Alert className="border-orange-200 bg-orange-50">
-                <AlertTriangle className="h-4 w-4" />
+              
+              <Alert>
+                <Settings className="h-4 w-4" />
                 <AlertDescription>
-                  <div className="space-y-1">
-                    {results.warnings.map((warning: string, i: number) => <div key={i} className="text-sm">{warning}</div>)}
-                  </div>
+                  Enter your ship's main dimensions and form coefficients. Use the Profiles tab to save and load ship configurations.
                 </AlertDescription>
-              </Alert>}
-          </div>}
-      </CardContent>
-    </Card>;
-  const renderResultsStep = () => <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5" />
-          Results & Analysis
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {results && <Tabs defaultValue="summary">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="criteria">Criteria</TabsTrigger>
-              <TabsTrigger value="curve">GZ Curve</TabsTrigger>
-            </TabsList>
+              </Alert>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <TabsContent value="summary" className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-blue-50 p-3 rounded">
-                  <div className="text-sm text-blue-600">Displacement</div>
-                  <div className="text-lg font-bold">{results.loadingSummary.total_displacement.toFixed(0)} t</div>
+        <TabsContent value="profiles" className="space-y-4">
+          <StabilityProfileManager
+            currentGeometry={geometry}
+            currentKG={kg}
+            onLoadProfile={handleLoadProfile}
+          />
+        </TabsContent>
+
+        <TabsContent value="calculate" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calculator className="h-5 w-5" />
+                Stability Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-center">
+                <Button 
+                  onClick={performCalculations} 
+                  disabled={calculating}
+                  size="lg"
+                  className="w-full max-w-md"
+                >
+                  {calculating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Calculating...
+                    </>
+                  ) : (
+                    <>
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Perform Complete Stability Analysis
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-primary">
+                    {geometry.length.toFixed(1)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Length (m)</div>
                 </div>
-                <div className="bg-green-50 p-3 rounded">
-                  <div className="text-sm text-green-600">GM</div>
-                  <div className="text-lg font-bold">{results.GM_t.toFixed(3)} m</div>
-                </div>
-                <div className="bg-purple-50 p-3 rounded">
-                  <div className="text-sm text-purple-600">Max GZ</div>
-                  <div className="text-lg font-bold">{results.stabilityCurve.max_GZ.toFixed(3)} m</div>
-                </div>
-                <div className="bg-orange-50 p-3 rounded">
-                  <div className="text-sm text-orange-600">Draft</div>
-                  <div className="text-lg font-bold">{results.draftSolution.T_mean.toFixed(2)} m</div>
+                
+                <div className="text-center p-4 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-primary">
+                    {(geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025).toFixed(0)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Est. Displacement (t)</div>
                 </div>
               </div>
-            </TabsContent>
+              
+              <Alert>
+                <Calculator className="h-4 w-4" />
+                <AlertDescription>
+                  This will perform a complete stability analysis including hydrostatic calculations, 
+                  GZ curve generation, and IMO criteria verification.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <TabsContent value="criteria" className="space-y-4">
-              <div className="space-y-2">
-                {results.criteriaResults.compliance.map((criterion: any, index: number) => <div key={index} className="flex justify-between items-center p-3 border rounded">
-                    <div>
-                      <div className="font-medium">{criterion.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Value: {criterion.value.toFixed(3)} | Required: {criterion.requirement.toFixed(3)}
+        <TabsContent value="results" className="space-y-4">
+          {results ? (
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Stability Results Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">
+                        {results.displacement.displacement.toFixed(0)}
                       </div>
+                      <div className="text-sm text-muted-foreground">Displacement (t)</div>
                     </div>
-                    <Badge variant={criterion.passed ? 'default' : 'destructive'}>
-                      {criterion.passed ? <><CheckCircle className="h-3 w-3 mr-1" />PASS</> : <><AlertTriangle className="h-3 w-3 mr-1" />FAIL</>}
-                    </Badge>
-                  </div>)}
+                    
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">
+                        {results.centers.gmt.toFixed(2)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">GM (m)</div>
+                    </div>
+                    
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">
+                        {results.stability.maxGz.toFixed(3)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Max GZ (m)</div>
+                    </div>
+                    
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold">
+                        <Badge variant={results.imoCriteria.compliance ? "default" : "destructive"}>
+                          {results.imoCriteria.compliance ? "PASS" : "FAIL"}
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-muted-foreground">IMO Compliance</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Hydrostatic Properties</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">KB</div>
+                      <div className="font-medium">{results.centers.kb.toFixed(2)} m</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">KM</div>
+                      <div className="font-medium">{results.centers.kmt.toFixed(2)} m</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">BM</div>
+                      <div className="font-medium">{results.centers.bmt.toFixed(2)} m</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">LCB</div>
+                      <div className="font-medium">{results.centers.lcb.toFixed(2)} m</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">TPC</div>
+                      <div className="font-medium">{results.coefficients.tpc.toFixed(2)} t/cm</div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-sm text-muted-foreground">MCT</div>
+                      <div className="font-medium">{results.coefficients.mtc1cm.toFixed(1)} t·m/cm</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <div className="flex gap-2">
+                <Button onClick={exportResults} variant="outline" className="flex-1">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Results
+                </Button>
+                <Button onClick={() => setActiveTab("chart")} className="flex-1">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  View GZ Chart
+                </Button>
               </div>
-            </TabsContent>
+            </div>
+          ) : (
+            <Alert>
+              <FileText className="h-4 w-4" />
+              <AlertDescription>
+                No calculation results yet. Go to the Calculate tab and run the stability analysis.
+              </AlertDescription>
+            </Alert>
+          )}
+        </TabsContent>
 
-            <TabsContent value="curve" className="space-y-4">
-              <div className="h-64 bg-gray-50 rounded flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>GZ Curve Visualization</p>
-                  <p className="text-sm">(Chart implementation would go here)</p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>}
-
-        <Separator />
-
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex-1">
-            <Download className="h-4 w-4 mr-2" />
-            Export JSON
-          </Button>
-          <Button variant="outline" className="flex-1">
-            <Download className="h-4 w-4 mr-2" />
-            Export PDF
-          </Button>
-        </div>
-      </CardContent>
-    </Card>;
-  return <div className={`space-y-6 ${className}`}>
-      {/* Progress Header */}
-      <Card>
-        <CardHeader className="pb-2">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl font-bold">Ship Stability Calculator</h2>
-            <Badge variant="outline">{Math.round(getProgress())}% Complete</Badge>
-          </div>
-          <Progress value={getProgress()} className="h-2" />
-        </CardHeader>
-        <CardContent className="pt-2">
-          <div className="flex flex-wrap gap-2">
-            {(['vessel', 'loading', 'calculate', 'curve', 'criteria', 'results'] as WorkflowStep[]).map(step => <Button key={step} variant={currentStep === step ? 'default' : completedSteps.includes(step) ? 'secondary' : 'outline'} size="sm" onClick={() => setCurrentStep(step)} className="capitalize">
-                {completedSteps.includes(step) && <CheckCircle className="h-3 w-3 mr-1" />}
-                {step.replace(/([A-Z])/g, ' $1')}
-              </Button>)}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Main Content */}
-      {currentStep === 'vessel' && renderVesselStep()}
-      {currentStep === 'loading' && renderLoadingStep()}
-      {currentStep === 'calculate' && renderCalculateStep()}
-      {(currentStep === 'curve' || currentStep === 'criteria' || currentStep === 'results') && renderResultsStep()}
-    </div>;
+        <TabsContent value="chart" className="space-y-4">
+          {results ? (
+            <EnhancedStabilityChart
+              data={results.gzCurveData}
+              criticalPoints={results.criticalPoints}
+              imoCriteria={results.imoCriteria}
+              showKN={true}
+              title="Ship Stability Curve Analysis"
+            />
+          ) : (
+            <Alert>
+              <BarChart3 className="h-4 w-4" />
+              <AlertDescription>
+                No chart data available. Please run the stability calculations first.
+              </AlertDescription>
+            </Alert>
+          )}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
+
 export default StabilityCalculatorWorkflow;

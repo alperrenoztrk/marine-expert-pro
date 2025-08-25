@@ -1075,7 +1075,7 @@ export class HydrostaticCalculations {
     let currentGeometry = { ...geometry };
     let lastTrim = 0;
     for (let iter = 1; iter <= maxIterations; iter++) {
-      const mct = this.calculateMTC(currentGeometry);
+      const mct = this.calculateMCT1cm(currentGeometry, 0);
       const trimChange = mct > 0 ? (weightMomentTonMeters / mct) : 0;
       const trimAngle = Math.atan2(trimChange, currentGeometry.length) * 180 / Math.PI;
       currentGeometry = { ...currentGeometry, draft: Math.max(0.1, geometry.draft + trimChange / 2) };
