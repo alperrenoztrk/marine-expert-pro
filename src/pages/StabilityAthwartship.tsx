@@ -27,8 +27,10 @@ export default function StabilityAthwartship() {
     verticalPrismaticCoefficient: 0.75,
   });
   const [kg, setKg] = useState<number>(12);
-  const [result, setResult] = useState<{ gm: number; stabilityRange: number; naturalPeriod: number } | null>(null);
+  const [freeService, setFreeService] = useState<number>(0);
+  const [result, setResult] = useState<{ gm: number; stabilityRange: number; naturalPeriod: number; deckEdgeAngle: number } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
+  const [showInfo, setShowInfo] = useState<boolean>(false);
 
   const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -42,8 +44,10 @@ export default function StabilityAthwartship() {
       setResult(null);
       return;
     }
-    const res = HydrostaticUtils.calculateSmallAngleStability(geometry, kg);
-    setResult(res);
+    const res = HydrostaticUtils.calculateSmallAngleStability(geometry, kg - freeService);
+    // Calculate deck edge immersion angle (simplified approximation)
+    const deckEdgeAngle = Math.atan(geometry.breadth / (2 * geometry.draft)) * (180 / Math.PI);
+    setResult({ ...res, deckEdgeAngle });
   };
 
   const chartData = useMemo(() => {
@@ -134,6 +138,10 @@ export default function StabilityAthwartship() {
               <Label>KG (m)</Label>
               <Input type="number" step="0.01" value={kg} onChange={(e) => setKg(parseFloat(e.target.value))} />
             </div>
+            <div>
+              <Label>Serbest Yüzey Düzeltmesi (m)</Label>
+              <Input type="number" step="0.01" value={freeService} onChange={(e) => setFreeService(parseFloat(e.target.value))} />
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -141,7 +149,26 @@ export default function StabilityAthwartship() {
             <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
             <Button variant="ghost" onClick={() => { setResult(null); setErrors([]); }}>Temizle</Button>
+            <Button variant="outline" onClick={() => setShowInfo(!showInfo)}>
+              {showInfo ? 'Bilgiyi Gizle' : 'Bilgi ve Formüller'}
+            </Button>
           </div>
+
+          {showInfo && (
+            <Alert>
+              <AlertTitle>Enine Stabilite Formülleri ve Bilgileri</AlertTitle>
+              <AlertDescription className="space-y-2 text-sm">
+                <div><strong>GM:</strong> GM = KB + BM - KG - FSE</div>
+                <div><strong>Doğal Periyot:</strong> T ≈ 2π√(k²/g·GM) veya T ≈ 0.8√(B/GM) (yaklaşık)</div>
+                <div><strong>GZ (Küçük açılar):</strong> GZ ≈ GM × sin(φ)</div>
+                <div><strong>Güverte Kenarı Dalma Açısı:</strong> φ ≈ arctan(B/2T)</div>
+                <div><strong>Serbest Yüzey Etkisi:</strong> KG'yi arttırır, GM'yi azaltır</div>
+                <div className="text-xs text-muted-foreground mt-2">
+                  IMO kriterleri: GM ≥ 0.15m, GZ(30°) ≥ 0.20m, Maks GZ ≥ 25°'de
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
 
           {result && (
             <div className="space-y-4">
@@ -157,7 +184,7 @@ export default function StabilityAthwartship() {
                 </ChartContainer>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-2">
                 <div className="rounded-md border p-3">
                   <div className="text-xs text-muted-foreground">GM</div>
                   <div className="text-xl font-semibold">{result.gm.toFixed(3)} m</div>
@@ -169,6 +196,10 @@ export default function StabilityAthwartship() {
                 <div className="rounded-md border p-3">
                   <div className="text-xs text-muted-foreground">Doğal Periyot</div>
                   <div className="text-xl font-semibold">{result.naturalPeriod.toFixed(2)} s</div>
+                </div>
+                <div className="rounded-md border p-3">
+                  <div className="text-xs text-muted-foreground">Güverte Kenarı Dalma</div>
+                  <div className="text-xl font-semibold">{result.deckEdgeAngle.toFixed(1)}°</div>
                 </div>
               </div>
             </div>

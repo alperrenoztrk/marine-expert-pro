@@ -28,6 +28,7 @@ export default function StabilityGZIMO() {
     verticalPrismaticCoefficient: 0.75,
   });
   const [kg, setKg] = useState<number>(12);
+  const [showInfo, setShowInfo] = useState<boolean>(false);
 
   const [data, setData] = useState<ReturnType<typeof HydrostaticCalculations.calculateStabilityData> | null>(null);
   const [imo, setImo] = useState<ReturnType<typeof HydrostaticCalculations.calculateIMOStabilityCriteria> | null>(null);
@@ -126,7 +127,27 @@ export default function StabilityGZIMO() {
             <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
             <Button variant="ghost" onClick={() => { setData(null); setImo(null); setErrors([]); }}>Temizle</Button>
+            <Button variant="outline" onClick={() => setShowInfo(!showInfo)}>
+              {showInfo ? 'Bilgiyi Gizle' : 'IMO Bilgileri ve Kriterler'}
+            </Button>
           </div>
+
+          {showInfo && (
+            <Alert>
+              <AlertTitle>IMO Stabilite Kriterleri ve Formüller</AlertTitle>
+              <AlertDescription className="space-y-2 text-sm">
+                <div><strong>Area 0-30°:</strong> ≥ 0.055 m·rad (3.15 m·derece)</div>
+                <div><strong>Area 0-40°:</strong> ≥ 0.090 m·rad (5.16 m·derece)</div>
+                <div><strong>Area 30-40°:</strong> ≥ 0.030 m·rad (1.72 m·derece)</div>
+                <div><strong>Max GZ:</strong> ≥ 0.20 m ve 30° veya daha büyük açıda</div>
+                <div><strong>GM₀:</strong> ≥ 0.15 m (küçük yük gemileri için)</div>
+                <div><strong>Vanishing Angle:</strong> ≥ 30° (tercihen ≥ 60°)</div>
+                <div className="text-xs text-muted-foreground mt-2">
+                  Bu kriterler IMO MSC.267(85) ve SOLAS 2009'a göre temel gereksinimlerdir
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
 
           {data && imo && (
             <div className="space-y-4">
