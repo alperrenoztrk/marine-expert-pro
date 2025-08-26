@@ -1545,3 +1545,19 @@ All colors MUST be HSL.
 /* Hide scrollbars utility */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Sextant Y-axis rotation - homepage */
+@keyframes sextant-rotate-y {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.maritime-logo--rotate {
+  animation: sextant-rotate-y 8s linear infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
