@@ -28,10 +28,10 @@ const Index = () => {
         {/* Title */}
         <div className="mb-10 md:mb-12">
           <h1 className="text-[56px] md:text-[84px] lg:text-[110px] font-extrabold leading-[0.95] tracking-tight">
-            <span className="block text-white drop-shadow-lg">
+            <span className="block text-blue-600 drop-shadow-lg">
               Maritime
             </span>
-            <span className="block text-white/90 drop-shadow-lg">
+            <span className="block text-blue-500 drop-shadow-lg">
               Calculator
             </span>
           </h1>
