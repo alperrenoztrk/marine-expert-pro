@@ -277,14 +277,14 @@ export default function StabilityAthwartship() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
                 <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Pozitif Stabilite</h4>
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  Gemi yatırıldığında kendini düzeltmeye çalışır. GM > 0 olmalıdır.
-                </p>
+                                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    Gemi yatırıldığında kendini düzeltmeye çalışır. GM &gt; 0 olmalıdır.
+                  </p>
               </div>
               <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg">
                 <h4 className="font-semibold text-red-900 dark:text-red-100 mb-2">Negatif Stabilite</h4>
                 <p className="text-sm text-red-800 dark:text-red-200">
-                  Gemi yatırıldığında daha da yatmaya devam eder. GM < 0 - Tehlikeli!
+                  Gemi yatırıldığında daha da yatmaya devam eder. GM &lt; 0 - Tehlikeli!
                 </p>
               </div>
             </div>
@@ -611,15 +611,15 @@ export default function StabilityAthwartship() {
               </p>
               <div className="space-y-3">
                 <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                  <h4 className="font-semibold text-green-800 dark:text-green-200">GM > 1.0m</h4>
+                  <h4 className="font-semibold text-green-800 dark:text-green-200">GM &gt; 1.0m</h4>
                   <p className="text-sm text-green-700 dark:text-green-300">Sert stabilite - hızlı düzeltme ama rahatsız</p>
                 </div>
                 <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 dark:text-blue-200">0.15m < GM < 1.0m</h4>
+                  <h4 className="font-semibold text-blue-800 dark:text-blue-200">0.15m &lt; GM &lt; 1.0m</h4>
                   <p className="text-sm text-blue-700 dark:text-blue-300">Optimal aralık - rahat ve güvenli</p>
                 </div>
                 <div className="p-3 bg-red-50 dark:bg-red-950 rounded-lg">
-                  <h4 className="font-semibold text-red-800 dark:text-red-200">GM < 0.15m</h4>
+                  <h4 className="font-semibold text-red-800 dark:text-red-200">GM &lt; 0.15m</h4>
                   <p className="text-sm text-red-700 dark:text-red-300">Tehlikeli - IMO limiti altında</p>
                 </div>
               </div>
