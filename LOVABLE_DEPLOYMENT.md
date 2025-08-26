@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.29
+- **Durum:** ✅ Hesaplamalar menüsündeki yazı renkleri mavi yapıldı
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.28
 - **Durum:** ✅ Hesaplamalar menüsü anasayfa renkleriyle uyumlu hale getirildi
 
@@ -66,6 +70,13 @@
 - **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🎨 Hesaplamalar Menüsü Yazı Renkleri (2025-01-27)
+- Başlık ve kategori yazıları mavi renge değiştirildi
+- Başlık: `text-blue-600` (Denizcilik Hesaplamaları)
+- Kategori yazıları: `text-blue-700` (Stabilite, Kargo, vb.)
+- Icon renkleri de mavi olarak güncellendi
+- Anasayfa temasıyla daha uyumlu görünüm
 
 ### 🎨 Hesaplamalar Menüsü UI Güncellemesi (2025-01-27)
 - Hesaplamalar menüsü anasayfa temasıyla uyumlu hale getirildi
