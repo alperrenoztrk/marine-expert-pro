@@ -15,7 +15,7 @@ import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
-import { Sextant3D } from "@/components/Sextant3D";
+// import { Sextant3D } from "@/components/Sextant3D";
 
 
 // Removed calculation components - they are now on individual pages
@@ -126,6 +126,8 @@ const Index = () => {
         <div className="relative bg-card/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-border shadow-lg">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
             {/* Logo - Always visible, 3D rotating */}
+            {/* Removed Sextant 3D logo from homepage */}
+            {/*
             <div className="flex-shrink-0 sextant-3d-container">
               <div className="relative overflow-hidden rounded-lg">
                 <Sextant3D
@@ -137,6 +139,7 @@ const Index = () => {
                 />
               </div>
             </div>
+            */}
             
             {/* Title with Neon Billboard Effect */}
             <div className="text-center">
