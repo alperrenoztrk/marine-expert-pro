@@ -15,6 +15,7 @@ import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
 import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { toast } from "sonner";
 import React from "react"; // Added missing import for React
+import { Sextant3D } from "@/components/Sextant3D";
 
 
 // Removed calculation components - they are now on individual pages
@@ -127,10 +128,12 @@ const Index = () => {
             {/* Logo - Always visible, 3D rotating */}
             <div className="flex-shrink-0 sextant-3d-container">
               <div className="relative overflow-hidden rounded-lg">
-                <img 
-                  src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png" 
-                  alt="Maritime Calculator Logo" 
-                  className="maritime-logo maritime-logo--rotate maritime-logo--rotate-3d w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+                <Sextant3D
+                  src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png"
+                  alt="Maritime Calculator Logo"
+                  className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+                  depthPx={28}
+                  numLayers={18}
                 />
               </div>
             </div>

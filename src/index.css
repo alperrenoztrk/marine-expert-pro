@@ -1563,3 +1563,32 @@ All colors MUST be HSL.
   backface-visibility: hidden;
   will-change: transform;
 }
+
+/* Sextant3D layered depth */
+.sextant-3d {
+  position: relative;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.sextant-3d__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+/* Soft glow to suggest metallic edges */
+.sextant-3d__glow {
+  position: absolute;
+  inset: -6%;
+  background: radial-gradient(ellipse at 50% 40%, hsl(210 90% 98% / 0.12), transparent 55%),
+              radial-gradient(ellipse at 50% 60%, hsl(220 90% 70% / 0.08), transparent 60%);
+  filter: blur(10px);
+  transform: translateZ(-1px);
+  pointer-events: none;
+}
