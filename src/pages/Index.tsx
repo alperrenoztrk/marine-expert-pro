@@ -120,141 +120,119 @@ const Index = () => {
   return (
     <MobileLayout>
       {/* Header Section */}
-      <div className="relative mb-6 sm:mb-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-teal-600/20 rounded-xl"></div>
-        
-        <div className="relative bg-card/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-border shadow-lg">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
-            {/* Logo - Always visible, 3D rotating */}
-            {/* Removed Sextant 3D logo from homepage */}
-            {/*
-            <div className="flex-shrink-0 sextant-3d-container">
-              <div className="relative overflow-hidden rounded-lg">
-                <Sextant3D
-                  src="/lovable-uploads/d5cd10ce-fad6-43e5-8ba1-13ecff822033.png"
-                  alt="Maritime Calculator Logo"
-                  className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
-                  depthPx={30}
-                  numLayers={12}
-                />
-              </div>
-            </div>
-            */}
-            
-            {/* Title with Neon Billboard Effect */}
-            <div className="text-center">
-              {theme === 'neon' ? (
-                <div className="neon-billboard relative">
-                  {/* Billboard Background */}
-                  <div className="billboard-background absolute inset-0 bg-black/80 rounded-lg border-2 border-cyan-400/50 shadow-[0_0_30px_rgba(0,255,255,0.5)]"></div>
-                  
-                  {/* New Pulse Rings Effect */}
-                  <div className="billboard-pulse-rings">
-                    <div className="billboard-pulse-ring"></div>
-                    <div className="billboard-pulse-ring"></div>
-                    <div className="billboard-pulse-ring"></div>
-                  </div>
-                  
-                  {/* New Matrix Scanning Effect */}
-                  <div className="billboard-matrix-scan"></div>
-                  
-                  {/* New Holographic Shimmer Effect */}
-                  <div className="billboard-holographic-shimmer"></div>
-                  
-                  {/* New Corner Glitch Effects */}
-                  <div className="billboard-corner-glitch top-left"></div>
-                  <div className="billboard-corner-glitch top-right"></div>
-                  <div className="billboard-corner-glitch bottom-left"></div>
-                  <div className="billboard-corner-glitch bottom-right"></div>
-                  
-                  {/* Neon Text Container */}
-                  <div className="relative z-10 p-4">
-                    <h1 
-                      ref={neonTextRef}
-                      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold neon-text neon-text-interactive"
-                      data-translatable
-                      onMouseMove={handleMouseMove}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                      style={{
-                        '--mouse-x': `${mousePosition.x}px`,
-                        '--mouse-y': `${mousePosition.y}px`,
-                        '--is-hovering': isHovering ? '1' : '0'
-                      } as React.CSSProperties}
-                    >
-                      Maritime Calculator
-                    </h1>
-                    
-                  </div>
-                  
-                  {/* Billboard Frame */}
-                  <div className="billboard-frame absolute inset-0 border-4 border-cyan-400/30 rounded-lg"></div>
-                  
-                  {/* Neon Glow Effects */}
-                  <div className="neon-glow-1 absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20 blur-sm"></div>
-                  <div className="neon-glow-2 absolute inset-0 rounded-lg bg-gradient-to-b from-cyan-400/10 to-transparent"></div>
-                </div>
-              ) : (
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
-                  Maritime Calculator
-                </h1>
-                            )}
-            </div>
-          </div>
-
-
-
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="flex-1 min-w-0">
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed" data-translatable>
-                Tüm denizciler için pratik hesaplama platformu
-              </p>
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                {/* First Row - Asistan and Regülasyonlar */}
-                <div className="flex gap-2 w-full sm:w-auto">
-                  <Link to="/formulas">
-                    <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-400 dark:hover:bg-gray-700 cyberpunk:border-purple-400 cyberpunk:text-purple-400 cyberpunk:hover:bg-gray-800 nature:border-purple-400 nature:text-purple-600 nature:hover:bg-purple-50">
-                      <Brain className="w-4 h-4" />
-                      <span data-translatable>Regülasyon Rehberi: Mark</span>
-                    </Button>
-                  </Link>
-                                     <Link to="/regulations">
-                     <Button size="sm" variant="outline" className="gap-2 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-700 cyberpunk:border-emerald-400 cyberpunk:text-emerald-400 cyberpunk:hover:bg-gray-800 nature:border-emerald-400 nature:text-emerald-600 nature:hover:bg-emerald-50">
-                       <Shield className="w-4 h-4" />
-                       <span data-translatable>Regülasyonlar</span>
-                     </Button>
-                   </Link>
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
+          {/* Title with Neon Billboard Effect */}
+          <div className="text-center">
+            {theme === 'neon' ? (
+              <div className="neon-billboard relative">
+                {/* Billboard Background */}
+                <div className="billboard-background absolute inset-0 bg-black/80 rounded-lg border-2 border-cyan-400/50 shadow-[0_0_30px_rgba(0,255,255,0.5)]"></div>
+                
+                {/* New Pulse Rings Effect */}
+                <div className="billboard-pulse-rings">
+                  <div className="billboard-pulse-ring"></div>
+                  <div className="billboard-pulse-ring"></div>
+                  <div className="billboard-pulse-ring"></div>
                 </div>
                 
-                {/* Second Row - Other buttons */}
-                <div className="flex gap-2 flex-wrap">
-					<Link to="/calculations">
-						<Button
-							size="sm"
-							variant="outline"
-							aria-label="Hesaplamalar"
-							className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
-						>
-							<Calculator className="w-4 h-4" />
-							<span data-translatable>Hesaplamalar</span>
-						</Button>
-					</Link>
+                {/* New Matrix Scanning Effect */}
+                <div className="billboard-matrix-scan"></div>
+                
+                {/* New Holographic Shimmer Effect */}
+                <div className="billboard-holographic-shimmer"></div>
+                
+                {/* New Corner Glitch Effects */}
+                <div className="billboard-corner-glitch top-left"></div>
+                <div className="billboard-corner-glitch top-right"></div>
+                <div className="billboard-corner-glitch bottom-left"></div>
+                <div className="billboard-corner-glitch bottom-right"></div>
+                
+                {/* Neon Text Container */}
+                <div className="relative z-10 p-4">
+                  <h1 
+                    ref={neonTextRef}
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold neon-text neon-text-interactive"
+                    data-translatable
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    style={{
+                      '--mouse-x': `${mousePosition.x}px`,
+                      '--mouse-y': `${mousePosition.y}px`,
+                      '--is-hovering': isHovering ? '1' : '0'
+                    } as React.CSSProperties}
+                  >
+                    Maritime Calculator
+                  </h1>
+                  
                 </div>
+                
+                {/* Billboard Frame */}
+                <div className="billboard-frame absolute inset-0 border-4 border-cyan-400/30 rounded-lg"></div>
+                
+                {/* Neon Glow Effects */}
+                <div className="neon-glow-1 absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20 blur-sm"></div>
+                <div className="neon-glow-2 absolute inset-0 rounded-lg bg-gradient-to-b from-cyan-400/10 to-transparent"></div>
+              </div>
+            ) : (
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
+                Maritime Calculator
+              </h1>
+                          )}
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed" data-translatable>
+              Tüm denizciler için pratik hesaplama platformu
+            </p>
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              {/* First Row - Asistan and Regülasyonlar */}
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Link to="/formulas">
+                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-400 dark:hover:bg-gray-700 cyberpunk:border-purple-400 cyberpunk:text-purple-400 cyberpunk:hover:bg-gray-800 nature:border-purple-400 nature:text-purple-600 nature:hover:bg-purple-50">
+                    <Brain className="w-4 h-4" />
+                    <span data-translatable>Regülasyon Rehberi: Mark</span>
+                  </Button>
+                </Link>
+                <Link to="/regulations">
+                  <Button size="sm" variant="outline" className="gap-2 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-700 cyberpunk:border-emerald-400 cyberpunk:text-emerald-400 cyberpunk:hover:bg-gray-800 nature:border-emerald-400 nature:text-emerald-600 nature:hover:bg-emerald-50">
+                    <Shield className="w-4 h-4" />
+                    <span data-translatable>Regülasyonlar</span>
+                  </Button>
+                </Link>
+              </div>
+              
+              {/* Second Row - Other buttons */}
+              <div className="flex gap-2 flex-wrap">
+                <Link to="/calculations">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    aria-label="Hesaplamalar"
+                    className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
+                  >
+                    <Calculator className="w-4 h-4" />
+                    <span data-translatable>Hesaplamalar</span>
+                  </Button>
+                </Link>
               </div>
             </div>
-            
-            {/* Settings */}
-            <div className="flex-shrink-0 flex items-center gap-3">
-              <Link to="/settings">
-                <Button
-                  size="icon"
-                  className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-                  title="Ayarlar"
-                >
-                  <Settings className="w-5 h-5" />
-                </Button>
-              </Link>
-            </div>
+          </div>
+          
+          {/* Settings */}
+          <div className="flex-shrink-0 flex items-center gap-3">
+            <Link to="/settings">
+              <Button
+                size="icon"
+                className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+                title="Ayarlar"
+              >
+                <Settings className="w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
