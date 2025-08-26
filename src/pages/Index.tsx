@@ -203,7 +203,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex-1 min-w-0">
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed" data-translatable>
-                Uzakyol zabitlerinden denizcilik öğrencilerine – tüm denizciler için pratik hesaplama platformu
+                Tüm denizciler için pratik hesaplama platformu
               </p>
               <div className="flex items-center gap-2 mt-2 flex-wrap">
                 {/* First Row - Asistan and Regülasyonlar */}
