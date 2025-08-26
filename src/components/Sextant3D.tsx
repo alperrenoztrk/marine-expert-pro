@@ -14,12 +14,12 @@ export const Sextant3D: React.FC<Sextant3DProps> = ({
   src,
   alt = "Sextant",
   className = "",
-  depthPx = 48,
-  numLayers = 28,
-  tiltXdeg = 20,
-  swayXPx = 4,
+  depthPx = 80,
+  numLayers = 40,
+  tiltXdeg = 25,
+  swayXPx = 8,
 }) => {
-  const totalLayers = Math.max(3, Math.floor(numLayers));
+  const totalLayers = Math.max(5, Math.floor(numLayers));
   const middleIndex = (totalLayers - 1) / 2;
   const depthStepPx = depthPx / (totalLayers - 1);
 
@@ -36,8 +36,10 @@ export const Sextant3D: React.FC<Sextant3DProps> = ({
           const depthFactor = (layerIndex - middleIndex) / (totalLayers - 1);
           const zOffsetPx = depthFactor * depthPx;
           const xOffsetPx = depthFactor * swayXPx;
-          const brightness = 0.88 + (layerIndex / (totalLayers - 1)) * 0.12;
-          const opacity = 0.82 + (layerIndex / (totalLayers - 1)) * 0.18;
+          const yOffsetPx = depthFactor * (swayXPx * 0.3); // Slight vertical parallax
+          const scaleFactor = 1 + (depthFactor * 0.05); // Perspective scaling
+          const brightness = 0.85 + (layerIndex / (totalLayers - 1)) * 0.15;
+          const opacity = 0.75 + (layerIndex / (totalLayers - 1)) * 0.25;
           return (
             <img
               key={layerIndex}
@@ -45,8 +47,8 @@ export const Sextant3D: React.FC<Sextant3DProps> = ({
               alt={layerIndex === Math.round(middleIndex) ? alt : ""}
               className="sextant-3d__layer"
               style={{
-                transform: `translateX(${xOffsetPx.toFixed(2)}px) translateZ(${zOffsetPx.toFixed(2)}px)`,
-                filter: `brightness(${brightness.toFixed(3)})`,
+                transform: `translateX(${xOffsetPx.toFixed(2)}px) translateY(${yOffsetPx.toFixed(2)}px) translateZ(${zOffsetPx.toFixed(2)}px) scale(${scaleFactor.toFixed(3)})`,
+                filter: `brightness(${brightness.toFixed(3)}) drop-shadow(${Math.abs(zOffsetPx * 0.1)}px ${Math.abs(zOffsetPx * 0.15)}px ${Math.abs(zOffsetPx * 0.2)}px hsl(210 30% 20% / ${0.3 * Math.abs(depthFactor)}))`,
                 opacity,
               }}
               loading={layerIndex === Math.round(middleIndex) ? "eager" : "lazy"}

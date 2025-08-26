@@ -1554,7 +1554,8 @@ All colors MUST be HSL.
 }
 
 .sextant-3d-container {
-  perspective: 900px;
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
 }
 
 .maritime-logo--rotate-3d {
@@ -1582,13 +1583,18 @@ All colors MUST be HSL.
   pointer-events: none;
 }
 
-/* Soft glow to suggest metallic edges */
+/* Enhanced metallic glow with 3D depth */
 .sextant-3d__glow {
   position: absolute;
-  inset: -6%;
-  background: radial-gradient(ellipse at 50% 40%, hsl(210 90% 98% / 0.12), transparent 55%),
-              radial-gradient(ellipse at 50% 60%, hsl(220 90% 70% / 0.08), transparent 60%);
-  filter: blur(10px);
-  transform: translateZ(-1px);
+  inset: -8%;
+  background: radial-gradient(ellipse at 50% 35%, hsl(210 90% 98% / 0.18), transparent 50%),
+              radial-gradient(ellipse at 50% 65%, hsl(220 90% 70% / 0.12), transparent 65%),
+              radial-gradient(ellipse at 30% 50%, hsl(45 100% 85% / 0.08), transparent 40%),
+              radial-gradient(ellipse at 70% 50%, hsl(45 100% 85% / 0.08), transparent 40%);
+  filter: blur(15px);
+  transform: translateZ(-2px);
   pointer-events: none;
+  box-shadow: 
+    0 0 30px hsl(210 90% 70% / 0.15),
+    0 0 60px hsl(45 100% 70% / 0.1);
 }
