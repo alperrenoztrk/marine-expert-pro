@@ -30,8 +30,49 @@
   <path d="M0,1400 Q270,1380 540,1400 T1080,1400 L1080,1920 L0,1920 Z" fill="url(#waveGradient)"/>
   <path d="M0,1450 Q135,1430 270,1450 T540,1450 Q675,1430 810,1450 T1080,1450 L1080,1920 L0,1920 Z" fill="url(#waveGradient)" opacity="0.7"/>
   
-  <!-- Ship silhouette in the distance -->
-  <g transform="translate(750, 580)" opacity="0.4">
+  <!-- Main ship based on uploaded image - prominent in center -->
+  <g transform="translate(200, 1200)" opacity="0.8">
+    <!-- Ship hull - main body -->
+    <path d="M0,60 L200,60 L220,45 L220,20 L200,20 L200,0 L-20,0 L-20,20 L0,30 Z" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+    
+    <!-- Ship deck -->
+    <rect x="0" y="20" width="200" height="8" fill="#e2e8f0"/>
+    
+    <!-- Main superstructure -->
+    <rect x="30" y="-20" width="80" height="20" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="40" y="-35" width="60" height="15" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="50" y="-45" width="40" height="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    
+    <!-- Bridge/wheelhouse -->
+    <rect x="60" y="-55" width="25" height="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    
+    <!-- Orange/yellow details like in the image -->
+    <rect x="10" y="10" width="30" height="10" fill="#f97316" opacity="0.9"/>
+    <rect x="160" y="10" width="30" height="10" fill="#f97316" opacity="0.9"/>
+    
+    <!-- Crane/loading equipment -->
+    <rect x="120" y="-15" width="8" height="35" fill="#94a3b8"/>
+    <path d="M124,-15 L160,-5 M124,-10 L160,0" stroke="#94a3b8" stroke-width="2"/>
+    
+    <!-- Main mast -->
+    <line x1="80" y1="-55" x2="80" y2="-85" stroke="#94a3b8" stroke-width="3"/>
+    
+    <!-- Ship antenna/communications -->
+    <line x1="70" y1="-55" x2="70" y2="-70" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="90" y1="-55" x2="90" y2="-70" stroke="#94a3b8" stroke-width="1"/>
+    
+    <!-- Navigation lights -->
+    <circle cx="210" cy="30" r="3" fill="#ef4444" opacity="0.8"/>
+    <circle cx="-10" cy="30" r="3" fill="#22c55e" opacity="0.8"/>
+    <circle cx="80" cy="-45" r="2" fill="#fbbf24" filter="url(#glow)"/>
+    
+    <!-- Ship wake/water disturbance -->
+    <path d="M-30,65 Q-20,70 -10,65 Q0,70 10,65" stroke="#3b82f6" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M210,65 Q220,70 230,65 Q240,70 250,65" stroke="#3b82f6" stroke-width="2" fill="none" opacity="0.6"/>
+  </g>
+  
+  <!-- Small distant ship silhouette -->
+  <g transform="translate(750, 580)" opacity="0.3">
     <!-- Ship hull -->
     <path d="M0,20 L80,20 L85,10 L85,0 L-5,0 L-5,10 Z" fill="#374151"/>
     <!-- Ship superstructure -->
