@@ -176,6 +176,7 @@ const App = () => {
                   <Route path="/draft-survey-port" element={<DraftSurveyPort />} />
                   <Route path="/draft-survey-analysis" element={<DraftSurveyAnalysis />} />
                   <Route path="/draft-survey-calculator" element={<DraftSurveyCalculator />} />
+                  <Route path="*" element={<Index />} />
                 </Routes>
               </BrowserRouter>
             </div>
