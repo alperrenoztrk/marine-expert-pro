@@ -124,18 +124,16 @@ const Index = () => {
         
         <div className="relative bg-card/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-border shadow-lg">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
-            {/* Logo - Hidden for neon theme */}
-            {theme !== 'neon' && (
-              <div className="flex-shrink-0">
-                <div className="relative overflow-hidden rounded-lg">
-                  <img 
-                    src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png" 
-                    alt="Maritime Calculator Logo" 
-                    className="maritime-logo maritime-logo--rotate w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+            {/* Logo - Always visible, rotating */}
+            <div className="flex-shrink-0">
+              <div className="relative overflow-hidden rounded-lg" style={{ perspective: '800px' }}>
+                <img 
+                  src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png" 
+                  alt="Maritime Calculator Logo" 
+                  className="maritime-logo maritime-logo--rotate w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+                />
               </div>
-            )}
+            </div>
             
             {/* Title with Neon Billboard Effect */}
             <div className="text-center">
