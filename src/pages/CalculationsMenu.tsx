@@ -13,12 +13,18 @@ const categories = [
 
 export default function CalculationsMenu() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0f2137' }}>
-      <div className="max-w-5xl mx-auto px-6 py-10">
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Deep maritime background matching homepage */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-dark via-primary to-primary-light"
+      />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
         {/* Title */}
         <div className="flex items-center gap-4 text-white mb-10">
-          <Anchor className="w-10 h-10" />
-          <h1 className="text-4xl font-bold" data-no-translate>Denizcilik Hesaplamaları</h1>
+          <Anchor className="w-10 h-10 drop-shadow-lg" />
+          <h1 className="text-4xl font-bold drop-shadow-lg" data-no-translate>Denizcilik Hesaplamaları</h1>
         </div>
 
         {/* Categories */}
@@ -27,14 +33,14 @@ export default function CalculationsMenu() {
             <Link
               key={index}
               to={category.link}
-              className="block rounded-2xl border border-white/40 p-6 bg-transparent hover:bg-white/5 transition-colors"
+              className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
             >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  <category.icon className="w-16 h-16 text-white" strokeWidth={1.5} />
+                  <category.icon className="w-16 h-16 text-white drop-shadow-lg" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
-                  <span className="text-2xl font-bold text-white" data-no-translate>
+                  <span className="text-2xl font-bold text-white drop-shadow-sm" data-no-translate>
                     {category.title}
                   </span>
                 </div>
