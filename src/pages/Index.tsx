@@ -6,59 +6,72 @@ import { Plus, Shield, FileText, Settings } from "lucide-react";
 const Index = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Deep maritime background */}
+      {/* Maritime background image */}
       <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-dark via-primary to-primary-light"
+        className="absolute inset-0 maritime-background"
+        style={{
+          backgroundImage: "url('/maritime-background.svg')"
+        }}
       />
+      
+      {/* Dark blue overlay for better text readability */}
+      <div className="absolute inset-0 bg-blue-900/40 z-0" />
 
-      {/* Floating Settings button (top-right) */}
-      <Link to="/settings" className="fixed right-8 top-8 z-20">
+      {/* Purple Settings gear icon (top-right) */}
+      <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
           size="icon"
-          className="h-12 w-12 rounded-full bg-primary hover:bg-primary-light text-white shadow-lg border-2 border-white/30"
+          className="h-12 w-12 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg border-2 border-white/30 transition-all duration-200"
           title="Ayarlar"
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-6 h-6" />
         </Button>
       </Link>
 
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-start justify-center min-h-screen px-8 md:px-16 lg:px-24">
-        {/* Title */}
-        <div className="mb-10 md:mb-12">
-          <h1 className="text-[56px] md:text-[84px] lg:text-[110px] font-extrabold leading-[0.95] tracking-tight">
-            <span className="block text-blue-600 drop-shadow-lg">
-              Maritime
-            </span>
-            <span className="block text-blue-500 drop-shadow-lg">
-              Calculator
+      {/* Main content - centered */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
+        {/* Title with shadow effects */}
+        <div className="mb-12">
+          <h1 className="maritime-title text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
+            <span 
+              className="block drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]"
+              style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.7)" }}
+            >
+              Maritime Calculator
             </span>
           </h1>
-          <p className="mt-8 text-xl md:text-2xl text-white/80 font-medium drop-shadow-sm" data-translatable>
+          
+          {/* Subtitle */}
+          <p 
+            className="maritime-subtitle text-lg md:text-xl text-white/80 font-medium mt-6 drop-shadow-md" 
+            data-translatable
+            style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}
+          >
             Tüm denizciler için pratik hesaplama platformu
           </p>
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-4 w-full max-w-xl">
+        <div className="flex flex-col gap-4 w-full max-w-md">
+          {/* Top button - Regülasyon Rehberi: Mark */}
           <Link to="/formulas" className="w-full">
-            <Button className="w-full h-14 md:h-16 bg-white/95 hover:bg-white text-blue-700 rounded-full gap-2 text-base md:text-lg font-semibold shadow-lg border border-white/60">
+            <Button className="w-full h-14 bg-white/90 hover:bg-white text-blue-700 rounded-2xl gap-3 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
               <Plus className="w-5 h-5" />
               <span data-translatable>Regülasyon Rehberi: Mark</span>
             </Button>
           </Link>
 
+          {/* Bottom buttons - side by side */}
           <div className="flex gap-4 w-full">
             <Link to="/regulations" className="flex-1">
-              <Button className="w-full h-14 md:h-16 bg-white/95 hover:bg-white text-blue-700 rounded-full gap-2 text-base md:text-lg font-semibold shadow-lg border border-white/60">
+              <Button className="w-full h-14 bg-white/90 hover:bg-white text-blue-700 rounded-2xl gap-2 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
                 <Shield className="w-5 h-5" />
                 <span data-translatable>Regülasyonlar</span>
               </Button>
             </Link>
 
             <Link to="/calculations" className="flex-1">
-              <Button className="w-full h-14 md:h-16 bg-white/95 hover:bg-white text-blue-700 rounded-full gap-2 text-base md:text-lg font-semibold shadow-lg border border-white/60">
+              <Button className="w-full h-14 bg-white/90 hover:bg-white text-blue-700 rounded-2xl gap-2 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
                 <FileText className="w-5 h-5" />
                 <span data-translatable>Hesaplamalar</span>
               </Button>
@@ -66,8 +79,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-
-
     </div>
   );
 };

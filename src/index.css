@@ -81,6 +81,26 @@ All colors MUST be HSL.
     }
   }
 
+  /* Maritime background optimizations for mobile */
+  .maritime-background {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  /* Mobile-optimized typography */
+  @media (max-width: 768px) {
+    .maritime-title {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      line-height: 1.1;
+    }
+    
+    .maritime-subtitle {
+      font-size: clamp(1rem, 4vw, 1.25rem);
+    }
+  }
+
     --sidebar-background: 0 0% 98%;
 
     --sidebar-foreground: 240 5.3% 26.1%;
