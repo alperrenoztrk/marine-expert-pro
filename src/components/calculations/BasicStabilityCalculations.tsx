@@ -140,7 +140,7 @@ export const BasicStabilityCalculations = () => {
                   <Input value={bmInputs.breadth} onChange={(e)=>setBmInputs(p=>({...p, breadth:e.target.value}))} />
                 </div>
                 <div>
-                  <Label>T (m)</Label>
+                  <Label>Su Çekimi (m)</Label>
                   <Input value={bmInputs.draft} onChange={(e)=>setBmInputs(p=>({...p, draft:e.target.value}))} />
                 </div>
                 <div>

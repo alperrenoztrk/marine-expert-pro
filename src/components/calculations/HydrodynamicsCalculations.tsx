@@ -487,7 +487,7 @@ export const HydrodynamicsCalculations = ({ initialTab }: { initialTab?: string 
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="shipDraft">Draft (m)</Label>
+                  <Label htmlFor="shipDraft">Su Çekimi (m)</Label>
                   <Input
                     id="shipDraft"
                     type="number"

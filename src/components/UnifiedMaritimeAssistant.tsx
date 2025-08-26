@@ -202,7 +202,7 @@ Türkçe, düzenli ve kısa yanıtla.`
 **Bileşenler:**
 - **L**: Gemi uzunluğu (m)
 - **B**: Gemi genişliği (m)
-- **T**: Taslak (m)
+- **T**: Su Çekimi (m)
 - **Cb**: Blok katsayısı (0.6-0.8)
 - **ρ**: Su yoğunluğu (1.025 t/m³)`,
 
@@ -314,7 +314,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
   const quickQuestions = [
     "GM hesaplaması nasıl yapılır?",
     "Trim açısı formülü nedir?",
-    "Stabilite kriterleri nelerdir?",
+    "Kararlılık kriterleri nelerdir?",
     "SFOC hesaplama yöntemi",
     "Büyük daire seyir hesabı"
   ];
@@ -353,7 +353,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
 Örnekler:
 • 'GM hesaplaması nasıl yapılır?'
 • 'KM 15.2m, KG 14.8m olan geminin GM değeri?'
-• 'Stabilite kriterleri nelerdir?'"
+• 'Kararlılık kriterleri nelerdir?'"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             className="min-h-[100px] resize-none"

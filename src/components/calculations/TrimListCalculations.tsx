@@ -245,7 +245,7 @@ export const TrimListCalculations = () => {
       depth
     }));
     
-    toast.success(`Ortalama Draft: ${meanDraft.toFixed(3)} m (${meanDraftCm.toFixed(1)} cm)`);
+    toast.success(`Ortalama Su Çekimi: ${meanDraft.toFixed(3)} m (${meanDraftCm.toFixed(1)} cm)`);
   };
 
   const calculateDisplacement = () => {

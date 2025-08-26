@@ -47,7 +47,7 @@ export const WolframIntegration = () => {
 
   const calculateDisplacement = async () => {
     if (!values.length || !values.beam || !values.draft) {
-      toast.error("Lütfen uzunluk, genişlik ve taslak değerlerini girin");
+      toast.error("Lütfen uzunluk, genişlik ve su çekimi değerlerini girin");
       return;
     }
 
@@ -72,9 +72,9 @@ export const WolframIntegration = () => {
           setResult(`**Deplasman Hesabı:**
 
 **Formül:** Δ = L × B × T × Cb × ρ
-- **L**: ${values.length}m (uzunluk)
-- **B**: ${values.beam}m (genişlik) 
-- **T**: ${values.draft}m (taslak)
+- **L**: ${values.length}m (gemi boyu)
+- **B**: ${values.beam}m (gemi genişliği) 
+- **T**: ${values.draft}m (su çekimi)
 - **Cb**: 0.7 (blok katsayısı)
 - **ρ**: 1.025 t/m³ (deniz suyu yoğunluğu)
 
@@ -237,7 +237,7 @@ export const WolframIntegration = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="draft">Taslak (T) - metre</Label>
+              <Label htmlFor="draft">Su Çekimi (T) - metre</Label>
               <Input
                 id="draft"
                 type="number"

@@ -45,7 +45,7 @@ export const WorkingAIAssistant = () => {
 3. **BM = I / ∇** (Metasantrik yarıçap)
 4. **KB = T × (0.5 - (1/12) × (1-CWP/CB))** (Batıklık merkezi)
 
-**IMO Stabilite Kriterleri (IS Code 2008):**
+**IMO Kararlılık Kriterleri (IS Code 2008):**
 - 0-30° alan: ≥ 3.151 m.derece
 - 0-40° alan: ≥ 5.157 m.derece  
 - 30-40° alan: ≥ 1.719 m.derece

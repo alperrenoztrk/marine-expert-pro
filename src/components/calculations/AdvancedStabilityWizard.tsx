@@ -222,7 +222,7 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
                 <div><Label>L (m)</Label><Input type="number" value={geometryInputs.length} onChange={(e)=> setGeometryInputs(v=>({...v, length: e.target.value}))} /></div>
                 <div><Label>B (m)</Label><Input type="number" value={geometryInputs.breadth} onChange={(e)=> setGeometryInputs(v=>({...v, breadth: e.target.value}))} /></div>
                 <div><Label>D (m)</Label><Input type="number" value={geometryInputs.depth} onChange={(e)=> setGeometryInputs(v=>({...v, depth: e.target.value}))} /></div>
-                <div><Label>T (m)</Label><Input type="number" value={geometryInputs.draft} onChange={(e)=> setGeometryInputs(v=>({...v, draft: e.target.value}))} /></div>
+                <div><Label>Su Çekimi (m)</Label><Input type="number" value={geometryInputs.draft} onChange={(e)=> setGeometryInputs(v=>({...v, draft: e.target.value}))} /></div>
                 <div><Label>Cb</Label><Input type="number" step="0.01" value={geometryInputs.blockCoefficient} onChange={(e)=> setGeometryInputs(v=>({...v, blockCoefficient: e.target.value}))} /></div>
                 <div><Label>Cwp</Label><Input type="number" step="0.01" value={geometryInputs.waterplaneCoefficient} onChange={(e)=> setGeometryInputs(v=>({...v, waterplaneCoefficient: e.target.value}))} /></div>
               </div>
@@ -301,7 +301,7 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
                   <div><Label>L (m)</Label><Input type="number" value={profile.length||''} onChange={(e)=> setProfile(p=>({...p, length: parseFloat(e.target.value)}))} /></div>
                   <div><Label>B (m)</Label><Input type="number" value={profile.breadth||''} onChange={(e)=> setProfile(p=>({...p, breadth: parseFloat(e.target.value)}))} /></div>
                   <div><Label>D (m)</Label><Input type="number" value={profile.depth||''} onChange={(e)=> setProfile(p=>({...p, depth: parseFloat(e.target.value)}))} /></div>
-                  <div><Label>T (m)</Label><Input type="number" value={profile.draft||''} onChange={(e)=> setProfile(p=>({...p, draft: parseFloat(e.target.value)}))} /></div>
+                  <div><Label>Su Çekimi (m)</Label><Input type="number" value={profile.draft||''} onChange={(e)=> setProfile(p=>({...p, draft: parseFloat(e.target.value)}))} /></div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div><Label>Cb</Label><Input type="number" step="0.01" value={profile.blockCoefficient||''} onChange={(e)=> setProfile(p=>({...p, blockCoefficient: parseFloat(e.target.value)}))} /></div>

@@ -97,7 +97,7 @@ const DraftSurveyCalculator = () => {
             <TabsContent value="draft-change" className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="initial-draft">İlk Draft (m)</Label>
+                  <Label htmlFor="initial-draft">İlk Su Çekimi (m)</Label>
                   <Input
                     id="initial-draft"
                     type="number"
@@ -108,7 +108,7 @@ const DraftSurveyCalculator = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="final-draft">Son Draft (m)</Label>
+                  <Label htmlFor="final-draft">Son Su Çekimi (m)</Label>
                   <Input
                     id="final-draft"
                     type="number"
@@ -146,7 +146,7 @@ const DraftSurveyCalculator = () => {
             <TabsContent value="trim" className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="forward-draft">Baş Draft (m)</Label>
+                  <Label htmlFor="forward-draft">Baş Su Çekimi (m)</Label>
                   <Input
                     id="forward-draft"
                     type="number"
@@ -157,7 +157,7 @@ const DraftSurveyCalculator = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="aft-draft">Kıç Draft (m)</Label>
+                  <Label htmlFor="aft-draft">Kıç Su Çekimi (m)</Label>
                   <Input
                     id="aft-draft"
                     type="number"
@@ -198,7 +198,7 @@ const DraftSurveyCalculator = () => {
             <TabsContent value="displacement" className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="mean-draft">Ortalama Draft (m)</Label>
+                  <Label htmlFor="mean-draft">Ortalama Su Çekimi (m)</Label>
                   <Input
                     id="mean-draft"
                     type="number"
@@ -252,8 +252,8 @@ const DraftSurveyCalculator = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p><strong>Draft Değişimi:</strong> Ağırlık Değişimi = (Son Draft - İlk Draft) × TPC</p>
-            <p><strong>Trim:</strong> Trim % = (Kıç Draft - Baş Draft) / LPP × 100</p>
+            <p><strong>Su Çekimi Değişimi:</strong> Ağırlık Değişimi = (Son Su Çekimi - İlk Su Çekimi) × TPC</p>
+            <p><strong>Trim:</strong> Trim % = (Kıç Su Çekimi - Baş Su Çekimi) / LPP × 100</p>
             <p><strong>Deplasman Düzeltmesi:</strong> Düzeltilmiş = Deplasman × (Gerçek Yoğunluk / 1.025)</p>
           </div>
         </CardContent>

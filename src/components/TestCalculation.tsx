@@ -58,7 +58,7 @@ export const TestCalculation = () => {
             />
           </div>
           <div>
-            <Label htmlFor="draft">Draft (T) - m</Label>
+            <Label htmlFor="draft">Su Çekimi (T) - m</Label>
             <Input
               id="draft"
               type="number"

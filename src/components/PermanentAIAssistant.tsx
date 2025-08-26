@@ -250,7 +250,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
   const quickQuestions = [
     "GM hesaplaması nasıl yapılır?",
     "Trim açısı formülü nedir?", 
-    "Stabilite kriterleri nelerdir?",
+    "Kararlılık kriterleri nelerdir?",
     "Büyük daire seyir hesabı",
     "SFOC hesaplama yöntemi",
     "Balast suyu hesaplamaları"

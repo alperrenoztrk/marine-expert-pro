@@ -633,7 +633,7 @@ export const SafetyCalculations = () => {
             <TabsContent value="freeboard" className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="summerDraft">Yaz Drafı (m)</Label>
+                  <Label htmlFor="summerDraft">Yaz Su Çekimi (m)</Label>
                   <Input
                     id="summerDraft"
                     type="number"
@@ -643,7 +643,7 @@ export const SafetyCalculations = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="winterDraft">Kış Drafı (m)</Label>
+                  <Label htmlFor="winterDraft">Kış Su Çekimi (m)</Label>
                   <Input
                     id="winterDraft"
                     type="number"
@@ -653,7 +653,7 @@ export const SafetyCalculations = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="tropicalDraft">Tropikal Draft (m)</Label>
+                  <Label htmlFor="tropicalDraft">Tropikal Su Çekimi (m)</Label>
                   <Input
                     id="tropicalDraft"
                     type="number"
@@ -663,7 +663,7 @@ export const SafetyCalculations = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="freshWaterDraft">Tatlı Su Drafı (m)</Label>
+                  <Label htmlFor="freshWaterDraft">Tatlı Su Su Çekimi (m)</Label>
                   <Input
                     id="freshWaterDraft"
                     type="number"

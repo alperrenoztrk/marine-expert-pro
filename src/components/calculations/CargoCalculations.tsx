@@ -1036,7 +1036,7 @@ export const CargoCalculations = ({ initialTab, singleMode }: CargoCalcProps = {
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm mb-2">
                       <div><Label>L (m)</Label><Input aria-label="L (m)" type="number" value={quickGeo.length} onChange={(e)=>setQuickGeo({...quickGeo, length: parseFloat(e.target.value)})} /></div>
                       <div><Label>B (m)</Label><Input aria-label="B (m)" type="number" value={quickGeo.breadth} onChange={(e)=>setQuickGeo({...quickGeo, breadth: parseFloat(e.target.value)})} /></div>
-                      <div><Label>T (m)</Label><Input aria-label="T (m)" type="number" value={quickGeo.draft} onChange={(e)=>setQuickGeo({...quickGeo, draft: parseFloat(e.target.value)})} /></div>
+                      <div><Label>Su Çekimi (m)</Label><Input aria-label="Su Çekimi (m)" type="number" value={quickGeo.draft} onChange={(e)=>setQuickGeo({...quickGeo, draft: parseFloat(e.target.value)})} /></div>
                       <div><Label>Cb</Label><Input aria-label="Cb" type="number" step="0.01" value={quickGeo.blockCoefficient} onChange={(e)=>setQuickGeo({...quickGeo, blockCoefficient: parseFloat(e.target.value)})} /></div>
                     </div>
                     <Button size="sm" onClick={runQuickStability}><Calculator className="h-4 w-4 mr-1" />Hızlı Kontrol</Button>

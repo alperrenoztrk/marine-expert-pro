@@ -200,7 +200,7 @@ import { useToast } from "@/hooks/use-toast";
                      <div className="md:col-span-3 text-xs text-muted-foreground">Veya yaklaşık için L,B,T girin:</div>
                      <div><Label>L (m)</Label><Input value={approxL} onChange={(e)=> setApproxL(e.target.value)} /></div>
                      <div><Label>B (m)</Label><Input value={approxB} onChange={(e)=> setApproxB(e.target.value)} /></div>
-                     <div><Label>T (m)</Label><Input value={approxT} onChange={(e)=> setApproxT(e.target.value)} /></div>
+                     <div><Label>Su Çekimi (m)</Label><Input value={approxT} onChange={(e)=> setApproxT(e.target.value)} /></div>
                      <div className="md:col-span-3"><Button onClick={computeGM}>Hesapla</Button></div>
                    </div>
                  )}

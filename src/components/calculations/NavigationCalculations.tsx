@@ -2111,7 +2111,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="shipDraft">Gemi Drafı (m)</Label>
+                        <Label htmlFor="shipDraft">Gemi Su Çekimi (m)</Label>
                         <Input
                           id="shipDraft"
                           type="number"

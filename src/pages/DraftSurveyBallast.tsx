@@ -140,11 +140,11 @@ export default function DraftSurveyBallast() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-red-600 dark:text-red-400">Balast Öncesi Draftlar (m)</CardTitle>
+            <CardTitle className="text-red-600 dark:text-red-400">Balast Öncesi Su Çekimleri (m)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="before-forward">Baş Draft</Label>
+              <Label htmlFor="before-forward">Baş Su Çekimi</Label>
               <Input
                 id="before-forward"
                 type="number"
@@ -158,7 +158,7 @@ export default function DraftSurveyBallast() {
               />
             </div>
             <div>
-              <Label htmlFor="before-midship">Orta Draft</Label>
+              <Label htmlFor="before-midship">Orta Su Çekimi</Label>
               <Input
                 id="before-midship"
                 type="number"
@@ -172,7 +172,7 @@ export default function DraftSurveyBallast() {
               />
             </div>
             <div>
-              <Label htmlFor="before-aft">Kıç Draft</Label>
+              <Label htmlFor="before-aft">Kıç Su Çekimi</Label>
               <Input
                 id="before-aft"
                 type="number"
@@ -190,11 +190,11 @@ export default function DraftSurveyBallast() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-blue-600 dark:text-blue-400">Balast Sonrası Draftlar (m)</CardTitle>
+            <CardTitle className="text-blue-600 dark:text-blue-400">Balast Sonrası Su Çekimleri (m)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="after-forward">Baş Draft</Label>
+              <Label htmlFor="after-forward">Baş Su Çekimi</Label>
               <Input
                 id="after-forward"
                 type="number"
@@ -208,7 +208,7 @@ export default function DraftSurveyBallast() {
               />
             </div>
             <div>
-              <Label htmlFor="after-midship">Orta Draft</Label>
+              <Label htmlFor="after-midship">Orta Su Çekimi</Label>
               <Input
                 id="after-midship"
                 type="number"
@@ -222,7 +222,7 @@ export default function DraftSurveyBallast() {
               />
             </div>
             <div>
-              <Label htmlFor="after-aft">Kıç Draft</Label>
+              <Label htmlFor="after-aft">Kıç Su Çekimi</Label>
               <Input
                 id="after-aft"
                 type="number"
@@ -343,7 +343,7 @@ export default function DraftSurveyBallast() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <p><strong>Draft Değişimi:</strong> {result.draftChange.toFixed(3)} m</p>
+                <p><strong>Su Çekimi Değişimi:</strong> {result.draftChange.toFixed(3)} m</p>
                 <p><strong>Balast Ağırlığı:</strong> {result.ballastWeight.toFixed(2)} ton</p>
               </div>
               <div className="space-y-2">

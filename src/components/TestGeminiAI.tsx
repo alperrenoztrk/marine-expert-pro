@@ -49,7 +49,7 @@ GM, geminin kararlılığını belirleyen kritik parametredir. Pozitif GM değer
 2. GZ = GM × sin(φ) (Doğrultucu kol - küçük açılar)
 3. BM = I / ∇ (Metasantrik yarıçap)
 
-**Stabilite Kriterleri:**
+**Kararlılık Kriterleri:**
 - Pozitif GM gerekli
 - IMO standartlarına uyum
 - GZ eğrisi analizi
@@ -117,7 +117,7 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
 
 Örnek sorular:
 • GM hesaplaması nedir?
-• Stabilite kriterleri nelerdir?
+• Kararlılık kriterleri nelerdir?
 • Trim hesabı nasıl yapılır?"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}

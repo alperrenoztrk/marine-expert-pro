@@ -697,7 +697,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
             <h4 className="font-semibold mb-3">Trim Açısı (Trim = arctan((Ta - Tf) / L))</h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
-                <Label htmlFor="ta">Ta - Arka Draft (m)</Label>
+                <Label htmlFor="ta">Ta - Kıç Su Çekimi (m)</Label>
                 <Input
                   id="ta"
                   type="number"
@@ -707,7 +707,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                 />
               </div>
               <div>
-                <Label htmlFor="tf">Tf - Ön Draft (m)</Label>
+                <Label htmlFor="tf">Tf - Baş Su Çekimi (m)</Label>
                 <Input
                   id="tf"
                   type="number"
@@ -889,7 +889,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     />
                   </div>
                   <div>
-                    <Label htmlFor="draft">Draft (m)</Label>
+                    <Label htmlFor="draft">Su Çekimi (m)</Label>
                     <Input
                       id="draft"
                       type="number"
