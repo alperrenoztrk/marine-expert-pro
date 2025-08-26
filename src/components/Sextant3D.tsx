@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
+import { BackgroundRemovalProcessor } from './BackgroundRemovalProcessor';
 
 interface Sextant3DProps {
   src: string;
@@ -6,56 +7,74 @@ interface Sextant3DProps {
   className?: string;
   depthPx?: number; // Total depth (thickness) in pixels
   numLayers?: number; // Number of layers to extrude
-  tiltXdeg?: number; // Fixed X tilt in degrees
-  swayXPx?: number; // Max lateral parallax sway across depth (px)
 }
 
 export const Sextant3D: React.FC<Sextant3DProps> = ({
   src,
   alt = "Sextant",
   className = "",
-  depthPx = 60,
-  numLayers = 18,
-  tiltXdeg = 0,
-  swayXPx = 0,
+  depthPx = 30,
+  numLayers = 12,
 }) => {
-  const totalLayers = Math.max(8, Math.floor(numLayers));
+  const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
+  const [showProcessor, setShowProcessor] = useState(true);
+
+  const handleImageProcessed = useCallback((processedUrl: string) => {
+    setProcessedImageUrl(processedUrl);
+    setShowProcessor(false);
+  }, []);
+
+  const totalLayers = Math.max(6, Math.floor(numLayers));
   const middleIndex = (totalLayers - 1) / 2;
+
+  if (showProcessor && !processedImageUrl) {
+    return (
+      <div className="sextant-3d-container">
+        <BackgroundRemovalProcessor 
+          imageUrl={src} 
+          onProcessed={handleImageProcessed}
+        />
+      </div>
+    );
+  }
+
+  const finalImageSrc = processedImageUrl || src;
 
   return (
     <div className="sextant-3d-container">
       <div
         className={[
-          "sextant-3d maritime-logo maritime-logo--3d",
+          "sextant-3d maritime-logo",
           className,
         ].join(" ")}
+        style={{ transformStyle: 'preserve-3d' }}
       >
         {Array.from({ length: totalLayers }, (_, layerIndex) => {
           const depthFactor = (layerIndex - middleIndex) / (totalLayers - 1);
           
-          // Simple 3D depth positioning
+          // Simple 3D depth positioning without rotation
           const zOffsetPx = depthFactor * depthPx;
           
           // Realistic 3D lighting and opacity based on depth
           const distanceFromCenter = Math.abs(depthFactor);
-          const brightness = 0.8 + (1 - distanceFromCenter) * 0.2;
-          const opacity = 0.6 + (1 - distanceFromCenter) * 0.4;
+          const brightness = 0.85 + (1 - distanceFromCenter) * 0.15;
+          const opacity = 0.7 + (1 - distanceFromCenter) * 0.3;
           
           // Simple metallic reflection based on layer position
-          const reflectionIntensity = (1 - distanceFromCenter) * 0.15;
+          const reflectionIntensity = (1 - distanceFromCenter) * 0.1;
           
           return (
             <img
               key={layerIndex}
-              src={src}
+              src={finalImageSrc}
               alt={layerIndex === Math.round(middleIndex) ? alt : ""}
               className="sextant-3d__layer"
               style={{
                 transform: `translateZ(${zOffsetPx.toFixed(2)}px)`,
                 filter: `
                   brightness(${(brightness + reflectionIntensity).toFixed(3)}) 
-                  contrast(${(1.05 + reflectionIntensity).toFixed(2)})
-                  drop-shadow(${(zOffsetPx * 0.1).toFixed(1)}px ${(zOffsetPx * 0.15).toFixed(1)}px ${(Math.abs(zOffsetPx) * 0.3).toFixed(1)}px hsl(210 40% 10% / ${(0.3 * distanceFromCenter).toFixed(2)}))
+                  contrast(${(1.03 + reflectionIntensity).toFixed(2)})
+                  drop-shadow(${(zOffsetPx * 0.08).toFixed(1)}px ${(zOffsetPx * 0.12).toFixed(1)}px ${(Math.abs(zOffsetPx) * 0.25).toFixed(1)}px hsl(210 30% 15% / ${(0.25 * distanceFromCenter).toFixed(2)}))
                 `,
                 opacity: opacity.toFixed(3),
               }}

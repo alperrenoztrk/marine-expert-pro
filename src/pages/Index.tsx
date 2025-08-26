@@ -132,10 +132,8 @@ const Index = () => {
                   src="/lovable-uploads/d5cd10ce-fad6-43e5-8ba1-13ecff822033.png"
                   alt="Maritime Calculator Logo"
                   className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 drop-shadow-lg hover:scale-105 transition-transform duration-300"
-                  depthPx={64}
-                  numLayers={32}
-                  tiltXdeg={22}
-                  swayXPx={6}
+                  depthPx={30}
+                  numLayers={12}
                 />
               </div>
             </div>
