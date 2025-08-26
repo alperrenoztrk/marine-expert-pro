@@ -1,259 +1,100 @@
-import { useState, useEffect, useRef } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
-import { Brain, Shield, Settings, Calculator } from "lucide-react";
-// import { GoogleAuth } from "@/components/auth/GoogleAuth";
-
-
-
-import { useAdManager, loadAdSenseScript } from "@/hooks/useAdManager";
-import { useTheme } from "@/hooks/useTheme";
-
-import { AdBannerMobile, AdBannerInline } from "@/components/ads/AdBanner";
-import { NativeAd, MaritimeEquipmentAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
-import { toast } from "sonner";
-import React from "react"; // Added missing import for React
-// import { Sextant3D } from "@/components/Sextant3D";
-
-
-// Removed calculation components - they are now on individual pages
+import { Plus, Shield, FileText, Settings } from "lucide-react";
 
 const Index = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const neonTextRef = useRef<HTMLHeadingElement>(null);
-  const { theme } = useTheme();
-  
-  // Safe hooks with error handling
-  const safeAdManager = (() => {
-    try {
-      return useAdManager();
-    } catch (error) {
-      console.warn('AdManager hook failed, using fallback:', error);
-      return { 
-        shouldShowAd: () => false, 
-        trackInteraction: () => {} 
-      };
-    }
-  })();
-  
-  const { shouldShowAd, trackInteraction } = safeAdManager;
+  return (
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 -z-10">
+        <img
+          src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png"
+          alt="Sea background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-tl from-background/90 via-background/70 to-background/30" />
+      </div>
 
-  // Mouse tracking for neon text
-  const handleMouseMove = (e: React.MouseEvent<HTMLHeadingElement>) => {
-    if (theme === 'neon' && neonTextRef.current) {
-      const rect = neonTextRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      // Ensure coordinates are within bounds
-      const clampedX = Math.max(0, Math.min(x, rect.width));
-      const clampedY = Math.max(0, Math.min(y, rect.height));
-      
-      setMousePosition({ x: clampedX, y: clampedY });
-    }
-  };
+      {/* Floating settings button */}
+      <Link to="/settings" className="absolute right-6 top-1/3 sm:top-1/2 z-20">
+        <Button
+          size="icon"
+          className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+          title="Ayarlar"
+        >
+          <Settings className="w-5 h-5" />
+        </Button>
+      </Link>
 
-  const handleMouseEnter = () => {
-    if (theme === 'neon') {
-      setIsHovering(true);
-    }
-  };
+      {/* Content */}
+      <MobileLayout className="relative bg-none">
+        <div className="pt-16 pb-8">
+          {/* Title */}
+          <div className="text-left mb-6 sm:mb-8">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold leading-none tracking-tight">
+              <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">
+                Maritime
+              </span>
+              <span className="block mt-1 bg-gradient-to-r from-teal-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                Calculator
+              </span>
+            </h1>
+            <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl" data-translatable>
+              Tüm denizciler için pratik hesaplama platformu
+            </p>
+          </div>
 
-  const handleMouseLeave = () => {
-    if (theme === 'neon') {
-      setIsHovering(false);
-      setMousePosition({ x: 0, y: 0 });
-    }
-  };
+          {/* Actions */}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-3">
+              <Link to="/formulas">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2 rounded-full px-4 border-purple-300 text-purple-600 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-400 dark:hover:bg-gray-800"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span data-translatable>Regülasyon Rehberi: Mark</span>
+                </Button>
+              </Link>
+            </div>
 
-  // Load AdSense script safely
-  useEffect(() => {
-    const loadAds = async () => {
-      try {
-        if (import.meta.env.VITE_ADS_ENABLED === 'true') {
-          await loadAdSenseScript();
-        }
-      } catch (error) {
-        console.warn('AdSense loading failed:', error);
-      }
-    };
-    loadAds();
-    
-    // Set loading to false after component mounts
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+            <div className="flex flex-wrap gap-3">
+              <Link to="/regulations">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2 rounded-full px-4 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-800"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span data-translatable>Regülasyonlar</span>
+                </Button>
+              </Link>
 
-  // Calculation cards removed - using individual pages now
-
-  const handleCalculationComplete = async (calculationType: string, inputData: any, resultData: any) => {
-    // Temporarily disabled - authentication not implemented
-    console.log('Calculation completed:', calculationType, inputData, resultData);
-    toast.success("Hesaplama tamamlandı!");
-  };
-
-  const handleToggleFavorite = async (calculationId: string) => {
-    // Temporarily disabled - authentication not implemented
-    console.log('Toggle favorite:', calculationId);
-    toast.success("Favori durumu güncellendi!");
-  };
-
-  // Calculations overlay removed; direct navigation is used.
-
-  if (isLoading) {
-    return (
-      <MobileLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-muted-foreground">Maritime Calculator yükleniyor...</p>
+              <Link to="/calculations">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2 rounded-full px-4 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-800"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span data-translatable>Hesaplamalar</span>
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </MobileLayout>
-    );
-  }
 
-  return (
-    <MobileLayout>
-      {/* Header Section */}
-      <div className="mb-6 sm:mb-8">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-6">
-          {/* Title with Neon Billboard Effect */}
-          <div className="text-center">
-            {theme === 'neon' ? (
-              <div className="neon-billboard relative">
-                {/* Billboard Background */}
-                <div className="billboard-background absolute inset-0 bg-black/80 rounded-lg border-2 border-cyan-400/50 shadow-[0_0_30px_rgba(0,255,255,0.5)]"></div>
-                
-                {/* New Pulse Rings Effect */}
-                <div className="billboard-pulse-rings">
-                  <div className="billboard-pulse-ring"></div>
-                  <div className="billboard-pulse-ring"></div>
-                  <div className="billboard-pulse-ring"></div>
-                </div>
-                
-                {/* New Matrix Scanning Effect */}
-                <div className="billboard-matrix-scan"></div>
-                
-                {/* New Holographic Shimmer Effect */}
-                <div className="billboard-holographic-shimmer"></div>
-                
-                {/* New Corner Glitch Effects */}
-                <div className="billboard-corner-glitch top-left"></div>
-                <div className="billboard-corner-glitch top-right"></div>
-                <div className="billboard-corner-glitch bottom-left"></div>
-                <div className="billboard-corner-glitch bottom-right"></div>
-                
-                {/* Neon Text Container */}
-                <div className="relative z-10 p-4">
-                  <h1 
-                    ref={neonTextRef}
-                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold neon-text neon-text-interactive"
-                    data-translatable
-                    onMouseMove={handleMouseMove}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                    style={{
-                      '--mouse-x': `${mousePosition.x}px`,
-                      '--mouse-y': `${mousePosition.y}px`,
-                      '--is-hovering': isHovering ? '1' : '0'
-                    } as React.CSSProperties}
-                  >
-                    Maritime Calculator
-                  </h1>
-                  
-                </div>
-                
-                {/* Billboard Frame */}
-                <div className="billboard-frame absolute inset-0 border-4 border-cyan-400/30 rounded-lg"></div>
-                
-                {/* Neon Glow Effects */}
-                <div className="neon-glow-1 absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-400/20 via-blue-400/20 to-purple-400/20 blur-sm"></div>
-                <div className="neon-glow-2 absolute inset-0 rounded-lg bg-gradient-to-b from-cyan-400/10 to-transparent"></div>
-              </div>
-            ) : (
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent drop-shadow-sm" data-translatable>
-                Maritime Calculator
-              </h1>
-                          )}
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex-1 min-w-0">
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed" data-translatable>
-              Tüm denizciler için pratik hesaplama platformu
-            </p>
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              {/* First Row - Asistan and Regülasyonlar */}
-              <div className="flex gap-2 w-full sm:w-auto">
-                <Link to="/formulas">
-                  <Button size="sm" variant="outline" className="gap-2 border-purple-300 text-purple-600 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-400 dark:hover:bg-gray-700 cyberpunk:border-purple-400 cyberpunk:text-purple-400 cyberpunk:hover:bg-gray-800 nature:border-purple-400 nature:text-purple-600 nature:hover:bg-purple-50">
-                    <Brain className="w-4 h-4" />
-                    <span data-translatable>Regülasyon Rehberi: Mark</span>
-                  </Button>
-                </Link>
-                <Link to="/regulations">
-                  <Button size="sm" variant="outline" className="gap-2 border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-gray-700 cyberpunk:border-emerald-400 cyberpunk:text-emerald-400 cyberpunk:hover:bg-gray-800 nature:border-emerald-400 nature:text-emerald-600 nature:hover:bg-emerald-50">
-                    <Shield className="w-4 h-4" />
-                    <span data-translatable>Regülasyonlar</span>
-                  </Button>
-                </Link>
-              </div>
-              
-              {/* Second Row - Other buttons */}
-              <div className="flex gap-2 flex-wrap">
-                <Link to="/calculations">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    aria-label="Hesaplamalar"
-                    className="gap-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-gray-700 cyberpunk:border-indigo-400 cyberpunk:text-indigo-400 cyberpunk:hover:bg-gray-800 nature:border-indigo-400 nature:text-indigo-600 nature:hover:bg-indigo-50"
-                  >
-                    <Calculator className="w-4 h-4" />
-                    <span data-translatable>Hesaplamalar</span>
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-          
-          {/* Settings */}
-          <div className="flex-shrink-0 flex items-center gap-3">
-            <Link to="/settings">
-              <Button
-                size="icon"
-                className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-                title="Ayarlar"
-              >
-                <Settings className="w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Top Page Ad */}
-      {shouldShowAd('top-page') && (
-        <div className="mb-6">
-          <AdBannerMobile />
-        </div>
-      )}
-
-
-
-      {/* Bottom Page Ad */}
-      {shouldShowAd('bottom-page') && (
-        <div className="mt-8">
-          <AdBannerInline />
-        </div>
-      )}
-
-    </MobileLayout>
+      {/* Decorative illustration (bottom-left) */}
+      <img
+        src="/maritime-logo.svg"
+        alt="Maritime logo"
+        className="pointer-events-none select-none absolute bottom-0 left-2 w-48 sm:w-64 opacity-90"
+      />
+    </div>
   );
 };
 
