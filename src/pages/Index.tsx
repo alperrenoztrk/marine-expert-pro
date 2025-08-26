@@ -5,21 +5,12 @@ import { Plus, Shield, FileText, Settings } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0">
-        <img
-          src="/lovable-uploads/6600febe-17ab-46d7-b124-c43116e375e6.png"
-          alt="Maritime background"
-          className="w-full h-full object-cover"
-        />
-      </div>
-
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600">
       {/* Settings button */}
       <Link to="/settings" className="absolute top-8 right-8 z-20">
         <Button
           size="icon"
-          className="w-12 h-12 rounded-full bg-primary hover:bg-primary-dark text-primary-foreground shadow-lg"
+          className="w-12 h-12 rounded-full bg-blue-600/80 hover:bg-blue-700 text-white shadow-lg border-2 border-blue-300/50"
           title="Ayarlar"
         >
           <Settings className="w-5 h-5" />
@@ -27,27 +18,27 @@ const Index = () => {
       </Link>
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-6 py-16">
+      <div className="relative z-10 flex flex-col items-start justify-center min-h-screen px-8 py-16">
         {/* Title */}
-        <div className="text-center mb-16">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-4">
-            <span className="block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <div className="mb-12">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight">
+            <span className="block bg-gradient-to-r from-blue-800 via-blue-700 to-teal-600 bg-clip-text text-transparent">
               Maritime
             </span>
-            <span className="block bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-700 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
               Calculator
             </span>
           </h1>
-          <p className="text-xl text-foreground/90 mt-6" data-translatable>
+          <p className="text-xl text-blue-900/90 mt-6 font-medium" data-translatable>
             Tüm denizciler için pratik hesaplama platformu
           </p>
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
+        <div className="flex flex-col gap-4 w-full max-w-lg">
           <Link to="/formulas" className="w-full">
             <Button
-              className="w-full h-12 bg-card/95 hover:bg-card text-card-foreground rounded-full gap-2 text-base font-medium shadow-lg"
+              className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-full gap-2 text-base font-semibold shadow-lg border border-white/50"
             >
               <Plus className="w-5 h-5" />
               <span data-translatable>Regülasyon Rehberi: Mark</span>
@@ -57,7 +48,7 @@ const Index = () => {
           <div className="flex gap-4 w-full">
             <Link to="/regulations" className="flex-1">
               <Button
-                className="w-full h-12 bg-card/95 hover:bg-card text-card-foreground rounded-full gap-2 text-base font-medium shadow-lg"
+                className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-full gap-2 text-base font-semibold shadow-lg border border-white/50"
               >
                 <Shield className="w-5 h-5" />
                 <span data-translatable>Regülasyonlar</span>
@@ -66,7 +57,7 @@ const Index = () => {
 
             <Link to="/calculations" className="flex-1">
               <Button
-                className="w-full h-12 bg-card/95 hover:bg-card text-card-foreground rounded-full gap-2 text-base font-medium shadow-lg"
+                className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-full gap-2 text-base font-semibold shadow-lg border border-white/50"
               >
                 <FileText className="w-5 h-5" />
                 <span data-translatable>Hesaplamalar</span>
