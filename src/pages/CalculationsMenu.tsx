@@ -22,9 +22,9 @@ export default function CalculationsMenu() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
         {/* Title */}
-        <div className="flex items-center gap-4 text-white mb-10">
-          <Anchor className="w-10 h-10 drop-shadow-lg" />
-          <h1 className="text-4xl font-bold drop-shadow-lg" data-no-translate>Denizcilik Hesaplamaları</h1>
+        <div className="flex items-center gap-4 mb-10">
+          <Anchor className="w-10 h-10 text-blue-600 drop-shadow-lg" />
+          <h1 className="text-4xl font-bold text-blue-600 drop-shadow-lg" data-no-translate>Denizcilik Hesaplamaları</h1>
         </div>
 
         {/* Categories */}
@@ -37,10 +37,10 @@ export default function CalculationsMenu() {
             >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  <category.icon className="w-16 h-16 text-white drop-shadow-lg" strokeWidth={1.5} />
+                  <category.icon className="w-16 h-16 text-blue-700 drop-shadow-lg" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1">
-                  <span className="text-2xl font-bold text-white drop-shadow-sm" data-no-translate>
+                  <span className="text-2xl font-bold text-blue-700 drop-shadow-sm" data-no-translate>
                     {category.title}
                   </span>
                 </div>
