@@ -6,20 +6,20 @@ import { Plus, Shield, FileText, Settings } from "lucide-react";
 const Index = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Soft ocean background */}
+      {/* Deep maritime background */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-sky-200 via-sky-300 to-sky-500"
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-dark via-primary to-primary-light"
       />
 
-      {/* Floating Settings button (center-right) */}
-      <Link to="/settings" className="fixed right-16 top-1/2 -translate-y-1/2 z-20">
+      {/* Floating Settings button (top-right) */}
+      <Link to="/settings" className="fixed right-8 top-8 z-20">
         <Button
           size="icon"
-          className="h-14 w-14 rounded-full bg-violet-600 hover:bg-violet-700 text-white shadow-lg border-2 border-white/40"
+          className="h-12 w-12 rounded-full bg-primary hover:bg-primary-light text-white shadow-lg border-2 border-white/30"
           title="Ayarlar"
         >
-          <Settings className="w-6 h-6" />
+          <Settings className="w-5 h-5" />
         </Button>
       </Link>
 
@@ -28,14 +28,14 @@ const Index = () => {
         {/* Title */}
         <div className="mb-10 md:mb-12">
           <h1 className="text-[56px] md:text-[84px] lg:text-[110px] font-extrabold leading-[0.95] tracking-tight">
-            <span className="block bg-gradient-to-r from-blue-900 via-blue-700 to-teal-600 bg-clip-text text-transparent">
+            <span className="block text-white drop-shadow-lg">
               Maritime
             </span>
-            <span className="block bg-gradient-to-r from-blue-700 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+            <span className="block text-white/90 drop-shadow-lg">
               Calculator
             </span>
           </h1>
-          <p className="mt-8 text-xl md:text-2xl text-slate-900/90 font-medium" data-translatable>
+          <p className="mt-8 text-xl md:text-2xl text-white/80 font-medium drop-shadow-sm" data-translatable>
             Tüm denizciler için pratik hesaplama platformu
           </p>
         </div>
