@@ -260,9 +260,8 @@ All colors MUST be HSL.
   --shadow-card: 0 4px 16px -2px hsl(120 70% 40% / 0.15), 0 0 10px hsl(90 70% 45% / 0.1);
   --shadow-button: 0 2px 8px -1px hsl(120 70% 40% / 0.25), 0 0 5px hsl(90 70% 45% / 0.15);
 
-  /* Maritime logo animation */
+  /* Maritime logo base styles */
   .maritime-logo {
-    animation: sextant-rotate-y 8s linear infinite;
     transform-style: preserve-3d;
   }
 
@@ -1020,25 +1019,7 @@ All colors MUST be HSL.
   filter: drop-shadow(0 0 10px hsl(180 100% 70% / 0.6)) brightness(1.2);
 }
 
-/* Logo animation */
-@keyframes logoFloat {
-  0%, 100% { 
-    transform: translateY(0px); 
-    animation-duration: calc(var(--animation-duration) * 6);
-  }
-  50% { 
-    transform: translateY(-10px); 
-    animation-duration: calc(var(--animation-duration) * 6);
-  }
-}
-
-.maritime-logo {
-  animation: logoFloat 6s ease-in-out infinite;
-}
-
-.maritime-logo:hover {
-  animation-play-state: paused;
-}
+/* Remove conflicting animation */
 
 /* Nature theme title color for contrast */
 .nature .nature-title {
