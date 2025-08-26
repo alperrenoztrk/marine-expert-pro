@@ -45,6 +45,10 @@ export default function StabilityLongitudinal() {
   const [selectedShipType, setSelectedShipType] = useState<string>("cargo");
   const [loadCondition, setLoadCondition] = useState<string>("loaded");
   const [trimCondition, setTrimCondition] = useState<number>(0);
+  const [showAnswers, setShowAnswers] = useState<boolean>(false);
+  const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
+  const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
+  const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
   
   // Longitudinal stability example data
   const exampleData = {
@@ -809,9 +813,30 @@ export default function StabilityLongitudinal() {
                   <p className="text-sm"><strong>Durum:</strong> Kıç tanktan 50 ton yakıt tüketildi.</p>
                   <p className="text-sm mt-2"><strong>Soru:</strong> Trim nasıl değişir?</p>
                 </div>
-                <Button variant="outline" className="w-full">
-                  Cevabı Öğren
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setScenario2Answer(!scenario2Answer)}
+                >
+                  {scenario2Answer ? "Cevabı Gizle" : "Cevabı Öğren"}
                 </Button>
+                {scenario2Answer && (
+                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
+                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">📚 Doğru Cevap:</h4>
+                    <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+                      <strong>Trim AZALIR (başa doğru)!</strong> Kıç tanktan yakıt tüketildiğinde:
+                    </p>
+                    <ul className="text-sm text-green-700 dark:text-green-300 space-y-1 ml-4">
+                      <li>• Kıç ağırlığı azalır</li>
+                      <li>• LCG öne doğru kayar</li>
+                      <li>• Trim moment = Δ × (LCG - LCF) azalır</li>
+                      <li>• Sonuç: Daha az kıç trim, hatta baş trim olabilir</li>
+                    </ul>
+                    <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
+                      <p className="text-xs font-mono">ΔTrim = (Yakıt_ağırlığı × Kıç_mesafesi) / MCT</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

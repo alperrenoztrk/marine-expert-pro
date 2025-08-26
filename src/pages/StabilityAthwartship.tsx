@@ -46,6 +46,10 @@ export default function StabilityAthwartship() {
   const [selectedShipType, setSelectedShipType] = useState<string>("cargo");
   const [weatherCondition, setWeatherCondition] = useState<number>(3);
   const [urgentCalculation, setUrgentCalculation] = useState<boolean>(false);
+  const [showAnswers, setShowAnswers] = useState<boolean>(false);
+  const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
+  const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
+  const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
 
   const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -114,6 +118,97 @@ export default function StabilityAthwartship() {
       weatherLimit: gm > 0.3 ? 18 : 12,
       cargoOperationLimit: 10
     };
+  };
+
+  const handleQuizAnswer = (questionId: string, answer: string) => {
+    setQuizAnswers(prev => ({ ...prev, [questionId]: answer }));
+  };
+
+  const checkQuizAnswers = () => {
+    const correctAnswers = {
+      q1: "b", // Stabilite sertleşir
+      q2: "b"  // KG'yi arttırır (sanal)
+    };
+    
+    setShowQuizResults(true);
+    let score = 0;
+    Object.keys(correctAnswers).forEach(qId => {
+      if (quizAnswers[qId] === correctAnswers[qId as keyof typeof correctAnswers]) {
+        score++;
+      }
+    });
+    
+    setTimeout(() => {
+      if (score === 2) {
+        setLearningProgress(100);
+      } else if (score === 1) {
+        setLearningProgress(Math.max(learningProgress, 90));
+      }
+    }, 1000);
+  };
+
+  const getDetailedStabilityAnalysis = () => {
+    if (!result) return null;
+    
+    const analysis = {
+      gmQuality: result.gm > 1.0 ? "SERT" : result.gm > 0.5 ? "ORTA" : result.gm > 0.15 ? "YUMUŞAK" : "KRİTİK",
+      gzMaxAngle: Math.round(result.stabilityRange * 0.7), // Yaklaşık max GZ açısı
+      rollPeriod: result.naturalPeriod,
+      stabilityReserve: result.stabilityRange,
+      weatherCapability: getWeatherRecommendation(result.gm, weatherCondition),
+      performanceScore: Math.min(100, (result.gm * 20 + result.stabilityRange * 2 + (20 - result.naturalPeriod) * 3)),
+      recommendations: getAdvancedRecommendations(result.gm, result.stabilityRange, result.naturalPeriod)
+    };
+    
+    return analysis;
+  };
+
+  const getAdvancedRecommendations = (gm: number, range: number, period: number) => {
+    const recommendations = [];
+    
+    if (gm < 0.15) {
+      recommendations.push({
+        type: "CRITICAL",
+        message: "ACİL: GM IMO minimum değerinin altında! Derhal ballast al.",
+        action: "Ballast Operations"
+      });
+    } else if (gm < 0.5) {
+      recommendations.push({
+        type: "WARNING",
+        message: "GM değeri düşük. Kötü hava koşullarında dikkatli ol.",
+        action: "Weather Monitoring"
+      });
+    } else if (gm > 2.0) {
+      recommendations.push({
+        type: "CAUTION",
+        message: "GM çok yüksek. Sert sallanım beklenir, konfor azalır.",
+        action: "Comfort Optimization"
+      });
+    }
+    
+    if (period < 8) {
+      recommendations.push({
+        type: "INFO",
+        message: "Hızlı roll periyodu. Sert stabilite, rahatsız edici olabilir.",
+        action: "Crew Comfort"
+      });
+    } else if (period > 20) {
+      recommendations.push({
+        type: "WARNING", 
+        message: "Çok yavaş roll. Stabilite zayıf olabilir.",
+        action: "Stability Check"
+      });
+    }
+    
+    if (range < 30) {
+      recommendations.push({
+        type: "WARNING",
+        message: "Stabilite aralığı dar. Büyük açılarda dikkat et.",
+        action: "Large Angle Caution"
+      });
+    }
+    
+    return recommendations;
   };
 
   const chartData = useMemo(() => {
@@ -578,6 +673,98 @@ export default function StabilityAthwartship() {
               </Card>
             </div>
 
+            {/* Advanced Analysis Section */}
+            <Card className="border-purple-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Gelişmiş Stabilite Analizi
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const analysis = getDetailedStabilityAnalysis();
+                  return analysis ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg text-center">
+                          <div className="text-lg font-bold text-blue-600">{analysis.gmQuality}</div>
+                          <div className="text-sm text-muted-foreground">Stabilite Kalitesi</div>
+                        </div>
+                        <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg text-center">
+                          <div className="text-lg font-bold text-green-600">{analysis.gzMaxAngle}°</div>
+                          <div className="text-sm text-muted-foreground">Max GZ Açısı</div>
+                        </div>
+                        <div className="p-3 bg-orange-50 dark:bg-orange-950 rounded-lg text-center">
+                          <div className="text-lg font-bold text-orange-600">{Math.round(analysis.performanceScore)}%</div>
+                          <div className="text-sm text-muted-foreground">Performans Skoru</div>
+                        </div>
+                      </div>
+
+                      {analysis.recommendations.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-semibold">🎯 Uzman Tavsiyeleri:</h4>
+                          {analysis.recommendations.map((rec, idx) => (
+                            <div 
+                              key={idx} 
+                              className={`p-3 rounded-lg border-l-4 ${
+                                rec.type === "CRITICAL" ? "bg-red-50 dark:bg-red-950 border-red-500" :
+                                rec.type === "WARNING" ? "bg-yellow-50 dark:bg-yellow-950 border-yellow-500" :
+                                rec.type === "CAUTION" ? "bg-orange-50 dark:bg-orange-950 border-orange-500" :
+                                "bg-blue-50 dark:bg-blue-950 border-blue-500"
+                              }`}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <p className="text-sm font-medium">{rec.message}</p>
+                                  <Badge variant="outline" className="mt-1 text-xs">
+                                    {rec.action}
+                                  </Badge>
+                                </div>
+                                <Badge variant={
+                                  rec.type === "CRITICAL" ? "destructive" :
+                                  rec.type === "WARNING" ? "secondary" :
+                                  "default"
+                                }>
+                                  {rec.type}
+                                </Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div className="p-3 border rounded-lg">
+                          <h4 className="font-semibold mb-2">💊 Hava Durumu Kabiliyeti</h4>
+                          <div className={`text-sm p-2 rounded ${
+                            analysis.weatherCapability.status === "safe" ? "bg-green-50 text-green-800" :
+                            analysis.weatherCapability.status === "caution" ? "bg-yellow-50 text-yellow-800" :
+                            analysis.weatherCapability.status === "warning" ? "bg-orange-50 text-orange-800" :
+                            "bg-red-50 text-red-800"
+                          }`}>
+                            SS-{weatherCondition}: {analysis.weatherCapability.message}
+                          </div>
+                        </div>
+                        <div className="p-3 border rounded-lg">
+                          <h4 className="font-semibold mb-2">⚖️ Stabilite Rezervi</h4>
+                          <div className="text-sm">
+                            <div>Range: {analysis.stabilityReserve.toFixed(1)}°</div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                              <div 
+                                className="bg-blue-600 h-2 rounded-full" 
+                                style={{ width: `${Math.min(100, analysis.stabilityReserve * 2)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
+              </CardContent>
+            </Card>
+
             <Button 
               onClick={() => {
                 setActiveTab("concepts");
@@ -749,9 +936,30 @@ export default function StabilityAthwartship() {
                   <p className="text-sm"><strong>Durum:</strong> Seyir sırasında yakıt tüketimi KG'yi nasıl etkiler?</p>
                   <p className="text-sm mt-2"><strong>Soru:</strong> Alt tanklardan yakıt tüketilirse GM artar mı?</p>
                 </div>
-                <Button variant="outline" className="w-full">
-                  Cevabı Öğren
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setScenario2Answer(!scenario2Answer)}
+                >
+                  {scenario2Answer ? "Cevabı Gizle" : "Cevabı Öğren"}
                 </Button>
+                {scenario2Answer && (
+                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
+                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">📚 Doğru Cevap:</h4>
+                    <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+                      <strong>EVET, GM artar!</strong> Alt tanklardan yakıt tüketildiğinde:
+                    </p>
+                    <ul className="text-sm text-green-700 dark:text-green-300 space-y-1 ml-4">
+                      <li>• Toplam ağırlık azalır (Δ ↓)</li>
+                      <li>• KG düşer (alt tank boşaldığı için)</li>
+                      <li>• Draft azalır, KB değişir</li>
+                      <li>• Net etki: GM = KB + BM - KG artışı</li>
+                    </ul>
+                    <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
+                      <p className="text-xs font-mono">Formula: GM_yeni = GM_eski + (KG_eski - KG_yeni)</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -767,41 +975,127 @@ export default function StabilityAthwartship() {
                 <h4 className="font-semibold">Soru 1: GM'nin artması ne anlama gelir?</h4>
                 <div className="mt-3 space-y-2">
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q1" value="a" />
-                    <span className="text-sm">A) Gemi daha hızlı gider</span>
+                    <input 
+                      type="radio" 
+                      name="q1" 
+                      value="a"
+                      onChange={(e) => handleQuizAnswer("q1", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "a" ? "text-red-600 line-through" : "") : ""}`}>
+                      A) Gemi daha hızlı gider
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q1" value="b" />
-                    <span className="text-sm">B) Stabilite sertleşir</span>
+                    <input 
+                      type="radio" 
+                      name="q1" 
+                      value="b"
+                      onChange={(e) => handleQuizAnswer("q1", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
+                      B) Stabilite sertleşir ✅
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q1" value="c" />
-                    <span className="text-sm">C) Yakıt tüketimi azalır</span>
+                    <input 
+                      type="radio" 
+                      name="q1" 
+                      value="c"
+                      onChange={(e) => handleQuizAnswer("q1", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "c" ? "text-red-600 line-through" : "") : ""}`}>
+                      C) Yakıt tüketimi azalır
+                    </span>
                   </label>
                 </div>
+                {showQuizResults && (
+                  <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
+                    <p className="text-xs text-blue-800 dark:text-blue-200">
+                      <strong>Açıklama:</strong> GM arttığında gemi daha sert stabiliteye sahip olur, 
+                      roll periyodu azalır ve righting moment artar.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950">
                 <h4 className="font-semibold">Soru 2: Serbest yüzey etkisi nedir?</h4>
                 <div className="mt-3 space-y-2">
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q2" value="a" />
-                    <span className="text-sm">A) KG'yi azaltır</span>
+                    <input 
+                      type="radio" 
+                      name="q2" 
+                      value="a"
+                      onChange={(e) => handleQuizAnswer("q2", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "a" ? "text-red-600 line-through" : "") : ""}`}>
+                      A) KG'yi azaltır
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q2" value="b" />
-                    <span className="text-sm">B) KG'yi arttırır (sanal)</span>
+                    <input 
+                      type="radio" 
+                      name="q2" 
+                      value="b"
+                      onChange={(e) => handleQuizAnswer("q2", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
+                      B) KG'yi arttırır (sanal) ✅
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q2" value="c" />
-                    <span className="text-sm">C) GM'yi etkilemez</span>
+                    <input 
+                      type="radio" 
+                      name="q2" 
+                      value="c"
+                      onChange={(e) => handleQuizAnswer("q2", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "c" ? "text-red-600 line-through" : "") : ""}`}>
+                      C) GM'yi etkilemez
+                    </span>
                   </label>
                 </div>
+                {showQuizResults && (
+                  <div className="mt-3 p-2 bg-green-100 dark:bg-green-900 rounded">
+                    <p className="text-xs text-green-800 dark:text-green-200">
+                      <strong>Açıklama:</strong> Serbest yüzey etkisi sanal KG artışına neden olur (FSE). 
+                      Bu da GM'yi azaltır: GM_eff = GM - FSE
+                    </p>
+                  </div>
+                )}
               </div>
 
-              <Button className="w-full">
-                Cevapları Kontrol Et
+              <Button 
+                className="w-full" 
+                onClick={checkQuizAnswers}
+                disabled={!quizAnswers.q1 || !quizAnswers.q2}
+              >
+                {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
               </Button>
+              
+              {showQuizResults && (
+                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                  <h4 className="font-semibold mb-2">🎯 Sonuçlarınız:</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {Object.keys({q1: "b", q2: "b"}).reduce((score, qId) => 
+                          score + (quizAnswers[qId] === ({q1: "b", q2: "b"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
+                        )}/2
+                      </div>
+                      <div className="text-sm text-muted-foreground">Doğru Cevap</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {Math.round((Object.keys({q1: "b", q2: "b"}).reduce((score, qId) => 
+                          score + (quizAnswers[qId] === ({q1: "b", q2: "b"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
+                        ) / 2) * 100)}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
