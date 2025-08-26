@@ -67,11 +67,7 @@ export default function StabilityMenu() {
           <div className="space-y-6">
             {/* Hero / Opening section */}
             <div className="rounded-lg border bg-muted/20 p-4 md:p-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="space-y-1 text-center md:text-left">
-                  <div className="text-2xl font-bold">Stabilite Modülü</div>
-                  <p className="text-muted-foreground">Başlıklar halinde düzenlendi. Detaylar gerektiğinde eklenecek.</p>
-                </div>
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button variant="calculator" className="gap-2">
