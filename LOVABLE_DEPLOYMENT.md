@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.28
+- **Durum:** ✅ Hesaplamalar menüsü anasayfa renkleriyle uyumlu hale getirildi
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.27
 - **Durum:** ✅ Anasayfa arkaplan gemi görseli kaldırıldı
 
@@ -62,6 +66,14 @@
 - **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🎨 Hesaplamalar Menüsü UI Güncellemesi (2025-01-27)
+- Hesaplamalar menüsü anasayfa temasıyla uyumlu hale getirildi
+- Gradient arka plan: `bg-gradient-to-b from-primary-dark via-primary to-primary-light`
+- Kartlara backdrop blur ve gelişmiş shadow efektleri eklendi
+- Drop shadow efektleri tüm text ve iconlara uygulandı
+- Hover animasyonları geliştirildi (`transition-all duration-300`)
+- Renk paleti tamamen anasayfayla senkronize edildi
 
 ### 🧭 Mark — Regülasyon Rehberi Odak (2025-08-22)
 - Persona: Yanıt formatı “Kaynak / Erişim / Not” olacak şekilde revize edildi
