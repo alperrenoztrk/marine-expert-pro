@@ -148,7 +148,7 @@ GM = KM - KG
 
     "trim": `**Trim Hesabı:**
 
-Trim = Ta - Tf (Kıç taslağı - Baş taslağı)
+Trim = Ta - Tf (Kıç su çekimi - Baş su çekimi)
 
 **Trim Açısı:**
 θ = arctan(Trim / LPP)
@@ -596,7 +596,7 @@ Sorular sorabilirsiniz:
 • **Stabilite**: GM, BM, KM hesaplamaları
 • **Trim**: Boyuna stabilite, MCT
 • **Yükleme**: Kargo dağılımı, balast
-• **Hidrostatik**: Taslak, deplasman
+• **Hidrostatik**: Su çekimi, deplasman
 • **Sevk**: Direnç, itki, verimlilik
 • **Güvenlik**: IMO, SOLAS kriterleri
 

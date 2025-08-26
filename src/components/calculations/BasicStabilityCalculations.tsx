@@ -171,7 +171,7 @@ export const BasicStabilityCalculations = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded bg-muted">
-              <h4 className="font-semibold mb-3">Draft Değişimi ΔT = V / Awp</h4>
+              <h4 className="font-semibold mb-3">Su çekimi değişimi ΔT = V / Awp</h4>
               <div className="grid grid-cols-2 gap-2 items-end">
                 <div>
                   <Label>Hacim V (m³)</Label>

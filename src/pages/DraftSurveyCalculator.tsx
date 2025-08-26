@@ -83,13 +83,13 @@ const DraftSurveyCalculator = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="h-5 w-5" />
-            Draft Hesaplama Araçları
+            Su çekimi hesaplama araçları
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="draft-change" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="draft-change">Draft Değişimi</TabsTrigger>
+              <TabsTrigger value="draft-change">Su çekimi değişimi</TabsTrigger>
               <TabsTrigger value="trim">Trim Hesaplama</TabsTrigger>
               <TabsTrigger value="displacement">Deplasman</TabsTrigger>
             </TabsList>
@@ -132,7 +132,7 @@ const DraftSurveyCalculator = () => {
               </div>
               
               <Button onClick={calculateDraftChange} className="w-full">
-                Draft Değişimini Hesapla
+                Su çekimi değişimini hesapla
               </Button>
 
               {draftResult !== null && (

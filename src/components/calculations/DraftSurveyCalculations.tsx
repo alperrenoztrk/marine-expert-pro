@@ -494,19 +494,19 @@ export function DraftSurveyCalculations() {
                     <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <Waves className="h-4 w-4" />
-                        Draft Analizi
+                        Su çekimi analizi
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>Port Ortalama Draft:</span>
+                          <span>Port ortalama su çekimi:</span>
                           <span className="font-mono">{results.portMeanDraft.toFixed(3)} m</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Starboard Ortalama Draft:</span>
+                          <span>Starboard ortalama su çekimi:</span>
                           <span className="font-mono">{results.starboardMeanDraft.toFixed(3)} m</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Genel Ortalama Draft:</span>
+                          <span>Genel ortalama su çekimi:</span>
                           <span className="font-mono">{results.overallMeanDraft.toFixed(3)} m</span>
                         </div>
                         <div className="flex justify-between">

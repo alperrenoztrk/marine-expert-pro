@@ -79,9 +79,9 @@ const TrimList = () => {
                   <Separator />
 
                   <div>
-                    <h4 className="font-semibold text-sm text-green-700 mb-2">⚖️ Draft Survey Formülleri</h4>
+                    <h4 className="font-semibold text-sm text-green-700 mb-2">⚖️ Su çekimi survey formülleri</h4>
                     <div className="space-y-1 text-xs">
-                      <p><strong>Ortalama Draft:</strong></p>
+                      <p><strong>Ortalama su çekimi:</strong></p>
                       <p className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-1 rounded">T_mean = (T_f + 4×T_m + T_a) / 6</p>
                       <p><strong>Displacement:</strong></p>
                       <p className="font-mono bg-gray-50 cyberpunk:bg-gray-800 p-1 rounded">Δ = V × ρ_sw</p>

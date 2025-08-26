@@ -321,7 +321,7 @@ export default function DraftSurveyBunker() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <p><strong>Draft Değişimi:</strong> {result.draftChange.toFixed(3)} m</p>
+                <p><strong>Su çekimi değişimi:</strong> {result.draftChange.toFixed(3)} m</p>
                 <p><strong>Deplasman Değişimi:</strong> {result.displacementChange.toFixed(2)} ton</p>
                 <p><strong>Düzeltilmiş Yoğunluk:</strong> {result.fuelDensityCorrection.toFixed(3)} ton/m³</p>
               </div>

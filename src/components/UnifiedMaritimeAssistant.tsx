@@ -202,13 +202,13 @@ Türkçe, düzenli ve kısa yanıtla.`
 **Bileşenler:**
 - **L**: Gemi uzunluğu (m)
 - **B**: Gemi genişliği (m)
-- **T**: Su Çekimi (m)
+- **T**: Su çekimi (m)
 - **Cb**: Blok katsayısı (0.6-0.8)
 - **ρ**: Su yoğunluğu (1.025 t/m³)`,
 
       "trim": `**Trim Hesaplamaları**
 
-**Trim:** Ta - Tf (Kıç - Baş taslağı)
+**Trim:** Ta - Tf (Kıç su çekimi - Baş su çekimi)
 **Trim Açısı:** θ = arctan(Trim / LPP)
 **MCT:** MCT1cm = (Δ × GML) / (100 × LPP)`
     };

@@ -57,7 +57,7 @@ export const HydrostaticsCalculations = () => {
   const [bonjeanResults, setBonjeanResults] = useState<HydrostaticsResults | null>(null);
 
   const calculateDraftSurvey = () => {
-    // Formül 1: Ortalama Draft - T_mean = (T_f + 4×T_m + T_a) / 6
+    // Formül 1: Ortalama su çekimi - T_mean = (T_f + 4×T_m + T_a) / 6
     const meanDraft = (hydrostaticsData.draftForward + 4 * hydrostaticsData.draftMidships + hydrostaticsData.draftAft) / 6;
     
     // Formül 2: Displacement - Δ = V × ρ_sw
@@ -138,13 +138,13 @@ export const HydrostaticsCalculations = () => {
             <div className="mt-12"></div>
 
             <TabsContent value="draft-survey" className="space-y-6">
-              {/* Formül 1: Ortalama Draft - T_mean = (T_f + 4×T_m + T_a) / 6 */}
+              {/* Formül 1: Ortalama su çekimi - T_mean = (T_f + 4×T_m + T_a) / 6 */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-blue-700">📏 Ortalama Draft Hesaplama</h3>
+                <h3 className="text-lg font-semibold text-blue-700">📏 Ortalama su çekimi hesaplama</h3>
                 <p className="text-sm text-gray-600">T_mean = (T_f + 4×T_m + T_a) / 6</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="draftForward">Baş Draft (T_f) [m]</Label>
+                    <Label htmlFor="draftForward">Baş su çekimi (T_f) [m]</Label>
                     <Input
                       id="draftForward"
                       type="number"
@@ -155,7 +155,7 @@ export const HydrostaticsCalculations = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="draftMidships">Orta Draft (T_m) [m]</Label>
+                    <Label htmlFor="draftMidships">Orta su çekimi (T_m) [m]</Label>
                     <Input
                       id="draftMidships"
                       type="number"
@@ -166,7 +166,7 @@ export const HydrostaticsCalculations = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="draftAft">Kıç Draft (T_a) [m]</Label>
+                    <Label htmlFor="draftAft">Kıç su çekimi (T_a) [m]</Label>
                     <Input
                       id="draftAft"
                       type="number"
@@ -259,7 +259,7 @@ export const HydrostaticsCalculations = () => {
                   <h3 className="text-lg font-semibold text-gray-800">📊 Draft Survey Sonuçları</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Ortalama Draft (T_mean)</Label>
+                      <Label className="text-sm font-medium">Ortalama su çekimi (T_mean)</Label>
                       <div className="text-lg font-bold text-blue-600">
                         {draftSurveyResults.meanDraft.toFixed(3)} m
                       </div>

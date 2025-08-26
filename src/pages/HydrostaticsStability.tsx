@@ -85,13 +85,13 @@ const HydrostaticsStabilityPage = () => {
                       
                       <div className="space-y-3">
                         <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
-                          <h4 className="font-semibold text-sm mb-2">1. Deplasman ve Draft Hesaplamaları</h4>
+                          <h4 className="font-semibold text-sm mb-2">1. Deplasman ve su çekimi hesaplamaları</h4>
                           <div className="space-y-2 text-sm">
                             <p><strong>Deplasman (Δ):</strong></p>
                             <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">Δ = V × ρsw</p>
-                            <p><strong>Draft (T):</strong></p>
+                            <p><strong>Su çekimi (T):</strong></p>
                             <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">T = V / Awp</p>
-                            <p><strong>Ortalama Draft:</strong></p>
+                            <p><strong>Ortalama su çekimi:</strong></p>
                             <p className="font-mono bg-white dark:bg-gray-600 p-2 rounded">Tmean = (Tf + 4×Tm + Ta) / 6</p>
                           </div>
                         </div>

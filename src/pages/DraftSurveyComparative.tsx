@@ -381,7 +381,7 @@ export default function DraftSurveyComparative() {
                 {result.surveys.map((survey, index) => (
                   <div key={index} className="p-3 bg-white dark:bg-gray-600 rounded">
                     <h4 className="font-semibold">{survey.name}</h4>
-                    <p><strong>Ortalama Draft:</strong> {survey.meanDraft.toFixed(3)} m</p>
+                    <p><strong>Ortalama su çekimi:</strong> {survey.meanDraft.toFixed(3)} m</p>
                     <p><strong>Deplasman:</strong> {survey.displacement.toFixed(2)} ton</p>
                     <p><strong>Trim:</strong> {survey.trimByHead.toFixed(3)} m {survey.trimByHead >= 0 ? "(Baş trim)" : "(Kıç trim)"}</p>
                   </div>
@@ -402,7 +402,7 @@ export default function DraftSurveyComparative() {
                 <div key={index} className="p-3 bg-white dark:bg-gray-600 rounded">
                   <h4 className="font-semibold">{comparison.from} → {comparison.to}</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                    <p><strong>Draft Değişimi:</strong> {comparison.draftChange.toFixed(3)} m</p>
+                    <p><strong>Su çekimi değişimi:</strong> {comparison.draftChange.toFixed(3)} m</p>
                     <p><strong>Deplasman Değişimi:</strong> {comparison.displacementChange.toFixed(2)} ton</p>
                     <p><strong>Trend:</strong> 
                       <span className={`ml-1 ${

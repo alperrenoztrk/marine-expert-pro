@@ -53,16 +53,16 @@ class GoogleTranslationService {
       'ISPS': 'Uluslararası Gemi ve Liman Tesisi Güvenliği',
       'MLC': 'Denizcilik Çalışma Sözleşmesi',
       'STCW': 'Eğitim, Belgelendirme ve Vardiya Standartları',
-      'DWT': 'Dorse Ağırlığı Tonajı',
-      'GRT': 'Gayri Safi Tescil Tonajı',
-      'LOA': 'Maksimum Boy',
-      'LBP': 'Perpendikülreler Arası Boy',
-      'draft': 'gemi drafı',
-      'trim': 'gemi trimi',
-      'ballast': 'balast suyu',
-      'cargo': 'gemi yükü',
-      'stability': 'gemi stabilitesi',
-      'metacentric': 'metasantrik yükseklik'
+      'DWT': 'Deadweight (DWT)',
+      'GRT': 'Gross Register Tonnage',
+      'LOA': 'Tam Boy (LOA)',
+      'LBP': 'Perpendiküller Arası Boy (LBP)',
+      'draft': 'su çekimi (draft)',
+      'trim': 'trim',
+      'ballast': 'balast',
+      'cargo': 'yük',
+      'stability': 'stabilite',
+      'metacentric': 'metasantrik yükseklik (GM)'
     }
   };
 

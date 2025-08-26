@@ -66,7 +66,7 @@ export const WorkingAIAssistant = () => {
     "trim": `**Trim ve List Hesaplamaları:**
 
 **Trim Formülü:**
-Trim = Ta - Tf (Kıç taslağı - Baş taslağı)
+Trim = Ta - Tf (Kıç su çekimi - Baş su çekimi)
 
 **Trim Açısı:**
 θ = arctan(Trim / LPP)

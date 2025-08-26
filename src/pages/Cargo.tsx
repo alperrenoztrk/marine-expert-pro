@@ -115,7 +115,7 @@ export const CargoCalculations = () => {
     // Formül 2: Trim Moment - M_trim = W × (LCG - LCF)
     const trimMoment = totalWeight * (cargoData.cargoLCG - cargoData.shipLCF);
     
-    // Formül 3: Draft Değişimi - ΔD = W / TPC
+    // Formül 3: Su çekimi değişimi - ΔD = W / TPC
     const draftChange = totalWeight / cargoData.TPC;
     
     // Formül 4: Stabilite - GM_new = GM_old - (W × KG) / Δ
@@ -408,7 +408,7 @@ export const CargoCalculations = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Draft Değişimi</Label>
+                    <Label className="text-sm font-medium">Su çekimi değişimi</Label>
                     <div className="text-lg font-bold text-green-600">
                       {cargoResults.cargoDistribution.draftChange.toFixed(2)} cm
                     </div>

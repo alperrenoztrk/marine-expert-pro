@@ -144,7 +144,7 @@ Türkçe olarak, teknik ama anlaşılır şekilde yanıtla.`;
       "trim": `**Trim ve List Hesaplamaları:**
 
 **Trim Formülü:**
-Trim = Ta - Tf (Kıç - Baş taslağı)
+Trim = Ta - Tf (Kıç su çekimi - Baş su çekimi)
 
 **Trim Açısı:**
 θ = arctan(Trim / LPP)

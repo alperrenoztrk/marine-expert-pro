@@ -663,7 +663,7 @@ export const SafetyCalculations = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="freshWaterDraft">Tatlı Su Su Çekimi (m)</Label>
+                  <Label htmlFor="freshWaterDraft">Tatlı Su Çekimi (m)</Label>
                   <Input
                     id="freshWaterDraft"
                     type="number"

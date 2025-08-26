@@ -311,7 +311,7 @@ export default function DraftSurveyIntermediate() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <p><strong>Draft Değişimi:</strong> {result.draftChange.toFixed(3)} m</p>
+                <p><strong>Su çekimi değişimi:</strong> {result.draftChange.toFixed(3)} m</p>
                 <p><strong>İşlenen Kargo:</strong> {result.cargoHandled.toFixed(2)} ton</p>
                 <p><strong>İşlem Hızı:</strong> {result.handlingRate.toFixed(1)} ton/saat</p>
               </div>

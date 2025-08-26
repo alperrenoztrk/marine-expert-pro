@@ -239,7 +239,7 @@ export default function DraftSurveyStandard() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <p><strong>Ortalama Draft:</strong> {result.meanDraft.toFixed(3)} m</p>
+                <p><strong>Ortalama su çekimi:</strong> {result.meanDraft.toFixed(3)} m</p>
                 <p><strong>Deplasman:</strong> {result.displacement.toFixed(2)} ton</p>
               </div>
               <div className="space-y-2">
