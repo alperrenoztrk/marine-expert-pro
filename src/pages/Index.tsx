@@ -67,12 +67,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Ship illustration */}
-      <img
-        src="/maritime-logo.svg"
-        alt="Maritime logo"
-        className="pointer-events-none select-none absolute -bottom-4 left-8 md:left-16 w-[220px] sm:w-[280px] md:w-[340px] lg:w-[420px] opacity-95"
-      />
+
     </div>
   );
 };
