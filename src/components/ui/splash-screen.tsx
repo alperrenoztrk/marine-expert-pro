@@ -54,7 +54,7 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
       <div className={`main-logo ${showLogo ? 'show' : ''} absolute inset-0 flex flex-col items-center justify-center text-center z-10`}>
         <div className="anchor-container">
           <img
-            src="/lovable-uploads/c6c6ba44-f631-4adf-8900-c7b1c64e1f49.png"
+            src="/sextant-golden.jpg"
             alt="Maritime Calculator sextant logo"
             className="w-40 h-40 md:w-56 md:h-56 object-contain drop-shadow-lg"
             loading="eager"
