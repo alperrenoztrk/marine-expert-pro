@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.30
+- **Durum:** ✅ Splash screen'deki sextant ikonu kaldırıldı
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.29
 - **Durum:** ✅ Hesaplamalar menüsündeki yazı renkleri mavi yapıldı
 
@@ -70,6 +74,12 @@
 - **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🚫 Splash Screen Sextant Kaldırma (2025-01-27)
+- Splash screen'deki sextant ikonu ve container'ı tamamen kaldırıldı
+- Artık sadece "Maritime Calculator" başlığı gösteriliyor
+- Daha temiz ve sade splash screen tasarımı
+- Yükleme süresi ve görsel karmaşıklık azaltıldı
 
 ### 🎨 Hesaplamalar Menüsü Yazı Renkleri (2025-01-27)
 - Başlık ve kategori yazıları mavi renge değiştirildi
