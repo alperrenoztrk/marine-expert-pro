@@ -1561,3 +1561,24 @@ All colors MUST be HSL.
   transform-style: preserve-3d;
   will-change: transform;
 }
+
+/* Sextant 3D rotation and container */
+@keyframes sextant-rotate-y-3d {
+  from {
+    transform: rotateX(15deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(15deg) rotateY(360deg);
+  }
+}
+
+.sextant-3d-container {
+  perspective: 900px;
+}
+
+.maritime-logo--rotate-3d {
+  animation: sextant-rotate-y-3d 8s linear infinite;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
