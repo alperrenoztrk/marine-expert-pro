@@ -6,8 +6,14 @@ import { Plus, Shield, FileText, Settings } from "lucide-react";
 const Index = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Blue gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-light to-secondary" />
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <img
+          src="/lovable-uploads/6600febe-17ab-46d7-b124-c43116e375e6.png"
+          alt="Maritime background"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
       {/* Settings button */}
       <Link to="/settings" className="absolute top-8 right-8 z-20">
@@ -25,14 +31,14 @@ const Index = () => {
         {/* Title */}
         <div className="text-center mb-16">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-4">
-            <span className="block bg-gradient-to-r from-primary-foreground to-accent-foreground bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Maritime
             </span>
-            <span className="block bg-gradient-to-r from-accent-foreground to-primary-foreground bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Calculator
             </span>
           </h1>
-          <p className="text-xl text-primary-foreground/90 mt-6" data-translatable>
+          <p className="text-xl text-foreground/90 mt-6" data-translatable>
             Tüm denizciler için pratik hesaplama platformu
           </p>
         </div>
@@ -41,7 +47,7 @@ const Index = () => {
         <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
           <Link to="/formulas" className="w-full">
             <Button
-              className="w-full h-12 bg-primary-foreground/95 hover:bg-primary-foreground text-primary rounded-full gap-2 text-base font-medium"
+              className="w-full h-12 bg-card/95 hover:bg-card text-card-foreground rounded-full gap-2 text-base font-medium shadow-lg"
             >
               <Plus className="w-5 h-5" />
               <span data-translatable>Regülasyon Rehberi: Mark</span>
@@ -51,7 +57,7 @@ const Index = () => {
           <div className="flex gap-4 w-full">
             <Link to="/regulations" className="flex-1">
               <Button
-                className="w-full h-12 bg-primary-foreground/95 hover:bg-primary-foreground text-primary rounded-full gap-2 text-base font-medium"
+                className="w-full h-12 bg-card/95 hover:bg-card text-card-foreground rounded-full gap-2 text-base font-medium shadow-lg"
               >
                 <Shield className="w-5 h-5" />
                 <span data-translatable>Regülasyonlar</span>
@@ -60,7 +66,7 @@ const Index = () => {
 
             <Link to="/calculations" className="flex-1">
               <Button
-                className="w-full h-12 bg-primary-foreground/95 hover:bg-primary-foreground text-primary rounded-full gap-2 text-base font-medium"
+                className="w-full h-12 bg-card/95 hover:bg-card text-card-foreground rounded-full gap-2 text-base font-medium shadow-lg"
               >
                 <FileText className="w-5 h-5" />
                 <span data-translatable>Hesaplamalar</span>
