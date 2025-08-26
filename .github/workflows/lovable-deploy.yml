@@ -1,0 +1,32 @@
+name: Lovable Deploy
+
+on:
+  push:
+    branches: [ main ]
+  create:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build (Lovable)
+        run: npm run build:prod
+
+      - name: Trigger Lovable remote deploy
+        if: env.LOVABLE_DEPLOY_HOOK != ''
+        env:
+          LOVABLE_DEPLOY_HOOK: ${{ secrets.LOVABLE_DEPLOY_HOOK }}
+        run: node scripts/lovable-deploy.cjs
