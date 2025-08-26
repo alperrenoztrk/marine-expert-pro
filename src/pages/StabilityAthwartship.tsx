@@ -127,7 +127,7 @@ export default function StabilityAthwartship() {
   const checkQuizAnswers = () => {
     const correctAnswers = {
       q1: "b", // Stabilite sertleşir
-      q2: "b"  // KG'yi arttırır (sanal)
+      q2: "b"  // GM'yi azaltır
     };
     
     setShowQuizResults(true);
@@ -1019,7 +1019,7 @@ export default function StabilityAthwartship() {
               </div>
 
               <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950">
-                <h4 className="font-semibold">Soru 2: Serbest yüzey etkisi nedir?</h4>
+                <h4 className="font-semibold">Soru 2: Serbest yüzey etkisi (FSE) stabiliteyi nasıl etkiler?</h4>
                 <div className="mt-3 space-y-2">
                   <label className="flex items-center gap-2">
                     <input 
@@ -1029,7 +1029,7 @@ export default function StabilityAthwartship() {
                       onChange={(e) => handleQuizAnswer("q2", e.target.value)}
                     />
                     <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "a" ? "text-red-600 line-through" : "") : ""}`}>
-                      A) KG'yi azaltır
+                      A) GM'yi arttırır
                     </span>
                   </label>
                   <label className="flex items-center gap-2">
@@ -1040,7 +1040,7 @@ export default function StabilityAthwartship() {
                       onChange={(e) => handleQuizAnswer("q2", e.target.value)}
                     />
                     <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
-                      B) KG'yi arttırır (sanal) ✅
+                      B) GM'yi azaltır ✅
                     </span>
                   </label>
                   <label className="flex items-center gap-2">
@@ -1051,15 +1051,16 @@ export default function StabilityAthwartship() {
                       onChange={(e) => handleQuizAnswer("q2", e.target.value)}
                     />
                     <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "c" ? "text-red-600 line-through" : "") : ""}`}>
-                      C) GM'yi etkilemez
+                      C) Sadece KG'yi etkiler
                     </span>
                   </label>
                 </div>
                 {showQuizResults && (
                   <div className="mt-3 p-2 bg-green-100 dark:bg-green-900 rounded">
                     <p className="text-xs text-green-800 dark:text-green-200">
-                      <strong>Açıklama:</strong> Serbest yüzey etkisi sanal KG artışına neden olur (FSE). 
-                      Bu da GM'yi azaltır: GM_eff = GM - FSE
+                      <strong>Doğru Açıklama:</strong> FSE direkt olarak GM'yi azaltır! 
+                      Formül: <code className="bg-white px-1 rounded">GM_effective = GM_solid - FSE</code><br/>
+                      Kısmi dolu tanklar sanal inertia momenti yaratır ve stabiliteyi düşürür.
                     </p>
                   </div>
                 )}

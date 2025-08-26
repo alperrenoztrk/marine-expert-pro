@@ -167,6 +167,33 @@ export default function StabilityLongitudinal() {
     };
   };
 
+  const handleTrimQuizAnswer = (questionId: string, answer: string) => {
+    setQuizAnswers(prev => ({ ...prev, [questionId]: answer }));
+  };
+
+  const checkTrimQuizAnswers = () => {
+    const correctAnswers = {
+      q1: "b", // Kıç draft > Baş draft
+      q2: "a"  // MCT = (Δ × GML) / (100 × L)
+    };
+    
+    setShowQuizResults(true);
+    let score = 0;
+    Object.keys(correctAnswers).forEach(qId => {
+      if (quizAnswers[qId] === correctAnswers[qId as keyof typeof correctAnswers]) {
+        score++;
+      }
+    });
+    
+    setTimeout(() => {
+      if (score === 2) {
+        setLearningProgress(100);
+      } else if (score === 1) {
+        setLearningProgress(Math.max(learningProgress, 90));
+      }
+    }, 1000);
+  };
+
   const chartData = useMemo(() => {
     const points = HydrostaticCalculations.generateGZCurve(geometry, kg, 0, 90, 1);
     return points.map((p) => ({ angle: p.angle, gz: Number(p.gz.toFixed(3)) }));
@@ -852,41 +879,132 @@ export default function StabilityLongitudinal() {
                 <h4 className="font-semibold">Soru 1: Pozitif trim ne demektir?</h4>
                 <div className="mt-3 space-y-2">
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q1" value="a" />
-                    <span className="text-sm">A) Baş draft &gt; Kıç draft</span>
+                    <input 
+                      type="radio" 
+                      name="q1" 
+                      value="a"
+                      onChange={(e) => handleTrimQuizAnswer("q1", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "a" ? "text-red-600 line-through" : "") : ""}`}>
+                      A) Baş draft &gt; Kıç draft
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q1" value="b" />
-                    <span className="text-sm">B) Kıç draft &gt; Baş draft</span>
+                    <input 
+                      type="radio" 
+                      name="q1" 
+                      value="b"
+                      onChange={(e) => handleTrimQuizAnswer("q1", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
+                      B) Kıç draft &gt; Baş draft ✅
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q1" value="c" />
-                    <span className="text-sm">C) Baş draft = Kıç draft</span>
+                    <input 
+                      type="radio" 
+                      name="q1" 
+                      value="c"
+                      onChange={(e) => handleTrimQuizAnswer("q1", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "c" ? "text-red-600 line-through" : "") : ""}`}>
+                      C) Baş draft = Kıç draft
+                    </span>
                   </label>
                 </div>
+                {showQuizResults && (
+                  <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
+                    <p className="text-xs text-blue-800 dark:text-blue-200">
+                      <strong>Açıklama:</strong> Pozitif trim = Kıçtan bastık. 
+                      Trim değeri = (T_stern - T_bow) pozitif olduğunda kıç draft daha fazladır.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950">
-                <h4 className="font-semibold">Soru 2: MCT formülü nedir?</h4>
+                <h4 className="font-semibold">Soru 2: MCT (Moment to Change Trim) 1cm için doğru formül nedir?</h4>
                 <div className="mt-3 space-y-2">
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q2" value="a" />
-                    <span className="text-sm">A) MCT = Δ × GML / L</span>
+                    <input 
+                      type="radio" 
+                      name="q2" 
+                      value="a"
+                      onChange={(e) => handleTrimQuizAnswer("q2", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
+                      A) MCT = (Δ × GML) / (100 × L) ✅
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q2" value="b" />
-                    <span className="text-sm">B) MCT = (Δ × GML × B²) / (12 × L)</span>
+                    <input 
+                      type="radio" 
+                      name="q2" 
+                      value="b"
+                      onChange={(e) => handleTrimQuizAnswer("q2", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "b" ? "text-red-600 line-through" : "") : ""}`}>
+                      B) MCT = (Δ × GML × LCF) / L
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="radio" name="q2" value="c" />
-                    <span className="text-sm">C) MCT = W × d</span>
+                    <input 
+                      type="radio" 
+                      name="q2" 
+                      value="c"
+                      onChange={(e) => handleTrimQuizAnswer("q2", e.target.value)}
+                    />
+                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "c" ? "text-red-600 line-through" : "") : ""}`}>
+                      C) MCT = W × arm / trim_change
+                    </span>
                   </label>
+                </div>
+                {showQuizResults && (
+                  <div className="mt-3 p-2 bg-green-100 dark:bg-green-900 rounded">
+                    <p className="text-xs text-green-800 dark:text-green-200">
+                      <strong>Doğru Açıklama:</strong> MCT = (Displacement × GM_longitudinal) / (100 × LBP)<br/>
+                      Bu formül 1cm trim değişimi için gereken momenti verir. 100 faktörü cm'ye çevrim içindir.
+                    </p>
+                  </div>
+                )}
+                <div className="mt-3 p-2 bg-gray-100 dark:bg-gray-800 rounded">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <strong>İpucu:</strong> MCT = 1cm trim değişimi için gereken moment (tm)
+                  </p>
                 </div>
               </div>
 
-              <Button className="w-full">
-                Cevapları Kontrol Et
+              <Button 
+                className="w-full" 
+                onClick={checkTrimQuizAnswers}
+                disabled={!quizAnswers.q1 || !quizAnswers.q2}
+              >
+                {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
               </Button>
+              
+              {showQuizResults && (
+                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                  <h4 className="font-semibold mb-2">🎯 Trim Quiz Sonuçlarınız:</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {Object.keys({q1: "b", q2: "a"}).reduce((score, qId) => 
+                          score + (quizAnswers[qId] === ({q1: "b", q2: "a"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
+                        )}/2
+                      </div>
+                      <div className="text-sm text-muted-foreground">Doğru Cevap</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">
+                        {Math.round((Object.keys({q1: "b", q2: "a"}).reduce((score, qId) => 
+                          score + (quizAnswers[qId] === ({q1: "b", q2: "a"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
+                        ) / 2) * 100)}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
