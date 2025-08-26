@@ -14,72 +14,56 @@ export const Sextant3D: React.FC<Sextant3DProps> = ({
   src,
   alt = "Sextant",
   className = "",
-  depthPx = 120,
-  numLayers = 60,
+  depthPx = 60,
+  numLayers = 18,
   tiltXdeg = 0,
   swayXPx = 0,
 }) => {
   const totalLayers = Math.max(8, Math.floor(numLayers));
   const middleIndex = (totalLayers - 1) / 2;
-  const depthStepPx = depthPx / (totalLayers - 1);
 
   return (
-    <div className="sextant-4d-container">
+    <div className="sextant-3d-container">
       <div
         className={[
-          "sextant-4d maritime-logo maritime-logo--hypercube",
+          "sextant-3d maritime-logo maritime-logo--3d",
           className,
         ].join(" ")}
       >
         {Array.from({ length: totalLayers }, (_, layerIndex) => {
-          const normalizedIndex = layerIndex / (totalLayers - 1);
           const depthFactor = (layerIndex - middleIndex) / (totalLayers - 1);
           
-          // True 3D positioning with perspective correction
+          // Simple 3D depth positioning
           const zOffsetPx = depthFactor * depthPx;
-          const perspectiveScale = 1 / (1 + Math.abs(zOffsetPx) * 0.001);
           
-          // 4D hypercube transformations
-          const rotateW = normalizedIndex * 360; // 4th dimension rotation
-          const hyperX = Math.cos(normalizedIndex * Math.PI * 2) * 2;
-          const hyperY = Math.sin(normalizedIndex * Math.PI * 2) * 2;
-          
-          // Realistic 3D lighting and opacity
+          // Realistic 3D lighting and opacity based on depth
           const distanceFromCenter = Math.abs(depthFactor);
-          const brightness = 0.7 + (1 - distanceFromCenter) * 0.3;
-          const opacity = 0.4 + (1 - distanceFromCenter) * 0.6;
+          const brightness = 0.8 + (1 - distanceFromCenter) * 0.2;
+          const opacity = 0.6 + (1 - distanceFromCenter) * 0.4;
           
-          // Metallic surface reflection simulation
-          const reflectionIntensity = Math.abs(Math.cos(normalizedIndex * Math.PI)) * 0.2;
+          // Simple metallic reflection based on layer position
+          const reflectionIntensity = (1 - distanceFromCenter) * 0.15;
+          
           return (
             <img
               key={layerIndex}
               src={src}
               alt={layerIndex === Math.round(middleIndex) ? alt : ""}
-              className="sextant-4d__layer"
+              className="sextant-3d__layer"
               style={{
-                transform: `
-                  translateZ(${zOffsetPx.toFixed(2)}px) 
-                  scale(${perspectiveScale.toFixed(3)}) 
-                  rotateX(${(normalizedIndex * 20 - 10).toFixed(1)}deg)
-                  rotateY(${(normalizedIndex * 15 - 7.5).toFixed(1)}deg)
-                  rotateZ(${(Math.sin(normalizedIndex * Math.PI * 4) * 2).toFixed(1)}deg)
-                `,
+                transform: `translateZ(${zOffsetPx.toFixed(2)}px)`,
                 filter: `
                   brightness(${(brightness + reflectionIntensity).toFixed(3)}) 
-                  contrast(${(1.1 + reflectionIntensity).toFixed(2)})
-                  drop-shadow(${(zOffsetPx * 0.08).toFixed(1)}px ${(zOffsetPx * 0.12).toFixed(1)}px ${(Math.abs(zOffsetPx) * 0.25).toFixed(1)}px hsl(210 40% 10% / ${(0.4 * distanceFromCenter).toFixed(2)}))
-                  drop-shadow(0 0 ${(Math.abs(zOffsetPx) * 0.1).toFixed(1)}px hsl(45 100% 70% / ${(reflectionIntensity).toFixed(2)}))
+                  contrast(${(1.05 + reflectionIntensity).toFixed(2)})
+                  drop-shadow(${(zOffsetPx * 0.1).toFixed(1)}px ${(zOffsetPx * 0.15).toFixed(1)}px ${(Math.abs(zOffsetPx) * 0.3).toFixed(1)}px hsl(210 40% 10% / ${(0.3 * distanceFromCenter).toFixed(2)}))
                 `,
                 opacity: opacity.toFixed(3),
-                animationDelay: `${(layerIndex * 0.02).toFixed(2)}s`,
               }}
               loading={layerIndex === Math.round(middleIndex) ? "eager" : "lazy"}
             />
           );
         })}
-        <div className="sextant-4d__glow" aria-hidden />
-        <div className="sextant-4d__hyperglow" aria-hidden />
+        <div className="sextant-3d__glow" aria-hidden />
       </div>
     </div>
   );
