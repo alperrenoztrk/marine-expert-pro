@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.26
+- **Durum:** ✅ Maritime Calculator başlık metni mavi renge değiştirildi
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.25
 - **Durum:** ✅ Anasayfa yapılandırması doğrulandı ve varsayılan olarak ayarlandı
 
