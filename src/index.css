@@ -68,8 +68,18 @@ All colors MUST be HSL.
     --shadow-card: 0 4px 16px -2px hsl(var(--primary) / 0.08);
     --shadow-button: 0 2px 8px -1px hsl(var(--primary) / 0.15);
 
-    /* Transitions */
-    --transition-smooth: all var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+  /* Transitions */
+  --transition-smooth: all var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Sextant rotation animation */
+  @keyframes sextant-rotate-y {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
 
     --sidebar-background: 0 0% 98%;
 
@@ -245,10 +255,16 @@ All colors MUST be HSL.
     --gradient-earth: linear-gradient(135deg, hsl(30 60% 45%), hsl(45 60% 50%), hsl(60 60% 55%), hsl(75 60% 60%));
     --gradient-organic: linear-gradient(135deg, hsl(120 70% 40%), hsl(30 60% 45%), hsl(60 60% 50%), hsl(90 60% 55%));
     
-    /* Enhanced Nature Green & Brown Shadows */
-    --shadow-calculator: 0 8px 32px -4px hsl(120 70% 40% / 0.2), 0 0 20px hsl(90 70% 45% / 0.15);
-    --shadow-card: 0 4px 16px -2px hsl(120 70% 40% / 0.15), 0 0 10px hsl(90 70% 45% / 0.1);
-    --shadow-button: 0 2px 8px -1px hsl(120 70% 40% / 0.25), 0 0 5px hsl(90 70% 45% / 0.15);
+  /* Enhanced Nature Green & Brown Shadows */
+  --shadow-calculator: 0 8px 32px -4px hsl(120 70% 40% / 0.2), 0 0 20px hsl(90 70% 45% / 0.15);
+  --shadow-card: 0 4px 16px -2px hsl(120 70% 40% / 0.15), 0 0 10px hsl(90 70% 45% / 0.1);
+  --shadow-button: 0 2px 8px -1px hsl(120 70% 40% / 0.25), 0 0 5px hsl(90 70% 45% / 0.15);
+
+  /* Maritime logo animation */
+  .maritime-logo {
+    animation: sextant-rotate-y 8s linear infinite;
+    transform-style: preserve-3d;
+  }
 
     --sidebar-background: 120 30% 97%;
     --sidebar-foreground: 120 30% 15%;
