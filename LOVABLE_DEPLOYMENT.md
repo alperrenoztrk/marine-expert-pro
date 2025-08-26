@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.27
+- **Durum:** ✅ Anasayfa arkaplan gemi görseli kaldırıldı
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.26
 - **Durum:** ✅ Maritime Calculator başlık metni mavi renge değiştirildi
 
