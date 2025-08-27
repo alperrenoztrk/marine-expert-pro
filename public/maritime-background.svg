@@ -1,3 +1,78 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1e2fb0162842102637228cd207b7c63d552547da61eeb51b398443cf86ce3462
-size 3973
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B0E0E6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0F6FF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="seaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4682B4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#5F9EA0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E8B57;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky background -->
+  <rect width="1200" height="500" fill="url(#skyGradient)"/>
+  
+  <!-- Sea background -->
+  <rect y="500" width="1200" height="300" fill="url(#seaGradient)"/>
+  
+  <!-- Horizon line -->
+  <line x1="0" y1="500" x2="1200" y2="500" stroke="#ffffff" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Clouds -->
+  <ellipse cx="150" cy="150" rx="80" ry="40" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="170" cy="140" rx="60" ry="30" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="130" cy="140" rx="50" ry="25" fill="#ffffff" opacity="0.6"/>
+  
+  <ellipse cx="350" cy="200" rx="90" ry="45" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="380" cy="190" rx="70" ry="35" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="320" cy="190" rx="60" ry="30" fill="#ffffff" opacity="0.6"/>
+  
+  <ellipse cx="800" cy="120" rx="100" ry="50" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="840" cy="110" rx="80" ry="40" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="760" cy="110" rx="70" ry="35" fill="#ffffff" opacity="0.6"/>
+  
+  <ellipse cx="1000" cy="180" rx="85" ry="42" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="1030" cy="170" rx="65" ry="32" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="970" cy="170" rx="55" ry="28" fill="#ffffff" opacity="0.6"/>
+  
+  <!-- Ship positioned more towards the right -->
+  <g transform="translate(750, 250) scale(1.5)">
+    <!-- Ship hull -->
+    <path d="M 0 80 Q 10 100 40 100 L 160 100 Q 170 100 180 80 L 180 50 Q 180 40 170 40 L 10 40 Q 0 40 0 50 Z" fill="#2c3e50"/>
+    
+    <!-- Ship deck -->
+    <rect x="5" y="40" width="170" height="10" fill="#34495e"/>
+    
+    <!-- Ship superstructure -->
+    <rect x="60" y="10" width="60" height="30" fill="#ecf0f1"/>
+    <rect x="65" y="15" width="50" height="20" fill="#3498db" opacity="0.3"/>
+    
+    <!-- Bridge -->
+    <rect x="80" y="0" width="20" height="10" fill="#ecf0f1"/>
+    <rect x="82" y="2" width="16" height="6" fill="#3498db" opacity="0.3"/>
+    
+    <!-- Ship details -->
+    <circle cx="40" cy="75" r="3" fill="#e74c3c"/>
+    <circle cx="140" cy="75" r="3" fill="#27ae60"/>
+    
+    <!-- Waves around ship -->
+    <path d="M -10 90 Q 0 85 10 90 Q 20 95 30 90" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M 150 90 Q 160 85 170 90 Q 180 95 190 90" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
+  </g>
+  
+  <!-- Sun rays -->
+  <g opacity="0.3">
+    <line x1="100" y1="100" x2="120" y2="80" stroke="#ffffff" stroke-width="2"/>
+    <line x1="90" y1="120" x2="130" y2="100" stroke="#ffffff" stroke-width="2"/>
+    <line x1="110" y1="140" x2="110" y2="100" stroke="#ffffff" stroke-width="2"/>
+  </g>
+  
+  <!-- Ocean waves -->
+  <g opacity="0.4">
+    <path d="M 0 550 Q 50 545 100 550 Q 150 555 200 550 Q 250 545 300 550 Q 350 555 400 550 Q 450 545 500 550 Q 550 555 600 550 Q 650 545 700 550 Q 750 555 800 550 Q 850 545 900 550 Q 950 555 1000 550 Q 1050 545 1100 550 Q 1150 555 1200 550" stroke="#ffffff" stroke-width="3" fill="none"/>
+    <path d="M 0 600 Q 60 595 120 600 Q 180 605 240 600 Q 300 595 360 600 Q 420 605 480 600 Q 540 595 600 600 Q 660 605 720 600 Q 780 595 840 600 Q 900 605 960 600 Q 1020 595 1080 600 Q 1140 605 1200 600" stroke="#ffffff" stroke-width="2" fill="none"/>
+  </g>
+</svg>
