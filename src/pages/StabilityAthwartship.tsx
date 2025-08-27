@@ -140,12 +140,7 @@ export default function StabilityAthwartship() {
     const successRate = (score / currentQuizData.questions.length) * 100;
     setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
 
-    // 2 saniye sonra otomatik olarak yeni sorular getir
-    setTimeout(() => {
-      setCurrentQuizSet(Math.floor(Math.random() * quizBank.length));
-      setQuizAnswers({});
-      setShowQuizResults(false);
-    }, 2000);
+    // Otomatik geçiş kaldırıldı - kullanıcı manuel olarak önceki/sonraki butonlarını kullanacak
   };
 
   const getDetailedStabilityAnalysis = () => {
@@ -517,6 +512,30 @@ export default function StabilityAthwartship() {
     setCurrentScenario(Math.floor(Math.random() * scenarioBank.length));
     setCurrentQuizSet(Math.floor(Math.random() * quizBank.length));
   }, []);
+
+  // Keyboard navigation for quiz sets
+  React.useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (activeTab === "practice") {
+        if (event.key === "ArrowLeft") {
+          // Previous quiz set
+          const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : quizBank.length - 1;
+          setCurrentQuizSet(prevSet);
+          setQuizAnswers({});
+          setShowQuizResults(false);
+        } else if (event.key === "ArrowRight") {
+          // Next quiz set
+          const nextSet = currentQuizSet < quizBank.length - 1 ? currentQuizSet + 1 : 0;
+          setCurrentQuizSet(nextSet);
+          setQuizAnswers({});
+          setShowQuizResults(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [activeTab, currentQuizSet, quizBank.length]);
 
   const chartData = useMemo(() => {
     if (!result) return [] as { angle: number; gz: number }[];
@@ -1197,7 +1216,16 @@ export default function StabilityAthwartship() {
         {/* Dynamic Quiz System */}
         <Card>
           <CardHeader>
-            <CardTitle>Quiz</CardTitle>
+            <CardTitle className="flex items-center justify-between">
+              <span>Quiz</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Set {currentQuizSet + 1} / {quizBank.length}</span>
+                <Badge variant="outline">{currentQuizData.questions.length} Soru</Badge>
+              </div>
+            </CardTitle>
+            <div className="text-sm text-muted-foreground mt-2">
+              {currentQuizSet < 10 ? "🧮 Sayısal Stabilite Soruları" : "📚 Kavramsal Stabilite Soruları"}
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -1232,13 +1260,66 @@ export default function StabilityAthwartship() {
                 </div>
               ))}
 
-              <Button 
-                className="w-full" 
-                onClick={checkQuizAnswers}
-                disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
-              >
-                {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : quizBank.length - 1;
+                    setCurrentQuizSet(prevSet);
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                  className="flex-1"
+                  disabled={showQuizResults}
+                >
+                  ← Önceki Set
+                  <span className="ml-2 text-xs opacity-60">←</span>
+                </Button>
+                
+                <Button 
+                  className="flex-1" 
+                  onClick={checkQuizAnswers}
+                  disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
+                >
+                  {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const nextSet = currentQuizSet < quizBank.length - 1 ? currentQuizSet + 1 : 0;
+                    setCurrentQuizSet(nextSet);
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                  className="flex-1"
+                  disabled={showQuizResults}
+                >
+                  Sonraki Set →
+                  <span className="ml-2 text-xs opacity-60">→</span>
+                </Button>
+              </div>
+              
+              {/* Quiz Progress Indicator */}
+              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Quiz İlerlemesi</span>
+                  <span className="font-medium">{currentQuizSet + 1} / {quizBank.length}</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${((currentQuizSet + 1) / quizBank.length) * 100}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                  <span>Set 1</span>
+                  <span>Set {quizBank.length}</span>
+                </div>
+                <div className="mt-2 text-xs text-center text-muted-foreground">
+                  <span>💡 Sol/Sağ ok tuşları ile hızlı geçiş yapabilirsiniz</span>
+                </div>
+              </div>
               
               {showQuizResults && (
                 <div className="mt-4 space-y-4">
@@ -1329,6 +1410,39 @@ export default function StabilityAthwartship() {
                         </div>
                       );
                     })}
+                  </div>
+                  
+                  {/* Quiz Navigation After Results */}
+                  <div className="flex gap-3 pt-4 border-t">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : quizBank.length - 1;
+                        setCurrentQuizSet(prevSet);
+                        setQuizAnswers({});
+                        setShowQuizResults(false);
+                      }}
+                      className="flex-1"
+                      disabled={showQuizResults}
+                    >
+                      ← Önceki Set
+                      <span className="ml-2 text-xs opacity-60">←</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const nextSet = currentQuizSet < quizBank.length - 1 ? currentQuizSet + 1 : 0;
+                        setCurrentQuizSet(nextSet);
+                        setQuizAnswers({});
+                        setShowQuizResults(false);
+                      }}
+                      className="flex-1"
+                      disabled={showQuizResults}
+                    >
+                      Sonraki Set →
+                      <span className="ml-2 text-xs opacity-60">→</span>
+                    </Button>
                   </div>
                 </div>
               )}
