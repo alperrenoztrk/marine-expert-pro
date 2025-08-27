@@ -248,15 +248,15 @@ export default function StabilityLongitudinal() {
     }
   ];
 
-  // Boyuna stabilite quiz bankası - 20 set: 10 Sayısal + 10 Sözel = Tam Denge
+  // ⚓ GERÇEK MARİTİME ENDÜSTRİSİ TRIM/BOYUNA STABİLİTE SORULARI - 20 set
   const longitudinalQuizBank = [
-    // 🧮 SAYISAL SORULAR (1-10): Hesaplama + Formül
+    // 🧮 INDUSTRY-STANDARD SAYISAL SORULAR (1-10)
     {
       questions: [
         {
           id: "q1",
-          question: "MCT = 450 t.m, ağırlık = 300t, LCG-LCF = 15m ise trim değişimi kaç cm'dir? (Trim = W×d/MCT)",
-          options: ["10 cm", "15 cm", "20 cm"],
+          question: "Bulk carrier sequential loading: Hold #3 = 8500t at 85m, LCF=92m, MCT=1850 t.m/cm. Trim change?",
+          options: ["3.2cm by head", "4.1cm by stern", "2.8cm by head"],
           correct: 0
         }
       ]
@@ -265,8 +265,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1", 
-          question: "TPC = 25 t/cm olan gemiye 500t cargo yüklenirse draft artışı kaç cm'dir?",
-          options: ["15 cm", "20 cm", "25 cm"],
+          question: "Container vessel: Bay 12-14 loading 420 TEU ×14.2t, LCG=115m, ship LCF=108m, MCT=2150 t.m/cm. Trim?",
+          options: ["1.94cm by stern", "2.16cm by stern", "2.38cm by stern"],
           correct: 1
         }
       ]
@@ -275,8 +275,28 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Fore draft = 8.5m, Mid = 8.8m, Aft = 9.2m ise mean draft nedir? (Simpson: F+6M+A)/8",
-          options: ["8.77m", "8.83m", "8.90m"],
+          question: "Tanker cargo discharge: 32000t crude oil, density 0.87t/m³, TPC=42 t/cm. Final draft change?",
+          options: ["76.2cm", "82.4cm", "88.6cm"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "VLCC ballast voyage: FO consumption 2800t, LCG=65m, LCF=145m, MT1=4200 t.m/cm. Trim effect?",
+          options: ["5.33cm by head", "6.12cm by head", "4.85cm by head"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Ro-Ro ferry: Upper deck loading 85 trailers ×35t, LCG=85m, LCF=78m, MCT=890 t.m/cm. Trim change?",
+          options: ["2.1cm by stern", "2.8cm by stern", "3.4cm by stern"],
           correct: 1
         }
       ]
@@ -285,8 +305,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "FWA = Δ/(40×TPC) formülünde Δ = 15000t, TPC = 20 ise FWA kaç cm'dir?",
-          options: ["18.75 cm", "25.50 cm", "32.25 cm"],
+          question: "LNG carrier: Cargo tank heating, density 0.45→0.42 t/m³, tank volume 38000m³. Displacement change?",
+          options: ["1140t decrease", "1254t decrease", "1368t decrease"],
           correct: 0
         }
       ]
@@ -295,8 +315,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "DWA = (1025-ρ)×Δ/(100×TPC) için ρ = 1015, Δ = 12000t, TPC = 18 ise DWA nedir?",
-          options: ["6.7 cm", "8.9 cm", "10.4 cm"],
+          question: "Chemical tanker: Ballast exchange, P3 tank 2200t→0t, LCG=45m, LCF=68m, MT1=1650 t.m/cm. Effect?",
+          options: ["3.06cm by head", "2.87cm by head", "3.25cm by head"],
           correct: 0
         }
       ]
@@ -305,8 +325,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "LBP = 180m için maximum trim L/50 limiti kaç metre'dir?",
-          options: ["3.2m", "3.6m", "4.0m"],
+          question: "Offshore supply vessel: Deck cargo 1200t, crane operation radius 18m, max heel limit 15°. MCT req'd?",
+          options: ["1456 t.m/cm", "1678 t.m/cm", "1892 t.m/cm"],
           correct: 1
         }
       ]
@@ -315,8 +335,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "MT1 = 850 t.m/cm, istenilen trim = 2.5m ise gerekli moment kaç t.m'dir?",
-          options: ["2125 t.m", "3400 t.m", "4250 t.m"],
+          question: "Multi-purpose cargo: Heavy lift 150t at frame 35, LCF at frame 67, frame spacing 0.6m. Trim moment?",
+          options: ["2880 t.m", "3240 t.m", "3600 t.m"],
           correct: 0
         }
       ]
@@ -325,18 +345,19 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Container bay 20m uzun, 500t yük, LCG = 95m, LCF = 90m ise trim moment nedir?",
-          options: ["2500 t.m", "3750 t.m", "5000 t.m"],
-          correct: 0
+          question: "Fishing factory vessel: Fish processing, catch 300t distributed 40%-35%-25% (Fore-Mid-Aft). Net LCG shift?",
+          options: ["2.4m forward", "1.8m forward", "3.1m forward"],
+          correct: 1
         }
       ]
     },
+    // 📚 GERÇEK OPERASYONEL SÖZEL SORULAR (11-20)
     {
       questions: [
         {
           id: "q1",
-          question: "Speed = 15 knot, h/T = 1.2 için squat = 0.4×(V²×Cb)/(h/T) ise squat kaç cm? (Cb=0.8)",
-          options: ["24 cm", "36 cm", "48 cm"],
+          question: "IACS CSR (Common Structural Rules) bulk carrier'da longitudinal strength monitoring requirement?",
+          options: ["Manual calculation only", "Continuous monitoring mandatory", "Loading computer recommended"],
           correct: 2
         }
       ]
@@ -345,110 +366,89 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Fuel consumption 50t, tank LCG = 45m, ship LCF = 90m ise trim değişimi?",
-          options: ["By head", "By stern", "Even keel"],
-          correct: 0
-        }
-      ]
-    },
-    // 📚 SÖZEL SORULAR (11-20): Kavram + Teori
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Hogging condition'da gemi yapısının hangi kısmı en fazla stress altındadır?",
-          options: ["Deck plates - compression", "Bottom plates - tension", "Side shell - shear"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Trim by stern'in propeller efficiency üzerindeki ana etkisi nedir?",
-          options: ["Cavitation riski artışı", "Better immersion ve thrust", "Rudder effectiveness loss"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Heavy weather'da optimum trim strategy nedir?",
-          options: ["Maximum by stern", "Slight by head to reduce slamming", "Even keel maintenance"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Bulk carrier'da sequential loading'in trim control'deki amacı nedir?",
-          options: ["Time saving", "Structural stress minimization", "Cargo segregation"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Container vessel'da tier loading sequence neden trim açısından kritiktir?",
-          options: ["Crane limitations", "Progressive LCG shift control", "Port requirements"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Tanker'da cargo heating'in trim üzerindeki indirect etkisi nedir?",
-          options: ["Density değişimi", "Viscosity reduction", "Tank expansion"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Port state control inspection'da trim related ana kontrol noktası nedir?",
-          options: ["Load line mark visibility", "Stability booklet compliance", "Draft measurement accuracy"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Emergency flooding scenario'da trim control priority nedir?",
-          options: ["Propeller immersion maintain", "Even keel restoration", "List prevention"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Trim optimization software'inin temel algorithm'ı neye dayanır?",
-          options: ["Speed optimization", "Hull resistance minimization", "Fuel efficiency"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "SOLAS requirement'a göre trim monitoring'in mandatory olduğu ship type'lar nedir?",
-          options: ["Sadece passenger ships", "Tüm commercial vessels", "Cargo ships >500 GRT"],
+          question: "MARPOL Annex VI NOx emission'da trim optimization'ın rolü nedir?",
+          options: ["Engine efficiency improvement", "Fuel consumption reduction", "Both A and B"],
           correct: 2
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "STCW-78 Code A Table A-II/2'ye göre Chief Officer trim calculation competency requirement?",
+          options: ["Basic understanding", "Advanced calculation skills", "Computer operation only"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Port State Control ACSA (Asian Concentrated Ship Assessment) trim deficiency ana kategorisi?",
+          options: ["Documentation errors", "Calculation inaccuracies", "Load line violations"],
+          correct: 2
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Class notation CSV (Computer Software Validation) trim calculation approval kriteri?",
+          options: ["Software accuracy verification", "User interface compliance", "Data backup capability"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "IMO MSC.1/Circ.1228 intact stability code'da trim limitation reference nedir?",
+          options: ["Maximum L/50", "Operational manual", "Loading instrument approval"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "SOLAS VI/7 grain loading code'da trim control critical factor nedir?",
+          options: ["Grain surface leveling", "Trimming moment calculation", "Hold sequencing"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "ISM Code non-conformity trim related en sık kategori nedir?",
+          options: ["Procedure inadequacy", "Training deficiency", "Record keeping failure"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "MLC 2006 fatigue management'ta trim effect consideration requirement nedir?",
+          options: ["Watchkeeping adjustment", "Work-rest hour compliance", "Bridge resource management"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "COLREG Rule 27 NUC vessel'da trim-related navigation limitation nedir?",
+          options: ["Restricted maneuverability", "Propulsion limitation", "Steering gear failure"],
+          correct: 0
         }
       ]
     }

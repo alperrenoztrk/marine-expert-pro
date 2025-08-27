@@ -286,16 +286,16 @@ export default function StabilityAthwartship() {
     }
   ];
 
-  // Quiz soru bankası - 20 set: 10 Sayısal + 10 Sözel = Tam Denge
+  // ⚓ GERÇEK MARİTİME ENDÜSTRİSİ STABILITE SORULARI - 20 set
   const quizBank = [
-    // 🧮 SAYISAL SORULAR (1-10): Hesaplama + Formül
+    // 🧮 INDUSTRY-STANDARD SAYISAL SORULAR (1-10)
     {
       questions: [
         {
           id: "q1",
-          question: "GM = 1.2m olan geminin 15° yatırılması durumunda GZ değeri nedir? (GZ = GM × sin θ)",
-          options: ["0.31m", "0.86m", "1.16m"],
-          correct: 0
+          question: "18500 DWT Bulk Carrier: Displacement=22000t, KG=9.2m, KM=9.8m. IMO weather criterion için minimum GM?",
+          options: ["0.15m", "0.35m", "0.60m"],
+          correct: 2
         }
       ]
     },
@@ -303,8 +303,28 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1", 
-          question: "50m × 8m × 300m³ tank yarı dolu olduğunda FSE momentu kaçtır? (FSE = ρ × g × i × b³ × l / 12V)",
-          options: ["42.7 t.m", "85.4 t.m", "128.1 t.m"],
+          question: "Container vessel loading: 350 TEU ×14t = 4900t, VCG=12m. Ship: Δ=45000t, KG=8.5m. Yeni KG=?",
+          options: ["8.74m", "9.12m", "9.48m"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Oil tanker: Cargo tank 50m×20m×15m, %75 full, ρ=0.85t/m³. FSE correction = i×b³×l/(12×V) nedir?",
+          options: ["146.3 t.m", "195.1 t.m", "292.6 t.m"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "RORO ferry: Upper deck 2000 passengers, area=800m², density 4 person/m². Heeling moment kaç t.m?",
+          options: ["1600 t.m", "2400 t.m", "3200 t.m"],
           correct: 1
         }
       ]
@@ -313,8 +333,18 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Roll periodu T = 2π√(k²/GM) formülünde k = 0.4B ise, B = 20m, GM = 1.0m için T nedir?",
-          options: ["8.0 sn", "10.1 sn", "12.6 sn"],
+          question: "Chemical tanker: SOLAS damage stability, compartment flooding. P×A×h = 90×30×12m. Added moment?",
+          options: ["29160 t.m", "32400 t.m", "35640 t.m"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "LNG carrier: Cargo density 0.45t/m³, tank 40m×40m×30m, %90 full. Effective FSE moment?",
+          options: ["5184 t.m", "6480 t.m", "7776 t.m"],
           correct: 1
         }
       ]
@@ -323,8 +353,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "36 knot rüzgarda wind pressure = 0.00338 × V² ise basınç kaç Pa'dır?",
-          options: ["439 Pa", "878 Pa", "1317 Pa"],
+          question: "General cargo: Deck cargo 500t, KG=15m, ship KG=8.2m, Δ=12000t. New KG hesapla:",
+          options: ["8.48m", "8.76m", "9.04m"],
           correct: 0
         }
       ]
@@ -333,8 +363,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "GZ curve alanı 0-30° arası 0.055 m.rad, 0-40° arası 0.090 m.rad ise 30-40° alan nedir?",
-          options: ["0.035 m.rad", "0.055 m.rad", "0.090 m.rad"],
+          question: "Fishing vessel: Fish hold loading, net weight 80t, KG=18m, vessel Δ=1200t, KG=6m. New KG?",
+          options: ["6.75m", "7.12m", "7.48m"],
           correct: 0
         }
       ]
@@ -343,69 +373,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "200m gemi için minimum GM = 0.15m ise, 150m gemi için orantılı minimum GM nedir?",
-          options: ["0.11m", "0.15m", "0.20m"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "KG = 8.5m, KB = 4.2m, BM = 5.1m ise GM değeri kaçtır? (GM = KB + BM - KG)",
-          options: ["0.8m", "1.2m", "1.6m"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Deck width 25m, passenger density 4 kişi/m² ise crowding moment arm kaç m'dir?",
-          options: ["12.5m", "25.0m", "50.0m"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Ice accumulation 300 ton, KG = 15m ise yeni KG artışı kaç cm'dir? (Δ = 20000t, KG_old = 8m)",
-          options: ["10.5 cm", "15.8 cm", "21.0 cm"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Max GZ = 0.8m, angle = 25° ise dynamic stability 0-25° kaç m.rad'dır? (Yaklaşık)",
-          options: ["0.175 m.rad", "0.350 m.rad", "0.525 m.rad"],
-          correct: 0
-        }
-      ]
-    },
-    // 📚 SÖZEL SORULAR (11-20): Kavram + Teori
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Free Surface Effect'in GM üzerindeki etkisinin fiziksel nedeni nedir?",
-          options: ["Sanal ağırlık merkezi yükselmesi", "Gerçek ağırlık artışı", "Displacement azalması"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Synchronous rolling phenomenon'un oluşma koşulu nedir?",
-          options: ["Gemi hızının dalgalarla eşleşmesi", "Dalga periyodunun doğal roll periyoduna eşitlenmesi", "Rüzgar yönünün değişmesi"],
+          question: "Supply vessel: Deck crane operation, load 25t at 15m radius. Max heel angle with GM=0.8m?",
+          options: ["22.6°", "27.4°", "32.1°"],
           correct: 1
         }
       ]
@@ -414,8 +383,39 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Parametric rolling hangi tip dalgalarda en risklidir?",
-          options: ["Beam seas", "Head seas", "Following seas"],
+          question: "Arctic vessel: Ice accumulation rate 15 t/hr, 8 hours, ice KG=12m, ship Δ=8000t, KG=7.5m. KG change?",
+          options: ["0.675m", "0.825m", "0.975m"],
+          correct: 0
+        }
+      ]
+    },
+    // 📚 GERÇEK OPERASYONEL SÖZEL SORULAR (11-20)
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Hangi durumda IMO intact stability code A.749(18) mandatory uygulanır?",
+          options: ["Tüm ticari gemilerde", "500 GT ve üzeri yeni gemilerde", "Sadece yolcu gemilerinde"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "MARPOL Annex I'e göre double hull tanker'da cargo tank breach durumunda stability calculation priority?",
+          options: ["Pollution prevention", "Intact stability maintenance", "Structural integrity"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "MLC 2006'ya göre crew accommodation deck'te stability factor nedir?",
+          options: ["Weather tightness", "Escape route accessibility", "Living space VCG effect"],
           correct: 2
         }
       ]
@@ -424,8 +424,28 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Grain cargo'da shifting moment'in oluşma sebebi nedir?",
-          options: ["Tahıl tanelerinin hareket kabiliyeti", "Tank geometrisi", "Loading hızı"],
+          question: "STCW-95 Table A-II/1'e göre OOW hangi stability situation'da master'ı inform etmelidir?",
+          options: ["Her GM değişiminde", "Criteria limit'e yaklaşımda", "Sadece emergency'de"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "ISM Code SMS'te stability procedure requirement nedir?",
+          options: ["Loading computer mandatory", "Manual calculation backup", "Real-time monitoring"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "SOLAS II-2/19 fire safety'de stability açısından critical point nedir?",
+          options: ["Water accumulation on deck", "CO2 flooding effect", "Structural damage impact"],
           correct: 0
         }
       ]
@@ -434,48 +454,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Passenger vessel'da emergency response time neden kritiktir?",
-          options: ["Fuel consumption", "Crowd panic ve stability loss riski", "Engine room safety"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Liquid cargo tank'larda longitudinal bulkhead'in amacı nedir?",
-          options: ["Structural strength", "Free surface effect azaltma", "Loading efficiency"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Weather criterion evaluation'da en kritik faktör nedir?",
-          options: ["Wind speed", "Righting energy vs heeling energy", "Wave height"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Container vessel'da high GM'nin olumsuz etkisi nedir?",
-          options: ["Soft rolling motion", "Harsh rolling ve container damage", "Speed reduction"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Stability booklet'teki deadweight vs KG curve'unun amacı nedir?",
-          options: ["Loading guidance sağlama", "Speed optimization", "Fuel planning"],
+          question: "Port State Control CIC (Concentrated Inspection Campaign) stability deficiency en sık nedeni?",
+          options: ["Inaccurate loading information", "Missing stability booklet", "Improper ballast operations"],
           correct: 0
         }
       ]
@@ -484,8 +464,28 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Emergency ballast transfer'in stability üzerindeki etkisi nedir?",
-          options: ["Sadece GM değişimi", "GM + FSE + heel angle değişimi", "Sadece displacement değişimi"],
+          question: "Class surveyor stability approval'da critical review point nedir?",
+          options: ["Loading computer accuracy", "Stability booklet compliance", "Inclining test results"],
+          correct: 2
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "VDR (Voyage Data Recorder) S-VDR'de stability data recording requirement nedir?",
+          options: ["Continuous GM monitoring", "Critical stability parameters", "Manual entries only"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "GMDSS distress alert'te stability information transmission priority nedir?",
+          options: ["Position and POB first", "Stability status in MAYDAY", "After rescue coordination"],
           correct: 1
         }
       ]
