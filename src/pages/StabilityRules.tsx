@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MobileLayout } from '@/components/MobileLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowLeft, BookOpen, GraduationCap, Shuffle, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { StabilityQuiz } from '@/components/stability/StabilityQuiz';
+import { stabilityQuestions, getQuestionsByCategory, getAllCategories, getRandomQuestions } from '@/data/stabilityQuestions';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface RuleSection {
   title: string;
@@ -173,6 +176,65 @@ const sections: RuleSection[] = [
 ];
 
 export default function StabilityRules() {
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [quizQuestions, setQuizQuestions] = useState(stabilityQuestions);
+
+  const categories = getAllCategories();
+
+  const handleStartQuiz = () => {
+    setShowQuiz(true);
+  };
+
+  const handleBackToRules = () => {
+    setShowQuiz(false);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    if (category === 'all') {
+      setQuizQuestions(stabilityQuestions);
+    } else {
+      setQuizQuestions(getQuestionsByCategory(category));
+    }
+  };
+
+  const handleRandomQuiz = () => {
+    const randomQuestions = getRandomQuestions(10);
+    setQuizQuestions(randomQuestions);
+    setSelectedCategory('random');
+    setShowQuiz(true);
+  };
+
+  const handleQuizComplete = (score: number, total: number) => {
+    // Quiz tamamlandığında yapılacak işlemler
+    console.log(`Quiz completed: ${score}/${total}`);
+  };
+
+  if (showQuiz) {
+    return (
+      <MobileLayout>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" size="sm" className="gap-2" onClick={handleBackToRules}>
+              <ArrowLeft className="h-4 w-4" /> Kurallara Dön
+            </Button>
+            <div className="text-sm text-muted-foreground">
+              {selectedCategory === 'all' ? 'Tüm Sorular' : 
+               selectedCategory === 'random' ? 'Rastgele Sorular' : 
+               selectedCategory}
+            </div>
+          </div>
+          
+          <StabilityQuiz 
+            questions={quizQuestions} 
+            onComplete={handleQuizComplete}
+          />
+        </div>
+      </MobileLayout>
+    );
+  }
+
   return (
     <MobileLayout>
       <div className="space-y-4">
@@ -183,6 +245,54 @@ export default function StabilityRules() {
             </Button>
           </Link>
         </div>
+
+        {/* Quiz Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GraduationCap className="h-5 w-5" /> Stabilite Quiz
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Stabilite bilginizi test edin! Quiz'de otomatik geçiş yoktur, önceki ve sonraki butonları kullanarak kendi hızınızda ilerleyebilirsiniz.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Kategori seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tüm Sorular ({stabilityQuestions.length})</SelectItem>
+                      {categories.map(category => {
+                        const count = getQuestionsByCategory(category).length;
+                        return (
+                          <SelectItem key={category} value={category}>
+                            {category} ({count})
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button onClick={handleStartQuiz} className="gap-2">
+                    <GraduationCap className="h-4 w-4" />
+                    Quiz Başlat
+                  </Button>
+                  <Button variant="outline" onClick={handleRandomQuiz} className="gap-2">
+                    <Shuffle className="h-4 w-4" />
+                    Rastgele 10
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
