@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMemo, useRef, useState } from "react";
+import React from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -38,11 +39,11 @@ export default function StabilityAthwartship() {
   const [errors, setErrors] = useState<string[]>([]);
   const [showInfo, setShowInfo] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("calculator");
-  const [studentMode, setStudentMode] = useState<boolean>(true);
+  const [basicMode, setBasicMode] = useState<boolean>(true);
   const [showStepByStep, setShowStepByStep] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [learningProgress, setLearningProgress] = useState<number>(0);
-  const [officerMode, setOfficerMode] = useState<boolean>(false);
+  const [advancedMode, setAdvancedMode] = useState<boolean>(false);
   const [selectedShipType, setSelectedShipType] = useState<string>("cargo");
   const [weatherCondition, setWeatherCondition] = useState<number>(3);
   const [urgentCalculation, setUrgentCalculation] = useState<boolean>(false);
@@ -50,6 +51,8 @@ export default function StabilityAthwartship() {
   const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
   const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
   const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
+  const [currentScenario, setCurrentScenario] = useState<number>(0);
+  const [currentQuizSet, setCurrentQuizSet] = useState<number>(0);
 
   const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -211,6 +214,170 @@ export default function StabilityAthwartship() {
     return recommendations;
   };
 
+  // 10 farklı zor senaryo
+  const scenarioBank = [
+    {
+      title: "🚢 Kritik Ballast Transferi",
+      situation: "200m konteyner gemisi, SS-6 hava şartlarında GM=0.12m. Port tanklarında 800 ton ballast var.",
+      question: "Güvenli GM'ye (min 0.20m) ulaşmak için starboard tanklara ne kadar ballast transfer edilmeli?",
+      hint: "GM değişimi = (Transfer_ağırlığı × Tank_aralığı) / Deplasman",
+      answer: "~180 ton transfer gerekli. Tank aralığı 24m varsayımıyla: ΔGM = (180×24)/45000 ≈ 0.096m. Yeni GM ≈ 0.216m"
+    },
+    {
+      title: "⛽ Kritik Yakıt Durumu",
+      situation: "Seyir sırasında ana tank (kıç) ve servis tankı (üst) yarı dolu. GM=0.18m, FSE hesaba katılmamış.",
+      question: "Ana tankın tamamen doldurulması GM'yi nasıl etkiler? FSE'yi de hesaba kat.",
+      hint: "FSE = (i × ρ × g) / Δ, i = tank inertia momenti",
+      answer: "Ana tank dolarsa FSE azalır (~0.03m), KG düşer (~0.05m). Net GM artışı ≈ 0.08m. Yeni GM ≈ 0.26m"
+    },
+    {
+      title: "📦 Tehlikeli Kargo Kayması",
+      situation: "Hold 3'te 500 ton konteyner 5° list nedeniyle 3m yana kaydı. GM=0.35m, current list=8°.",
+      question: "Geminin final list açısını ve stabilite durumunu hesapla.",
+      hint: "Yeni KG = KG_eski + (W × shift_distance) / Δ",
+      answer: "Virtual KG artışı: ΔKG = (500×3)/40000 = 0.0375m. Yeni GM ≈ 0.31m. Final list ≈ 12-15°"
+    },
+    {
+      title: "🌊 Hava Hasarı Senaryosu",
+      situation: "Fırtınada hatch cover hasarı, Hold 1'e 200 ton deniz suyu girdi. Mevcut GM=0.22m.",
+      question: "Su girişinin GM'ye etkisini ve acil eylem planını belirle.",
+      hint: "Su girişi hem FSE yaratır hem KG'yi etkiler",
+      answer: "FSE ≈ 0.04m, KG artışı ≈ 0.02m. Net GM azalışı ≈ 0.06m. Acil: Pompa, ballast ayarı, liman arayışı"
+    },
+    {
+      title: "🔧 Kargo Operasyonu Krizi",
+      situation: "Liman operasyonunda crane arızası, 40 ton konteyner 25m yükseklikte asılı kaldı.",
+      question: "Bu durumun stabiliteye etkisini ve güvenlik önlemlerini değerlendir.",
+      hint: "Yüksek ağırlık merkezi GM'yi ciddi etkiler",
+      answer: "Virtual KG artışı büyük. GM azalışı ≈ 0.15-0.20m. Acil: Load control, weather watch, crane repair"
+    },
+    {
+      title: "🚨 Çoklu Tank Arızası",
+      situation: "Starboard ballast tanks (3 tank) pompa arızası, port'ta normal. Current heel=12°, GM=0.15m.",
+      question: "Port tankları kullanarak optimal balans stratejisi geliştirir.",
+      hint: "Asimetrik ballast ile hem GM'yi hem heel'i kontrol et",
+      answer: "Port tank boşalt, center tank doldur. Hedef: symmetric loading + GM increase. Plan: 2-3 aşamalı transfer"
+    },
+    {
+      title: "⚡ Elektrik Kesintisi",
+      situation: "Ana güç kesintisi, ballast pompaları çalışmıyor. Mevcut trim=3.2m (stern), weather worsening.",
+      question: "Emergency power ile hangi sistemi önceleyip nasıl stabilite sağlarsın?",
+      hint: "Limited power, maximum efficiency gerekli",
+      answer: "1. Trim pompası, 2. Fore peak ballast, 3. Weather monitoring. Fuel shift de dikkate al"
+    },
+    {
+      title: "🏭 Yük Kaybı Senaryosu",
+      situation: "Deck cargo (150 ton, KG=18m) fırtınada kaybedildi. Pre-loss GM=0.45m.",
+      question: "Yük kaybı sonrası yeni stabilite durumunu ve operasyonel limitleri hesapla.",
+      hint: "Ağırlık kaybı GM'yi etkiler, yeni draft hesabı gerek",
+      answer: "GM artışı ≈ 0.25m (weight loss + KG düşüşü). Yeni GM ≈ 0.70m. Draft düşüşü ≈ 4cm"
+    },
+    {
+      title: "🌀 Extreme Weather",
+      situation: "SS-8 fırtına, 60° roll açıları görüldü. GM=0.25m, doğal period=14s.",
+      question: "Mevcut stabilite parametric roll riskini değerlendir ve önlem al.",
+      hint: "Period matching with wave encounter period dangerous",
+      answer: "Period riski var. Course/speed change gerekli. Target period: 8-10s veya 18-20s. Ballast/fuel ops"
+    },
+    {
+      title: "🚁 Helikopter Operasyonu",
+      situation: "SAR operasyonu, helideck'e 8 ton helikopter konacak (KG=35m). Mevcut GM=0.33m.",
+      question: "Helikopter etkisini hesapla ve güvenli operasyon parametrelerini belirle.",
+      hint: "Yüksek KG dramatik GM azalışı yaratır",
+      answer: "Virtual KG artışı: ≈ 0.18m. Yeni GM ≈ 0.15m (minimum). Weather limit: SS-3 max, optimal ballast config"
+    }
+  ];
+
+  // Quiz soru bankası
+  const quizBank = [
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "GM'nin artması stabiliteyi nasıl etkiler?",
+          options: ["Stabiliteyi zayıflatır", "Stabiliteyi güçlendirir", "Sadece roll periyodunu etkiler"],
+          correct: 1
+        },
+        {
+          id: "q2", 
+          question: "Free Surface Effect (FSE) neyi etkiler?",
+          options: ["GM'yi arttırır", "GM'yi azaltır", "Sadece KG'yi etkiler"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "IMO stabilite kriterlerine göre minimum GM değeri nedir?",
+          options: ["0.10m", "0.15m", "0.20m"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Gemi 30° yatırıldığında minimum GZ değeri nedir?",
+          options: ["0.15m", "0.20m", "0.25m"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Roll periyodu 8 saniyeden az olursa ne anlama gelir?",
+          options: ["Yumuşak stabilite", "Sert stabilite", "Normal stabilite"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Maximum GZ açısı minimum kaç derece olmalıdır?",
+          options: ["20°", "25°", "30°"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Ballast tankı yarı dolu bırakmanın en büyük riski nedir?",
+          options: ["Trim değişimi", "Free surface effect", "Draft artışı"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Weather criterion kontrol ederken hangi GM değeri kullanılır?",
+          options: ["GM_solid", "GM_fluid", "GM_effective"],
+          correct: 2
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1", 
+          question: "Grain cargo için özel stabilite kriteri nedir?",
+          options: ["40° heeling arm", "Angle of equilibrium", "Both A and B"],
+          correct: 2
+        },
+        {
+          id: "q2",
+          question: "KG değeri hangi durumda en kritiktir?",
+          options: ["Ballast voyage", "Full load", "Partial load"],
+          correct: 1
+        }
+      ]
+    }
+  ];
+
+  // Random senaryo seçimi (component mount'ta)
+  React.useEffect(() => {
+    setCurrentScenario(Math.floor(Math.random() * scenarioBank.length));
+    setCurrentQuizSet(Math.floor(Math.random() * quizBank.length));
+  }, []);
+
   const chartData = useMemo(() => {
     if (!result) return [] as { angle: number; gz: number }[];
     const points: { angle: number; gz: number }[] = [];
@@ -245,29 +412,42 @@ export default function StabilityAthwartship() {
         
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <Switch 
-                checked={!studentMode} 
-                onCheckedChange={(checked) => {
-                  setStudentMode(!checked);
-                  setOfficerMode(checked);
-                  if (checked) {
-                    setActiveTab("officer");
-                  } else {
-                    setActiveTab("learn");
-                  }
+            <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <button
+                onClick={() => {
+                  setBasicMode(true);
+                  setAdvancedMode(false);
+                  setActiveTab("learn");
                 }}
-              />
-              <span className="text-sm font-medium">
-                {studentMode ? "Öğrenci" : "Zabit"} Modu
-              </span>
-            </label>
-            <Badge variant={!studentMode ? "default" : "secondary"} className="gap-2">
-              {studentMode ? <GraduationCap className="h-4 w-4" /> : <Timer className="h-4 w-4" />}
-              {studentMode ? "Öğrenci" : "Profesyonel"}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  basicMode 
+                    ? "bg-blue-500 text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                }`}
+              >
+                📚 Temel
+              </button>
+              <button
+                onClick={() => {
+                  setBasicMode(false);
+                  setAdvancedMode(true);
+                  setActiveTab("officer");
+                }}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  advancedMode 
+                    ? "bg-orange-500 text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                }`}
+              >
+                🎯 İleri
+              </button>
+            </div>
+            <Badge variant={advancedMode ? "default" : "secondary"} className="gap-2">
+              {basicMode ? <BookOpen className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+              {basicMode ? "Temel Seviye" : "İleri Seviye"}
             </Badge>
           </div>
-          {studentMode && (
+          {basicMode && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">İlerleme:</span>
               <Progress value={learningProgress} className="w-20" />
@@ -286,8 +466,8 @@ export default function StabilityAthwartship() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className={`grid w-full ${studentMode ? 'grid-cols-4' : 'grid-cols-3'}`}>
-              {studentMode ? (
+            <TabsList className={`grid w-full ${basicMode ? 'grid-cols-4' : 'grid-cols-3'}`}>
+              {basicMode ? (
                 <>
                   <TabsTrigger value="learn" className="gap-2">
                     <BookOpen className="h-4 w-4" />
@@ -880,219 +1060,179 @@ export default function StabilityAthwartship() {
   }
 
   function renderPracticeContent() {
+    const currentScenarioData = scenarioBank[currentScenario];
+    const currentQuizData = quizBank[currentQuizSet];
+    
     return (
       <div className="space-y-6">
         <Alert>
           <HelpCircle className="h-4 w-4" />
-          <AlertTitle>Pratik Alıştırmalar</AlertTitle>
+          <AlertTitle>Gelişmiş Pratik Alıştırmalar</AlertTitle>
           <AlertDescription>
-            Aşağıdaki senaryoları inceleyerek enine stabilite kavramlarını pekiştirin.
+            Profesyonel seviye senaryolar ve çoktan seçmeli sorularla bilginizi test edin.
           </AlertDescription>
         </Alert>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">🚢 Senaryo 1: Kargo Gemisi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                  <p className="text-sm"><strong>Durum:</strong> 180m kargo gemisi, yükleme sonrası GM = 0.8m</p>
-                  <p className="text-sm mt-2"><strong>Soru:</strong> Bu GM değeri güvenli midir?</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => {
-                    setGeometry({
-                      length: 180,
-                      breadth: 30,
-                      depth: 18,
-                      draft: 12,
-                      blockCoefficient: 0.75,
-                      waterplaneCoefficient: 0.85,
-                      midshipCoefficient: 0.98,
-                      prismaticCoefficient: 0.77,
-                      verticalPrismaticCoefficient: 0.75,
-                    });
-                    setKg(15);
-                    setActiveTab("calculator");
-                  }}
-                >
-                  Senaryoyu Çöz
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">⛽ Senaryo 2: Yakıt Tüketimi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
-                  <p className="text-sm"><strong>Durum:</strong> Seyir sırasında yakıt tüketimi KG'yi nasıl etkiler?</p>
-                  <p className="text-sm mt-2"><strong>Soru:</strong> Alt tanklardan yakıt tüketilirse GM artar mı?</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => setScenario2Answer(!scenario2Answer)}
-                >
-                  {scenario2Answer ? "Cevabı Gizle" : "Cevabı Öğren"}
-                </Button>
-                {scenario2Answer && (
-                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
-                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">📚 Doğru Cevap:</h4>
-                    <p className="text-sm text-green-700 dark:text-green-300 mb-2">
-                      <strong>EVET, GM artar!</strong> Alt tanklardan yakıt tüketildiğinde:
-                    </p>
-                    <ul className="text-sm text-green-700 dark:text-green-300 space-y-1 ml-4">
-                      <li>• Toplam ağırlık azalır (Δ ↓)</li>
-                      <li>• KG düşer (alt tank boşaldığı için)</li>
-                      <li>• Draft azalır, KB değişir</li>
-                      <li>• Net etki: GM = KB + BM - KG artışı</li>
-                    </ul>
-                    <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
-                      <p className="text-xs font-mono">Formula: GM_yeni = GM_eski + (KG_eski - KG_yeni)</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
+        {/* Random Challenging Scenario */}
+        <Card className="border-orange-200">
           <CardHeader>
-            <CardTitle>🏆 Bilgi Testi</CardTitle>
+            <CardTitle className="text-lg">{currentScenarioData.title}</CardTitle>
+            <div className="flex gap-2">
+              <Badge variant="destructive">Zor Seviye</Badge>
+              <Badge variant="outline">Senaryo #{currentScenario + 1}</Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
-                <h4 className="font-semibold">Soru 1: GM'nin artması ne anlama gelir?</h4>
-                <div className="mt-3 space-y-2">
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value="a"
-                      onChange={(e) => handleQuizAnswer("q1", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "a" ? "text-red-600 line-through" : "") : ""}`}>
-                      A) Gemi daha hızlı gider
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value="b"
-                      onChange={(e) => handleQuizAnswer("q1", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
-                      B) Stabilite sertleşir ✅
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value="c"
-                      onChange={(e) => handleQuizAnswer("q1", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "c" ? "text-red-600 line-through" : "") : ""}`}>
-                      C) Yakıt tüketimi azalır
-                    </span>
-                  </label>
-                </div>
-                {showQuizResults && (
-                  <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
-                    <p className="text-xs text-blue-800 dark:text-blue-200">
-                      <strong>Açıklama:</strong> GM arttığında gemi daha sert stabiliteye sahip olur, 
-                      roll periyodu azalır ve righting moment artar.
-                    </p>
-                  </div>
-                )}
+              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg border-l-4 border-red-500">
+                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">📋 Durum Analizi</h4>
+                <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+                  <strong>Durum:</strong> {currentScenarioData.situation}
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  <strong>Görev:</strong> {currentScenarioData.question}
+                </p>
+              </div>
+              
+              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <strong>💡 İpucu:</strong> {currentScenarioData.hint}
+                </p>
               </div>
 
-              <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950">
-                <h4 className="font-semibold">Soru 2: Serbest yüzey etkisi (FSE) stabiliteyi nasıl etkiler?</h4>
-                <div className="mt-3 space-y-2">
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q2" 
-                      value="a"
-                      onChange={(e) => handleQuizAnswer("q2", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "a" ? "text-red-600 line-through" : "") : ""}`}>
-                      A) GM'yi arttırır
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q2" 
-                      value="b"
-                      onChange={(e) => handleQuizAnswer("q2", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
-                      B) GM'yi azaltır ✅
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q2" 
-                      value="c"
-                      onChange={(e) => handleQuizAnswer("q2", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "c" ? "text-red-600 line-through" : "") : ""}`}>
-                      C) Sadece KG'yi etkiler
-                    </span>
-                  </label>
-                </div>
-                {showQuizResults && (
-                  <div className="mt-3 p-2 bg-green-100 dark:bg-green-900 rounded">
-                    <p className="text-xs text-green-800 dark:text-green-200">
-                      <strong>Doğru Açıklama:</strong> FSE direkt olarak GM'yi azaltır! 
-                      Formül: <code className="bg-white px-1 rounded">GM_effective = GM_solid - FSE</code><br/>
-                      Kısmi dolu tanklar sanal inertia momenti yaratır ve stabiliteyi düşürür.
-                    </p>
-                  </div>
-                )}
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setScenario2Answer(!scenario2Answer)}
+                >
+                  {scenario2Answer ? "Çözümü Gizle" : "Çözümü Gör"}
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setCurrentScenario(Math.floor(Math.random() * scenarioBank.length))}
+                >
+                  🎲 Yeni Senaryo
+                </Button>
               </div>
+
+              {scenario2Answer && (
+                <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Uzman Çözümü:</h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    {currentScenarioData.answer}
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Dynamic Quiz System */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              🧩 Gelişmiş Quiz Sistemi
+              <div className="flex gap-2">
+                <Badge variant="secondary">Set #{currentQuizSet + 1}</Badge>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => {
+                    setCurrentQuizSet(Math.floor(Math.random() * quizBank.length));
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                >
+                  🔄 Yeni Sorular
+                </Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {currentQuizData.questions.map((question, idx) => (
+                <div key={question.id} className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
+                  <h4 className="font-semibold mb-3">Soru {idx + 1}: {question.question}</h4>
+                  <div className="space-y-2">
+                    {question.options.map((option, optionIdx) => (
+                      <label key={optionIdx} className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          name={question.id} 
+                          value={optionIdx.toString()}
+                          onChange={(e) => handleQuizAnswer(question.id, e.target.value)}
+                          disabled={showQuizResults}
+                        />
+                        <span className={`text-sm ${
+                          showQuizResults ? 
+                            (parseInt(quizAnswers[question.id]) === question.correct ? 
+                              (optionIdx === question.correct ? "text-green-600 font-semibold" : "") :
+                              (optionIdx === parseInt(quizAnswers[question.id]) ? "text-red-600 line-through" : 
+                               optionIdx === question.correct ? "text-green-600 font-semibold" : "")
+                            ) : ""
+                        }`}>
+                          {String.fromCharCode(65 + optionIdx)}) {option}
+                          {showQuizResults && optionIdx === question.correct && " ✅"}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
               <Button 
                 className="w-full" 
                 onClick={checkQuizAnswers}
-                disabled={!quizAnswers.q1 || !quizAnswers.q2}
+                disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
               >
                 {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
               </Button>
               
               {showQuizResults && (
                 <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
-                  <h4 className="font-semibold mb-2">🎯 Sonuçlarınız:</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  <h4 className="font-semibold mb-2">🎯 Quiz Sonuçları:</h4>
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-blue-600">
-                        {Object.keys({q1: "b", q2: "b"}).reduce((score, qId) => 
-                          score + (quizAnswers[qId] === ({q1: "b", q2: "b"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
-                        )}/2
+                        {currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        )}/{currentQuizData.questions.length}
                       </div>
                       <div className="text-sm text-muted-foreground">Doğru Cevap</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">
-                        {Math.round((Object.keys({q1: "b", q2: "b"}).reduce((score, qId) => 
-                          score + (quizAnswers[qId] === ({q1: "b", q2: "b"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
-                        ) / 2) * 100)}%
+                        {Math.round((currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) * 100)}%
                       </div>
                       <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                    </div>
+                    <div className="text-center">
+                      <div className={`text-2xl font-bold ${
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+                      }`}>
+                        {(currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {(currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
+                      </div>
                     </div>
                   </div>
                 </div>
