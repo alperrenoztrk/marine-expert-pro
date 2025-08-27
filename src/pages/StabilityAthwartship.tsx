@@ -128,26 +128,17 @@ export default function StabilityAthwartship() {
   };
 
   const checkQuizAnswers = () => {
-    const correctAnswers = {
-      q1: "b", // Stabilite sertleşir
-      q2: "b"  // GM'yi azaltır
-    };
-    
+    const currentQuizData = quizBank[currentQuizSet];
     setShowQuizResults(true);
     let score = 0;
-    Object.keys(correctAnswers).forEach(qId => {
-      if (quizAnswers[qId] === correctAnswers[qId as keyof typeof correctAnswers]) {
+    currentQuizData.questions.forEach(q => {
+      if (parseInt(quizAnswers[q.id]) === q.correct) {
         score++;
       }
     });
     
-    setTimeout(() => {
-      if (score === 2) {
-        setLearningProgress(100);
-      } else if (score === 1) {
-        setLearningProgress(Math.max(learningProgress, 90));
-      }
-    }, 1000);
+    const successRate = (score / currentQuizData.questions.length) * 100;
+    setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
   };
 
   const getDetailedStabilityAnalysis = () => {
