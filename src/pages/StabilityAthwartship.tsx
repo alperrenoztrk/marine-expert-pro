@@ -1263,15 +1263,7 @@ export default function StabilityAthwartship() {
         {/* Dynamic Quiz System */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              🧩 Otomatik Quiz Sistemi
-              <div className="flex gap-2">
-                <Badge variant="secondary">Set {currentQuizSet + 1}/20</Badge>
-                <Badge variant="outline" className="text-xs">
-                  Otomatik İlerleme
-                </Badge>
-              </div>
-            </CardTitle>
+            <CardTitle>🧩 Otomatik Quiz Sistemi</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
