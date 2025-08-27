@@ -248,7 +248,7 @@ export default function StabilityLongitudinal() {
     }
   ];
 
-  // Boyuna stabilite quiz bankası - 10 set x 2 soru = 20 soru
+  // Boyuna stabilite quiz bankası - 20 set x 1 soru = 20 soru
   const longitudinalQuizBank = [
     {
       questions: [
@@ -257,9 +257,13 @@ export default function StabilityLongitudinal() {
           question: "Pozitif trim ne anlama gelir?",
           options: ["Baş draft > Kıç draft", "Kıç draft > Baş draft", "Baş draft = Kıç draft"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2", 
+          id: "q1", 
           question: "MCT (Moment to Change Trim) 1cm için doğru formül nedir?",
           options: ["MCT = (Δ × GML) / (100 × L)", "MCT = (Δ × GML × LCF) / L", "MCT = W × arm / trim_change"],
           correct: 0
@@ -273,9 +277,13 @@ export default function StabilityLongitudinal() {
           question: "LCG ve LCF arasındaki ilişki trim'i nasıl etkiler?",
           options: ["LCG > LCF → Trim by head", "LCG > LCF → Trim by stern", "LCG = LCF → Maximum trim"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "GML (Longitudinal GM) neyi ifade eder?",
           options: ["Longitudinal metacentric height", "Longitudinal center of gravity", "Load center factor"],
           correct: 0
@@ -289,9 +297,13 @@ export default function StabilityLongitudinal() {
           question: "Trim'in ship operasyonlarına en kritik etkisi nedir?",
           options: ["Fuel consumption", "Propeller immersion", "Cargo capacity"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Maximum allowable trim genellikle LBP'nin yüzde kaçıdır?",
           options: ["1%", "2%", "3%"],
           correct: 1
@@ -305,9 +317,13 @@ export default function StabilityLongitudinal() {
           question: "Ballast operasyonunda trim kontrolü için en etkili tank kombininasyonu?",
           options: ["Wing tanks only", "Center + fore/aft peak", "All tanks equal"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "LCF (Longitudinal Center of Flotation) değişimi neye bağlıdır?",
           options: ["Draft değişimi", "Displacement değişimi", "Waterplane area şekli"],
           correct: 2
@@ -321,9 +337,13 @@ export default function StabilityLongitudinal() {
           question: "Excessive trim by stern'in en büyük riski nedir?",
           options: ["Propeller cavitation", "Rudder efficiency loss", "Engine room flooding"],
           correct: 0
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Intact stability code'a göre maximum trim limiti nedir?",
           options: ["L/50", "L/100", "Depends on ship type"],
           correct: 2
@@ -337,9 +357,13 @@ export default function StabilityLongitudinal() {
           question: "Trim momenti hesabında hangi parametreler kullanılır?",
           options: ["Weight × LCG", "Weight × (LCG - LCF)", "Weight × Distance"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Container gemilerinde optimum trim değeri nedir?",
           options: ["0.5-1.0m by stern", "Level trim", "1.0-2.0m by head"],
           correct: 0
@@ -353,9 +377,13 @@ export default function StabilityLongitudinal() {
           question: "Flooding durumunda trim değişimi nasıl hesaplanır?",
           options: ["Basit ağırlık transferi", "Lost buoyancy method", "Added weight method"],
           correct: 2
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Fuel consumption sırasında trim kontrolü neden önemlidir?",
           options: ["Economy", "Stability", "Propeller efficiency"],
           correct: 2
@@ -369,9 +397,13 @@ export default function StabilityLongitudinal() {
           question: "Load line regulations'a göre summer trim limiti nedir?",
           options: ["No specific limit", "L/50", "As per ship's trim book"],
           correct: 2
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Heavy weather'da trim optimizasyonu hangi prensiple yapılır?",
           options: ["Maximum speed", "Minimum slamming", "Fuel economy"],
           correct: 1
@@ -385,9 +417,13 @@ export default function StabilityLongitudinal() {
           question: "Bulk carrier'larda loading sequence trim kontrolü neden kritiktir?",
           options: ["Cargo damage", "Structural stress", "Loading time"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Emergency trim correction için en hızlı yöntem nedir?",
           options: ["Ballast transfer", "Fuel transfer", "Cargo shift"],
           correct: 1
@@ -401,9 +437,13 @@ export default function StabilityLongitudinal() {
           question: "Port state control'de trim için kontrol edilen ana parametre nedir?",
           options: ["Visual inspection", "Load line compliance", "Stability booklet"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Modern ship design'da trim optimization için kullanılan teknoloji nedir?",
           options: ["Manual calculation", "Computer aided systems", "Experience based"],
           correct: 1
@@ -1119,7 +1159,7 @@ export default function StabilityLongitudinal() {
             <CardTitle className="flex items-center justify-between">
               🧩 Otomatik Trim Quiz Sistemi
               <div className="flex gap-2">
-                <Badge variant="secondary">Set #{currentQuizSet + 1}/10</Badge>
+                <Badge variant="secondary">Soru #{currentQuizSet + 1}/20</Badge>
                 <Badge variant="outline" className="text-xs">
                   Otomatik İlerleme
                 </Badge>

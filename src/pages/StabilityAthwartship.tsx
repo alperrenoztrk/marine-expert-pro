@@ -286,7 +286,7 @@ export default function StabilityAthwartship() {
     }
   ];
 
-  // Quiz soru bankası - 10 set x 2 soru = 20 soru
+  // Quiz soru bankası - 20 set x 1 soru = 20 soru
   const quizBank = [
     {
       questions: [
@@ -295,9 +295,13 @@ export default function StabilityAthwartship() {
           question: "GM'nin artması stabiliteyi nasıl etkiler?",
           options: ["Stabiliteyi zayıflatır", "Stabiliteyi güçlendirir", "Sadece roll periyodunu etkiler"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2", 
+          id: "q1", 
           question: "Free Surface Effect (FSE) neyi etkiler?",
           options: ["GM'yi arttırır", "GM'yi azaltır", "Sadece KG'yi etkiler"],
           correct: 1
@@ -311,9 +315,13 @@ export default function StabilityAthwartship() {
           question: "IMO stabilite kriterlerine göre minimum GM değeri nedir?",
           options: ["0.10m", "0.15m", "0.20m"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Gemi 30° yatırıldığında minimum GZ değeri nedir?",
           options: ["0.15m", "0.20m", "0.25m"],
           correct: 1
@@ -327,9 +335,13 @@ export default function StabilityAthwartship() {
           question: "Roll periyodu 8 saniyeden az olursa ne anlama gelir?",
           options: ["Yumuşak stabilite", "Sert stabilite", "Normal stabilite"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Maximum GZ açısı minimum kaç derece olmalıdır?",
           options: ["20°", "25°", "30°"],
           correct: 1
@@ -343,9 +355,13 @@ export default function StabilityAthwartship() {
           question: "Ballast tankı yarı dolu bırakmanın en büyük riski nedir?",
           options: ["Trim değişimi", "Free surface effect", "Draft artışı"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Weather criterion kontrol ederken hangi GM değeri kullanılır?",
           options: ["GM_solid", "GM_fluid", "GM_effective"],
           correct: 2
@@ -359,9 +375,13 @@ export default function StabilityAthwartship() {
           question: "Grain cargo için özel stabilite kriteri nedir?",
           options: ["40° heeling arm", "Angle of equilibrium", "Both A and B"],
           correct: 2
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "KG değeri hangi durumda en kritiktir?",
           options: ["Ballast voyage", "Full load", "Partial load"],
           correct: 1
@@ -375,9 +395,13 @@ export default function StabilityAthwartship() {
           question: "Deck edge immersion açısının önemi nedir?",
           options: ["Stabilite kaybı başlangıcı", "Maximum GZ noktası", "Roll period değişimi"],
           correct: 0
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Transverse shifting moment nedir?",
           options: ["Kargo kayması momenti", "Ballast transfer momenti", "Wind heeling moment"],
           correct: 0
@@ -391,9 +415,13 @@ export default function StabilityAthwartship() {
           question: "Passenger gemilerde özel stabilite kriteri hangisidir?",
           options: ["Weather criterion", "Crowding to one side", "Grain shift"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "GZ curve'deki maximum değer neyi gösterir?",
           options: ["Maximum stability", "Deck edge immersion", "Range of stability"],
           correct: 0
@@ -407,9 +435,13 @@ export default function StabilityAthwartship() {
           question: "Liquid cargo taşıyan gemilerde en kritik nokta nedir?",
           options: ["Loading phase", "Cargo tank level", "Pumping operations"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Parametric rolling riski ne zaman artar?",
           options: ["Calm weather", "Following seas", "Beam seas"],
           correct: 1
@@ -423,9 +455,13 @@ export default function StabilityAthwartship() {
           question: "Container gemilerinde GM'nin çok yüksek olmasının zararı nedir?",
           options: ["Yumuşak sallanım", "Sert sallanım ve container damage", "Yakıt tasarrufu"],
           correct: 1
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Ice accumulation stabilitenin hangi parametresini etkiler?",
           options: ["Sadece KG", "KG ve free surface", "Sadece displacement"],
           correct: 1
@@ -439,9 +475,13 @@ export default function StabilityAthwartship() {
           question: "Emergency situation'da hızlı stabilite değerlendirmesi hangi yöntemle yapılır?",
           options: ["Full calculation", "Inclining test", "Quick assessment method"],
           correct: 2
-        },
+        }
+      ]
+    },
+    {
+      questions: [
         {
-          id: "q2",
+          id: "q1",
           question: "Ağır hava koşullarında stabilite için en önemli önlem nedir?",
           options: ["Speed reduction", "Course change", "Ballast adjustment"],
           correct: 2
@@ -1215,7 +1255,7 @@ export default function StabilityAthwartship() {
             <CardTitle className="flex items-center justify-between">
               🧩 Otomatik Quiz Sistemi
               <div className="flex gap-2">
-                <Badge variant="secondary">Set #{currentQuizSet + 1}/10</Badge>
+                <Badge variant="secondary">Soru #{currentQuizSet + 1}/20</Badge>
                 <Badge variant="outline" className="text-xs">
                   Otomatik İlerleme
                 </Badge>
