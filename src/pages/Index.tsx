@@ -6,50 +6,8 @@ import { Plus, Shield, FileText, Settings } from "lucide-react";
 const Index = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Enhanced maritime background with enlarged clouds */}
-      <div className="absolute inset-0 maritime-background overflow-hidden">
-        {/* Large enhanced cloud overlays */}
-        <div className="absolute top-10 left-10 w-96 h-64 opacity-80">
-          <img
-            src="/assets/cumulus-clouds-C0NHryx8.jpg"
-            alt="Enhanced Cumulus Clouds"
-            className="w-full h-full object-cover rounded-3xl shadow-2xl"
-          />
-        </div>
-        
-        <div className="absolute top-32 right-20 w-80 h-56 opacity-75">
-          <img
-            src="/assets/cirrus-clouds-pzMhQ74g.jpg"
-            alt="Enhanced Cirrus Clouds"
-            className="w-full h-full object-cover rounded-3xl shadow-2xl"
-          />
-        </div>
-        
-        <div className="absolute bottom-32 left-20 w-72 h-48 opacity-70">
-          <img
-            src="/assets/altocumulus-CjIcXCTi.jpg"
-            alt="Enhanced Altocumulus Clouds"
-            className="w-full h-full object-cover rounded-3xl shadow-2xl"
-          />
-        </div>
-        
-        <div className="absolute bottom-20 right-32 w-64 h-40 opacity-85">
-          <img
-            src="/assets/stratocumulus-CdpDe6fY.jpg"
-            alt="Enhanced Stratocumulus Clouds"
-            className="w-full h-full object-cover rounded-3xl shadow-2xl"
-          />
-        </div>
-        
-        {/* Ocean waves background */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 opacity-60">
-          <img
-            src="/assets/ocean-waves-9U5gbQpe.jpg"
-            alt="Ocean Waves"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
+      {/* Clean background - ready for new design */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-sky-100" />
       
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
