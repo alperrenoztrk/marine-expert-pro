@@ -258,9 +258,6 @@ export default function StabilityRules() {
               <p className="text-sm text-muted-foreground">
                 Stabilite bilginizi test edin! Quiz'de otomatik geçiş yoktur, önceki ve sonraki butonları kullanarak kendi hızınızda ilerleyebilirsiniz.
               </p>
-              <div className="text-xs text-green-600 font-mono">
-                ✅ v2.5.31 - Quiz sistemi aktif!
-              </div>
               
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
