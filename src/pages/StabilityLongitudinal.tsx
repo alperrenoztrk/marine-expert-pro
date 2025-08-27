@@ -248,15 +248,16 @@ export default function StabilityLongitudinal() {
     }
   ];
 
-  // Boyuna stabilite quiz bankası - 20 set x 1 soru = 20 benzersiz soru
+  // Boyuna stabilite quiz bankası - 20 set: 10 Sayısal + 10 Sözel = Tam Denge
   const longitudinalQuizBank = [
+    // 🧮 SAYISAL SORULAR (1-10): Hesaplama + Formül
     {
       questions: [
         {
           id: "q1",
-          question: "Pozitif trim ne anlama gelir?",
-          options: ["Baş draft > Kıç draft", "Kıç draft > Baş draft", "Baş draft = Kıç draft"],
-          correct: 1
+          question: "MCT = 450 t.m, ağırlık = 300t, LCG-LCF = 15m ise trim değişimi kaç cm'dir? (Trim = W×d/MCT)",
+          options: ["10 cm", "15 cm", "20 cm"],
+          correct: 0
         }
       ]
     },
@@ -264,8 +265,28 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1", 
-          question: "MCT (Moment to Change Trim) 1cm için doğru formül nedir?",
-          options: ["MCT = (Δ × GML) / (100 × L)", "MCT = (Δ × GML × LCF) / L", "MCT = W × arm / trim_change"],
+          question: "TPC = 25 t/cm olan gemiye 500t cargo yüklenirse draft artışı kaç cm'dir?",
+          options: ["15 cm", "20 cm", "25 cm"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Fore draft = 8.5m, Mid = 8.8m, Aft = 9.2m ise mean draft nedir? (Simpson: F+6M+A)/8",
+          options: ["8.77m", "8.83m", "8.90m"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "FWA = Δ/(40×TPC) formülünde Δ = 15000t, TPC = 20 ise FWA kaç cm'dir?",
+          options: ["18.75 cm", "25.50 cm", "32.25 cm"],
           correct: 0
         }
       ]
@@ -274,38 +295,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "LCG ve LCF arasındaki ilişki trim'i nasıl etkiler?",
-          options: ["LCG > LCF → Trim by head", "LCG > LCF → Trim by stern", "LCG = LCF → Maximum trim"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "TPC (Tonnes Per Centimetre) neyi ifade eder?",
-          options: ["Trim change per tonne", "Draft change per tonne", "Displacement per cm"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Mean draft calculation'da en doğru yöntem nedir?",
-          options: ["(Fore + Aft) / 2", "(Fore + 6×Mid + Aft) / 8", "(Fore + Mid + Aft) / 3"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Longitudinal bending moment maximum hangi noktada oluşur?",
-          options: ["Amidships", "Forward perpendicular", "Aft perpendicular"],
+          question: "DWA = (1025-ρ)×Δ/(100×TPC) için ρ = 1015, Δ = 12000t, TPC = 18 ise DWA nedir?",
+          options: ["6.7 cm", "8.9 cm", "10.4 cm"],
           correct: 0
         }
       ]
@@ -314,8 +305,18 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Trim table'da LCF pozisyonu hangi referansla verilir?",
-          options: ["Amidships", "Forward perpendicular", "After perpendicular"],
+          question: "LBP = 180m için maximum trim L/50 limiti kaç metre'dir?",
+          options: ["3.2m", "3.6m", "4.0m"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "MT1 = 850 t.m/cm, istenilen trim = 2.5m ise gerekli moment kaç t.m'dir?",
+          options: ["2125 t.m", "3400 t.m", "4250 t.m"],
           correct: 0
         }
       ]
@@ -324,9 +325,9 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Fresh water allowance (FWA) hesabında kullanılan faktör nedir?",
-          options: ["Displacement", "TPC at summer draft", "Waterplane area"],
-          correct: 1
+          question: "Container bay 20m uzun, 500t yük, LCG = 95m, LCF = 90m ise trim moment nedir?",
+          options: ["2500 t.m", "3750 t.m", "5000 t.m"],
+          correct: 0
         }
       ]
     },
@@ -334,18 +335,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Sagging condition'da ship structure hangi stress'e maruz kalır?",
-          options: ["Compression at deck, tension at bottom", "Tension at deck, compression at bottom", "Uniform stress distribution"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Draft survey'de accuracy için en önemli factor nedir?",
-          options: ["Calm water conditions", "Accurate trim readings", "Density measurement"],
+          question: "Speed = 15 knot, h/T = 1.2 için squat = 0.4×(V²×Cb)/(h/T) ise squat kaç cm? (Cb=0.8)",
+          options: ["24 cm", "36 cm", "48 cm"],
           correct: 2
         }
       ]
@@ -354,8 +345,19 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Dock water allowance (DWA) calculation method'u nedir?",
-          options: ["DWA = (1025 - dock density) × displacement / (100 × TPC)", "DWA = FWA × dock factor", "DWA = displacement × density difference"],
+          question: "Fuel consumption 50t, tank LCG = 45m, ship LCF = 90m ise trim değişimi?",
+          options: ["By head", "By stern", "Even keel"],
+          correct: 0
+        }
+      ]
+    },
+    // 📚 SÖZEL SORULAR (11-20): Kavram + Teori
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Hogging condition'da gemi yapısının hangi kısmı en fazla stress altındadır?",
+          options: ["Deck plates - compression", "Bottom plates - tension", "Side shell - shear"],
           correct: 0
         }
       ]
@@ -364,8 +366,48 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Load line surveyor'ın trim ile ilgili kontrol ettiği ana parametre nedir?",
-          options: ["Draft marks alignment", "Trim calculation accuracy", "Load distribution"],
+          question: "Trim by stern'in propeller efficiency üzerindeki ana etkisi nedir?",
+          options: ["Cavitation riski artışı", "Better immersion ve thrust", "Rudder effectiveness loss"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Heavy weather'da optimum trim strategy nedir?",
+          options: ["Maximum by stern", "Slight by head to reduce slamming", "Even keel maintenance"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Bulk carrier'da sequential loading'in trim control'deki amacı nedir?",
+          options: ["Time saving", "Structural stress minimization", "Cargo segregation"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Container vessel'da tier loading sequence neden trim açısından kritiktir?",
+          options: ["Crane limitations", "Progressive LCG shift control", "Port requirements"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Tanker'da cargo heating'in trim üzerindeki indirect etkisi nedir?",
+          options: ["Density değişimi", "Viscosity reduction", "Tank expansion"],
           correct: 0
         }
       ]
@@ -374,18 +416,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Pounding phenomenon hangi trim condition'da daha sık görülür?",
-          options: ["Even keel", "Trim by head", "Trim by stern"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Hydrostatic tables'da MT1 (Moment to Trim 1cm) değeri neyi gösterir?",
-          options: ["Required moment for 1cm trim change", "Weight to cause 1cm trim", "Distance for unit moment"],
+          question: "Port state control inspection'da trim related ana kontrol noktası nedir?",
+          options: ["Load line mark visibility", "Stability booklet compliance", "Draft measurement accuracy"],
           correct: 0
         }
       ]
@@ -394,8 +426,18 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Deadweight scale'de displacement hesabında kullanılan density değeri nedir?",
-          options: ["1.000 t/m³", "1.025 t/m³", "Local seawater density"],
+          question: "Emergency flooding scenario'da trim control priority nedir?",
+          options: ["Propeller immersion maintain", "Even keel restoration", "List prevention"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Trim optimization software'inin temel algorithm'ı neye dayanır?",
+          options: ["Speed optimization", "Hull resistance minimization", "Fuel efficiency"],
           correct: 1
         }
       ]
@@ -404,48 +446,8 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Trim optimization software'inin temel input parametresi nedir?",
-          options: ["Weather conditions", "Cargo distribution plan", "Engine power"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Longitudinal strength calculation'da critical factor nedir?",
-          options: ["Still water bending moment", "Wave bending moment", "Total bending moment"],
-          correct: 2
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "IACS unified requirements'a göre trim monitoring frequency nedir?",
-          options: ["Every watch", "Twice daily", "As required by master"],
-          correct: 2
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Squat effect calculation'da primary factor nedir?",
-          options: ["Ship speed", "Water depth", "Block coefficient"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "VDR data'da trim information recording requirement nedir?",
-          options: ["Every minute", "Every 15 minutes", "At significant changes"],
+          question: "SOLAS requirement'a göre trim monitoring'in mandatory olduğu ship type'lar nedir?",
+          options: ["Sadece passenger ships", "Tüm commercial vessels", "Cargo ships >500 GRT"],
           correct: 2
         }
       ]

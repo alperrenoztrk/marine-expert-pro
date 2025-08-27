@@ -286,15 +286,16 @@ export default function StabilityAthwartship() {
     }
   ];
 
-  // Quiz soru bankası - 20 set x 1 soru = 20 benzersiz soru
+  // Quiz soru bankası - 20 set: 10 Sayısal + 10 Sözel = Tam Denge
   const quizBank = [
+    // 🧮 SAYISAL SORULAR (1-10): Hesaplama + Formül
     {
       questions: [
         {
           id: "q1",
-          question: "GM'nin artması stabiliteyi nasıl etkiler?",
-          options: ["Stabiliteyi zayıflatır", "Stabiliteyi güçlendirir", "Sadece roll periyodunu etkiler"],
-          correct: 1
+          question: "GM = 1.2m olan geminin 15° yatırılması durumunda GZ değeri nedir? (GZ = GM × sin θ)",
+          options: ["0.31m", "0.86m", "1.16m"],
+          correct: 0
         }
       ]
     },
@@ -302,8 +303,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1", 
-          question: "Free Surface Effect (FSE) neyi etkiler?",
-          options: ["GM'yi arttırır", "GM'yi azaltır", "Sadece KG'yi etkiler"],
+          question: "50m × 8m × 300m³ tank yarı dolu olduğunda FSE momentu kaçtır? (FSE = ρ × g × i × b³ × l / 12V)",
+          options: ["42.7 t.m", "85.4 t.m", "128.1 t.m"],
           correct: 1
         }
       ]
@@ -312,8 +313,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "IMO stabilite kriterlerine göre minimum GM değeri nedir?",
-          options: ["0.10m", "0.15m", "0.20m"],
+          question: "Roll periodu T = 2π√(k²/GM) formülünde k = 0.4B ise, B = 20m, GM = 1.0m için T nedir?",
+          options: ["8.0 sn", "10.1 sn", "12.6 sn"],
           correct: 1
         }
       ]
@@ -322,58 +323,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Gemi 30° yatırıldığında minimum GZ değeri nedir?",
-          options: ["0.15m", "0.20m", "0.25m"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Roll periyodu 8 saniyeden az olursa ne anlama gelir?",
-          options: ["Yumuşak stabilite", "Sert stabilite", "Normal stabilite"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Maximum GZ açısı minimum kaç derece olmalıdır?",
-          options: ["20°", "25°", "30°"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Ballast tankı yarı dolu bırakmanın en büyük riski nedir?",
-          options: ["Trim değişimi", "Free surface effect", "Draft artışı"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Weather criterion kontrol ederken hangi GM değeri kullanılır?",
-          options: ["GM_solid", "GM_fluid", "GM_effective"],
-          correct: 2
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1", 
-          question: "Stability booklet'teki KG limit curve neyi gösterir?",
-          options: ["Maximum allowable KG for different displacement", "Minimum GM requirements", "Roll period limits"],
+          question: "36 knot rüzgarda wind pressure = 0.00338 × V² ise basınç kaç Pa'dır?",
+          options: ["439 Pa", "878 Pa", "1317 Pa"],
           correct: 0
         }
       ]
@@ -382,8 +333,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Deck edge immersion açısının önemi nedir?",
-          options: ["Stabilite kaybı başlangıcı", "Maximum GZ noktası", "Roll period değişimi"],
+          question: "GZ curve alanı 0-30° arası 0.055 m.rad, 0-40° arası 0.090 m.rad ise 30-40° alan nedir?",
+          options: ["0.035 m.rad", "0.055 m.rad", "0.090 m.rad"],
           correct: 0
         }
       ]
@@ -392,8 +343,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Synchronous rolling riski hangi durumda artar?",
-          options: ["Wave period = ship's natural period", "High speed operations", "Shallow water effect"],
+          question: "200m gemi için minimum GM = 0.15m ise, 150m gemi için orantılı minimum GM nedir?",
+          options: ["0.11m", "0.15m", "0.20m"],
           correct: 0
         }
       ]
@@ -402,8 +353,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Passenger gemilerde crowding to one side hesabında kullanılan parametre nedir?",
-          options: ["4 person/m²", "6 person/m²", "8 person/m²"],
+          question: "KG = 8.5m, KB = 4.2m, BM = 5.1m ise GM değeri kaçtır? (GM = KB + BM - KG)",
+          options: ["0.8m", "1.2m", "1.6m"],
           correct: 0
         }
       ]
@@ -412,8 +363,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Righting lever arm (GZ) hangi formula ile hesaplanır?",
-          options: ["GZ = GM × sin(θ)", "GZ = GM × cos(θ)", "GZ = GM × tan(θ)"],
+          question: "Deck width 25m, passenger density 4 kişi/m² ise crowding moment arm kaç m'dir?",
+          options: ["12.5m", "25.0m", "50.0m"],
           correct: 0
         }
       ]
@@ -422,8 +373,39 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Liquid cargo tank yapısında stability açısından en kritik feature nedir?",
-          options: ["Tank capacity", "Longitudinal bulkheads", "Tank height"],
+          question: "Ice accumulation 300 ton, KG = 15m ise yeni KG artışı kaç cm'dir? (Δ = 20000t, KG_old = 8m)",
+          options: ["10.5 cm", "15.8 cm", "21.0 cm"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Max GZ = 0.8m, angle = 25° ise dynamic stability 0-25° kaç m.rad'dır? (Yaklaşık)",
+          options: ["0.175 m.rad", "0.350 m.rad", "0.525 m.rad"],
+          correct: 0
+        }
+      ]
+    },
+    // 📚 SÖZEL SORULAR (11-20): Kavram + Teori
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Free Surface Effect'in GM üzerindeki etkisinin fiziksel nedeni nedir?",
+          options: ["Sanal ağırlık merkezi yükselmesi", "Gerçek ağırlık artışı", "Displacement azalması"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Synchronous rolling phenomenon'un oluşma koşulu nedir?",
+          options: ["Gemi hızının dalgalarla eşleşmesi", "Dalga periyodunun doğal roll periyoduna eşitlenmesi", "Rüzgar yönünün değişmesi"],
           correct: 1
         }
       ]
@@ -432,28 +414,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Wind heeling moment hesabında en önemli faktör nedir?",
-          options: ["Wind velocity squared", "Ship length", "Draft"],
-          correct: 0
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Icing conditions'da stability monitoring için öncelik nedir?",
-          options: ["Continuous GM calculation", "Ice removal operations", "Speed reduction"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Bulk carrier'da cargo shift prevention için kullanılan yöntem nedir?",
-          options: ["Overstowing", "Leveling", "Both A and B"],
+          question: "Parametric rolling hangi tip dalgalarda en risklidir?",
+          options: ["Beam seas", "Head seas", "Following seas"],
           correct: 2
         }
       ]
@@ -462,8 +424,18 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Fishing vessel'larda stability calculation'da en kritik factor nedir?",
-          options: ["Fish hold loading", "Net and gear weight", "Fuel consumption"],
+          question: "Grain cargo'da shifting moment'in oluşma sebebi nedir?",
+          options: ["Tahıl tanelerinin hareket kabiliyeti", "Tank geometrisi", "Loading hızı"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Passenger vessel'da emergency response time neden kritiktir?",
+          options: ["Fuel consumption", "Crowd panic ve stability loss riski", "Engine room safety"],
           correct: 1
         }
       ]
@@ -472,8 +444,38 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "SOLAS stability criteria'ya göre area under GZ curve (0-30°) minimum değeri nedir?",
-          options: ["0.055 m.rad", "0.065 m.rad", "0.075 m.rad"],
+          question: "Liquid cargo tank'larda longitudinal bulkhead'in amacı nedir?",
+          options: ["Structural strength", "Free surface effect azaltma", "Loading efficiency"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Weather criterion evaluation'da en kritik faktör nedir?",
+          options: ["Wind speed", "Righting energy vs heeling energy", "Wave height"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Container vessel'da high GM'nin olumsuz etkisi nedir?",
+          options: ["Soft rolling motion", "Harsh rolling ve container damage", "Speed reduction"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Stability booklet'teki deadweight vs KG curve'unun amacı nedir?",
+          options: ["Loading guidance sağlama", "Speed optimization", "Fuel planning"],
           correct: 0
         }
       ]
@@ -482,9 +484,9 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Dynamic stability nedir?",
-          options: ["Energy required to heel ship to any angle", "Maximum righting moment", "Roll period calculation"],
-          correct: 0
+          question: "Emergency ballast transfer'in stability üzerindeki etkisi nedir?",
+          options: ["Sadece GM değişimi", "GM + FSE + heel angle değişimi", "Sadece displacement değişimi"],
+          correct: 1
         }
       ]
     }
