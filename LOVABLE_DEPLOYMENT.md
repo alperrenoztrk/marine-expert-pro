@@ -1,6 +1,10 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
+- **Tarih:** 2025-08-27
+- **Sürüm:** v2.5.52
+- **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
+
 - **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.50
 - **Durum:** ✅ Yeni ana sayfa tasarımı - Maritime Calculator başlığı mavi/teal renk şeması, yeni arka plan (gökyüzü-deniz geçişi), gemi illüstrasyonu ve modern buton tasarımı - **LOVABLE'A DEPLOY EDİLDİ**
