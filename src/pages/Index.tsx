@@ -10,20 +10,9 @@ const Index = () => {
       <div
         className="absolute inset-0 maritime-background"
         style={{
-          backgroundImage: "url('/maritime-background.svg')"
+          backgroundImage: "url('/maritime-home-background.svg')"
         }}
       />
-      
-      {/* Ship illustration overlay */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative w-full h-full max-w-4xl max-h-96">
-          <img
-            src="/ship-bridge-DDf8ulzO.jpg"
-            alt="Maritime Ship"
-            className="w-full h-full object-contain opacity-20"
-          />
-        </div>
-      </div>
       
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
@@ -48,7 +37,7 @@ const Index = () => {
               Maritime
             </span>
             <span 
-              className="block text-blue-500 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
+              className="block text-teal-500 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
               style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.4)" }}
             >
               Calculator
@@ -67,13 +56,13 @@ const Index = () => {
 
         {/* Buttons */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Top button - Hesaplamalar */}
-          <Link to="/calculations" className="w-full">
+          {/* Top button - Regülasyon Rehberi: Mark */}
+          <Link to="/formulas" className="w-full">
             <Button className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-2xl gap-3 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
               <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
                 <Plus className="w-4 h-4 text-white" />
               </div>
-              <span data-translatable>Hesaplamalar</span>
+              <span data-translatable>Regülasyon Rehberi: Mark</span>
             </Button>
           </Link>
 
@@ -88,10 +77,10 @@ const Index = () => {
               </Button>
             </Link>
 
-            <Link to="/formulas" className="flex-1">
+            <Link to="/calculations" className="flex-1">
               <Button className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-2xl gap-2 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
                 <FileText className="w-5 h-5 text-blue-600" />
-                <span data-translatable>Formüller</span>
+                <span data-translatable>Hesaplamalar</span>
               </Button>
             </Link>
           </div>

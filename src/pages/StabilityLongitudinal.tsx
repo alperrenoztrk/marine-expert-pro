@@ -172,23 +172,6 @@ export default function StabilityLongitudinal() {
 
   const handleTrimQuizAnswer = (questionId: string, answer: string) => {
     setQuizAnswers(prev => ({ ...prev, [questionId]: answer }));
-    
-    // Şık seçildiğinde direkt sonuçları göster
-    const currentQuizData = longitudinalQuizBank[currentQuizSet];
-    const allQuestionsAnswered = Object.keys({ ...prev, [questionId]: answer }).length >= currentQuizData.questions.length;
-    
-    if (allQuestionsAnswered) {
-      setShowQuizResults(true);
-      let score = 0;
-      currentQuizData.questions.forEach(q => {
-        if (parseInt({ ...prev, [questionId]: answer }[q.id]) === q.correct) {
-          score++;
-        }
-      });
-      
-      const successRate = (score / currentQuizData.questions.length) * 100;
-      setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
-    }
   };
 
   // 10 farklı boyuna stabilite senaryosu
@@ -521,7 +504,21 @@ export default function StabilityLongitudinal() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [activeTab, currentQuizSet, longitudinalQuizBank.length]);
 
+  const checkTrimQuizAnswers = () => {
+    const currentQuizData = longitudinalQuizBank[currentQuizSet];
+    setShowQuizResults(true);
+    let score = 0;
+    currentQuizData.questions.forEach(q => {
+      if (parseInt(quizAnswers[q.id]) === q.correct) {
+        score++;
+      }
+    });
+    
+    const successRate = (score / currentQuizData.questions.length) * 100;
+    setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
 
+    // Otomatik geçiş kaldırıldı - kullanıcı manuel olarak önceki/sonraki butonlarını kullanacak
+  };
 
   const chartData = useMemo(() => {
     const points = HydrostaticCalculations.generateGZCurve(geometry, kg, 0, 90, 1);
@@ -1260,20 +1257,28 @@ export default function StabilityLongitudinal() {
                   <span className="ml-2 text-xs opacity-60">←</span>
                 </Button>
                 
-                                  <Button 
-                    variant="outline"
-                    onClick={() => {
-                      const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
-                      setCurrentQuizSet(nextSet);
-                      setQuizAnswers({});
-                      setShowQuizResults(false);
-                    }}
-                    className="flex-1"
-                    disabled={showQuizResults}
-                  >
-                    Sonraki Set →
-                    <span className="ml-2 text-xs opacity-60">→</span>
-                  </Button>
+                <Button 
+                  className="flex-1" 
+                  onClick={checkTrimQuizAnswers}
+                  disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
+                >
+                  {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+                    setCurrentQuizSet(nextSet);
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                  className="flex-1"
+                  disabled={showQuizResults}
+                >
+                  Sonraki Set →
+                  <span className="ml-2 text-xs opacity-60">→</span>
+                </Button>
               </div>
               
               {/* Quiz Progress Indicator */}
