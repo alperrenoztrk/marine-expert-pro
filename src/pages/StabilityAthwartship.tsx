@@ -1268,7 +1268,7 @@ export default function StabilityAthwartship() {
           <CardContent>
             <div className="space-y-4">
               {currentQuizData.questions.map((question, idx) => (
-                <div key={question.id} className="p-4 border-l-4 border-blue-500">
+                <div key={question.id} className="p-4">
                   <h4 className="font-semibold mb-3">{question.question}</h4>
                   <div className="space-y-2">
                     {question.options.map((option, optionIdx) => (
