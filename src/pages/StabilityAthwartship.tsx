@@ -1194,64 +1194,6 @@ export default function StabilityAthwartship() {
     
     return (
       <div className="space-y-6">
-        {/* Random Challenging Scenario */}
-        <Card className="border-orange-200">
-          <CardHeader>
-            <CardTitle className="text-lg">{currentScenarioData.title}</CardTitle>
-            <div className="flex gap-2">
-              <Badge variant="destructive">Zor Seviye</Badge>
-              <Badge variant="outline">Senaryo #{currentScenario + 1}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg border-l-4 border-red-500">
-                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">📋 Durum Analizi</h4>
-                <p className="text-sm text-red-700 dark:text-red-300 mb-3">
-                  <strong>Durum:</strong> {currentScenarioData.situation}
-                </p>
-                <p className="text-sm text-red-700 dark:text-red-300">
-                  <strong>Görev:</strong> {currentScenarioData.question}
-                </p>
-              </div>
-              
-              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  <strong>💡 İpucu:</strong> {currentScenarioData.hint}
-                </p>
-              </div>
-
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => setScenario2Answer(!scenario2Answer)}
-                >
-                  {scenario2Answer ? "Çözümü Gizle" : "Çözümü Gör"}
-                </Button>
-                <Button 
-                  variant="secondary" 
-                  onClick={() => {
-                    setCurrentScenario(Math.floor(Math.random() * scenarioBank.length));
-                    setScenario2Answer(false);
-                  }}
-                >
-                  🎲 Yeni Senaryo
-                </Button>
-              </div>
-
-              {scenario2Answer && (
-                <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
-                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Uzman Çözümü:</h4>
-                  <p className="text-sm text-green-700 dark:text-green-300">
-                    {currentScenarioData.answer}
-                  </p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Dynamic Quiz System */}
         <Card>
           <CardHeader>
