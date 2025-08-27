@@ -3,7 +3,7 @@
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.50
-- **Durum:** ✅ Yeni ana sayfa tasarımı - Maritime Calculator başlığı mavi/teal renk şeması, yeni arka plan (gökyüzü-deniz geçişi), gemi illüstrasyonu ve modern buton tasarımı
+- **Durum:** ✅ Yeni ana sayfa tasarımı - Maritime Calculator başlığı mavi/teal renk şeması, yeni arka plan (gökyüzü-deniz geçişi), gemi illüstrasyonu ve modern buton tasarımı - **LOVABLE'A DEPLOY EDİLDİ**
 
 - **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.31
