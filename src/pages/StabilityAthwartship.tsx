@@ -1266,7 +1266,7 @@ export default function StabilityAthwartship() {
             <CardTitle className="flex items-center justify-between">
               🧩 Otomatik Quiz Sistemi
               <div className="flex gap-2">
-                <Badge variant="secondary">Soru #{currentQuizSet + 1}/20</Badge>
+                <Badge variant="secondary">Set {currentQuizSet + 1}/20</Badge>
                 <Badge variant="outline" className="text-xs">
                   Otomatik İlerleme
                 </Badge>
@@ -1277,7 +1277,7 @@ export default function StabilityAthwartship() {
             <div className="space-y-4">
               {currentQuizData.questions.map((question, idx) => (
                 <div key={question.id} className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
-                  <h4 className="font-semibold mb-3">Soru {idx + 1}: {question.question}</h4>
+                  <h4 className="font-semibold mb-3">{question.question}</h4>
                   <div className="space-y-2">
                     {question.options.map((option, optionIdx) => (
                       <label key={optionIdx} className="flex items-center gap-2">
