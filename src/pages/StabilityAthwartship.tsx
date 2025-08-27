@@ -1263,7 +1263,7 @@ export default function StabilityAthwartship() {
         {/* Dynamic Quiz System */}
         <Card>
           <CardHeader>
-            <CardTitle>🧩 Otomatik Quiz Sistemi</CardTitle>
+            <CardTitle>Quiz</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
