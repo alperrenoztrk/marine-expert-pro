@@ -1101,7 +1101,10 @@ export default function StabilityAthwartship() {
                 </Button>
                 <Button 
                   variant="secondary" 
-                  onClick={() => setCurrentScenario(Math.floor(Math.random() * scenarioBank.length))}
+                  onClick={() => {
+                    setCurrentScenario(Math.floor(Math.random() * scenarioBank.length));
+                    setScenario2Answer(false);
+                  }}
                 >
                   🎲 Yeni Senaryo
                 </Button>
@@ -1150,8 +1153,9 @@ export default function StabilityAthwartship() {
                       <label key={optionIdx} className="flex items-center gap-2">
                         <input 
                           type="radio" 
-                          name={question.id} 
+                          name={`quiz-${currentQuizSet}-${question.id}`} 
                           value={optionIdx.toString()}
+                          checked={quizAnswers[question.id] === optionIdx.toString()}
                           onChange={(e) => handleQuizAnswer(question.id, e.target.value)}
                           disabled={showQuizResults}
                         />
