@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.50
+- **Durum:** ✅ Yeni ana sayfa tasarımı - Maritime Calculator başlığı mavi/teal renk şeması, yeni arka plan (gökyüzü-deniz geçişi), gemi illüstrasyonu ve modern buton tasarımı
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.31
 - **Durum:** ✅ Stabilite quiz sistemi eklendi - otomatik geçiş kapatıldı, önceki/sonraki butonları eklendi
 
