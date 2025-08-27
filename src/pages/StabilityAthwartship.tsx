@@ -125,23 +125,26 @@ export default function StabilityAthwartship() {
 
   const handleQuizAnswer = (questionId: string, answer: string) => {
     setQuizAnswers(prev => ({ ...prev, [questionId]: answer }));
-  };
-
-  const checkQuizAnswers = () => {
-    const currentQuizData = quizBank[currentQuizSet];
-    setShowQuizResults(true);
-    let score = 0;
-    currentQuizData.questions.forEach(q => {
-      if (parseInt(quizAnswers[q.id]) === q.correct) {
-        score++;
-      }
-    });
     
-    const successRate = (score / currentQuizData.questions.length) * 100;
-    setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
-
-    // Otomatik geçiş kaldırıldı - kullanıcı manuel olarak önceki/sonraki butonlarını kullanacak
+    // Şık seçildiğinde direkt sonuçları göster
+    const currentQuizData = quizBank[currentQuizSet];
+    const allQuestionsAnswered = Object.keys({ ...prev, [questionId]: answer }).length >= currentQuizData.questions.length;
+    
+    if (allQuestionsAnswered) {
+      setShowQuizResults(true);
+      let score = 0;
+      currentQuizData.questions.forEach(q => {
+        if (parseInt({ ...prev, [questionId]: answer }[q.id]) === q.correct) {
+          score++;
+        }
+      });
+      
+      const successRate = (score / currentQuizData.questions.length) * 100;
+      setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
+    }
   };
+
+
 
   const getDetailedStabilityAnalysis = () => {
     if (!result) return null;
@@ -1274,14 +1277,6 @@ export default function StabilityAthwartship() {
                 >
                   ← Önceki Set
                   <span className="ml-2 text-xs opacity-60">←</span>
-                </Button>
-                
-                <Button 
-                  className="flex-1" 
-                  onClick={checkQuizAnswers}
-                  disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
-                >
-                  {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
                 </Button>
                 
                 <Button 
