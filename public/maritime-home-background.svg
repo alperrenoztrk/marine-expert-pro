@@ -31,7 +31,7 @@
   <line x1="0" y1="960" x2="1080" y2="960" stroke="#4682B4" stroke-width="3" opacity="0.8"/>
   
   <!-- Ship illustration in bottom-left corner -->
-  <g transform="translate(100, 1600)">
+  <g transform="translate(100, 1550) scale(1.5)">
     <!-- Ship hull -->
     <path d="M0,40 L120,40 L130,20 L130,0 L-10,0 L-10,20 Z" fill="#1E3A8A" stroke="#0F172A" stroke-width="2"/>
     
