@@ -286,7 +286,7 @@ export default function StabilityAthwartship() {
     }
   ];
 
-  // Quiz soru bankası - 20 set x 1 soru = 20 soru
+  // Quiz soru bankası - 20 set x 1 soru = 20 benzersiz soru
   const quizBank = [
     {
       questions: [
@@ -372,19 +372,9 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1", 
-          question: "Grain cargo için özel stabilite kriteri nedir?",
-          options: ["40° heeling arm", "Angle of equilibrium", "Both A and B"],
-          correct: 2
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "KG değeri hangi durumda en kritiktir?",
-          options: ["Ballast voyage", "Full load", "Partial load"],
-          correct: 1
+          question: "Stability booklet'teki KG limit curve neyi gösterir?",
+          options: ["Maximum allowable KG for different displacement", "Minimum GM requirements", "Roll period limits"],
+          correct: 0
         }
       ]
     },
@@ -402,8 +392,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Transverse shifting moment nedir?",
-          options: ["Kargo kayması momenti", "Ballast transfer momenti", "Wind heeling moment"],
+          question: "Synchronous rolling riski hangi durumda artar?",
+          options: ["Wave period = ship's natural period", "High speed operations", "Shallow water effect"],
           correct: 0
         }
       ]
@@ -412,18 +402,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Passenger gemilerde özel stabilite kriteri hangisidir?",
-          options: ["Weather criterion", "Crowding to one side", "Grain shift"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "GZ curve'deki maximum değer neyi gösterir?",
-          options: ["Maximum stability", "Deck edge immersion", "Range of stability"],
+          question: "Passenger gemilerde crowding to one side hesabında kullanılan parametre nedir?",
+          options: ["4 person/m²", "6 person/m²", "8 person/m²"],
           correct: 0
         }
       ]
@@ -432,8 +412,18 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Liquid cargo taşıyan gemilerde en kritik nokta nedir?",
-          options: ["Loading phase", "Cargo tank level", "Pumping operations"],
+          question: "Righting lever arm (GZ) hangi formula ile hesaplanır?",
+          options: ["GZ = GM × sin(θ)", "GZ = GM × cos(θ)", "GZ = GM × tan(θ)"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Liquid cargo tank yapısında stability açısından en kritik feature nedir?",
+          options: ["Tank capacity", "Longitudinal bulkheads", "Tank height"],
           correct: 1
         }
       ]
@@ -442,8 +432,18 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Parametric rolling riski ne zaman artar?",
-          options: ["Calm weather", "Following seas", "Beam seas"],
+          question: "Wind heeling moment hesabında en önemli faktör nedir?",
+          options: ["Wind velocity squared", "Ship length", "Draft"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Icing conditions'da stability monitoring için öncelik nedir?",
+          options: ["Continuous GM calculation", "Ice removal operations", "Speed reduction"],
           correct: 1
         }
       ]
@@ -452,28 +452,8 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Container gemilerinde GM'nin çok yüksek olmasının zararı nedir?",
-          options: ["Yumuşak sallanım", "Sert sallanım ve container damage", "Yakıt tasarrufu"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Ice accumulation stabilitenin hangi parametresini etkiler?",
-          options: ["Sadece KG", "KG ve free surface", "Sadece displacement"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "Emergency situation'da hızlı stabilite değerlendirmesi hangi yöntemle yapılır?",
-          options: ["Full calculation", "Inclining test", "Quick assessment method"],
+          question: "Bulk carrier'da cargo shift prevention için kullanılan yöntem nedir?",
+          options: ["Overstowing", "Leveling", "Both A and B"],
           correct: 2
         }
       ]
@@ -482,9 +462,29 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Ağır hava koşullarında stabilite için en önemli önlem nedir?",
-          options: ["Speed reduction", "Course change", "Ballast adjustment"],
-          correct: 2
+          question: "Fishing vessel'larda stability calculation'da en kritik factor nedir?",
+          options: ["Fish hold loading", "Net and gear weight", "Fuel consumption"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "SOLAS stability criteria'ya göre area under GZ curve (0-30°) minimum değeri nedir?",
+          options: ["0.055 m.rad", "0.065 m.rad", "0.075 m.rad"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Dynamic stability nedir?",
+          options: ["Energy required to heel ship to any angle", "Maximum righting moment", "Roll period calculation"],
+          correct: 0
         }
       ]
     }
