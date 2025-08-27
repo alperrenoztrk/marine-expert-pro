@@ -248,16 +248,17 @@ export default function StabilityLongitudinal() {
     }
   ];
 
-  // ⚓ GERÇEK MARİTİME ENDÜSTRİSİ TRIM/BOYUNA STABİLİTE SORULARI - 20 set
+  // 🎯 SADECE BOYUNA STABİLİTE/TRIM KONULARI - Detaylı Çözümlü Sorular - 20 set
   const longitudinalQuizBank = [
-    // 🧮 INDUSTRY-STANDARD SAYISAL SORULAR (1-10)
+    // 🧮 SAYISAL TRIM/BOYUNA STABİLİTE SORULARI (1-10)
     {
       questions: [
         {
           id: "q1",
-          question: "Bulk carrier sequential loading: Hold #3 = 8500t at 85m, LCF=92m, MCT=1850 t.m/cm. Trim change?",
-          options: ["3.2cm by head", "4.1cm by stern", "2.8cm by head"],
-          correct: 0
+          question: "Gemi: LBP=150m, MCT=800 t.m/cm, cargo 500t yükleniyor LCG=75m, LCF=72m. Trim değişimi?",
+          options: ["1.875cm by stern", "2.125cm by stern", "2.375cm by stern"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Trim = (Weight × (LCG - LCF)) / MCT = (500 × (75-72)) / 800 = 1500/800 = 1.875cm by stern. LCG > LCF olduğunda trim by stern oluşur."
         }
       ]
     },
@@ -265,9 +266,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1", 
-          question: "Container vessel: Bay 12-14 loading 420 TEU ×14.2t, LCG=115m, ship LCF=108m, MCT=2150 t.m/cm. Trim?",
-          options: ["1.94cm by stern", "2.16cm by stern", "2.38cm by stern"],
-          correct: 1
+          question: "TPC=28 t/cm, 1200t cargo discharge ediliyor. Draft değişimi nedir?",
+          options: ["42.9cm azalma", "46.2cm azalma", "38.7cm azalma"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Draft change = Weight / TPC = 1200 / 28 = 42.86cm ≈ 42.9cm. TPC (Tonnes Per Centimetre), 1cm draft değişimi için gerekli weight'i gösterir."
         }
       ]
     },
@@ -275,9 +277,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Tanker cargo discharge: 32000t crude oil, density 0.87t/m³, TPC=42 t/cm. Final draft change?",
-          options: ["76.2cm", "82.4cm", "88.6cm"],
-          correct: 0
+          question: "Fore draft=9.2m, Mid=9.6m, Aft=10.1m. Simpson's rule ile mean draft? (F+6M+A)/8",
+          options: ["9.59m", "9.63m", "9.67m"],
+          correct: 1,
+          explanation: "ÇÖZÜM: Mean draft = (F + 6M + A) / 8 = (9.2 + 6×9.6 + 10.1) / 8 = (9.2 + 57.6 + 10.1) / 8 = 76.9/8 = 9.63m. Simpson's rule, trim durumunda en doğru mean draft hesabını verir."
         }
       ]
     },
@@ -285,9 +288,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "VLCC ballast voyage: FO consumption 2800t, LCG=65m, LCF=145m, MT1=4200 t.m/cm. Trim effect?",
-          options: ["5.33cm by head", "6.12cm by head", "4.85cm by head"],
-          correct: 0
+          question: "FWA hesabı: Displacement=18000t, TPC=35 t/cm. Fresh water allowance?",
+          options: ["12.9cm", "15.4cm", "17.8cm"],
+          correct: 0,
+          explanation: "ÇÖZÜM: FWA = Displacement / (40 × TPC) = 18000 / (40 × 35) = 18000/1400 = 12.86cm ≈ 12.9cm. FWA, tatlı sudan deniz suyuna geçerken izin verilen extra draft'tır."
         }
       ]
     },
@@ -295,9 +299,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Ro-Ro ferry: Upper deck loading 85 trailers ×35t, LCG=85m, LCF=78m, MCT=890 t.m/cm. Trim change?",
-          options: ["2.1cm by stern", "2.8cm by stern", "3.4cm by stern"],
-          correct: 1
+          question: "DWA hesabı: Dock density=1015 kg/m³, Displacement=15000t, TPC=25 t/cm. Dock water allowance?",
+          options: ["6.0cm", "7.2cm", "8.4cm"],
+          correct: 0,
+          explanation: "ÇÖZÜM: DWA = (1025 - dock_density) × Displacement / (100 × TPC) = (1025-1015) × 15000 / (100×25) = 10×15000/2500 = 6.0cm. DWA, farklı yoğunluktaki dok suyunda draft correction'dır."
         }
       ]
     },
@@ -305,9 +310,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "LNG carrier: Cargo tank heating, density 0.45→0.42 t/m³, tank volume 38000m³. Displacement change?",
-          options: ["1140t decrease", "1254t decrease", "1368t decrease"],
-          correct: 0
+          question: "MT1=1200 t.m/cm, mevcut trim=1.8m, hedef even keel. Gerekli trimming moment?",
+          options: ["2160 t.m", "2520 t.m", "2880 t.m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Required moment = MT1 × desired trim change = 1200 × 1.8m = 1200 × 180cm = 216000 t.cm = 2160 t.m. MT1, 1cm trim değişimi için gerekli moment'tir."
         }
       ]
     },
@@ -315,9 +321,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Chemical tanker: Ballast exchange, P3 tank 2200t→0t, LCG=45m, LCF=68m, MT1=1650 t.m/cm. Effect?",
-          options: ["3.06cm by head", "2.87cm by head", "3.25cm by head"],
-          correct: 0
+          question: "LCF shift: Draft 8m→10m, LCF değişimi +2m forward. TPC effect on trim calculation?",
+          options: ["MCT increases", "MCT decreases", "No MCT change"],
+          correct: 0,
+          explanation: "ÇÖZÜM: LCF forward shift, waterplane area'nın center'ını öne taşır. Bu da MCT'yi artırır çünkü same moment ile daha az trim oluşur. MCT = Δ×GML / (100×LBP) formülünde GML ve effective length artar."
         }
       ]
     },
@@ -325,9 +332,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Offshore supply vessel: Deck cargo 1200t, crane operation radius 18m, max heel limit 15°. MCT req'd?",
-          options: ["1456 t.m/cm", "1678 t.m/cm", "1892 t.m/cm"],
-          correct: 1
+          question: "Ballast tank: 1500t ballast, LCG=45m, ship LCF=78m, MCT=950 t.m/cm. Trim etkisi?",
+          options: ["5.21cm by head", "4.89cm by head", "5.53cm by head"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Trim = Weight × (LCG - LCF) / MCT = 1500 × (45-78) / 950 = 1500 × (-33) / 950 = -49500/950 = -5.21cm = 5.21cm by head. Negative değer by head trim'i gösterir."
         }
       ]
     },
@@ -335,9 +343,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Multi-purpose cargo: Heavy lift 150t at frame 35, LCF at frame 67, frame spacing 0.6m. Trim moment?",
-          options: ["2880 t.m", "3240 t.m", "3600 t.m"],
-          correct: 0
+          question: "Longitudinal bending moment: Still water BM=+2500 t.m, wave BM=-1800 t.m. Total BM?",
+          options: ["700 t.m sagging", "700 t.m hogging", "4300 t.m hogging"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Total BM = Still water BM + Wave BM = 2500 + (-1800) = 700 t.m. Positive BM = hogging (deck compression), Negative BM = sagging (deck tension). Bu durumda net sagging."
         }
       ]
     },
@@ -345,30 +354,22 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Fishing factory vessel: Fish processing, catch 300t distributed 40%-35%-25% (Fore-Mid-Aft). Net LCG shift?",
-          options: ["2.4m forward", "1.8m forward", "3.1m forward"],
-          correct: 1
+          question: "Squat calculation: Speed=12 knots, Cb=0.75, h/T=1.3. Squat = 0.4×V²×Cb/(h/T), sonuç?",
+          options: ["33.2cm", "39.6cm", "45.1cm"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Squat = 0.4 × V² × Cb / (h/T) = 0.4 × 12² × 0.75 / 1.3 = 0.4 × 144 × 0.75 / 1.3 = 43.2/1.3 = 33.23cm. Squat, shallow water'da dynamic sinkage'dır."
         }
       ]
     },
-    // 📚 GERÇEK OPERASYONEL SÖZEL SORULAR (11-20)
+    // 📚 KAVRAMSAL BOYUNA STABİLİTE SORULARI (11-20)
     {
       questions: [
         {
           id: "q1",
-          question: "IACS CSR (Common Structural Rules) bulk carrier'da longitudinal strength monitoring requirement?",
-          options: ["Manual calculation only", "Continuous monitoring mandatory", "Loading computer recommended"],
-          correct: 2
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "MARPOL Annex VI NOx emission'da trim optimization'ın rolü nedir?",
-          options: ["Engine efficiency improvement", "Fuel consumption reduction", "Both A and B"],
-          correct: 2
+          question: "Longitudinal Metacentric Height (GML) transverse GM'den neden çok daha büyüktür?",
+          options: ["Longer waterplane length", "Second moment of area about longitudinal axis", "Different calculation method"],
+          correct: 1,
+          explanation: "AÇIKLAMA: GML = ILong/∇ formülünde ILong (longitudinal second moment of area) çok büyüktür çünkü waterplane'in length dimension'ı width'den çok daha büyüktür. Typical: GML = 100-300m, GM = 0.5-2m."
         }
       ]
     },
@@ -376,9 +377,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "STCW-78 Code A Table A-II/2'ye göre Chief Officer trim calculation competency requirement?",
-          options: ["Basic understanding", "Advanced calculation skills", "Computer operation only"],
-          correct: 1
+          question: "Trim by stern'in propeller efficiency'e pozitif etkisi nedir?",
+          options: ["Reduced cavitation", "Better propeller immersion", "Lower fuel consumption"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Trim by stern, propeller'ı daha derine daldırır, bu da propeller disk area'sının tamamen suda kalmasını sağlar. Better immersion, thrust efficiency'yi artırır ve propeller wash effect'i iyileştirir."
         }
       ]
     },
@@ -386,9 +388,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Port State Control ACSA (Asian Concentrated Ship Assessment) trim deficiency ana kategorisi?",
-          options: ["Documentation errors", "Calculation inaccuracies", "Load line violations"],
-          correct: 2
+          question: "Hogging ve Sagging arasındaki temel fark nedir?",
+          options: ["Loading condition difference", "Wave position effect", "Structural stress direction"],
+          correct: 2,
+          explanation: "AÇIKLAMA: Hogging: deck compression + bottom tension (positive BM), Sagging: deck tension + bottom compression (negative BM). Her ikisi de longitudinal bending moment direction'ını gösterir ve structural integrity'yi etkiler."
         }
       ]
     },
@@ -396,9 +399,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "Class notation CSV (Computer Software Validation) trim calculation approval kriteri?",
-          options: ["Software accuracy verification", "User interface compliance", "Data backup capability"],
-          correct: 0
+          question: "LCF (Longitudinal Center of Flotation) neden önemlidir?",
+          options: ["Stability calculation center", "Trim moment reference point", "Buoyancy center location"],
+          correct: 1,
+          explanation: "AÇIKLAMA: LCF, trim hesaplamalarında reference point'tir. LCG-LCF distance, trim direction'ını belirler. LCG > LCF = trim by stern, LCG < LCF = trim by head. Draft değişimiyle LCF position'ı da değişir."
         }
       ]
     },
@@ -406,9 +410,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "IMO MSC.1/Circ.1228 intact stability code'da trim limitation reference nedir?",
-          options: ["Maximum L/50", "Operational manual", "Loading instrument approval"],
-          correct: 1
+          question: "Heavy weather'da optimum trim strategy neden 'slightly by head'dir?",
+          options: ["Better fuel economy", "Reduced bow slamming", "Improved visibility"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Slight trim by head, bow'un wave impact'ini azaltır ve slamming phenomenon'unu minimize eder. Bu, structural damage riskini azaltır ve crew comfort'ını artırır. Typical: 0.5-1.0m by head heavy weather'da optimal."
         }
       ]
     },
@@ -416,9 +421,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "SOLAS VI/7 grain loading code'da trim control critical factor nedir?",
-          options: ["Grain surface leveling", "Trimming moment calculation", "Hold sequencing"],
-          correct: 1
+          question: "Bulk carrier'da sequential loading neden kritiktir?",
+          options: ["Time efficiency", "Structural stress control", "Cargo segregation"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Sequential loading, longitudinal bending moment'ları kontrol eder. Yanlış loading sequence, excessive hogging/sagging'e neden olabilir. Alternate hold loading genellikle preferred method'dur structural stress minimization için."
         }
       ]
     },
@@ -426,9 +432,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "ISM Code non-conformity trim related en sık kategori nedir?",
-          options: ["Procedure inadequacy", "Training deficiency", "Record keeping failure"],
-          correct: 0
+          question: "Container ship'lerde bay loading sequence neden trim control açısından önemlidir?",
+          options: ["Crane efficiency", "Progressive LCG control", "Port requirements"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Her bay loading LCG'yi değiştirir. Forward bay'lar trim by head, aft bay'lar trim by stern yaratır. Proper sequence, excessive trim'i önler ve propeller immersion'ı maintain eder. Real-time trim monitoring gereklidir."
         }
       ]
     },
@@ -436,9 +443,10 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "MLC 2006 fatigue management'ta trim effect consideration requirement nedir?",
-          options: ["Watchkeeping adjustment", "Work-rest hour compliance", "Bridge resource management"],
-          correct: 0
+          question: "Pounding phenomenon hangi trim condition'da daha sık görülür?",
+          options: ["Even keel", "Trim by head", "Trim by stern"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Trim by head, bow'u wave impact'ine daha exposed hale getirir. Forward perpendicular area'nın water line'a yakınlığı, wave-ship interaction'ını artırır ve pounding risk'ini yükseltir."
         }
       ]
     },
@@ -446,9 +454,21 @@ export default function StabilityLongitudinal() {
       questions: [
         {
           id: "q1",
-          question: "COLREG Rule 27 NUC vessel'da trim-related navigation limitation nedir?",
-          options: ["Restricted maneuverability", "Propulsion limitation", "Steering gear failure"],
-          correct: 0
+          question: "Load line regulations'a göre maximum allowable trim limitation basis nedir?",
+          options: ["Fixed L/50 rule", "Ship-specific calculation", "Stability booklet reference"],
+          correct: 2,
+          explanation: "AÇIKLAMA: Load line regulations, ship-specific trim limitations'ı stability booklet'te referans alır. Generic L/50 rule guide'dır, actual limits ship design'a göre belirlenir ve approved stability information'da specify edilir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Trim optimization'ın fuel efficiency'e etkisinin temel prensibi nedir?",
+          options: ["Engine load reduction", "Hull resistance minimization", "Propeller efficiency improvement"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Optimum trim, hull resistance'ı minimize eder. Wave-making resistance ve frictional resistance'ın optimal balance'ı sağlanır. Typical optimum: slight stern trim (0.5-1.5m) most commercial vessels için fuel efficiency açısından ideal."
         }
       ]
     }
@@ -1210,50 +1230,94 @@ export default function StabilityLongitudinal() {
               </Button>
               
               {showQuizResults && (
-                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
-                  <h4 className="font-semibold mb-2">🎯 Trim Quiz Sonuçları:</h4>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">
-                        {currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        )}/{currentQuizData.questions.length}
+                <div className="mt-4 space-y-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                    <h4 className="font-semibold mb-2">🎯 Trim Quiz Sonuçları:</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          )}/{currentQuizData.questions.length}
+                        </div>
+                        <div className="text-sm text-muted-foreground">Doğru Cevap</div>
                       </div>
-                      <div className="text-sm text-muted-foreground">Doğru Cevap</div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {Math.round((currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) * 100)}%
+                        </div>
+                        <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                      </div>
+                      <div className="text-center">
+                        <div className={`text-2xl font-bold ${
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {(currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {(currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">
-                        {Math.round((currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) * 100)}%
-                      </div>
-                      <div className="text-sm text-muted-foreground">Başarı Oranı</div>
-                    </div>
-                    <div className="text-center">
-                      <div className={`text-2xl font-bold ${
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
-                      }`}>
-                        {(currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {(currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
-                      </div>
-                    </div>
+                  </div>
+                  
+                  {/* Detaylı Çözümler */}
+                  <div className="space-y-3">
+                    <h5 className="font-semibold text-gray-800">📚 Detaylı Çözümler & Açıklamalar:</h5>
+                    {currentQuizData.questions.map((question, idx) => {
+                      const userAnswer = parseInt(quizAnswers[question.id] || "-1");
+                      const isCorrect = userAnswer === question.correct;
+                      
+                      return (
+                        <div key={question.id} className={`p-4 rounded-lg border-2 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                          <h6 className="font-medium mb-2">{question.question}</h6>
+                          <div className="space-y-1 mb-3">
+                            {question.options.map((option, optionIdx) => (
+                              <div 
+                                key={optionIdx} 
+                                className={`p-2 rounded text-sm ${
+                                  optionIdx === question.correct 
+                                    ? 'bg-green-100 text-green-800 border border-green-300' 
+                                    : userAnswer === optionIdx 
+                                      ? 'bg-red-100 text-red-800 border border-red-300' 
+                                      : 'bg-gray-100'
+                                }`}
+                              >
+                                {optionIdx === question.correct && "✅ "}
+                                {userAnswer === optionIdx && userAnswer !== question.correct && "❌ "}
+                                {option}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {question.explanation && (
+                            <div className="bg-blue-50 border-l-4 border-blue-400 p-3">
+                              <div className="text-blue-800 text-sm">
+                                <strong>🔍 Detaylı Açıklama:</strong>
+                                <p className="mt-1 whitespace-pre-line">{question.explanation}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

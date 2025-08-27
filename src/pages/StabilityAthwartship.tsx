@@ -286,16 +286,17 @@ export default function StabilityAthwartship() {
     }
   ];
 
-  // ⚓ GERÇEK MARİTİME ENDÜSTRİSİ STABILITE SORULARI - 20 set
+  // 🎯 SADECE STABİLİTE KONULARI - Detaylı Çözümlü Sorular - 20 set
   const quizBank = [
-    // 🧮 INDUSTRY-STANDARD SAYISAL SORULAR (1-10)
+    // 🧮 SAYISAL STABİLİTE SORULARI (1-10)
     {
       questions: [
         {
           id: "q1",
-          question: "18500 DWT Bulk Carrier: Displacement=22000t, KG=9.2m, KM=9.8m. IMO weather criterion için minimum GM?",
-          options: ["0.15m", "0.35m", "0.60m"],
-          correct: 2
+          question: "Gemi: Δ=15000t, KG=8.5m, KB=4.2m, BM=5.8m. GM değeri nedir?",
+          options: ["1.5m", "2.0m", "2.5m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: GM = KB + BM - KG = 4.2 + 5.8 - 8.5 = 1.5m. Bu formül transverse metacentric height'ın temel hesaplama yöntemidir. GM, geminin initial stability'sinin ana göstergesidir."
         }
       ]
     },
@@ -303,9 +304,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1", 
-          question: "Container vessel loading: 350 TEU ×14t = 4900t, VCG=12m. Ship: Δ=45000t, KG=8.5m. Yeni KG=?",
-          options: ["8.74m", "9.12m", "9.48m"],
-          correct: 0
+          question: "Tank 20m×15m×8m, %60 dolu, ρ=1.025t/m³. Free Surface Moment = ρ×g×i×l×b³/(12×V), FSM=?",
+          options: ["244.1 t.m", "366.2 t.m", "488.3 t.m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: V=20×15×8×0.6=1440m³, i=b³/12=15³/12=281.25m⁴, FSM=1.025×9.81×281.25×20/1440=244.1 t.m. Free surface effect, partially filled tank'larda stability'yi azaltan kritik faktördür."
         }
       ]
     },
@@ -313,9 +315,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Oil tanker: Cargo tank 50m×20m×15m, %75 full, ρ=0.85t/m³. FSE correction = i×b³×l/(12×V) nedir?",
-          options: ["146.3 t.m", "195.1 t.m", "292.6 t.m"],
-          correct: 0
+          question: "Roll period T=12sn, k=0.4×B=0.4×18m=7.2m ise GM değeri? (T=2π√(k²/g×GM))",
+          options: ["0.89m", "1.12m", "1.35m"],
+          correct: 1,
+          explanation: "ÇÖZÜM: T=2π√(k²/g×GM) → 12=2π√(7.2²/9.81×GM) → GM=k²/(g×(T/2π)²)=51.84/(9.81×3.64)=1.12m. Roll period, GM ile ters orantılıdır - GM arttıkça roll period azalır."
         }
       ]
     },
@@ -323,9 +326,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "RORO ferry: Upper deck 2000 passengers, area=800m², density 4 person/m². Heeling moment kaç t.m?",
-          options: ["1600 t.m", "2400 t.m", "3200 t.m"],
-          correct: 1
+          question: "Weather criterion: Wind pressure=504 N/m², projected area=2400m², lever arm=12m, minimum GM?",
+          options: ["0.83m", "1.04m", "1.25m"],
+          correct: 1,
+          explanation: "ÇÖZÜM: Heeling moment=504×2400×12÷1000=14515 t.m, Weather criterion için GM_req=Heeling moment×1.4/Displacement=14515×1.4/19500=1.04m. Weather criterion, şiddetli rüzgarda stability'yi garanti eder."
         }
       ]
     },
@@ -333,9 +337,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Chemical tanker: SOLAS damage stability, compartment flooding. P×A×h = 90×30×12m. Added moment?",
-          options: ["29160 t.m", "32400 t.m", "35640 t.m"],
-          correct: 0
+          question: "GZ curve: 30°'de GZ=0.65m, area 0-30°=0.055 m.rad ise 40°'de area=0.090 m.rad için GZ₄₀=?",
+          options: ["0.52m", "0.60m", "0.68m"],
+          correct: 1,
+          explanation: "ÇÖZÜM: Area₃₀₋₄₀=0.090-0.055=0.035 m.rad, Δθ=10°=0.174 rad, Average GZ=(0.65+GZ₄₀)/2, 0.035=(0.65+GZ₄₀)×0.174/2 → GZ₄₀=0.60m. GZ curve area'sı dynamic stability'yi gösterir."
         }
       ]
     },
@@ -343,9 +348,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "LNG carrier: Cargo density 0.45t/m³, tank 40m×40m×30m, %90 full. Effective FSE moment?",
-          options: ["5184 t.m", "6480 t.m", "7776 t.m"],
-          correct: 1
+          question: "Cargo loading: 800t yük, VCG=15m, gemi KG=8.0m, Δ=12000t, yeni KG=?",
+          options: ["8.47m", "8.73m", "9.12m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: New KG = (Ship moment + Cargo moment)/(Ship Δ + Cargo) = (12000×8.0 + 800×15)/(12000+800) = (96000+12000)/12800 = 8.47m. Yüksek VCG'li cargo, geminin KG'sini yükseltir ve GM'yi azaltır."
         }
       ]
     },
@@ -353,9 +359,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "General cargo: Deck cargo 500t, KG=15m, ship KG=8.2m, Δ=12000t. New KG hesapla:",
-          options: ["8.48m", "8.76m", "9.04m"],
-          correct: 0
+          question: "Heel angle=8°, GM=1.2m ise small angle stability'de GZ değeri?",
+          options: ["0.167m", "0.189m", "0.211m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Small angle için GZ = GM × sin(θ) = 1.2 × sin(8°) = 1.2 × 0.139 = 0.167m. Bu formül sadece küçük açılarda (θ<15°) geçerlidir, büyük açılarda GZ curve kullanılmalıdır."
         }
       ]
     },
@@ -363,9 +370,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Fishing vessel: Fish hold loading, net weight 80t, KG=18m, vessel Δ=1200t, KG=6m. New KG?",
-          options: ["6.75m", "7.12m", "7.48m"],
-          correct: 0
+          question: "Deck cargo 200t, KG=16m, serbest surface effect=0.05m, gemi GM=1.5m, final GM=?",
+          options: ["1.28m", "1.35m", "1.42m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: New KG = (15000×8.5 + 200×16)/15200 = 8.71m, GM_solid = 9.8 - 8.71 = 1.09m, GM_fluid = GM_solid - FSE = 1.09 - 0.05 = 1.04m. Effective GM hesabında hem weight effect hem de FSE dikkate alınır."
         }
       ]
     },
@@ -373,9 +381,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Supply vessel: Deck crane operation, load 25t at 15m radius. Max heel angle with GM=0.8m?",
-          options: ["22.6°", "27.4°", "32.1°"],
-          correct: 1
+          question: "Passenger crowding: 400 kişi tek tarafa, 75kg/kişi, moment arm=8m, displacement=5000t, heel=?",
+          options: ["2.75°", "3.44°", "4.12°"],
+          correct: 1,
+          explanation: "ÇÖZÜM: Heeling moment = 400×0.075×8 = 240 t.m, tan(θ) = Heeling moment/(Displacement×GM) = 240/(5000×0.8) = 0.06, θ = arctan(0.06) = 3.44°. Passenger crowding, ferry stability'sinin kritik faktörüdür."
         }
       ]
     },
@@ -383,30 +392,22 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Arctic vessel: Ice accumulation rate 15 t/hr, 8 hours, ice KG=12m, ship Δ=8000t, KG=7.5m. KG change?",
-          options: ["0.675m", "0.825m", "0.975m"],
-          correct: 0
+          question: "Damage stability: Compartment flooding, volume=1200m³, permeability=0.85, virtual rise KG=?",
+          options: ["0.15m", "0.18m", "0.21m"],
+          correct: 1,
+          explanation: "ÇÖZÜM: Lost buoyancy = 1200×0.85×1.025 = 1045.5t, Virtual KG rise = (Volume×permeability×density×KG_flooding)/Original_displacement = (1200×0.85×1.025×8)/15000 = 0.18m. Damage stability'de virtual KG artışı GM'yi azaltır."
         }
       ]
     },
-    // 📚 GERÇEK OPERASYONEL SÖZEL SORULAR (11-20)
+    // 📚 KAVRAMSAL STABİLİTE SORULARI (11-20)
     {
       questions: [
         {
           id: "q1",
-          question: "Hangi durumda IMO intact stability code A.749(18) mandatory uygulanır?",
-          options: ["Tüm ticari gemilerde", "500 GT ve üzeri yeni gemilerde", "Sadece yolcu gemilerinde"],
-          correct: 1
-        }
-      ]
-    },
-    {
-      questions: [
-        {
-          id: "q1",
-          question: "MARPOL Annex I'e göre double hull tanker'da cargo tank breach durumunda stability calculation priority?",
-          options: ["Pollution prevention", "Intact stability maintenance", "Structural integrity"],
-          correct: 1
+          question: "Metacentric radius (BM) neye bağlı olarak değişir?",
+          options: ["Sadece draft'a", "Waterplane area moment of inertia/Volume", "Displacement'a"],
+          correct: 1,
+          explanation: "AÇIKLAMA: BM = I/∇ formülüyle hesaplanır. I = waterplane area'nın moment of inertia, ∇ = underwater volume. Geniş ve düz gemi formları daha büyük BM'ye sahiptir. BM, GM'nin önemli bir bileşenidir."
         }
       ]
     },
@@ -414,9 +415,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "MLC 2006'ya göre crew accommodation deck'te stability factor nedir?",
-          options: ["Weather tightness", "Escape route accessibility", "Living space VCG effect"],
-          correct: 2
+          question: "Synchronous rolling phenomenon'un oluşma sebebi nedir?",
+          options: ["Wave period = Natural roll period", "High GM values", "Low speed operations"],
+          correct: 0,
+          explanation: "AÇIKLAMA: Synchronous rolling, dalga periyodu ile geminin doğal roll periyodunun eşleşmesi durumunda oluşur. Bu durumda rezonans meydana gelir ve roll amplitüdü tehlikeli seviyelere çıkabilir. Çözüm: course/speed değişikliği."
         }
       ]
     },
@@ -424,9 +426,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "STCW-95 Table A-II/1'e göre OOW hangi stability situation'da master'ı inform etmelidir?",
-          options: ["Her GM değişiminde", "Criteria limit'e yaklaşımda", "Sadece emergency'de"],
-          correct: 1
+          question: "Free Surface Effect'in GM üzerindeki etkisinin fiziksel nedeni nedir?",
+          options: ["Virtual KG rise", "Real weight increase", "Center of flotation shift"],
+          correct: 0,
+          explanation: "AÇIKLAMA: FSE, partially filled tank'larda liquid'in movement'ı nedeniyle virtual KG artışı yaratır. Gerçek KG değişmez ama effective GM azalır. FSE = (i×ρ×g)/Δ formülüyle hesaplanır ve tank geometry'sine bağlıdır."
         }
       ]
     },
@@ -434,9 +437,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "ISM Code SMS'te stability procedure requirement nedir?",
-          options: ["Loading computer mandatory", "Manual calculation backup", "Real-time monitoring"],
-          correct: 1
+          question: "Parametric rolling hangi durumda en tehlikelidir?",
+          options: ["Beam seas", "Following seas with λ≈L", "Head seas"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Parametric rolling, wave length ≈ ship length olan following seas'de en tehlikelidir. Gemi wave crest ve trough'da farklı waterplane area'lara sahip olur, bu da GM'nin periodic değişimine ve büyük roll amplitüdlerine neden olur."
         }
       ]
     },
@@ -444,9 +448,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "SOLAS II-2/19 fire safety'de stability açısından critical point nedir?",
-          options: ["Water accumulation on deck", "CO2 flooding effect", "Structural damage impact"],
-          correct: 0
+          question: "IMO Intact Stability Code'a göre weather criterion neyi test eder?",
+          options: ["Static heel resistance", "Dynamic stability adequacy", "Roll period limits"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Weather criterion, geminin severe wind ve wave conditions'da yeterli dynamic stability'ye sahip olduğunu doğrular. Test: steady wind heeling moment vs available righting energy comparison. Minimum area under GZ curve gereklidir."
         }
       ]
     },
@@ -454,9 +459,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Port State Control CIC (Concentrated Inspection Campaign) stability deficiency en sık nedeni?",
-          options: ["Inaccurate loading information", "Missing stability booklet", "Improper ballast operations"],
-          correct: 0
+          question: "Grain cargo shifting moment'in önlenmesi için hangi yöntem kullanılır?",
+          options: ["Overstowing with bagged cargo", "Tank top strengthening", "Hold ventilation"],
+          correct: 0,
+          explanation: "AÇIKLAMA: Grain cargo'nun shifting'ini önlemek için overstowing (torbalanmış cargo ile üst yüzeyi kapatma) kullanılır. Bu method, bulk grain'in movement'ını sınırlar ve shifting moment'ı azaltır. SOLAS VI/7 Grain Code'da detaylandırılır."
         }
       ]
     },
@@ -464,9 +470,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "Class surveyor stability approval'da critical review point nedir?",
-          options: ["Loading computer accuracy", "Stability booklet compliance", "Inclining test results"],
-          correct: 2
+          question: "Liquid cargo tank'larda longitudinal bulkhead'in stability açısından amacı nedir?",
+          options: ["Structural strength", "Free surface reduction", "Loading efficiency"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Longitudinal bulkhead, tank width'ini azaltarak free surface moment'ı minimize eder. FSM ∝ b³ olduğundan, tank width'inin küçülmesi FSE'yi dramatically azaltır. Bu özellikle crude oil tanker'larda kritiktir."
         }
       ]
     },
@@ -474,9 +481,10 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "VDR (Voyage Data Recorder) S-VDR'de stability data recording requirement nedir?",
-          options: ["Continuous GM monitoring", "Critical stability parameters", "Manual entries only"],
-          correct: 1
+          question: "High GM'nin container vessel'larda neden problem yaratır?",
+          options: ["Fuel consumption increase", "Harsh rolling and cargo damage", "Speed limitation"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Yüksek GM, çok hızlı ve sert roll motion'a neden olur. Bu durum container lashing'larında stress yaratır ve cargo damage riski artırır. Optimal GM range: 0.8-1.2m. Roll period 8-12 saniye ideal range'dir."
         }
       ]
     },
@@ -484,9 +492,21 @@ export default function StabilityAthwartship() {
       questions: [
         {
           id: "q1",
-          question: "GMDSS distress alert'te stability information transmission priority nedir?",
-          options: ["Position and POB first", "Stability status in MAYDAY", "After rescue coordination"],
-          correct: 1
+          question: "Angle of vanishing stability nedir ve neden önemlidir?",
+          options: ["Maximum GZ angle", "GZ becomes zero", "Deck edge immersion"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Vanishing stability angle, GZ'nin sıfır olduğu açıdır. Bu açıdan sonra negative stability başlar ve gemi capsize edebilir. Minimum 25° olmalıdır. Range of positive stability'nin sonu olarak kritik safety parameter'dır."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "KG limit curve'unun stability booklet'teki fonksiyonu nedir?",
+          options: ["Maximum allowable KG vs displacement", "GM requirements", "Loading sequence"],
+          correct: 0,
+          explanation: "AÇIKLAMA: KG limit curve, her displacement değeri için maximum allowable KG'yi gösterir. Bu curve, IMO criteria'yı satisfy eden minimum GM'yi garanti eder. Loading planning'de critical tool olarak kullanılır ve stability compliance'ı sağlar."
         }
       ]
     }
@@ -1295,50 +1315,94 @@ export default function StabilityAthwartship() {
               </Button>
               
               {showQuizResults && (
-                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
-                  <h4 className="font-semibold mb-2">🎯 Quiz Sonuçları:</h4>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">
-                        {currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        )}/{currentQuizData.questions.length}
+                <div className="mt-4 space-y-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                    <h4 className="font-semibold mb-2">🎯 Quiz Sonuçları:</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          )}/{currentQuizData.questions.length}
+                        </div>
+                        <div className="text-sm text-muted-foreground">Doğru Cevap</div>
                       </div>
-                      <div className="text-sm text-muted-foreground">Doğru Cevap</div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {Math.round((currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) * 100)}%
+                        </div>
+                        <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                      </div>
+                      <div className="text-center">
+                        <div className={`text-2xl font-bold ${
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {(currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {(currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">
-                        {Math.round((currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) * 100)}%
-                      </div>
-                      <div className="text-sm text-muted-foreground">Başarı Oranı</div>
-                    </div>
-                    <div className="text-center">
-                      <div className={`text-2xl font-bold ${
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
-                      }`}>
-                        {(currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {(currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
-                        (currentQuizData.questions.reduce((score, q) => 
-                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                        ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
-                      </div>
-                    </div>
+                  </div>
+                  
+                  {/* Detaylı Çözümler */}
+                  <div className="space-y-3">
+                    <h5 className="font-semibold text-gray-800">📚 Detaylı Çözümler & Açıklamalar:</h5>
+                    {currentQuizData.questions.map((question, idx) => {
+                      const userAnswer = parseInt(quizAnswers[question.id] || "-1");
+                      const isCorrect = userAnswer === question.correct;
+                      
+                      return (
+                        <div key={question.id} className={`p-4 rounded-lg border-2 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                          <h6 className="font-medium mb-2">{question.question}</h6>
+                          <div className="space-y-1 mb-3">
+                            {question.options.map((option, optionIdx) => (
+                              <div 
+                                key={optionIdx} 
+                                className={`p-2 rounded text-sm ${
+                                  optionIdx === question.correct 
+                                    ? 'bg-green-100 text-green-800 border border-green-300' 
+                                    : userAnswer === optionIdx 
+                                      ? 'bg-red-100 text-red-800 border border-red-300' 
+                                      : 'bg-gray-100'
+                                }`}
+                              >
+                                {optionIdx === question.correct && "✅ "}
+                                {userAnswer === optionIdx && userAnswer !== question.correct && "❌ "}
+                                {option}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {question.explanation && (
+                            <div className="bg-blue-50 border-l-4 border-blue-400 p-3">
+                              <div className="text-blue-800 text-sm">
+                                <strong>🔍 Detaylı Açıklama:</strong>
+                                <p className="mt-1 whitespace-pre-line">{question.explanation}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
