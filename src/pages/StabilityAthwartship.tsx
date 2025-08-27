@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Gauge, Ruler, Timer, Waves, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Download, Gauge, Ruler, Timer, Waves, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Settings2, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -443,7 +443,7 @@ export default function StabilityAthwartship() {
               </button>
             </div>
             <Badge variant={advancedMode ? "default" : "secondary"} className="gap-2">
-              {basicMode ? <BookOpen className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+              {basicMode ? <BookOpen className="h-4 w-4" /> : <Settings2 className="h-4 w-4" />}
               {basicMode ? "Temel Seviye" : "İleri Seviye"}
             </Badge>
           </div>
