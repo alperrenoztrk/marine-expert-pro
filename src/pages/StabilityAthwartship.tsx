@@ -1194,14 +1194,6 @@ export default function StabilityAthwartship() {
     
     return (
       <div className="space-y-6">
-        <Alert>
-          <HelpCircle className="h-4 w-4" />
-          <AlertTitle>Gelişmiş Pratik Alıştırmalar</AlertTitle>
-          <AlertDescription>
-            Profesyonel seviye senaryolar ve çoktan seçmeli sorularla bilginizi test edin.
-          </AlertDescription>
-        </Alert>
-
         {/* Random Challenging Scenario */}
         <Card className="border-orange-200">
           <CardHeader>
