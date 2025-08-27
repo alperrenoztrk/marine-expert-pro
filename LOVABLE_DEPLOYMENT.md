@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
+- **Sürüm:** v2.5.31
+- **Durum:** ✅ Stabilite quiz sistemi eklendi - otomatik geçiş kapatıldı, önceki/sonraki butonları eklendi
+
+- **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.30
 - **Durum:** ✅ Splash screen'deki sextant ikonu kaldırıldı
 
@@ -74,6 +78,17 @@
 - **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🎯 Stabilite Quiz Sistemi (2025-01-27)
+- Stabilite sorularında otomatik geçiş tamamen kapatıldı
+- Manuel önceki/sonraki butonları eklendi
+- 15 stabilite sorusu ile kapsamlı quiz sistemi
+- Kategori bazlı soru filtreleme (IS Code, Grain Code, Temel Stabilite, vb.)
+- Rastgele 10 soru seçeneği
+- Cevap gösterme özelliği (isteğe bağlı)
+- Detaylı sonuç ekranı ve açıklamalar
+- Progress bar ile ilerleme takibi
+- Kullanıcı kendi hızında ilerleyebiliyor
 
 ### 🚫 Splash Screen Sextant Kaldırma (2025-01-27)
 - Splash screen'deki sextant ikonu ve container'ı tamamen kaldırıldı
