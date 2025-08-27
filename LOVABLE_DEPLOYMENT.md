@@ -1,6 +1,10 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
+- **Tarih:** 2024-12-19
+- **Sürüm:** v2.5.51
+- **Durum:** ✅ Quiz navigasyon özellikleri eklendi - Enine ve Boyuna Stabilite quiz sistemlerine önceki/sonraki butonları, ilerleme göstergesi, klavye kısayolları - **LOVABLE'A DEPLOY EDİLDİ**
+
 - **Tarih:** 2025-08-27
 - **Sürüm:** v2.5.52
 - **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
