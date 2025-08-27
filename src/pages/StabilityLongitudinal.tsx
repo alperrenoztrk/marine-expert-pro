@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMemo, useRef, useState } from "react";
+import React from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
@@ -38,10 +39,10 @@ export default function StabilityLongitudinal() {
   const [result, setResult] = useState<{ gz: number; rightingMoment: number; stabilityIndex: number } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>("calculator");
-  const [studentMode, setStudentMode] = useState<boolean>(true);
+  const [basicMode, setBasicMode] = useState<boolean>(true);
   const [showStepByStep, setShowStepByStep] = useState<boolean>(false);
   const [learningProgress, setLearningProgress] = useState<number>(0);
-  const [officerMode, setOfficerMode] = useState<boolean>(false);
+  const [advancedMode, setAdvancedMode] = useState<boolean>(false);
   const [selectedShipType, setSelectedShipType] = useState<string>("cargo");
   const [loadCondition, setLoadCondition] = useState<string>("loaded");
   const [trimCondition, setTrimCondition] = useState<number>(0);
@@ -49,6 +50,8 @@ export default function StabilityLongitudinal() {
   const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
   const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
   const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
+  const [currentScenario, setCurrentScenario] = useState<number>(0);
+  const [currentQuizSet, setCurrentQuizSet] = useState<number>(0);
   
   // Longitudinal stability example data
   const exampleData = {
@@ -171,27 +174,182 @@ export default function StabilityLongitudinal() {
     setQuizAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
+  // 10 farklı boyuna stabilite senaryosu
+  const longitudinalScenarioBank = [
+    {
+      title: "🚢 Kritik Trim Durumu",
+      situation: "250m konteyner gemisi, aşırı kıç trim = 4.8m. Kargo operasyonu devam ediyor, hava kötüleşiyor.",
+      question: "Güvenli trim limitine (max 3.0m) ulaşmak için hangi ballast stratejisini uygularsın?",
+      hint: "Trim değişimi = (Transfer_momenti) / (GML × Δ/100)",
+      answer: "Fore peak ballast + center tank stratejisi. ~1200 ton fore'a transfer. Hesap: ΔTrim = (1200×80m) / (450×48000/100) ≈ 1.8m azalış"
+    },
+    {
+      title: "⚖️ LCG-LCF Dengesizliği", 
+      situation: "Kargo yüklemesi sonrası LCG = 92.5m, LCF = 88.2m. Deplasman = 35000 ton. Trim hesabı gerekli.",
+      question: "Bu koşullarda beklenen trim değerini ve yönünü hesapla.",
+      hint: "Trim = (LCG - LCF) × 100 / GML",
+      answer: "Pozitif trim (kıçtan bastık). Trim ≈ (92.5-88.2) × 100 / 420 ≈ 1.02m. Kıç draft artışı beklenir."
+    },
+    {
+      title: "📦 Hold Flooding Analizi",
+      situation: "Hold 2'ye 800 ton deniz suyu girdi (LCG=65m). Original LCG=82m, deplasman=42000 ton.",
+      question: "Su girişi sonrası yeni LCG'yi ve trim değişimini hesapla.",
+      hint: "Yeni_LCG = (W1×LCG1 + W2×LCG2) / (W1+W2)",
+      answer: "Yeni LCG = (42000×82 + 800×65) / 42800 ≈ 81.7m. LCG azalışı → trim by head artışı, yaklaşık 0.5m trim değişimi"
+    },
+    {
+      title: "⛽ Yakıt Tüketim Etkisi",
+      situation: "Uzun seyir, aft fuel tank %30'a düştü. Fore service tank doldu. Trim kontrolü kritik.",
+      question: "Yakıt tüketiminin longitudinal pozisyona etkisini analiz et ve düzeltici eylem öner.",
+      hint: "LCG değişimi fuel consumption pattern'ına bağlı",
+      answer: "Aft tank boşalması LCG'yi forward'a çeker. Fore tank doluluğu etkiyi artırır. Önlem: Mid tank kullan, aft tank supplement et"
+    },
+    {
+      title: "🏗️ Crane Operasyon Krizi",
+      situation: "Deck crane ile 60 ton yük 15m yükseklikte, 35m fore'da asılı. Stability + trim critical.",
+      question: "Bu operasyonun hem transverse hem longitudinal stabilitye etkisini değerlendir.",
+      hint: "KG artışı + LCG değişimi kombine etki",
+      answer: "KG artışı: ~0.8m, LCG forward shift: ~0.15m. GM azalışı + trim by head eğilimi. Max weather: SS-2"
+    },
+    {
+      title: "🌊 Sloshing Tank Problemi",
+      situation: "Center ballast tank %60 dolu, rolling motion ile sloshing effect. Trim oscillations.",
+      question: "Sloshing'in longitudinal stability'e etkisini analiz et ve çözüm öner.",
+      hint: "Free surface moment hem transverse hem longitudinal",
+      answer: "Longitudinal free surface azaltır GML'yi. Çözüm: Tank tamamen doldur veya boşalt. Partial filling avoid et"
+    },
+    {
+      title: "📏 MCT Calculation Emergency",
+      situation: "Port'ta rapid trim correction gerekli. MCT=120 ton.m/cm. Target: 2.5m trim azaltma.",
+      question: "Gerekli moment transferini ve ballast miktarını hesapla.",
+      hint: "Required moment = MCT × trim_change(cm)",
+      answer: "Gerekli moment = 120 × 250cm = 30000 ton.m. 80m arm ile transfer: 30000/80 = 375 ton ballast transfer"
+    },
+    {
+      title: "⚡ Blackout Trim Management",
+      situation: "Ana güç kesintisi, emergency power sınırlı. Aşırı kıç trim var, deniz state kötü.",
+      question: "Sınırlı güçle optimal trim düzeltme stratejisi geliştirir.",
+      hint: "Priority systems with limited power consumption",
+      answer: "1. Fore peak ballast pump (priority), 2. Fuel transfer system, 3. Emergency bilge pump. Avoid high-power consumers"
+    },
+    {
+      title: "🚁 Multi-helicopter Operations",
+      situation: "SAR operasyonu: 2 helikopter (8+6 ton) farklı pozisyonlarda konacak. Trim + stability critical.",
+      question: "Multi-heli operasyonunun ship stability'e total etkisini hesapla.",
+      hint: "Combined weight + moment calculation",
+      answer: "Total weight: 14 ton, Combined moment effect significant. Optimal positioning: symmetric about LCG. Pre-ballast adjustment needed"
+    },
+    {
+      title: "📊 Loading Computer Failure",
+      situation: "Loading computer down, manuel calculation gerekli. Multi-hold loading planning.",
+      question: "3 hold'a 5000 ton kargo dağıtımını manuel hesapla ve optimal trim elde et.",
+      hint: "Manual moment calculation for each hold",
+      answer: "Hold distribution: Aft 40%, Mid 35%, Fore 25%. Target LCG ≈ LCF için calculate. Trim < 1.5m maintain et"
+    }
+  ];
+
+  // Boyuna stabilite quiz bankası
+  const longitudinalQuizBank = [
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Pozitif trim ne anlama gelir?",
+          options: ["Baş draft > Kıç draft", "Kıç draft > Baş draft", "Baş draft = Kıç draft"],
+          correct: 1
+        },
+        {
+          id: "q2", 
+          question: "MCT (Moment to Change Trim) 1cm için doğru formül nedir?",
+          options: ["MCT = (Δ × GML) / (100 × L)", "MCT = (Δ × GML × LCF) / L", "MCT = W × arm / trim_change"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "LCG ve LCF arasındaki ilişki trim'i nasıl etkiler?",
+          options: ["LCG > LCF → Trim by head", "LCG > LCF → Trim by stern", "LCG = LCF → Maximum trim"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "GML (Longitudinal GM) neyi ifade eder?",
+          options: ["Longitudinal metacentric height", "Longitudinal center of gravity", "Load center factor"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Trim'in ship operasyonlarına en kritik etkisi nedir?",
+          options: ["Fuel consumption", "Propeller immersion", "Cargo capacity"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Maximum allowable trim genellikle LBP'nin yüzde kaçıdır?",
+          options: ["1%", "2%", "3%"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Ballast operasyonunda trim kontrolü için en etkili tank kombininasyonu?",
+          options: ["Wing tanks only", "Center + fore/aft peak", "All tanks equal"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "LCF (Longitudinal Center of Flotation) değişimi neye bağlıdır?",
+          options: ["Draft değişimi", "Displacement değişimi", "Waterplane area şekli"],
+          correct: 2
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Excessive trim by stern'in en büyük riski nedir?",
+          options: ["Propeller cavitation", "Rudder efficiency loss", "Engine room flooding"],
+          correct: 0
+        },
+        {
+          id: "q2",
+          question: "Intact stability code'a göre maximum trim limiti nedir?",
+          options: ["L/50", "L/100", "Depends on ship type"],
+          correct: 2
+        }
+      ]
+    }
+  ];
+
+  // Random senaryo seçimi (component mount'ta)
+  React.useEffect(() => {
+    setCurrentScenario(Math.floor(Math.random() * longitudinalScenarioBank.length));
+    setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
+  }, []);
+
   const checkTrimQuizAnswers = () => {
-    const correctAnswers = {
-      q1: "b", // Kıç draft > Baş draft
-      q2: "a"  // MCT = (Δ × GML) / (100 × L)
-    };
-    
+    const currentQuizData = longitudinalQuizBank[currentQuizSet];
     setShowQuizResults(true);
     let score = 0;
-    Object.keys(correctAnswers).forEach(qId => {
-      if (quizAnswers[qId] === correctAnswers[qId as keyof typeof correctAnswers]) {
+    currentQuizData.questions.forEach(q => {
+      if (parseInt(quizAnswers[q.id]) === q.correct) {
         score++;
       }
     });
     
-    setTimeout(() => {
-      if (score === 2) {
-        setLearningProgress(100);
-      } else if (score === 1) {
-        setLearningProgress(Math.max(learningProgress, 90));
-      }
-    }, 1000);
+    const successRate = (score / currentQuizData.questions.length) * 100;
+    setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
   };
 
   const chartData = useMemo(() => {
@@ -218,29 +376,42 @@ export default function StabilityLongitudinal() {
         
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <Switch 
-                checked={!studentMode} 
-                onCheckedChange={(checked) => {
-                  setStudentMode(!checked);
-                  setOfficerMode(checked);
-                  if (checked) {
-                    setActiveTab("officer");
-                  } else {
-                    setActiveTab("learn");
-                  }
+            <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <button
+                onClick={() => {
+                  setBasicMode(true);
+                  setAdvancedMode(false);
+                  setActiveTab("learn");
                 }}
-              />
-              <span className="text-sm font-medium">
-                {studentMode ? "Öğrenci" : "Zabit"} Modu
-              </span>
-            </label>
-            <Badge variant={!studentMode ? "default" : "secondary"} className="gap-2">
-              {studentMode ? <GraduationCap className="h-4 w-4" /> : <Ship className="h-4 w-4" />}
-              {studentMode ? "Öğrenci" : "Profesyonel"}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  basicMode 
+                    ? "bg-blue-500 text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                }`}
+              >
+                📚 Temel
+              </button>
+              <button
+                onClick={() => {
+                  setBasicMode(false);
+                  setAdvancedMode(true);
+                  setActiveTab("officer");
+                }}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  advancedMode 
+                    ? "bg-orange-500 text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                }`}
+              >
+                🎯 İleri
+              </button>
+            </div>
+            <Badge variant={advancedMode ? "default" : "secondary"} className="gap-2">
+              {basicMode ? <BookOpen className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+              {basicMode ? "Temel Seviye" : "İleri Seviye"}
             </Badge>
           </div>
-          {studentMode && (
+          {basicMode && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">İlerleme:</span>
               <Progress value={learningProgress} className="w-20" />
@@ -259,8 +430,8 @@ export default function StabilityLongitudinal() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className={`grid w-full ${studentMode ? 'grid-cols-4' : 'grid-cols-3'}`}>
-              {studentMode ? (
+            <TabsList className={`grid w-full ${basicMode ? 'grid-cols-4' : 'grid-cols-3'}`}>
+              {basicMode ? (
                 <>
                   <TabsTrigger value="learn" className="gap-2">
                     <BookOpen className="h-4 w-4" />
@@ -784,223 +955,179 @@ export default function StabilityLongitudinal() {
   }
 
   function renderPracticeContent() {
+    const currentScenarioData = longitudinalScenarioBank[currentScenario];
+    const currentQuizData = longitudinalQuizBank[currentQuizSet];
+    
     return (
       <div className="space-y-6">
         <Alert>
           <HelpCircle className="h-4 w-4" />
-          <AlertTitle>Pratik Alıştırmalar</AlertTitle>
+          <AlertTitle>Gelişmiş Boyuna Stabilite Alıştırmaları</AlertTitle>
           <AlertDescription>
-            Boyuna stabilite ve trim hesaplamalarını pekiştirmek için senaryoları çözün.
+            Profesyonel seviye trim ve boyuna stabilite senaryolarıyla bilginizi test edin.
           </AlertDescription>
         </Alert>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">🚢 Senaryo 1: Kargo Yükleme</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                  <p className="text-sm"><strong>Durum:</strong> Hold 1'e 500 ton kargo yüklendi. Trim nasıl değişir?</p>
-                  <p className="text-sm mt-2"><strong>Soru:</strong> MCT = 250 tm/cm ise trim değişimi nedir?</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => {
-                    setGeometry({
-                      length: 180,
-                      breadth: 30,
-                      depth: 18,
-                      draft: 12,
-                      blockCoefficient: 0.75,
-                      waterplaneCoefficient: 0.85,
-                      midshipCoefficient: 0.98,
-                      prismaticCoefficient: 0.77,
-                      verticalPrismaticCoefficient: 0.75,
-                    });
-                    setKg(15);
-                    setActiveTab("calculator");
-                  }}
-                >
-                  Senaryoyu Çöz
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">⛽ Senaryo 2: Yakıt Tüketimi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
-                  <p className="text-sm"><strong>Durum:</strong> Kıç tanktan 50 ton yakıt tüketildi.</p>
-                  <p className="text-sm mt-2"><strong>Soru:</strong> Trim nasıl değişir?</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => setScenario2Answer(!scenario2Answer)}
-                >
-                  {scenario2Answer ? "Cevabı Gizle" : "Cevabı Öğren"}
-                </Button>
-                {scenario2Answer && (
-                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
-                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">📚 Doğru Cevap:</h4>
-                    <p className="text-sm text-green-700 dark:text-green-300 mb-2">
-                      <strong>Trim AZALIR (başa doğru)!</strong> Kıç tanktan yakıt tüketildiğinde:
-                    </p>
-                    <ul className="text-sm text-green-700 dark:text-green-300 space-y-1 ml-4">
-                      <li>• Kıç ağırlığı azalır</li>
-                      <li>• LCG öne doğru kayar</li>
-                      <li>• Trim moment = Δ × (LCG - LCF) azalır</li>
-                      <li>• Sonuç: Daha az kıç trim, hatta baş trim olabilir</li>
-                    </ul>
-                    <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
-                      <p className="text-xs font-mono">ΔTrim = (Yakıt_ağırlığı × Kıç_mesafesi) / MCT</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
+        {/* Random Challenging Scenario */}
+        <Card className="border-orange-200">
           <CardHeader>
-            <CardTitle>🏆 Trim Hesaplama Quiz</CardTitle>
+            <CardTitle className="text-lg">{currentScenarioData.title}</CardTitle>
+            <div className="flex gap-2">
+              <Badge variant="destructive">Zor Seviye</Badge>
+              <Badge variant="outline">Senaryo #{currentScenario + 1}</Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
-                <h4 className="font-semibold">Soru 1: Pozitif trim ne demektir?</h4>
-                <div className="mt-3 space-y-2">
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value="a"
-                      onChange={(e) => handleTrimQuizAnswer("q1", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "a" ? "text-red-600 line-through" : "") : ""}`}>
-                      A) Baş draft &gt; Kıç draft
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value="b"
-                      onChange={(e) => handleTrimQuizAnswer("q1", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
-                      B) Kıç draft &gt; Baş draft ✅
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q1" 
-                      value="c"
-                      onChange={(e) => handleTrimQuizAnswer("q1", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q1 === "c" ? "text-red-600 line-through" : "") : ""}`}>
-                      C) Baş draft = Kıç draft
-                    </span>
-                  </label>
-                </div>
-                {showQuizResults && (
-                  <div className="mt-3 p-2 bg-blue-100 dark:bg-blue-900 rounded">
-                    <p className="text-xs text-blue-800 dark:text-blue-200">
-                      <strong>Açıklama:</strong> Pozitif trim = Kıçtan bastık. 
-                      Trim değeri = (T_stern - T_bow) pozitif olduğunda kıç draft daha fazladır.
-                    </p>
-                  </div>
-                )}
+              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg border-l-4 border-red-500">
+                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">📋 Trim Analizi</h4>
+                <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+                  <strong>Durum:</strong> {currentScenarioData.situation}
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  <strong>Görev:</strong> {currentScenarioData.question}
+                </p>
+              </div>
+              
+              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <strong>💡 İpucu:</strong> {currentScenarioData.hint}
+                </p>
               </div>
 
-              <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-950">
-                <h4 className="font-semibold">Soru 2: MCT (Moment to Change Trim) 1cm için doğru formül nedir?</h4>
-                <div className="mt-3 space-y-2">
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q2" 
-                      value="a"
-                      onChange={(e) => handleTrimQuizAnswer("q2", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? "text-green-600 font-semibold" : ""}`}>
-                      A) MCT = (Δ × GML) / (100 × L) ✅
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q2" 
-                      value="b"
-                      onChange={(e) => handleTrimQuizAnswer("q2", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "b" ? "text-red-600 line-through" : "") : ""}`}>
-                      B) MCT = (Δ × GML × LCF) / L
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      name="q2" 
-                      value="c"
-                      onChange={(e) => handleTrimQuizAnswer("q2", e.target.value)}
-                    />
-                    <span className={`text-sm ${showQuizResults ? (quizAnswers.q2 === "c" ? "text-red-600 line-through" : "") : ""}`}>
-                      C) MCT = W × arm / trim_change
-                    </span>
-                  </label>
-                </div>
-                {showQuizResults && (
-                  <div className="mt-3 p-2 bg-green-100 dark:bg-green-900 rounded">
-                    <p className="text-xs text-green-800 dark:text-green-200">
-                      <strong>Doğru Açıklama:</strong> MCT = (Displacement × GM_longitudinal) / (100 × LBP)<br/>
-                      Bu formül 1cm trim değişimi için gereken momenti verir. 100 faktörü cm'ye çevrim içindir.
-                    </p>
-                  </div>
-                )}
-                <div className="mt-3 p-2 bg-gray-100 dark:bg-gray-800 rounded">
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    <strong>İpucu:</strong> MCT = 1cm trim değişimi için gereken moment (tm)
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setScenario2Answer(!scenario2Answer)}
+                >
+                  {scenario2Answer ? "Çözümü Gizle" : "Çözümü Gör"}
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setCurrentScenario(Math.floor(Math.random() * longitudinalScenarioBank.length))}
+                >
+                  🎲 Yeni Senaryo
+                </Button>
+              </div>
+
+              {scenario2Answer && (
+                <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Uzman Çözümü:</h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    {currentScenarioData.answer}
                   </p>
                 </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Dynamic Quiz System */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              🧩 Gelişmiş Trim Quiz Sistemi
+              <div className="flex gap-2">
+                <Badge variant="secondary">Set #{currentQuizSet + 1}</Badge>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => {
+                    setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                >
+                  🔄 Yeni Sorular
+                </Button>
               </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {currentQuizData.questions.map((question, idx) => (
+                <div key={question.id} className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
+                  <h4 className="font-semibold mb-3">Soru {idx + 1}: {question.question}</h4>
+                  <div className="space-y-2">
+                    {question.options.map((option, optionIdx) => (
+                      <label key={optionIdx} className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          name={question.id} 
+                          value={optionIdx.toString()}
+                          onChange={(e) => handleTrimQuizAnswer(question.id, e.target.value)}
+                          disabled={showQuizResults}
+                        />
+                        <span className={`text-sm ${
+                          showQuizResults ? 
+                            (parseInt(quizAnswers[question.id]) === question.correct ? 
+                              (optionIdx === question.correct ? "text-green-600 font-semibold" : "") :
+                              (optionIdx === parseInt(quizAnswers[question.id]) ? "text-red-600 line-through" : 
+                               optionIdx === question.correct ? "text-green-600 font-semibold" : "")
+                            ) : ""
+                        }`}>
+                          {String.fromCharCode(65 + optionIdx)}) {option}
+                          {showQuizResults && optionIdx === question.correct && " ✅"}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
               <Button 
                 className="w-full" 
                 onClick={checkTrimQuizAnswers}
-                disabled={!quizAnswers.q1 || !quizAnswers.q2}
+                disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
               >
                 {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
               </Button>
               
               {showQuizResults && (
                 <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
-                  <h4 className="font-semibold mb-2">🎯 Trim Quiz Sonuçlarınız:</h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  <h4 className="font-semibold mb-2">🎯 Trim Quiz Sonuçları:</h4>
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-blue-600">
-                        {Object.keys({q1: "b", q2: "a"}).reduce((score, qId) => 
-                          score + (quizAnswers[qId] === ({q1: "b", q2: "a"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
-                        )}/2
+                        {currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        )}/{currentQuizData.questions.length}
                       </div>
                       <div className="text-sm text-muted-foreground">Doğru Cevap</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">
-                        {Math.round((Object.keys({q1: "b", q2: "a"}).reduce((score, qId) => 
-                          score + (quizAnswers[qId] === ({q1: "b", q2: "a"}[qId as keyof {q1: string, q2: string}]) ? 1 : 0), 0
-                        ) / 2) * 100)}%
+                        {Math.round((currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) * 100)}%
                       </div>
                       <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                    </div>
+                    <div className="text-center">
+                      <div className={`text-2xl font-bold ${
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+                      }`}>
+                        {(currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {(currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
+                        (currentQuizData.questions.reduce((score, q) => 
+                          score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                        ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
+                      </div>
                     </div>
                   </div>
                 </div>
