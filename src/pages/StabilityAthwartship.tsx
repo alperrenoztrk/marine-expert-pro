@@ -562,18 +562,7 @@ export default function StabilityAthwartship() {
                 🎯 İleri
               </button>
             </div>
-            <Badge variant={advancedMode ? "default" : "secondary"} className="gap-2">
-              {basicMode ? <BookOpen className="h-4 w-4" /> : <Settings2 className="h-4 w-4" />}
-              {basicMode ? "Temel Seviye" : "İleri Seviye"}
-            </Badge>
           </div>
-          {basicMode && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">İlerleme:</span>
-              <Progress value={learningProgress} className="w-20" />
-              <span className="text-sm font-medium">{learningProgress}%</span>
-            </div>
-          )}
         </div>
       </div>
 
