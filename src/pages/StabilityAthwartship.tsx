@@ -139,6 +139,13 @@ export default function StabilityAthwartship() {
     
     const successRate = (score / currentQuizData.questions.length) * 100;
     setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
+
+    // 2 saniye sonra otomatik olarak yeni sorular getir
+    setTimeout(() => {
+      setCurrentQuizSet(Math.floor(Math.random() * quizBank.length));
+      setQuizAnswers({});
+      setShowQuizResults(false);
+    }, 2000);
   };
 
   const getDetailedStabilityAnalysis = () => {
@@ -279,7 +286,7 @@ export default function StabilityAthwartship() {
     }
   ];
 
-  // Quiz soru bankası
+  // Quiz soru bankası - 10 set x 2 soru = 20 soru
   const quizBank = [
     {
       questions: [
@@ -358,6 +365,86 @@ export default function StabilityAthwartship() {
           question: "KG değeri hangi durumda en kritiktir?",
           options: ["Ballast voyage", "Full load", "Partial load"],
           correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Deck edge immersion açısının önemi nedir?",
+          options: ["Stabilite kaybı başlangıcı", "Maximum GZ noktası", "Roll period değişimi"],
+          correct: 0
+        },
+        {
+          id: "q2",
+          question: "Transverse shifting moment nedir?",
+          options: ["Kargo kayması momenti", "Ballast transfer momenti", "Wind heeling moment"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Passenger gemilerde özel stabilite kriteri hangisidir?",
+          options: ["Weather criterion", "Crowding to one side", "Grain shift"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "GZ curve'deki maximum değer neyi gösterir?",
+          options: ["Maximum stability", "Deck edge immersion", "Range of stability"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Liquid cargo taşıyan gemilerde en kritik nokta nedir?",
+          options: ["Loading phase", "Cargo tank level", "Pumping operations"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Parametric rolling riski ne zaman artar?",
+          options: ["Calm weather", "Following seas", "Beam seas"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Container gemilerinde GM'nin çok yüksek olmasının zararı nedir?",
+          options: ["Yumuşak sallanım", "Sert sallanım ve container damage", "Yakıt tasarrufu"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Ice accumulation stabilitenin hangi parametresini etkiler?",
+          options: ["Sadece KG", "KG ve free surface", "Sadece displacement"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Emergency situation'da hızlı stabilite değerlendirmesi hangi yöntemle yapılır?",
+          options: ["Full calculation", "Inclining test", "Quick assessment method"],
+          correct: 2
+        },
+        {
+          id: "q2",
+          question: "Ağır hava koşullarında stabilite için en önemli önlem nedir?",
+          options: ["Speed reduction", "Course change", "Ballast adjustment"],
+          correct: 2
         }
       ]
     }
@@ -1126,20 +1213,12 @@ export default function StabilityAthwartship() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              🧩 Gelişmiş Quiz Sistemi
+              🧩 Otomatik Quiz Sistemi
               <div className="flex gap-2">
-                <Badge variant="secondary">Set #{currentQuizSet + 1}</Badge>
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => {
-                    setCurrentQuizSet(Math.floor(Math.random() * quizBank.length));
-                    setQuizAnswers({});
-                    setShowQuizResults(false);
-                  }}
-                >
-                  🔄 Yeni Sorular
-                </Button>
+                <Badge variant="secondary">Set #{currentQuizSet + 1}/10</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Otomatik İlerleme
+                </Badge>
               </div>
             </CardTitle>
           </CardHeader>

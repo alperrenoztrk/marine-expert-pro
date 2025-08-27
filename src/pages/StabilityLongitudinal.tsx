@@ -248,7 +248,7 @@ export default function StabilityLongitudinal() {
     }
   ];
 
-  // Boyuna stabilite quiz bankası
+  // Boyuna stabilite quiz bankası - 10 set x 2 soru = 20 soru
   const longitudinalQuizBank = [
     {
       questions: [
@@ -329,6 +329,86 @@ export default function StabilityLongitudinal() {
           correct: 2
         }
       ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Trim momenti hesabında hangi parametreler kullanılır?",
+          options: ["Weight × LCG", "Weight × (LCG - LCF)", "Weight × Distance"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Container gemilerinde optimum trim değeri nedir?",
+          options: ["0.5-1.0m by stern", "Level trim", "1.0-2.0m by head"],
+          correct: 0
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Flooding durumunda trim değişimi nasıl hesaplanır?",
+          options: ["Basit ağırlık transferi", "Lost buoyancy method", "Added weight method"],
+          correct: 2
+        },
+        {
+          id: "q2",
+          question: "Fuel consumption sırasında trim kontrolü neden önemlidir?",
+          options: ["Economy", "Stability", "Propeller efficiency"],
+          correct: 2
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Load line regulations'a göre summer trim limiti nedir?",
+          options: ["No specific limit", "L/50", "As per ship's trim book"],
+          correct: 2
+        },
+        {
+          id: "q2",
+          question: "Heavy weather'da trim optimizasyonu hangi prensiple yapılır?",
+          options: ["Maximum speed", "Minimum slamming", "Fuel economy"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Bulk carrier'larda loading sequence trim kontrolü neden kritiktir?",
+          options: ["Cargo damage", "Structural stress", "Loading time"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Emergency trim correction için en hızlı yöntem nedir?",
+          options: ["Ballast transfer", "Fuel transfer", "Cargo shift"],
+          correct: 1
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Port state control'de trim için kontrol edilen ana parametre nedir?",
+          options: ["Visual inspection", "Load line compliance", "Stability booklet"],
+          correct: 1
+        },
+        {
+          id: "q2",
+          question: "Modern ship design'da trim optimization için kullanılan teknoloji nedir?",
+          options: ["Manual calculation", "Computer aided systems", "Experience based"],
+          correct: 1
+        }
+      ]
     }
   ];
 
@@ -350,6 +430,13 @@ export default function StabilityLongitudinal() {
     
     const successRate = (score / currentQuizData.questions.length) * 100;
     setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
+
+    // 2 saniye sonra otomatik olarak yeni sorular getir
+    setTimeout(() => {
+      setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
+      setQuizAnswers({});
+      setShowQuizResults(false);
+    }, 2000);
   };
 
   const chartData = useMemo(() => {
@@ -1030,20 +1117,12 @@ export default function StabilityLongitudinal() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              🧩 Gelişmiş Trim Quiz Sistemi
+              🧩 Otomatik Trim Quiz Sistemi
               <div className="flex gap-2">
-                <Badge variant="secondary">Set #{currentQuizSet + 1}</Badge>
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => {
-                    setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
-                    setQuizAnswers({});
-                    setShowQuizResults(false);
-                  }}
-                >
-                  🔄 Yeni Sorular
-                </Button>
+                <Badge variant="secondary">Set #{currentQuizSet + 1}/10</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Otomatik İlerleme
+                </Badge>
               </div>
             </CardTitle>
           </CardHeader>
