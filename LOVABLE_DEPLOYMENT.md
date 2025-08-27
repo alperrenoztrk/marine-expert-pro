@@ -3,7 +3,7 @@
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.31
-- **Durum:** ✅ Stabilite quiz sistemi eklendi - otomatik geçiş kapatıldı, önceki/sonraki butonları eklendi
+- **Durum:** ✅ Stabilite quiz sistemi eklendi - otomatik geçiş kapatıldı, önceki/sonraki butonları eklendi [Manuel deploy trigger]
 
 - **Tarih:** 2025-01-27
 - **Sürüm:** v2.5.30
