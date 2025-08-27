@@ -1183,7 +1183,7 @@ export default function StabilityLongitudinal() {
               <div className="flex gap-2">
                 <Badge variant="secondary">Soru #{currentQuizSet + 1}/20</Badge>
                 <Badge variant="outline" className="text-xs">
-                  Otomatik İlerleme
+                  Manuel Kontrol
                 </Badge>
               </div>
             </CardTitle>

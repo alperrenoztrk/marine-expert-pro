@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw, CheckCircle, XCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuizQuestion {
@@ -182,6 +182,14 @@ export const StabilityQuiz: React.FC<QuizProps> = ({ questions, onComplete }) =>
           </div>
         </div>
         <Progress value={progress} className="w-full" />
+        
+        {/* Info banner about manual navigation */}
+        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <Info className="h-4 w-4 text-blue-600" />
+          <span className="text-sm text-blue-800">
+            Quiz'de otomatik geçiş yoktur. Önceki ve sonraki butonları kullanarak kendi hızınızda ilerleyebilirsiniz.
+          </span>
+        </div>
       </CardHeader>
       
       <CardContent className="space-y-6">
@@ -242,7 +250,8 @@ export const StabilityQuiz: React.FC<QuizProps> = ({ questions, onComplete }) =>
           </div>
         )}
         
-        <div className="flex items-center justify-between pt-4">
+        {/* Enhanced navigation section */}
+        <div className="flex items-center justify-between pt-4 border-t">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
@@ -250,7 +259,7 @@ export const StabilityQuiz: React.FC<QuizProps> = ({ questions, onComplete }) =>
             className="gap-2"
           >
             <ChevronLeft className="h-4 w-4" />
-            Önceki
+            Önceki Soru
           </Button>
           
           <div className="flex gap-2">
@@ -277,15 +286,21 @@ export const StabilityQuiz: React.FC<QuizProps> = ({ questions, onComplete }) =>
                 disabled={currentQuestionIndex === totalQuestions - 1}
                 className="gap-2"
               >
-                Sonraki
+                Sonraki Soru
                 <ChevronRight className="h-4 w-4" />
               </Button>
             )}
           </div>
         </div>
         
-        <div className="text-center text-xs text-muted-foreground">
-          Yanıtlanmış sorular: {Object.keys(selectedAnswers).length} / {totalQuestions}
+        {/* Question status and navigation info */}
+        <div className="text-center space-y-2">
+          <div className="text-xs text-muted-foreground">
+            Yanıtlanmış sorular: {Object.keys(selectedAnswers).length} / {totalQuestions}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Navigasyon: Önceki/Sonraki butonları ile sorular arasında geçiş yapabilirsiniz
+          </div>
         </div>
       </CardContent>
     </Card>
