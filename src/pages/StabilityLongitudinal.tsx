@@ -480,6 +480,30 @@ export default function StabilityLongitudinal() {
     setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
   }, []);
 
+  // Keyboard navigation for quiz sets
+  React.useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (activeTab === "practice") {
+        if (event.key === "ArrowLeft") {
+          // Previous quiz set
+          const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : longitudinalQuizBank.length - 1;
+          setCurrentQuizSet(prevSet);
+          setQuizAnswers({});
+          setShowQuizResults(false);
+        } else if (event.key === "ArrowRight") {
+          // Next quiz set
+          const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+          setCurrentQuizSet(nextSet);
+          setQuizAnswers({});
+          setShowQuizResults(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [activeTab, currentQuizSet, longitudinalQuizBank.length]);
+
   const checkTrimQuizAnswers = () => {
     const currentQuizData = longitudinalQuizBank[currentQuizSet];
     setShowQuizResults(true);
@@ -493,12 +517,7 @@ export default function StabilityLongitudinal() {
     const successRate = (score / currentQuizData.questions.length) * 100;
     setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
 
-    // 2 saniye sonra otomatik olarak yeni sorular getir
-    setTimeout(() => {
-      setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
-      setQuizAnswers({});
-      setShowQuizResults(false);
-    }, 2000);
+    // Otomatik geçiş kaldırıldı - kullanıcı manuel olarak önceki/sonraki butonlarını kullanacak
   };
 
   const chartData = useMemo(() => {
@@ -1179,14 +1198,15 @@ export default function StabilityLongitudinal() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              🧩 Otomatik Trim Quiz Sistemi
-              <div className="flex gap-2">
-                <Badge variant="secondary">Soru #{currentQuizSet + 1}/20</Badge>
-                <Badge variant="outline" className="text-xs">
-                  Manuel Kontrol
-                </Badge>
+              <span>Quiz</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Set {currentQuizSet + 1} / {longitudinalQuizBank.length}</span>
+                <Badge variant="outline">{currentQuizData.questions.length} Soru</Badge>
               </div>
             </CardTitle>
+            <div className="text-sm text-muted-foreground mt-2">
+              🧩 Boyuna Stabilite ve Trim Quiz Soruları
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -1221,18 +1241,71 @@ export default function StabilityLongitudinal() {
                 </div>
               ))}
 
-              <Button 
-                className="w-full" 
-                onClick={checkTrimQuizAnswers}
-                disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
-              >
-                {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : longitudinalQuizBank.length - 1;
+                    setCurrentQuizSet(prevSet);
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                  className="flex-1"
+                  disabled={showQuizResults}
+                >
+                  ← Önceki Set
+                  <span className="ml-2 text-xs opacity-60">←</span>
+                </Button>
+                
+                <Button 
+                  className="flex-1" 
+                  onClick={checkTrimQuizAnswers}
+                  disabled={Object.keys(quizAnswers).length < currentQuizData.questions.length}
+                >
+                  {showQuizResults ? "Quiz Tamamlandı!" : "Cevapları Kontrol Et"}
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+                    setCurrentQuizSet(nextSet);
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                  className="flex-1"
+                  disabled={showQuizResults}
+                >
+                  Sonraki Set →
+                  <span className="ml-2 text-xs opacity-60">→</span>
+                </Button>
+              </div>
+              
+              {/* Quiz Progress Indicator */}
+              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Quiz İlerlemesi</span>
+                  <span className="font-medium">{currentQuizSet + 1} / {longitudinalQuizBank.length}</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${((currentQuizSet + 1) / longitudinalQuizBank.length) * 100}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                  <span>Set 1</span>
+                  <span>Set {longitudinalQuizBank.length}</span>
+                </div>
+                <div className="mt-2 text-xs text-center text-muted-foreground">
+                  <span>💡 Sol/Sağ ok tuşları ile hızlı geçiş yapabilirsiniz</span>
+                </div>
+              </div>
               
               {showQuizResults && (
                 <div className="mt-4 space-y-4">
                   <div className="p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
-                    <h4 className="font-semibold mb-2">🎯 Trim Quiz Sonuçları:</h4>
+                    <h4 className="font-semibold mb-2">🎯 Quiz Sonuçları:</h4>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-blue-600">
@@ -1254,14 +1327,14 @@ export default function StabilityLongitudinal() {
                         <div className={`text-2xl font-bold ${
                           (currentQuizData.questions.reduce((score, q) => 
                             score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                          ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' : 
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' :
                           (currentQuizData.questions.reduce((score, q) => 
                             score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
                           ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
                         }`}>
                           {(currentQuizData.questions.reduce((score, q) => 
                             score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                          ) / currentQuizData.questions.length) >= 0.8 ? '🏆' : 
+                          ) / currentQuizData.questions.length) >= 0.8 ? '🏆' :
                           (currentQuizData.questions.reduce((score, q) => 
                             score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
                           ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
@@ -1269,7 +1342,7 @@ export default function StabilityLongitudinal() {
                         <div className="text-sm text-muted-foreground">
                           {(currentQuizData.questions.reduce((score, q) => 
                             score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
-                          ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' : 
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' :
                           (currentQuizData.questions.reduce((score, q) => 
                             score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
                           ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
@@ -1318,6 +1391,35 @@ export default function StabilityLongitudinal() {
                         </div>
                       );
                     })}
+                  </div>
+                  
+                  {/* Quiz Navigation After Results */}
+                  <div className="flex gap-3 pt-4 border-t">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : longitudinalQuizBank.length - 1;
+                        setCurrentQuizSet(prevSet);
+                        setQuizAnswers({});
+                        setShowQuizResults(false);
+                      }}
+                      className="flex-1 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+                    >
+                      ← Önceki Set
+                    </Button>
+                    
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+                        setCurrentQuizSet(nextSet);
+                        setQuizAnswers({});
+                        setShowQuizResults(false);
+                      }}
+                      className="flex-1 bg-green-50 hover:bg-green-100 border-green-200 text-green-700"
+                    >
+                      Sonraki Set →
+                    </Button>
                   </div>
                 </div>
               )}
