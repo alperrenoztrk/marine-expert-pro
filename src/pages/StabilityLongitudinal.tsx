@@ -1,5 +1,26 @@
+// Force refresh - imports validation
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Gauge, Activity, TrendingUp, Ruler, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Timer, Waves, Ship, Settings, Package, Droplets } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Download, 
+  Gauge, 
+  Activity, 
+  TrendingUp, 
+  Ruler, 
+  BookOpen, 
+  Calculator, 
+  Lightbulb, 
+  GraduationCap, 
+  HelpCircle, 
+  CheckCircle, 
+  AlertTriangle, 
+  Timer, 
+  Waves, 
+  Ship, 
+  Settings, 
+  Package, 
+  Droplets 
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -2098,6 +2119,8 @@ export default function StabilityLongitudinal() {
   }
 
   function renderCalculationsContent() {
+    console.log('CardDescription imported:', typeof CardDescription);
+    console.log('Package imported:', typeof Package);
     return (
       <div className="space-y-6">
         <Card>

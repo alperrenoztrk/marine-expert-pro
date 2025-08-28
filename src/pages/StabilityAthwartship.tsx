@@ -1,5 +1,28 @@
+// Force refresh - imports validation  
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Gauge, Ruler, Timer, Waves, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Settings2, TrendingUp, Search, RotateCcw, Anchor, Ship, Package, Droplets } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Download, 
+  Gauge, 
+  Ruler, 
+  Timer, 
+  Waves, 
+  BookOpen, 
+  Calculator, 
+  Lightbulb, 
+  GraduationCap, 
+  HelpCircle, 
+  CheckCircle, 
+  AlertTriangle, 
+  Settings2, 
+  TrendingUp, 
+  Search, 
+  RotateCcw, 
+  Anchor, 
+  Ship, 
+  Package, 
+  Droplets 
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
