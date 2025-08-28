@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2024-12-19
+- **Sürüm:** v2.5.56
+- **Durum:** ✅ Navigation sayfasına tüm Düzlem ve Göksel Seyir hesaplamaları eklendi - 30+ hesaplama türü, kapsamlı menü, interaktif arayüz - **LOVABLE'A DEPLOY EDİLDİ**
+
+- **Tarih:** 2024-12-19
 - **Sürüm:** v2.5.54
 - **Durum:** ✅ Stabilite hesaplamalarına temel ve ileri özellikler eklendi - GZ/IMO, Hasarlı Stabilite ve Tahıl Stabilitesi için mod seçimi - **LOVABLE'A DEPLOY EDİLDİ**
 
