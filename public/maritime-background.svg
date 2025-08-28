@@ -38,30 +38,6 @@
   <ellipse cx="1030" cy="170" rx="65" ry="32" fill="#ffffff" opacity="0.6"/>
   <ellipse cx="970" cy="170" rx="55" ry="28" fill="#ffffff" opacity="0.6"/>
   
-  <!-- Ship positioned more towards the right -->
-  <g transform="translate(750, 250) scale(1.5)">
-    <!-- Ship hull -->
-    <path d="M 0 80 Q 10 100 40 100 L 160 100 Q 170 100 180 80 L 180 50 Q 180 40 170 40 L 10 40 Q 0 40 0 50 Z" fill="#2c3e50"/>
-    
-    <!-- Ship deck -->
-    <rect x="5" y="40" width="170" height="10" fill="#34495e"/>
-    
-    <!-- Ship superstructure -->
-    <rect x="60" y="10" width="60" height="30" fill="#ecf0f1"/>
-    <rect x="65" y="15" width="50" height="20" fill="#3498db" opacity="0.3"/>
-    
-    <!-- Bridge -->
-    <rect x="80" y="0" width="20" height="10" fill="#ecf0f1"/>
-    <rect x="82" y="2" width="16" height="6" fill="#3498db" opacity="0.3"/>
-    
-    <!-- Ship details -->
-    <circle cx="40" cy="75" r="3" fill="#e74c3c"/>
-    <circle cx="140" cy="75" r="3" fill="#27ae60"/>
-    
-    <!-- Waves around ship -->
-    <path d="M -10 90 Q 0 85 10 90 Q 20 95 30 90" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
-    <path d="M 150 90 Q 160 85 170 90 Q 180 95 190 90" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
-  </g>
   
   <!-- Sun rays -->
   <g opacity="0.3">
