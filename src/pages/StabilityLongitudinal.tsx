@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Gauge, Activity, TrendingUp, Ruler, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Timer, Waves, Ship, Settings } from "lucide-react";
+import { ArrowLeft, Download, Gauge, Activity, TrendingUp, Ruler, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Timer, Waves, Ship, Settings, Package, Droplets } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useMemo, useRef, useState } from "react";
 import React from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
@@ -48,6 +48,36 @@ export default function StabilityLongitudinal() {
   const [trimCondition, setTrimCondition] = useState<number>(0);
   const [showAnswers, setShowAnswers] = useState<boolean>(false);
   const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
+  
+  // Calculation states
+  const [momentWeight, setMomentWeight] = useState<number>(0);
+  const [momentDistance, setMomentDistance] = useState<number>(0);
+  const [loadingWeight, setLoadingWeight] = useState<number>(0);
+  const [loadingDistance, setLoadingDistance] = useState<number>(0);
+  const [ballastWeight, setBallastWeight] = useState<number>(0);
+  const [ballastDistance, setBallastDistance] = useState<number>(0);
+  const [currentDraft, setCurrentDraft] = useState<number>(0);
+  const [targetDraft, setTargetDraft] = useState<number>(0);
+  
+  // Calculation functions
+  const calculateLongitudinalMoment = () => {
+    return momentWeight * momentDistance;
+  };
+  
+  const calculateLoadingTrim = () => {
+    const moment = loadingWeight * loadingDistance;
+    return moment / (geometry.length * geometry.breadth * geometry.waterplaneCoefficient * 1.025);
+  };
+  
+  const calculateBallastTrim = () => {
+    const moment = ballastWeight * ballastDistance;
+    return moment / (geometry.length * geometry.breadth * geometry.waterplaneCoefficient * 1.025);
+  };
+  
+  const correctDrafts = () => {
+    const correction = targetDraft - currentDraft;
+    return correction;
+  };
   const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
   const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
   const [currentScenario, setCurrentScenario] = useState<number>(0);

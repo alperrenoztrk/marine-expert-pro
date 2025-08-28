@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Gauge, Ruler, Timer, Waves, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Settings2, TrendingUp } from "lucide-react";
+import { ArrowLeft, Download, Gauge, Ruler, Timer, Waves, BookOpen, Calculator, Lightbulb, GraduationCap, HelpCircle, CheckCircle, AlertTriangle, Settings2, TrendingUp, Search, RotateCcw, Anchor, Ship, Package, Droplets } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useMemo, useRef, useState } from "react";
 import React from "react";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
@@ -48,6 +48,41 @@ export default function StabilityAthwartship() {
   const [weatherCondition, setWeatherCondition] = useState<number>(3);
   const [urgentCalculation, setUrgentCalculation] = useState<boolean>(false);
   const [showAnswers, setShowAnswers] = useState<boolean>(false);
+  
+  // Calculation states
+  const [momentWeight, setMomentWeight] = useState<number>(0);
+  const [momentDistance, setMomentDistance] = useState<number>(0);
+  const [unknownWeight, setUnknownWeight] = useState<number>(0);
+  const [heelAngle, setHeelAngle] = useState<number>(0);
+  const [craneWeight, setCraneWeight] = useState<number>(0);
+  const [craneDistance, setCraneDistance] = useState<number>(0);
+  const [dryDockGM, setDryDockGM] = useState<number>(0);
+  const [dryDockDraft, setDryDockDraft] = useState<number>(0);
+  
+  // Calculation functions
+  const calculateMoment = () => {
+    return momentWeight * momentDistance;
+  };
+  
+  const calculateUnknownWeight = () => {
+    // Based on heel angle formula
+    const displacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025;
+    return (Math.sin(heelAngle * Math.PI / 180) * displacement * result?.gm || 0) / momentDistance;
+  };
+  
+  const calculateHeelAngle = () => {
+    if (!result?.gm) return 0;
+    const displacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025;
+    return Math.asin((craneWeight * craneDistance) / (displacement * result.gm)) * 180 / Math.PI;
+  };
+  
+  const calculateCraneGM = () => {
+    return dryDockGM * (dryDockDraft / geometry.draft);
+  };
+  
+  const calculateDryDockGM = () => {
+    return (momentWeight * momentDistance) / (geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025);
+  };
   const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
   const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
   const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
@@ -2185,7 +2220,7 @@ export default function StabilityAthwartship() {
                   {craneWeight > 0 && craneDistance > 0 && (
                     <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
                       <p className="font-semibold">Sonuç:</p>
-                      <p>Meyil açısı: {Math.atan(craneWeight / (craneDistance * 9.81)) * (180/Math.PI).toFixed(1)}°</p>
+                      <p>Meyil açısı: {(Math.atan(craneWeight / (craneDistance * 9.81)) * (180/Math.PI)).toFixed(1)}°</p>
                     </div>
                   )}
                 </CardContent>
