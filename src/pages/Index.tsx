@@ -15,17 +15,6 @@ const Index = () => {
       />
       
       
-      {/* Ship illustration overlay */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative w-full h-full max-w-4xl max-h-96">
-          <img
-            src="/lovable-uploads/be2bc624-94b0-4812-9a7c-2bbe8beb217c.png"
-            alt="Maritime Ship"
-            className="w-full h-full object-contain opacity-20"
-          />
-        </div>
-      </div>
-      
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
