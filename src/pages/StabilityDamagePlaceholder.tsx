@@ -125,7 +125,7 @@ export default function StabilityDamagePlaceholder() {
               </div>
               <div>
                 <Label>Derinlik D (m)</Label>
-                <Input type="number" value={geometry.draft} onChange={handleChange('depth')} />
+                <Input type="number" value={geometry.depth} onChange={handleChange('depth')} />
               </div>
               <div>
                 <Label>Draft T (m)</Label>

@@ -166,7 +166,7 @@ export default function StabilityGZIMO() {
               </div>
               <div>
                 <Label>Draft T (m)</Label>
-                <Input type="number" value={geometry.draft} onChange={handleChange('depth')} />
+                <Input type="number" value={geometry.draft} onChange={handleChange('draft')} />
               </div>
               <div>
                 <Label>Cb</Label>
