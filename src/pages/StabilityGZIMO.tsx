@@ -16,6 +16,11 @@ import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
 export default function StabilityGZIMO() {
   const navigate = useNavigate();
   const chartRef = useRef<HTMLDivElement>(null);
+  
+  // Temel ve İleri mod seçimi
+  const [basicMode, setBasicMode] = useState<boolean>(true);
+  const [advancedMode, setAdvancedMode] = useState<boolean>(false);
+  
   const [geometry, setGeometry] = useState<ShipGeometry>({
     length: 180,
     breadth: 30,
@@ -82,6 +87,29 @@ export default function StabilityGZIMO() {
       <Card>
         <CardHeader>
           <CardTitle>GZ Eğrisi ve IMO Kriterleri</CardTitle>
+          {/* Mod Seçimi */}
+          <div className="flex gap-2 mt-4">
+            <Button
+              variant={basicMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setBasicMode(true);
+                setAdvancedMode(false);
+              }}
+            >
+              Temel
+            </Button>
+            <Button
+              variant={advancedMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setAdvancedMode(true);
+                setBasicMode(false);
+              }}
+            >
+              İleri
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {!!errors.length && (
@@ -95,32 +123,77 @@ export default function StabilityGZIMO() {
             </Alert>
           )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <div>
-              <Label>Uzunluk LBP (m)</Label>
-              <Input type="number" value={geometry.length} onChange={handleChange('length')} />
+          {/* Temel Mod - Sadece gerekli alanlar */}
+          {basicMode && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div>
+                <Label>Uzunluk LBP (m)</Label>
+                <Input type="number" value={geometry.length} onChange={handleChange('length')} />
+              </div>
+              <div>
+                <Label>Genişlik B (m)</Label>
+                <Input type="number" value={geometry.breadth} onChange={handleChange('breadth')} />
+              </div>
+              <div>
+                <Label>Draft T (m)</Label>
+                <Input type="number" value={geometry.draft} onChange={handleChange('draft')} />
+              </div>
+              <div>
+                <Label>Cb</Label>
+                <Input type="number" step="0.01" value={geometry.blockCoefficient} onChange={handleChange('blockCoefficient')} />
+              </div>
+              <div>
+                <Label>KG (m)</Label>
+                <Input type="number" step="0.01" value={kg} onChange={(e) => setKg(parseFloat(e.target.value))} />
+              </div>
             </div>
-            <div>
-              <Label>Genişlik B (m)</Label>
-              <Input type="number" value={geometry.breadth} onChange={handleChange('breadth')} />
+          )}
+
+          {/* İleri Mod - Tüm alanlar */}
+          {advancedMode && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div>
+                <Label>Uzunluk LBP (m)</Label>
+                <Input type="number" value={geometry.length} onChange={handleChange('length')} />
+              </div>
+              <div>
+                <Label>Genişlik B (m)</Label>
+                <Input type="number" value={geometry.breadth} onChange={handleChange('breadth')} />
+              </div>
+              <div>
+                <Label>Derinlik D (m)</Label>
+                <Input type="number" value={geometry.depth} onChange={handleChange('depth')} />
+              </div>
+              <div>
+                <Label>Draft T (m)</Label>
+                <Input type="number" value={geometry.draft} onChange={handleChange('depth')} />
+              </div>
+              <div>
+                <Label>Cb</Label>
+                <Input type="number" step="0.01" value={geometry.blockCoefficient} onChange={handleChange('blockCoefficient')} />
+              </div>
+              <div>
+                <Label>Cwp</Label>
+                <Input type="number" step="0.01" value={geometry.waterplaneCoefficient} onChange={handleChange('waterplaneCoefficient')} />
+              </div>
+              <div>
+                <Label>Cm</Label>
+                <Input type="number" step="0.01" value={geometry.midshipCoefficient} onChange={handleChange('midshipCoefficient')} />
+              </div>
+              <div>
+                <Label>Cp</Label>
+                <Input type="number" step="0.01" value={geometry.prismaticCoefficient} onChange={handleChange('prismaticCoefficient')} />
+              </div>
+              <div>
+                <Label>Cvp</Label>
+                <Input type="number" step="0.01" value={geometry.verticalPrismaticCoefficient} onChange={handleChange('verticalPrismaticCoefficient')} />
+              </div>
+              <div>
+                <Label>KG (m)</Label>
+                <Input type="number" step="0.01" value={kg} onChange={(e) => setKg(parseFloat(e.target.value))} />
+              </div>
             </div>
-            <div>
-              <Label>Derinlik D (m)</Label>
-              <Input type="number" value={geometry.depth} onChange={handleChange('depth')} />
-            </div>
-            <div>
-              <Label>Draft T (m)</Label>
-              <Input type="number" value={geometry.draft} onChange={handleChange('draft')} />
-            </div>
-            <div>
-              <Label>Cb</Label>
-              <Input type="number" step="0.01" value={geometry.blockCoefficient} onChange={handleChange('blockCoefficient')} />
-            </div>
-            <div>
-              <Label>KG (m)</Label>
-              <Input type="number" step="0.01" value={kg} onChange={(e) => setKg(parseFloat(e.target.value))} />
-            </div>
-          </div>
+          )}
 
           <div className="flex flex-wrap gap-2">
             <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
