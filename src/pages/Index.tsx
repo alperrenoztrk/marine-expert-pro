@@ -13,7 +13,6 @@ const Index = () => {
           backgroundImage: "url('/maritime-background.svg')"
         }}
       />
-      
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button

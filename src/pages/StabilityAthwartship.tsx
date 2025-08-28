@@ -124,17 +124,18 @@ export default function StabilityAthwartship() {
   };
 
   const handleQuizAnswer = (questionId: string, answer: string) => {
-    setQuizAnswers(prev => ({ ...prev, [questionId]: answer }));
+    const newAnswers = { ...quizAnswers, [questionId]: answer };
+    setQuizAnswers(newAnswers);
     
     // Şık seçildiğinde direkt sonuçları göster
     const currentQuizData = quizBank[currentQuizSet];
-    const allQuestionsAnswered = Object.keys({ ...prev, [questionId]: answer }).length >= currentQuizData.questions.length;
+    const allQuestionsAnswered = Object.keys(newAnswers).length >= currentQuizData.questions.length;
     
     if (allQuestionsAnswered) {
       setShowQuizResults(true);
       let score = 0;
       currentQuizData.questions.forEach(q => {
-        if (parseInt({ ...prev, [questionId]: answer }[q.id]) === q.correct) {
+        if (parseInt(newAnswers[q.id]) === q.correct) {
           score++;
         }
       });
