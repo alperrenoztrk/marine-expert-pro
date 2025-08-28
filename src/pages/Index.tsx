@@ -14,17 +14,6 @@ const Index = () => {
         }}
       />
       
-      {/* Ship illustration overlay */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative w-full h-full max-w-4xl max-h-96">
-          <img
-            src="/ship-bridge-DDf8ulzO.jpg"
-            alt="Maritime Ship"
-            className="w-full h-full object-contain opacity-20"
-          />
-        </div>
-      </div>
-      
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
