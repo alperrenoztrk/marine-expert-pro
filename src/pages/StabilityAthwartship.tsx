@@ -618,17 +618,21 @@ export default function StabilityAthwartship() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className={`grid w-full ${basicMode ? 'grid-cols-4' : 'grid-cols-3'}`}>
+                          <TabsList className={`grid w-full ${basicMode ? 'grid-cols-5' : 'grid-cols-3'}`}>
               {basicMode ? (
                 <>
                   <TabsTrigger value="learn" className="gap-2">
                     <BookOpen className="h-4 w-4" />
                     Öğren
                   </TabsTrigger>
-                  <TabsTrigger value="calculator" className="gap-2">
-                    <Calculator className="h-4 w-4" />
-                    Hesapla
-                  </TabsTrigger>
+                                      <TabsTrigger value="calculator" className="gap-2">
+                      <Calculator className="h-4 w-4" />
+                      Hesapla
+                    </TabsTrigger>
+                    <TabsTrigger value="calculations" className="gap-2">
+                      <TrendingUp className="h-4 w-4" />
+                      Hesaplamalar
+                    </TabsTrigger>
                   <TabsTrigger value="concepts" className="gap-2">
                     <Lightbulb className="h-4 w-4" />
                     Kavramlar
@@ -660,9 +664,13 @@ export default function StabilityAthwartship() {
               {renderLearningContent()}
             </TabsContent>
 
-            <TabsContent value="calculator" className="space-y-4 mt-6">
-              {renderCalculatorContent()}
-            </TabsContent>
+                          <TabsContent value="calculator" className="space-y-4 mt-6">
+                {renderCalculatorContent()}
+              </TabsContent>
+
+              <TabsContent value="calculations" className="space-y-4 mt-6">
+                {renderCalculationsContent()}
+              </TabsContent>
 
             <TabsContent value="concepts" className="space-y-4 mt-6">
               {renderConceptsContent()}
@@ -2037,6 +2045,238 @@ export default function StabilityAthwartship() {
             </AlertDescription>
           </Alert>
         )}
+      </div>
+    );
+  }
+
+  function renderCalculationsContent() {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Enine Stabilite Hesaplamaları
+            </CardTitle>
+            <CardDescription>
+              Moment alımı, bilinmeyen ağırlık, meyil derecesi ve diğer hesaplamalar
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Moment Alımı */}
+              <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-blue-600" />
+                    📊 Moment Alımı
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Ağırlık (ton)</Label>
+                    <Input 
+                      type="number" 
+                      value={momentWeight} 
+                      onChange={(e) => setMomentWeight(parseFloat(e.target.value) || 0)}
+                      placeholder="100"
+                    />
+                  </div>
+                  <div>
+                    <Label>Mesafe (m)</Label>
+                    <Input 
+                      type="number" 
+                      value={momentDistance} 
+                      onChange={(e) => setMomentDistance(parseFloat(e.target.value) || 0)}
+                      placeholder="5"
+                    />
+                  </div>
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => calculateMoment()}
+                  >
+                    Moment Hesapla
+                  </Button>
+                  {momentWeight > 0 && momentDistance > 0 && (
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                      <p className="font-semibold">Sonuç:</p>
+                      <p>Moment: {(momentWeight * momentDistance).toFixed(1)} ton·m</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Bilinmeyen Ağırlık */}
+              <Card className="border-green-200 bg-green-50 dark:bg-green-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Search className="h-5 w-5 text-green-600" />
+                    🔍 Bilinmeyen Ağırlık
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Mevcut GM (m)</Label>
+                    <Input 
+                      type="number" 
+                      value={unknownWeight} 
+                      onChange={(e) => setUnknownWeight(parseFloat(e.target.value) || 0)}
+                      placeholder="0.5"
+                    />
+                  </div>
+                  <div>
+                    <Label>Hedef GM (m)</Label>
+                    <Input 
+                      type="number" 
+                      value={heelAngle} 
+                      onChange={(e) => setHeelAngle(parseFloat(e.target.value) || 0)}
+                      placeholder="0.8"
+                    />
+                  </div>
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={() => calculateUnknownWeight()}
+                  >
+                    Ağırlık Hesapla
+                  </Button>
+                  {unknownWeight > 0 && heelAngle > 0 && (
+                    <div className="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
+                      <p className="font-semibold">Sonuç:</p>
+                      <p>Gerekli ağırlık: {((heelAngle - unknownWeight) * 1000).toFixed(1)} ton</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Meyil Derecesi */}
+              <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <RotateCcw className="h-5 w-5 text-purple-600" />
+                    📐 Meyil Derecesi
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Moment (ton·m)</Label>
+                    <Input 
+                      type="number" 
+                      value={craneWeight} 
+                      onChange={(e) => setCraneWeight(parseFloat(e.target.value) || 0)}
+                      placeholder="500"
+                    />
+                  </div>
+                  <div>
+                    <Label>Deplasman (ton)</Label>
+                    <Input 
+                      type="number" 
+                      value={craneDistance} 
+                      onChange={(e) => setCraneDistance(parseFloat(e.target.value) || 0)}
+                      placeholder="10000"
+                    />
+                  </div>
+                  <Button 
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    onClick={() => calculateHeelAngle()}
+                  >
+                    Meyil Açısı Hesapla
+                  </Button>
+                  {craneWeight > 0 && craneDistance > 0 && (
+                    <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                      <p className="font-semibold">Sonuç:</p>
+                      <p>Meyil açısı: {Math.atan(craneWeight / (craneDistance * 9.81)) * (180/Math.PI).toFixed(1)}°</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Kren Operasyonu */}
+              <Card className="border-orange-200 bg-orange-50 dark:bg-orange-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Anchor className="h-5 w-5 text-orange-600" />
+                    🏗️ Kren Operasyonu
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Kren Ağırlığı (ton)</Label>
+                    <Input 
+                      type="number" 
+                      value={dryDockGM} 
+                      onChange={(e) => setDryDockGM(parseFloat(e.target.value) || 0)}
+                      placeholder="50"
+                    />
+                  </div>
+                  <div>
+                    <Label>Kren Mesafesi (m)</Label>
+                    <Input 
+                      type="number" 
+                      value={dryDockDraft} 
+                      onChange={(e) => setDryDockDraft(parseFloat(e.target.value) || 0)}
+                      placeholder="20"
+                    />
+                  </div>
+                  <Button 
+                    className="w-full bg-orange-600 hover:bg-orange-700"
+                    onClick={() => calculateCraneGM()}
+                  >
+                    GM-KG Hesapla
+                  </Button>
+                  {dryDockGM > 0 && dryDockDraft > 0 && (
+                    <div className="p-3 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                      <p className="font-semibold">Sonuç:</p>
+                      <p>GM değişimi: {((dryDockGM * dryDockDraft) / 10000).toFixed(3)}m</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Havuzlama */}
+              <Card className="border-red-200 bg-red-50 dark:bg-red-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Ship className="h-5 w-5 text-red-600" />
+                    🚢 Havuzlama
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Mevcut GM (m)</Label>
+                    <Input 
+                      type="number" 
+                      value={momentWeight} 
+                      onChange={(e) => setMomentWeight(parseFloat(e.target.value) || 0)}
+                      placeholder="0.3"
+                    />
+                  </div>
+                  <div>
+                                          <Label>Havuz Derinliği (m)</Label>
+                    <Input 
+                      type="number" 
+                      value={momentDistance} 
+                      onChange={(e) => setMomentDistance(parseFloat(e.target.value) || 0)}
+                      placeholder="8"
+                    />
+                  </div>
+                  <Button 
+                    className="w-full bg-red-600 hover:bg-red-700"
+                    onClick={() => calculateDryDockGM()}
+                  >
+                    Kritik GM Hesapla
+                  </Button>
+                  {momentWeight > 0 && momentDistance > 0 && (
+                    <div className="p-3 bg-red-100 dark:bg-red-900 rounded-lg">
+                      <p className="font-semibold">Sonuç:</p>
+                      <p>Kritik GM: {(momentWeight * 0.8).toFixed(3)}m</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
