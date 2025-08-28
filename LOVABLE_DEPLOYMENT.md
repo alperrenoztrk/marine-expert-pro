@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2024-12-19
+- **Sürüm:** v2.5.58
+- **Durum:** ✅ Stabilite hesaplamaları gerçekten deploy edildi - Enine ve Boyuna Stabilite sayfalarına Hesaplamalar tab'ı eklendi - **LOVABLE'A DEPLOY EDİLDİ**
+
+- **Tarih:** 2024-12-19
 - **Sürüm:** v2.5.57
 - **Durum:** ✅ Navigation hesaplamaları gerçekten deploy edildi - v2.5.56'da eksik olan build ve sync işlemleri tamamlandı - **LOVABLE'A DEPLOY EDİLDİ**
 
