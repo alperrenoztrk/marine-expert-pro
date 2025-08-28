@@ -39,6 +39,29 @@
   <ellipse cx="970" cy="170" rx="55" ry="28" fill="#ffffff" opacity="0.6"/>
   
   
+  <!-- Small fishing boat on the horizon -->
+  <g transform="translate(900, 310) scale(0.4)" opacity="0.8">
+    <!-- Boat hull -->
+    <path d="M 0 20 Q 5 30 15 30 L 45 30 Q 50 30 55 20 L 55 10 Q 55 5 50 5 L 5 5 Q 0 5 0 10 Z" fill="#8B4513"/>
+    
+    <!-- Boat cabin -->
+    <rect x="15" y="0" width="25" height="10" fill="#D2691E"/>
+    <rect x="17" y="2" width="21" height="6" fill="#4682B4" opacity="0.3"/>
+    
+    <!-- Mast -->
+    <line x1="27" y1="0" x2="27" y2="-15" stroke="#654321" stroke-width="1"/>
+    
+    <!-- Fishing net in water -->
+    <g transform="translate(55, 25)">
+      <path d="M 0 0 Q 10 5 20 0 Q 30 -3 40 0 Q 50 5 60 0" stroke="#87CEEB" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M 5 2 Q 15 7 25 2 Q 35 -1 45 2 Q 55 7 65 2" stroke="#87CEEB" stroke-width="1" fill="none" opacity="0.4"/>
+    </g>
+    
+    <!-- Small waves around boat -->
+    <path d="M -5 25 Q 0 23 5 25" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.5"/>
+    <path d="M 50 25 Q 55 23 60 25" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.5"/>
+  </g>
+  
   <!-- Sun rays -->
   <g opacity="0.3">
     <line x1="100" y1="100" x2="120" y2="80" stroke="#ffffff" stroke-width="2"/>
