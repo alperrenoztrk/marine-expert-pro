@@ -6,8 +6,13 @@ import { Plus, Shield, FileText, Settings } from "lucide-react";
 const Index = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Maritime background - solid color */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600" />
+      {/* Maritime background image */}
+      <div
+        className="absolute inset-0 maritime-background"
+        style={{
+          backgroundImage: "url('/maritime-background.svg')"
+        }}
+      />
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
