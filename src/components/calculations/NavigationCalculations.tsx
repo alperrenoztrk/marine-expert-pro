@@ -1068,6 +1068,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
           <Tabs defaultValue={initialTab || "route"} className="w-full">
             <div className="w-full overflow-x-auto">
               <TabsList className="inline-flex w-auto min-w-full h-auto py-2 px-2 space-x-1">
+                <TabsTrigger value="calculations" className="text-xs px-3 py-2 whitespace-nowrap">📊 Hesaplamalar</TabsTrigger>
                 <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
                 <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
                 <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
@@ -1079,7 +1080,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">Radar</TabsTrigger>
                 <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit</TabsTrigger>
                 <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava</TabsTrigger>
-                <TabsTrigger value="marine-weather" className="text-xs px-3 py-2 whitespace-nowrap">Deniz Hava</TabsTrigger>
+                <TabsTrigger value="marine-weather" className="text-xs px-2 whitespace-nowrap">Deniz Hava</TabsTrigger>
                 <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu</TabsTrigger>
                 <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman</TabsTrigger>
                 <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel</TabsTrigger>
@@ -1087,6 +1088,10 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 <TabsTrigger value="almanac" className="text-xs px-3 py-2 whitespace-nowrap">Almanac</TabsTrigger>
               </TabsList>
             </div>
+
+            <TabsContent value="calculations" className="space-y-4">
+              {renderCalculationsContent()}
+            </TabsContent>
 
             <TabsContent value="route" className="space-y-4">
               {/* Coordinate Input Section */}
@@ -3283,4 +3288,183 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
 
     </div>
   );
+
+  function renderCalculationsContent() {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Seyir Hesaplamaları Menüsü
+            </CardTitle>
+            <CardDescription>
+              Seyir hesaplamaları için kapsamlı hesaplama türleri ve formüller
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Düzlem (Yer/Grafik) Seyri */}
+              <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-blue-600" />
+                    🗺️ Düzlem (Yer/Grafik) Seyri
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200">Rota–Mesafe–Zaman</h4>
+                    <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
+                      <li>• DR (Dead Reckoning) mevkii</li>
+                      <li>• Hız–zaman–mesafe (S = V×t)</li>
+                      <li>• CTS (Course to Steer)</li>
+                      <li>• EP (Estimated Position)</li>
+                      <li>• ETA/ETD, ort. hız, yakıt/menzil</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200">Kıyı/Pilotaj & Pozisyon</h4>
+                    <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
+                      <li>• Tek/çift/üç kerterizle mevkii</li>
+                      <li>• Alın–omuz/başüstü kerterizleri</li>
+                      <li>• Mesafe–kerterizden mevkiler</li>
+                      <li>• Çapraz hatası (XTE)</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200">Akıntı–Gelgit</h4>
+                    <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
+                      <li>• Akıntı vektörlemesi (set/drift)</li>
+                      <li>• Gelgit yüksekliği (Rule of Twelfths)</li>
+                      <li>• İkincil liman düzeltmeleri</li>
+                      <li>• UKC (Under Keel Clearance)</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200">Radar/ARPA – Göreli Hareket</h4>
+                    <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
+                      <li>• CPA/TCPA</li>
+                      <li>• Göreli hareket üçgeni</li>
+                      <li>• EBL/VRM ile uzaklık–kerteriz</li>
+                      <li>• Kaçınma manevrası analizi</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200">Klasik "Sailing" Hesapları</h4>
+                    <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
+                      <li>• Plane/Parallel/Middle-Latitude</li>
+                      <li>• Mercator Sailing</li>
+                      <li>• Rhumbline mesafe/istikamet</li>
+                      <li>• Great-Circle temelleri</li>
+                      <li>• Manyetik–deklinasyon–deviasyon</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Göksel (Astronomik) Seyir */}
+              <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Star className="h-5 w-5 text-purple-600" />
+                    🌟 Göksel (Astronomik) Seyir
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-purple-800 dark:text-purple-200">Gözlem Hazırlığı ve Düzeltmeler</h4>
+                    <ul className="text-sm space-y-1 text-purple-700 dark:text-purple-300">
+                      <li>• Sekstant yükseklik düzeltmeleri</li>
+                      <li>• İndeks hatası, dip, kırılma</li>
+                      <li>• SD/HP/Parallax</li>
+                      <li>• DR/Assumed Position (AP)</li>
+                      <li>• Uygun cisim seçimi</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-purple-800 dark:text-purple-200">Yükseklik–Azimut Yöntemi</h4>
+                    <ul className="text-sm space-y-1 text-purple-700 dark:text-purple-300">
+                      <li>• Marcq St. Hilaire</li>
+                      <li>• Hc & Zn hesapları</li>
+                      <li>• Intercept (a-toward/away)</li>
+                      <li>• LOP çizimi</li>
+                      <li>• 2–3 LOP ile pozisyon tespiti</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-purple-800 dark:text-purple-200">Meridyen ve Özel Gözlemler</h4>
+                    <ul className="text-sm space-y-1 text-purple-700 dark:text-purple-300">
+                      <li>• LAN (Local Apparent Noon)</li>
+                      <li>• Polaris ile yaklaşık enlem</li>
+                      <li>• Ex-meridian düzeltmeleri</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-purple-800 dark:text-purple-200">Zaman/Boylam/Pusula Kontrolü</h4>
+                    <ul className="text-sm space-y-1 text-purple-700 dark:text-purple-300">
+                      <li>• Zaman gözlemi ile boylam</li>
+                      <li>• Güneş/yıldız azimut & amplitüd</li>
+                      <li>• Pusula hatası (deviation) kontrolü</li>
+                    </ul>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-purple-800 dark:text-purple-200">Katalog/Almanak Kullanımı</h4>
+                    <ul className="text-sm space-y-1 text-purple-700 dark:text-purple-300">
+                      <li>• GHA/Dec/SD/HP vb. almanak verileri</li>
+                      <li>• Sight reduction tabloları</li>
+                      <li>• Pub. 229/249</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Hesaplama Türleri Seçimi */}
+            <Card className="mt-6 border-green-200 bg-green-50 dark:bg-green-950">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Target className="h-5 w-5 text-green-600" />
+                  🎯 Hesaplama Türü Seçimi
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Düzlem Seyri</h4>
+                    <p className="text-sm text-blue-700 dark:text-blue-200">
+                      Harita üzerinde rota, mesafe, zaman hesaplamaları
+                    </p>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <h4 className="font-semibold text-purple-800 dark:text-purple-200 mb-2">Göksel Seyri</h4>
+                    <p className="text-sm text-purple-700 dark:text-purple-200">
+                      Güneş, ay, yıldız gözlemleri ile konum tespiti
+                    </p>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800">
+                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Kombine</h4>
+                    <p className="text-sm text-green-700 dark:text-green-200">
+                      Düzlem ve göksel seyir kombinasyonu
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 };
