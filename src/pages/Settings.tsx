@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, Zap, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, Zap, Volume2, VolumeX, CreditCard } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -12,11 +12,13 @@ import { useTheme } from "@/hooks/useTheme";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLanguageFlag } from "@/utils/languages";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, changeLanguage, supportedLanguages, getLanguageName } = useLanguage();
   const [neonSoundEnabled, setNeonSoundEnabled] = useState(true);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     const savedSoundSetting = localStorage.getItem('neonSoundEnabled');
@@ -49,6 +51,32 @@ const Settings = () => {
     setNeonSoundEnabled(enabled);
     localStorage.setItem('neonSoundEnabled', JSON.stringify(enabled));
     toast.success(enabled ? 'Neon ses efektleri aktif' : 'Neon ses efektleri devre dışı');
+  };
+
+  const handleStartCheckout = async () => {
+    try {
+      setIsProcessingPayment(true);
+      const { data, error } = await supabase.functions.invoke('stripe-checkout', {
+        body: {
+          // priceId: 'price_XXXX', // Supabase Edge env'de STRIPE_DEFAULT_PRICE_ID de kullanılabilir
+          mode: 'payment',
+          successUrl: window.location.origin + '/?payment=success',
+          cancelUrl: window.location.origin + '/settings?payment=cancel',
+        },
+      });
+      if (error) throw error;
+      const url = (data as any)?.url;
+      if (!url) {
+        toast.error('Stripe checkout URL oluşturulamadı');
+        return;
+      }
+      window.location.href = url as string;
+    } catch (e: any) {
+      console.error(e);
+      toast.error('Ödeme başlatılamadı');
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   return (
@@ -226,6 +254,38 @@ const Settings = () => {
                   <p className="text-sm text-muted-foreground">
                     <span data-translatable>Seçilen dil tüm uygulamada geçerli olacaktır</span>
                   </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Payment / Stripe */}
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  <span data-translatable>Ödeme</span>
+                </CardTitle>
+                <CardDescription>
+                  <span data-translatable>Pro özellikler için ödeme yapın</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>
+                      <span data-translatable>Stripe Checkout</span>
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      <span data-translatable>Güvenli ödeme ile hemen yükseltin</span>
+                    </p>
+                  </div>
+                  <Button onClick={handleStartCheckout} disabled={isProcessingPayment}>
+                    {isProcessingPayment ? (
+                      <span data-translatable>Yönlendiriliyor...</span>
+                    ) : (
+                      <span data-translatable>Satın Al</span>
+                    )}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
