@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +68,14 @@ export const LongitudinalStabilityCalculations = () => {
 
   const [results, setResults] = useState<LongitudinalResults | null>(null);
   const [activeTab, setActiveTab] = useState("gml");
+  const resultsTopRef = useRef<HTMLDivElement>(null);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    // Ensure the results section is visible after changing tabs
+    // This addresses UX where users might not notice tab changes below the fold
+    resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   // Calculate results whenever inputs change
   useEffect(() => {
@@ -182,7 +190,7 @@ export const LongitudinalStabilityCalculations = () => {
         <h2 className="text-2xl font-bold">Boyuna Stabilite Hesaplamaları</h2>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="gml">GM_L</TabsTrigger>
           <TabsTrigger value="mct">MCT 1cm</TabsTrigger>
@@ -372,6 +380,9 @@ export const LongitudinalStabilityCalculations = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Anchor to scroll results into view when tabs change */}
+        <div ref={resultsTopRef} />
 
         {/* Results Tabs */}
         <TabsContent value="gml">
