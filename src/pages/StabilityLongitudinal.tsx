@@ -40,6 +40,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { LongitudinalStabilityService, LongitudinalResults } from "@/services/longitudinalStability";
 
 export default function StabilityLongitudinal() {
   const navigate = useNavigate();
@@ -79,6 +80,45 @@ export default function StabilityLongitudinal() {
   const [ballastDistance, setBallastDistance] = useState<number>(0);
   const [currentDraft, setCurrentDraft] = useState<number>(0);
   const [targetDraft, setTargetDraft] = useState<number>(0);
+  // Longitudinal-only calculator states
+  const [xcfFromAft, setXcfFromAft] = useState<number>(90);
+  const [initialDraftFwd, setInitialDraftFwd] = useState<number>(10);
+  const [initialDraftAft, setInitialDraftAft] = useState<number>(10);
+  const [trimMoments, setTrimMoments] = useState<{ weightTonnes: number; distanceMeters: number; description?: string }[]>([
+    { weightTonnes: 0, distanceMeters: 0, description: "Yük/ballast hareketi" }
+  ]);
+  const [longitudinalResult, setLongitudinalResult] = useState<LongitudinalResults | null>(null);
+
+  // Longitudinal helpers
+  const addMomentRow = () => {
+    setTrimMoments((rows) => [...rows, { weightTonnes: 0, distanceMeters: 0, description: '' }]);
+  };
+
+  const updateMomentRow = (idx: number, field: 'weightTonnes' | 'distanceMeters' | 'description', value: string) => {
+    setTrimMoments((rows) => rows.map((r, i) => i === idx ? { ...r, [field]: field === 'description' ? value : parseFloat(value) || 0 } : r));
+  };
+
+  const removeMomentRow = (idx: number) => {
+    setTrimMoments((rows) => rows.filter((_, i) => i !== idx));
+  };
+
+  const computeLongitudinal = () => {
+    const v = HydrostaticUtils.validateShipGeometry(geometry);
+    setErrors(v.errors);
+    if (!v.isValid) {
+      setLongitudinalResult(null);
+      return;
+    }
+    const res = LongitudinalStabilityService.compute({
+      geometry,
+      kg,
+      xCFfromAft: xcfFromAft,
+      initialDraftForward: initialDraftFwd,
+      initialDraftAft: initialDraftAft,
+      moments: trimMoments
+    });
+    setLongitudinalResult(res);
+  };
   
   // Calculation functions
   const calculateLongitudinalMoment = () => {
@@ -932,6 +972,16 @@ export default function StabilityLongitudinal() {
             <Calculator className="h-4 w-4" />
             Hesapla ve Öğren
           </Button>
+          <Button 
+            variant="secondary" 
+            className="gap-2"
+            onClick={() => {
+              computeLongitudinal();
+              setLearningProgress(Math.max(learningProgress, 85));
+            }}
+          >
+            <Ruler className="h-4 w-4" /> Boyuna Trim Hesapla
+          </Button>
           <Button variant="secondary" onClick={loadExampleData}>
             Örnek Veri Yükle
           </Button>
@@ -945,6 +995,124 @@ export default function StabilityLongitudinal() {
             Temizle
           </Button>
         </div>
+
+        {/* NEW: Longitudinal-only calculator UI */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Ruler className="h-5 w-5" /> Boyuna Stabilite Hesaplayıcı (GML, MCT, Trim)
+            </CardTitle>
+            <CardDescription>
+              GML ve MCT_{`1 cm`} ile toplam trim ve yeni draftları hesaplar. Ne/Neden açıklamaları içerir.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>CF Konumu x_CF (kıçtan, m)</Label>
+                <Input type="number" step="0.1" value={xcfFromAft} onChange={(e) => setXcfFromAft(parseFloat(e.target.value) || 0)} />
+                <p className="text-xs text-muted-foreground mt-1">Neden: Trim dağıtımı CF etrafında yapılır.</p>
+              </div>
+              <div>
+                <Label>Baş Draftı T_fwd (m)</Label>
+                <Input type="number" step="0.01" value={initialDraftFwd} onChange={(e) => setInitialDraftFwd(parseFloat(e.target.value) || 0)} />
+                <p className="text-xs text-muted-foreground mt-1">Ne: Baştaki mevcut draft.</p>
+              </div>
+              <div>
+                <Label>Kıç Draftı T_aft (m)</Label>
+                <Input type="number" step="0.01" value={initialDraftAft} onChange={(e) => setInitialDraftAft(parseFloat(e.target.value) || 0)} />
+                <p className="text-xs text-muted-foreground mt-1">Ne: Kıçtaki mevcut draft.</p>
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Trim Momenti Girdileri (W × d)</Label>
+                <Button variant="outline" onClick={addMomentRow}>Satır Ekle</Button>
+              </div>
+              <div className="space-y-2">
+                {trimMoments.map((row, idx) => (
+                  <div key={idx} className="grid grid-cols-12 gap-2 items-end">
+                    <div className="col-span-4">
+                      <Label>Açıklama</Label>
+                      <Input value={row.description || ''} onChange={(e) => updateMomentRow(idx, 'description', e.target.value)} placeholder="Yük/ballast hareketi" />
+                    </div>
+                    <div className="col-span-3">
+                      <Label>Ağırlık (ton)</Label>
+                      <Input type="number" step="0.1" value={row.weightTonnes} onChange={(e) => updateMomentRow(idx, 'weightTonnes', e.target.value)} />
+                    </div>
+                    <div className="col-span-3">
+                      <Label>Mesafe d (m)</Label>
+                      <Input type="number" step="0.1" value={row.distanceMeters} onChange={(e) => updateMomentRow(idx, 'distanceMeters', e.target.value)} />
+                      <p className="text-xs text-muted-foreground mt-1">İşaret: başa (+), kıça (−) kabul ederek tutarlı olun.</p>
+                    </div>
+                    <div className="col-span-2 flex gap-2">
+                      <Button variant="ghost" onClick={() => removeMomentRow(idx)}>Sil</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <Button className="mt-2" onClick={computeLongitudinal}><Calculator className="h-4 w-4 mr-2" /> Hesapla</Button>
+              </div>
+            </div>
+
+            {longitudinalResult && (
+              <div className="space-y-4">
+                <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertTitle>Boyuna Hesaplama Sonuçları</AlertTitle>
+                  <AlertDescription>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 text-sm">
+                      <div>
+                        <div className="font-semibold">GML (m)</div>
+                        <div>{longitudinalResult.gml.toFixed(3)}</div>
+                        <div className="text-xs text-muted-foreground">Neden: Trim direncinin temel ölçüsü</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">MCT 1 cm (t·m/cm)</div>
+                        <div>{longitudinalResult.mct1cm.toFixed(1)}</div>
+                        <div className="text-xs text-muted-foreground">Ne: 1 cm trim için gereken moment</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Toplam Trim (cm)</div>
+                        <div>{longitudinalResult.trimChangeCm.toFixed(2)} {longitudinalResult.trimChangeCm >= 0 ? 'by stern' : 'by head'}</div>
+                        <div className="text-xs text-muted-foreground">Ne: ∑(W·d) / MCT</div>
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Trim Dağılımı (CF = {longitudinalResult.distribution.xCFfromAft.toFixed(2)} m)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div>Başa düşen: {longitudinalResult.distribution.forwardCm.toFixed(2)} cm</div>
+                      <div>Kıça düşen: {longitudinalResult.distribution.aftCm.toFixed(2)} cm</div>
+                      <div className="text-xs text-muted-foreground">Neden: Trim CF etrafında paylaştırılır (baş/kıç oranı konuma göre).</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Yeni Draftlar</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div>Yeni Baş Draft: {longitudinalResult.newDrafts.forward.toFixed(3)} m</div>
+                      <div>Yeni Kıç Draft: {longitudinalResult.newDrafts.aft.toFixed(3)} m</div>
+                      <div>Ortalama Draft: {longitudinalResult.newDrafts.mean.toFixed(3)} m</div>
+                      <div className="text-xs text-muted-foreground">İşaret: Trim by stern ise kıç artar, baş azalır; tersi için ters işaret.</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {result && (
           <div className="space-y-6">

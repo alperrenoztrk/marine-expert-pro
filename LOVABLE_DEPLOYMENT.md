@@ -1,6 +1,10 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
+- **Tarih:** 2025-08-29
+- **Sürüm:** v2.5.59
+- **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
+
 - **Tarih:** 2024-12-19
 - **Sürüm:** v2.5.59
 - **Durum:** ✅ Enine stabilite hesaplamaları ve formülleri kapsamlı olarak hazırlandı - GM, GZ, RM, BM, KG hesaplamaları, serbest yüzey düzeltmesi ve stabilite açısı formülleri - **LOVABLE'A DEPLOY EDİLDİ**
