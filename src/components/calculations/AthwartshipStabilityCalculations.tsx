@@ -15,7 +15,7 @@ interface WeightItem {
 }
 
 export default function AthwartshipStabilityCalculations() {
-  // Basic ship data
+  // Shared ship data - synchronized across all tabs
   const [km, setKm] = useState<number>(10.5);
   const [kg, setKg] = useState<number>(8.2);
   const [waterplaneInertia, setWaterplaneInertia] = useState<number>(180000);
