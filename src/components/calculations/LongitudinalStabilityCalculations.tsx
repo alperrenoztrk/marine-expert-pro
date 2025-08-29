@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, TrendingUp, Plus, X, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -386,12 +385,11 @@ export const LongitudinalStabilityCalculations = () => {
             <CardContent>
               {results && (
                 <div className="space-y-4">
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription>
-                      <strong>Formül:</strong> GM_L = I_L / ∇ - BG = BM_L - BG
-                    </AlertDescription>
-                  </Alert>
+                  <div className="font-mono text-sm bg-muted p-3 rounded">
+                    <div className="font-semibold mb-2">Formül:</div>
+                    <div>GM_L = BM_L - BG</div>
+                    <div>BM_L = I_L / ∇</div>
+                  </div>
                   
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-3">
@@ -414,7 +412,6 @@ export const LongitudinalStabilityCalculations = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <Separator />
                       <div className="flex justify-between items-center text-lg font-semibold">
                         <span>GM_L:</span>
                         <Badge variant={results.gml > 100 ? "default" : results.gml > 50 ? "secondary" : "destructive"}>
@@ -445,12 +442,10 @@ export const LongitudinalStabilityCalculations = () => {
             <CardContent>
               {results && (
                 <div className="space-y-4">
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription>
-                      <strong>Formül:</strong> MCT 1cm = (Δ × GM_L) / (100 × L_BP)
-                    </AlertDescription>
-                  </Alert>
+                  <div className="font-mono text-sm bg-muted p-3 rounded">
+                    <div className="font-semibold mb-2">Formül:</div>
+                    <div>MCT 1cm = (Δ × GM_L) / (100 × L_BP)</div>
+                  </div>
                   
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-3">
@@ -469,7 +464,6 @@ export const LongitudinalStabilityCalculations = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <Separator />
                       <div className="flex justify-between items-center text-lg font-semibold">
                         <span>MCT 1cm:</span>
                         <Badge variant="outline">
@@ -498,12 +492,10 @@ export const LongitudinalStabilityCalculations = () => {
             <CardContent>
               {results && (
                 <div className="space-y-4">
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription>
-                      <strong>Formül:</strong> Trim Değişimi = Toplam Trim Momenti / MCT 1cm
-                    </AlertDescription>
-                  </Alert>
+                  <div className="font-mono text-sm bg-muted p-3 rounded">
+                    <div className="font-semibold mb-2">Formül:</div>
+                    <div>Trim Değişimi = Toplam Trim Momenti / MCT 1cm</div>
+                  </div>
                   
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-3">
@@ -518,7 +510,6 @@ export const LongitudinalStabilityCalculations = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <Separator />
                       <div className="flex justify-between items-center text-lg font-semibold">
                         <span>Trim Değişimi:</span>
                         <Badge className={getTrimStatus(results.trimChange).color}>
@@ -547,12 +538,10 @@ export const LongitudinalStabilityCalculations = () => {
             <CardContent>
               {results && (
                 <div className="space-y-4">
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription>
-                      <strong>Formül:</strong> Dağılım LCF konumuna göre orantılıdır
-                    </AlertDescription>
-                  </Alert>
+                  <div className="font-mono text-sm bg-muted p-3 rounded">
+                    <div className="font-semibold mb-2">Formül:</div>
+                    <div>Dağılım LCF konumuna göre orantılıdır</div>
+                  </div>
                   
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-3">
@@ -571,7 +560,6 @@ export const LongitudinalStabilityCalculations = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <Separator />
                       <div className="flex justify-between items-center">
                         <span>Kıç draft değişimi:</span>
                         <Badge variant={results.distribution.aftChange > 0 ? "destructive" : "default"}>
@@ -643,7 +631,6 @@ export const LongitudinalStabilityCalculations = () => {
                     </div>
                   </div>
 
-                  <Separator />
                   
                   <div className="mt-4 p-4 bg-muted rounded-lg">
                     <h4 className="font-semibold mb-2">Trim Durumu</h4>
@@ -688,8 +675,7 @@ export const LongitudinalStabilityCalculations = () => {
                     </div>
                   </div>
 
-                  <Separator />
-
+                  
                   <div className="space-y-3">
                     <h4 className="font-semibold">Değerlendirme</h4>
                     <div className="grid gap-3">

@@ -39,7 +39,6 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { LongitudinalStabilityService, LongitudinalResults } from "@/services/longitudinalStability";
 import { LongitudinalStabilityCalculations } from "@/components/calculations/LongitudinalStabilityCalculations";
 
@@ -1026,8 +1025,7 @@ export default function StabilityLongitudinal() {
               </div>
             </div>
 
-            <Separator />
-
+            
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label>Trim Momenti Girdileri (W × d)</Label>
