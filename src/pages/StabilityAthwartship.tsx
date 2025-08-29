@@ -36,6 +36,7 @@ import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AthwartshipStabilityCalculations from "@/components/calculations/AthwartshipStabilityCalculations";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -676,7 +677,7 @@ export default function StabilityAthwartship() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                          <TabsList className={`grid w-full ${basicMode ? 'grid-cols-5' : 'grid-cols-3'}`}>
+            <TabsList className={`grid w-full ${basicMode ? 'grid-cols-6' : 'grid-cols-4'}`}>
               {basicMode ? (
                 <>
                   <TabsTrigger value="learn" className="gap-2">
@@ -687,6 +688,10 @@ export default function StabilityAthwartship() {
                       <Calculator className="h-4 w-4" />
                       Hesapla
                     </TabsTrigger>
+                  <TabsTrigger value="calculations" className="gap-2">
+                    <Calculator className="h-4 w-4" />
+                    Hesaplamalar
+                  </TabsTrigger>
                     <TabsTrigger value="calculations" className="gap-2">
                       <TrendingUp className="h-4 w-4" />
                       Hesaplamalar
@@ -702,6 +707,10 @@ export default function StabilityAthwartship() {
                 </>
               ) : (
                 <>
+                  <TabsTrigger value="calculations" className="gap-2">
+                    <Calculator className="h-4 w-4" />
+                    Hesaplamalar
+                  </TabsTrigger>
                   <TabsTrigger value="officer" className="gap-2">
                     <Timer className="h-4 w-4" />
                     Hızlı Hesaplama
@@ -727,7 +736,7 @@ export default function StabilityAthwartship() {
               </TabsContent>
 
               <TabsContent value="calculations" className="space-y-4 mt-6">
-                {renderCalculationsContent()}
+                <AthwartshipStabilityCalculations />
               </TabsContent>
 
             <TabsContent value="concepts" className="space-y-4 mt-6">
