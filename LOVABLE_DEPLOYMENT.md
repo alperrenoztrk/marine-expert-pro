@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2024-12-19
+- **Sürüm:** v2.5.59
+- **Durum:** ✅ Enine stabilite hesaplamaları ve formülleri kapsamlı olarak hazırlandı - GM, GZ, RM, BM, KG hesaplamaları, serbest yüzey düzeltmesi ve stabilite açısı formülleri - **LOVABLE'A DEPLOY EDİLDİ**
+
+- **Tarih:** 2024-12-19
 - **Sürüm:** v2.5.58
 - **Durum:** ✅ Stabilite hesaplamaları gerçekten deploy edildi - Enine ve Boyuna Stabilite sayfalarına Hesaplamalar tab'ı eklendi - **LOVABLE'A DEPLOY EDİLDİ**
 
@@ -110,6 +114,18 @@
 - **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 📐 Enine Stabilite Hesaplamaları (2024-12-19)
+- **Metasentrik Yükseklik (GM)**: `GM = KM - KG` ve alternatif formül `GM = (I/∇) - KG`
+- **Doğrultucu Kol (GZ)**: Küçük açılar için `GZ ≈ GM · sin(φ)` formülü
+- **Doğrultucu Moment (RM)**: `RM = Δ · GZ` hesaplaması
+- **Metasentrik Yarıçap (BM)**: `BM = I/∇` parametresi
+- **KG Hesabı**: `KG = Σ(wᵢ · KGᵢ) / Σwᵢ` dikey ağırlık merkezi
+- **Serbest Yüzey Düzeltmesi**: `GM_düzeltilmiş = GM - Σ(I_f)/∇` tank etkisi
+- **Stabilite Açısı (AVS)**: GZ = 0 olduğu alabora açısı
+- Tüm formüller gemi mühendisliği terminolojisi ile açıklandı
+- IMO kriterleri ve güvenlik notları eklendi
+- Pratik uygulama alanları belirtildi
 
 ### 🎯 Stabilite Quiz Sistemi (2025-01-27)
 - Stabilite sorularında otomatik geçiş tamamen kapatıldı
