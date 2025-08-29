@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
+import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin, Clock } from "lucide-react";
 
 type WeatherResponse = {
   latitude: number;
@@ -344,6 +344,21 @@ export default function WeatherWidget() {
     } as const;
   }, [data, nowMs]);
 
+  const localTimeStr = useMemo(() => {
+    if (!data?.timezoneId) return null;
+    try {
+      return new Intl.DateTimeFormat("tr-TR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZone: data.timezoneId,
+      }).format(nowMs);
+    } catch {
+      return null;
+    }
+  }, [data?.timezoneId, nowMs]);
+
   return (
     <Card className="w-full shadow-lg">
       <CardHeader className="pb-2">
@@ -380,6 +395,18 @@ export default function WeatherWidget() {
                 {Number.isFinite(data.latitude) && Number.isFinite(data.longitude)
                   ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`
                   : null}
+              </div>
+            </div>
+            <div className="col-span-2 flex items-center gap-3">
+              <Clock className="h-5 w-5 text-indigo-600" />
+              <div>
+                <div className="text-sm text-muted-foreground" data-translatable>Yerel Saat</div>
+                <div className="text-base font-medium">
+                  {localTimeStr ?? (timeDisplay?.zt ?? "-")}
+                  {data?.timezoneId ? (
+                    <span className="ml-2 text-xs text-muted-foreground">{data.timezoneId}</span>
+                  ) : null}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
