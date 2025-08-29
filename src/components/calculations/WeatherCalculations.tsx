@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CloudCard } from "@/components/ui/cloud-card";
 import { cloudTypes, cloudTypesByLevel } from "@/components/calculations/cloud-types";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 
 interface MeteoOceanData {
   // Wind Parameters
@@ -109,6 +110,7 @@ interface MeteoOceanResult {
 export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("wind");
+  const { data: wx, requestOnce, loading: wxLoading } = useCurrentWeather({ watchPosition: false, reverseGeocode: false });
   const [data, setData] = useState<MeteoOceanData>({
     windSpeed: 25, windDirection: 270, shipHeading: 45, shipSpeed: 12,
     waveHeight: 3.5, wavePeriod: 8, waveDirection: 285,
@@ -370,6 +372,20 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
     setData(prev => ({ ...prev, [field]: value }));
   };
 
+  const populateFromWeather = async () => {
+    const res = await requestOnce();
+    const w = res || wx;
+    if (!w) {
+      toast({ title: "Anlık hava alınamadı", description: "Konum izni veya ağ bağlantısını kontrol edin.", variant: "destructive" });
+      return;
+    }
+    updateData('windSpeed', Math.round((w.windSpeedKt ?? 0) * 10) / 10);
+    updateData('windDirection', Math.round(w.windDirectionDeg ?? 0));
+    updateData('temperature', Math.round((w.temperatureC ?? 0) * 10) / 10);
+    updateData('barometricPressure', Math.round(w.pressureHpa ?? 0));
+    toast({ title: "Anlık veriler uygulandı", description: "Rüzgar, sıcaklık ve basınç güncellendi." });
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -381,6 +397,11 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
           <CardDescription>
             Beaufort & Douglas skalaları, rüzgar/akıntı etkileri ve gemi üzerine etki eden kuvvetler
           </CardDescription>
+          <div className="mt-2">
+            <Button size="sm" variant="outline" onClick={populateFromWeather} disabled={wxLoading}>
+              {wxLoading ? 'Alınıyor…' : 'Anlık havayı kullan'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue={initialTab || "wind"} className="w-full" onValueChange={setActiveTab}>
