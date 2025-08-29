@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Shield, FileText, Settings } from "lucide-react";
+import WeatherWidget from "@/components/WeatherWidget";
 
 const Index = () => {
   return (
@@ -51,6 +52,11 @@ const Index = () => {
           >
             Tüm denizciler için pratik hesaplama platformu
           </p>
+        </div>
+
+        {/* Weather widget */}
+        <div className="w-full max-w-md mb-6">
+          <WeatherWidget />
         </div>
 
         {/* Buttons with maritime styling */}
