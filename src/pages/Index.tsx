@@ -6,8 +6,8 @@ import WeatherWidget from "@/components/WeatherWidget";
 
 const Index = () => {
   const navigate = useNavigate();
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -18,7 +18,7 @@ const Index = () => {
   };
 
   const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
+    if (touchStartX.current === null || touchEndX.current === null) return;
     
     const distance = touchEndX.current - touchStartX.current;
     const isRightSwipe = distance > 100; // Minimum swipe distance for right swipe
@@ -28,8 +28,8 @@ const Index = () => {
     }
     
     // Reset values
-    touchStartX.current = 0;
-    touchEndX.current = 0;
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   return (
