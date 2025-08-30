@@ -166,20 +166,20 @@ export default function WeatherWidget() {
     } as const;
   }, [data, nowMs]);
 
-  const localTimeStr = useMemo(() => {
-    if (!data?.timezoneId) return null;
+  const nationalTimeStr = useMemo(() => {
+    // Turkey National Time (UTC+3 year-round)
     try {
       return new Intl.DateTimeFormat("tr-TR", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false,
-        timeZone: data.timezoneId,
+        timeZone: "Europe/Istanbul",
       }).format(nowMs);
     } catch {
       return null;
     }
-  }, [data?.timezoneId, nowMs]);
+  }, [nowMs]);
 
   return (
     <Card className="w-full shadow-lg bg-transparent">
@@ -222,12 +222,10 @@ export default function WeatherWidget() {
             <div className="col-span-2 flex items-center gap-3">
               <Clock className="h-5 w-5 text-indigo-600" />
               <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Yerel Saat</div>
+                <div className="text-sm text-muted-foreground" data-translatable>Ulusal Saat</div>
                 <div className="text-base font-medium">
-                  {localTimeStr ?? (timeDisplay?.zt ?? "-")}
-                  {data?.timezoneId ? (
-                    <span className="ml-2 text-xs text-muted-foreground">{data.timezoneId}</span>
-                  ) : null}
+                  {nationalTimeStr ?? "-"}
+                  <span className="ml-2 text-xs text-muted-foreground">TRT (UTC+3)</span>
                 </div>
               </div>
             </div>
