@@ -6,7 +6,7 @@ import WeatherWidget from "@/components/WeatherWidget";
 
 const EmptyPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 relative maritime-background">
+    <div className="min-h-screen flex items-center justify-center px-6 relative homepage-ship-background">
       <Link to="/" className="fixed left-4 top-6 z-20">
         <Button
           size="icon"

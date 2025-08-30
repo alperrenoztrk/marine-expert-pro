@@ -90,6 +90,15 @@ All colors MUST be HSL.
     background-attachment: fixed;
   }
 
+  /* Homepage background using uploaded ship image */
+  .homepage-ship-background {
+    background-image: url('/lovable-uploads/be2bc624-94b0-4812-9a7c-2bbe8beb217c.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
   /* Mobile-optimized typography */
   @media (max-width: 768px) {
     .maritime-title {

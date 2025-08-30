@@ -39,8 +39,8 @@ const Index = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Maritime background without ship image */}
-      <div className="absolute inset-0 maritime-background" />
+      {/* Homepage background with ship image */}
+      <div className="absolute inset-0 homepage-ship-background" />
       {/* Right-side arrow to open Empty Page */}
       <Link to="/empty-page" className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
         <Button
