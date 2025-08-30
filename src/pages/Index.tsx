@@ -21,9 +21,9 @@ const Index = () => {
     if (!touchStartX.current || !touchEndX.current) return;
     
     const distance = touchEndX.current - touchStartX.current;
-    const isLeftSwipe = distance > 100; // Minimum swipe distance
+    const isRightSwipe = distance > 100; // Minimum swipe distance for right swipe
     
-    if (isLeftSwipe) {
+    if (isRightSwipe) {
       navigate('/empty-page');
     }
     
