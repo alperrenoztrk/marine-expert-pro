@@ -182,7 +182,7 @@ export default function WeatherWidget() {
   }, [nowMs]);
 
   return (
-    <Card className="w-full shadow-lg bg-card">
+    <Card className="w-full bg-transparent border-none shadow-none">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg" data-translatable>
           Anlık Hava Durumu
