@@ -83,6 +83,7 @@ All colors MUST be HSL.
 
   /* Maritime background optimizations for mobile */
   .maritime-background {
+    background-image: url('/maritime-background.svg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
