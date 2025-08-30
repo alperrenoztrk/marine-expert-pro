@@ -39,13 +39,7 @@ const Index = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Maritime background image */}
-      <div
-        className="absolute inset-0 maritime-background"
-        style={{
-          backgroundImage: "url('/maritime-background.svg')"
-        }}
-      />
+      {/* Maritime background removed */}
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
