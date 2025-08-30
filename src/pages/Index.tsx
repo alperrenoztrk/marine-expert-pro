@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, FileText, Settings } from "lucide-react";
+import { Plus, Shield, FileText, Settings, ChevronRight } from "lucide-react";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
@@ -41,6 +41,16 @@ const Index = () => {
     >
       {/* Maritime background without ship image */}
       <div className="absolute inset-0 maritime-background" />
+      {/* Right-side arrow to open Empty Page */}
+      <Link to="/empty-page" className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
+        <Button
+          size="icon"
+          className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-2 border-white/30 transition-all duration-200"
+          title="Sağ sayfa"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </Button>
+      </Link>
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
