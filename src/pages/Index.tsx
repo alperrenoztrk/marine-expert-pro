@@ -1,12 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Shield, FileText, Settings } from "lucide-react";
 import WeatherWidget from "@/components/WeatherWidget";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchEndX.current - touchStartX.current;
+    const isLeftSwipe = distance > 100; // Minimum swipe distance
+    
+    if (isLeftSwipe) {
+      navigate('/empty-page');
+    }
+    
+    // Reset values
+    touchStartX.current = 0;
+    touchEndX.current = 0;
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div 
+      className="relative min-h-screen overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Maritime background image */}
       <div
         className="absolute inset-0 maritime-background"

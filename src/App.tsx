@@ -10,6 +10,7 @@ import { useFrameRate } from "@/hooks/useFrameRate";
 import { useState, useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
+import EmptyPage from "./pages/EmptyPage";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 
@@ -116,6 +117,7 @@ const App = () => {
                 <LanguageRouteSync />
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/empty-page" element={<EmptyPage />} />
                   <Route path="/formulas" element={<Formulas />} />
                   <Route path="/regulations" element={<Regulations />} />
                   
