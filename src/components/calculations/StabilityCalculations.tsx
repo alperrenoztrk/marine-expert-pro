@@ -246,7 +246,7 @@ export const StabilityCalculations = () => {
 
   // 🎯 Temel Stabilite Formülleri
   const calculateGM = () => {
-    if (!data.KM || !data.KG) {
+    if (data.KM == null || data.KG == null) {
       toast.error("Lütfen KM ve KG değerlerini girin.");
       return;
     }
@@ -287,13 +287,17 @@ export const StabilityCalculations = () => {
   };
 
   const calculateKG = () => {
-    if (!data.weights || !data.heights) {
-      toast.error("Lütfen ağırlık ve yükseklik değerlerini girin.");
+    if (!Array.isArray(data.weights) || !Array.isArray(data.heights) || data.weights.length === 0 || data.heights.length === 0 || data.weights.length !== data.heights.length || data.weights.some(w => !Number.isFinite(w)) || data.heights.some(h => !Number.isFinite(h))) {
+      toast.error("Lütfen geçerli ve eşit sayıda ağırlık/yükseklik değerlerini girin.");
       return;
     }
     
     // KG = Σ(Wi × zi) / ΣWi
     const totalWeight = data.weights.reduce((sum, weight) => sum + weight, 0);
+    if (totalWeight === 0) {
+      toast.error("Toplam ağırlık 0 olamaz.");
+      return;
+    }
     const weightedSum = data.weights.reduce((sum, weight, index) => 
       sum + (weight * data.heights[index]), 0);
     const KG = weightedSum / totalWeight;
@@ -307,7 +311,7 @@ export const StabilityCalculations = () => {
   };
 
   const calculateKM = () => {
-    if (!data.KB || !data.BM) {
+    if (data.KB == null || data.BM == null) {
       toast.error("Lütfen KB ve BM değerlerini girin.");
       return;
     }
@@ -323,8 +327,12 @@ export const StabilityCalculations = () => {
   };
 
   const calculateKB = () => {
-    if (!data.T || !data.CB || !data.CWP) {
+    if (data.T == null || data.CB == null || data.CWP == null) {
       toast.error("Lütfen T, CB ve CWP değerlerini girin.");
+      return;
+    }
+    if (data.CB === 0) {
+      toast.error("CB 0 olamaz.");
       return;
     }
     
@@ -339,13 +347,26 @@ export const StabilityCalculations = () => {
   };
 
   const calculateBM = () => {
-    if (!data.L || !data.B || !data.delta) {
+    if (data.L == null || data.B == null || data.delta == null) {
       toast.error("Lütfen L, B ve Δ değerlerini girin.");
+      return;
+    }
+    if (data.L <= 0 || data.B <= 0 || data.delta <= 0) {
+      toast.error("L, B ve Δ pozitif olmalıdır.");
+      return;
+    }
+    const rho_sw = data.rho_sw || 1.025;
+    if (rho_sw <= 0) {
+      toast.error("ρ_sw pozitif olmalıdır.");
       return;
     }
     
     const I_waterplane = (data.L * Math.pow(data.B, 3)) / 12;
-    const volume_displacement = data.delta / (data.rho_sw || 1.025);
+    const volume_displacement = data.delta / rho_sw;
+    if (volume_displacement <= 0) {
+      toast.error("Hacim deplasmanı pozitif olmalıdır.");
+      return;
+    }
     const BM = I_waterplane / volume_displacement;
     
     setResults(prev => ({ 
@@ -360,7 +381,7 @@ export const StabilityCalculations = () => {
 
   // 🌊 GZ Eğrisi ve Stabilite Kolu
   const calculateGZ = () => {
-    if (!data.phi || !results.GM_corrected || !data.KM || !data.KG) {
+    if (data.phi == null || results.GM_corrected == null || data.KM == null || data.KG == null) {
       toast.error("Lütfen φ değerini girin ve önce GM hesaplayın.");
       return;
     }
@@ -368,7 +389,7 @@ export const StabilityCalculations = () => {
     const phiRad = (data.phi * Math.PI) / 180;
     const GZ_small = results.GM_corrected * Math.sin(phiRad);
     const GZ_large = (data.KM - data.KG) * Math.sin(phiRad);
-    const righting_moment = GZ_small * (data.delta || 25000) * (data.g || 9.81) / 1000; // kN.m
+    const righting_moment = GZ_small * (data.delta || 25000) * (data.g || 9.81); // kN.m
     
     setResults(prev => ({ 
       ...prev, 
@@ -381,7 +402,7 @@ export const StabilityCalculations = () => {
   };
 
   const calculateDynamicStability = () => {
-    if (!data.phi || !results.GZ_small) {
+    if (data.phi == null || results.GZ_small == null) {
       toast.error("Lütfen φ değerini girin ve önce GZ hesaplayın.");
       return;
     }
@@ -401,8 +422,12 @@ export const StabilityCalculations = () => {
 
   // 🔄 Free Surface Effect
   const calculateFSC = () => {
-    if (!data.L_tank || !data.B_tank || !data.rho_fluid || !data.delta) {
+    if (data.L_tank == null || data.B_tank == null || data.rho_fluid == null || data.delta == null) {
       toast.error("Lütfen tank boyutları, ρ_fluid ve Δ değerlerini girin.");
+      return;
+    }
+    if (data.L_tank <= 0 || data.B_tank <= 0 || data.rho_fluid <= 0 || data.delta <= 0) {
+      toast.error("Tank boyutları, ρ_fluid ve Δ pozitif olmalıdır.");
       return;
     }
     
@@ -422,13 +447,13 @@ export const StabilityCalculations = () => {
 
   // 🌪️ Wind and Weather Stability
   const calculateWindStability = () => {
-    if (!data.P_wind || !data.A_wind || !data.h_wind || !data.delta || results.GM_corrected) {
+    if (!data.P_wind || !data.A_wind || !data.h_wind || !data.delta || results.GM_corrected == null) {
       toast.error("Lütfen rüzgar parametrelerini girin ve önce GM hesaplayın.");
       return;
     }
     
     const wind_moment = (data.P_wind * data.A_wind * data.h_wind) / 1000; // kN.m
-    const righting_moment = (data.delta || 25000) * (results.GM_corrected || 1.0) * (data.g || 9.81) / 1000; // kN.m
+    const righting_moment = (data.delta || 25000) * (results.GM_corrected || 1.0) * (data.g || 9.81); // kN.m
     const wind_heel_angle = Math.atan(wind_moment / righting_moment) * (180 / Math.PI);
     const weather_criterion = wind_heel_angle <= 15; // Simplified criterion
     
@@ -444,8 +469,8 @@ export const StabilityCalculations = () => {
 
   // 📊 IMO Stability Criteria
   const calculateArea0to30 = () => {
-    if (!results.GM_corrected || !data.phi) {
-      toast.error("Lütfen önce GM hesaplayın ve φ değerini girin.");
+    if (!results.GM_corrected) {
+      toast.error("Lütfen önce GM hesaplayın.");
       return;
     }
     
@@ -461,8 +486,8 @@ export const StabilityCalculations = () => {
   };
 
   const calculateArea0to40 = () => {
-    if (!results.GM_corrected || !data.phi) {
-      toast.error("Lütfen önce GM hesaplayın ve φ değerini girin.");
+    if (!results.GM_corrected) {
+      toast.error("Lütfen önce GM hesaplayın.");
       return;
     }
     
@@ -489,23 +514,23 @@ export const StabilityCalculations = () => {
       ...prev, 
       area_30to40,
       area_30to40_calculated: area_30to40,
-      area_30to40_compliance: area_30to40 >= 1.719
+      area_30to40_compliance: area_30to40 >= 0.03
     }));
     
-    toast.success(`Area 30-40°: ${area_30to40.toFixed(3)} m.rad - ${area_30to40 >= 1.719 ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+    toast.success(`Area 30-40°: ${area_30to40.toFixed(3)} m.rad - ${area_30to40 >= 0.03 ? 'UYGUN' : 'UYGUN DEĞİL'}`);
   };
 
   const calculateIMOCompliance = () => {
-    if (!results.area_0to30 || !results.area_0to40 || !results.area_30to40 || !results.GZ_small || results.GM_corrected === undefined) {
-      toast.error("Lütfen önce tüm area hesaplamalarını ve GZ hesaplayın.");
+    if (!results.area_0to30 || !results.area_0to40 || !results.area_30to40 || results.GM_corrected === undefined || results.gz_max_calculated === undefined || results.phi_max_gz_calculated === undefined) {
+      toast.error("Lütfen önce tüm alan hesaplamalarını, GM'yi ve GZ eğrisini hesaplayın.");
       return;
     }
     
     const imo_compliance = {
-      area_0to30: results.area_0to30 >= 3.151,
-      area_0to40: results.area_0to40 >= 5.157,
-      area_30to40: results.area_30to40 >= 1.719,
-      gz_max: results.GZ_small >= 0.20,
+      area_0to30: results.area_0to30 >= 0.055,
+      area_0to40: results.area_0to40 >= 0.09,
+      area_30to40: results.area_30to40 >= 0.03,
+      gz_max: (results.gz_max_calculated >= 0.20) && ((results.phi_max_gz_calculated || 0) >= 30),
       initial_gm: results.GM_corrected >= 0.15,
       weather_criterion: results.weather_criterion || false
     };
@@ -526,7 +551,7 @@ export const StabilityCalculations = () => {
 
   // 🚨 Critical Angles
   const calculateCriticalAngles = () => {
-    if (!data.LCG || !data.LCB || results.GM_corrected === undefined || !data.BM) {
+    if (data.LCG == null || data.LCB == null || results.GM_corrected == null || data.BM == null) {
       toast.error("Lütfen LCG, LCB, GM ve BM değerlerini girin.");
       return;
     }
@@ -549,7 +574,7 @@ export const StabilityCalculations = () => {
 
   // 🛡️ Damage Stability
   const calculateDamageStability = () => {
-    if (!data.V_compartment || !data.permeability || !data.KG_flooded || !data.delta_flooded || !data.M_flooded || data.delta) {
+    if (!data.V_compartment || !data.permeability || !data.KG_flooded || !data.delta_flooded || !data.M_flooded || !data.delta) {
       toast.error("Lütfen hasar parametrelerini girin.");
       return;
     }
@@ -585,8 +610,12 @@ export const StabilityCalculations = () => {
 
   // 🌾 Grain Stability
   const calculateGrainStability = () => {
-    if (!data.delta || results.GM_corrected === undefined || !data.B) {
+    if (data.delta == null || results.GM_corrected == null || data.B == null) {
       toast.error("Lütfen Δ, GM ve B değerlerini girin.");
+      return;
+    }
+    if (data.delta <= 0 || results.GM_corrected <= 0 || data.B <= 0) {
+      toast.error("Δ, GM ve B pozitif olmalıdır.");
       return;
     }
     
@@ -689,14 +718,21 @@ export const StabilityCalculations = () => {
 
   // 🔄 Total FSC Calculation
   const calculateTotalFSC = () => {
-    if (!data.tanks || !data.delta) {
+    if (!Array.isArray(data.tanks) || data.delta == null) {
       toast.error("Lütfen tank bilgilerini ve Δ değerini girin.");
+      return;
+    }
+    if (data.delta <= 0) {
+      toast.error("Δ pozitif olmalıdır.");
       return;
     }
     
     // FSC_total = Σ(Ixx_i × ρ_i) / Δ
     let totalFSC = 0;
     data.tanks.forEach(tank => {
+      if (!tank || tank.L <= 0 || tank.B <= 0 || tank.rho <= 0) {
+        return;
+      }
       const Ixx = (tank.L * Math.pow(tank.B, 3)) / 12;
       const fsc = (Ixx * tank.rho) / data.delta;
       totalFSC += fsc;
@@ -710,10 +746,10 @@ export const StabilityCalculations = () => {
     toast.success(`Total FSC: ${totalFSC.toFixed(3)}m`);
   };
 
-  // 🌪️ Weather Criterion
+  // 🌪️ Hava Kriteri
   const calculateWeatherCriterion = () => {
-    if (!results.wind_heel_angle) {
-      toast.error("Lütfen önce Wind Heel Angle hesaplayın.");
+    if (results.wind_heel_angle == null) {
+      toast.error("Lütfen önce Rüzgar Yatma Açısı hesaplayın.");
       return;
     }
     
@@ -725,13 +761,13 @@ export const StabilityCalculations = () => {
       weather_criterion
     }));
     
-    toast.success(`Weather Criterion: ${phi_steady.toFixed(2)}° - ${weather_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+    toast.success(`Hava Kriteri: ${phi_steady.toFixed(2)}° - ${weather_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}`);
   };
 
   // 📊 Range of Stability
   const calculateStabilityRange = () => {
-    if (!results.vanishing_angle || !results.angle_of_list) {
-      toast.error("Lütfen önce Critical Angles hesaplayın.");
+    if (results.vanishing_angle == null || results.angle_of_list == null) {
+      toast.error("Lütfen önce Kritik Açıları hesaplayın.");
       return;
     }
     
@@ -749,7 +785,7 @@ export const StabilityCalculations = () => {
   // 🚨 Vanishing Angle
   const calculateVanishingAngle = () => {
     if (!results.gz_curve_points) {
-      toast.error("Lütfen önce GZ Curve hesaplayın.");
+      toast.error("Lütfen önce GZ Eğrisi hesaplayın.");
       return;
     }
     
@@ -770,10 +806,14 @@ export const StabilityCalculations = () => {
     toast.success(`Vanishing Angle: ${vanishing_angle.toFixed(1)}°`);
   };
 
-  // 🛡️ Cross Flooding Time
+  // 🛡️ Çapraz Dolma Süresi
   const calculateCrossFloodingTime = () => {
-    if (!data.V_compartment || !data.Q_cross) {
+    if (data.V_compartment == null || data.Q_cross == null) {
       toast.error("Lütfen V_compartment ve Q_cross değerlerini girin.");
+      return;
+    }
+    if (data.Q_cross === 0) {
+      toast.error("Q_cross 0 olamaz.");
       return;
     }
     
@@ -784,29 +824,29 @@ export const StabilityCalculations = () => {
       t_cross
     }));
     
-    toast.success(`Cross Flooding Time: ${t_cross.toFixed(1)} min`);
+    toast.success(`Çapraz Dolma Süresi: ${t_cross.toFixed(1)} dk`);
   };
 
-  // 🌪️ Area Requirement 30-40°
+  // 🌪️ Alan Kriteri 30–40°
   const calculateAreaRequirement = () => {
-    if (!results.area_30to40_calculated) {
+    if (results.area_30to40_calculated == null) {
       toast.error("Lütfen önce Area 30-40° hesaplayın.");
       return;
     }
     
-    const area_requirement = results.area_30to40_calculated >= 1.719;
+    const area_requirement = results.area_30to40_calculated >= 0.03;
     
     setResults(prev => ({ 
       ...prev, 
       area_30to40_compliance: area_requirement
     }));
     
-    toast.success(`Area Requirement 30-40°: ${results.area_30to40_calculated.toFixed(3)} m.rad - ${area_requirement ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+    toast.success(`Alan Kriteri 30–40°: ${results.area_30to40_calculated.toFixed(3)} m.rad - ${area_requirement ? 'UYGUN' : 'UYGUN DEĞİL'}`);
   };
 
-  // 🛡️ Downflooding Angle
+  // 🛡️ Aşağı Su Alma Açısı
   const calculateDownfloodingAngle = () => {
-    if (!data.h_vent || !data.T || !data.B) {
+    if (data.h_vent == null || data.T == null || data.B == null) {
       toast.error("Lütfen h_vent, T ve B değerlerini girin.");
       return;
     }
@@ -819,13 +859,13 @@ export const StabilityCalculations = () => {
       phi_down
     }));
     
-    toast.success(`Downflooding Angle: ${phi_down.toFixed(2)}°`);
+    toast.success(`Aşağı Su Alma Açısı: ${phi_down.toFixed(2)}°`);
   };
 
-  // 🛡️ Equalized Angle
+  // 🛡️ Eşitlenmiş Açı
   const calculateEqualizedAngle = () => {
-    if (!results.heel_angle || !results.t_cross) {
-      toast.error("Lütfen önce Heel Angle ve Cross Flooding Time hesaplayın.");
+    if (results.heel_angle == null || results.t_cross == null) {
+      toast.error("Lütfen önce Yatma Açısı ve Çapraz Dolma Süresini hesaplayın.");
       return;
     }
     
@@ -837,13 +877,17 @@ export const StabilityCalculations = () => {
       phi_eq
     }));
     
-    toast.success(`Equalized Angle: ${phi_eq.toFixed(2)}°`);
+    toast.success(`Eşitlenmiş Açı: ${phi_eq.toFixed(2)}°`);
   };
 
   // 🌾 Grain Allowable Heel
   const calculateGrainAllowableHeel = () => {
-    if (!data.delta || !data.B || !results.GM_corrected) {
+    if (data.delta == null || data.B == null || results.GM_corrected == null) {
       toast.error("Lütfen Δ, B ve GM değerlerini girin.");
+      return;
+    }
+    if (data.delta <= 0 || data.B <= 0 || results.GM_corrected <= 0) {
+      toast.error("Δ, B ve GM pozitif olmalıdır.");
       return;
     }
     
@@ -861,9 +905,9 @@ export const StabilityCalculations = () => {
     toast.success(`Grain Allowable Heel: ${phi_allowable.toFixed(2)}° - ${grain_stability_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}`);
   };
 
-  // 🔬 Energy to Heel
+  // 🔬 Yatma Enerjisi
   const calculateEnergyToHeel = () => {
-    if (!results.GZ_small || !data.phi_max) {
+    if (results.GZ_small == null || data.phi_max == null) {
       toast.error("Lütfen önce GZ hesaplayın ve φ_max değerini girin.");
       return;
     }
@@ -877,12 +921,12 @@ export const StabilityCalculations = () => {
       E_heel_calculated: E_heel
     }));
     
-    toast.success(`Energy to Heel: ${E_heel.toFixed(3)} m.rad`);
+    toast.success(`Yatma Enerjisi: ${E_heel.toFixed(3)} m.rad`);
   };
 
   // 🔬 GM Standard and Min
   const calculateGMStandards = () => {
-    if (!results.GM_corrected) {
+    if (results.GM_corrected == null) {
       toast.error("Lütfen önce GM hesaplayın.");
       return;
     }
@@ -903,10 +947,10 @@ export const StabilityCalculations = () => {
     toast.success(`GM Standard: ${GM_standard}m - GM Min: ${GM_min}m - SI: ${SI.toFixed(1)}% - SM: ${SM.toFixed(1)}%`);
   };
 
-  // 📈 GZ Curve Analysis
+  // 📈 GZ Eğrisi Analizi
   const calculateGZCurveAnalysis = () => {
-    if (!results.gz_curve_points || !results.gz_max_calculated) {
-      toast.error("Lütfen önce GZ Curve hesaplayın.");
+    if (!results.gz_curve_points || results.gz_max_calculated == null) {
+      toast.error("Lütfen önce GZ Eğrisi hesaplayın.");
       return;
     }
     
@@ -922,7 +966,7 @@ export const StabilityCalculations = () => {
     const dynamic_stability = area;
     
     // Calculate righting moment
-    const righting_moment = results.gz_max_calculated * (data.delta || 25000) * (data.g || 9.81) / 1000;
+    const righting_moment = results.gz_max_calculated * (data.delta || 25000) * (data.g || 9.81);
     
     setResults(prev => ({ 
       ...prev, 
@@ -931,19 +975,28 @@ export const StabilityCalculations = () => {
       righting_moment_calculated: righting_moment
     }));
     
-    toast.success(`GZ Curve Analysis - Area: ${area.toFixed(3)} m.rad - Dynamic Stability: ${dynamic_stability.toFixed(3)} m.rad - Righting Moment: ${righting_moment.toFixed(1)} kN.m`);
+    toast.success(`GZ Eğrisi Analizi - Alan: ${area.toFixed(3)} m.rad - Dinamik Stabilite: ${dynamic_stability.toFixed(3)} m.rad - Doğrultucu Moment: ${righting_moment.toFixed(1)} kN.m`);
   };
 
   // 🚢 Doğrultucu Moment Hesaplama
   const calculateRightingMoment = () => {
-    if (!data.L || !data.B || !data.H || !data.delta || !data.heel_angle) {
+    if (data.L == null || data.B == null || data.H == null || data.delta == null || data.heel_angle == null) {
       toast.error("Lütfen L, B, H, Δ ve yatma açısı değerlerini girin.");
+      return;
+    }
+    if (data.L <= 0 || data.B <= 0 || data.H <= 0 || data.delta <= 0) {
+      toast.error("L, B, H ve Δ pozitif olmalıdır.");
       return;
     }
     
     // 1. Draft hesaplama (A = L × B × d × density)
     const density = data.rho_sw || 1.025; // t/m³
     const draft = data.delta / (data.L * data.B * density);
+    
+    if (draft <= 0) {
+      toast.error("Draft pozitif olmalıdır.");
+      return;
+    }
     
     // 2. BM hesaplama (BM = B² / (12 × d))
     const BM = Math.pow(data.B, 2) / (12 * draft);
@@ -960,9 +1013,9 @@ export const StabilityCalculations = () => {
     // 6. GM hesaplama (GM = KM - KG)
     const GM = KM - KG;
     
-    // 7. Doğrultucu Moment = Δ × GM × tan(φ)
+    // 7. Doğrultucu Moment = Δ × g × GM × tan(φ)
     const heel_angle_rad = (data.heel_angle * Math.PI) / 180;
-    const righting_moment = data.delta * GM * Math.tan(heel_angle_rad);
+    const righting_moment = data.delta * (data.g || 9.81) * GM * Math.tan(heel_angle_rad);
     
     setResults(prev => ({ 
       ...prev, 
@@ -975,7 +1028,7 @@ export const StabilityCalculations = () => {
       righting_moment_special: righting_moment
     }));
     
-    toast.success(`Doğrultucu Moment: ${righting_moment.toFixed(1)} ton.m - GM: ${GM.toFixed(3)}m - Draft: ${draft.toFixed(3)}m`);
+    toast.success(`Doğrultucu Moment: ${righting_moment.toFixed(1)} kN.m - GM: ${GM.toFixed(3)}m - Draft: ${draft.toFixed(3)}m`);
   };
 
   return (
@@ -1335,8 +1388,8 @@ export const StabilityCalculations = () => {
                     </Button>
                     {results.righting_moment_special !== undefined && (
                       <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.righting_moment_special.toFixed(1)} ton.m</div>
-                        <div className="text-sm text-muted-foreground">Doğrultucu Moment</div>
+                        <div className="text-2xl font-bold">{results.righting_moment_special.toFixed(1)} kN.m</div>
+                        <div className="text-sm text-muted-foreground">Doğrultucu Moment (kN.m)</div>
                         {results.GM_calculated !== undefined && (
                           <div className="text-lg font-semibold mt-1">GM: {results.GM_calculated.toFixed(3)} m</div>
                         )}
@@ -1594,13 +1647,13 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      Weather Criterion: φ_steady = φ_wind × 1.5
+                      Hava Kriteri: φ_steady = φ_wind × 1.5
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateWeatherCriterion} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Weather Criterion Hesapla
+                      Hava Kriteri Hesapla
                     </Button>
                     {results.weather_criterion !== undefined && (
                       <div className="text-center p-3 bg-yellow-50 rounded-lg">
@@ -1618,18 +1671,18 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      Area Requirement: Area_30to40 ≥ 1.719 m.rad
+                      Alan Kriteri: 30–40° ≥ 0.03 m.rad
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateAreaRequirement} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Area Requirement Hesapla
+                      Alan Kriteri Hesapla
                     </Button>
                     {results.area_30to40_compliance !== undefined && (
                       <div className="text-center p-3 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.area_30to40_calculated?.toFixed(3) || '0.000'} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Area 30-40°</div>
+                        <div className="text-sm text-muted-foreground">Alan 30–40°</div>
                         <Badge className={`mt-2 ${results.area_30to40_compliance ? 'bg-green-500' : 'bg-red-500'}`}>
                           {results.area_30to40_compliance ? 'UYGUN' : 'UYGUN DEĞİL'}
                         </Badge>
@@ -1647,20 +1700,20 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5" />
-                      Area 0-30°: Area ≥ 3.151 m.rad
+                      Alan 0–30°: Alan ≥ 0.055 m.rad
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateArea0to30} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Area 0-30° Hesapla
+                      Alan 0–30° Hesapla
                     </Button>
                     {results.area_0to30 !== undefined && (
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.area_0to30.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Area 0-30°</div>
-                        <Badge className={`mt-2 ${results.area_0to30 >= 3.151 ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.area_0to30 >= 3.151 ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        <div className="text-sm text-muted-foreground">Alan 0–30°</div>
+                        <Badge className={`mt-2 ${results.area_0to30 >= 0.055 ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_0to30 >= 0.055 ? 'UYGUN' : 'UYGUN DEĞİL'}
                         </Badge>
                       </div>
                     )}
@@ -1671,20 +1724,20 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5" />
-                      Area 0-40°: Area ≥ 5.157 m.rad
+                      Alan 0–40°: Alan ≥ 0.09 m.rad
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateArea0to40} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Area 0-40° Hesapla
+                      Alan 0–40° Hesapla
                     </Button>
                     {results.area_0to40 !== undefined && (
                       <div className="text-center p-3 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.area_0to40.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Area 0-40°</div>
-                        <Badge className={`mt-2 ${results.area_0to40 >= 5.157 ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.area_0to40 >= 5.157 ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        <div className="text-sm text-muted-foreground">Alan 0–40°</div>
+                        <Badge className={`mt-2 ${results.area_0to40 >= 0.09 ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_0to40 >= 0.09 ? 'UYGUN' : 'UYGUN DEĞİL'}
                         </Badge>
                       </div>
                     )}
@@ -1695,20 +1748,20 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5" />
-                      Area 30-40°: Area ≥ 1.719 m.rad
+                      Alan 30–40°: Alan ≥ 0.03 m.rad
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateArea30to40} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Area 30-40° Hesapla
+                      Alan 30–40° Hesapla
                     </Button>
                     {results.area_30to40 !== undefined && (
                       <div className="text-center p-3 bg-purple-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.area_30to40.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Area 30-40°</div>
-                        <Badge className={`mt-2 ${results.area_30to40 >= 1.719 ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.area_30to40 >= 1.719 ? 'UYGUN' : 'UYGUN DEĞİL'}
+                        <div className="text-sm text-muted-foreground">Alan 30–40°</div>
+                        <Badge className={`mt-2 ${results.area_30to40 >= 0.03 ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {results.area_30to40 >= 0.03 ? 'UYGUN' : 'UYGUN DEĞİL'}
                         </Badge>
                       </div>
                     )}
@@ -1738,12 +1791,12 @@ export const StabilityCalculations = () => {
                                 <AlertTriangle className="h-4 w-4 text-red-500" />
                               )}
                               <span className="text-sm">
-                                {key === 'area_0to30' && 'Area 0-30° ≥ 3.151 m.rad'}
-                                {key === 'area_0to40' && 'Area 0-40° ≥ 5.157 m.rad'}
-                                {key === 'area_30to40' && 'Area 30-40° ≥ 1.719 m.rad'}
-                                {key === 'gz_max' && 'GZ_max ≥ 0.20 m at φ ≥ 30°'}
-                                {key === 'initial_gm' && 'Initial GM ≥ 0.15 m'}
-                                {key === 'weather_criterion' && 'Weather Criterion'}
+                                {key === 'area_0to30' && 'Alan 0–30° ≥ 0.055 m.rad'}
+                                {key === 'area_0to40' && 'Alan 0–40° ≥ 0.09 m.rad'}
+                                {key === 'area_30to40' && 'Alan 30–40° ≥ 0.03 m.rad'}
+                                {key === 'gz_max' && 'GZ_max ≥ 0.20 m @ φ ≥ 30°'}
+                                {key === 'initial_gm' && 'Başlangıç GM ≥ 0.15 m'}
+                                {key === 'weather_criterion' && 'Hava Kriteri'}
                               </span>
                             </div>
                           ))}
@@ -1868,7 +1921,7 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      Advanced Stability Analysis
+                      Gelişmiş Stabilite Analizi
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1934,7 +1987,7 @@ export const StabilityCalculations = () => {
                         {results.phi_max_gz_calculated !== undefined && (
                           <div className="text-lg font-semibold mt-1">@ {results.phi_max_gz_calculated}°</div>
                         )}
-                        <div className="text-sm mt-2">GZ Eğrisi 0-90° arası oluşturuldu</div>
+                        <div className="text-sm mt-2">GZ Eğrisi 0–90° arası oluşturuldu</div>
                       </div>
                     )}
                   </CardContent>
@@ -1944,7 +1997,7 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      Energy to Heel: E_heel = ∫GZ dφ (0 to φ_max)
+                      Yatma Enerjisi: E_heel = ∫GZ dφ (0 → φ_max)
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1960,12 +2013,12 @@ export const StabilityCalculations = () => {
                     </div>
                     <Button onClick={calculateEnergyToHeel} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Energy to Heel Hesapla
+                      Yatma Enerjisi Hesapla
                     </Button>
                     {results.E_heel_calculated !== undefined && (
                       <div className="text-center p-3 bg-indigo-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.E_heel_calculated.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Energy to Heel</div>
+                        <div className="text-sm text-muted-foreground">Yatma Enerjisi</div>
                       </div>
                     )}
                   </CardContent>
@@ -1975,18 +2028,18 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      GM Standards: SI = (GM_corrected / GM_standard) × 100
+                      GM Standartları: SI = (GM_corr / GM_std) × 100
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateGMStandards} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      GM Standards Hesapla
+                      GM Standartları Hesapla
                     </Button>
                     {results.GM_standard_calculated !== undefined && (
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.GM_standard_calculated.toFixed(2)} m</div>
-                        <div className="text-sm text-muted-foreground">GM Standard</div>
+                        <div className="text-sm text-muted-foreground">GM Standart</div>
                         {results.GM_min_calculated !== undefined && (
                           <div className="text-lg font-semibold mt-1">GM Min: {results.GM_min_calculated.toFixed(2)} m</div>
                         )}
@@ -2005,23 +2058,23 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5" />
-                      GZ Curve Analysis: Area, Dynamic Stability, Righting Moment
+                      GZ Eğrisi Analizi: Alan, Dinamik Stabilite, Doğrultucu Moment
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateGZCurveAnalysis} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      GZ Curve Analysis Hesapla
+                      GZ Eğrisi Analizi Hesapla
                     </Button>
                     {results.area_calculated !== undefined && (
                       <div className="text-center p-3 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.area_calculated.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Area Under Curve</div>
+                        <div className="text-sm text-muted-foreground">Eğri Altı Alan</div>
                         {results.dynamic_stability_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">Dynamic Stability: {results.dynamic_stability_calculated.toFixed(3)} m.rad</div>
+                          <div className="text-lg font-semibold mt-1">Dinamik Stabilite: {results.dynamic_stability_calculated.toFixed(3)} m.rad</div>
                         )}
                         {results.righting_moment_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">Righting Moment: {results.righting_moment_calculated.toFixed(1)} kN.m</div>
+                          <div className="text-lg font-semibold mt-1">Doğrultucu Moment: {results.righting_moment_calculated.toFixed(1)} kN.m</div>
                         )}
                       </div>
                     )}
@@ -2037,7 +2090,7 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Damage Stability
+                      Hasar Stabilitesi
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -2135,7 +2188,7 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Cross Flooding Time: t_cross = V_compartment / Q_cross
+                      Çapraz Dolma Süresi: t_cross = V_compartment / Q_cross
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -2163,12 +2216,12 @@ export const StabilityCalculations = () => {
                     </div>
                     <Button onClick={calculateCrossFloodingTime} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Cross Flooding Time Hesapla
+                      Çapraz Dolma Süresi Hesapla
                     </Button>
                     {results.t_cross !== undefined && (
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.t_cross.toFixed(1)} min</div>
-                        <div className="text-sm text-muted-foreground">Cross Flooding Time</div>
+                        <div className="text-2xl font-bold">{results.t_cross.toFixed(1)} dk</div>
+                        <div className="text-sm text-muted-foreground">Çapraz Dolma Süresi</div>
                       </div>
                     )}
                   </CardContent>
@@ -2178,7 +2231,7 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Downflooding Angle: φ_down = arctan((h_vent - T) / (B/2))
+                      Aşağı Su Alma Açısı: φ_down = arctan((h_vent - T) / (B/2))
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -2216,12 +2269,12 @@ export const StabilityCalculations = () => {
                     </div>
                     <Button onClick={calculateDownfloodingAngle} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Downflooding Angle Hesapla
+                      Aşağı Su Alma Açısı Hesapla
                     </Button>
                     {results.phi_down !== undefined && (
                       <div className="text-center p-3 bg-red-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.phi_down.toFixed(2)}°</div>
-                        <div className="text-sm text-muted-foreground">Downflooding Angle</div>
+                        <div className="text-sm text-muted-foreground">Aşağı Su Alma Açısı</div>
                       </div>
                     )}
                   </CardContent>
@@ -2231,18 +2284,18 @@ export const StabilityCalculations = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5" />
-                      Equalized Angle: φ_eq = φ_heel × (1 - e^(-t/t_cross))
+                      Eşitlenmiş Açı: φ_eq = φ_heel × (1 - e^(-t/t_cross))
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <Button onClick={calculateEqualizedAngle} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Equalized Angle Hesapla
+                      Eşitlenmiş Açı Hesapla
                     </Button>
                     {results.phi_eq !== undefined && (
                       <div className="text-center p-3 bg-orange-50 rounded-lg">
                         <div className="text-2xl font-bold">{results.phi_eq.toFixed(2)}°</div>
-                        <div className="text-sm text-muted-foreground">Equalized Angle</div>
+                        <div className="text-sm text-muted-foreground">Eşitlenmiş Açı</div>
                       </div>
                     )}
                   </CardContent>
