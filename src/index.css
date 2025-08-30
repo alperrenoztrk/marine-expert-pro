@@ -99,6 +99,12 @@ All colors MUST be HSL.
     background-attachment: fixed;
   }
 
+  /* Zoom-out variant for homepage ship background */
+  .homepage-ship-background--zoom-out {
+    background-size: contain;
+    background-position: center;
+  }
+
   /* Mobile-optimized typography */
   @media (max-width: 768px) {
     .maritime-title {
@@ -108,6 +114,16 @@ All colors MUST be HSL.
     
     .maritime-subtitle {
       font-size: clamp(1rem, 4vw, 1.25rem);
+    }
+
+    /* Mobile background behavior for performance and better framing */
+    .homepage-ship-background {
+      background-attachment: scroll;
+    }
+
+    .homepage-ship-background--zoom-out {
+      background-size: 75%;
+      background-position: center;
     }
   }
 
