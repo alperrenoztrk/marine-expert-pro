@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin, Clock } from "lucide-react";
+import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 
 type WeatherResponse = {
@@ -166,20 +166,6 @@ export default function WeatherWidget() {
     } as const;
   }, [data, nowMs]);
 
-  const nationalTimeStr = useMemo(() => {
-    // Turkey National Time (UTC+3 year-round)
-    try {
-      return new Intl.DateTimeFormat("tr-TR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-        timeZone: "Europe/Istanbul",
-      }).format(nowMs);
-    } catch {
-      return null;
-    }
-  }, [nowMs]);
 
   return (
     <Card className="w-full bg-transparent border-none shadow-none">
@@ -217,16 +203,6 @@ export default function WeatherWidget() {
                 {Number.isFinite(data.latitude) && Number.isFinite(data.longitude)
                   ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`
                   : null}
-              </div>
-            </div>
-            <div className="col-span-2 flex items-center gap-3">
-              <Clock className="h-5 w-5 text-indigo-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Ulusal Saat</div>
-                <div className="text-base font-medium">
-                  {nationalTimeStr ?? "-"}
-                  <span className="ml-2 text-xs text-muted-foreground">TRT (UTC+3)</span>
-                </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
