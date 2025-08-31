@@ -147,7 +147,7 @@ export default function WeatherWidget() {
     const utcMs = nowMs; // Date.now() in ms since epoch (UTC epoch)
     const offsetSeconds = data.utcOffsetSeconds ?? 0;
     const ztMs = utcMs + offsetSeconds * 1000;
-    // LMT removed as per requirement
+    const lmtMs = utcMs + (data.longitude ?? 0) * 4 * 60 * 1000; // 4 min per degree
     const fmt = (ms: number) => new Date(ms).toISOString().substring(11, 19); // HH:mm:ss (UTC-based substring)
 
     // Format ZD = hours to add to ZT to get GMT => ZD = -offset
@@ -161,6 +161,7 @@ export default function WeatherWidget() {
     return {
       gmt: fmt(utcMs),
       zt: fmt(ztMs),
+      lmt: fmt(lmtMs),
       zd: zdStr,
     } as const;
   }, [data, nowMs]);
@@ -255,12 +256,16 @@ export default function WeatherWidget() {
               </div>
             </div>
 
-            {/* Timezone block: GMT / ZT / ZD */}
+            {/* Timezone block: GMT / LMT / ZT / ZD */}
             {timeDisplay && (
-              <div className="col-span-2 grid grid-cols-3 gap-3 text-xs">
+              <div className="col-span-2 grid grid-cols-4 gap-3 text-xs">
                 <div className="flex flex-col items-start">
                   <span className="text-muted-foreground">GMT</span>
                   <span className="font-medium">{timeDisplay.gmt}</span>
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-muted-foreground">LMT</span>
+                  <span className="font-medium">{timeDisplay.lmt}</span>
                 </div>
                 <div className="flex flex-col items-start">
                   <span className="text-muted-foreground">ZT</span>
