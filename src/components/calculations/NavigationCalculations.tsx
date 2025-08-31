@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera } from "lucide-react";
+import SextantCamera from "@/components/SextantCamera";
 import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
 import { DirectionInput } from "@/components/DirectionInput";
@@ -488,6 +489,21 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     const gst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 
                0.000387933 * T * T - T * T * T / 38710000;
     return normalizeAngle(gst);
+  };
+
+  // Compute Sun GHA from Greenwich Sidereal Time and Sun Right Ascension
+  const calculateSunGHA = (jd: number) => {
+    // Recalculate basic quantities similarly to calculateSunPosition
+    const n = jd - 2451545.0;
+    const L = (280.460 + 0.9856474 * n) % 360;
+    const g = toRadians((357.528 + 0.9856003 * n) % 360);
+    const lambda = toRadians(L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g));
+    const alphaRad = Math.atan2(Math.cos(toRadians(23.439)) * Math.sin(lambda), Math.cos(lambda));
+    const alphaDeg = normalizeAngle(toDegrees(alphaRad));
+    const gst = calculateGST(jd);
+    // GHA = GST - RA
+    const gha = normalizeAngle(gst - alphaDeg);
+    return { gha, rightAscension: alphaDeg };
   };
 
   // Enhanced twilight calculations
@@ -2362,50 +2378,93 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       <Camera className="h-4 w-4" />
                       Sextant Ölçümleri
                     </h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="altitude">Sextant Yüksekliği (°)</Label>
-                        <Input
-                          id="altitude"
-                          type="number"
-                          step="0.1"
-                          value={data.altitude}
-                          onChange={(e) => updateData('altitude', parseFloat(e.target.value) || 0)}
-                          className="text-right"
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="order-2 md:order-1 space-y-4">
+                        <SextantCamera onHoMeasured={(deg) => updateData('altitude', deg)} />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="azimuth">Azimut (°)</Label>
-                        <Input
-                          id="azimuth"
-                          type="number"
-                          step="0.1"
-                          value={data.azimuth}
-                          onChange={(e) => updateData('azimuth', parseFloat(e.target.value) || 0)}
-                          className="text-right"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="gha">GHA (°)</Label>
-                        <Input
-                          id="gha"
-                          type="number"
-                          step="0.1"
-                          value={data.gha}
-                          onChange={(e) => updateData('gha', parseFloat(e.target.value) || 0)}
-                          className="text-right"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="declination">Deklinasyon (°)</Label>
-                        <Input
-                          id="declination"
-                          type="number"
-                          step="0.1"
-                          value={data.declination}
-                          onChange={(e) => updateData('declination', parseFloat(e.target.value) || 0)}
-                          className="text-right"
-                        />
+                      <div className="order-1 md:order-2 grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="altitude">Sextant Yüksekliği (°)</Label>
+                          <Input
+                            id="altitude"
+                            type="number"
+                            step="0.1"
+                            value={data.altitude}
+                            onChange={(e) => updateData('altitude', parseFloat(e.target.value) || 0)}
+                            className="text-right"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="azimuth">Azimut (°)</Label>
+                          <Input
+                            id="azimuth"
+                            type="number"
+                            step="0.1"
+                            value={data.azimuth}
+                            onChange={(e) => updateData('azimuth', parseFloat(e.target.value) || 0)}
+                            className="text-right"
+                          />
+                        </div>
+                        {(() => {
+                          const selectedDate = new Date(data.date);
+                          const jd = calculateJulianDay(selectedDate);
+                          const sunPos = calculateSunPosition(jd, data.observerLatitude, data.observerLongitude);
+                          const { gha } = calculateSunGHA(jd);
+                          const lha = normalizeAngle(gha + data.observerLongitude);
+                          const latRad = toRadians(data.observerLatitude);
+                          const decRad = toRadians(sunPos.declination);
+                          const lhaRad = toRadians(lha);
+                          const hcRad = Math.asin(Math.sin(latRad) * Math.sin(decRad) + Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad));
+                          const hc = toDegrees(hcRad);
+                          return (
+                            <>
+                              <div className="space-y-2">
+                                <Label>GHA (Güneş) (°)</Label>
+                                <div className="text-right py-2 px-3 rounded border bg-muted">{gha.toFixed(2)}</div>
+                              </div>
+                              <div className="space-y-2">
+                                <Label>LHA (°)</Label>
+                                <div className="text-right py-2 px-3 rounded border bg-muted">{lha.toFixed(2)}</div>
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Dekl. (°)</Label>
+                                <div className="text-right py-2 px-3 rounded border bg-muted">{sunPos.declination.toFixed(2)}</div>
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Hc (°)</Label>
+                                <div className="text-right py-2 px-3 rounded border bg-muted">{hc.toFixed(2)}</div>
+                              </div>
+                              <div className="col-span-2 space-y-1">
+                                <Label>Intercept (Ho - Hc)</Label>
+                                <div className="text-right py-2 px-3 rounded border bg-muted">
+                                  { (data.altitude - hc).toFixed(2) }°
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })()}
+                        <div className="space-y-2">
+                          <Label htmlFor="gha">GHA (°)</Label>
+                          <Input
+                            id="gha"
+                            type="number"
+                            step="0.1"
+                            value={data.gha}
+                            onChange={(e) => updateData('gha', parseFloat(e.target.value) || 0)}
+                            className="text-right"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="declination">Deklinasyon (°)</Label>
+                          <Input
+                            id="declination"
+                            type="number"
+                            step="0.1"
+                            value={data.declination}
+                            onChange={(e) => updateData('declination', parseFloat(e.target.value) || 0)}
+                            className="text-right"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
