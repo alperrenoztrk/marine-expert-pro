@@ -39,7 +39,8 @@ const Index = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background now applied globally on body via index.html */}
+      {/* Homepage background with ship image (zoomed out) */}
+      <div className="absolute inset-0 homepage-ship-background homepage-ship-background--zoom-out" />
       {/* Right-side arrow to open Empty Page */}
       <Link to="/empty-page" className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
         <Button

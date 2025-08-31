@@ -111,7 +111,7 @@ const App = () => {
         <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
           <LanguageProvider>
             <Toaster />
-            <div className={`min-h-screen text-foreground ${keyboardVisible ? 'pb-16' : ''} ${isNative ? 'safe-area' : ''}`}>
+            <div className={`min-h-screen bg-background text-foreground ${keyboardVisible ? 'pb-16' : ''} ${isNative ? 'safe-area' : ''}`}>
               <BrowserRouter>
                 {/* Sync language on route changes */}
                 <LanguageRouteSync />
