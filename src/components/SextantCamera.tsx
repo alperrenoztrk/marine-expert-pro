@@ -10,7 +10,8 @@ import {
   getAllVisibleCelestialBodies, 
   calculateRefraction,
   ObserverPosition,
-  CelestialBody 
+  CelestialBody,
+  celestialToScreenCoordinates 
 } from "@/utils/celestialCalculations";
 
 interface SextantCameraProps {
@@ -52,6 +53,9 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
   const [deviceOrientation, setDeviceOrientation] = useState({ alpha: 0, beta: 0, gamma: 0 });
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
   const [selectedCelestialBody, setSelectedCelestialBody] = useState<CelestialBody | null>(null);
+  const [autoIdentify, setAutoIdentify] = useState<boolean>(true);
+  const [identifyThresholdPx, setIdentifyThresholdPx] = useState<number>(48);
+  const [identifiedCelestial, setIdentifiedCelestial] = useState<(CelestialBody & { screenX: number; screenY: number }) | null>(null);
 
   const startCamera = useCallback(async () => {
     try {
@@ -172,6 +176,54 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
     if (onHoMeasured) onHoMeasured(correctedAltitudeDeg);
   }, [onHoMeasured, correctedAltitudeDeg]);
 
+  // Project celestial bodies to screen coordinates for identification
+  const bodiesInView = useMemo(() => {
+    if (!isStreaming || !hasOrientationPermission || screenDimensions.width === 0 || screenDimensions.height === 0) return [] as (CelestialBody & { screenX: number; screenY: number; isInView: boolean })[];
+    return celestialBodies
+      .map((body) => {
+        const pos = celestialToScreenCoordinates(
+          body.altitude,
+          body.azimuth,
+          deviceOrientation,
+          screenDimensions.width,
+          screenDimensions.height
+        );
+        return { ...body, screenX: pos.x, screenY: pos.y, isInView: pos.isInView };
+      })
+      .filter((b) => b.isInView);
+  }, [celestialBodies, deviceOrientation, screenDimensions, isStreaming, hasOrientationPermission]);
+
+  // Auto-identify nearest celestial to the crosshair center
+  useEffect(() => {
+    if (!autoIdentify) {
+      setIdentifiedCelestial(null);
+      return;
+    }
+    if (bodiesInView.length === 0) {
+      setIdentifiedCelestial(null);
+      return;
+    }
+    const centerX = screenDimensions.width / 2;
+    const centerY = screenDimensions.height / 2;
+    let best: (CelestialBody & { screenX: number; screenY: number }) | null = null;
+    let bestDist = Infinity;
+    for (const b of bodiesInView) {
+      const dx = b.screenX - centerX;
+      const dy = b.screenY - centerY;
+      const d = Math.hypot(dx, dy);
+      if (d < bestDist) {
+        bestDist = d;
+        best = b;
+      }
+    }
+    if (best && bestDist <= identifyThresholdPx) {
+      setIdentifiedCelestial(best);
+      setSelectedCelestialBody(best);
+    } else {
+      setIdentifiedCelestial(null);
+    }
+  }, [autoIdentify, bodiesInView, screenDimensions, identifyThresholdPx]);
+
   return (
     <div className={["w-full space-y-3", className].join(" ")}> 
       <div className="flex gap-2">
@@ -205,6 +257,15 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
               disabled={!showAROverlay}
             />
           </div>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="autoIdentify" className="text-sm">Otomatik Tanıma</Label>
+            <Switch
+              id="autoIdentify"
+              checked={autoIdentify}
+              onCheckedChange={setAutoIdentify}
+              disabled={!showAROverlay}
+            />
+          </div>
         </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -230,6 +291,20 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
               className="text-xs"
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="identifyThreshold" className="text-sm">Tanıma Eşiği (px)</Label>
+            <Input
+              id="identifyThreshold"
+              type="number"
+              min="8"
+              max="200"
+              step="4"
+              value={identifyThresholdPx}
+              onChange={(e) => setIdentifyThresholdPx(parseFloat(e.target.value) || 48)}
+              disabled={!showAROverlay || !autoIdentify}
+              className="text-xs"
+            />
+          </div>
         </div>
       </div>
 
@@ -247,6 +322,37 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
             showOnlyNavigationStars={showOnlyNavigationStars}
             minimumMagnitude={minimumMagnitude}
           />
+        )}
+
+        {/* Identified celestial highlight */}
+        {identifiedCelestial && (
+          <div className="absolute inset-0 pointer-events-none">
+            <div
+              className="absolute"
+              style={{
+                left: identifiedCelestial.screenX,
+                top: identifiedCelestial.screenY,
+                transform: "translate(-50%, -50%)"
+              }}
+            >
+              <div className="w-16 h-16 rounded-full border-2 border-yellow-400 animate-pulse" />
+            </div>
+            <div
+              className="absolute"
+              style={{
+                left: identifiedCelestial.screenX,
+                top: identifiedCelestial.screenY + 40,
+                transform: "translate(-50%, 0)"
+              }}
+            >
+              <Badge variant="default" className="bg-yellow-500 text-black">
+                {identifiedCelestial.name}
+                {typeof identifiedCelestial.magnitude === "number" && (
+                  <span className="ml-1">· mag {identifiedCelestial.magnitude.toFixed(1)}</span>
+                )}
+              </Badge>
+            </div>
+          </div>
         )}
         
         {/* Traditional Overlay */}
