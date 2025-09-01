@@ -1605,6 +1605,40 @@ All colors MUST be HSL.
   overflow: visible;
 }
 
+/* AR Overlay Animations */
+@keyframes celestial-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.8; }
+  25% { opacity: 1; }
+  50% { opacity: 0.6; }
+  75% { opacity: 1; }
+}
+
+.celestial-body {
+  animation: celestial-pulse 2s ease-in-out infinite;
+}
+
+.celestial-star {
+  animation: star-twinkle 3s ease-in-out infinite;
+}
+
+.celestial-sun {
+  animation: celestial-pulse 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px #FFD700);
+}
+
+.celestial-moon {
+  animation: celestial-pulse 5s ease-in-out infinite;
+}
+
+.celestial-planet {
+  animation: celestial-pulse 3s ease-in-out infinite;
+}
+
 .sextant-3d {
   position: relative;
   transform-style: preserve-3d;

@@ -2380,7 +2380,13 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="order-2 md:order-1 space-y-4">
-                        <SextantCamera onHoMeasured={(deg) => updateData('altitude', deg)} />
+                        <SextantCamera 
+                          onHoMeasured={(deg) => updateData('altitude', deg)} 
+                          observerPosition={{
+                            latitude: data.observerLatitude,
+                            longitude: data.observerLongitude
+                          }}
+                        />
                       </div>
                       <div className="order-1 md:order-2 grid grid-cols-2 gap-4">
                         <div className="space-y-2">
