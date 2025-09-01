@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, FileText, Settings, ChevronRight } from "lucide-react";
+import { Plus, Shield, FileText, Settings, ChevronRight, Star } from "lucide-react";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
@@ -95,7 +95,20 @@ const Index = () => {
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Top button - Hesaplamalar */}
+          {/* Top button - Star Walk */}
+          <Link to="/starwalk" className="w-full">
+            <Button className="w-full h-16 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-2xl gap-3 text-base font-semibold shadow-xl border-2 border-white/20 transition-all duration-200 hover:scale-105">
+              <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center animate-pulse">
+                <Star className="w-5 h-5 text-purple-800" fill="currentColor" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold">Yıldız Tanıma</div>
+                <div className="text-xs text-purple-100">Star Walk benzeri AR deneyimi</div>
+              </div>
+            </Button>
+          </Link>
+
+          {/* Second button - Hesaplamalar */}
           <Link to="/calculations" className="w-full">
             <Button className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-2xl gap-3 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
               <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">

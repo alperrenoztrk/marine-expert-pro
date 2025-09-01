@@ -48,6 +48,7 @@ import WeatherMenu from "./pages/WeatherMenu";
 import SpecialShipsMenu from "./pages/SpecialShipsMenu";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityRules from "./pages/StabilityRules";
+import StarWalk from "./pages/StarWalk";
 // Removed StabilityRulesBasic and StabilityCalculatorPage imports
 import EconomicsMenu from "./pages/EconomicsMenu";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
@@ -122,6 +123,7 @@ const App = () => {
                   <Route path="/regulations" element={<Regulations />} />
                   
                   <Route path="/navigation" element={<Navigation />} />
+                  <Route path="/starwalk" element={<StarWalk />} />
                   <Route path="/hydrodynamics" element={<Hydrodynamics />} />
                   <Route path="/engine" element={<Engine />} />
                   <Route path="/cargo" element={<CargoMenu />} />

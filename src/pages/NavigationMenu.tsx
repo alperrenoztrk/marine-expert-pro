@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Compass, Map, Clock, Ruler, Anchor, Book } from "lucide-react";
+import { ArrowLeft, Compass, Map, Clock, Ruler, Anchor, Book, Star, Camera } from "lucide-react";
 
 export default function NavigationMenu(){
   const items = [
@@ -23,6 +23,8 @@ export default function NavigationMenu(){
     { to: "/navigation?tab=celestial", icon: <Book className="h-4 w-4" />, label: "Göksel" },
     { to: "/navigation?tab=astronomical", icon: <Book className="h-4 w-4" />, label: "Astronomik" },
     { to: "/navigation?tab=almanac", icon: <Book className="h-4 w-4" />, label: "Almanac" },
+    { to: "/starwalk", icon: <Star className="h-4 w-4" />, label: "Yıldız Tanıma (Star Walk)" },
+    { to: "/starwalk?tab=ar", icon: <Camera className="h-4 w-4" />, label: "AR Yıldız Kamerası" },
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
