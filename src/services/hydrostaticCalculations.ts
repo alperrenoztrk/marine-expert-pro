@@ -1019,6 +1019,92 @@ export class HydrostaticCalculations {
   }
 
   /**
+   * GG1 from a weight shift: GG1 = w · d / Δ
+   */
+  static calculateGG1(weightTonnes: number, distanceMeters: number, displacementTonnes: number): number {
+    if (displacementTonnes <= 0) return 0;
+    return (weightTonnes * distanceMeters) / displacementTonnes;
+  }
+
+  /**
+   * Heel angle from GZ and GM: tan(φ) = GZ / GM
+   */
+  static calculateHeelAngleFromGZ(gzMeters: number, gmMeters: number): number {
+    if (gmMeters === 0) return 0;
+    const phiRad = Math.atan(gzMeters / gmMeters);
+    return (phiRad * 180) / Math.PI;
+  }
+
+  /**
+   * Pendulum-based heel angle approximation: tanφ ≈ sinφ = deviation/length
+   */
+  static calculatePendulumHeelAngle(deviationMeters: number, pendulumLengthMeters: number): number {
+    if (pendulumLengthMeters <= 0) return 0;
+    const phiRad = Math.atan(deviationMeters / pendulumLengthMeters);
+    return (phiRad * 180) / Math.PI;
+  }
+
+  /**
+   * FSM for a rectangular tank: FSM = (L · B^3 / 12) · ρ
+   */
+  static calculateFSMRectangularTank(lengthMeters: number, breadthMeters: number, rhoTPerM3: number = this.WATER_DENSITY): number {
+    if (lengthMeters <= 0 || breadthMeters <= 0 || rhoTPerM3 <= 0) return 0;
+    return (lengthMeters * Math.pow(breadthMeters, 3) / 12) * rhoTPerM3; // tonne·m
+  }
+
+  /**
+   * ΔKG (free-surface GM reduction) from FSM: ΔKG = FSM / Δ
+   */
+  static calculateDeltaKGFromFSM(fsmTonneMeter: number, displacementTonnes: number): number {
+    if (displacementTonnes <= 0) return 0;
+    return fsmTonneMeter / displacementTonnes; // meters
+  }
+
+  /**
+   * Vertical shift in KG due to lifting with crane/derrick: ΔKG = w · (h_hook − h_load) / Δ
+   */
+  static calculateCraneDeltaKG(weightTonnes: number, hookHeightMeters: number, loadHeightMeters: number, displacementTonnes: number): number {
+    if (displacementTonnes <= 0) return 0;
+    return (weightTonnes * (hookHeightMeters - loadHeightMeters)) / displacementTonnes;
+  }
+
+  /**
+   * Floating dock reaction P (tonnes): P = MCT1cm · Trim(cm) / t (m)
+   */
+  static calculateDockReactionP(mct1cm_tonMeterPerCm: number, trimCm: number, distanceMeters: number): number {
+    if (distanceMeters === 0) return 0;
+    return (mct1cm_tonMeterPerCm * trimCm) / distanceMeters; // tonnes
+  }
+
+  /**
+   * Critical GM in dock: GM_k = (P · KM) / Δ
+   */
+  static calculateCriticalGMDock(reactionTonnes: number, kmMeters: number, displacementTonnes: number): number {
+    if (displacementTonnes <= 0) return 0;
+    return (reactionTonnes * kmMeters) / displacementTonnes; // meters
+  }
+
+  /**
+   * GZ from KN cross curve: GZ = KN − KG · sinφ
+   */
+  static calculateGZFromKN(knMeters: number, kgMeters: number, angleDeg: number): number {
+    const rad = (angleDeg * Math.PI) / 180;
+    const gz = knMeters - kgMeters * Math.sin(rad);
+    return Math.max(0, gz);
+  }
+
+  /**
+   * Simplified roll period: T = C(cb) · B / sqrt(GM)
+   * C(cb) is approximated as ~0.7 for typical cargo ships and adjusted slightly by Cb.
+   */
+  static calculateRollPeriodSimplified(cb: number, breadthMeters: number, gmMeters: number): number {
+    if (gmMeters <= 0 || breadthMeters <= 0) return 0;
+    // Approximate C from block coefficient: clamp between 0.6 and 0.8
+    const c = Math.max(0.6, Math.min(0.8, 0.7 + 0.1 * (cb - 0.7)));
+    return c * breadthMeters / Math.sqrt(gmMeters);
+  }
+
+  /**
    * Parse Bonjean from CSV text: columns: station,area,moment (draft assumed current)
    */
   static parseBonjeanCSV(csvText: string, stationSpacing?: number): BonjeanSet {
