@@ -1,304 +1,179 @@
-# ⚓ Maritime Calculator - Denizcilik Hesaplayıcısı
+# Gemi Enine Stabilite Hesaplama Sistemi
 
-> **🚀 Professional maritime calculations app with AI assistant, multilingual support, and Google Cloud integration**
+Bu proje, gemi enine stabilitesi ile ilgili tüm hesaplamaları yapabilen kapsamlı bir Python uygulamasıdır. SOLAS ve IMO kriterlerine uygun hesaplamalar yapar ve detaylı raporlama sağlar.
 
-## 🌟 **Features / Özellikler**
+## 🚢 Özellikler
 
-### 🧮 **13 Maritime Calculation Categories:**
-- ⚖️ **Stability Calculations** - Ship stability analysis
-- 🧭 **Navigation** - Course, distance, speed calculations  
-- 🌊 **Hydrodynamics** - Resistance, powering, waves
-- ⚙️ **Engine Performance** - Power, fuel consumption
-- 📦 **Cargo Operations** - Loading, stowage planning
-- 💧 **Ballast Management** - Tank calculations
-- 📐 **Trim & List** - Ship attitude analysis
-- 🏗️ **Structural** - Strength, stress analysis
-- 🛡️ **Safety** - Life rafts, fire systems
-- 🍃 **Emissions** - Environmental compliance
-- 🌤️ **Weather** - Routing, conditions
-- 💰 **Economic** - Cost analysis, efficiency
-- 🚢 **Special Ships** - Specialized vessel calculations
+### Temel Stabilite Hesaplamaları
+- GM (Metasantr yüksekliği) hesaplama
+- KM ve KG hesaplamaları
+- KB ve BM ilişkisi
 
-### 🤖 **AI Assistant:**
-- **Gemini AI** explanations
-- **Wolfram Alpha** calculations  
-- **Hybrid AI system** for accuracy
-- **25+ languages** support
+### Yük Operasyonları
+- Yükleme/tahliye sonrası yeni KG hesaplama
+- GM değişimi analizi
+- Çoklu yük operasyonları desteği
 
-### 🌍 **Multilingual Support:**
-- **Microsoft Translator API** integration
-- **Automatic language detection**
-- **25+ supported languages**
-- **Real-time translation**
+### Meyil Hesaplamaları
+- Yük hareketi ile meyil açısı
+- Sarkaç ile meyil ölçümü
+- GZ (doğrultucu kol) hesaplama
+- Meyil momenti analizi
 
-### 🔐 **User Management:**
-- **Google OAuth 2.0** authentication
-- **Supabase backend** integration
-- **Calculation history** tracking
-- **Favorites system**
-- **User statistics & levels**
+### Kren/Bumba Operasyonları
+- Yük kaldırma sırasında GM değişimi
+- Kritik yükseklik analizi
+- Güvenlik kontrolü
 
-### 💰 **Monetization:**
-- **Google AdSense** web ads
-- **AdMob** mobile ads  
-- **Native advertising** system
-- **Smart ad placement** algorithm
+### Serbest Yüzey Etkisi (FSM)
+- Tank bazlı FSM hesaplama
+- GM düzeltmesi
+- Çoklu tank analizi
 
-### 📱 **Mobile-First Design:**
-- **Android app** via Capacitor
-- **Progressive Web App (PWA)**
-- **Responsive design** for all devices
-- **Offline calculations** support
+### Stabilite Analizleri
+- Yalpa periyodu hesaplama
+- GZ eğrisi oluşturma
+- KN'den GZ hesaplama
+- Dinamik stabilite alanı (Simpson kuralı)
 
-## 🚀 **Lovable Deployment**
+### SOLAS Kriterleri
+- Minimum GM kontrolü (0.15m / 0.30m)
+- GZ eğrisi alan kontrolleri
+- Maksimum GZ ve açı kontrolleri
 
-### **📋 Quick Start:**
+### Özel Durumlar
+- Havuzda kritik GM hesabı
+- Yaralı stabilite (duba örneği)
+- P kuvveti (takarya tepkisi) hesabı
+
+## 🛠️ Kurulum
+
+1. Python 3.8 veya üzeri sürümün yüklü olduğundan emin olun.
+
+2. Gerekli paketleri yükleyin:
 ```bash
-# 1. Clone and install
-git clone https://github.com/alperrenoztrk/maritime-calculator-kopya-612fb10a
-cd maritime-calculator-kopya-612fb10a
-npm install
-
-# 2. Build for Lovable
-npm run build
-
-# 3. Deploy to Lovable
-# 🔗 URL: https://c91ef2fa-0890-438a-8151-84cda6639f91.lovableproject.com
+pip install -r requirements.txt
 ```
 
-### **🔧 Environment Setup:**
-Copy `.env.example` to `.env` and configure:
-```env
-# 🔐 Required for Lovable deployment
-VITE_SUPABASE_URL=https://cpwtwlriwmwgfqgrmfso.supabase.co
-VITE_SUPABASE_ANON_KEY=your_supabase_key
-MICROSOFT_TRANSLATOR_KEY=your_translator_key
-VITE_FIREBASE_API_KEY=your_firebase_key
-```
+## 🚀 Kullanım
 
-## 🏗️ **Architecture**
+### Streamlit Uygulaması (Web Arayüzü)
 
-### **🎯 Tech Stack:**
-- **Frontend:** React 18 + TypeScript + Vite
-- **UI:** Tailwind CSS + Shadcn/ui components
-- **Backend:** Supabase (Auth + Database + Edge Functions)
-- **AI:** Gemini AI + Wolfram Alpha
-- **Translation:** Microsoft Translator API
-- **Mobile:** Capacitor + Android
-- **Analytics:** Google Analytics + Firebase
-- **Ads:** Google AdSense + AdMob
-
-### **📁 Project Structure:**
-```
-maritime-calculator/
-├── src/
-│   ├── components/
-│   │   ├── ads/              # Ad components
-│   │   ├── auth/             # Authentication
-│   │   ├── calculations/     # Maritime calculations
-│   │   └── ui/               # UI components
-│   ├── hooks/                # Custom React hooks
-│   ├── pages/                # Main pages
-│   ├── utils/                # Utilities
-│   └── integrations/         # API integrations
-├── supabase/
-│   └── functions/            # Edge Functions
-├── android/                  # Capacitor Android
-├── public/                   # Static assets
-└── docs/                     # Documentation
-```
-
-## 🔐 **API Integration**
-
-### **🤖 AI Assistant (Supabase Edge Functions):**
-```typescript
-// Ask AI endpoint
-POST /functions/v1/ask-ai
-{
-  "question": "How to calculate ship stability?",
-  "language": "en"
-}
-```
-
-### **🌍 Translation (Microsoft Translator):**
-```typescript
-// Translate text
-POST /functions/v1/translate
-{
-  "text": "Hello world",
-  "from": "en",
-  "to": "tr"
-}
-```
-
-### **🔐 Authentication (Supabase Auth):**
-```typescript
-// Google OAuth
-const { data, error } = await supabase.auth.signInWithOAuth({
-  provider: 'google',
-  options: {
-    redirectTo: 'https://yourapp.com/auth/callback'
-  }
-})
-```
-
-## 📱 **Mobile Development**
-
-### **🔧 Android Build:**
 ```bash
-# Install dependencies
-npm run cap:add:firebase
-
-# Sync and build
-npm run cap:sync
-npm run android:build
-
-# Open in Android Studio
-npm run cap:open:android
+streamlit run streamlit_app.py
 ```
 
-### **📦 Google Play Deployment:**
-1. **Generate signed APK/AAB**
-2. **Upload to Play Console**
-3. **Configure AdMob ads**
-4. **Setup Firebase Analytics**
+Uygulama varsayılan olarak `http://localhost:8501` adresinde açılacaktır.
 
-## 💰 **Monetization Strategy**
+### Test ve Örnekler
 
-### **📊 Ad Placement:**
-- **Banner ads** on top/bottom
-- **Interstitial ads** between calculations
-- **Native ads** in content feed
-- **Reward ads** for premium features
+Test dosyasını çalıştırarak tüm hesaplama örneklerini görebilirsiniz:
 
-### **💎 Revenue Streams:**
-- **Google AdSense** (web)
-- **AdMob** (mobile)
-- **Premium subscriptions**
-- **Enterprise licensing**
-
-## 🌐 **Internationalization**
-
-### **🗣️ Supported Languages:**
-🇹🇷 Turkish | 🇺🇸 English | 🇪🇸 Spanish | 🇩🇪 German | 🇫🇷 French | 🇮🇹 Italian | 🇵🇹 Portuguese | 🇷🇺 Russian | 🇯🇵 Japanese | 🇰🇷 Korean | 🇨🇳 Chinese | 🇸🇦 Arabic | 🇮🇳 Hindi | 🇳🇱 Dutch | 🇸🇪 Swedish | 🇳🇴 Norwegian | 🇩🇰 Danish | 🇫🇮 Finnish | 🇵🇱 Polish | 🇨🇿 Czech | 🇭🇺 Hungarian | 🇷🇴 Romanian | 🇬🇷 Greek | 🇧🇬 Bulgarian | 🇭🇷 Croatian | 🇺🇦 Ukrainian
-
-### **🔄 Auto Translation:**
-- **Browser language detection**
-- **Real-time content translation**
-- **Fallback dictionaries**
-- **Context-aware translations**
-
-## 🛡️ **Security & Privacy**
-
-### **🔐 Data Protection:**
-- **Row Level Security (RLS)** on Supabase
-- **HTTPS everywhere**
-- **API key protection**
-- **User data encryption**
-
-### **📋 Compliance:**
-- **GDPR compliant**
-- **Cookie consent**
-- **Privacy policy**
-- **Terms of service**
-
-## 📈 **Analytics & Performance**
-
-### **📊 Tracking:**
-- **User interactions**
-- **Calculation usage**
-- **Ad performance**
-- **Revenue metrics**
-
-### **⚡ Performance:**
-- **Code splitting**
-- **Lazy loading**
-- **Service workers**
-- **CDN optimization**
-
-## 🔧 **Development**
-
-### **🛠️ Local Development:**
 ```bash
-# Start dev server
-npm run dev
-
-# Build production
-npm run build
-
-# Preview build
-npm run preview
-
-# Lint code
-npm run lint
+python test_stability.py
 ```
 
-### **🧪 Testing:**
-```bash
-# Run tests
-npm run test
+### Python Modülü Olarak Kullanım
 
-# E2E tests
-npm run test:e2e
+```python
+from stability_calculator import EnineStabiliteHesaplama, YukBilgisi
 
-# Type checking
-npm run type-check
+# Temel hesaplama
+hesaplama = EnineStabiliteHesaplama(
+    deplasman=10000,  # ton
+    km=8.5,           # m
+    kg=6.5            # m
+)
+
+print(f"GM: {hesaplama.gm} m")
+
+# Yük operasyonu
+yukler = [
+    YukBilgisi(agirlik=200, kg=12.0),
+    YukBilgisi(agirlik=150, kg=2.0)
+]
+
+yeni_kg = hesaplama.yeni_kg_hesapla(yukler)
+print(f"Yeni KG: {yeni_kg} m")
 ```
 
-## 📚 **Documentation**
+## 📊 Formüller
 
-- **📖 [Firebase Setup](./FIREBASE_SETUP.md)** - Firebase integration guide
-- **🔐 [Google Auth Setup](./GOOGLE_AUTH_SETUP.md)** - Authentication setup
-- **🌍 [Translation Setup](./TRANSLATION_SETUP.md)** - Microsoft Translator setup
-- **💰 [Advertisement Setup](./ADVERTISEMENT_SETUP.md)** - Ad integration guide
-- **📱 [Google Play Deployment](./GOOGLE_PLAY_DEPLOYMENT.md)** - Mobile deployment
-- **🗄️ [Database Schema](./DATABASE_SCHEMA.sql)** - Database structure
+### Temel Formüller
 
-## 🎯 **Roadmap**
+- **GM Hesaplama**: `GM = KM - KG`
+- **KM Hesaplama**: `KM = KB + BM`
+- **Yeni KG**: `KG_yeni = Σ(Ağırlık × KG) / Σ(Ağırlık)`
+- **GG₁ (Yük Hareketi)**: `GG₁ = (w × d) / Δ`
+- **Meyil Açısı**: `tan φ = GZ / GM`
+- **GZ Hesaplama**: `GZ = KN - KG × sin φ`
 
-### **🚀 Upcoming Features:**
-- [ ] **iOS app** development
-- [ ] **Offline mode** for calculations
-- [ ] **Advanced 3D visualizations**
-- [ ] **Real-time collaboration**
-- [ ] **API marketplace**
-- [ ] **White-label solutions**
+### Serbest Yüzey Etkisi
 
-### **💡 Enhancement Ideas:**
-- [ ] **Voice input** for calculations
-- [ ] **AR visualizations** for ship data
-- [ ] **ML-powered** predictions
-- [ ] **IoT sensor** integration
+- **FSM (Dikdörtgen Tank)**: `FSM = (L × B³ × ρ) / 12`
+- **GM Küçülmesi**: `GG₁ = FSM / Δ`
 
-## 🤝 **Contributing**
+### Yalpa Periyodu
 
-1. **Fork** the repository
-2. **Create** feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to branch (`git push origin feature/amazing-feature`)
-5. **Open** Pull Request
+- **T**: `T = C × B / √GM`
 
-## 📄 **License**
+## 📋 Dosya Yapısı
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+```
+├── stability_calculator.py    # Ana hesaplama modülü
+├── streamlit_app.py          # Web arayüzü
+├── test_stability.py         # Test ve örnekler
+├── requirements.txt          # Gerekli paketler
+└── README.md                # Bu dosya
+```
 
-## 🙏 **Acknowledgments**
+## 🔍 Özellik Detayları
 
-- **Maritime Industry** professionals for requirements
-- **Supabase** for backend infrastructure
-- **Google Cloud** for AI and translation services
-- **Lovable** for deployment platform
-- **Open source community** for amazing tools
+### Streamlit Arayüzü Sekmeleri
 
----
+1. **Temel Hesaplamalar**: GM, KM, KG hesaplamaları ve SOLAS kontrolleri
+2. **Yük Operasyonları**: Yükleme/tahliye simülasyonları
+3. **Kren/Bumba İşlemleri**: Yük kaldırma güvenlik analizi
+4. **Serbest Yüzey Etkisi**: Tank FSM hesaplamaları
+5. **Meyil Hesaplamaları**: Meyil açısı ve yalpa periyodu
+6. **GZ Eğrisi ve SOLAS**: Stabilite eğrisi analizi
+7. **Rapor**: Detaylı stabilite raporu oluşturma
 
-## 📞 **Support & Contact**
+### Test Fonksiyonları
 
-- **🌐 Website:** [Maritime Calculator](https://dfc3279a-089d-4d25-bff1-ff197bc24769.lovableproject.com)
-- **📧 Email:** support@maritimecalculator.com
-- **💬 Discord:** [Join our community](https://discord.gg/maritime-calculator)
-- **📱 Mobile App:** [Google Play Store](https://play.google.com/store/apps/details?id=com.maritime.calculator)
+- `test_temel_hesaplamalar()`: Temel GM, KM, KG testleri
+- `test_yuk_operasyonlari()`: Yük ekleme/çıkarma testleri
+- `test_meyil_hesaplamalari()`: Meyil açısı testleri
+- `test_bumba_kren()`: Kren operasyonu testleri
+- `test_serbest_yuzey()`: FSM hesaplama testleri
+- `test_yalpa_periyodu()`: Yalpa karakteristiği testleri
+- `test_gz_egri_solas()`: GZ eğrisi ve SOLAS testleri
+- `test_kritik_gm_havuz()`: Havuz operasyonu testleri
 
----
+## 📚 Referanslar
 
-**⚓ Built with ❤️ for the maritime industry 🌊**
+- SOLAS (Safety of Life at Sea) Chapter II-1
+- IMO Intact Stability Code
+- Gemi Stabilitesi Prensipleri
+
+## 📝 Notlar
+
+- Tüm hesaplamalar metrik sistemde yapılmaktadır
+- Açılar derece cinsinden girilir, radyana çevrilir
+- Deniz suyu yoğunluğu varsayılan: 1.025 ton/m³
+- Simpson kuralı için tek sayıda (en az 3) değer gereklidir
+
+## ⚠️ Uyarılar
+
+Bu yazılım eğitim ve referans amaçlıdır. Gerçek gemi operasyonlarında kullanmadan önce:
+- Hesaplamaları kontrol edin
+- Yetkili denizcilik otoritelerinin onayını alın
+- Güncel SOLAS ve IMO kriterlerini takip edin
+
+## 🤝 Katkıda Bulunma
+
+Geliştirme önerileri ve hata bildirimleri için issue açabilirsiniz.
+
+## 📄 Lisans
+
+Bu proje eğitim amaçlı olarak geliştirilmiştir.
