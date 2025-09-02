@@ -38,6 +38,7 @@ export default function StabilityMenu() {
 
   const optionButtons = [
     { key: 'longitudinal', label: 'Boyuna Stabilite', to: '/stability/longitudinal' },
+    { key: 'transverse', label: 'Enine Stabilite', to: '/stability/transverse' },
     { key: 'gz-imo', label: 'GZ / IMO Kriterleri', to: '/stability/gz-imo' },
     { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
     { key: 'grain', label: 'Tahıl Stabilitesi', to: '/stability/grain' },

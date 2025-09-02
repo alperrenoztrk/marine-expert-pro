@@ -65,6 +65,7 @@ import DraftSurveyAnalysis from "./pages/DraftSurveyAnalysis";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 // Stability2 removed
 import StabilityLongitudinal from "./pages/StabilityLongitudinal";
+import StabilityTransverse from "./pages/StabilityTransverse";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityDamagePlaceholder from "./pages/StabilityDamagePlaceholder";
 import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
@@ -153,6 +154,7 @@ const App = () => {
                   
                   <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
                   <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
+                  <Route path="/stability/transverse" element={<StabilityTransverse />} />
                   <Route path="/stability/damage" element={<StabilityDamagePlaceholder />} />
                   <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
