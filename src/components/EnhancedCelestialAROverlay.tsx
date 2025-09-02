@@ -156,8 +156,8 @@ export const EnhancedCelestialAROverlay: React.FC<EnhancedCelestialAROverlayProp
   return (
     <div className={`absolute inset-0 ${className}`}>
       {/* Control Panel */}
-      <div className="absolute top-4 left-4 space-y-2 z-10">
-        <div className="bg-black/60 backdrop-blur-sm rounded-lg p-3 space-y-2">
+      <div className="absolute top-2 left-2 space-y-1 z-10">
+        <div className="bg-black/80 backdrop-blur-sm rounded-lg p-2 space-y-2 text-xs">
           <div className="flex items-center gap-2">
             <Button
               size="sm"
@@ -381,7 +381,7 @@ export const EnhancedCelestialAROverlay: React.FC<EnhancedCelestialAROverlayProp
       </div>
 
       {/* Information panel */}
-      <div className="absolute top-4 right-4 space-y-2 pointer-events-none z-10">
+      <div className="absolute top-2 right-2 space-y-1 pointer-events-none z-10">
         <Badge variant="outline" className="bg-black/60 text-white border-white/40">
           Görünür: {visibleBodies.length} gök cismi
         </Badge>

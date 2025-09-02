@@ -1,7 +1,7 @@
 // Celestial navigation calculations for AR overlay
 export interface CelestialBody {
   name: string;
-  type: 'sun' | 'moon' | 'planet' | 'star';
+  type: 'sun' | 'moon' | 'planet' | 'star' | 'galaxy' | 'nebula' | 'star_cluster' | 'planetary_nebula';
   altitude: number; // degrees above horizon
   azimuth: number; // degrees from north
   magnitude?: number; // brightness

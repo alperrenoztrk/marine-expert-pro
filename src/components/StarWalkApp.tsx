@@ -164,20 +164,20 @@ export const StarWalkApp: React.FC<StarWalkAppProps> = ({
   return (
     <div className={`min-h-screen bg-gradient-to-b from-gray-900 to-black text-white ${className}`}>
       {/* Header */}
-      <div className="bg-black/50 backdrop-blur-sm border-b border-white/10 p-4">
-        <div className="flex items-center justify-between">
+      <div className="bg-black/50 backdrop-blur-sm border-b border-white/10 p-3 sticky top-0 z-50">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0 sm:justify-between">
           <div className="flex items-center gap-3">
-            <Star className="h-8 w-8 text-yellow-400" fill="currentColor" />
-            <div>
-              <h1 className="text-2xl font-bold">Göksel - Yıldız Tanıma</h1>
-              <p className="text-sm text-gray-300">Star Walk benzeri yıldız keşif uygulaması</p>
+            <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400" fill="currentColor" />
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-2xl font-bold truncate">Göksel - Yıldız Tanıma</h1>
+              <p className="text-xs sm:text-sm text-gray-300 hidden sm:block">Star Walk benzeri yıldız keşif uygulaması</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
+          <div className="flex items-center gap-2 text-xs">
+            <Badge variant="outline" className="text-xs whitespace-nowrap">
               <MapPin className="h-3 w-3 mr-1" />
-              {observerPosition.latitude.toFixed(2)}°, {observerPosition.longitude.toFixed(2)}°
+              {observerPosition.latitude.toFixed(1)}°, {observerPosition.longitude.toFixed(1)}°
             </Badge>
             <Badge variant="outline" className="text-xs">
               <Compass className="h-3 w-3 mr-1" />
@@ -189,22 +189,22 @@ export const StarWalkApp: React.FC<StarWalkAppProps> = ({
 
       {/* Permission Requests */}
       {(locationPermission !== 'granted' || orientationPermission !== 'granted') && (
-        <div className="bg-yellow-600/20 border-b border-yellow-500/30 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-medium">İzinler Gerekli</h3>
-              <p className="text-sm text-gray-300">
+        <div className="bg-yellow-600/20 border-b border-yellow-500/30 p-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1">
+              <h3 className="font-medium text-sm">İzinler Gerekli</h3>
+              <p className="text-xs text-gray-300 mt-1">
                 En iyi deneyim için konum ve cihaz oryantasyonu izinleri gereklidir.
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {locationPermission !== 'granted' && (
-                <Button size="sm" onClick={requestLocationPermission}>
+                <Button size="sm" onClick={requestLocationPermission} className="text-xs">
                   Konum İzni
                 </Button>
               )}
               {orientationPermission !== 'granted' && (
-                <Button size="sm" onClick={requestOrientationPermission}>
+                <Button size="sm" onClick={requestOrientationPermission} className="text-xs">
                   Oryantasyon İzni
                 </Button>
               )}
@@ -214,28 +214,33 @@ export const StarWalkApp: React.FC<StarWalkAppProps> = ({
       )}
 
       {/* Main Content */}
-      <div className="p-4">
+      <div className="p-2 sm:p-4 pb-20">
         <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-black/30 border border-white/10">
-            <TabsTrigger value="ar" className="flex items-center gap-2">
-              <Camera className="h-4 w-4" />
-              AR Kamera
+          <TabsList className="grid w-full grid-cols-5 bg-black/30 border border-white/10 text-xs">
+            <TabsTrigger value="ar" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
+              <Camera className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">AR Kamera</span>
+              <span className="sm:hidden">AR</span>
             </TabsTrigger>
-            <TabsTrigger value="map" className="flex items-center gap-2">
-              <Map className="h-4 w-4" />
-              Yıldız Haritası
+            <TabsTrigger value="map" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
+              <Map className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Yıldız Haritası</span>
+              <span className="sm:hidden">Harita</span>
             </TabsTrigger>
-            <TabsTrigger value="catalog" className="flex items-center gap-2">
-              <Search className="h-4 w-4" />
-              Katalog
+            <TabsTrigger value="catalog" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
+              <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Katalog</span>
+              <span className="sm:hidden">Arama</span>
             </TabsTrigger>
-            <TabsTrigger value="time" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Zaman
+            <TabsTrigger value="time" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Zaman</span>
+              <span className="sm:hidden">Zaman</span>
             </TabsTrigger>
-            <TabsTrigger value="info" className="flex items-center gap-2">
-              <Info className="h-4 w-4" />
-              Bilgi
+            <TabsTrigger value="info" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
+              <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Bilgi</span>
+              <span className="sm:hidden">Bilgi</span>
             </TabsTrigger>
           </TabsList>
 
