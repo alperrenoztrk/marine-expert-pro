@@ -124,6 +124,25 @@ export const ComprehensiveMaritimeCalculations = () => {
   });
   const [temperatureDensityResult, setTemperatureDensityResult] = useState<number | null>(null);
 
+  // 2a. Enine Ek: GG1, Sarkaç, Dikey Kaldırma, Havuz Tepkisi P, FSM (dikdörtgen), Duba Draft Değişimi
+  const [gg1Inputs, setGg1Inputs] = useState({ weight: "", distance: "", displacement: "" });
+  const [gg1Result, setGg1Result] = useState<number | null>(null);
+
+  const [pendulumInputs, setPendulumInputs] = useState({ pendulumLength: "", deflection: "" });
+  const [pendulumResult, setPendulumResult] = useState<number | null>(null);
+
+  const [craneVerticalInputs, setCraneVerticalInputs] = useState({ weight: "", hookHeight: "", loadHeight: "", displacement: "" });
+  const [craneVerticalResult, setCraneVerticalResult] = useState<number | null>(null);
+
+  const [drydockReactionInputs, setDrydockReactionInputs] = useState({ mct1cm: "", trimCm: "", t: "", km: "", displacement: "" });
+  const [drydockReactionResult, setDrydockReactionResult] = useState<{ P: number; gmCritical?: number } | null>(null);
+
+  const [fsmRectInputs, setFsmRectInputs] = useState({ length: "", breadth: "", rho: "1.025", displacement: "" });
+  const [fsmRectResult, setFsmRectResult] = useState<{ fsm: number; deltaKG?: number } | null>(null);
+
+  const [pontoonInputs, setPontoonInputs] = useState({ weight: "", length: "", breadth: "", damagedArea: "", rho: "1.025" });
+  const [pontoonResult, setPontoonResult] = useState<number | null>(null);
+
   // Calculation Functions
 
   // 1. Hogging/Sagging Detection
@@ -468,6 +487,103 @@ export const ComprehensiveMaritimeCalculations = () => {
     toast({ title: "Hesaplama Tamamlandı", description: `Yeni Yoğunluk: ${newDensity.toFixed(4)} ton/m³` });
   };
 
+  // Enine Ek Fonksiyonlar
+  const calculateGG1 = () => {
+    const w = parseFloat(gg1Inputs.weight);
+    const d = parseFloat(gg1Inputs.distance);
+    const delta = parseFloat(gg1Inputs.displacement);
+    if (isNaN(w) || isNaN(d) || isNaN(delta) || delta === 0) {
+      toast({ title: "Hata", description: "Geçerli w, d, Δ girin", variant: "destructive" });
+      return;
+    }
+    const gg1 = (w * d) / delta;
+    setGg1Result(gg1);
+    toast({ title: "Hesaplama Tamamlandı", description: `GG₁ = ${gg1.toFixed(4)} m` });
+  };
+
+  const calculatePendulumAngle = () => {
+    const L = parseFloat(pendulumInputs.pendulumLength);
+    const x = parseFloat(pendulumInputs.deflection);
+    if (isNaN(L) || isNaN(x) || L === 0) {
+      toast({ title: "Hata", description: "Geçerli sarkaç boyu ve sapma girin", variant: "destructive" });
+      return;
+    }
+    const angle = Math.atan(x / L) * (180 / Math.PI);
+    setPendulumResult(angle);
+    toast({ title: "Hesaplama Tamamlandı", description: `Meyil Açısı ≈ ${angle.toFixed(2)}°` });
+  };
+
+  const calculateCraneVertical = () => {
+    const w = parseFloat(craneVerticalInputs.weight);
+    const hHook = parseFloat(craneVerticalInputs.hookHeight);
+    const hLoad = parseFloat(craneVerticalInputs.loadHeight);
+    const delta = parseFloat(craneVerticalInputs.displacement);
+    if (isNaN(w) || isNaN(hHook) || isNaN(hLoad) || isNaN(delta) || delta === 0) {
+      toast({ title: "Hata", description: "Geçerli w, h_cunda, h_yük, Δ girin", variant: "destructive" });
+      return;
+    }
+    const deltaKG = (w * (hHook - hLoad)) / delta; // meters
+    setCraneVerticalResult(deltaKG);
+    toast({ title: "Hesaplama Tamamlandı", description: `ΔKG (dikey kaldırma) = ${deltaKG.toFixed(4)} m` });
+  };
+
+  const calculateDrydockReaction = () => {
+    const mct1cm = parseFloat(drydockReactionInputs.mct1cm); // t·m/cm
+    const trimCm = parseFloat(drydockReactionInputs.trimCm); // cm
+    const t = parseFloat(drydockReactionInputs.t); // m
+    const km = parseFloat(drydockReactionInputs.km);
+    const delta = parseFloat(drydockReactionInputs.displacement);
+    if (isNaN(mct1cm) || isNaN(trimCm) || isNaN(t) || t === 0) {
+      toast({ title: "Hata", description: "Geçerli MCT1cm, Trim(cm), t girin", variant: "destructive" });
+      return;
+    }
+    const P = (mct1cm * trimCm) / t; // tonnes
+    let gmCritical: number | undefined = undefined;
+    if (!isNaN(km) && !isNaN(delta) && delta > 0) {
+      gmCritical = (P * km) / delta;
+    }
+    setDrydockReactionResult({ P, gmCritical });
+    toast({ title: "Hesaplama Tamamlandı", description: `P = ${P.toFixed(2)} ton${gmCritical != null ? `, GM_k = ${gmCritical.toFixed(3)} m` : ''}` });
+  };
+
+  const calculateFSMRect = () => {
+    const L = parseFloat(fsmRectInputs.length);
+    const B = parseFloat(fsmRectInputs.breadth);
+    const rho = parseFloat(fsmRectInputs.rho);
+    const delta = parseFloat(fsmRectInputs.displacement);
+    if (isNaN(L) || isNaN(B) || isNaN(rho)) {
+      toast({ title: "Hata", description: "Geçerli L, B, ρ girin", variant: "destructive" });
+      return;
+    }
+    const fsm = (L * Math.pow(B, 3) / 12) * rho; // tonne·m
+    const result: { fsm: number; deltaKG?: number } = { fsm };
+    if (!isNaN(delta) && delta > 0) {
+      result.deltaKG = fsm / delta; // meters
+    }
+    setFsmRectResult(result);
+    toast({ title: "Hesaplama Tamamlandı", description: `FSM = ${fsm.toFixed(2)} t·m${result.deltaKG != null ? `, ΔKG = ${result.deltaKG.toFixed(4)} m` : ''}` });
+  };
+
+  const calculatePontoonDraftChange = () => {
+    const w = parseFloat(pontoonInputs.weight); // tonnes
+    const L = parseFloat(pontoonInputs.length);
+    const B = parseFloat(pontoonInputs.breadth);
+    const Ad = parseFloat(pontoonInputs.damagedArea);
+    const rho = parseFloat(pontoonInputs.rho);
+    if ([w, L, B, Ad, rho].some((v) => isNaN(v))) {
+      toast({ title: "Hata", description: "Geçerli w, L, B, yaralı alan ve ρ girin", variant: "destructive" });
+      return;
+    }
+    const effectiveArea = Math.max(0, (L * B) - Ad);
+    if (effectiveArea === 0 || rho === 0) {
+      toast({ title: "Hata", description: "Etkin alan ve yoğunluk sıfır olamaz", variant: "destructive" });
+      return;
+    }
+    const deltaDraft = w / (effectiveArea * rho); // meters
+    setPontoonResult(deltaDraft);
+    toast({ title: "Hesaplama Tamamlandı", description: `Δd = ${deltaDraft.toFixed(3)} m` });
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="hogging" className="w-full">
@@ -639,6 +755,60 @@ export const ComprehensiveMaritimeCalculations = () => {
                 )}
               </div>
 
+              {/* GG₁ (Yük Hareketi / Yükleme-Tahliye) */}
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">GG₁ = w × d / Δ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Ağırlık hareketi veya yükleme/tahliye sonrası G kaymasını hesaplar.</p>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                  <div>
+                    <Label>Ağırlık w (ton)</Label>
+                    <Input type="number" placeholder="w" value={gg1Inputs.weight} onChange={(e)=> setGg1Inputs(p=>({...p, weight:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Mesafe d (m)</Label>
+                    <Input type="number" placeholder="d" value={gg1Inputs.distance} onChange={(e)=> setGg1Inputs(p=>({...p, distance:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Deplasman Δ (ton)</Label>
+                    <Input type="number" placeholder="Δ" value={gg1Inputs.displacement} onChange={(e)=> setGg1Inputs(p=>({...p, displacement:e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateGG1} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {gg1Result !== null && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                    <p className="font-mono text-lg">GG₁ = {gg1Result.toFixed(4)} m</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Sarkaç ile Meyil Açısı */}
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">tan φ ≈ sin φ = Sapma / Sarkaç Boyu</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Sarkaç sapmasından meyil açısını tahmin eder.</p>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div>
+                    <Label>Sarkaç Boyu (m)</Label>
+                    <Input type="number" placeholder="Boy" value={pendulumInputs.pendulumLength} onChange={(e)=> setPendulumInputs(p=>({...p, pendulumLength:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Sapma (m)</Label>
+                    <Input type="number" placeholder="Sapma" value={pendulumInputs.deflection} onChange={(e)=> setPendulumInputs(p=>({...p, deflection:e.target.value}))} />
+                  </div>
+                  <Button onClick={calculatePendulumAngle} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {pendulumResult !== null && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                    <p className="font-mono text-lg">φ ≈ {pendulumResult.toFixed(2)}°</p>
+                  </div>
+                )}
+              </div>
+
               {/* Bumba ile Kaldırma Sonrası GM Değişimi */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Bumba GM Değişimi = w × Yük Kolu / Δ</h4>
@@ -679,6 +849,109 @@ export const ComprehensiveMaritimeCalculations = () => {
                 {craneGMResult !== null && (
                   <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
                     <p className="font-mono text-lg">GM Değişimi = {craneGMResult.toFixed(3)} m</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Dikey Kaldırmada ΔKG (Vinç/Bumba) */}
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">ΔKG = w × (h_cunda − h_yük) / Δ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Yükün dikey kaldırılması sırasında KG artışını hesaplar.</p>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                  <div>
+                    <Label>Ağırlık w (ton)</Label>
+                    <Input type="number" placeholder="w" value={craneVerticalInputs.weight} onChange={(e)=> setCraneVerticalInputs(p=>({...p, weight:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>h_cunda (m)</Label>
+                    <Input type="number" placeholder="Kanca yüksekliği" value={craneVerticalInputs.hookHeight} onChange={(e)=> setCraneVerticalInputs(p=>({...p, hookHeight:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>h_yük (m)</Label>
+                    <Input type="number" placeholder="Yükün başlangıç yüksekliği" value={craneVerticalInputs.loadHeight} onChange={(e)=> setCraneVerticalInputs(p=>({...p, loadHeight:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Deplasman Δ (ton)</Label>
+                    <Input type="number" placeholder="Δ" value={craneVerticalInputs.displacement} onChange={(e)=> setCraneVerticalInputs(p=>({...p, displacement:e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateCraneVertical} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {craneVerticalResult !== null && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                    <p className="font-mono text-lg">ΔKG = {craneVerticalResult.toFixed(4)} m</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Dikdörtgen Tank FSM ve ΔKG */}
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">FSM = (L × B³ / 12) × ρ; ΔKG = FSM / Δ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Serbest yüzey etkisinden kaynaklı GM küçülmesini hesaplar.</p>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                  <div>
+                    <Label>L (m)</Label>
+                    <Input type="number" placeholder="L" value={fsmRectInputs.length} onChange={(e)=> setFsmRectInputs(p=>({...p, length:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>B (m)</Label>
+                    <Input type="number" placeholder="B" value={fsmRectInputs.breadth} onChange={(e)=> setFsmRectInputs(p=>({...p, breadth:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>ρ (ton/m³)</Label>
+                    <Input type="number" placeholder="1.025" value={fsmRectInputs.rho} onChange={(e)=> setFsmRectInputs(p=>({...p, rho:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Δ (ton) - opsiyonel</Label>
+                    <Input type="number" placeholder="Δ" value={fsmRectInputs.displacement} onChange={(e)=> setFsmRectInputs(p=>({...p, displacement:e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateFSMRect} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {fsmRectResult && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                    <p className="font-mono text-lg">FSM = {fsmRectResult.fsm.toFixed(2)} t·m{fsmRectResult.deltaKG != null ? `; ΔKG = ${fsmRectResult.deltaKG.toFixed(4)} m` : ''}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Havuzda Tepki P ve Kritik GM */}
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">P = (MCT₁cm × Trim(cm)) / t; GM_k = P × KM / Δ</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Havuzda kritik anda takarya tepkisini ve kritik GM'yi hesaplar.</p>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                  <div>
+                    <Label>MCT₁cm (t·m/cm)</Label>
+                    <Input type="number" placeholder="MCT1cm" value={drydockReactionInputs.mct1cm} onChange={(e)=> setDrydockReactionInputs(p=>({...p, mct1cm:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Trim (cm)</Label>
+                    <Input type="number" placeholder="Trim cm" value={drydockReactionInputs.trimCm} onChange={(e)=> setDrydockReactionInputs(p=>({...p, trimCm:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>t (m)</Label>
+                    <Input type="number" placeholder="t" value={drydockReactionInputs.t} onChange={(e)=> setDrydockReactionInputs(p=>({...p, t:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>KM (m) - opsiyonel</Label>
+                    <Input type="number" placeholder="KM" value={drydockReactionInputs.km} onChange={(e)=> setDrydockReactionInputs(p=>({...p, km:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Δ (ton) - opsiyonel</Label>
+                    <Input type="number" placeholder="Δ" value={drydockReactionInputs.displacement} onChange={(e)=> setDrydockReactionInputs(p=>({...p, displacement:e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateDrydockReaction} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {drydockReactionResult && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                    <p className="font-mono text-lg">P = {drydockReactionResult.P.toFixed(2)} ton{drydockReactionResult.gmCritical != null ? `; GM_k = ${drydockReactionResult.gmCritical.toFixed(3)} m` : ''}</p>
                   </div>
                 )}
               </div>
@@ -1187,6 +1460,43 @@ export const ComprehensiveMaritimeCalculations = () => {
                 {densityChangeResult !== null && (
                   <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
                     <p className="font-mono text-lg">Yeni Deplasman = {densityChangeResult.toFixed(2)} ton</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Duba – Yaralı Stabilite: Draft Değişimi */}
+              <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Δd = w / [(Boy × En − Yaralı Alan) × ρ]</h4>
+                <p className="text-sm text-muted-foreground mb-3">Amaç: Yaralı yüzeyli duba örneğinde draft değişimini hesaplar.</p>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                  <div>
+                    <Label>w (ton)</Label>
+                    <Input type="number" placeholder="Ağırlık" value={pontoonInputs.weight} onChange={(e)=> setPontoonInputs(p=>({...p, weight:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Boy (m)</Label>
+                    <Input type="number" placeholder="Boy" value={pontoonInputs.length} onChange={(e)=> setPontoonInputs(p=>({...p, length:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>En (m)</Label>
+                    <Input type="number" placeholder="En" value={pontoonInputs.breadth} onChange={(e)=> setPontoonInputs(p=>({...p, breadth:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Yaralı Alan (m²)</Label>
+                    <Input type="number" placeholder="Alan" value={pontoonInputs.damagedArea} onChange={(e)=> setPontoonInputs(p=>({...p, damagedArea:e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>ρ (ton/m³)</Label>
+                    <Input type="number" placeholder="1.025" value={pontoonInputs.rho} onChange={(e)=> setPontoonInputs(p=>({...p, rho:e.target.value}))} />
+                  </div>
+                  <Button onClick={calculatePontoonDraftChange} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {pontoonResult !== null && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
+                    <p className="font-mono text-lg">Δd = {pontoonResult.toFixed(3)} m</p>
                   </div>
                 )}
               </div>
