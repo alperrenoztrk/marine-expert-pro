@@ -7,9 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { Calculator } from "lucide-react";
 
 export const BasicStabilityCalculations = () => {
-  const [gmInputs, setGmInputs] = useState({ kb: "", bm: "", kg: "" });
-  const [gm, setGm] = useState<number | null>(null);
-
   const [kmInputs, setKmInputs] = useState({ kb: "", bm: "" });
   const [km, setKm] = useState<number | null>(null);
 
@@ -26,14 +23,6 @@ export const BasicStabilityCalculations = () => {
     { name: "Item 1", weight: "", lcg: "" },
   ]);
   const [lcgResult, setLcgResult] = useState<number | null>(null);
-
-  const calcGM = () => {
-    const kb = parseFloat(gmInputs.kb);
-    const bm = parseFloat(gmInputs.bm);
-    const kg = parseFloat(gmInputs.kg);
-    if ([kb, bm, kg].some(Number.isNaN)) return;
-    setGm(kb + bm - kg);
-  };
 
   const calcKM = () => {
     const kb = parseFloat(kmInputs.kb);
@@ -88,27 +77,7 @@ export const BasicStabilityCalculations = () => {
           <CardTitle>Temel Stabilite Hesaplamaları</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded bg-muted">
-              <h4 className="font-semibold mb-3">GM = KB + BM - KG</h4>
-              <div className="grid grid-cols-3 gap-2 items-end">
-                <div>
-                  <Label>KB (m)</Label>
-                  <Input value={gmInputs.kb} onChange={(e)=>setGmInputs(p=>({...p, kb:e.target.value}))} />
-                </div>
-                <div>
-                  <Label>BM (m)</Label>
-                  <Input value={gmInputs.bm} onChange={(e)=>setGmInputs(p=>({...p, bm:e.target.value}))} />
-                </div>
-                <div>
-                  <Label>KG (m)</Label>
-                  <Input value={gmInputs.kg} onChange={(e)=>setGmInputs(p=>({...p, kg:e.target.value}))} />
-                </div>
-                <Button className="col-span-3" onClick={calcGM}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
-              </div>
-              {gm!==null && (<div className="mt-2 text-sm">GM = <span className="font-mono">{gm.toFixed(3)} m</span></div>)}
-            </div>
-
+          <div className="grid grid-cols-1 gap-4">
             <div className="p-4 rounded bg-muted">
               <h4 className="font-semibold mb-3">KM = KB + BM</h4>
               <div className="grid grid-cols-3 gap-2 items-end">

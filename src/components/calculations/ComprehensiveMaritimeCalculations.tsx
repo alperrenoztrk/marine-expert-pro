@@ -17,11 +17,7 @@ export const ComprehensiveMaritimeCalculations = () => {
   });
   const [hoggingSaggingResult, setHoggingSaggingResult] = useState<{type: string, difference: number} | null>(null);
 
-  // 2. GM ve KG Hesapları
-  const [gmInputs, setGmInputs] = useState({
-    kb: "", bm: "", kg: ""
-  });
-  const [gmResult, setGmResult] = useState<number | null>(null);
+  // 2. KG Hesapları
 
   const [newKGInputs, setNewKGInputs] = useState({
     totalMoment: "", totalWeight: ""
@@ -147,23 +143,6 @@ export const ComprehensiveMaritimeCalculations = () => {
     
     setHoggingSaggingResult({ type, difference: Math.abs(difference) });
     toast({ title: "Hesaplama Tamamlandı", description: `${type}: ${Math.abs(difference).toFixed(3)} m` });
-  };
-
-  // 2. GM Calculation
-  const calculateGM = () => {
-    const kb = parseFloat(gmInputs.kb);
-    const bm = parseFloat(gmInputs.bm);
-    const kg = parseFloat(gmInputs.kg);
-    
-    if (isNaN(kb) || isNaN(bm) || isNaN(kg)) {
-      toast({ title: "Hata", description: "Lütfen geçerli sayısal değerler girin", variant: "destructive" });
-      return;
-    }
-    
-    const gm = kb + bm - kg;
-    setGmResult(gm);
-    const stability = gm > 0 ? "Pozitif (Stabil)" : "Negatif (Stabil değil)";
-    toast({ title: "Hesaplama Tamamlandı", description: `GM: ${gm.toFixed(3)} m - ${stability}` });
   };
 
   // New KG Calculation
@@ -572,53 +551,6 @@ export const ComprehensiveMaritimeCalculations = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               
-              {/* GM Hesaplama */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">GM = KM - KG</h4>
-                <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin metasantr yüksekliğini (GM) bulmak için kullanılır. GM &gt; 0 kararlı dengeyi gösterir.</p>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                  <div>
-                    <Label>KB (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="KB"
-                      value={gmInputs.kb}
-                      onChange={(e) => setGmInputs(prev => ({ ...prev, kb: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>BM (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="BM"
-                      value={gmInputs.bm}
-                      onChange={(e) => setGmInputs(prev => ({ ...prev, bm: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>KG (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="KG"
-                      value={gmInputs.kg}
-                      onChange={(e) => setGmInputs(prev => ({ ...prev, kg: e.target.value }))}
-                    />
-                  </div>
-                  <Button onClick={calculateGM} className="w-full">
-                    <Calculator className="w-4 h-4 mr-2" />
-                    Hesapla
-                  </Button>
-                </div>
-                {gmResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
-                    <p className="font-mono text-lg">GM = {gmResult.toFixed(3)} m</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                      {gmResult > 0 ? "✅ Pozitif GM - Stabil" : "❌ Negatif GM - Stabil değil"}
-                    </p>
-                  </div>
-                )}
-              </div>
-
               {/* Yeni KG Hesaplama */}
               <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Yeni KG = Toplam Moment / Toplam Ağırlık</h4>
