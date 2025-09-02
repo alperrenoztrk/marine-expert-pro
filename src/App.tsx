@@ -68,6 +68,7 @@ import StabilityLongitudinal from "./pages/StabilityLongitudinal";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityDamagePlaceholder from "./pages/StabilityDamagePlaceholder";
 import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
+import StabilityTransversePage from "./pages/StabilityTransverse";
 
 const queryClient = new QueryClient();
 
@@ -155,6 +156,7 @@ const App = () => {
                   <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
                   <Route path="/stability/damage" element={<StabilityDamagePlaceholder />} />
                   <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
+                  <Route path="/stability/transverse" element={<StabilityTransversePage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/navigation-menu" element={<NavigationMenu />} />
