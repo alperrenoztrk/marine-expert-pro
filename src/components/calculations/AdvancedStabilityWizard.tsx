@@ -18,7 +18,7 @@ type ShipProfile = {
   tanks: Array<{ name: string; capacity: number; current: number; lcg: number; vcg: number; tcg: number; density: number; freeSurfaceEffect?: number }>;
 };
 
-type LearnMode = 'gm' | 'gz' | 'trim' | 'list' | 'loll';
+type LearnMode = 'trim' | 'list' | 'loll';
 
 const LS_KEY = "advanced-ship-profile";
 
@@ -50,8 +50,7 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
   });
 
   // Hesaplamalara özel girişler ve sonuçlar
-  const [kgInput, setKgInput] = useState<string>("5"); // GM, GZ, List, Loll için KG
-  const [angleInput, setAngleInput] = useState<string>("10"); // GZ için açı (°)
+  const [kgInput, setKgInput] = useState<string>("5"); // List, Loll için KG
   const [trimTa, setTrimTa] = useState<string>("6.2");
   const [trimTf, setTrimTf] = useState<string>("5.8");
   const [listWeight, setListWeight] = useState<string>("100"); // ton
@@ -134,24 +133,8 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
     const displacement = HydrostaticCalculations.calculateDisplacement(geometry).displacement; // ton
     const g = 9.81;
 
-    if (learnMode === 'gm') {
-      if (!isFinite(kg)) { setResultText("Lütfen geçerli KG girin."); return; }
-      const centers = HydrostaticCalculations.calculateCenterPoints(geometry, kg);
-      const stability = centers.gm > 0 ? "Pozitif (Stabil)" : (centers.gm === 0 ? "Nötr" : "Negatif (Stabil değil)");
-      setResultText(`GM = ${centers.kb.toFixed(3)} + ${centers.bm.toFixed(3)} - ${kg.toFixed(3)} = ${centers.gm.toFixed(3)} m → ${stability}`);
-      return;
-    }
+    // GM ve GZ hesaplamaları bu sihirbazdan kaldırıldı; Enine Stabilite sayfasında mevcuttur.
 
-    if (learnMode === 'gz') {
-      const angle = parseFloat(angleInput);
-      if (!isFinite(kg) || !isFinite(angle)) { setResultText("Lütfen KG ve Açı girin."); return; }
-      const centers = HydrostaticCalculations.calculateCenterPoints(geometry, kg);
-      const angleRad = (angle * Math.PI) / 180;
-      const gz = Math.max(0, (centers.km - kg) * Math.sin(angleRad) - 0.5 * geometry.breadth * Math.pow(Math.sin(angleRad), 2));
-      const rm = gz * displacement * g; // kN·m yaklaşık
-      setResultText(`GZ(${angle.toFixed(1)}°) = ${gz.toFixed(4)} m, Sağlama Momenti ≈ ${rm.toFixed(1)} kN·m`);
-      return;
-    }
 
     if (learnMode === 'trim') {
       const ta = parseFloat(trimTa);
@@ -194,8 +177,6 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
           <div className="space-y-4">
             <div className="text-sm">Öncelikle, neyi öğrenmek istiyorsunuz?</div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              <Button variant={learnMode==='gm'? 'default':'secondary'} onClick={()=>{ setLearnMode('gm'); setStep(1); }}>GM (Metasentrik Yükseklik)</Button>
-              <Button variant={learnMode==='gz'? 'default':'secondary'} onClick={()=>{ setLearnMode('gz'); setStep(1); }}>GZ (Doğrultucu Kol)</Button>
               <Button variant={learnMode==='trim'? 'default':'secondary'} onClick={()=>{ setLearnMode('trim'); setStep(1); }}>Trim Açısı</Button>
               <Button variant={learnMode==='list'? 'default':'secondary'} onClick={()=>{ setLearnMode('list'); setStep(1); }}>List Açısı</Button>
               <Button variant={learnMode==='loll'? 'default':'secondary'} onClick={()=>{ setLearnMode('loll'); setStep(1); }}>Loll Açısı</Button>
@@ -210,7 +191,7 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
         {step === 1 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="font-medium">Seçilen konu: {learnMode === 'gm' ? 'GM' : learnMode === 'gz' ? 'GZ' : learnMode === 'trim' ? 'Trim' : learnMode === 'list' ? 'List' : 'Loll'}</div>
+              <div className="font-medium">Seçilen konu: {learnMode === 'trim' ? 'Trim' : learnMode === 'list' ? 'List' : 'Loll'}</div>
               <div className="flex items-center gap-2 text-xs">
                 <input id="useProfile" type="checkbox" checked={useProfile && hasStoredProfile} onChange={(e)=> setUseProfile(e.target.checked && hasStoredProfile)} />
                 <Label htmlFor="useProfile">Profili kullan</Label>
@@ -229,18 +210,12 @@ export const AdvancedStabilityWizard = ({ open, onClose, onSaved }: { open: bool
             )}
 
             {/* Konu bazlı girdiler */}
-            {(learnMode==='gm' || learnMode==='gz' || learnMode==='list' || learnMode==='loll') && (
+            {(learnMode==='list' || learnMode==='loll') && (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 <div>
                   <Label>KG (m)</Label>
                   <Input type="number" value={kgInput} onChange={(e)=> setKgInput(e.target.value)} />
                 </div>
-                {learnMode==='gz' && (
-                  <div>
-                    <Label>Açı (°)</Label>
-                    <Input type="number" value={angleInput} onChange={(e)=> setAngleInput(e.target.value)} />
-                  </div>
-                )}
                 {learnMode==='list' && (
                   <>
                     <div>

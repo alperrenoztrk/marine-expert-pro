@@ -53,7 +53,7 @@ export default function StabilityStabilityPage(){
             <Button onClick={()=> setWizardOpen(true)}>{hasProfile ? 'Profili Güncelle' : 'Profili Kur'}</Button>
             <Button variant="outline" onClick={()=> setMode('select')}>Mod Seçimine Dön</Button>
           </div>
-          <HydrostaticsStabilityCalculations singleMode section="stability" />
+          <HydrostaticsStabilityCalculations singleMode section="trimlist" />
           <AdvancedStabilityWizard open={wizardOpen} onClose={()=> setWizardOpen(false)} onSaved={()=> setHasProfile(true)} />
         </>
       )}
