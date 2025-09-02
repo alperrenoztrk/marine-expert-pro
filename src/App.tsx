@@ -64,7 +64,6 @@ import DraftSurveyPort from "./pages/DraftSurveyPort";
 import DraftSurveyAnalysis from "./pages/DraftSurveyAnalysis";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 // Stability2 removed
-import StabilityAthwartship from "./pages/StabilityAthwartship";
 import StabilityLongitudinal from "./pages/StabilityLongitudinal";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityDamagePlaceholder from "./pages/StabilityDamagePlaceholder";
@@ -151,7 +150,7 @@ const App = () => {
                   {/* Keep only Assistant and Rules under stability */}
                   <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
                   <Route path="/stability/rules" element={<StabilityRules />} />
-                  <Route path="/stability/athwartship" element={<StabilityAthwartship />} />
+                  
                   <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
                   <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
                   <Route path="/stability/damage" element={<StabilityDamagePlaceholder />} />

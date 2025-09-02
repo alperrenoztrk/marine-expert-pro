@@ -37,7 +37,6 @@ export default function StabilityMenu() {
   }, [open]);
 
   const optionButtons = [
-    { key: 'athwartship', label: 'Enine Stabilite', to: '/stability/athwartship' },
     { key: 'longitudinal', label: 'Boyuna Stabilite', to: '/stability/longitudinal' },
     { key: 'gz-imo', label: 'GZ / IMO Kriterleri', to: '/stability/gz-imo' },
     { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
