@@ -69,6 +69,12 @@ import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityDamagePlaceholder from "./pages/StabilityDamagePlaceholder";
 import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
 import StabilityTransversePage from "./pages/StabilityTransverse";
+import StabilityGMPage from "./pages/StabilityGM";
+import StabilityGZPage from "./pages/StabilityGZ";
+import StabilityListPage from "./pages/StabilityList";
+import StabilityTrimPage from "./pages/StabilityTrim";
+import StabilityLollPage from "./pages/StabilityLoll";
+import StabilityAnalysisPage from "./pages/StabilityAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -157,6 +163,12 @@ const App = () => {
                   <Route path="/stability/damage" element={<StabilityDamagePlaceholder />} />
                   <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
                   <Route path="/stability/transverse" element={<StabilityTransversePage />} />
+                  <Route path="/stability/gm" element={<StabilityGMPage />} />
+                  <Route path="/stability/gz" element={<StabilityGZPage />} />
+                  <Route path="/stability/list" element={<StabilityListPage />} />
+                  <Route path="/stability/trim" element={<StabilityTrimPage />} />
+                  <Route path="/stability/loll" element={<StabilityLollPage />} />
+                  <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/navigation-menu" element={<NavigationMenu />} />
