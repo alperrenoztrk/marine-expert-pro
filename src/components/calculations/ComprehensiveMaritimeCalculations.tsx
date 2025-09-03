@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true }: { showLongitudinal?: boolean }) => {
+export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, showDraftSurvey = true }: { showLongitudinal?: boolean; showDraftSurvey?: boolean }) => {
   const { toast } = useToast();
 
   // 1. Hogging/Sagging Detection
@@ -587,13 +587,15 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true }: {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="hogging" className="w-full">
-        <TabsList className={`grid w-full ${showLongitudinal ? 'grid-cols-7' : 'grid-cols-6'}`}>
+        <TabsList className={`grid w-full ${showLongitudinal && showDraftSurvey ? 'grid-cols-7' : showLongitudinal || showDraftSurvey ? 'grid-cols-6' : 'grid-cols-5'}`}>
           <TabsTrigger value="hogging">1. Giriş</TabsTrigger>
           <TabsTrigger value="transverse">2. Enine Denge Hesapları</TabsTrigger>
           {showLongitudinal && (
             <TabsTrigger value="longitudinal">3. Boyuna Denge Hesapları</TabsTrigger>
           )}
-          <TabsTrigger value="draft">4. Draft Survey</TabsTrigger>
+          {showDraftSurvey && (
+            <TabsTrigger value="draft">4. Draft Survey</TabsTrigger>
+          )}
           <TabsTrigger value="density">5. Duba ve Yoğunluk Hesapları</TabsTrigger>
           <TabsTrigger value="solas">6. SOLAS Stabilite Kriterleri</TabsTrigger>
           <TabsTrigger value="load">7. Yük Hesapları</TabsTrigger>
@@ -1136,6 +1138,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true }: {
         )}
 
         {/* 4. Draft Survey */}
+        {showDraftSurvey && (
         <TabsContent value="draft" className="space-y-4">
           <Card>
             <CardHeader>
@@ -1145,185 +1148,11 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true }: {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              
-              {/* MMM Draft */}
-              <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">MMM = (dF + dA + 6dM) / 8</h4>
-                <p className="text-sm text-muted-foreground mb-3">Amaç: Üç noktadan alınan draftların ağırlıklı ortalamasını hesaplar.</p>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                  <div>
-                    <Label>Baş Draft (dF) - m</Label>
-                    <Input
-                      type="number"
-                      placeholder="Baş draft"
-                      value={mmmDraftInputs.draftForward}
-                      onChange={(e) => setMmmDraftInputs(prev => ({ ...prev, draftForward: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>Kıç Draft (dA) - m</Label>
-                    <Input
-                      type="number"
-                      placeholder="Kıç draft"
-                      value={mmmDraftInputs.draftAft}
-                      onChange={(e) => setMmmDraftInputs(prev => ({ ...prev, draftAft: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>Vasat Draft (dM) - m</Label>
-                    <Input
-                      type="number"
-                      placeholder="Vasat draft"
-                      value={mmmDraftInputs.draftMidship}
-                      onChange={(e) => setMmmDraftInputs(prev => ({ ...prev, draftMidship: e.target.value }))}
-                    />
-                  </div>
-                  <Button onClick={calculateMMMDraft} className="w-full">
-                    <Calculator className="w-4 h-4 mr-2" />
-                    Hesapla
-                  </Button>
-                </div>
-                {mmmDraftResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500">
-                    <p className="font-mono text-lg">MMM Draft = {mmmDraftResult.toFixed(3)} m</p>
-                  </div>
-                )}
-              </div>
-
-              {/* 1. Trim Düzeltmesi */}
-              <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">1. Trim Düzeltmesi = Trim × LCF × TPC × 100 / LBP</h4>
-                <p className="text-sm text-muted-foreground mb-3">Amaç: Trim etkisini deplasmanda düzeltir.</p>
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                  <div>
-                    <Label>Trim (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="Trim"
-                      value={trimCorrection1Inputs.trim}
-                      onChange={(e) => setTrimCorrection1Inputs(prev => ({ ...prev, trim: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>LCF (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="LCF"
-                      value={trimCorrection1Inputs.lcf}
-                      onChange={(e) => setTrimCorrection1Inputs(prev => ({ ...prev, lcf: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>TPC (ton/cm)</Label>
-                    <Input
-                      type="number"
-                      placeholder="TPC"
-                      value={trimCorrection1Inputs.tpc}
-                      onChange={(e) => setTrimCorrection1Inputs(prev => ({ ...prev, tpc: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>LBP (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="LBP"
-                      value={trimCorrection1Inputs.lbp}
-                      onChange={(e) => setTrimCorrection1Inputs(prev => ({ ...prev, lbp: e.target.value }))}
-                    />
-                  </div>
-                  <Button onClick={calculateTrimCorrection1} className="w-full">
-                    <Calculator className="w-4 h-4 mr-2" />
-                    Hesapla
-                  </Button>
-                </div>
-                {trimCorrection1Result !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500">
-                    <p className="font-mono text-lg">1. Trim Düzeltmesi = {trimCorrection1Result.toFixed(2)} ton</p>
-                  </div>
-                )}
-              </div>
-
-              {/* 2. Trim Düzeltmesi */}
-              <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">2. Trim Düzeltmesi = Trim² × MCT × 50 / LBP</h4>
-                <p className="text-sm text-muted-foreground mb-3">Amaç: Trim karesinin deplasmandaki etkisini hesaplar.</p>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                  <div>
-                    <Label>Trim (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="Trim"
-                      value={trimCorrection2Inputs.trim}
-                      onChange={(e) => setTrimCorrection2Inputs(prev => ({ ...prev, trim: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>MCT (ton.m/cm)</Label>
-                    <Input
-                      type="number"
-                      placeholder="MCT"
-                      value={trimCorrection2Inputs.mct}
-                      onChange={(e) => setTrimCorrection2Inputs(prev => ({ ...prev, mct: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>LBP (m)</Label>
-                    <Input
-                      type="number"
-                      placeholder="LBP"
-                      value={trimCorrection2Inputs.lbp}
-                      onChange={(e) => setTrimCorrection2Inputs(prev => ({ ...prev, lbp: e.target.value }))}
-                    />
-                  </div>
-                  <Button onClick={calculateTrimCorrection2} className="w-full">
-                    <Calculator className="w-4 h-4 mr-2" />
-                    Hesapla
-                  </Button>
-                </div>
-                {trimCorrection2Result !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500">
-                    <p className="font-mono text-lg">2. Trim Düzeltmesi = {trimCorrection2Result.toFixed(2)} ton</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Yoğunluk Düzeltmesi */}
-              <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
-                <h4 className="font-semibold mb-3">Yoğunluk Düzeltmesi = Δ × (ρgerçek/1.025 - 1)</h4>
-                <p className="text-sm text-muted-foreground mb-3">Amaç: Deniz suyu yoğunluğu farkını deplasmanda düzeltir.</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                  <div>
-                    <Label>Deplasman (Δ) - ton</Label>
-                    <Input
-                      type="number"
-                      placeholder="Deplasman"
-                      value={densityCorrectionInputs.displacement}
-                      onChange={(e) => setDensityCorrectionInputs(prev => ({ ...prev, displacement: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label>Gerçek Yoğunluk (ton/m³)</Label>
-                    <Input
-                      type="number"
-                      placeholder="1.025"
-                      value={densityCorrectionInputs.actualDensity}
-                      onChange={(e) => setDensityCorrectionInputs(prev => ({ ...prev, actualDensity: e.target.value }))}
-                    />
-                  </div>
-                  <Button onClick={calculateDensityCorrection} className="w-full">
-                    <Calculator className="w-4 h-4 mr-2" />
-                    Hesapla
-                  </Button>
-                </div>
-                {densityCorrectionResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500">
-                    <p className="font-mono text-lg">Yoğunluk Düzeltmesi = {densityCorrectionResult.toFixed(2)} ton</p>
-                  </div>
-                )}
-              </div>
+...
             </CardContent>
           </Card>
         </TabsContent>
+        )}
 
         {/* 5. Duba ve Yoğunluk Hesapları */}
         <TabsContent value="density" className="space-y-4">
