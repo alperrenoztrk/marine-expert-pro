@@ -393,7 +393,243 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
     toast({ title: "Hesaplama Tamamlandı", description: `Loll Açısı: ${lollAngle.toFixed(2)}°` });
   };
 
-  // Missing calculation functions
+  // TRANSVERSE STABILITY CALCULATIONS
+
+  // 1. Hidrostatik Temeller
+  const [hydrostaticInputs, setHydrostaticInputs] = useState({
+    length: "", breadth: "", draft: "", blockCoeff: "", waterplaneCoeff: ""
+  });
+  const [hydrostaticResults, setHydrostaticResults] = useState<{
+    displacement: number; volume: number; waterplaneArea: number; kb: number; bmt: number; kmt: number;
+  } | null>(null);
+
+  const calculateHydrostaticFoundations = () => {
+    const L = parseFloat(hydrostaticInputs.length);
+    const B = parseFloat(hydrostaticInputs.breadth);
+    const T = parseFloat(hydrostaticInputs.draft);
+    const Cb = parseFloat(hydrostaticInputs.blockCoeff);
+    const Cw = parseFloat(hydrostaticInputs.waterplaneCoeff);
+
+    if (isNaN(L) || isNaN(B) || isNaN(T) || isNaN(Cb) || isNaN(Cw)) {
+      toast({ title: "Hata", description: "Lütfen geçerli sayısal değerler girin", variant: "destructive" });
+      return;
+    }
+
+    const volume = L * B * T * Cb; // ∇ (m³)
+    const displacement = volume * 1.025; // Δ (ton) - assuming seawater density
+    const waterplaneArea = L * B * Cw; // WPA (m²)
+    const kb = T * (0.53 + 0.085 * Cb); // KB approximation
+    const iT = (L * Math.pow(B, 3) * Cw) / 12; // I_T approximation
+    const bmt = iT / volume; // BM_T = I_T / ∇
+    const kmt = kb + bmt; // KM_T = KB + BM_T
+
+    setHydrostaticResults({ displacement, volume, waterplaneArea, kb, bmt, kmt });
+    toast({ title: "Hidrostatik Temeller Hesaplandı", description: `Δ: ${displacement.toFixed(1)} ton, ∇: ${volume.toFixed(1)} m³` });
+  };
+
+  // 2. Ağırlık Merkezi ve GM
+  const [weightCenterInputs, setWeightCenterInputs] = useState({
+    kmt: "", kg: "", totalMoment: "", totalWeight: ""
+  });
+  const [weightCenterResults, setWeightCenterResults] = useState<{ kg: number; gmt: number } | null>(null);
+
+  const calculateWeightCenterGM = () => {
+    const KMT = parseFloat(weightCenterInputs.kmt);
+    const KG = parseFloat(weightCenterInputs.kg);
+    const totalMoment = parseFloat(weightCenterInputs.totalMoment);
+    const totalWeight = parseFloat(weightCenterInputs.totalWeight);
+
+    if (!isNaN(KMT) && !isNaN(KG)) {
+      const GMT = KMT - KG; // GM_T = KM_T - KG
+      setWeightCenterResults({ kg: KG, gmt: GMT });
+      toast({ title: "GM Hesaplandı", description: `GM_T: ${GMT.toFixed(3)} m` });
+    } else if (!isNaN(totalMoment) && !isNaN(totalWeight) && totalWeight > 0) {
+      const newKG = totalMoment / totalWeight; // KG = Σ(wi * KGi) / Σwi
+      setWeightCenterResults({ kg: newKG, gmt: 0 });
+      toast({ title: "KG Hesaplandı", description: `KG: ${newKG.toFixed(3)} m` });
+    } else {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+    }
+  };
+
+  // 3. Ağırlık Şifti
+  const [weightShiftInputs, setWeightShiftInputs] = useState({
+    weight: "", distance: "", displacement: "", gmt: "", verticalShift: ""
+  });
+  const [weightShiftResults, setWeightShiftResults] = useState<{ listAngle: number; kgChange: number } | null>(null);
+
+  const calculateWeightShift = () => {
+    const w = parseFloat(weightShiftInputs.weight);
+    const d = parseFloat(weightShiftInputs.distance);
+    const Delta = parseFloat(weightShiftInputs.displacement);
+    const GMT = parseFloat(weightShiftInputs.gmt);
+    const h = parseFloat(weightShiftInputs.verticalShift);
+
+    if (!isNaN(w) && !isNaN(d) && !isNaN(Delta) && !isNaN(GMT)) {
+      // Enine şift: tan φ ≈ w*d/(Δ*GM_T)
+      const listAngle = Math.atan((w * d) / (Delta * GMT)) * (180 / Math.PI);
+      let kgChange = 0;
+      
+      if (!isNaN(h)) {
+        // Düşey şift: GG_1 = w*h/Δ
+        kgChange = (w * h) / Delta;
+      }
+
+      setWeightShiftResults({ listAngle, kgChange });
+      toast({ title: "Ağırlık Şifti Hesaplandı", description: `List Açısı: ${listAngle.toFixed(2)}°` });
+    } else {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+    }
+  };
+
+  // 4. Serbest Yüzey Etkisi
+  const [freeSurfaceInputs2, setFreeSurfaceInputs2] = useState({
+    tankLength: "", tankBreadth: "", tankVolume: "", fluidDensity: "0.85", volume: ""
+  });
+  const [freeSurfaceResults, setFreeSurfaceResults] = useState<{ fsc: number; gmCorrected: number } | null>(null);
+
+  const calculateFreeSurfaceEffect = () => {
+    const l = parseFloat(freeSurfaceInputs2.tankLength);
+    const b = parseFloat(freeSurfaceInputs2.tankBreadth);
+    const rhoTank = parseFloat(freeSurfaceInputs2.fluidDensity);
+    const volume = parseFloat(freeSurfaceInputs2.volume);
+
+    if (isNaN(l) || isNaN(b) || isNaN(rhoTank) || isNaN(volume)) {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+      return;
+    }
+
+    const iF = (l * Math.pow(b, 3)) / 12; // Tank serbest yüzey ikinci momenti
+    const fsc = (rhoTank / 1.025) * (iF / volume); // FSC = (ρ_tank/ρ_sea) * i_f/∇
+    
+    setFreeSurfaceResults({ fsc, gmCorrected: 0 });
+    toast({ title: "Serbest Yüzey Etkisi Hesaplandı", description: `FSC: ${fsc.toFixed(4)} m` });
+  };
+
+  // 5. GZ ve Dinamik Stabilite
+  const [gzDynamicInputs, setGzDynamicInputs] = useState({
+    gmCorr: "", angle: "", kn: "", kg: ""
+  });
+  const [gzDynamicResults, setGzDynamicResults] = useState<{ gz: number; rightingMoment: number } | null>(null);
+
+  const calculateGZDynamic = () => {
+    const gmCorr = parseFloat(gzDynamicInputs.gmCorr);
+    const angle = parseFloat(gzDynamicInputs.angle);
+    const kn = parseFloat(gzDynamicInputs.kn);
+    const kg = parseFloat(gzDynamicInputs.kg);
+
+    if (!isNaN(gmCorr) && !isNaN(angle)) {
+      // Küçük açılar için: GZ ≈ GM_corr * sin φ
+      const angleRad = (angle * Math.PI) / 180;
+      const gz = gmCorr * Math.sin(angleRad);
+      const rightingMoment = (geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025) * gz;
+      
+      setGzDynamicResults({ gz, rightingMoment });
+      toast({ title: "GZ Hesaplandı", description: `GZ: ${gz.toFixed(4)} m` });
+    } else if (!isNaN(kn) && !isNaN(kg) && !isNaN(angle)) {
+      // Genel açılar için: GZ(φ) = KN(φ) - KG sin φ
+      const angleRad = (angle * Math.PI) / 180;
+      const gz = kn - kg * Math.sin(angleRad);
+      const rightingMoment = (geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025) * gz;
+      
+      setGzDynamicResults({ gz, rightingMoment });
+      toast({ title: "GZ (KN Yöntemi) Hesaplandı", description: `GZ: ${gz.toFixed(4)} m` });
+    } else {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+    }
+  };
+
+  // 6. Rüzgar Etkisi
+  const [windEffectInputs, setWindEffectInputs] = useState({
+    windPressure: "", lateralArea: "", leverArm: "", displacement: ""
+  });
+  const [windEffectResults, setWindEffectResults] = useState<{ heelingMoment: number; heelingArm: number } | null>(null);
+
+  const calculateWindEffect = () => {
+    const q = parseFloat(windEffectInputs.windPressure); // Pa
+    const A = parseFloat(windEffectInputs.lateralArea); // m²
+    const z = parseFloat(windEffectInputs.leverArm); // m
+    const Delta = parseFloat(windEffectInputs.displacement); // ton
+
+    if (isNaN(q) || isNaN(A) || isNaN(z) || isNaN(Delta)) {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+      return;
+    }
+
+    const heelingMoment = (q * A * z) / 1000; // kN·m (Pa to kN/m² conversion)
+    const heelingArm = heelingMoment / (Delta * 9.81); // m
+
+    setWindEffectResults({ heelingMoment, heelingArm });
+    toast({ title: "Rüzgar Etkisi Hesaplandı", description: `Heeling Moment: ${heelingMoment.toFixed(2)} kN·m` });
+  };
+
+  // 7. İnklinasyon Deneyi
+  const [inclinationInputs, setInclinationInputs] = useState({
+    testWeight: "", shiftDistance: "", displacement: "", observedAngle: ""
+  });
+  const [inclinationResults, setInclinationResults] = useState<{ gmt: number } | null>(null);
+
+  const calculateInclinationTest = () => {
+    const w = parseFloat(inclinationInputs.testWeight);
+    const l = parseFloat(inclinationInputs.shiftDistance);
+    const Delta = parseFloat(inclinationInputs.displacement);
+    const phi = parseFloat(inclinationInputs.observedAngle);
+
+    if (isNaN(w) || isNaN(l) || isNaN(Delta) || isNaN(phi)) {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+      return;
+    }
+
+    const phiRad = (phi * Math.PI) / 180;
+    const gmt = (w * l) / (Delta * Math.tan(phiRad)); // GM_T = w*l/(Δ*tan φ)
+
+    setInclinationResults({ gmt });
+    toast({ title: "İnklinasyon Deneyi Sonucu", description: `GM_T: ${gmt.toFixed(3)} m` });
+  };
+
+  // 8. Yalpa Periyodu
+  const [rollPeriodInputs2, setRollPeriodInputs2] = useState({
+    breadth: "", gmCorr: "", radiusOfGyration: ""
+  });
+  const [rollPeriodResults, setRollPeriodResults] = useState<{ period: number } | null>(null);
+
+  const calculateRollPeriod = () => {
+    const B = parseFloat(rollPeriodInputs2.breadth);
+    const gmCorr = parseFloat(rollPeriodInputs2.gmCorr);
+    const k = parseFloat(rollPeriodInputs2.radiusOfGyration) || 0.35 * B; // Default k ≈ 0.35B
+
+    if (isNaN(B) || isNaN(gmCorr) || gmCorr <= 0) {
+      toast({ title: "Hata", description: "Lütfen geçerli değerler girin", variant: "destructive" });
+      return;
+    }
+
+    const T = 2 * Math.PI * k / Math.sqrt(9.81 * gmCorr); // T = 2π * k / √(g*GM_corr)
+
+    setRollPeriodResults({ period: T });
+    toast({ title: "Yalpa Periyodu Hesaplandı", description: `T: ${T.toFixed(2)} saniye` });
+  };
+
+  // 9. Angle of Loll
+  const [lollInputs2, setLollInputs2] = useState({
+    gm: "", bmt: ""
+  });
+  const [lollResults, setLollResults] = useState<{ lollAngle: number } | null>(null);
+
+  const calculateAngleOfLoll = () => {
+    const GM = parseFloat(lollInputs2.gm);
+    const BMT = parseFloat(lollInputs2.bmt);
+
+    if (isNaN(GM) || isNaN(BMT) || GM >= 0) {
+      toast({ title: "Hata", description: "GM negatif olmalı (GM < 0)", variant: "destructive" });
+      return;
+    }
+
+    const lollAngle = Math.atan(Math.sqrt(-2 * GM / BMT)) * (180 / Math.PI); // tan φ_loll ≈ √(-2*GM/BM_T)
+
+    setLollResults({ lollAngle });
+    toast({ title: "Angle of Loll Hesaplandı", description: `Loll Açısı: ${lollAngle.toFixed(2)}°` });
+  };
+
   const calculateDisplacement = () => {
     const volume = parseFloat(displacementInputs.volume);
     const waterDensity = parseFloat(displacementInputs.waterDensity);
@@ -835,6 +1071,567 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
             )}
           </div>
           )}
+        </CardContent>
+      </Card>
+      </>
+      )}
+
+      {/* TRANSVERSE STABILITY CALCULATIONS */}
+      {(!singleMode || section === 'stability' || section === 'hydrostatic' || section === 'trimlist') && (
+      <>
+      <Separator />
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Shield className="h-5 w-5" />
+            Enine Stabilite Hesaplamaları
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          
+          {/* 1. Hidrostatik Temeller */}
+          {(!singleMode || section === 'hydrostatic') && (
+          <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">1. Hidrostatik Temeller</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div>
+                <Label htmlFor="hydro-length">Uzunluk (L) [m]</Label>
+                <Input
+                  id="hydro-length"
+                  type="number"
+                  placeholder="100"
+                  value={hydrostaticInputs.length}
+                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, length: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="hydro-breadth">Genişlik (B) [m]</Label>
+                <Input
+                  id="hydro-breadth"
+                  type="number"
+                  placeholder="20"
+                  value={hydrostaticInputs.breadth}
+                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, breadth: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="hydro-draft">Draft (T) [m]</Label>
+                <Input
+                  id="hydro-draft"
+                  type="number"
+                  placeholder="6"
+                  value={hydrostaticInputs.draft}
+                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, draft: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="hydro-cb">Cb Katsayısı</Label>
+                <Input
+                  id="hydro-cb"
+                  type="number"
+                  placeholder="0.7"
+                  value={hydrostaticInputs.blockCoeff}
+                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, blockCoeff: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="hydro-cw">Cw Katsayısı</Label>
+                <Input
+                  id="hydro-cw"
+                  type="number"
+                  placeholder="0.8"
+                  value={hydrostaticInputs.waterplaneCoeff}
+                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, waterplaneCoeff: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateHydrostaticFoundations} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              Hidrostatik Temelleri Hesapla
+            </Button>
+            {hydrostaticResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                  <div><strong>Δ:</strong> {hydrostaticResults.displacement.toFixed(1)} ton</div>
+                  <div><strong>∇:</strong> {hydrostaticResults.volume.toFixed(1)} m³</div>
+                  <div><strong>WPA:</strong> {hydrostaticResults.waterplaneArea.toFixed(1)} m²</div>
+                  <div><strong>KB:</strong> {hydrostaticResults.kb.toFixed(3)} m</div>
+                  <div><strong>BM_T:</strong> {hydrostaticResults.bmt.toFixed(3)} m</div>
+                  <div><strong>KM_T:</strong> {hydrostaticResults.kmt.toFixed(3)} m</div>
+                </div>
+              </div>
+            )}
+          </div>
+          )}
+
+          {/* 2. Ağırlık Merkezi ve GM */}
+          {(!singleMode || section === 'stability' || calc === 'gm') && (
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">2. Ağırlık Merkezi ve GM</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="weight-kmt">KM_T [m]</Label>
+                <Input
+                  id="weight-kmt"
+                  type="number"
+                  placeholder="8.5"
+                  value={weightCenterInputs.kmt}
+                  onChange={(e) => setWeightCenterInputs(prev => ({ ...prev, kmt: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="weight-kg">KG [m]</Label>
+                <Input
+                  id="weight-kg"
+                  type="number"
+                  placeholder="5.2"
+                  value={weightCenterInputs.kg}
+                  onChange={(e) => setWeightCenterInputs(prev => ({ ...prev, kg: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="weight-moment">Toplam Moment [t·m]</Label>
+                <Input
+                  id="weight-moment"
+                  type="number"
+                  placeholder="18000"
+                  value={weightCenterInputs.totalMoment}
+                  onChange={(e) => setWeightCenterInputs(prev => ({ ...prev, totalMoment: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="weight-total">Toplam Ağırlık [t]</Label>
+                <Input
+                  id="weight-total"
+                  type="number"
+                  placeholder="3500"
+                  value={weightCenterInputs.totalWeight}
+                  onChange={(e) => setWeightCenterInputs(prev => ({ ...prev, totalWeight: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateWeightCenterGM} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              GM ve KG Hesapla
+            </Button>
+            {weightCenterResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><strong>KG:</strong> {weightCenterResults.kg.toFixed(3)} m</div>
+                  <div><strong>GM_T:</strong> {weightCenterResults.gmt.toFixed(3)} m</div>
+                </div>
+              </div>
+            )}
+          </div>
+          )}
+
+          {/* 3. Ağırlık Şifti */}
+          {(!singleMode || section === 'trimlist' || calc === 'list') && (
+          <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">3. Ağırlık Ekleme/Çıkarma/Şift</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div>
+                <Label htmlFor="shift-weight">Ağırlık (w) [t]</Label>
+                <Input
+                  id="shift-weight"
+                  type="number"
+                  placeholder="100"
+                  value={weightShiftInputs.weight}
+                  onChange={(e) => setWeightShiftInputs(prev => ({ ...prev, weight: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="shift-distance">Enine Mesafe (d) [m]</Label>
+                <Input
+                  id="shift-distance"
+                  type="number"
+                  placeholder="5"
+                  value={weightShiftInputs.distance}
+                  onChange={(e) => setWeightShiftInputs(prev => ({ ...prev, distance: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="shift-displacement">Deplasman (Δ) [t]</Label>
+                <Input
+                  id="shift-displacement"
+                  type="number"
+                  placeholder="3500"
+                  value={weightShiftInputs.displacement}
+                  onChange={(e) => setWeightShiftInputs(prev => ({ ...prev, displacement: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="shift-gmt">GM_T [m]</Label>
+                <Input
+                  id="shift-gmt"
+                  type="number"
+                  placeholder="1.2"
+                  value={weightShiftInputs.gmt}
+                  onChange={(e) => setWeightShiftInputs(prev => ({ ...prev, gmt: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="shift-vertical">Düşey Şift (h) [m]</Label>
+                <Input
+                  id="shift-vertical"
+                  type="number"
+                  placeholder="2"
+                  value={weightShiftInputs.verticalShift}
+                  onChange={(e) => setWeightShiftInputs(prev => ({ ...prev, verticalShift: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateWeightShift} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              Ağırlık Şifti Hesapla
+            </Button>
+            {weightShiftResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><strong>List Açısı:</strong> {weightShiftResults.listAngle.toFixed(2)}°</div>
+                  <div><strong>KG Değişimi:</strong> {weightShiftResults.kgChange.toFixed(4)} m</div>
+                </div>
+              </div>
+            )}
+          </div>
+          )}
+
+          {/* 4. Serbest Yüzey Etkisi */}
+          <div className="bg-amber-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">4. Serbest Yüzey Etkisi (FSC)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div>
+                <Label htmlFor="fs-length">Tank Uzunluğu [m]</Label>
+                <Input
+                  id="fs-length"
+                  type="number"
+                  placeholder="10"
+                  value={freeSurfaceInputs2.tankLength}
+                  onChange={(e) => setFreeSurfaceInputs2(prev => ({ ...prev, tankLength: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="fs-breadth">Tank Genişliği [m]</Label>
+                <Input
+                  id="fs-breadth"
+                  type="number"
+                  placeholder="8"
+                  value={freeSurfaceInputs2.tankBreadth}
+                  onChange={(e) => setFreeSurfaceInputs2(prev => ({ ...prev, tankBreadth: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="fs-density">Akışkan Yoğunluğu [t/m³]</Label>
+                <Input
+                  id="fs-density"
+                  type="number"
+                  placeholder="0.85"
+                  value={freeSurfaceInputs2.fluidDensity}
+                  onChange={(e) => setFreeSurfaceInputs2(prev => ({ ...prev, fluidDensity: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="fs-volume">Gemi Hacmi (∇) [m³]</Label>
+                <Input
+                  id="fs-volume"
+                  type="number"
+                  placeholder="2400"
+                  value={freeSurfaceInputs2.volume}
+                  onChange={(e) => setFreeSurfaceInputs2(prev => ({ ...prev, volume: e.target.value }))}
+                />
+              </div>
+              <Button onClick={calculateFreeSurfaceEffect} className="w-full">
+                <Calculator className="w-4 h-4 mr-2" />
+                FSC Hesapla
+              </Button>
+            </div>
+            {freeSurfaceResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-amber-500">
+                <div className="text-sm">
+                  <div><strong>FSC:</strong> {freeSurfaceResults.fsc.toFixed(4)} m</div>
+                  <div className="text-xs mt-1 text-amber-600 dark:text-amber-400">
+                    GM_corr = GM_T - ΣFSC
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 5. GZ ve Dinamik Stabilite */}
+          {(!singleMode || section === 'stability' || calc === 'gz') && (
+          <div className="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">5. GZ ve Moment Hesaplamaları</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="gz-gmcorr">GM_corr [m]</Label>
+                <Input
+                  id="gz-gmcorr"
+                  type="number"
+                  placeholder="1.1"
+                  value={gzDynamicInputs.gmCorr}
+                  onChange={(e) => setGzDynamicInputs(prev => ({ ...prev, gmCorr: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="gz-angle">Açı (φ) [°]</Label>
+                <Input
+                  id="gz-angle"
+                  type="number"
+                  placeholder="15"
+                  value={gzDynamicInputs.angle}
+                  onChange={(e) => setGzDynamicInputs(prev => ({ ...prev, angle: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="gz-kn">KN [m] (opsiyonel)</Label>
+                <Input
+                  id="gz-kn"
+                  type="number"
+                  placeholder="1.2"
+                  value={gzDynamicInputs.kn}
+                  onChange={(e) => setGzDynamicInputs(prev => ({ ...prev, kn: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="gz-kg">KG [m] (KN için)</Label>
+                <Input
+                  id="gz-kg"
+                  type="number"
+                  placeholder="5.2"
+                  value={gzDynamicInputs.kg}
+                  onChange={(e) => setGzDynamicInputs(prev => ({ ...prev, kg: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateGZDynamic} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              GZ Hesapla
+            </Button>
+            {gzDynamicResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-purple-500">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><strong>GZ:</strong> {gzDynamicResults.gz.toFixed(4)} m</div>
+                  <div><strong>Righting Moment:</strong> {(gzDynamicResults.rightingMoment/1000).toFixed(1)} kN·m</div>
+                </div>
+              </div>
+            )}
+          </div>
+          )}
+
+          {/* 6. Rüzgar Etkisi */}
+          <div className="bg-cyan-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">6. Rüzgar Etkisi</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="wind-pressure">Rüzgar Basıncı (q) [Pa]</Label>
+                <Input
+                  id="wind-pressure"
+                  type="number"
+                  placeholder="300"
+                  value={windEffectInputs.windPressure}
+                  onChange={(e) => setWindEffectInputs(prev => ({ ...prev, windPressure: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="wind-area">Yanal Alan (A) [m²]</Label>
+                <Input
+                  id="wind-area"
+                  type="number"
+                  placeholder="400"
+                  value={windEffectInputs.lateralArea}
+                  onChange={(e) => setWindEffectInputs(prev => ({ ...prev, lateralArea: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="wind-lever">Kol (z) [m]</Label>
+                <Input
+                  id="wind-lever"
+                  type="number"
+                  placeholder="8"
+                  value={windEffectInputs.leverArm}
+                  onChange={(e) => setWindEffectInputs(prev => ({ ...prev, leverArm: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="wind-displacement">Deplasman [t]</Label>
+                <Input
+                  id="wind-displacement"
+                  type="number"
+                  placeholder="3500"
+                  value={windEffectInputs.displacement}
+                  onChange={(e) => setWindEffectInputs(prev => ({ ...prev, displacement: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateWindEffect} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              Rüzgar Etkisi Hesapla
+            </Button>
+            {windEffectResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-cyan-500">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><strong>Heeling Moment:</strong> {windEffectResults.heelingMoment.toFixed(1)} kN·m</div>
+                  <div><strong>Heeling Arm:</strong> {windEffectResults.heelingArm.toFixed(4)} m</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 7. İnklinasyon Deneyi */}
+          <div className="bg-indigo-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">7. İnklinasyon Deneyi</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="incl-weight">Test Ağırlığı (w) [t]</Label>
+                <Input
+                  id="incl-weight"
+                  type="number"
+                  placeholder="5"
+                  value={inclinationInputs.testWeight}
+                  onChange={(e) => setInclinationInputs(prev => ({ ...prev, testWeight: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="incl-distance">Şift Mesafesi (l) [m]</Label>
+                <Input
+                  id="incl-distance"
+                  type="number"
+                  placeholder="8"
+                  value={inclinationInputs.shiftDistance}
+                  onChange={(e) => setInclinationInputs(prev => ({ ...prev, shiftDistance: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="incl-displacement">Deplasman (Δ) [t]</Label>
+                <Input
+                  id="incl-displacement"
+                  type="number"
+                  placeholder="3500"
+                  value={inclinationInputs.displacement}
+                  onChange={(e) => setInclinationInputs(prev => ({ ...prev, displacement: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="incl-angle">Gözlenen Açı (φ) [°]</Label>
+                <Input
+                  id="incl-angle"
+                  type="number"
+                  placeholder="2.5"
+                  value={inclinationInputs.observedAngle}
+                  onChange={(e) => setInclinationInputs(prev => ({ ...prev, observedAngle: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateInclinationTest} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              GM Ölç (İnklinasyon)
+            </Button>
+            {inclinationResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-indigo-500">
+                <div className="text-sm">
+                  <div><strong>GM_T:</strong> {inclinationResults.gmt.toFixed(3)} m</div>
+                  <div className="text-xs mt-1 text-indigo-600 dark:text-indigo-400">
+                    GM_T = w·l/(Δ·tan φ)
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 8. Yalpa Periyodu */}
+          <div className="bg-teal-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">8. Yalpa Periyodu</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="roll-breadth">Genişlik (B) [m]</Label>
+                <Input
+                  id="roll-breadth"
+                  type="number"
+                  placeholder="20"
+                  value={rollPeriodInputs2.breadth}
+                  onChange={(e) => setRollPeriodInputs2(prev => ({ ...prev, breadth: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="roll-gmcorr">GM_corr [m]</Label>
+                <Input
+                  id="roll-gmcorr"
+                  type="number"
+                  placeholder="1.1"
+                  value={rollPeriodInputs2.gmCorr}
+                  onChange={(e) => setRollPeriodInputs2(prev => ({ ...prev, gmCorr: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="roll-k">Atalet Yarıçapı (k) [m]</Label>
+                <Input
+                  id="roll-k"
+                  type="number"
+                  placeholder="Otomatik (0.35×B)"
+                  value={rollPeriodInputs2.radiusOfGyration}
+                  onChange={(e) => setRollPeriodInputs2(prev => ({ ...prev, radiusOfGyration: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateRollPeriod} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              Yalpa Periyodu Hesapla
+            </Button>
+            {rollPeriodResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
+                <div className="text-sm">
+                  <div><strong>Yalpa Periyodu:</strong> {rollPeriodResults.period.toFixed(2)} saniye</div>
+                  <div className="text-xs mt-1 text-teal-600 dark:text-teal-400">
+                    T = 2π·k/√(g·GM_corr)
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 9. Angle of Loll */}
+          {(!singleMode || calc === 'loll') && (
+          <div className="bg-red-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">9. Angle of Loll</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="loll2-gm">GM (negatif) [m]</Label>
+                <Input
+                  id="loll2-gm"
+                  type="number"
+                  placeholder="-0.5"
+                  value={lollInputs2.gm}
+                  onChange={(e) => setLollInputs2(prev => ({ ...prev, gm: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="loll2-bmt">BM_T [m]</Label>
+                <Input
+                  id="loll2-bmt"
+                  type="number"
+                  placeholder="3.2"
+                  value={lollInputs2.bmt}
+                  onChange={(e) => setLollInputs2(prev => ({ ...prev, bmt: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Button onClick={calculateAngleOfLoll} className="w-full mt-4">
+              <Calculator className="w-4 h-4 mr-2" />
+              Loll Açısını Hesapla
+            </Button>
+            {lollResults && (
+              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-red-500">
+                <div className="text-sm">
+                  <div><strong>Loll Açısı:</strong> {lollResults.lollAngle.toFixed(2)}°</div>
+                  <div className="text-xs mt-1 text-red-600 dark:text-red-400">
+                    tan φ_loll ≈ √(-2·GM/BM_T)
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          )}
+
         </CardContent>
       </Card>
       </>
