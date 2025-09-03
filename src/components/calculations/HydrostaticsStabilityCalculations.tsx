@@ -425,7 +425,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   return (
     <div className="space-y-6">
       {/* Kapsamlı Denizcilik Hesaplamaları */}
-      <ComprehensiveMaritimeCalculations showLongitudinal={section !== 'stability'} />
+      <ComprehensiveMaritimeCalculations showLongitudinal={section !== 'stability' && section !== 'trimlist'} />
       
       {/* Stabilite Asistanı */}
       <Card className="shadow border border-blue-200/50">
