@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const ComprehensiveMaritimeCalculations = () => {
+export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true }: { showLongitudinal?: boolean }) => {
   const { toast } = useToast();
 
   // 1. Hogging/Sagging Detection
@@ -587,10 +587,12 @@ export const ComprehensiveMaritimeCalculations = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="hogging" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className={`grid w-full ${showLongitudinal ? 'grid-cols-7' : 'grid-cols-6'}`}>
           <TabsTrigger value="hogging">1. Giriş</TabsTrigger>
           <TabsTrigger value="transverse">2. Enine Denge Hesapları</TabsTrigger>
-          <TabsTrigger value="longitudinal">3. Boyuna Denge Hesapları</TabsTrigger>
+          {showLongitudinal && (
+            <TabsTrigger value="longitudinal">3. Boyuna Denge Hesapları</TabsTrigger>
+          )}
           <TabsTrigger value="draft">4. Draft Survey</TabsTrigger>
           <TabsTrigger value="density">5. Duba ve Yoğunluk Hesapları</TabsTrigger>
           <TabsTrigger value="solas">6. SOLAS Stabilite Kriterleri</TabsTrigger>
@@ -1004,6 +1006,7 @@ export const ComprehensiveMaritimeCalculations = () => {
         </TabsContent>
 
         {/* 3. Boyuna Denge Hesapları */}
+        {showLongitudinal && (
         <TabsContent value="longitudinal" className="space-y-4">
           <Card>
             <CardHeader>
@@ -1130,6 +1133,7 @@ export const ComprehensiveMaritimeCalculations = () => {
             </CardContent>
           </Card>
         </TabsContent>
+        )}
 
         {/* 4. Draft Survey */}
         <TabsContent value="draft" className="space-y-4">
