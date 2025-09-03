@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { HydrostaticsStabilityCalculations } from "@/components/calculations/HydrostaticsStabilityCalculations";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
-export default function StabilityDraftPage(){
+export default function StabilityFreeSurfacePage(){
   const navigate = useNavigate();
   const handleBack = () => {
     if (window.history.length > 1) navigate(-1);
@@ -16,7 +16,7 @@ export default function StabilityDraftPage(){
         <ArrowLeft className="h-4 w-4" />
         Geri Dön
       </Button>
-      <HydrostaticsStabilityCalculations singleMode section="hydrostatic" calc="draft" />
+      <HydrostaticsStabilityCalculations singleMode section="stability" />
       
       {/* Stabilite Asistanı */}
       <div className="mt-6">
