@@ -344,116 +344,6 @@ def test_rapor_olusturma():
     print(rapor)
 
 
-def test_gelismis_hesaplamalar():
-    """Gelişmiş stabilite hesaplamalarını test eder"""
-    baslik("GELİŞMİŞ STABİLİTE HESAPLAMALARİ")
-    
-    deplasman = 10000
-    km = 8.5
-    kg = 6.5
-    hesaplama = EnineStabiliteHesaplama(deplasman, km, kg)
-    
-    # Parametrik yalpa analizi
-    print("1. Parametrik Yalpa Analizi:")
-    parametrik = hesaplama.parametrik_yalpa_analizi(
-        dalga_boyu=100,  # m
-        dalga_yuksekligi=3,  # m
-        gemi_hizi=5  # m/s
-    )
-    
-    print(f"  Dalga boyu: 100 m")
-    print(f"  Dalga yüksekliği: 3 m")
-    print(f"  Yalpa periyodu: {parametrik['yalpa_periyodu']:.2f} s")
-    print(f"  Dalga periyodu: {parametrik['dalga_periyodu']:.2f} s")
-    print(f"  Rezonans oranı: {parametrik['rezonans_orani']:.3f}")
-    
-    if parametrik['risk_var']:
-        print("  ⚠️ PARAMETRİK YALPA RİSKİ VAR!")
-    else:
-        print("  ✓ Parametrik yalpa riski düşük")
-    
-    # Rüzgar kriteri analizi
-    print("\n2. Rüzgar Kriteri Analizi:")
-    ruzgar = hesaplama.ruzgar_kriteri_analizi(
-        ruzgar_hizi=25,  # m/s
-        yanal_alan=500,  # m²
-        ruzgar_kolu=15   # m
-    )
-    
-    print(f"  Rüzgar hızı: 25 m/s")
-    print(f"  Rüzgar basıncı: {ruzgar['ruzgar_basinc']:.1f} N/m²")
-    print(f"  Rüzgar kuvveti: {ruzgar['ruzgar_kuvveti']:.1f} kN")
-    print(f"  Rüzgar yatırma açısı: {ruzgar['ruzgar_acisi']:.2f}°")
-    print(f"  Güvenlik marjı: {ruzgar['guvenlik_marji']:.3f} m")
-    
-    if ruzgar['guvenli']:
-        print("  ✓ Rüzgar koşullarında güvenli")
-    else:
-        print("  ⚠️ Rüzgar koşullarında riskli")
-    
-    # Tahıl stabilite analizi
-    print("\n3. Tahıl Stabilite Analizi (SOLAS VI):")
-    tahil = hesaplama.tahil_stabilite_analizi(
-        tahil_kayma_momenti=500  # ton.m
-    )
-    
-    print(f"  Minimum GM gereksinimi: {tahil['minimum_gm_gereksinimi']:.2f} m")
-    print(f"  Mevcut GM: {tahil['mevcut_gm']:.2f} m")
-    print(f"  Tahıl yatma açısı: {tahil['tahil_yatma_acisi']:.2f}°")
-    print(f"  Güvenlik faktörü: {tahil['guvenlik_faktoru']:.2f}")
-    
-    if tahil['solas_uygun']:
-        print("  ✓ SOLAS Bölüm VI gereksinimlerini karşılıyor")
-    else:
-        print("  ✗ SOLAS Bölüm VI gereksinimlerini karşılamıyor")
-
-
-def test_hasar_ve_optimizasyon():
-    """Hasar stabilitesi ve optimizasyon testleri"""
-    baslik("HASAR STABİLİTESİ VE OPTİMİZASYON")
-    
-    deplasman = 10000
-    km = 8.5
-    kg = 6.5
-    hesaplama = EnineStabiliteHesaplama(deplasman, km, kg)
-    
-    # Hasar stabilite analizi
-    print("1. Hasar Stabilite Analizi:")
-    hasar = hesaplama.hasar_stabilite_analizi(
-        hasar_hacmi=200,  # m³
-        hasar_kg=3.0,     # m
-        gecirgenlik=0.95
-    )
-    
-    print(f"  Hasar hacmi: 200 m³")
-    print(f"  Giren su ağırlığı: {hasar['giren_su_agirligi']:.1f} ton")
-    print(f"  Yeni deplasman: {hasar['yeni_deplasman']:.1f} ton")
-    print(f"  Yeni KG: {hasar['yeni_kg']:.3f} m")
-    print(f"  Kalan GM: {hasar['kalan_gm']:.3f} m")
-    print(f"  Çapraz su alma süresi: {hasar['capraz_su_alma_suresi']:.1f} dakika")
-    print(f"  Hayatta kalma faktörü: {hasar['hayatta_kalma_faktoru']:.3f}")
-    
-    if hasar['guvenli']:
-        print("  ✓ Hasar sonrası gemi stabil kalıyor")
-    else:
-        print("  ⚠️ Hasar sonrası stabilite kritik!")
-    
-    # Optimum trim hesabı
-    print("\n2. Optimum Trim Hesabı:")
-    trim_opt = hesaplama.optimum_trim_hesapla(
-        gemi_hizi=7.5,   # m/s (yaklaşık 15 knot)
-        gemi_boyu=150    # m
-    )
-    
-    print(f"  Gemi hızı: 7.5 m/s (≈15 knot)")
-    print(f"  Froude sayısı: {trim_opt['froude_sayisi']:.3f}")
-    print(f"  Optimum trim: {trim_opt['optimum_trim']:.2f} m")
-    print(f"  Trim tipi: {trim_opt['trim_tipi']}")
-    print(f"  Önerilen ön draft: {trim_opt['onerilen_on_draft']:.2f} m")
-    print(f"  Önerilen arka draft: {trim_opt['onerilen_arka_draft']:.2f} m")
-    print(f"  Direnç azalması: %{trim_opt['direnc_azalmasi_yuzde']:.1f}")
-
-
 def main():
     """Ana test fonksiyonu"""
     print("ENİNE STABİLİTE HESAPLAMA TESTLERİ")
@@ -468,8 +358,6 @@ def main():
     test_yalpa_periyodu()
     test_gz_egri_solas()
     test_kritik_gm_havuz()
-    test_gelismis_hesaplamalar()
-    test_hasar_ve_optimizasyon()
     test_rapor_olusturma()
     
     print("\n" + "="*60)

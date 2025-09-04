@@ -8,7 +8,7 @@ export default function StabilityTPCPage(){
   const navigate = useNavigate();
   const handleBack = () => {
     if (window.history.length > 1) navigate(-1);
-    else navigate('/stability/transverse');
+    else navigate('/stability');
   };
   return (
     <div className="container mx-auto p-6 space-y-4">

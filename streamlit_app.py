@@ -40,15 +40,13 @@ kg = st.sidebar.number_input("Ağırlık Merkezi Yüksekliği (KG) [m]",
 hesaplama = EnineStabiliteHesaplama(deplasman, km, kg)
 
 # Ana sekmeler
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📈 Temel Hesaplamalar",
     "📦 Yük Operasyonları", 
     "🏗️ Kren/Bumba İşlemleri",
     "💧 Serbest Yüzey Etkisi",
     "📐 Meyil Hesaplamaları",
     "📊 GZ Eğrisi ve SOLAS",
-    "🌪️ Gelişmiş Analizler",
-    "🛡️ Hasar Stabilitesi",
     "📋 Rapor"
 ])
 
@@ -363,149 +361,13 @@ with tab6:
                 st.error(f"✗ {kriter}")
     
     # Alan hesaplamaları
-            if len(gz_degerleri) >= 5:
+    if len(gz_degerleri) >= 5:
         st.subheader("Dinamik Stabilite Alanları")
         alan = hesaplama.dinamik_stabilite_alani_simpson(gz_degerleri[:5], aci_adimi)
         st.metric("GZ eğrisi altındaki alan (Simpson)", f"{alan:.3f} m.rad")
 
-# Tab 7: Gelişmiş Analizler
+# Tab 7: Rapor
 with tab7:
-    st.header("🌪️ Gelişmiş Stabilite Analizleri")
-    
-    # Parametrik Yalpa Analizi
-    st.subheader("Parametrik Yalpa Analizi")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        dalga_boyu = st.number_input("Dalga Boyu [m]", min_value=50.0, value=100.0, step=10.0)
-        dalga_yuksekligi = st.number_input("Dalga Yüksekliği [m]", min_value=1.0, value=3.0, step=0.5)
-        gemi_hizi = st.number_input("Gemi Hızı [m/s]", min_value=0.0, value=7.5, step=0.5)
-    
-    with col2:
-        if st.button("Parametrik Yalpa Analizi Yap"):
-            parametrik = hesaplama.parametrik_yalpa_analizi(dalga_boyu, dalga_yuksekligi, gemi_hizi)
-            
-            st.metric("Yalpa Periyodu", f"{parametrik['yalpa_periyodu']:.2f} s")
-            st.metric("Dalga Periyodu", f"{parametrik['dalga_periyodu']:.2f} s")
-            st.metric("Rezonans Oranı", f"{parametrik['rezonans_orani']:.3f}")
-            
-            if parametrik['risk_var']:
-                st.error("⚠️ PARAMETRİK YALPA RİSKİ VAR!")
-            else:
-                st.success("✓ Parametrik yalpa riski düşük")
-    
-    st.divider()
-    
-    # Rüzgar Kriteri Analizi
-    st.subheader("Rüzgar Kriteri Analizi")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        ruzgar_hizi = st.number_input("Rüzgar Hızı [m/s]", min_value=5.0, value=25.0, step=1.0)
-        yanal_alan = st.number_input("Yanal Alan [m²]", min_value=100.0, value=500.0, step=50.0)
-        ruzgar_kolu = st.number_input("Rüzgar Kolu [m]", min_value=5.0, value=15.0, step=1.0)
-    
-    with col2:
-        if st.button("Rüzgar Analizi Yap"):
-            ruzgar = hesaplama.ruzgar_kriteri_analizi(ruzgar_hizi, yanal_alan, ruzgar_kolu)
-            
-            st.metric("Rüzgar Basıncı", f"{ruzgar['ruzgar_basinc']:.1f} N/m²")
-            st.metric("Rüzgar Yatırma Açısı", f"{ruzgar['ruzgar_acisi']:.2f}°")
-            st.metric("Güvenlik Marjı", f"{ruzgar['guvenlik_marji']:.3f} m")
-            
-            if ruzgar['guvenli']:
-                st.success("✓ Rüzgar koşullarında güvenli")
-            else:
-                st.error("⚠️ Rüzgar koşullarında riskli")
-    
-    st.divider()
-    
-    # Tahıl Stabilite Analizi
-    st.subheader("Tahıl Stabilite Analizi (SOLAS VI)")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        tahil_momenti = st.number_input("Tahıl Kayma Momenti [ton.m]", min_value=0.0, value=500.0, step=50.0)
-        tahil_yogunluk = st.number_input("Tahıl Yoğunluğu [ton/m³]", min_value=0.5, value=0.8, step=0.1)
-    
-    with col2:
-        if st.button("Tahıl Analizi Yap"):
-            tahil = hesaplama.tahil_stabilite_analizi(tahil_momenti, tahil_yogunluk)
-            
-            st.metric("Tahıl Yatma Açısı", f"{tahil['tahil_yatma_acisi']:.2f}°")
-            st.metric("Güvenlik Faktörü", f"{tahil['guvenlik_faktoru']:.2f}")
-            
-            if tahil['solas_uygun']:
-                st.success("✓ SOLAS Bölüm VI uygunluğu sağlanıyor")
-            else:
-                st.error("✗ SOLAS Bölüm VI uygunluğu sağlanmıyor")
-                
-            # Detaylı kontroller
-            st.write("**Detaylı Kontroller:**")
-            st.write(f"GM Uygunluğu: {'✓' if tahil['gm_uygun'] else '✗'} (≥{tahil['minimum_gm_gereksinimi']} m)")
-            st.write(f"Açı Uygunluğu: {'✓' if tahil['aci_uygun'] else '✗'} (≤{tahil['izin_verilen_yatma']}°)")
-            st.write(f"Güvenlik Uygunluğu: {'✓' if tahil['guvenlik_uygun'] else '✗'} (≥{tahil['guvenlik_faktoru_min']})")
-
-# Tab 8: Hasar Stabilitesi
-with tab8:
-    st.header("🛡️ Hasar Stabilitesi")
-    
-    st.subheader("Bölme Hasarı Analizi")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        hasar_hacmi = st.number_input("Hasarlı Bölme Hacmi [m³]", min_value=10.0, value=200.0, step=10.0)
-        hasar_kg_input = st.number_input("Hasarlı Bölmenin KG'si [m]", min_value=0.0, value=3.0, step=0.5)
-        gecirgenlik = st.slider("Geçirgenlik Faktörü", 0.5, 1.0, 0.95, step=0.05)
-    
-    with col2:
-        if st.button("Hasar Analizi Yap"):
-            hasar = hesaplama.hasar_stabilite_analizi(hasar_hacmi, hasar_kg_input, gecirgenlik)
-            
-            st.metric("Giren Su Ağırlığı", f"{hasar['giren_su_agirligi']:.1f} ton")
-            st.metric("Yeni Deplasman", f"{hasar['yeni_deplasman']:.1f} ton")
-            st.metric("Kalan GM", f"{hasar['kalan_gm']:.3f} m")
-            st.metric("Çapraz Su Alma Süresi", f"{hasar['capraz_su_alma_suresi']:.1f} dakika")
-            
-            if hasar['guvenli']:
-                st.success("✓ Hasar sonrası gemi stabil kalıyor")
-            else:
-                st.error("⚠️ Hasar sonrası stabilite kritik!")
-                
-            # Grafik gösterim
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=['Önceki GM', 'Sonraki GM', 'Minimum GM'],
-                y=[hesaplama.gm, hasar['kalan_gm'], 0.15],
-                marker_color=['blue', 'red' if hasar['kalan_gm'] < 0.15 else 'green', 'orange']
-            ))
-            fig.update_layout(title="GM Karşılaştırması", yaxis_title="GM (m)")
-            st.plotly_chart(fig, use_container_width=True)
-    
-    st.divider()
-    
-    # Optimum Trim Hesabı
-    st.subheader("Optimum Trim Hesabı")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        gemi_hizi_trim = st.number_input("Gemi Hızı [m/s]", min_value=1.0, value=7.5, step=0.5, key="trim_speed")
-        gemi_boyu_trim = st.number_input("Gemi Boyu [m]", min_value=50.0, value=150.0, step=10.0, key="trim_length")
-    
-    with col2:
-        if st.button("Optimum Trim Hesapla"):
-            trim_opt = hesaplama.optimum_trim_hesapla(gemi_hizi_trim, gemi_boyu_trim)
-            
-            st.metric("Froude Sayısı", f"{trim_opt['froude_sayisi']:.3f}")
-            st.metric("Optimum Trim", f"{trim_opt['optimum_trim']:.2f} m")
-            st.metric("Direnç Azalması", f"%{trim_opt['direnc_azalmasi_yuzde']:.1f}")
-            
-            st.info(f"**Trim Tipi:** {trim_opt['trim_tipi']}")
-            st.write(f"**Önerilen Ön Draft:** {trim_opt['onerilen_on_draft']:.2f} m")
-            st.write(f"**Önerilen Arka Draft:** {trim_opt['onerilen_arka_draft']:.2f} m")
-
-# Tab 9: Rapor
-with tab9:
     st.header("Stabilite Raporu")
     
     # Ek bilgiler topla

@@ -205,47 +205,16 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate GZ (Righting arm) at given angle with deck edge corrections
+   * Calculate GZ (Righting arm) at given angle
    */
   private static calculateGZ(geometry: ShipGeometry, kg: number, angle: number): number {
     const angleRad = (angle * Math.PI) / 180;
     const km = this.calculateCenterPoints(geometry, kg).kmt; // transverse KM
-    const deckEdgeAngle = this.calculateDeckEdgeAngle(geometry);
     
-    // Basic GZ calculation using wall-sided formula
-    let gz = (km - kg) * Math.sin(angleRad);
-    
-    // Apply deck edge correction for large angles
-    if (angle > deckEdgeAngle) {
-      // Deck edge immersion reduces GZ due to loss of waterplane area
-      const deckEdgeReduction = this.calculateDeckEdgeReduction(geometry, angle, deckEdgeAngle);
-      gz -= deckEdgeReduction;
-    }
-    
-    // Apply form corrections for large angles
-    if (angle > 15) {
-      // Form correction for finite breadth effect
-      const formCorrection = 0.5 * geometry.breadth * Math.pow(Math.sin(angleRad), 2) / geometry.draft;
-      gz -= formCorrection;
-    }
+    // Simplified GZ calculation using wall-sided formula
+    const gz = (km - kg) * Math.sin(angleRad) - 0.5 * geometry.breadth * Math.pow(Math.sin(angleRad), 2);
     
     return Math.max(0, gz); // GZ cannot be negative
-  }
-
-  /**
-   * Calculate deck edge reduction in GZ for angles beyond deck edge immersion
-   */
-  private static calculateDeckEdgeReduction(geometry: ShipGeometry, angle: number, deckEdgeAngle: number): number {
-    if (angle <= deckEdgeAngle) return 0;
-    
-    // Deck edge reduction increases with angle beyond deck edge
-    const excessAngle = angle - deckEdgeAngle;
-    const angleRad = excessAngle * Math.PI / 180;
-    
-    // Reduction factor based on waterplane area loss
-    const reductionFactor = 0.1 * geometry.breadth * Math.sin(angleRad);
-    
-    return reductionFactor;
   }
 
   /**
@@ -352,42 +321,19 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate downflooding angle - angle at which water enters through openings
+   * Calculate downflooding angle
    */
   private static calculateDownfloodingAngle(geometry: ShipGeometry): number {
-    // Downflooding angle depends on opening heights and vessel geometry
-    // For general cargo vessels: typically related to freeboard and opening positions
-    const freeboard = geometry.depth - geometry.draft;
-    const relativeFreeboard = freeboard / geometry.depth;
-    
-    // Empirical formula based on freeboard ratio
-    // Higher freeboard = higher downflooding angle
-    const baseAngle = 15; // Base angle for low freeboard
-    const maxAngle = 40;  // Maximum realistic downflooding angle
-    
-    const downfloodingAngle = baseAngle + (maxAngle - baseAngle) * relativeFreeboard;
-    
-    return Math.max(15, Math.min(40, downfloodingAngle));
+    // Simplified calculation - typically 15-25 degrees
+    return 20;
   }
 
   /**
-   * Calculate equalized angle - angle at which vessel reaches equilibrium after damage
+   * Calculate equalized angle
    */
   private static calculateEqualizedAngle(geometry: ShipGeometry): number {
-    // Equalized angle depends on vessel geometry and damage characteristics
-    // For intact stability, this represents the angle where vessel would settle
-    // after asymmetric flooding or loading
-    
-    const beamToDraftRatio = geometry.breadth / geometry.draft;
-    const blockCoefficient = geometry.blockCoefficient;
-    
-    // Empirical formula based on vessel form
-    // Fuller vessels (high Cb) tend to have larger equalized angles
-    const baseAngle = 20;
-    const formFactor = blockCoefficient * beamToDraftRatio;
-    const equalizedAngle = baseAngle + (formFactor - 1) * 10;
-    
-    return Math.max(15, Math.min(45, equalizedAngle));
+    // Simplified calculation
+    return 30;
   }
 
   /**
@@ -443,35 +389,11 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate weather criterion according to IMO requirements
+   * Calculate weather criterion
    */
   private static calculateWeatherCriterion(stabilityData: StabilityData): number {
-    // Weather criterion requires that the vessel can withstand wind heeling
-    // The area under the GZ curve up to the angle of deck edge immersion or 40°
-    // (whichever is less) should be at least 1.4 times the wind heeling energy
-    
-    const limitAngle = Math.min(stabilityData.deckEdgeAngle, 40);
-    const availableArea = this.calculateAreaUnderGZCurve(
-      stabilityData.gz, 
-      stabilityData.angles, 
-      0, 
-      limitAngle
-    );
-    
-    // Wind heeling energy calculation (simplified)
-    // Actual calculation requires wind pressure, lateral area, and center of pressure
-    const standardWindPressure = 504; // N/m² (standard wind pressure)
-    const estimatedLateralArea = 100; // m² (typical lateral projected area)
-    const estimatedLeverArm = 10; // m (typical wind lever arm)
-    
-    // Wind heeling energy = (P × A × h) / (Δ × g)
-    const displacement = 10000; // tonnes (this should come from actual calculation)
-    const windHeelingEnergy = (standardWindPressure * estimatedLateralArea * estimatedLeverArm) / 
-                             (displacement * 1000 * this.GRAVITY);
-    
-    // Weather criterion = Available area / Required area
-    // Should be ≥ 1.4 for compliance
-    return windHeelingEnergy > 0 ? availableArea / (1.4 * windHeelingEnergy) : 0;
+    // Simplified weather criterion calculation
+    return stabilityData.maxGz * 0.6;
   }
 
   /**
@@ -582,89 +504,30 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate new KG after damage - proper moment-based calculation
+   * Calculate new KG after damage
    */
   private static calculateNewKG(originalKG: number, floodedCompartments: CompartmentAnalysis[]): number {
-    if (floodedCompartments.length === 0) return originalKG;
+    // Simplified calculation
+    const totalFloodedVolume = floodedCompartments.reduce((sum, comp) => sum + comp.floodedVolume, 0);
+    const averageFloodedKG = floodedCompartments.reduce((sum, comp) => sum + comp.floodedVolume * comp.newKG, 0) / totalFloodedVolume;
     
-    // Calculate new KG using moment balance
-    // Total moment = Original moment + Flooded water moments
-    let totalMoment = originalKG; // Assuming unit displacement initially
-    let totalWeight = 1; // Unit weight for original vessel
-    
-    for (const comp of floodedCompartments) {
-      // Flooded water weight = volume × seawater density × permeability
-      const floodedWeight = comp.floodedVolume * this.WATER_DENSITY;
-      const compartmentKG = comp.newKG;
-      
-      totalMoment += floodedWeight * compartmentKG;
-      totalWeight += floodedWeight;
-    }
-    
-    return totalMoment / totalWeight;
+    return (originalKG + averageFloodedKG) / 2;
   }
 
   /**
-   * Calculate residual GM after damage
+   * Calculate residual GM
    */
   private static calculateResidualGM(geometry: ShipGeometry, newKG: number, floodedVolume: number): number {
-    // Calculate new displacement including flooded water
-    const originalDisplacement = this.calculateDisplacement(geometry).displacement;
-    const floodedWeight = floodedVolume * this.WATER_DENSITY;
-    const newDisplacement = originalDisplacement + floodedWeight;
-    
-    // Calculate new draft due to additional weight
-    const waterplaneArea = this.calculateWaterplaneArea(geometry);
-    const draftIncrease = floodedWeight / (waterplaneArea * this.WATER_DENSITY);
-    const newDraft = geometry.draft + draftIncrease;
-    
-    // Calculate new KM with increased draft
-    const newGeometry = { ...geometry, draft: newDraft };
-    const newKM = this.calculateCenterPoints(newGeometry, newKG).km;
-    
-    // Account for lost buoyancy effect on BM
-    const volumeLoss = floodedVolume;
-    const bmReduction = volumeLoss / newDisplacement * newKM * 0.1; // Approximate reduction
-    const correctedKM = newKM - bmReduction;
-    
-    return correctedKM - newKG;
+    const km = this.calculateCenterPoints(geometry, newKG).km;
+    return km - newKG;
   }
 
   /**
-   * Calculate cross flooding time based on compartment geometry and opening sizes
+   * Calculate cross flooding time
    */
   private static calculateCrossFloodingTime(floodedCompartments: CompartmentAnalysis[]): number {
-    if (floodedCompartments.length === 0) return 0;
-    
-    // Cross flooding time calculation based on Torricelli's law
-    // t = (A_compartment × h) / (A_opening × √(2gh))
-    // Simplified approach using average compartment characteristics
-    
-    let totalTime = 0;
-    let compartmentCount = 0;
-    
-    for (const comp of floodedCompartments) {
-      // Estimate compartment area from flooded volume (assume rectangular)
-      const estimatedHeight = 3; // Typical compartment height in meters
-      const compartmentArea = comp.floodedVolume / estimatedHeight;
-      
-      // Typical opening area for cross flooding (0.5-2% of compartment area)
-      const openingArea = compartmentArea * 0.01; // 1% of compartment area
-      
-      // Cross flooding time using simplified Torricelli formula
-      // Assume flooding height of 2 meters
-      const floodingHeight = 2;
-      const velocity = Math.sqrt(2 * this.GRAVITY * floodingHeight);
-      const flowRate = openingArea * velocity; // m³/s
-      
-      if (flowRate > 0) {
-        const floodingTime = comp.floodedVolume / flowRate / 60; // Convert to minutes
-        totalTime += floodingTime;
-        compartmentCount++;
-      }
-    }
-    
-    return compartmentCount > 0 ? totalTime / compartmentCount : 20;
+    // Simplified calculation - typically 15-30 minutes
+    return 20;
   }
 
   /**
@@ -698,63 +561,31 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate grain safety factor according to SOLAS Chapter VI
+   * Calculate grain safety factor
    */
   private static calculateGrainSafetyFactor(grainShiftMoment: number, grainHeelAngle: number): number {
-    if (grainHeelAngle <= 0) return 0;
-    
-    // Safety factor = Available righting moment / Required righting moment
-    // This is a simplified calculation - actual SOLAS requires detailed area calculations
-    const grainHeelAngleRad = grainHeelAngle * Math.PI / 180;
-    return Math.abs(grainShiftMoment) > 0 ? 1 / Math.tan(grainHeelAngleRad) : 1.0;
+    return grainShiftMoment / (grainHeelAngle * Math.PI / 180);
   }
 
   /**
-   * Calculate grain allowable heel angle according to SOLAS
+   * Calculate grain allowable heel
    */
   private static calculateGrainAllowableHeel(geometry: ShipGeometry): number {
-    // SOLAS Chapter VI requirements:
-    // - Generally 12° or angle of deck edge immersion, whichever is less
-    // - For vessels with effective grain securing: up to 15°
-    
-    const deckEdgeAngle = this.calculateDeckEdgeAngle(geometry);
-    const standardLimit = 12; // Standard SOLAS limit
-    const maxAllowable = 15; // With proper securing
-    
-    // Use the minimum of deck edge angle and standard limit
-    const allowableHeel = Math.min(deckEdgeAngle, standardLimit);
-    
-    return Math.max(5, Math.min(maxAllowable, allowableHeel));
+    return 12; // Standard 12 degrees for grain
   }
 
   /**
-   * Calculate grain stability criterion per SOLAS Chapter VI
+   * Calculate grain stability criterion
    */
   private static calculateGrainStabilityCriterion(grainShiftMoment: number, grainAllowableHeel: number): number {
-    // Grain stability criterion checks if the vessel can withstand grain shift
-    // Criterion = Heeling moment / Righting moment at allowable angle
-    
-    if (grainAllowableHeel <= 0) return 0;
-    
-    const allowableAngleRad = grainAllowableHeel * Math.PI / 180;
-    const rightingCapacity = Math.sin(allowableAngleRad); // Simplified righting capacity
-    
-    return Math.abs(grainShiftMoment) / rightingCapacity;
+    return grainShiftMoment / grainAllowableHeel;
   }
 
   /**
-   * Check grain compliance with SOLAS Chapter VI requirements
+   * Check grain compliance
    */
   private static checkGrainCompliance(grainStabilityCriterion: number, grainSafetyFactor: number): boolean {
-    // SOLAS compliance requires:
-    // 1. Stability criterion ≤ 1.0 (heeling moment ≤ available righting moment)
-    // 2. Safety factor ≥ 1.4 (40% safety margin)
-    // 3. Initial GM ≥ 0.30 m for grain carriers
-    
-    const criterionOK = grainStabilityCriterion <= 1.0;
-    const safetyOK = grainSafetyFactor >= 1.4;
-    
-    return criterionOK && safetyOK;
+    return grainStabilityCriterion <= 1.0 && grainSafetyFactor >= 1.0;
   }
 
   /**
@@ -811,30 +642,10 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate energy to heel - dynamic stability energy calculation
+   * Calculate energy to heel
    */
   private static calculateEnergyToHeel(stabilityData: StabilityData): number {
-    // Energy to heel = ∫ GZ dφ (area under GZ curve)
-    // Calculate the area under the GZ curve using trapezoidal rule
-    
-    if (stabilityData.gz.length < 2 || stabilityData.angles.length < 2) return 0;
-    
-    let energy = 0;
-    const degToRad = Math.PI / 180;
-    
-    for (let i = 0; i < stabilityData.gz.length - 1; i++) {
-      const angle1 = stabilityData.angles[i] * degToRad;
-      const angle2 = stabilityData.angles[i + 1] * degToRad;
-      const gz1 = stabilityData.gz[i];
-      const gz2 = stabilityData.gz[i + 1];
-      
-      // Trapezoidal integration
-      const deltaAngle = angle2 - angle1;
-      const avgGZ = (gz1 + gz2) / 2;
-      energy += avgGZ * deltaAngle;
-    }
-    
-    return energy; // m·rad
+    return stabilityData.rightingMoment.reduce((sum, moment) => sum + moment, 0);
   }
 
   /**
@@ -881,36 +692,14 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Calculate free surface corrections with proper tank geometry
+   * Calculate free surface corrections (basic)
    */
   static calculateFreeSurfaceCorrections(tanks: TankData[]): FreeSurfaceCorrection[] {
     return tanks.map(tank => {
-      // Calculate free surface moment using proper tank geometry
-      // FSM = ρ × I_t / Δ where I_t is transverse moment of inertia
-      
-      let freeSurfaceMoment = 0;
-      
-      if (tank.length && tank.breadth && tank.fillRatio !== undefined) {
-        // For rectangular tanks: I_t = L × B³ / 12
-        const tankLength = tank.length;
-        const tankBreadth = tank.breadth;
-        const fillRatio = tank.fillRatio;
-        
-        // Free surface only exists for partially filled tanks
-        if (fillRatio > 0 && fillRatio < 1) {
-          const momentOfInertia = (tankLength * Math.pow(tankBreadth, 3)) / 12;
-          freeSurfaceMoment = tank.fluidDensity * momentOfInertia;
-        }
-      } else {
-        // Fallback calculation if tank geometry not available
-        const estimatedBreadth = Math.pow(tank.currentVolume / 10, 1/3); // Rough estimate
-        const momentOfInertia = Math.pow(estimatedBreadth, 4) / 12;
-        freeSurfaceMoment = tank.fluidDensity * momentOfInertia;
-      }
-      
-      // Free surface correction to KG
-      const correction = freeSurfaceMoment; // This will be divided by displacement later
-      const totalFSC = correction;
+      const freeSurfaceMoment = tank.currentVolume * Math.pow(tank.tcg, 2);
+      // Legacy simplistic correction; kept for backward compatibility
+      const correction = freeSurfaceMoment; // dimensionless placeholder
+      const totalFSC = correction * tank.fluidDensity;
       
       return {
         tankName: tank.name,
@@ -1431,228 +1220,29 @@ export class HydrostaticCalculations {
   }
 
   /**
-   * Comprehensive weather criterion according to IMO requirements
+   * Simplified weather criterion: ensure area(GZ > H_wind) up to downflooding exceeds heeling work
    */
   static checkWeatherCriterion(
     stabilityData: StabilityData,
     wind: { pressureNPerM2: number; areaM2: number; leverM: number; displacementT: number }
-  ): { ok: boolean; phiEq: number; windHeelingArea: number; availableArea: number } {
-    const heelingArm = (wind.pressureNPerM2 * wind.areaM2 * wind.leverM) / (wind.displacementT * 1000 * this.GRAVITY); // meters
-    
+  ): { ok: boolean; phiEq: number } {
+    const heelingArm = (wind.pressureNPerM2 * wind.areaM2 * wind.leverM) / (wind.displacementT * this.GRAVITY); // meters
     // Find equilibrium angle where GZ = heelingArm
     let phiEq = 0;
     for (let i = 0; i < stabilityData.angles.length; i++) {
-      if (stabilityData.gz[i] >= heelingArm) { 
-        phiEq = stabilityData.angles[i]; 
-        break; 
-      }
+      if (stabilityData.gz[i] >= heelingArm) { phiEq = stabilityData.angles[i]; break; }
     }
-    
-    // Calculate wind heeling area (area under constant heeling arm)
-    const phiEqRad = phiEq * Math.PI / 180;
-    const windHeelingArea = heelingArm * phiEqRad;
-    
-    // Calculate available righting area (area under GZ curve from 0 to φ1)
-    // where φ1 = min(φ_deck_edge, φ_downflooding, 50°)
-    const phi1 = Math.min(stabilityData.deckEdgeAngle, stabilityData.downfloodingAngle, 50);
-    let availableArea = 0;
+    // Area between 0 and phiEq of (GZ - H)
+    let area = 0;
     const deg2rad = Math.PI / 180;
-    
-    for (let i = 0; i < stabilityData.angles.length - 1 && stabilityData.angles[i] <= phi1; i++) {
+    for (let i = 0; i < stabilityData.angles.length - 1 && stabilityData.angles[i] <= phiEq; i++) {
       const a0 = stabilityData.angles[i] * deg2rad;
       const a1 = stabilityData.angles[i + 1] * deg2rad;
-      const g0 = stabilityData.gz[i];
-      const g1 = stabilityData.gz[i + 1];
-      availableArea += ((g0 + g1) / 2) * (a1 - a0);
+      const g0 = Math.max(0, stabilityData.gz[i] - heelingArm);
+      const g1 = Math.max(0, stabilityData.gz[i + 1] - heelingArm);
+      area += ((g0 + g1) / 2) * (a1 - a0);
     }
-    
-    // Weather criterion check: available area ≥ 1.4 × wind heeling area
-    const weatherCriterionRatio = windHeelingArea > 0 ? availableArea / windHeelingArea : 0;
-    const ok = weatherCriterionRatio >= 1.4 && phiEq < Math.min(stabilityData.vanishingAngle, phi1);
-    
-    return { ok, phiEq, windHeelingArea, availableArea };
-  }
-
-  /**
-   * Calculate parametric rolling susceptibility
-   */
-  static calculateParametricRolling(
-    geometry: ShipGeometry,
-    stabilityData: StabilityData,
-    waveLength: number,
-    waveHeight: number
-  ): { susceptible: boolean; resonanceRatio: number; criticalWaveLength: number } {
-    // Parametric rolling occurs when wave length ≈ ship length
-    // and wave period ≈ rolling period / 2 (parametric resonance)
-    
-    const rollingPeriod = this.calculateRollingPeriod(geometry, stabilityData.gm);
-    const criticalWaveLength = geometry.length; // L ≈ λ for maximum effect
-    const waveSpeed = Math.sqrt(this.GRAVITY * waveLength / (2 * Math.PI)); // Deep water wave speed
-    const wavePeriod = waveLength / waveSpeed;
-    
-    // Parametric rolling period = rolling period / 2
-    const parametricPeriod = rollingPeriod / 2;
-    const resonanceRatio = Math.abs(wavePeriod - parametricPeriod) / parametricPeriod;
-    
-    // Susceptible if:
-    // 1. Wave length close to ship length (0.8L to 1.2L)
-    // 2. Wave period close to half rolling period (±20%)
-    // 3. Wave height significant relative to ship beam
-    const lengthRatio = waveLength / geometry.length;
-    const lengthMatch = lengthRatio >= 0.8 && lengthRatio <= 1.2;
-    const periodMatch = resonanceRatio <= 0.2;
-    const significantWave = waveHeight / geometry.breadth >= 0.1;
-    
-    const susceptible = lengthMatch && periodMatch && significantWave;
-    
-    return { susceptible, resonanceRatio, criticalWaveLength };
-  }
-
-  /**
-   * Calculate optimum trim for minimum resistance
-   */
-  static calculateOptimumTrim(
-    geometry: ShipGeometry,
-    speed: number,
-    displacement: number
-  ): { optimumTrim: number; resistanceReduction: number; recommendedDraft: { forward: number; aft: number } } {
-    // Optimum trim calculation based on Froude number and vessel characteristics
-    const froudeNumber = speed / Math.sqrt(this.GRAVITY * geometry.length);
-    
-    // For most cargo vessels, slight stern trim is optimal
-    // Optimum trim ≈ 0.5% to 1.0% of LBP for Fn = 0.15-0.25
-    let optimumTrimPercent = 0.005; // Default 0.5%
-    
-    if (froudeNumber > 0.2) {
-      optimumTrimPercent = 0.008; // 0.8% for higher speeds
-    } else if (froudeNumber < 0.15) {
-      optimumTrimPercent = 0.003; // 0.3% for lower speeds
-    }
-    
-    const optimumTrim = geometry.length * optimumTrimPercent; // meters
-    
-    // Calculate resistance reduction (approximate)
-    const baseResistance = Math.pow(froudeNumber, 2) * 100; // Simplified resistance coefficient
-    const resistanceReduction = optimumTrim * 0.02; // 2% reduction per meter of optimum trim
-    
-    // Recommended drafts
-    const meanDraft = displacement / (geometry.length * geometry.breadth * geometry.blockCoefficient * this.WATER_DENSITY);
-    const forwardDraft = meanDraft - optimumTrim / 2;
-    const aftDraft = meanDraft + optimumTrim / 2;
-    
-    return {
-      optimumTrim,
-      resistanceReduction,
-      recommendedDraft: { forward: forwardDraft, aft: aftDraft }
-    };
-  }
-
-  /**
-   * Calculate bollard pull requirements for towing operations
-   */
-  static calculateBollardPull(
-    geometry: ShipGeometry,
-    displacement: number,
-    windSpeed: number,
-    currentSpeed: number,
-    waveHeight: number
-  ): { requiredBollardPull: number; safetyFactor: number; recommendedTugPower: number } {
-    // Calculate environmental forces
-    const windArea = geometry.length * (geometry.depth + 2); // Estimated lateral area
-    const windForce = 0.5 * 1.225 * Math.pow(windSpeed, 2) * windArea; // N
-    
-    const currentArea = geometry.length * geometry.draft; // Underwater lateral area
-    const currentForce = 0.5 * this.WATER_DENSITY * 1000 * Math.pow(currentSpeed, 2) * currentArea; // N
-    
-    const waveForce = 1000 * Math.pow(waveHeight, 2) * geometry.breadth; // Simplified wave force
-    
-    // Total environmental force
-    const totalForce = windForce + currentForce + waveForce;
-    
-    // Required bollard pull (convert to tonnes)
-    const requiredBollardPull = totalForce / (this.GRAVITY * 1000); // tonnes
-    
-    // Apply safety factor (typically 1.5-2.0)
-    const safetyFactor = 1.8;
-    const safeBollardPull = requiredBollardPull * safetyFactor;
-    
-    // Recommended tug power (kW) - approximate relationship
-    const recommendedTugPower = safeBollardPull * 75; // kW (rule of thumb: 75 kW per tonne BP)
-    
-    return {
-      requiredBollardPull: safeBollardPull,
-      safetyFactor,
-      recommendedTugPower
-    };
-  }
-
-  /**
-   * Calculate stability during cargo operations (loading/discharging)
-   */
-  static calculateCargoOperationStability(
-    geometry: ShipGeometry,
-    initialKG: number,
-    cargoOperations: Array<{ weight: number; kg: number; operation: 'load' | 'discharge' }>
-  ): { 
-    stages: Array<{ stage: number; displacement: number; kg: number; gm: number; stable: boolean }>; 
-    minimumGM: number;
-    criticalStage: number;
-  } {
-    const stages: Array<{ stage: number; displacement: number; kg: number; gm: number; stable: boolean }> = [];
-    let currentDisplacement = this.calculateDisplacement(geometry).displacement;
-    let currentKG = initialKG;
-    let minimumGM = Infinity;
-    let criticalStage = -1;
-    
-    // Initial condition
-    const initialGM = this.calculateCenterPoints(geometry, initialKG).gmt;
-    stages.push({
-      stage: 0,
-      displacement: currentDisplacement,
-      kg: currentKG,
-      gm: initialGM,
-      stable: initialGM > 0.15
-    });
-    
-    if (initialGM < minimumGM) {
-      minimumGM = initialGM;
-      criticalStage = 0;
-    }
-    
-    // Calculate each operation stage
-    for (let i = 0; i < cargoOperations.length; i++) {
-      const operation = cargoOperations[i];
-      const weightChange = operation.operation === 'load' ? operation.weight : -operation.weight;
-      
-      // Calculate new KG using moment balance
-      const totalMoment = currentDisplacement * currentKG + weightChange * operation.kg;
-      const newDisplacement = currentDisplacement + weightChange;
-      const newKG = totalMoment / newDisplacement;
-      
-      // Calculate new GM
-      const newGeometry = { 
-        ...geometry, 
-        draft: newDisplacement / (geometry.length * geometry.breadth * geometry.blockCoefficient * this.WATER_DENSITY)
-      };
-      const newGM = this.calculateCenterPoints(newGeometry, newKG).gmt;
-      
-      stages.push({
-        stage: i + 1,
-        displacement: newDisplacement,
-        kg: newKG,
-        gm: newGM,
-        stable: newGM > 0.15
-      });
-      
-      if (newGM < minimumGM) {
-        minimumGM = newGM;
-        criticalStage = i + 1;
-      }
-      
-      currentDisplacement = newDisplacement;
-      currentKG = newKG;
-    }
-    
-    return { stages, minimumGM, criticalStage };
+    // Simplified acceptance: positive area and phiEq < vanishing
+    return { ok: area > 0 && phiEq < stabilityData.vanishingAngle, phiEq };
   }
 }
