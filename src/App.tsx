@@ -75,6 +75,16 @@ import StabilityListPage from "./pages/StabilityList";
 import StabilityTrimPage from "./pages/StabilityTrim";
 import StabilityLollPage from "./pages/StabilityLoll";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
+import StabilityDisplacementPage from "./pages/StabilityDisplacement";
+import StabilityTPCPage from "./pages/StabilityTPC";
+import StabilityDraftPage from "./pages/StabilityDraft";
+import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
+import StabilityFreeSurfacePage from "./pages/StabilityFreeSurface";
+import StabilityWindHeelPage from "./pages/StabilityWindHeel";
+import StabilityTurningHeelPage from "./pages/StabilityTurningHeel";
+import StabilityInclinationTestPage from "./pages/StabilityInclinationTest";
+import StabilityRollPeriodPage from "./pages/StabilityRollPeriod";
+import StabilityPassengerShiftPage from "./pages/StabilityPassengerShift";
 
 const queryClient = new QueryClient();
 
@@ -164,11 +174,21 @@ const App = () => {
                   <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
                   <Route path="/stability/transverse" element={<StabilityTransversePage />} />
                   <Route path="/stability/gm" element={<StabilityGMPage />} />
+                  <Route path="/stability/displacement" element={<StabilityDisplacementPage />} />
+                  <Route path="/stability/tpc" element={<StabilityTPCPage />} />
+                  <Route path="/stability/draft" element={<StabilityDraftPage />} />
                   <Route path="/stability/gz" element={<StabilityGZPage />} />
                   <Route path="/stability/list" element={<StabilityListPage />} />
                   <Route path="/stability/trim" element={<StabilityTrimPage />} />
                   <Route path="/stability/loll" element={<StabilityLollPage />} />
                   <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
+                  <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
+                  <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />
+                  <Route path="/stability/wind-heel" element={<StabilityWindHeelPage />} />
+                  <Route path="/stability/turning-heel" element={<StabilityTurningHeelPage />} />
+                  <Route path="/stability/inclination-test" element={<StabilityInclinationTestPage />} />
+                  <Route path="/stability/roll-period" element={<StabilityRollPeriodPage />} />
+                  <Route path="/stability/passenger-shift" element={<StabilityPassengerShiftPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/navigation-menu" element={<NavigationMenu />} />
