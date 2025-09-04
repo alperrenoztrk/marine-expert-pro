@@ -21,6 +21,10 @@ import { StarSearchAndCatalog } from './StarSearchAndCatalog';
 import { CelestialTimeTravel } from './CelestialTimeTravel';
 import { StarMapView } from './StarMapView';
 import { SextantCamera } from './SextantCamera';
+import {
+  requestDeviceOrientationPermission,
+  addDeviceOrientationListener,
+} from '@/utils/celestialCamera';
 import { 
   EnhancedCelestialBody,
   getAllEnhancedCelestialBodies
@@ -72,40 +76,20 @@ export const StarWalkApp: React.FC<StarWalkAppProps> = ({
     }
   }, []);
 
-  // Get device orientation
+  // Get device orientation (centralized utils)
   useEffect(() => {
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      setDeviceOrientation({
-        alpha: event.alpha || 0,
-        beta: event.beta || 0,
-        gamma: event.gamma || 0
-      });
-    };
-
-    // Request permission for iOS 13+
-    const requestOrientationPermission = async () => {
-      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-        try {
-          const permission = await (DeviceOrientationEvent as any).requestPermission();
-          setOrientationPermission(permission);
-          if (permission === 'granted') {
-            window.addEventListener('deviceorientation', handleOrientation);
-          }
-        } catch (error) {
-          console.warn('Oryantasyon izni alınamadı:', error);
-          setOrientationPermission('denied');
-        }
-      } else {
-        // For non-iOS devices
-        window.addEventListener('deviceorientation', handleOrientation);
-        setOrientationPermission('granted');
+    let removeListener: (() => void) | null = null;
+    (async () => {
+      const granted = await requestDeviceOrientationPermission();
+      setOrientationPermission(granted ? 'granted' : 'denied');
+      if (granted) {
+        removeListener = addDeviceOrientationListener(({ alpha, beta, gamma }) => {
+          setDeviceOrientation({ alpha, beta, gamma });
+        });
       }
-    };
-
-    requestOrientationPermission();
-
+    })();
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation);
+      if (removeListener) removeListener();
     };
   }, []);
 
@@ -142,22 +126,12 @@ export const StarWalkApp: React.FC<StarWalkAppProps> = ({
   };
 
   const requestOrientationPermission = async () => {
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      try {
-        const permission = await (DeviceOrientationEvent as any).requestPermission();
-        setOrientationPermission(permission);
-        if (permission === 'granted') {
-          window.addEventListener('deviceorientation', (event) => {
-            setDeviceOrientation({
-              alpha: event.alpha || 0,
-              beta: event.beta || 0,
-              gamma: event.gamma || 0
-            });
-          });
-        }
-      } catch (error) {
-        setOrientationPermission('denied');
-      }
+    const granted = await requestDeviceOrientationPermission();
+    setOrientationPermission(granted ? 'granted' : 'denied');
+    if (granted) {
+      addDeviceOrientationListener(({ alpha, beta, gamma }) => {
+        setDeviceOrientation({ alpha, beta, gamma });
+      });
     }
   };
 

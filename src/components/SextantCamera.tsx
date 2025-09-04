@@ -13,6 +13,14 @@ import {
   CelestialBody,
   celestialToScreenCoordinates 
 } from "@/utils/celestialCalculations";
+import {
+  startCameraStream,
+  stopCameraStream,
+  requestDeviceOrientationPermission,
+  addDeviceOrientationListener,
+  computeDipCorrectionDeg,
+  type CameraSession,
+} from "@/utils/celestialCamera";
 
 interface SextantCameraProps {
   onHoMeasured?: (degrees: number) => void;
@@ -23,12 +31,7 @@ interface SextantCameraProps {
   };
 }
 
-// Simple dip correction: Dip (minutes) ≈ 1.76 * sqrt(heightOfEye_m)
-const computeDipCorrectionDeg = (heightOfEyeMeters: number) => {
-  if (!heightOfEyeMeters || heightOfEyeMeters <= 0) return 0;
-  const dipMinutes = 1.76 * Math.sqrt(heightOfEyeMeters);
-  return dipMinutes / 60;
-};
+// Dip correction moved to utils
 
 export const SextantCamera: React.FC<SextantCameraProps> = ({ 
   onHoMeasured, 
@@ -36,7 +39,7 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
   observerPosition = { latitude: 41.0082, longitude: 28.9784 } // Default to Istanbul
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const cameraSessionRef = useRef<CameraSession | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [hasOrientationPermission, setHasOrientationPermission] = useState<boolean>(false);
   const [pitchDeg, setPitchDeg] = useState<number>(0);
@@ -59,40 +62,26 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
 
   const startCamera = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false,
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      streamRef.current = stream;
-      setIsStreaming(true);
+      if (!videoRef.current) return;
+      const session = await startCameraStream(videoRef.current, { facingMode: 'environment' });
+      cameraSessionRef.current = session;
+      setIsStreaming(session.isStreaming);
     } catch (err) {
       console.error("Camera start failed", err);
     }
   }, []);
 
   const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
+    stopCameraStream(cameraSessionRef.current, videoRef.current);
+    cameraSessionRef.current = null;
     setIsStreaming(false);
   }, []);
 
   useEffect(() => {
     return () => {
-      // cleanup
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((t) => t.stop());
-      }
+      stopCamera();
     };
-  }, []);
+  }, [stopCamera]);
 
   // Update screen dimensions when video loads
   useEffect(() => {
@@ -113,34 +102,17 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
   }, [isStreaming]);
 
   const requestOrientationPermission = useCallback(async () => {
-    try {
-      const w = window as any;
-      if (typeof w.DeviceOrientationEvent !== "undefined" && typeof w.DeviceOrientationEvent.requestPermission === "function") {
-        const res = await w.DeviceOrientationEvent.requestPermission();
-        if (res === "granted") setHasOrientationPermission(true);
-        else setHasOrientationPermission(false);
-      } else {
-        // Non iOS - assume available
-        setHasOrientationPermission(true);
-      }
-    } catch (e) {
-      setHasOrientationPermission(false);
-    }
+    const granted = await requestDeviceOrientationPermission();
+    setHasOrientationPermission(granted);
   }, []);
 
   useEffect(() => {
     if (!hasOrientationPermission) return;
-    const handle = (ev: DeviceOrientationEvent) => {
-      // beta: front-to-back tilt in degrees, -180..180. 0 means device flat. We use it as pitch.
-      const beta = typeof ev.beta === "number" ? ev.beta : 0;
-      const alpha = typeof ev.alpha === "number" ? ev.alpha : 0;
-      const gamma = typeof ev.gamma === "number" ? ev.gamma : 0;
-      
+    const remove = addDeviceOrientationListener(({ alpha, beta, gamma }) => {
       setPitchDeg(beta);
       setDeviceOrientation({ alpha, beta, gamma });
-    };
-    window.addEventListener("deviceorientation", handle);
-    return () => window.removeEventListener("deviceorientation", handle);
+    });
+    return remove;
   }, [hasOrientationPermission]);
 
   // Raw measured angle between stored horizon pitch and stored sun pitch
