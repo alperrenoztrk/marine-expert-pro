@@ -127,21 +127,6 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   });
   const [drydockGMResult, setDrydockGMResult] = useState<number | null>(null);
 
-  // 3. Boyuna Denge Hesapları
-  const [trimChangeInputs, setTrimChangeInputs] = useState({
-    totalMoment: "", mct: ""
-  });
-  const [trimChangeResult, setTrimChangeResult] = useState<number | null>(null);
-
-  const [parallelSinkageInputs, setParallelSinkageInputs] = useState({
-    loadedWeight: "", tpc: ""
-  });
-  const [parallelSinkageResult, setParallelSinkageResult] = useState<number | null>(null);
-
-  const [draftCorrectionInputs, setDraftCorrectionInputs] = useState({
-    trim: "", distance: "", lbp: ""
-  });
-  const [draftCorrectionResult, setDraftCorrectionResult] = useState<number | null>(null);
 
   // 4. Draft Survey
   const [mmmDraftInputs, setMmmDraftInputs] = useState({
