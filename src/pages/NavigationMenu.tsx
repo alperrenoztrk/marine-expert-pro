@@ -23,8 +23,6 @@ export default function NavigationMenu(){
     { to: "/navigation?tab=celestial", icon: <Book className="h-4 w-4" />, label: "Göksel" },
     { to: "/navigation?tab=astronomical", icon: <Book className="h-4 w-4" />, label: "Astronomik" },
     { to: "/navigation?tab=almanac", icon: <Book className="h-4 w-4" />, label: "Almanac" },
-    { to: "/starwalk", icon: <Star className="h-4 w-4" />, label: "Yıldız Tanıma (Star Walk)" },
-    { to: "/starwalk?tab=ar", icon: <Camera className="h-4 w-4" />, label: "AR Yıldız Kamerası" },
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">

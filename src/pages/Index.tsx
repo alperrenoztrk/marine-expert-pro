@@ -95,26 +95,16 @@ const Index = () => {
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Top button - Göksel Hesaplamalar */}
-          <Link to="/celestial" className="w-full">
-            <Button className="w-full h-16 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-2xl gap-3 text-base font-semibold shadow-xl border-2 border-white/20 transition-all duration-200 hover:scale-105">
-              <div className="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center animate-pulse">
-                <Star className="w-5 h-5 text-purple-800" fill="currentColor" />
+          {/* Main button - Hesaplamalar */}
+          <Link to="/calculations" className="w-full">
+            <Button className="w-full h-16 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl gap-3 text-base font-semibold shadow-xl border-2 border-white/20 transition-all duration-200 hover:scale-105">
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                <Plus className="w-5 h-5 text-blue-600" />
               </div>
               <div className="text-left">
-                <div className="font-bold">Göksel Hesaplamalar</div>
-                <div className="text-xs text-purple-100">Sextant, yıldız tanıma ve navigasyon</div>
+                <div className="font-bold">Hesaplamalar</div>
+                <div className="text-xs text-blue-100">Tüm gemi hesaplama araçları</div>
               </div>
-            </Button>
-          </Link>
-
-          {/* Second button - Hesaplamalar */}
-          <Link to="/calculations" className="w-full">
-            <Button className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-2xl gap-3 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
-              <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
-                <Plus className="w-4 h-4 text-white" />
-              </div>
-              <span data-translatable>Hesaplamalar</span>
             </Button>
           </Link>
 
