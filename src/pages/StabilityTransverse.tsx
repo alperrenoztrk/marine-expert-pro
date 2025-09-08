@@ -71,43 +71,6 @@ export default function StabilityTransversePage() {
         </CardContent>
       </Card>
 
-      {/* Özel Heeling Etkileri */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Özel Heeling Etkileri</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/wind-heel')}>
-            <Wind className="h-4 w-4" /> Rüzgâr Etkisi
-          </Button>
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/passenger-shift')}>
-            <ArrowRight className="h-4 w-4" /> Yolcu/Ekip Şifti
-          </Button>
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/turning-heel')}>
-            <Anchor className="h-4 w-4" /> Dönüş Santrifüj Yalpası
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Test ve Özel Durumlar */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Test ve Özel Durumlar</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/inclination-test')}>
-            <Shield className="h-4 w-4" /> İnklinasyon Deneyi
-          </Button>
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/roll-period')}>
-            <BarChart3 className="h-4 w-4" /> Yalpa Periyodu
-          </Button>
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/loll')}>
-            <Anchor className="h-4 w-4" /> Angle of Loll
-          </Button>
-        </CardContent>
-      </Card>
-
-
       {/* Stabilite Asistanı */}
       <div className="mt-6">
         <StabilityAssistantPopup />
