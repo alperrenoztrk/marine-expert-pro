@@ -26,6 +26,10 @@ import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
 import StabilityFreeSurfacePage from "./pages/StabilityFreeSurface";
 import StabilityGZPage from "./pages/StabilityGZ";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
+import EmptyPage from "./pages/EmptyPage";
+import Settings from "./pages/Settings";
+import Formulas from "./pages/Formulas";
+import Regulations from "./pages/Regulations";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +66,10 @@ const App = () => {
                   <Route path="/cargo" element={<CargoMenu />} />
                   <Route path="/navigation" element={<Navigation />} />
                   <Route path="/economics" element={<Economics />} />
+                  <Route path="/empty-page" element={<EmptyPage />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/formulas" element={<Formulas />} />
+                  <Route path="/regulations" element={<Regulations />} />
                   <Route path="*" element={<Index />} />
                 </Routes>
               </BrowserRouter>
