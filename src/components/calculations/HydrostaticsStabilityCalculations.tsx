@@ -1062,7 +1062,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       )}
 
       {/* TRANSVERSE STABILITY CALCULATIONS */}
-      {(!singleMode || section === 'stability' || section === 'hydrostatic' || section === 'trimlist') && (
+      {(!singleMode || section === 'stability') && (
       <>
       <Separator />
       <Card className="shadow-lg">
@@ -1074,81 +1074,6 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
         </CardHeader>
         <CardContent className="space-y-6">
           
-          {/* 1. Hidrostatik Temeller */}
-          {(!singleMode || section === 'hydrostatic') && (
-          <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold mb-3">1. Hidrostatik Temeller</h4>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div>
-                <Label htmlFor="hydro-length">Uzunluk (L) [m]</Label>
-                <Input
-                  id="hydro-length"
-                  type="number"
-                  placeholder="100"
-                  value={hydrostaticInputs.length}
-                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, length: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="hydro-breadth">Genişlik (B) [m]</Label>
-                <Input
-                  id="hydro-breadth"
-                  type="number"
-                  placeholder="20"
-                  value={hydrostaticInputs.breadth}
-                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, breadth: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="hydro-draft">Draft (T) [m]</Label>
-                <Input
-                  id="hydro-draft"
-                  type="number"
-                  placeholder="6"
-                  value={hydrostaticInputs.draft}
-                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, draft: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="hydro-cb">Cb Katsayısı</Label>
-                <Input
-                  id="hydro-cb"
-                  type="number"
-                  placeholder="0.7"
-                  value={hydrostaticInputs.blockCoeff}
-                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, blockCoeff: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="hydro-cw">Cw Katsayısı</Label>
-                <Input
-                  id="hydro-cw"
-                  type="number"
-                  placeholder="0.8"
-                  value={hydrostaticInputs.waterplaneCoeff}
-                  onChange={(e) => setHydrostaticInputs(prev => ({ ...prev, waterplaneCoeff: e.target.value }))}
-                />
-              </div>
-            </div>
-            <Button onClick={calculateHydrostaticFoundations} className="w-full mt-4">
-              <Calculator className="w-4 h-4 mr-2" />
-              Hidrostatik Temelleri Hesapla
-            </Button>
-            {hydrostaticResults && (
-              <div className="mt-4 p-4 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                  <div><strong>Δ:</strong> {hydrostaticResults.displacement.toFixed(1)} ton</div>
-                  <div><strong>∇:</strong> {hydrostaticResults.volume.toFixed(1)} m³</div>
-                  <div><strong>WPA:</strong> {hydrostaticResults.waterplaneArea.toFixed(1)} m²</div>
-                  <div><strong>KB:</strong> {hydrostaticResults.kb.toFixed(3)} m</div>
-                  <div><strong>BM_T:</strong> {hydrostaticResults.bmt.toFixed(3)} m</div>
-                  <div><strong>KM_T:</strong> {hydrostaticResults.kmt.toFixed(3)} m</div>
-                </div>
-              </div>
-            )}
-          </div>
-          )}
-
           {/* 2. Ağırlık Merkezi ve GM */}
           {(!singleMode || section === 'stability' || calc === 'gm') && (
           <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
@@ -1211,7 +1136,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           )}
 
           {/* 3. Ağırlık Şifti */}
-          {(!singleMode || section === 'trimlist' || calc === 'list') && (
+          {(!singleMode || section === 'stability' || calc === 'list') && (
           <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">3. Ağırlık Ekleme/Çıkarma/Şift</h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

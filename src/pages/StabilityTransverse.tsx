@@ -17,23 +17,7 @@ export default function StabilityTransversePage() {
         Geri Dön
       </Button>
 
-      {/* Hidrostatik Temeller */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Hidrostatik Temeller</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/displacement')}>
-            <Shield className="h-4 w-4" /> Deplasman (Δ)
-          </Button>
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/tpc')}>
-            <BarChart3 className="h-4 w-4" /> TPC ve MTC
-          </Button>
-          <Button variant="outline" className="justify-start gap-2" onClick={() => navigate('/stability/draft')}>
-            <ArrowRight className="h-4 w-4" /> KB, BM, KM Hesaplamaları
-          </Button>
-        </CardContent>
-      </Card>
+      
 
       {/* Ağırlık Merkezi ve GM */}
       <Card>
