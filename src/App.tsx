@@ -15,6 +15,17 @@ import TankMenu from "./pages/TankMenu";
 import CargoMenu from "./pages/CargoMenu";
 import Navigation from "./pages/Navigation";
 import Economics from "./pages/Economics";
+import StabilityAssistantPage from "./pages/StabilityAssistant";
+import StabilityRules from "./pages/StabilityRules";
+import StabilityLongitudinal from "./pages/StabilityLongitudinal";
+import StabilityGZIMO from "./pages/StabilityGZIMO";
+import StabilityDamagePage from "./pages/StabilityDamage";
+import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
+import StabilityGMPage from "./pages/StabilityGM";
+import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
+import StabilityFreeSurfacePage from "./pages/StabilityFreeSurface";
+import StabilityGZPage from "./pages/StabilityGZ";
+import StabilityAnalysisPage from "./pages/StabilityAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +43,18 @@ const App = () => {
                   <Route path="/calculations" element={<CalculationsMenu />} />
                   <Route path="/stability" element={<StabilityMenu />} />
                   <Route path="/stability/transverse" element={<StabilityTransversePage />} />
+                  {/* Stability sub-routes */}
+                  <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
+                  <Route path="/stability/rules" element={<StabilityRules />} />
+                  <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
+                  <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
+                  <Route path="/stability/damage" element={<StabilityDamagePage />} />
+                  <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
+                  <Route path="/stability/gm" element={<StabilityGMPage />} />
+                  <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
+                  <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />
+                  <Route path="/stability/gz" element={<StabilityGZPage />} />
+                  <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                   <Route path="/safety-menu" element={<SafetyMenu />} />
                   <Route path="/navigation-menu" element={<NavigationMenu />} />
                   <Route path="/economics-menu" element={<EconomicsMenu />} />
