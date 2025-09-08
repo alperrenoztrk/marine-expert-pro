@@ -1,65 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { 
-  Camera, 
-  Map, 
-  Search, 
-  Clock, 
   Star, 
-  Settings, 
-  Info,
-  MapPin,
-  Compass,
-  Eye,
-  BookOpen,
   Calculator,
   Navigation,
-  Ruler
+  Ruler,
+  ArrowLeft
 } from 'lucide-react';
-import { EnhancedCelestialAROverlay } from '@/components/EnhancedCelestialAROverlay';
-import { StarSearchAndCatalog } from '@/components/StarSearchAndCatalog';
-import { CelestialTimeTravel } from '@/components/CelestialTimeTravel';
-import { StarMapView } from '@/components/StarMapView';
-import { SextantCamera } from '@/components/SextantCamera';
-import { Sextant3D } from '@/components/Sextant3D';
-import {
-  requestDeviceOrientationPermission,
-  addDeviceOrientationListener,
-} from '@/utils/celestialCamera';
-import { 
-  EnhancedCelestialBody,
-  getAllEnhancedCelestialBodies
-} from '@/utils/enhancedCelestialCalculations';
-import { ObserverPosition } from '@/utils/celestialCalculations';
+import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 export default function CelestialCalculations() {
   const { toast } = useToast();
   
-  const [observerPosition, setObserverPosition] = useState<ObserverPosition>({
-    latitude: 41.0082, // Istanbul coordinates as default
-    longitude: 28.9784,
-    dateTime: new Date(),
-    timeZone: 3
-  });
-  
-  const [deviceOrientation, setDeviceOrientation] = useState({
-    alpha: 0, // compass direction
-    beta: 0,  // front-back tilt
-    gamma: 0  // left-right tilt
-  });
-  
-  const [selectedObject, setSelectedObject] = useState<EnhancedCelestialBody | null>(null);
-  const [currentTab, setCurrentTab] = useState('ar');
-  const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
-  const [orientationPermission, setOrientationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
-
   // Sextant calculations
   const [sextantReadings, setSextantReadings] = useState({
     observedAltitude: '',
@@ -85,85 +42,6 @@ export default function CelestialCalculations() {
     calculatedAzimuth: number;
     intercept: number;
   } | null>(null);
-
-  // Get user location
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setObserverPosition(prev => ({
-            ...prev,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }));
-          setLocationPermission('granted');
-        },
-        (error) => {
-          console.warn('Konum alınamadı:', error);
-          setLocationPermission('denied');
-        }
-      );
-    }
-  }, []);
-
-  // Get device orientation
-  useEffect(() => {
-    let removeListener: (() => void) | null = null;
-    (async () => {
-      const granted = await requestDeviceOrientationPermission();
-      setOrientationPermission(granted ? 'granted' : 'denied');
-      if (granted) {
-        removeListener = addDeviceOrientationListener(({ alpha, beta, gamma }) => {
-          setDeviceOrientation({ alpha, beta, gamma });
-        });
-      }
-    })();
-    return () => {
-      if (removeListener) removeListener();
-    };
-  }, []);
-
-  // Update time
-  const handleTimeChange = (newDateTime: Date, bodies: EnhancedCelestialBody[]) => {
-    setObserverPosition(prev => ({
-      ...prev,
-      dateTime: newDateTime
-    }));
-  };
-
-  // Handle object selection
-  const handleObjectSelection = (object: EnhancedCelestialBody) => {
-    setSelectedObject(object);
-  };
-
-  // Request permissions
-  const requestLocationPermission = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setObserverPosition(prev => ({
-            ...prev,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }));
-          setLocationPermission('granted');
-        },
-        (error) => {
-          setLocationPermission('denied');
-        }
-      );
-    }
-  };
-
-  const requestOrientationPermission = async () => {
-    const granted = await requestDeviceOrientationPermission();
-    setOrientationPermission(granted ? 'granted' : 'denied');
-    if (granted) {
-      addDeviceOrientationListener(({ alpha, beta, gamma }) => {
-        setDeviceOrientation({ alpha, beta, gamma });
-      });
-    }
-  };
 
   // Sextant calculations
   const calculateTrueAltitude = () => {
@@ -244,124 +122,33 @@ export default function CelestialCalculations() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Header */}
       <div className="bg-black/50 backdrop-blur-sm border-b border-white/10 p-3 sticky top-0 z-50">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0 sm:justify-between">
-          <div className="flex items-center gap-3">
-            <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400" fill="currentColor" />
-            <div className="min-w-0 flex-1">
-              <h1 className="text-lg sm:text-2xl font-bold truncate">Göksel Hesaplamalar</h1>
-              <p className="text-xs sm:text-sm text-gray-300 hidden sm:block">Sextant, yıldız tanıma ve göksel navigasyon</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2 text-xs">
-            <Badge variant="outline" className="text-xs whitespace-nowrap">
-              <MapPin className="h-3 w-3 mr-1" />
-              {observerPosition.latitude.toFixed(1)}°, {observerPosition.longitude.toFixed(1)}°
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              <Compass className="h-3 w-3 mr-1" />
-              {deviceOrientation.alpha.toFixed(0)}°
-            </Badge>
+        <div className="flex items-center gap-3">
+          <Link to="/">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
+          <div>
+            <h1 className="text-lg font-bold">Göksel Hesaplamalar</h1>
+            <p className="text-xs text-gray-300">Sextant ve göksel navigasyon</p>
           </div>
         </div>
       </div>
 
-      {/* Permission Requests */}
-      {(locationPermission !== 'granted' || orientationPermission !== 'granted') && (
-        <div className="bg-yellow-600/20 border-b border-yellow-500/30 p-3">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex-1">
-              <h3 className="font-medium text-sm">İzinler Gerekli</h3>
-              <p className="text-xs text-gray-300 mt-1">
-                En iyi deneyim için konum ve cihaz oryantasyonu izinleri gereklidir.
-              </p>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {locationPermission !== 'granted' && (
-                <Button size="sm" onClick={requestLocationPermission} className="text-xs">
-                  Konum İzni
-                </Button>
-              )}
-              {orientationPermission !== 'granted' && (
-                <Button size="sm" onClick={requestOrientationPermission} className="text-xs">
-                  Oryantasyon İzni
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main Content */}
-      <div className="p-2 sm:p-4 pb-20">
-        <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-black/30 border border-white/10 text-xs">
-            <TabsTrigger value="ar" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
-              <Camera className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">AR Kamera</span>
-              <span className="sm:hidden">AR</span>
+      <div className="p-4 pb-20">
+        <Tabs defaultValue="sextant" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-black/30 border border-white/10">
+            <TabsTrigger value="sextant" className="flex items-center gap-2">
+              <Ruler className="h-4 w-4" />
+              Sextant Hesaplamaları
             </TabsTrigger>
-            <TabsTrigger value="sextant" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
-              <Ruler className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Sextant</span>
-              <span className="sm:hidden">Sextant</span>
-            </TabsTrigger>
-            <TabsTrigger value="navigation" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
-              <Navigation className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Navigasyon</span>
-              <span className="sm:hidden">Nav</span>
-            </TabsTrigger>
-            <TabsTrigger value="map" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
-              <Map className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Yıldız Haritası</span>
-              <span className="sm:hidden">Harita</span>
-            </TabsTrigger>
-            <TabsTrigger value="catalog" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
-              <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Katalog</span>
-              <span className="sm:hidden">Arama</span>
-            </TabsTrigger>
-            <TabsTrigger value="time" className="flex flex-col sm:flex-row items-center gap-1 px-2 py-2">
-              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Zaman</span>
-              <span className="sm:hidden">Zaman</span>
+            <TabsTrigger value="navigation" className="flex items-center gap-2">
+              <Navigation className="h-4 w-4" />
+              Göksel Navigasyon
             </TabsTrigger>
           </TabsList>
-
-          {/* AR Camera View */}
-          <TabsContent value="ar" className="mt-4">
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Camera className="h-5 w-5" />
-                  Artırılmış Gerçeklik Görünümü
-                </CardTitle>
-                <CardDescription className="text-gray-300">
-                  Kameranızı gökyüzüne yönlendirin ve yıldızları keşfedin
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="relative bg-black rounded-lg overflow-hidden" style={{ height: '500px' }}>
-                  <SextantCamera 
-                    onHoMeasured={() => {}}
-                    observerPosition={{
-                      latitude: observerPosition.latitude,
-                      longitude: observerPosition.longitude
-                    }}
-                    className="w-full h-full"
-                  />
-                  
-                  <EnhancedCelestialAROverlay
-                    observerPosition={observerPosition}
-                    deviceOrientation={deviceOrientation}
-                    screenWidth={800}
-                    screenHeight={500}
-                    className="absolute inset-0"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           {/* Sextant Calculations */}
           <TabsContent value="sextant" className="mt-4">
@@ -449,12 +236,12 @@ export default function CelestialCalculations() {
                           ...prev,
                           semiDiameter: e.target.value
                         }))}
-                        placeholder="Güneş/Ay için"
+                        placeholder="Dakika cinsinden"
                         className="bg-black/40 border-white/20"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="parallax">Parallax Düzeltmesi</Label>
+                      <Label htmlFor="parallax">Parallax</Label>
                       <Input
                         id="parallax"
                         type="number"
@@ -464,44 +251,25 @@ export default function CelestialCalculations() {
                           ...prev,
                           parallax: e.target.value
                         }))}
-                        placeholder="Ay için"
+                        placeholder="Dakika cinsinden"
                         className="bg-black/40 border-white/20"
                       />
                     </div>
                   </div>
-                  
+
                   <Button onClick={calculateTrueAltitude} className="w-full">
                     <Calculator className="h-4 w-4 mr-2" />
-                    Gerçek Yükseklik Hesapla
+                    Gerçek Yüksekliği Hesapla
                   </Button>
-                  
+
                   {trueAltitude !== null && (
-                    <div className="bg-green-900/30 border border-green-500/50 rounded-lg p-4">
-                      <h4 className="font-semibold text-green-400 mb-2">Gerçek Yükseklik (Ht)</h4>
-                      <p className="text-2xl font-mono">{trueAltitude.toFixed(4)}°</p>
-                      <p className="text-sm text-gray-300 mt-1">
-                        {Math.floor(trueAltitude)}° {((trueAltitude % 1) * 60).toFixed(1)}'
+                    <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                      <h4 className="font-bold text-green-400">Sonuç</h4>
+                      <p className="text-lg font-mono">
+                        Gerçek Yükseklik: <span className="text-green-400">{trueAltitude.toFixed(4)}°</span>
                       </p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
-
-              <Card className="bg-black/20 border-white/10">
-                <CardHeader>
-                  <CardTitle>3D Sextant Modeli</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Interaktif sextant görselleştirmesi
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex justify-center">
-                  <Sextant3D
-                    src="/sextant-golden-real.jpg"
-                    alt="Golden Sextant"
-                    className="w-64 h-64"
-                    depthPx={40}
-                    numLayers={16}
-                  />
                 </CardContent>
               </Card>
             </div>
@@ -509,146 +277,127 @@ export default function CelestialCalculations() {
 
           {/* Celestial Navigation */}
           <TabsContent value="navigation" className="mt-4">
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Navigation className="h-5 w-5" />
-                  Göksel Navigasyon Hesaplamaları
-                </CardTitle>
-                <CardDescription className="text-gray-300">
-                  Sight reduction ve intercept hesaplamaları
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="gha">GHA (Greenwich Hour Angle)</Label>
-                    <Input
-                      id="gha"
-                      type="number"
-                      step="0.1"
-                      value={navInputs.gha}
-                      onChange={(e) => setNavInputs(prev => ({
-                        ...prev,
-                        gha: e.target.value
-                      }))}
-                      placeholder="Derece cinsinden"
-                      className="bg-black/40 border-white/20"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="sha">SHA (Sidereal Hour Angle)</Label>
-                    <Input
-                      id="sha"
-                      type="number"
-                      step="0.1"
-                      value={navInputs.sha}
-                      onChange={(e) => setNavInputs(prev => ({
-                        ...prev,
-                        sha: e.target.value
-                      }))}
-                      placeholder="Yıldızlar için (opsiyonel)"
-                      className="bg-black/40 border-white/20"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="declination">Declination (Dec)</Label>
-                    <Input
-                      id="declination"
-                      type="number"
-                      step="0.1"
-                      value={navInputs.declination}
-                      onChange={(e) => setNavInputs(prev => ({
-                        ...prev,
-                        declination: e.target.value
-                      }))}
-                      placeholder="Derece cinsinden"
-                      className="bg-black/40 border-white/20"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="assumed-latitude">Tahmini Enlem</Label>
-                    <Input
-                      id="assumed-latitude"
-                      type="number"
-                      step="0.1"
-                      value={navInputs.assumedLatitude}
-                      onChange={(e) => setNavInputs(prev => ({
-                        ...prev,
-                        assumedLatitude: e.target.value
-                      }))}
-                      placeholder="Derece cinsinden"
-                      className="bg-black/40 border-white/20"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Label htmlFor="assumed-longitude">Tahmini Boylam</Label>
-                    <Input
-                      id="assumed-longitude"
-                      type="number"
-                      step="0.1"
-                      value={navInputs.assumedLongitude}
-                      onChange={(e) => setNavInputs(prev => ({
-                        ...prev,
-                        assumedLongitude: e.target.value
-                      }))}
-                      placeholder="Derece cinsinden"
-                      className="bg-black/40 border-white/20"
-                    />
-                  </div>
-                </div>
-                
-                <Button onClick={calculateCelestialNavigation} className="w-full">
-                  <Calculator className="h-4 w-4 mr-2" />
-                  Sight Reduction Hesapla
-                </Button>
-                
-                {navResults && (
-                  <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4 space-y-3">
-                    <h4 className="font-semibold text-blue-400 mb-2">Hesaplama Sonuçları</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p><strong>LHA:</strong> {navResults.lha.toFixed(1)}°</p>
-                        <p><strong>Hesaplanan Yükseklik:</strong> {navResults.calculatedAltitude.toFixed(4)}°</p>
-                      </div>
-                      <div>
-                        <p><strong>Azimuth:</strong> {navResults.calculatedAzimuth.toFixed(1)}°</p>
-                        <p><strong>Intercept:</strong> {navResults.intercept.toFixed(1)} nm</p>
-                      </div>
+            <div className="space-y-4">
+              <Card className="bg-black/20 border-white/10">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Navigation className="h-5 w-5" />
+                    Göksel Navigasyon Hesaplamaları
+                  </CardTitle>
+                  <CardDescription className="text-gray-300">
+                    LHA, hesaplanan yükseklik ve azimut hesaplamaları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="gha">Greenwich Hour Angle (GHA)</Label>
+                      <Input
+                        id="gha"
+                        type="number"
+                        step="0.01"
+                        value={navInputs.gha}
+                        onChange={(e) => setNavInputs(prev => ({
+                          ...prev,
+                          gha: e.target.value
+                        }))}
+                        placeholder="Derece cinsinden"
+                        className="bg-black/40 border-white/20"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="sha">Sidereal Hour Angle (SHA)</Label>
+                      <Input
+                        id="sha"
+                        type="number"
+                        step="0.01"
+                        value={navInputs.sha}
+                        onChange={(e) => setNavInputs(prev => ({
+                          ...prev,
+                          sha: e.target.value
+                        }))}
+                        placeholder="Derece cinsinden (opsiyonel)"
+                        className="bg-black/40 border-white/20"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="declination">Declination</Label>
+                      <Input
+                        id="declination"
+                        type="number"
+                        step="0.01"
+                        value={navInputs.declination}
+                        onChange={(e) => setNavInputs(prev => ({
+                          ...prev,
+                          declination: e.target.value
+                        }))}
+                        placeholder="Derece cinsinden"
+                        className="bg-black/40 border-white/20"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="assumed-latitude">Assumed Latitude</Label>
+                      <Input
+                        id="assumed-latitude"
+                        type="number"
+                        step="0.01"
+                        value={navInputs.assumedLatitude}
+                        onChange={(e) => setNavInputs(prev => ({
+                          ...prev,
+                          assumedLatitude: e.target.value
+                        }))}
+                        placeholder="Derece cinsinden"
+                        className="bg-black/40 border-white/20"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <Label htmlFor="assumed-longitude">Assumed Longitude</Label>
+                      <Input
+                        id="assumed-longitude"
+                        type="number"
+                        step="0.01"
+                        value={navInputs.assumedLongitude}
+                        onChange={(e) => setNavInputs(prev => ({
+                          ...prev,
+                          assumedLongitude: e.target.value
+                        }))}
+                        placeholder="Derece cinsinden"
+                        className="bg-black/40 border-white/20"
+                      />
                     </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          {/* Star Map View */}
-          <TabsContent value="map" className="mt-4">
-            <StarMapView
-              observerPosition={observerPosition}
-              selectedObject={selectedObject}
-              onSelectObject={handleObjectSelection}
-            />
-          </TabsContent>
+                  <Button onClick={calculateCelestialNavigation} className="w-full">
+                    <Calculator className="h-4 w-4 mr-2" />
+                    Göksel Navigasyon Hesapla
+                  </Button>
 
-          {/* Star Catalog and Search */}
-          <TabsContent value="catalog" className="mt-4">
-            <StarSearchAndCatalog
-              observerPosition={observerPosition}
-              onSelectObject={handleObjectSelection}
-            />
-          </TabsContent>
-
-          {/* Time Travel */}
-          <TabsContent value="time" className="mt-4">
-            <CelestialTimeTravel
-              observerPosition={{
-                latitude: observerPosition.latitude,
-                longitude: observerPosition.longitude,
-                timeZone: observerPosition.timeZone
-              }}
-              onTimeChange={handleTimeChange}
-            />
+                  {navResults && (
+                    <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 space-y-2">
+                      <h4 className="font-bold text-blue-400">Sonuçlar</h4>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-300">LHA:</span>
+                          <span className="text-blue-400 font-mono ml-2">{navResults.lha.toFixed(2)}°</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-300">Hesaplanan Yükseklik:</span>
+                          <span className="text-blue-400 font-mono ml-2">{navResults.calculatedAltitude.toFixed(2)}°</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-300">Azimut:</span>
+                          <span className="text-blue-400 font-mono ml-2">{navResults.calculatedAzimuth.toFixed(1)}°</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-300">Intercept:</span>
+                          <span className="text-blue-400 font-mono ml-2">{navResults.intercept.toFixed(1)} mil</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
