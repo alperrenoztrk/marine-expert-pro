@@ -8,6 +8,13 @@ import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
 import StabilityTransversePage from "./pages/StabilityTransverse";
+import SafetyMenu from "./pages/SafetyMenu";
+import NavigationMenu from "./pages/NavigationMenu";
+import EconomicsMenu from "./pages/EconomicsMenu";
+import TankMenu from "./pages/TankMenu";
+import CargoMenu from "./pages/CargoMenu";
+import Navigation from "./pages/Navigation";
+import Economics from "./pages/Economics";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +32,13 @@ const App = () => {
                   <Route path="/calculations" element={<CalculationsMenu />} />
                   <Route path="/stability" element={<StabilityMenu />} />
                   <Route path="/stability/transverse" element={<StabilityTransversePage />} />
+                  <Route path="/safety-menu" element={<SafetyMenu />} />
+                  <Route path="/navigation-menu" element={<NavigationMenu />} />
+                  <Route path="/economics-menu" element={<EconomicsMenu />} />
+                  <Route path="/tank-menu" element={<TankMenu />} />
+                  <Route path="/cargo" element={<CargoMenu />} />
+                  <Route path="/navigation" element={<Navigation />} />
+                  <Route path="/economics" element={<Economics />} />
                   <Route path="*" element={<Index />} />
                 </Routes>
               </BrowserRouter>
