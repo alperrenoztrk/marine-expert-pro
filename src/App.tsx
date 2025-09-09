@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { HelmetProvider } from "react-helmet-async";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
@@ -36,45 +37,47 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
-        <TooltipProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
-            <Toaster />
-            <div className="min-h-screen bg-background text-foreground">
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/calculations" element={<CalculationsMenu />} />
-                  <Route path="/stability" element={<StabilityMenu />} />
-                  <Route path="/stability/transverse" element={<StabilityTransversePage />} />
-                  {/* Stability sub-routes */}
-                  <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
-                  <Route path="/stability/rules" element={<StabilityAssistantPage />} />
-                  <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
-                  <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
-                  <Route path="/stability/damage" element={<StabilityDamagePage />} />
-                  <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
-                  <Route path="/stability/gm" element={<StabilityGMPage />} />
-                  <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
-                  <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />
-                  <Route path="/stability/gz" element={<StabilityGZPage />} />
-                  <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
-                  <Route path="/safety-menu" element={<SafetyMenu />} />
-                  <Route path="/navigation-menu" element={<NavigationMenu />} />
-                  <Route path="/economics-menu" element={<EconomicsMenu />} />
-                  <Route path="/tank-menu" element={<TankMenu />} />
-                  <Route path="/cargo" element={<CargoMenu />} />
-                  <Route path="/navigation" element={<Navigation />} />
-                  <Route path="/economics" element={<Economics />} />
-                  <Route path="/empty-page" element={<EmptyPage />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/formulas" element={<Formulas />} />
-                  <Route path="/regulations" element={<Regulations />} />
-                  <Route path="*" element={<Index />} />
-                </Routes>
-              </BrowserRouter>
-            </div>
-          </ThemeProvider>
-        </TooltipProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
+              <Toaster />
+              <div className="min-h-screen bg-background text-foreground">
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/calculations" element={<CalculationsMenu />} />
+                    <Route path="/stability" element={<StabilityMenu />} />
+                    <Route path="/stability/transverse" element={<StabilityTransversePage />} />
+                    {/* Stability sub-routes */}
+                    <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
+                    <Route path="/stability/rules" element={<StabilityAssistantPage />} />
+                    <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
+                    <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
+                    <Route path="/stability/damage" element={<StabilityDamagePage />} />
+                    <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
+                    <Route path="/stability/gm" element={<StabilityGMPage />} />
+                    <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
+                    <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />
+                    <Route path="/stability/gz" element={<StabilityGZPage />} />
+                    <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
+                    <Route path="/safety-menu" element={<SafetyMenu />} />
+                    <Route path="/navigation-menu" element={<NavigationMenu />} />
+                    <Route path="/economics-menu" element={<EconomicsMenu />} />
+                    <Route path="/tank-menu" element={<TankMenu />} />
+                    <Route path="/cargo" element={<CargoMenu />} />
+                    <Route path="/navigation" element={<Navigation />} />
+                    <Route path="/economics" element={<Economics />} />
+                    <Route path="/empty-page" element={<EmptyPage />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/formulas" element={<Formulas />} />
+                    <Route path="/regulations" element={<Regulations />} />
+                    <Route path="*" element={<Index />} />
+                  </Routes>
+                </BrowserRouter>
+              </div>
+            </ThemeProvider>
+          </TooltipProvider>
+        </LanguageProvider>
       </HelmetProvider>
     </QueryClientProvider>
   );
