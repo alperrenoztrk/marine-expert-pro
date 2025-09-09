@@ -63,48 +63,31 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const initializeLanguage = async () => {
     setIsLoading(true);
     try {
-      const languages = await translationService.getSupportedLanguages();
-      const filtered = languages.filter(l => TOP_25_LANGUAGE_CODES.includes(l.language));
-      setSupportedLanguages(filtered.length > 0 ? filtered : languages);
+      // Basit başlatma - API çağrısı yok
+      const supportedLangs: SupportedLanguage[] = [
+        { language: 'en', name: 'English', displayName: 'English' },
+        { language: 'tr', name: 'Turkish', displayName: 'Türkçe' },
+        { language: 'es', name: 'Spanish', displayName: 'Español' },
+        { language: 'fr', name: 'French', displayName: 'Français' },
+        { language: 'de', name: 'German', displayName: 'Deutsch' }
+      ];
+      setSupportedLanguages(supportedLangs);
 
-      const currentBrowserLang = translationService.getBrowserLanguage();
+      const currentBrowserLang = 'tr'; // Basit varsayılan
       const savedLanguage = localStorage.getItem('preferredLanguage');
-      const manual = localStorage.getItem('manualLanguageSelection') === 'true';
 
-      if (savedLanguage && manual) {
+      if (savedLanguage) {
         setCurrentLanguage(savedLanguage);
-        console.log(`Using manually selected language: ${savedLanguage}`);
-      } else if (savedLanguage && savedLanguage !== currentBrowserLang) {
-        console.log(`Auto-updating language from ${savedLanguage} to ${currentBrowserLang} (system change detected)`);
-        setCurrentLanguage(currentBrowserLang);
-        localStorage.setItem('preferredLanguage', currentBrowserLang);
-        localStorage.removeItem('manualLanguageSelection');
-        toast({
-          title: "Dil Otomatik Güncellendi",
-          description: `Sistem diliniz değişti. Uygulama dili ${translationService.getLanguageName(currentBrowserLang)} olarak güncellendi.`,
-        });
-      } else if (savedLanguage) {
-        setCurrentLanguage(savedLanguage);
-        console.log(`Using saved language: ${savedLanguage}`);
       } else {
         setCurrentLanguage(currentBrowserLang);
         localStorage.setItem('preferredLanguage', currentBrowserLang);
-        toast({
-          title: "Dil Algılandı",
-          description: `Sistem diliniz (${translationService.getLanguageName(currentBrowserLang)}) otomatik olarak seçildi.`,
-        });
       }
 
-      const finalLang = localStorage.getItem('preferredLanguage') || 'en';
-      document.documentElement.dir = rtlLanguages.includes(finalLang) ? 'rtl' : 'ltr';
-      document.documentElement.lang = finalLang;
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = savedLanguage || currentBrowserLang;
     } catch (error) {
       console.error('Language initialization error:', error);
-      toast({
-        title: "Dil Hatası",
-        description: "Dil ayarları yüklenirken hata oluştu",
-        variant: "destructive",
-      });
+      setCurrentLanguage('tr');
     } finally {
       setIsLoading(false);
     }
