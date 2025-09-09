@@ -50,7 +50,7 @@ export default function StabilityMenu() {
   };
 
   return (
-    <div key="stability-menu-v2" className="container mx-auto p-6 space-y-6" data-no-translate>
+    <div key="stability-menu-v2" className="container mx-auto p-4 space-y-4" data-no-translate>
       <div className="flex items-center justify-between">
         <Link to="/">
           <Button variant="ghost" size="sm" className="gap-2">
@@ -64,9 +64,9 @@ export default function StabilityMenu() {
           <CardTitle data-no-translate>Stabilite Hesaplamaları</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Hero / Opening section */}
-            <div className="rounded-lg border bg-muted/20 p-4 md:p-6">
+            <div className="rounded-lg border bg-muted/20 p-3 md:p-4">
               <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
@@ -88,7 +88,7 @@ export default function StabilityMenu() {
                     </DialogHeader>
 
                     {showOptions && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1.5">
                         {optionButtons.map((opt, idx) => (
                           <Button
                             key={opt.key}

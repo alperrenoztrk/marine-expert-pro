@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { HelmetProvider } from "react-helmet-async";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { DensityProvider } from "@/contexts/DensityContext";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
@@ -40,10 +41,11 @@ const App = () => {
         <LanguageProvider>
           <TooltipProvider>
             <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
-              <Toaster />
-              <div className="min-h-screen bg-background text-foreground">
-                <BrowserRouter>
-                  <Routes>
+              <DensityProvider>
+                <Toaster />
+                <div className="min-h-screen bg-background text-foreground">
+                  <BrowserRouter>
+                    <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/calculations" element={<CalculationsMenu />} />
                     <Route path="/stability" element={<StabilityMenu />} />
@@ -72,9 +74,10 @@ const App = () => {
                     <Route path="/formulas" element={<Formulas />} />
                     <Route path="/regulations" element={<Regulations />} />
                     <Route path="*" element={<Index />} />
-                  </Routes>
-                </BrowserRouter>
-              </div>
+                    </Routes>
+                  </BrowserRouter>
+                </div>
+              </DensityProvider>
             </ThemeProvider>
           </TooltipProvider>
         </LanguageProvider>

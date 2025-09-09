@@ -23,10 +23,10 @@ const buttonVariants = cva(
         ocean: "bg-gradient-to-r from-accent to-secondary text-white hover:from-accent/90 hover:to-secondary/90 shadow-[var(--shadow-button)]",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: "h-[var(--control-height)] px-[var(--control-padding-x)] py-[var(--control-padding-y)]",
+        sm: "h-[calc(var(--control-height)*0.9)] rounded-md px-[calc(var(--control-padding-x)*0.75)]",
+        lg: "h-[calc(var(--control-height)*1.1)] rounded-md px-[calc(var(--control-padding-x)*1.5)]",
+        icon: "h-[var(--control-height)] w-[var(--control-height)]",
       },
     },
     defaultVariants: {

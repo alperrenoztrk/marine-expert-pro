@@ -58,6 +58,20 @@ All colors MUST be HSL.
     --animation-duration: 8.33ms;
     --transition-duration: 16.67ms;
 
+    /* Density tokens */
+    --density-scale: 1;
+    --control-height-base: 2.5rem; /* corresponds to h-10 */
+    --control-padding-x-base: 1rem; /* px-4 */
+    --control-padding-y-base: 0.5rem; /* py-2 */
+    --card-padding-base: 1.5rem; /* p-6 */
+    --tabs-list-height-base: 2.5rem; /* h-10 */
+
+    --control-height: calc(var(--control-height-base) * var(--density-scale));
+    --control-padding-x: calc(var(--control-padding-x-base) * var(--density-scale));
+    --control-padding-y: calc(var(--control-padding-y-base) * var(--density-scale));
+    --card-padding: calc(var(--card-padding-base) * var(--density-scale));
+    --tabs-list-height: calc(var(--tabs-list-height-base) * var(--density-scale));
+
     /* Maritime gradients */
     --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-deep: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-dark)));
@@ -79,6 +93,11 @@ All colors MUST be HSL.
     to {
       transform: rotateY(360deg);
     }
+  }
+
+  /* Global compact density mode */
+  .density-compact {
+    --density-scale: 0.85;
   }
 
   /* Maritime background optimizations for mobile */

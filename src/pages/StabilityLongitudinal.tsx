@@ -630,7 +630,7 @@ export default function StabilityLongitudinal() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-4">
+    <div className="container mx-auto p-4 space-y-3">
       <div className="flex items-center justify-between">
         <Button variant="outline" size="sm" className="gap-2" onClick={() => navigate('/stability')}>
           <ArrowLeft className="h-4 w-4" />

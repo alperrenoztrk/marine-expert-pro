@@ -184,7 +184,7 @@ export const LongitudinalStabilityCalculations = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center gap-3">
         <Ship className="w-6 h-6 text-blue-600" />
         <h2 className="text-2xl font-bold">Boyuna Stabilite Hesaplamaları</h2>
@@ -201,7 +201,7 @@ export const LongitudinalStabilityCalculations = () => {
         </TabsList>
 
         {/* Ship Parameters */}
-        <Card className="mb-4">
+        <Card className="mb-3">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calculator className="w-5 h-5" />
@@ -209,7 +209,7 @@ export const LongitudinalStabilityCalculations = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div>
                 <Label htmlFor="length">Uzunluk (L_BP) [m]</Label>
                 <Input
@@ -296,12 +296,12 @@ export const LongitudinalStabilityCalculations = () => {
         </Card>
 
         {/* Initial Drafts */}
-        <Card className="mb-4">
+        <Card className="mb-3">
           <CardHeader>
             <CardTitle>Başlangıç Draftları</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="initialDraftForward">Baş Draft [m]</Label>
                 <Input
@@ -325,7 +325,7 @@ export const LongitudinalStabilityCalculations = () => {
         </Card>
 
         {/* Trim Moments */}
-        <Card className="mb-4">
+        <Card className="mb-3">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               Trim Momentleri
@@ -336,7 +336,7 @@ export const LongitudinalStabilityCalculations = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {inputs.moments.map((moment, index) => (
                 <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
                   <div className="flex-1">
