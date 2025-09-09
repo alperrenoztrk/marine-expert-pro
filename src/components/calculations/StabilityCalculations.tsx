@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor } from "lucide-react";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface StabilityData {
   // 🎯 Temel Stabilite Formülleri
@@ -243,6 +245,10 @@ export const StabilityCalculations = () => {
   });
   const [results, setResults] = useState<Partial<StabilityResults>>({});
   const [activeTab, setActiveTab] = useState("basic");
+  const [grainAutoM, setGrainAutoM] = useState<boolean>(true);
+  const [grainHelpOpen, setGrainHelpOpen] = useState<boolean>(false);
+  const [mGrainHelpOpen, setMGrainHelpOpen] = useState<boolean>(false);
+  const [grainErrors, setGrainErrors] = useState<{ delta?: boolean; B?: boolean; M_grain?: boolean }>({});
 
   // 🎯 Temel Stabilite Formülleri
   const calculateGM = () => {
@@ -610,29 +616,43 @@ export const StabilityCalculations = () => {
 
   // 🌾 Grain Stability
   const calculateGrainStability = () => {
-    if (data.delta == null || results.GM_corrected == null || data.B == null) {
-      toast.error("Lütfen Δ, GM ve B değerlerini girin.");
+    const currentErrors: { delta?: boolean; B?: boolean; M_grain?: boolean } = {};
+    const deltaVal = data.delta;
+    const breadthVal = data.B;
+    const gmCorrVal = results.GM_corrected;
+    const useAuto = grainAutoM;
+    const mGrainVal = useAuto ? undefined : data.M_grain;
+
+    if (deltaVal == null || Number.isNaN(deltaVal)) currentErrors.delta = true;
+    if (breadthVal == null || Number.isNaN(breadthVal)) currentErrors.B = true;
+    if (!useAuto && (mGrainVal == null || Number.isNaN(mGrainVal))) currentErrors.M_grain = true;
+
+    if (Object.keys(currentErrors).length > 0 || gmCorrVal == null || Number.isNaN(gmCorrVal)) {
+      setGrainErrors(currentErrors);
+      toast.error("Lütfen tüm gerekli alanları doldurunuz");
       return;
     }
-    if (data.delta <= 0 || results.GM_corrected <= 0 || data.B <= 0) {
-      toast.error("Δ, GM ve B pozitif olmalıdır.");
+    if ((deltaVal as number) <= 0 || (breadthVal as number) <= 0 || (gmCorrVal as number) <= 0 || (!useAuto && (mGrainVal as number) <= 0)) {
+      toast.error("Değerler mantıklı aralıkta olmalı (negatif veya sıfır olamaz)");
       return;
     }
-    
-    const M_grain = data.delta * 0.05 * (data.B / 2);
-    const phi_grain = Math.atan(M_grain / (data.delta * results.GM_corrected)) * (180 / Math.PI);
+
+    const M_grain = useAuto
+      ? (deltaVal as number) * 0.05 * ((breadthVal as number) / 2)
+      : (mGrainVal as number);
+    const phi_grain = Math.atan(M_grain / ((deltaVal as number) * (gmCorrVal as number))) * (180 / Math.PI);
     const SF_grain = 12 / phi_grain;
     const grain_compliance = phi_grain <= 12;
-    
-    setResults(prev => ({ 
-      ...prev, 
+
+    setResults(prev => ({
+      ...prev,
       M_grain_calculated: M_grain,
       phi_grain_calculated: phi_grain,
       SF_grain_calculated: SF_grain,
       grain_compliance
     }));
-    
-    toast.success(`Tahıl Yatma Açısı: ${phi_grain.toFixed(2)}° - Güvenlik Faktörü: ${SF_grain.toFixed(2)}`);
+
+    toast.success(`Tahıl Yatma Açısı: ${Number.isFinite(phi_grain) ? phi_grain.toFixed(2) : 'Hesaplama yapılamadı - Eksik veri'}° - Güvenlik Faktörü: ${Number.isFinite(SF_grain) ? SF_grain.toFixed(2) : '-'}`);
   };
 
   // 🔬 Advanced Stability
@@ -883,11 +903,11 @@ export const StabilityCalculations = () => {
   // 🌾 Grain Allowable Heel
   const calculateGrainAllowableHeel = () => {
     if (data.delta == null || data.B == null || results.GM_corrected == null) {
-      toast.error("Lütfen Δ, B ve GM değerlerini girin.");
+      toast.error("Lütfen tüm gerekli alanları doldurunuz");
       return;
     }
     if (data.delta <= 0 || data.B <= 0 || results.GM_corrected <= 0) {
-      toast.error("Δ, B ve GM pozitif olmalıdır.");
+      toast.error("Değerler mantıklı aralıkta olmalı (negatif veya sıfır olamaz)");
       return;
     }
     
@@ -902,7 +922,7 @@ export const StabilityCalculations = () => {
       grain_stability_criterion
     }));
     
-    toast.success(`Grain Allowable Heel: ${phi_allowable.toFixed(2)}° - ${grain_stability_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}`);
+    toast.success(`Grain Allowable Heel: ${Number.isFinite(phi_allowable) ? phi_allowable.toFixed(2) : 'Hesaplama yapılamadı - Eksik veri'}° - ${grain_stability_criterion ? 'UYGUN' : 'Güvenlik kriterleri sağlanmıyor'}`);
   };
 
   // 🔬 Yatma Enerjisi
@@ -1825,12 +1845,21 @@ export const StabilityCalculations = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-2 rounded bg-muted/20">
+                      <div className="text-sm">Tahıl Kayma Momenti (M_grain)</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs opacity-80">Manuel</span>
+                        <Switch checked={grainAutoM} onCheckedChange={setGrainAutoM} />
+                        <span className="text-xs opacity-80">Otomatik</span>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="delta_grain">Δ [ton]</Label>
                         <Input
                           id="delta_grain"
                           type="number"
+                          className={grainErrors.delta ? 'border-red-500' : undefined}
                           value={data.delta || ''}
                           onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
                           placeholder="25000"
@@ -1841,11 +1870,29 @@ export const StabilityCalculations = () => {
                         <Input
                           id="B_grain"
                           type="number"
+                          className={grainErrors.B ? 'border-red-500' : undefined}
                           value={data.B || ''}
                           onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
                           placeholder="25"
                         />
                       </div>
+                      {!grainAutoM && (
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="M_grain">M_grain [ton·m] (Tahıl Kayma Momenti)</Label>
+                          <Input
+                            id="M_grain"
+                            type="number"
+                            className={grainErrors.M_grain ? 'border-red-500' : undefined}
+                            value={data.M_grain || ''}
+                            onChange={(e) => setData({...data, M_grain: parseFloat(e.target.value)})}
+                            placeholder="Örn: 0.05×Δ×(B/2)"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" onClick={() => setGrainHelpOpen(true)}>Bu değerler ne anlama geliyor?</Button>
+                      <Button variant="outline" onClick={() => setMGrainHelpOpen(true)}>Tahıl Kayma Momenti nasıl hesaplanır?</Button>
                     </div>
                     <Button onClick={calculateGrainStability} className="w-full">
                       <Calculator className="h-4 w-4 mr-2" />
@@ -1856,7 +1903,7 @@ export const StabilityCalculations = () => {
                         <div className="text-2xl font-bold">{results.phi_grain_calculated.toFixed(2)}°</div>
                         <div className="text-sm text-muted-foreground">Tahıl Yatma Açısı</div>
                         <Badge className={`mt-2 ${results.grain_compliance ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.grain_compliance ? 'UYGUN' : 'UYGUN DEĞİL'}
+                          {results.grain_compliance ? 'UYGUN' : 'Güvenlik kriterleri sağlanmıyor'}
                         </Badge>
                         {results.SF_grain_calculated !== undefined && (
                           <div className="text-lg font-semibold mt-1">SF: {results.SF_grain_calculated.toFixed(2)}</div>
@@ -1905,13 +1952,42 @@ export const StabilityCalculations = () => {
                         <div className="text-2xl font-bold">{results.phi_allowable_calculated.toFixed(2)}°</div>
                         <div className="text-sm text-muted-foreground">Allowable Heel</div>
                         <Badge className={`mt-2 ${results.grain_stability_criterion ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.grain_stability_criterion ? 'UYGUN' : 'UYGUN DEĞİL'}
+                          {results.grain_stability_criterion ? 'UYGUN' : 'Güvenlik kriterleri sağlanmıyor'}
                         </Badge>
                       </div>
                     )}
                   </CardContent>
                 </Card>
               </div>
+              <Dialog open={grainHelpOpen} onOpenChange={setGrainHelpOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Bu değerler ne anlama geliyor?</DialogTitle>
+                    <DialogDescription>
+                      Δ: Gemi deplasmanı (ton). B: Gemi genişliği (m). GM: Metasantrik yükseklik (m). Tahıl yüklerinde yatma açısı, tahılın kayma momenti ile doğrultucu moment dengesinden bulunur. Güvenlik faktörü, yatma açısının 12° sınırına göre değerlendirilir.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="text-sm space-y-2">
+                    <p><strong>Güvenlik faktörü neden önemli?</strong> GM küçüldükçe geminin doğrultucu kabiliyeti azalır. Tahılın kayması ilave meyil momenti yaratarak dengenin bozulmasına sebep olabilir. SOLAS, tahıl yatma açısının 12°’yi aşmamasını ister.</p>
+                    <p><strong>Neleri değiştirmeli?</strong> GM’yi artırmak için balast almak veya ağırlıkları aşağıya taşımak; B’yi artırmak (geometrik); tahıl boşluklarını doldurmak ve sahil şilteleri ile boşlukları azaltmak M_grain’i küçültür.</p>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog open={mGrainHelpOpen} onOpenChange={setMGrainHelpOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Tahıl Kayma Momenti (M_grain) nasıl hesaplanır?</DialogTitle>
+                    <DialogDescription>
+                      Pratik yaklaşım: M_grain ≈ 0.05 × Δ × (B/2). Bu, tipik kararlılık kitapçıklarında verilen muhafazakâr bir tahmindir. Geminize özel tahıl kılavuzunda daha kesin katsayılar bulunabilir.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="text-sm space-y-2">
+                    <p><strong>Tipik değerler:</strong> Δ=25,000 t ve B=25 m için M_grain ≈ 0.05×25,000×12.5 ≈ 15,625 ton·m.</p>
+                    <p><strong>Otomatik hesaplama:</strong> Anahtarı “Otomatik” konumunda bırakırsanız bu pratik formül kullanılır. “Manuel” seçerseniz M_grain alanına kendi değerinizi girebilirsiniz.</p>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </TabsContent>
 
             {/* 🔬 Advanced Stability */}
