@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { translationService, TranslationResponse, SupportedLanguage } from '@/services/translationAPI';
 import { useToast } from '@/hooks/use-toast';
+
+interface SupportedLanguage {
+  language: string;
+  name: string;
+  displayName: string;
+}
 
 interface LanguageContextType {
   currentLanguage: string;
@@ -44,13 +49,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   useEffect(() => {
     initializeLanguage();
     
+    // Simplified language detection without external service
     const handleLanguageChange = () => {
-      const manual = localStorage.getItem('manualLanguageSelection') === 'true';
-      if (manual) return; // respect manual selection, do not auto-switch
-      const newBrowserLang = translationService.getBrowserLanguage();
-      if (newBrowserLang !== currentLanguage) {
-        console.log(`Browser language changed to: ${newBrowserLang}`);
-        changeLanguage(newBrowserLang);
+      const browserLang = navigator.language.split('-')[0];
+      if (browserLang !== currentLanguage) {
+        console.log(`Browser language changed to: ${browserLang}`);
+        changeLanguage(browserLang);
       }
     };
 
@@ -63,7 +67,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const initializeLanguage = async () => {
     setIsLoading(true);
     try {
-      // Basit başlatma - API çağrısı yok
       const supportedLangs: SupportedLanguage[] = [
         { language: 'en', name: 'English', displayName: 'English' },
         { language: 'tr', name: 'Turkish', displayName: 'Türkçe' },
@@ -73,18 +76,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       ];
       setSupportedLanguages(supportedLangs);
 
-      const currentBrowserLang = 'tr'; // Basit varsayılan
-      const savedLanguage = localStorage.getItem('preferredLanguage');
-
-      if (savedLanguage) {
-        setCurrentLanguage(savedLanguage);
-      } else {
-        setCurrentLanguage(currentBrowserLang);
-        localStorage.setItem('preferredLanguage', currentBrowserLang);
-      }
+      const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
+      setCurrentLanguage(savedLanguage);
 
       document.documentElement.dir = 'ltr';
-      document.documentElement.lang = savedLanguage || currentBrowserLang;
+      document.documentElement.lang = savedLanguage;
     } catch (error) {
       console.error('Language initialization error:', error);
       setCurrentLanguage('tr');
@@ -100,22 +96,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     try {
       setCurrentLanguage(languageCode);
       localStorage.setItem('preferredLanguage', languageCode);
-      localStorage.setItem('manualLanguageSelection', 'true');
 
       document.documentElement.dir = rtlLanguages.includes(languageCode) ? 'rtl' : 'ltr';
       document.documentElement.lang = languageCode;
 
-      const browserLang = translationService.getBrowserLanguage();
-      const isSystemLanguage = languageCode === browserLang;
-
+      const langName = getLanguageName(languageCode);
       toast({
         title: "Dil Değiştirildi",
-        description: isSystemLanguage 
-          ? `Uygulama dili ${translationService.getLanguageName(languageCode)} olarak değiştirildi (sistem dili)`
-          : `Uygulama dili ${translationService.getLanguageName(languageCode)} olarak değiştirildi (sistem dili değişirse otomatik güncellenmeyecek)`,
+        description: `Uygulama dili ${langName} olarak değiştirildi`,
       });
-
-      await applyTranslationsToCurrentPage(languageCode);
     } catch (error) {
       console.error('Language change error:', error);
       toast({
@@ -129,140 +118,41 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   const translateText = async (text: string, targetLanguage?: string): Promise<string> => {
-    try {
-      const target = targetLanguage || currentLanguage;
-      if (!text.trim()) return text;
-
-      const result = await translationService.autoDetectAndTranslate(text, target);
-      return result.translatedText;
-    } catch (error) {
-      console.error('Translation error:', error);
-      return text; // Return original text on error
-    }
+    // Simplified - no API calls, just return original text
+    return text;
   };
 
   const translateBatch = async (texts: string[], targetLanguage?: string): Promise<string[]> => {
-    try {
-      const target = targetLanguage || currentLanguage;
-      const results = await translationService.translateBatch(texts, target);
-      return results.map(result => result.translatedText);
-    } catch (error) {
-      console.error('Batch translation error:', error);
-      return texts; // Return original texts on error
-    }
+    // Simplified - no API calls, just return original texts
+    return texts;
   };
 
   const autoDetectLanguage = async () => {
     try {
-      const detectedLang = translationService.getBrowserLanguage();
+      const browserLang = navigator.language.split('-')[0];
+      const detectedLang = supportedLanguages.find(lang => lang.language === browserLang)?.language || 'tr';
       
       if (detectedLang !== currentLanguage) {
         await changeLanguage(detectedLang);
         toast({
           title: "Sistem Dili Algılandı",
-          description: `Dil ${translationService.getLanguageName(detectedLang)} olarak güncellendi`,
-        });
-      } else {
-        toast({
-          title: "Dil Zaten Güncel",
-          description: `Mevcut dil zaten sistem dili ile eşleşiyor (${translationService.getLanguageName(detectedLang)})`,
+          description: `Dil ${getLanguageName(detectedLang)} olarak güncellendi`,
         });
       }
     } catch (error) {
       console.error('Auto-detect error:', error);
-      toast({
-        title: "Algılama Hatası",
-        description: "Dil algılanırken hata oluştu",
-        variant: "destructive",
-      });
     }
   };
 
   const getLanguageName = (code: string): string => {
-    return translationService.getLanguageName(code);
+    return supportedLanguages.find(lang => lang.language === code)?.displayName || code;
   };
 
-  // Apply translations to current page without reload
+  // Simplified - no actual translation, just language switching
   const applyTranslationsToCurrentPage = async (languageCode: string) => {
-    try {
-      const translatableElements = document.querySelectorAll('[data-translatable]');
-      const inputElements = document.querySelectorAll('input[placeholder], textarea[placeholder]');
-
-      const textsToTranslate = Array.from(translatableElements).map(el => el.textContent || '');
-      const nonEmptyTexts = textsToTranslate.filter(text => text.trim().length > 0);
-
-      // If nothing explicitly marked, fallback to safe text-only elements (opt-out via data-no-translate)
-      if (nonEmptyTexts.length === 0 && inputElements.length === 0) {
-        // Exclude generic containers like div/section/nav and only translate leaf nodes to avoid breaking React DOM
-        const fallbackSelector = 'h1,h2,h3,h4,h5,h6,p,button,a,label,li,th,td,small,strong,em,span';
-        const allCandidates = (Array.from(document.querySelectorAll(fallbackSelector)) as HTMLElement[])
-          .filter((el) => {
-            if (el.dataset.noTranslate) return false;
-            // Skip splash screen elements during transition
-            if (el.closest('.splash-screen')) return false;
-            // Only translate leaf nodes (no element children)
-            if (el.childElementCount > 0) return false;
-            return true;
-          })
-          .slice(0, 200); // cap for performance
-
-        const texts = allCandidates.map(el => (el.textContent || '').trim());
-        const nonEmpty = texts.map((t, i) => ({ t, i })).filter(x => x.t.length > 0);
-        if (nonEmpty.length > 0) {
-          const translated = await translationService.translateBatch(nonEmpty.map(x => x.t), languageCode);
-          nonEmpty.forEach((x, idx) => {
-            const el = allCandidates[x.i];
-            const originalText = (el.dataset.originalText || el.textContent || '').trim();
-            if (!el.dataset.originalText) {
-              el.dataset.originalText = originalText;
-            }
-            const newText = translated[idx]?.translatedText || originalText;
-            el.textContent = newText;
-          });
-        }
-        console.log(`Safe fallback applied translations to ${nonEmpty.length} leaf elements`);
-        return;
-      }
-
-      // Translate visible texts
-      if (nonEmptyTexts.length > 0) {
-        const translatedTexts = await translationService.translateBatch(nonEmptyTexts, languageCode);
-        // Apply translations
-        let textIndex = 0;
-        translatableElements.forEach((element, index) => {
-          const originalText = textsToTranslate[index];
-          if (originalText.trim().length > 0) {
-            const translatedText = translatedTexts[textIndex]?.translatedText || originalText;
-            (element as HTMLElement).dataset.originalText = (element as HTMLElement).dataset.originalText || originalText;
-            element.textContent = translatedText;
-            textIndex++;
-          }
-        });
-      }
-
-      // Translate placeholders
-      if (inputElements.length > 0) {
-        const placeholders = Array.from(inputElements).map(el => (el as HTMLInputElement | HTMLTextAreaElement).placeholder || '');
-        const nonEmptyPlaceholders = placeholders.filter(p => p.trim().length > 0);
-        if (nonEmptyPlaceholders.length > 0) {
-          const translatedPlaceholders = await translationService.translateBatch(nonEmptyPlaceholders, languageCode);
-          let phIndex = 0;
-          inputElements.forEach((element, idx) => {
-            const originalPh = placeholders[idx];
-            if (originalPh.trim().length > 0) {
-              const translated = translatedPlaceholders[phIndex]?.translatedText || originalPh;
-              (element as HTMLInputElement | HTMLTextAreaElement).dataset.originalPlaceholder = (element as HTMLInputElement | HTMLTextAreaElement).dataset.originalPlaceholder || originalPh;
-              (element as HTMLInputElement | HTMLTextAreaElement).placeholder = translated;
-              phIndex++;
-            }
-          });
-        }
-      }
-
-      console.log(`Applied translations (lang=${languageCode}) to ${nonEmptyTexts.length} text elements and ${inputElements.length} placeholders`);
-    } catch (error) {
-      console.error('Error applying translations:', error);
-    }
+    // Just update the document language attribute
+    document.documentElement.lang = languageCode;
+    console.log(`Language switched to: ${languageCode}`);
   };
 
   const contextValue: LanguageContextType = {
@@ -278,15 +168,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     isRTL,
     resetLanguagePreferences: () => {
       localStorage.removeItem('preferredLanguage');
-      localStorage.removeItem('manualLanguageSelection');
-      // Re-detect system language
-      const browserLang = translationService.getBrowserLanguage();
-      localStorage.setItem('preferredLanguage', browserLang);
-      setCurrentLanguage(browserLang);
-      document.documentElement.dir = rtlLanguages.includes(browserLang) ? 'rtl' : 'ltr';
-      document.documentElement.lang = browserLang;
-      // Apply without reload
-      applyTranslationsToCurrentPage(browserLang);
+      const browserLang = navigator.language.split('-')[0];
+      const detectedLang = supportedLanguages.find(lang => lang.language === browserLang)?.language || 'tr';
+      localStorage.setItem('preferredLanguage', detectedLang);
+      setCurrentLanguage(detectedLang);
+      document.documentElement.dir = rtlLanguages.includes(detectedLang) ? 'rtl' : 'ltr';
+      document.documentElement.lang = detectedLang;
     },
     applyTranslations: async (languageCode?: string) => applyTranslationsToCurrentPage(languageCode || (localStorage.getItem('preferredLanguage') || currentLanguage))
   };
