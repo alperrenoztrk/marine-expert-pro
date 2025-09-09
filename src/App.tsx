@@ -16,7 +16,6 @@ import CargoMenu from "./pages/CargoMenu";
 import Navigation from "./pages/Navigation";
 import Economics from "./pages/Economics";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
-import StabilityRules from "./pages/StabilityRules";
 import StabilityLongitudinal from "./pages/StabilityLongitudinal";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityDamagePage from "./pages/StabilityDamage";
@@ -49,7 +48,7 @@ const App = () => {
                   <Route path="/stability/transverse" element={<StabilityTransversePage />} />
                   {/* Stability sub-routes */}
                   <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
-                  <Route path="/stability/rules" element={<StabilityRules />} />
+                  <Route path="/stability/rules" element={<StabilityAssistantPage />} />
                   <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
                   <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
                   <Route path="/stability/damage" element={<StabilityDamagePage />} />

@@ -40,7 +40,7 @@ const HydrostaticsStabilityPage = () => {
           <CardContent className="pt-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               <Link to="/stability/assistant"><Button variant="outline" className="w-full justify-start gap-2"><Shield className="h-4 w-4" /> Asistan</Button></Link>
-              <Link to="/stability/rules"><Button variant="outline" className="w-full justify-start gap-2"><BookOpen className="h-4 w-4" /> Kurallar</Button></Link>
+              <Link to="/stability/assistant"><Button variant="outline" className="w-full justify-start gap-2"><BookOpen className="h-4 w-4" /> Asistan</Button></Link>
             </div>
           </CardContent>
         </Card>

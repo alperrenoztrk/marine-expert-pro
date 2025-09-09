@@ -26,7 +26,7 @@ export default function StabilityAssistantPage() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Merhaba! Ben Mark, maritime regülasyonlar rehberinizim. Gemilerde hangi bilgiye nereden ulaşılması gerektiği konusunda size yardımcı olabilirim. Örneğin weather fax, ALRS, SOLAS, MARPOL gibi yayınlar hakkında sorular sorabilirsiniz. Hangi konuda bilgi arıyorsunuz?',
+      content: 'Merhaba! Ben Stabilite Asistanı. GM, GZ, KN, FSC, tahıl stabilitesi, hasarlı stabilite ve IMO kriterleri gibi konularda yardımcı olabilirim. Hesap, yorum veya görsel analizi için sorunuzu yazın ya da görsel ekleyin.',
       timestamp: new Date()
     }
   ]);
@@ -73,7 +73,7 @@ export default function StabilityAssistantPage() {
 				} else {
 					// Seed with greeting
 					setMessages([
-						{ id: '1', role: 'assistant', content: 'Merhaba! Ben Mark, maritime regülasyonlar rehberinizim. Gemilerde hangi bilgiye nereden ulaşılması gerektiği konusunda size yardımcı olabilirim.', timestamp: new Date() }
+						{ id: '1', role: 'assistant', content: 'Merhaba! Ben Stabilite Asistanı. GM, GZ, FSC ve IMO kriterleri gibi stabilite konularında yardımcı olabilirim.', timestamp: new Date() }
 					]);
 				}
 			} catch {}
@@ -370,8 +370,7 @@ export default function StabilityAssistantPage() {
           </AvatarFallback>
         </Avatar>
         <div>
-          <h1 className="font-semibold text-lg">Mark - Regülasyonlar Rehberi</h1>
-
+          <h1 className="font-semibold text-lg">Stabilite Asistanı</h1>
         </div>
         <div className="ml-auto flex items-center gap-2">
 			<Button variant="outline" size="sm" onClick={createThread} title="Yeni sohbet">
@@ -549,7 +548,7 @@ export default function StabilityAssistantPage() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 onPaste={handlePaste}
-                placeholder="Maritime regülasyonlar hakkında soru sorun, görsel yükleyin..."
+                placeholder="Stabilite hakkında soru sorun ya da görsel yükleyin (GM, GZ, FSC, IMO)..."
                 className="min-h-[50px] resize-none"
                 disabled={isLoading}
               />
@@ -573,34 +572,34 @@ export default function StabilityAssistantPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("Weather fax için ALRS'nin hangi cildi kullanılır?")}
+              onClick={() => setInputMessage("GM = KM - KG hesabını yapar mısın? Örnek: Δ=10,000 t, KM=8.2 m, KG=6.9 m")}
               disabled={isLoading}
             >
-              Weather Fax
+              GM Hesabı
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("SOLAS hangi konuları kapsar?")}
+              onClick={() => setInputMessage("GZ eğrisinden 0–30° alanını nasıl hesaplarım? Örnek veriyle gösterir misin?")}
               disabled={isLoading}
             >
-              SOLAS
+              GZ Alanı
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("MARPOL Annex I nedir?")}
+              onClick={() => setInputMessage("Serbest yüzey düzeltmesi (FSC) nasıl yapılır? Dikdörtgen tank örneğiyle açıkla.")}
               disabled={isLoading}
             >
-              MARPOL
+              FSC
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setInputMessage("Port State Control için hangi kılavuz kullanılır?")}
+              onClick={() => setInputMessage("2008 IS Code kriterlerini sağlıyor muyum? Örnek bir GZ eğrisiyle kontrol edelim.")}
               disabled={isLoading}
             >
-              PSC Kılavuzu
+              IMO Kriterleri
             </Button>
           </div>
         </div>

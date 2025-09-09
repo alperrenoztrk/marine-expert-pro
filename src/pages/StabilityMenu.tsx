@@ -12,7 +12,7 @@ export default function StabilityMenu() {
       title: 'Stabilite',
       items: [
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
-        { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" }
+        { to: "/stability/assistant", icon: <BookOpen className="h-4 w-4" />, label: "Asistan" }
       ]
     }
   ];
