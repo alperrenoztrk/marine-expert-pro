@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe, Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { languages as SUPPORTED_LANGUAGES } from "@/utils/languages";
+
 export const LanguageSelector = () => {
-  const { currentLanguage, changeLanguage, isTranslating } = useLanguage();
+  const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
-  const currentLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage) || SUPPORTED_LANGUAGES[0];
+  const currentLang = supportedLanguages.find(lang => lang.language === currentLanguage) || supportedLanguages[0];
 
   const handleLanguageChange = async (langCode: string) => {
     await changeLanguage(langCode);
@@ -27,28 +27,26 @@ export const LanguageSelector = () => {
           variant="outline" 
           size="sm" 
           className="gap-2 min-w-[120px]"
-          disabled={isTranslating}
         >
           <Globe className="w-4 h-4" />
-          <span className="hidden xs:inline">{currentLang.flag} {currentLang.name}</span>
-          <span className="xs:hidden">{currentLang.flag}</span>
+          <span className="hidden xs:inline">{currentLang.displayName}</span>
+          <span className="xs:hidden">{currentLang.language.toUpperCase()}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
         className="w-48 max-h-80 overflow-y-auto"
       >
-        {SUPPORTED_LANGUAGES.map((language) => (
+        {supportedLanguages.map((language) => (
           <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
+            key={language.language}
+            onClick={() => handleLanguageChange(language.language)}
             className="flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <span>{language.flag}</span>
-              <span className="text-sm">{language.name}</span>
+              <span>{language.displayName}</span>
             </div>
-            {currentLanguage === language.code && (
+            {currentLanguage === language.language && (
               <Check className="w-4 h-4 text-primary" />
             )}
           </DropdownMenuItem>

@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { translationService } from "@/services/translationAPI";
 import { 
   Code, 
   Trash2, 
@@ -28,7 +27,7 @@ export const LanguageDebug = () => {
       preferredLanguage: localStorage.getItem('preferredLanguage'),
       manualSelection: localStorage.getItem('manualLanguageSelection'),
       browserLanguage: navigator.language,
-      detectedLanguage: translationService.getBrowserLanguage(),
+      detectedLanguage: navigator.language.split('-')[0],
       documentLang: document.documentElement.lang,
       documentDir: document.documentElement.dir,
       allStorageKeys: Object.keys(localStorage).filter(key => 

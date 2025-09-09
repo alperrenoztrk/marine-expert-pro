@@ -34,9 +34,7 @@ export const LanguageSelector = ({
     currentLanguage,
     supportedLanguages,
     isLoading,
-    isTranslating,
     changeLanguage,
-    autoDetectLanguage,
     getLanguageName,
     resetLanguagePreferences
   } = useLanguage();
@@ -46,7 +44,12 @@ export const LanguageSelector = ({
   const handleAutoDetect = async () => {
     setIsDetecting(true);
     try {
-      await autoDetectLanguage();
+      // Simple browser language detection
+      const browserLang = navigator.language.split('-')[0];
+      const supportedLang = supportedLanguages.find(lang => lang.language === browserLang);
+      if (supportedLang) {
+        await changeLanguage(browserLang);
+      }
     } finally {
       setIsDetecting(false);
     }
@@ -88,7 +91,7 @@ export const LanguageSelector = ({
             className={`${className} h-8 w-8 p-0`}
             disabled={isLoading}
           >
-            {isLoading || isTranslating ? (
+            {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <span className="text-lg">{getLanguageFlag(currentLanguage)}</span>
@@ -133,7 +136,7 @@ export const LanguageSelector = ({
               className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
               disabled={isLoading}
             >
-              {isLoading || isTranslating ? (
+              {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
                 <>
@@ -208,7 +211,7 @@ export const LanguageSelector = ({
           className={`${className} flex items-center gap-2`}
           disabled={isLoading}
         >
-          {isLoading || isTranslating ? (
+          {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <>

@@ -8,11 +8,6 @@ import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTrian
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { AutoLanguageSelector } from "@/components/AutoLanguageSelector";
-import { useAutoLanguageDetection } from "@/hooks/useAutoLanguageDetection";
-import { useAdManager } from "@/hooks/useAdManager";
-import { AdBannerInline } from "@/components/ads/AdBanner";
-import { NativeAd, MaritimeSoftwareAd } from "@/components/ads/NativeAd";
 import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
 
 const Formulas = () => {
@@ -22,8 +17,6 @@ const Formulas = () => {
   const [responseCount, setResponseCount] = useState(0);
   const [geminiApiStatus, setGeminiApiStatus] = useState<'unknown' | 'working' | 'error'>('unknown');
   const [conversationHistory, setConversationHistory] = useState<Array<{question: string, answer: string}>>([]);
-  const { translateContent } = useAutoLanguageDetection();
-  const { shouldShowAd, trackInteraction } = useAdManager();
 
   // localStorage'dan konuşma geçmişini yükle
   useEffect(() => {
@@ -74,7 +67,6 @@ const Formulas = () => {
     }
 
     setIsLoading(true);
-    trackInteraction('ai_question_asked');
     
     try {
       // Supabase Edge Function çağrısı
@@ -90,15 +82,13 @@ const Formulas = () => {
       }
 
       if (data?.answer) {
-        // AI yanıtını kullanıcının diline çevir
-        const translatedAnswer = await translateContent(data.answer);
-        setAiResponse(translatedAnswer);
+        setAiResponse(data.answer);
         setResponseCount(prev => prev + 1);
         
         // Konuşma geçmişine ekle
         setConversationHistory(prev => [...prev, {
           question: question.trim(),
-          answer: translatedAnswer
+          answer: data.answer
         }]);
         
         // Update API status based on response
@@ -133,7 +123,6 @@ const Formulas = () => {
 
   const handleSuggestedQuestion = (suggestion: string) => {
     setQuestion(suggestion);
-    trackInteraction('suggested_question_clicked');
   };
 
   return (
@@ -166,13 +155,6 @@ const Formulas = () => {
           </h1>
         </div>
       </div>
-
-      {/* Üst reklam - Sayfa yüklendiğinde */}
-      {shouldShowAd('top-page') && (
-        <div className="mb-6">
-          <MaritimeSoftwareAd />
-        </div>
-      )}
 
       {/* Unified Maritime Assistant */}
       <UnifiedMaritimeAssistant />
@@ -486,13 +468,6 @@ const Formulas = () => {
                 </div>
               </div>
             )}
-
-            {/* AI yanıt sonrası reklam - Her 2 yanıttan sonra */}
-            {aiResponse && responseCount > 0 && responseCount % 2 === 0 && shouldShowAd('after-calculation') && (
-              <div className="mt-4 pt-4 border-t">
-                <AdBannerInline />
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -649,13 +624,6 @@ const Formulas = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Sayfa sonu reklamı */}
-        {shouldShowAd('bottom-page') && (
-          <div className="mt-6 pt-4 border-t">
-            <NativeAd />
-          </div>
-        )}
       </div>
     </MobileLayout>
   );
