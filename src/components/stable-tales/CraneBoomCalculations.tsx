@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Calculator, Construction, AlertTriangle, CheckCircle } from "lucide-react";
+import { Calculator, Settings, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { StableTalesEngine } from "./StableTalesCalculationEngine";
 import { BumbaKrenData } from "./StableTalesTypes";
@@ -99,7 +99,7 @@ export const CraneBoomCalculations = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Construction className="h-5 w-5" />
+            <Settings className="h-5 w-5" />
             Kren/Bumba Operasyon Analizi
           </CardTitle>
           <CardDescription>
