@@ -5,14 +5,6 @@ const config: CapacitorConfig = {
   appName: 'Denizcilik Hesaplayıcısı',
   webDir: 'dist',
   plugins: {
-    SplashScreen: {
-      launchShowDuration: 2000,
-      launchAutoHide: false,
-      backgroundColor: '#1e40af',
-      showSpinner: false,
-      androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP'
-    },
     StatusBar: {
       style: 'DARK',
       backgroundColor: '#1e40af'

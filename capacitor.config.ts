@@ -9,16 +9,6 @@ const config: CapacitorConfig = {
     cleartext: true
   },
   plugins: {
-    SplashScreen: {
-      launchShowDuration: 3000,
-      launchAutoHide: false,
-      backgroundColor: '#1e40af',
-      showSpinner: false,
-      androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
-      splashFullScreen: true,
-      splashImmersive: true
-    },
     StatusBar: {
       style: 'DARK',
       backgroundColor: '#1e40af'
@@ -49,8 +39,7 @@ const config: CapacitorConfig = {
       keystoreAliasPassword: undefined,
       releaseType: 'APK'
     },
-    // Firebase project configuration
-    googleServicesFile: 'google-services.json'
+    
   }
 };
 
