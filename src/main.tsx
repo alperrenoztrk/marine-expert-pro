@@ -20,3 +20,14 @@ function Root() {
 }
 
 createRoot(container).render(<Root />);
+
+// Gracefully hide splash once the app mounts
+const splashEl = document.getElementById('splash-root');
+if (splashEl) {
+  // Let first paint happen, then fade out
+  requestAnimationFrame(() => {
+    splashEl.classList.add('splash-hide');
+    // Remove from DOM after transition
+    setTimeout(() => splashEl.remove(), 600);
+  });
+}
