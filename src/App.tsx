@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,8 +6,6 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { HelmetProvider } from "react-helmet-async";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DensityProvider } from "@/contexts/DensityContext";
-import { Capacitor } from "@capacitor/core";
-import { SplashScreen as WebSplashScreen } from "@/components/ui/splash-screen";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
@@ -38,8 +35,6 @@ import Regulations from "./pages/Regulations";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [isWebSplashVisible, setIsWebSplashVisible] = useState(!Capacitor.isNativePlatform());
-
   return (
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
@@ -47,9 +42,6 @@ const App = () => {
           <TooltipProvider>
             <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
               <DensityProvider>
-                {isWebSplashVisible && (
-                  <WebSplashScreen onComplete={() => setIsWebSplashVisible(false)} duration={3000} />
-                )}
                 <Toaster />
                 <div className="min-h-screen bg-background text-foreground">
                   <BrowserRouter>

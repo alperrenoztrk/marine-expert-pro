@@ -8,7 +8,6 @@ import {
   Trash2, 
   RefreshCw, 
   Info,
-  AlertCircle,
   CheckCircle
 } from "lucide-react";
 
@@ -25,31 +24,15 @@ export const LanguageDebug = () => {
     const info = {
       currentLanguage,
       preferredLanguage: localStorage.getItem('preferredLanguage'),
-      manualSelection: localStorage.getItem('manualLanguageSelection'),
       browserLanguage: navigator.language,
-      detectedLanguage: navigator.language.split('-')[0],
-      documentLang: document.documentElement.lang,
-      documentDir: document.documentElement.dir,
-      allStorageKeys: Object.keys(localStorage).filter(key => 
-        key.includes('language') || key.includes('translation')
-      )
+      detectedLanguage: navigator.language.split('-')[0]
     };
     setDebugInfo(info);
   };
 
-  const clearTranslationCache = () => {
-    Object.keys(localStorage).forEach(key => {
-      if (key.startsWith('translation_')) {
-        localStorage.removeItem(key);
-      }
-    });
-    updateDebugInfo();
-  };
-
-  const forceLanguageChange = async (langCode: string) => {
+  const forceLanguageChange = (langCode: string) => {
     localStorage.setItem('preferredLanguage', langCode);
-    localStorage.setItem('manualLanguageSelection', 'true');
-    await changeLanguage(langCode);
+    changeLanguage(langCode);
   };
 
   // Show debug panel only in development or when ?debug=true
@@ -87,7 +70,7 @@ export const LanguageDebug = () => {
               </Button>
             </div>
             <CardDescription className="text-xs">
-              Dil ayarları ve çeviri durumu
+              Dil ayarları durumu
             </CardDescription>
           </CardHeader>
           
@@ -106,12 +89,8 @@ export const LanguageDebug = () => {
                   </Badge>
                 </div>
                 <div className="flex justify-between">
-                  <span>Manual Seçim:</span>
-                  {debugInfo.manualSelection === 'true' ? (
-                    <CheckCircle className="h-3 w-3 text-green-600" />
-                  ) : (
-                    <AlertCircle className="h-3 w-3 text-orange-600" />
-                  )}
+                  <span>localStorage:</span>
+                  <CheckCircle className="h-3 w-3 text-green-600" />
                 </div>
               </div>
             </div>
@@ -121,7 +100,6 @@ export const LanguageDebug = () => {
               <h4 className="font-medium mb-2">localStorage</h4>
               <div className="space-y-1 text-xs font-mono bg-gray-100 p-2 rounded">
                 <div>preferred: {debugInfo.preferredLanguage || 'null'}</div>
-                <div>manual: {debugInfo.manualSelection || 'null'}</div>
                 <div>browser: {debugInfo.browserLanguage}</div>
                 <div>detected: {debugInfo.detectedLanguage}</div>
               </div>
@@ -169,22 +147,13 @@ export const LanguageDebug = () => {
             {/* Reset Actions */}
             <div className="space-y-1">
               <Button
-                variant="destructive"
-                size="sm"
-                onClick={clearTranslationCache}
-                className="w-full text-xs h-7"
-              >
-                <Trash2 className="h-3 w-3 mr-1" />
-                Çeviri Cache Temizle
-              </Button>
-              <Button
                 variant="outline"
                 size="sm"
                 onClick={resetLanguagePreferences}
                 className="w-full text-xs h-7"
               >
                 <RefreshCw className="h-3 w-3 mr-1" />
-                Tüm Ayarları Sıfırla
+                Ayarları Sıfırla
               </Button>
             </div>
 

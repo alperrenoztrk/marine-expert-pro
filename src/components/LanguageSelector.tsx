@@ -15,8 +15,8 @@ export const LanguageSelector = () => {
 
   const currentLang = supportedLanguages.find(lang => lang.language === currentLanguage) || supportedLanguages[0];
 
-  const handleLanguageChange = async (langCode: string) => {
-    await changeLanguage(langCode);
+  const handleLanguageChange = (langCode: string) => {
+    changeLanguage(langCode);
     setIsOpen(false);
   };
 
