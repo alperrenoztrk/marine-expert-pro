@@ -350,7 +350,7 @@ export const DamageStabilityCalc = () => {
                   Acil Durum Protokolü:
                 </h5>
                 <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                  <li>• GM < 0.05m ise derhal balast ayarlaması yapın</li>
+                  <li>• GM &lt; 0.05m ise derhal balast ayarlaması yapın</li>
                   <li>• Su alma hızını azaltmak için yamaları hazırlayın</li>
                   <li>• Asimetrik ballast ile meyil açısını düzeltin</li>
                   <li>• Acil durumda personeli güvenli bölgelere taşıyın</li>

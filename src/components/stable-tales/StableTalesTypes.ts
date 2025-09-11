@@ -1,6 +1,12 @@
 // TypeScript interfaces for Stable Tales calculations
 // Based on Python stability_calculator.py
 
+export interface StableTalesInput {
+  deplasman: number;
+  km: number;
+  kg: number;
+}
+
 export interface YukBilgisi {
   agirlik: number; // Weight in tons
   kg: number; // Height above keel in meters

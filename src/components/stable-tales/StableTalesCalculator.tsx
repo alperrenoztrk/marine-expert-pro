@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Calculator, Ship, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { StableTalesEngine, StableTalesInput } from "./StableTalesCalculationEngine";
-import { YukBilgisi, TankBilgisi } from "./StableTalesTypes";
+import { StableTalesEngine } from "./StableTalesCalculationEngine";
+import { StableTalesInput, YukBilgisi, TankBilgisi } from "./StableTalesTypes";
 
 export const StableTalesCalculator = () => {
   const [vesselData, setVesselData] = useState({

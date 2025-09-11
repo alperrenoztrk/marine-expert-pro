@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Calculator, Crane, AlertTriangle, CheckCircle } from "lucide-react";
+import { Calculator, Construction, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { StableTalesEngine } from "./StableTalesCalculationEngine";
 import { BumbaKrenData } from "./StableTalesTypes";
@@ -99,7 +99,7 @@ export const CraneBoomCalculations = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Crane className="h-5 w-5" />
+            <Construction className="h-5 w-5" />
             Kren/Bumba Operasyon Analizi
           </CardTitle>
           <CardDescription>
@@ -281,7 +281,7 @@ export const CraneBoomCalculations = () => {
                   Güvenlik Protokolü:
                 </h5>
                 <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <li>• GM < 0.15m ise operasyon DURDURULMALIDIR</li>
+                  <li>• GM &lt; 0.15m ise operasyon DURDURULMALIDIR</li>
                   <li>• Operasyon öncesi ballast ayarlaması yapılmalıdır</li>
                   <li>• Hava koşulları değerlendirilmelidir</li>
                   <li>• Sürekli stabilite monitörleme gereklidir</li>

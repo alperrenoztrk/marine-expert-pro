@@ -311,7 +311,7 @@ export const DrydockStabilityCalc = () => {
                   Havuz Güvenlik Protokolü:
                 </h5>
                 <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
-                  <li>• GM < Kritik GM ise havuz operasyonu YASAKLI</li>
+                  <li>• GM &lt; Kritik GM ise havuz operasyonu YASAKLI</li>
                   <li>• Destek noktaları eşit aralıklarla yerleştirilmeli</li>
                   <li>• Su boşaltma işlemi dikkatli yapılmalı</li>
                   <li>• Sürekli stabilite monitörleme şart</li>
