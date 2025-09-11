@@ -9,7 +9,6 @@ import { DensityProvider } from "@/contexts/DensityContext";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
-import StabilityTransversePage from "./pages/StabilityTransverse";
 import SafetyMenu from "./pages/SafetyMenu";
 import NavigationMenu from "./pages/NavigationMenu";
 import EconomicsMenu from "./pages/EconomicsMenu";
@@ -18,7 +17,6 @@ import CargoMenu from "./pages/CargoMenu";
 import Navigation from "./pages/Navigation";
 import Economics from "./pages/Economics";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
-import StabilityLongitudinal from "./pages/StabilityLongitudinal";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityDamagePage from "./pages/StabilityDamage";
 import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
@@ -48,12 +46,10 @@ const App = () => {
                     <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/calculations" element={<CalculationsMenu />} />
-                    <Route path="/stability" element={<StabilityMenu />} />
-                    <Route path="/stability/transverse" element={<StabilityTransversePage />} />
-                    {/* Stability sub-routes */}
-                    <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
-                    <Route path="/stability/rules" element={<StabilityAssistantPage />} />
-                    <Route path="/stability/longitudinal" element={<StabilityLongitudinal />} />
+                     <Route path="/stability" element={<StabilityMenu />} />
+                     {/* Stability sub-routes */}
+                     <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
+                     <Route path="/stability/rules" element={<StabilityAssistantPage />} />
                     <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
                     <Route path="/stability/damage" element={<StabilityDamagePage />} />
                     <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
