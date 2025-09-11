@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Waves, Ship, BarChart3, AlertTriangle, ArrowLeft, Brain, BookOpen, Activity, Package, Droplets, Building, Route, Calculator } from "lucide-react";
+import { Shield, Waves, Ship, BarChart3, AlertTriangle, ArrowLeft, Brain, BookOpen, Activity, Package, Droplets, Building, Route, Calculator, Sigma } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ export default function StabilityMenu() {
       title: 'Stabilite',
       items: [
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
-        { to: "/stability/assistant", icon: <BookOpen className="h-4 w-4" />, label: "Asistan" }
+        { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" }
       ]
     }
   ];
@@ -41,6 +41,7 @@ export default function StabilityMenu() {
     { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
     { key: 'grain', label: 'Tahıl Stabilitesi', to: '/stability/grain' },
     { key: 'stable-tales', label: 'Stable Tales', to: '/stability/stable-tales' },
+    { key: 'formulas', label: 'Formüller', to: '/stability/formulas' },
   ];
 
   const handleSelect = (to: string) => {

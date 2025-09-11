@@ -30,6 +30,7 @@ import EmptyPage from "./pages/EmptyPage";
 import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
+import StabilityFormulasPage from "./pages/StabilityFormulas";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => {
                     <Route path="/stability/gz" element={<StabilityGZPage />} />
                     <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                     <Route path="/stability/stable-tales" element={<StableTalesPage />} />
+                    <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
                     <Route path="/safety-menu" element={<SafetyMenu />} />
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
