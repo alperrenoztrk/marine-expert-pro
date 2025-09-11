@@ -40,6 +40,7 @@ export default function StabilityMenu() {
     { key: 'gz-imo', label: 'GZ / IMO Kriterleri', to: '/stability/gz-imo' },
     { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
     { key: 'grain', label: 'Tahıl Stabilitesi', to: '/stability/grain' },
+    { key: 'stable-tales', label: 'Stable Tales', to: '/stability/stable-tales' },
   ];
 
   const handleSelect = (to: string) => {

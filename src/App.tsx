@@ -25,6 +25,7 @@ import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
 import StabilityFreeSurfacePage from "./pages/StabilityFreeSurface";
 import StabilityGZPage from "./pages/StabilityGZ";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
+import StableTalesPage from "./pages/StableTales";
 import EmptyPage from "./pages/EmptyPage";
 import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
@@ -58,6 +59,7 @@ const App = () => {
                     <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />
                     <Route path="/stability/gz" element={<StabilityGZPage />} />
                     <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
+                    <Route path="/stability/stable-tales" element={<StableTalesPage />} />
                     <Route path="/safety-menu" element={<SafetyMenu />} />
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
