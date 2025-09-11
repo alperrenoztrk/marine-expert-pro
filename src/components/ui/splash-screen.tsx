@@ -39,7 +39,7 @@ export const SplashScreen = ({ onComplete, duration = 4000 }: SplashScreenProps)
   if (!isVisible) return null;
 
   return (
-    <div className={`splash-screen ${isAnimating ? 'animate' : ''} ${fadeOut ? 'fade-out' : ''} relative`}>
+    <div className={`splash-screen ${isAnimating ? 'animate' : ''} ${fadeOut ? 'fade-out' : ''}`}>
       {/* Animated Background */}
       <div className="splash-background">
         <div className="gradient-overlay"></div>
