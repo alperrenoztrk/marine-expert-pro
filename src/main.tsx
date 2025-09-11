@@ -20,7 +20,12 @@ function Root() {
   return (
     <>
       {showSplash && (
-        <UISplashScreen onComplete={() => setShowSplash(false)} duration={3000} />
+        <UISplashScreen 
+          onComplete={() => setShowSplash(false)} 
+          duration={2500} 
+          allowSkip={true}
+          oncePerSession={true}
+        />
       )}
       <ErrorBoundary>
         <App />

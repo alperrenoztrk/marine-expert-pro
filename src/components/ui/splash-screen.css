@@ -16,6 +16,31 @@
   overflow: hidden;
 }
 
+/* Skip button */
+.skip-button {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 40;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.skip-button:hover,
+.skip-button:focus {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  outline: none;
+}
+
 .splash-screen.animate {
   opacity: 1;
 }
@@ -483,4 +508,38 @@
   .loading-bar {
     width: 200px;
   }
+}
+
+/* Reduced motion support via attribute and media query */
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen .wave-animation { display: none; }
+}
+
+.splash-screen[data-reduced-motion="true"] .wave-animation { display: none; }
+
+.splash-screen[data-reduced-motion="true"] .compass-ring,
+.splash-screen[data-reduced-motion="true"] .anchor-decoration {
+  animation: none !important;
+}
+
+.splash-screen[data-reduced-motion="true"] .logo-container {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+.splash-screen[data-reduced-motion="true"] .title-container,
+.splash-screen[data-reduced-motion="true"] .subtitle,
+.splash-screen[data-reduced-motion="true"] .loading-system {
+  opacity: 1;
+  transform: none;
+  animation: none !important;
+}
+
+.splash-screen[data-reduced-motion="true"] .loading-progress {
+  width: 100%;
+  animation: none !important;
+}
+
+.splash-screen[data-reduced-motion="true"] .enhanced-gradient-overlay {
+  animation: none !important;
 }

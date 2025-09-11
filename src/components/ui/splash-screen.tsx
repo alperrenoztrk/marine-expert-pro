@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { Anchor, Compass } from "lucide-react";
 import "./splash-screen.css";
 
 interface SplashScreenProps {
   onComplete: () => void;
   duration?: number;
+  allowSkip?: boolean;
+  oncePerSession?: boolean;
 }
 
-export const SplashScreen = ({ onComplete, duration = 5000 }: SplashScreenProps) => {
+const SESSION_KEY = "splashSeen:v2";
+
+export const SplashScreen = ({ onComplete, duration = 5000, allowSkip = true, oncePerSession = true }: SplashScreenProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
@@ -15,6 +19,8 @@ export const SplashScreen = ({ onComplete, duration = 5000 }: SplashScreenProps)
   const [showTitle, setShowTitle] = useState(false);
   const [titleText, setTitleText] = useState("");
   const [fadeOut, setFadeOut] = useState(false);
+  const reducedMotion = useRef(typeof window !== 'undefined' && 'matchMedia' in window ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false).current;
+  const effectiveDuration = useMemo(() => (reducedMotion ? Math.min(duration, 1200) : duration), [duration, reducedMotion]);
 
   const fullTitle = "Maritime Calculator";
   const subtitle = "Professional Maritime Calculations";
@@ -22,7 +28,10 @@ export const SplashScreen = ({ onComplete, duration = 5000 }: SplashScreenProps)
   // Typewriter effect
   useEffect(() => {
     if (!showTitle) return;
-    
+    if (reducedMotion) {
+      setTitleText(fullTitle);
+      return;
+    }
     let currentIndex = 0;
     const timer = setInterval(() => {
       if (currentIndex <= fullTitle.length) {
@@ -34,35 +43,80 @@ export const SplashScreen = ({ onComplete, duration = 5000 }: SplashScreenProps)
     }, 100);
 
     return () => clearInterval(timer);
-  }, [showTitle, fullTitle]);
+  }, [showTitle, fullTitle, reducedMotion]);
+
+  // Once-per-session fast path
+  useEffect(() => {
+    if (!oncePerSession) return;
+    try {
+      if (sessionStorage.getItem(SESSION_KEY)) {
+        setIsVisible(false);
+        onComplete();
+      }
+    } catch {
+      // no-op
+    }
+  }, [oncePerSession, onComplete]);
+
+  const handleSkip = useCallback(() => {
+    if (!isVisible) return;
+    setFadeOut(true);
+    window.setTimeout(() => {
+      setIsVisible(false);
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
+      onComplete();
+    }, 300);
+  }, [isVisible, onComplete]);
 
   useEffect(() => {
     // Enhanced animations sequence
     const timers: number[] = [];
 
+    if (!isVisible) return () => {};
+
     timers.push(window.setTimeout(() => setIsAnimating(true), 150));
-    timers.push(window.setTimeout(() => setShowWaves(true), 300));
-    timers.push(window.setTimeout(() => setShowLogo(true), 600));
-    timers.push(window.setTimeout(() => setShowTitle(true), 1200));
+    timers.push(window.setTimeout(() => setShowWaves(!reducedMotion), 300));
+    timers.push(window.setTimeout(() => setShowLogo(true), reducedMotion ? 200 : 600));
+    timers.push(window.setTimeout(() => setShowTitle(true), reducedMotion ? 300 : 1200));
     
     // Start fade out
-    timers.push(window.setTimeout(() => setFadeOut(true), duration - 1200));
+    const fadeStart = Math.max(0, effectiveDuration - 1200);
+    timers.push(window.setTimeout(() => setFadeOut(true), fadeStart));
     
     // Complete splash screen
     timers.push(window.setTimeout(() => {
       setIsVisible(false);
-      timers.push(window.setTimeout(onComplete, 1000));
-    }, duration));
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
+      timers.push(window.setTimeout(onComplete, 300));
+    }, effectiveDuration));
 
     return () => {
       timers.forEach(id => clearTimeout(id));
     };
-  }, [onComplete, duration]);
+  }, [onComplete, effectiveDuration, reducedMotion, isVisible]);
+
+  // Keyboard skip support (Escape)
+  useEffect(() => {
+    if (!allowSkip || !isVisible) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleSkip();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [allowSkip, isVisible, handleSkip]);
 
   if (!isVisible) return null;
 
   return (
-    <div className={`splash-screen ${isAnimating ? 'animate' : ''} ${fadeOut ? 'fade-out' : ''}`}>
+    <div className={`splash-screen ${isAnimating ? 'animate' : ''} ${fadeOut ? 'fade-out' : ''}`} aria-busy="true" data-reduced-motion={reducedMotion ? 'true' : 'false'}>
+      {allowSkip && (
+        <button className="skip-button" onClick={handleSkip} aria-label="Skip splash screen" title="Skip">
+          Skip
+        </button>
+      )}
       {/* Maritime Wave Background */}
       <div className="maritime-background">
         <div className={`wave-animation ${showWaves ? 'active' : ''}`}>
@@ -91,7 +145,7 @@ export const SplashScreen = ({ onComplete, duration = 5000 }: SplashScreenProps)
         {/* Maritime Logo with Compass */}
         <div className={`logo-container ${showLogo ? 'show' : ''}`}>
           <div className="compass-ring">
-            <Compass className="compass-icon w-16 h-16 md:w-20 md:w-20" />
+            <Compass className="compass-icon w-16 h-16 md:w-20 md:h-20" />
             <div className="compass-glow"></div>
           </div>
           <div className="anchor-decoration">
