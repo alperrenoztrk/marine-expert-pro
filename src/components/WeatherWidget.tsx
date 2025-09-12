@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin, Clock } from "lucide-react";
+import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
+import AnalogClock from "@/components/ui/AnalogClock";
 
 type WeatherResponse = {
   latitude: number;
@@ -142,44 +143,38 @@ export default function WeatherWidget() {
     return degreesToCompass(data?.windDirectionDeg ?? NaN);
   }, [data?.windDirectionDeg]);
 
-  const timeDisplay = useMemo(() => {
-    if (!data) return null;
-    const utcMs = nowMs; // Date.now() in ms since epoch (UTC epoch)
-    const offsetSeconds = data.utcOffsetSeconds ?? 0;
+  const analogTimes = useMemo(() => {
+    const utcMs = nowMs;
+    const offsetSeconds = data?.utcOffsetSeconds ?? 0;
     const ztMs = utcMs + offsetSeconds * 1000;
-    const lmtMs = utcMs + (data.longitude ?? 0) * 4 * 60 * 1000; // 4 min per degree
-    const fmt = (ms: number) => new Date(ms).toISOString().substring(11, 19); // HH:mm:ss (UTC-based substring)
+    const lmtMs = utcMs + (data?.longitude ?? 0) * 4 * 60 * 1000; // 4 min per degree
 
-    // Format ZD = hours to add to ZT to get GMT => ZD = -offset
-    const zdTotalMinutes = Math.round((-offsetSeconds) / 60);
-    const sign = zdTotalMinutes >= 0 ? "+" : "-";
-    const absMin = Math.abs(zdTotalMinutes);
-    const zdHours = Math.floor(absMin / 60);
-    const zdMins = absMin % 60;
-    const zdStr = `${sign}${String(zdHours).padStart(2, "0")}:${String(zdMins).padStart(2, "0")}`;
+    const asParts = (ms: number) => {
+      const d = new Date(ms);
+      return { h: d.getUTCHours(), m: d.getUTCMinutes(), s: d.getUTCSeconds() };
+    };
 
-    return {
-      gmt: fmt(utcMs),
-      zt: fmt(ztMs),
-      lmt: fmt(lmtMs),
-      zd: zdStr,
-    } as const;
-  }, [data, nowMs]);
+    const gmt = asParts(utcMs);
+    const zt = asParts(ztMs);
+    const lmt = asParts(lmtMs);
+    const trt = (() => {
+      try {
+        const parts = new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+          timeZone: "Europe/Istanbul",
+        }).formatToParts(utcMs);
+        const get = (t: string) => parseInt(parts.find(p => p.type === t)?.value ?? "0", 10);
+        return { h: get("hour"), m: get("minute"), s: get("second") };
+      } catch {
+        return zt;
+      }
+    })();
 
-  const nationalTimeStr = useMemo(() => {
-    // Turkey National Time (UTC+3 year-round)
-    try {
-      return new Intl.DateTimeFormat("tr-TR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-        timeZone: "Europe/Istanbul",
-      }).format(nowMs);
-    } catch {
-      return null;
-    }
-  }, [nowMs]);
+    return { gmt, zt, lmt, trt } as const;
+  }, [nowMs, data?.utcOffsetSeconds, data?.longitude]);
 
   return (
     <Card className="w-full bg-transparent border-none shadow-none">
@@ -207,6 +202,15 @@ export default function WeatherWidget() {
           </div>
         ) : data ? (
           <div className="grid grid-cols-2 gap-4">
+            {/* Analog clocks at top: TRT, GMT, LMT, ZT */}
+            <div className="col-span-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <AnalogClock size={96} hours={analogTimes.trt.h} minutes={analogTimes.trt.m} seconds={analogTimes.trt.s} label="TRT" className="mx-auto" />
+                <AnalogClock size={96} hours={analogTimes.gmt.h} minutes={analogTimes.gmt.m} seconds={analogTimes.gmt.s} label="GMT" className="mx-auto" />
+                <AnalogClock size={96} hours={analogTimes.lmt.h} minutes={analogTimes.lmt.m} seconds={analogTimes.lmt.s} label="LMT" className="mx-auto" />
+                <AnalogClock size={96} hours={analogTimes.zt.h} minutes={analogTimes.zt.m} seconds={analogTimes.zt.s} label="ZT" className="mx-auto" />
+              </div>
+            </div>
             <div className="col-span-2 flex items-center gap-3">
               <MapPin className="h-5 w-5 text-red-600" />
               <div>
@@ -217,16 +221,6 @@ export default function WeatherWidget() {
                 {Number.isFinite(data.latitude) && Number.isFinite(data.longitude)
                   ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`
                   : null}
-              </div>
-            </div>
-            <div className="col-span-2 flex items-center gap-3">
-              <Clock className="h-5 w-5 text-indigo-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Ulusal Saat</div>
-                <div className="text-base font-medium">
-                  {nationalTimeStr ?? "-"}
-                  <span className="ml-2 text-xs text-muted-foreground">TRT (UTC+3)</span>
-                </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -280,27 +274,6 @@ export default function WeatherWidget() {
               </div>
             </div>
 
-            {/* Timezone block: GMT / LMT / ZT / ZD */}
-            {timeDisplay && (
-              <div className="col-span-2 grid grid-cols-4 gap-3 text-xs">
-                <div className="flex flex-col items-start">
-                  <span className="text-muted-foreground">GMT</span>
-                  <span className="font-medium">{timeDisplay.gmt}</span>
-                </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-muted-foreground">LMT</span>
-                  <span className="font-medium">{timeDisplay.lmt}</span>
-                </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-muted-foreground">ZT</span>
-                  <span className="font-medium">{timeDisplay.zt}</span>
-                </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-muted-foreground">ZD</span>
-                  <span className="font-medium">{timeDisplay.zd}</span>
-                </div>
-              </div>
-            )}
           </div>
         ) : null}
       </CardContent>
