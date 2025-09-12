@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Waves, Ship, BarChart3, AlertTriangle, ArrowLeft, Brain, BookOpen, Activity, Package, Droplets, Building, Route, Calculator, Sigma } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Brain, BookOpen, Calculator, Sigma } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
-  const navigate = useNavigate();
   const groups = [
     {
       title: 'Stabilite',
@@ -18,10 +17,8 @@ export default function StabilityMenu() {
   ];
   const items = groups.flatMap((g)=> g.items);
 
-
-
   return (
-    <div key="stability-menu-v2" className="container mx-auto p-4 space-y-4" data-no-translate>
+    <div key="stability-menu-v3" className="container mx-auto p-4 space-y-4" data-no-translate>
       <div className="flex items-center justify-between">
         <Link to="/">
           <Button variant="ghost" size="sm" className="gap-2">
