@@ -236,7 +236,7 @@ export const BallastCalculations = ({ initialTab }: { initialTab?: string } = {}
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'improved': return 'bg-green-500';
-      case 'neutral': return 'bg-blue-500 cyberpunk:bg-yellow-500';
+      case 'neutral': return 'bg-blue-500';
       case 'degraded': return 'bg-red-500';
       default: return 'bg-gray-500';
     }

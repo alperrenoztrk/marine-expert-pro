@@ -651,7 +651,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Tehlikeli Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-red-700 flex items-center gap-2 neon:text-cyan-400">
+                <h4 className="text-lg font-semibold text-red-700 flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5" />
                   Yüksek Riskli Bulutlar
                 </h4>
@@ -666,7 +666,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Alçak Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-blue-700 flex items-center gap-2 neon:text-cyan-400">
+                <h4 className="text-lg font-semibold text-blue-700 flex items-center gap-2">
                   <Cloud className="h-5 w-5" />
                   Alçak Bulutlar (0-2 km)
                 </h4>
@@ -681,7 +681,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Orta Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2 neon:text-cyan-400">
+                <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2">
                   <Cloud className="h-5 w-5" />
                   Orta Bulutlar (2-7 km)
                 </h4>
@@ -696,7 +696,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Yüksek Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-purple-700 flex items-center gap-2 neon:text-cyan-400">
+                <h4 className="text-lg font-semibold text-purple-700 flex items-center gap-2">
                   <Cloud className="h-5 w-5" />
                   Yüksek Bulutlar (5-13 km)
                 </h4>

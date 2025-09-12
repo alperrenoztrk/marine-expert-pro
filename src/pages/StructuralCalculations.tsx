@@ -8,7 +8,7 @@ import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
 const StructuralCalculationsPage = () => {
   return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Back Button */}
@@ -52,7 +52,7 @@ const StructuralCalculationsPage = () => {
 
           {/* Formüller Kutucuğu */}
           <div className="lg:col-span-1">
-            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <Card className="h-fit sticky top-4 shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="h-5 w-5" />
@@ -118,7 +118,7 @@ const StructuralCalculationsPage = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 p-3 bg-blue-50 cyberpunk:bg-gray-800 rounded-lg">
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                     <p className="text-xs text-blue-700 dark:text-blue-300">
                       <strong>Semboller:</strong><br/>
                       σ: gerilme, τ: kesme gerilmesi, M: moment<br/>
@@ -143,7 +143,7 @@ const StructuralCalculationsPage = () => {
             safetyFactor: 2.0
           }}
           diagramType="structural"
-          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 dark:bg-gray-800/80 backdrop-blur-sm"
+          className="shadow-lg border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
         />
 
         {/* Info */}

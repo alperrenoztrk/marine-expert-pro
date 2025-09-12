@@ -46,7 +46,7 @@ export const EconomicCalculationsCard = () => {
         
         <Button 
           onClick={() => navigate("/economics")} 
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 cyberpunk:from-yellow-500 cyberpunk:to-yellow-600 cyberpunk:hover:from-yellow-600 cyberpunk:hover:to-yellow-700"
+          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
         >
           Hesaplamalara Git
           <ArrowRight className="w-4 h-4 ml-2" />
