@@ -32,6 +32,7 @@ import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
+import StabilityCalculationsPage from "./pages/StabilityCalculations";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => {
                     <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                     <Route path="/stability/stable-tales" element={<StableTalesPage />} />
                     <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
+                    <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
                     <Route path="/safety-menu" element={<SafetyMenu />} />
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
