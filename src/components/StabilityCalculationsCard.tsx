@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Ship, ChevronDown, ChevronUp, Calculator, BarChart3, Package, Droplets, Building } from "lucide-react";
+import { Ship, ChevronDown, ChevronUp, Calculator, BarChart3, Droplets, Building } from "lucide-react";
 
 // Import all calculation components
 import { TrimListCalculations } from "./calculations/TrimListCalculations";
-import { CargoCalculations } from "./calculations/CargoCalculations";
 import { BallastCalculations } from "./calculations/BallastCalculations";
 import { StructuralCalculations } from "./calculations/StructuralCalculations";
 
@@ -42,10 +41,6 @@ export const StabilityCalculationsCard = () => {
                 <Ship className="w-3 h-3" />
                 <span className="hidden sm:inline">Trim & List</span>
               </TabsTrigger>
-              <TabsTrigger value="cargo" className="flex items-center gap-1">
-                <Package className="w-3 h-3" />
-                <span className="hidden sm:inline">Kargo</span>
-              </TabsTrigger>
               <TabsTrigger value="ballast" className="flex items-center gap-1">
                 <Droplets className="w-3 h-3" />
                 <span className="hidden sm:inline">Balast</span>
@@ -60,9 +55,6 @@ export const StabilityCalculationsCard = () => {
               <TrimListCalculations />
             </TabsContent>
             
-            <TabsContent value="cargo">
-              <CargoCalculations />
-            </TabsContent>
             
             <TabsContent value="ballast">
               <BallastCalculations />

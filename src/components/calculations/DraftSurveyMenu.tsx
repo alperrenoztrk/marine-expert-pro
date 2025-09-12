@@ -25,13 +25,6 @@ const DraftSurveyMenu = () => {
       color: "bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900"
     },
     {
-      title: "Kargo Ölçümü",
-      description: "Kargo tonajı hesaplama",
-      icon: Scale,
-      path: "/draft-survey-cargo",
-      color: "bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900"
-    },
-    {
       title: "Bunker Ölçümü",
       description: "Yakıt tonajı hesaplama",
       icon: Gauge,
