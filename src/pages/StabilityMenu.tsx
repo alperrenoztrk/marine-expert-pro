@@ -13,7 +13,8 @@ export default function StabilityMenu() {
       items: [
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
         { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
-        { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" }
+        { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
+        { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" }
       ]
     }
   ];
@@ -38,6 +39,7 @@ export default function StabilityMenu() {
   }, [open]);
 
   const optionButtons = [
+    { key: 'calculations', label: 'Stabilite Hesaplamaları', to: '/stability/calculations' },
     { key: 'gz-imo', label: 'GZ / IMO Kriterleri', to: '/stability/gz-imo' },
     { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
     { key: 'grain', label: 'Tahıl Stabilitesi', to: '/stability/grain' },
