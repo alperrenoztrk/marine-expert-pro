@@ -12,7 +12,8 @@ export default function StabilityMenu() {
       title: 'Stabilite',
       items: [
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
-        { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" }
+        { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
+        { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" }
       ]
     }
   ];
@@ -41,6 +42,7 @@ export default function StabilityMenu() {
     { key: 'damage', label: 'Hasarlı Stabilite', to: '/stability/damage' },
     { key: 'grain', label: 'Tahıl Stabilitesi', to: '/stability/grain' },
     { key: 'stable-tales', label: 'Stable Tales', to: '/stability/stable-tales' },
+    { key: 'formulas', label: 'Formüller', to: '/stability/formulas' },
   ];
 
   const handleSelect = (to: string) => {
