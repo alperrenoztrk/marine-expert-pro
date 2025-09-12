@@ -274,7 +274,7 @@ const Regulations = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-              case 'general': return 'bg-blue-100 text-blue-800';
+              case 'general': return 'bg-blue-100 text-blue-800 cyberpunk:bg-gray-800 cyberpunk:text-yellow-400';
       case 'construction': return 'bg-green-100 text-green-800';
       case 'fire': return 'bg-red-100 text-red-800';
       case 'lifesaving': return 'bg-orange-100 text-orange-800';

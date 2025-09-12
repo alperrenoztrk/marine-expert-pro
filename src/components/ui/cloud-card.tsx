@@ -23,13 +23,13 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
   const getDangerColor = (danger: string) => {
     switch (danger) {
       case 'high':
-        return 'border-red-500 bg-red-50';
+        return 'border-red-500 bg-red-50 neon:border-cyan-400 neon:bg-cyan-900/30';
       case 'medium':
-        return 'border-orange-400 bg-orange-50';
+        return 'border-orange-400 bg-orange-50 neon:border-cyan-400 neon:bg-cyan-900/30';
       case 'low':
-        return 'border-blue-300 bg-blue-50';
+        return 'border-blue-300 bg-blue-50 cyberpunk:border-yellow-400 cyberpunk:bg-gray-800 neon:border-cyan-400 neon:bg-cyan-900/30';
       default:
-        return 'border-gray-300 bg-gray-50';
+        return 'border-gray-300 bg-gray-50 neon:border-cyan-400 neon:bg-cyan-900/30';
     }
   };
 
@@ -58,15 +58,15 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'low':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 cyberpunk:bg-gray-800 cyberpunk:text-yellow-400 neon:bg-cyan-900/50 neon:text-cyan-400';
       case 'middle':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 neon:bg-cyan-900/50 neon:text-cyan-400';
       case 'high':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-100 text-purple-800 neon:bg-cyan-900/50 neon:text-cyan-400';
       case 'vertical':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 neon:bg-cyan-900/50 neon:text-cyan-400';
       default:
-        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 neon:bg-cyan-900/50 neon:text-cyan-400';
     }
   };
 
@@ -136,19 +136,19 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
 
         {/* Açıklama */}
         <div className="space-y-2">
-          <p className="text-sm text-gray-700 dark:text-gray-300">{cloud.descriptionTr}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300 neon:text-cyan-300">{cloud.descriptionTr}</p>
           
           {/* Özellikler */}
-          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded-lg p-3 space-y-2">
-            <h4 className="font-semibold text-sm flex items-center gap-1">
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded-lg p-3 space-y-2 neon:bg-cyan-900/30">
+            <h4 className="font-semibold text-sm flex items-center gap-1 neon:text-cyan-400">
               <Info className="h-4 w-4" />
               Özellikler
             </h4>
             <ul className="text-xs space-y-1">
               {cloud.characteristics.map((char, index) => (
                 <li key={index} className="flex items-start gap-1">
-                  <span className="text-gray-400 mt-0.5">•</span>
-                  <span>{char}</span>
+                  <span className="text-gray-400 mt-0.5 neon:text-cyan-500">•</span>
+                  <span className="neon:text-cyan-300">{char}</span>
                 </li>
               ))}
             </ul>
@@ -160,7 +160,8 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
           "border",
           cloud.danger === 'high' ? 'border-red-300 bg-red-50' :
           cloud.danger === 'medium' ? 'border-orange-300 bg-orange-50' :
-          'border-blue-300 bg-blue-50'
+          'border-blue-300 bg-blue-50 cyberpunk:border-yellow-400 cyberpunk:bg-gray-800',
+          'neon:border-cyan-400 neon:bg-cyan-900/30'
         )}>
           <Navigation className="h-4 w-4" />
           <AlertDescription className="text-sm neon:text-cyan-300">
@@ -170,20 +171,20 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
 
         {/* Detaylı Bilgiler */}
         <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center">
-            <Eye className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400" />
-            <div className="font-semibold">Görüş</div>
-            <div className="text-gray-700 dark:text-gray-300">{cloud.visibility}</div>
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center neon:bg-cyan-900/30">
+            <Eye className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400 neon:text-cyan-400" />
+            <div className="font-semibold neon:text-cyan-400">Görüş</div>
+            <div className="text-gray-700 dark:text-gray-300 neon:text-cyan-300">{cloud.visibility}</div>
           </div>
-          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center">
-            <Wind className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400" />
-            <div className="font-semibold">Rüzgar</div>
-            <div className="text-gray-700 dark:text-gray-300">{cloud.wind}</div>
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center neon:bg-cyan-900/30">
+            <Wind className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400 neon:text-cyan-400" />
+            <div className="font-semibold neon:text-cyan-400">Rüzgar</div>
+            <div className="text-gray-700 dark:text-gray-300 neon:text-cyan-300">{cloud.wind}</div>
           </div>
-          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center">
-            <Droplets className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400" />
-            <div className="font-semibold">Yağış</div>
-            <div className="text-gray-700 dark:text-gray-300">{cloud.precipitation}</div>
+          <div className="bg-white dark:bg-gray-800/50 dark:bg-gray-700/50 rounded p-2 text-center neon:bg-cyan-900/30">
+            <Droplets className="h-4 w-4 mx-auto mb-1 text-gray-600 dark:text-gray-400 neon:text-cyan-400" />
+            <div className="font-semibold neon:text-cyan-400">Yağış</div>
+            <div className="text-gray-700 dark:text-gray-300 neon:text-cyan-300">{cloud.precipitation}</div>
           </div>
         </div>
       </CardContent>

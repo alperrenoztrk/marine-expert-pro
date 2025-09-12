@@ -245,8 +245,8 @@ All colors MUST be HSL.
 
 
 
-  /* Nature Theme - removed */
-  /* .nature {
+  /* Nature Theme - Enhanced Green & Brown Pattern (Green Focused) */
+  .nature {
     --background: 120 30% 98%;
     --foreground: 120 30% 8%;
 
@@ -307,7 +307,7 @@ All colors MUST be HSL.
   /* Maritime logo base styles */
   .maritime-logo {
     transform-style: preserve-3d;
-  } */
+  }
 
     --sidebar-background: 120 30% 97%;
     --sidebar-foreground: 120 30% 15%;
@@ -319,8 +319,8 @@ All colors MUST be HSL.
     --sidebar-ring: 120 70% 40%;
   }
 
-  /* Cyberpunk Theme - removed */
-  /* .cyberpunk {
+  /* Cyberpunk Theme - Yellow & Black Pattern */
+  .cyberpunk {
     --background: 0 0% 3%;
     --foreground: 60 100% 95%;
 
@@ -386,22 +386,31 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 60 100% 90%;
     --sidebar-border: 0 0% 15%;
     --sidebar-ring: 60 100% 60%;
-  } */
+  }
 
-  /* Cyberpunk Global Overrides - removed */
-  /* .cyberpunk { background: hsl(0 0% 3%) !important; color: hsl(60 100% 95%) !important; } */
+  /* Cyberpunk Global Overrides - Tüm ekranı kaplar */
+  .cyberpunk {
+    /* Ana arka plan override'ları */
+    background: hsl(0 0% 3%) !important;
+    color: hsl(60 100% 95%) !important;
+  }
 
-  /* .cyberpunk * { background-color: inherit; } */
+  .cyberpunk * {
+    /* Tüm elementlerin arka planını override et */
+    background-color: inherit;
+  }
 
   /* Cyberpunk tema için özel arka plan override'ları */
-  /* .cyberpunk .bg-gradient-to-br,
+  .cyberpunk .bg-gradient-to-br,
   .cyberpunk .bg-gradient-to-r,
   .cyberpunk .bg-gradient-to-l,
   .cyberpunk .bg-gradient-to-t,
-  .cyberpunk .bg-gradient-to-b { background: linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 8%), hsl(0 0% 3%)) !important; } */
+  .cyberpunk .bg-gradient-to-b {
+    background: linear-gradient(135deg, hsl(0 0% 3%), hsl(0 0% 8%), hsl(0 0% 3%)) !important;
+  }
 
   /* Cyberpunk tema için mavi arka planları override et */
-  /* .cyberpunk .bg-blue-50,
+  .cyberpunk .bg-blue-50,
   .cyberpunk .bg-blue-100,
   .cyberpunk .bg-blue-200,
   .cyberpunk .bg-blue-300,
@@ -410,17 +419,21 @@ All colors MUST be HSL.
   .cyberpunk .bg-blue-600,
   .cyberpunk .bg-blue-700,
   .cyberpunk .bg-blue-800,
-  .cyberpunk .bg-blue-900 { background-color: hsl(0 0% 8%) !important; } */
+  .cyberpunk .bg-blue-900 {
+    background-color: hsl(0 0% 8%) !important;
+  }
 
   /* Cyberpunk tema için beyaz arka planları override et */
-  /* .cyberpunk .bg-white,
+  .cyberpunk .bg-white,
   .cyberpunk .bg-gray-50,
   .cyberpunk .bg-gray-100,
   .cyberpunk .bg-gray-200,
-  .cyberpunk .bg-gray-300 { background-color: hsl(0 0% 8%) !important; } */
+  .cyberpunk .bg-gray-300 {
+    background-color: hsl(0 0% 8%) !important;
+  }
 
   /* Cyberpunk tema için indigo arka planları override et */
-  /* .cyberpunk .bg-indigo-50,
+  .cyberpunk .bg-indigo-50,
   .cyberpunk .bg-indigo-100,
   .cyberpunk .bg-indigo-200,
   .cyberpunk .bg-indigo-300,
@@ -429,58 +442,76 @@ All colors MUST be HSL.
   .cyberpunk .bg-indigo-600,
   .cyberpunk .bg-indigo-700,
   .cyberpunk .bg-indigo-800,
-  .cyberpunk .bg-indigo-900 { background-color: hsl(0 0% 8%) !important; } */
+  .cyberpunk .bg-indigo-900 {
+    background-color: hsl(0 0% 8%) !important;
+  }
 
   /* Cyberpunk tema için kart arka planları */
-  /* .cyberpunk .bg-white\/80,
+  .cyberpunk .bg-white\/80,
   .cyberpunk .bg-white\/90,
   .cyberpunk .bg-gray-800\/80,
-  .cyberpunk .bg-gray-800\/90 { background-color: hsl(0 0% 8% / 0.9) !important; } */
+  .cyberpunk .bg-gray-800\/90 {
+    background-color: hsl(0 0% 8% / 0.9) !important;
+  }
 
   /* Cyberpunk tema için formül kutucukları */
-  /* .cyberpunk .bg-gray-50 { background-color: hsl(0 0% 12%) !important; } */
+  .cyberpunk .bg-gray-50 {
+    background-color: hsl(0 0% 12%) !important;
+  }
 
   /* Cyberpunk tema için bilgi kutuları */
-  /* .cyberpunk .bg-blue-50 { background-color: hsl(0 0% 12%) !important; } */
+  .cyberpunk .bg-blue-50 {
+    background-color: hsl(0 0% 12%) !important;
+  }
 
   /* Cyberpunk tema için hover efektleri */
-  /* .cyberpunk .hover\:bg-blue-50:hover,
+  .cyberpunk .hover\:bg-blue-50:hover,
   .cyberpunk .hover\:bg-gray-50:hover,
-  .cyberpunk .hover\:bg-white:hover { background-color: hsl(0 0% 12%) !important; } */
+  .cyberpunk .hover\:bg-white:hover {
+    background-color: hsl(0 0% 12%) !important;
+  }
 
   /* Cyberpunk tema için border renkleri */
-  /* .cyberpunk .border-blue-200,
+  .cyberpunk .border-blue-200,
   .cyberpunk .border-blue-300,
   .cyberpunk .border-gray-200,
-  .cyberpunk .border-gray-300 { border-color: hsl(0 0% 20%) !important; } */
+  .cyberpunk .border-gray-300 {
+    border-color: hsl(0 0% 20%) !important;
+  }
 
   /* Cyberpunk tema için metin renkleri */
-  /* .cyberpunk .text-blue-600,
+  .cyberpunk .text-blue-600,
   .cyberpunk .text-blue-700,
   .cyberpunk .text-blue-800,
   .cyberpunk .text-gray-600,
   .cyberpunk .text-gray-700,
-  .cyberpunk .text-gray-800 { color: hsl(60 100% 95%) !important; } */
+  .cyberpunk .text-gray-800 {
+    color: hsl(60 100% 95%) !important;
+  }
 
   /* Cyberpunk tema için gradient metin renkleri */
-  /* .cyberpunk .bg-gradient-to-r.from-blue-600.to-indigo-600,
+  .cyberpunk .bg-gradient-to-r.from-blue-600.to-indigo-600,
   .cyberpunk .bg-gradient-to-r.from-blue-400.to-indigo-400 {
     background: linear-gradient(135deg, hsl(60 100% 60%), hsl(45 100% 55%)) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     color: transparent !important;
-  } */
+  }
 
-  /* Nature Theme Overrides - removed */
-  /* .nature * { transition: all 0.3s ease; } */
+  /* Nature Theme Overrides */
+  .nature * {
+    transition: all 0.3s ease;
+  }
 
-  /* .nature .bg-gradient-to-br,
+  .nature .bg-gradient-to-br,
   .nature .bg-gradient-to-tr,
   .nature .bg-gradient-to-tl,
-  .nature .bg-gradient-to-bl { background: var(--gradient-forest) !important; } */
+  .nature .bg-gradient-to-bl {
+    background: var(--gradient-forest) !important;
+  }
 
   /* Nature tema için mavi arka planları override et */
-  /* .nature .bg-blue-50,
+  .nature .bg-blue-50,
   .nature .bg-blue-100,
   .nature .bg-blue-200,
   .nature .bg-blue-300,
@@ -489,17 +520,21 @@ All colors MUST be HSL.
   .nature .bg-blue-600,
   .nature .bg-blue-700,
   .nature .bg-blue-800,
-  .nature .bg-blue-900 { background-color: hsl(120 30% 95%) !important; } */
+  .nature .bg-blue-900 {
+    background-color: hsl(120 30% 95%) !important;
+  }
 
   /* Nature tema için beyaz arka planları */
-  /* .nature .bg-white,
+  .nature .bg-white,
   .nature .bg-gray-50,
   .nature .bg-gray-100,
   .nature .bg-gray-200,
-  .nature .bg-gray-300 { background-color: hsl(120 30% 98%) !important; } */
+  .nature .bg-gray-300 {
+    background-color: hsl(120 30% 98%) !important;
+  }
 
   /* Nature tema için indigo arka planları override et */
-  /* .nature .bg-indigo-50,
+  .nature .bg-indigo-50,
   .nature .bg-indigo-100,
   .nature .bg-indigo-200,
   .nature .bg-indigo-300,
@@ -508,20 +543,26 @@ All colors MUST be HSL.
   .nature .bg-indigo-600,
   .nature .bg-indigo-700,
   .nature .bg-indigo-800,
-  .nature .bg-indigo-900 { background-color: hsl(120 30% 95%) !important; } */
+  .nature .bg-indigo-900 {
+    background-color: hsl(120 30% 95%) !important;
+  }
 
   /* Nature tema için kart arka planları */
-  /* .nature .bg-white\/80,
+  .nature .bg-white\/80,
   .nature .bg-white\/90,
   .nature .bg-gray-800\/80,
-  .nature .bg-gray-800\/90 { background-color: hsl(120 30% 98% / 0.9) !important; } */
+  .nature .bg-gray-800\/90 {
+    background-color: hsl(120 30% 98% / 0.9) !important;
+  }
 
   /* Nature tema için formül kutucukları */
-  /* .nature .bg-gray-50 { background-color: hsl(120 30% 95%) !important; } */
+  .nature .bg-gray-50 {
+    background-color: hsl(120 30% 95%) !important;
+  }
 
 
-  /* Neon Theme - removed */
-  /* .neon {
+  /* Neon Theme - True Neon Experience with Bright Colors & Glow Effects */
+  .neon {
     --background: 0 0% 5%;
     --foreground: 300 100% 95%;
 
@@ -587,15 +628,23 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 300 100% 90%;
     --sidebar-border: 300 100% 25%;
     --sidebar-ring: 300 100% 70%;
-  } */
+  }
 
   /* Neon Global Overrides - Deep black background with intense neon effects */
-  /* .neon { background: radial-gradient(ellipse at center, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%) !important; color: hsl(300 100% 95%) !important; min-height: 100vh; } */
+  .neon {
+    background: radial-gradient(ellipse at center, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%) !important;
+    color: hsl(300 100% 95%) !important;
+    min-height: 100vh;
+  }
 
-  /* .neon * { background-color: inherit; } */
+  .neon * {
+    background-color: inherit;
+  }
 
   /* Neon body with animated background */
-  /* .neon body { background: radial-gradient(ellipse at center, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%) !important; } */
+  .neon body {
+    background: radial-gradient(ellipse at center, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%) !important;
+  }
 
   /* Neon tema için özel arka plan override'ları - Bright neon gradients */
   .neon .bg-gradient-to-br,

@@ -3,7 +3,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, CreditCard, Minimize2 } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, Zap, Volume2, VolumeX, CreditCard, Minimize2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -19,15 +19,28 @@ const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { density, setDensity, toggleDensity } = useDensity();
   const { currentLanguage, changeLanguage, supportedLanguages, getLanguageName } = useLanguage();
-  
+  const [neonSoundEnabled, setNeonSoundEnabled] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
+    const savedSoundSetting = localStorage.getItem('neonSoundEnabled');
+    if (savedSoundSetting !== null) {
+      setNeonSoundEnabled(JSON.parse(savedSoundSetting));
+    }
   }, []);
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark");
-    const themeNames = { light: "Açık Tema", dark: "Koyu Tema" } as const;
+    setTheme(newTheme as "light" | "dark" | "cyberpunk" | "neon" | "nature");
+    
+    const themeNames = {
+      light: "Açık Tema",
+      dark: "Koyu Tema", 
+      cyberpunk: "Cyberpunk Tema",
+      neon: "Neon Tema",
+      nature: "Doğa Teması",
+      
+    };
+    
     toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
   };
 
@@ -36,7 +49,11 @@ const Settings = () => {
     toast.success(`Dil değiştirildi: ${getLanguageName(value)}`);
   };
 
-  
+  const handleNeonSoundToggle = (enabled: boolean) => {
+    setNeonSoundEnabled(enabled);
+    localStorage.setItem('neonSoundEnabled', JSON.stringify(enabled));
+    toast.success(enabled ? 'Neon ses efektleri aktif' : 'Neon ses efektleri devre dışı');
+  };
 
   const handleStartCheckout = async () => {
     try {
@@ -66,13 +83,13 @@ const Settings = () => {
 
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 nature:from-green-50 nature:to-emerald-100 p-4">
         <div className="max-w-4xl mx-auto space-y-6">
           
           {/* Back Button */}
           <div className="flex items-center gap-3">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700">
+              <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800 nature:hover:bg-green-50">
                 <ArrowLeft className="w-4 h-4" />
                 <span data-translatable>Ana Sayfa</span>
               </Button>
@@ -82,8 +99,8 @@ const Settings = () => {
           {/* Header */}
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3">
-              <SettingsIcon className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              <SettingsIcon className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
                 <span data-translatable>Ayarlar</span>
               </h1>
             </div>
@@ -96,7 +113,7 @@ const Settings = () => {
           <div className="grid gap-6">
             
             {/* Theme Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 cyberpunk:bg-slate-800 cyberpunk:border-cyan-500 nature:bg-green-50 nature:border-green-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />
@@ -130,7 +147,24 @@ const Settings = () => {
                           </div>
                         </SelectItem>
 
-                        
+                        <SelectItem value="cyberpunk">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 animate-pulse"></div>
+                            <span>Cyberpunk Tema</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="neon">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-green-400 animate-pulse shadow-lg shadow-blue-500/50"></div>
+                            <span>Neon Tema</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="nature">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse shadow-lg shadow-green-500/50"></div>
+                            <span>Doğa Teması</span>
+                          </div>
+                        </SelectItem>
 
                       </SelectContent>
                     </Select>
@@ -170,7 +204,49 @@ const Settings = () => {
               </CardContent>
             </Card>
 
-            
+            {/* Neon Sound Settings - Only visible in neon theme */}
+            {theme === 'neon' && (
+              <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 neon:bg-slate-800 neon:border-cyan-500">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-cyan-400" />
+                    <span>Neon Ses Efektleri</span>
+                  </CardTitle>
+                  <CardDescription>
+                    <span>Neon tema için elektronik ses efektlerini yönetin</span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <Label htmlFor="neon-sound-toggle">
+                          <span>Ses Efektleri</span>
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          <span>Buton tıklama ve hover ses efektleri</span>
+                        </p>
+                      </div>
+                      <Switch
+                        id="neon-sound-toggle"
+                        checked={neonSoundEnabled}
+                        onCheckedChange={handleNeonSoundToggle}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      {neonSoundEnabled ? (
+                        <Volume2 className="w-4 h-4 text-cyan-400" />
+                      ) : (
+                        <VolumeX className="w-4 h-4 text-gray-400" />
+                      )}
+                      <span>
+                        {neonSoundEnabled ? 'Ses efektleri aktif' : 'Ses efektleri devre dışı'}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Language Settings */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
