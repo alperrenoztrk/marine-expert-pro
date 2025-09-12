@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Calculator, Ship, Wind, Ruler, Activity, Waves, Shield, Anchor } from "lucide-react";
+import { ArrowLeft, Calculator, Ship, Wind, Ruler, Activity, Waves, Shield, Anchor, LineChart, Zap } from "lucide-react";
 import { useState, useMemo } from "react";
 
 export default function StabilityCalculationsPage() {
@@ -17,9 +17,9 @@ export default function StabilityCalculationsPage() {
     { id: "loll", title: "Angle of Loll" },
     { id: "roll-period", title: "Yalpa Periyodu" },
     { id: "hydrostatic", title: "Hidrostatik Temeller (KB, BM, KM, Δ, ∇, TPC)" },
-    { id: "wind", title: "Rüzgâr Heeling" },
+    { id: "wind", title: "Rüzgâr Heeling ve Weather Criterion" },
     { id: "inclination", title: "İnklinasyon Deneyi" },
-    { id: "imo", title: "IMO Kriterleri (Özet)" },
+    { id: "imo", title: "IMO Kriterleri (Özet)" }
   ];
 
   // GM Calculator States
@@ -166,8 +166,8 @@ export default function StabilityCalculationsPage() {
             </Button>
           </Link>
           <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Hesaplamalar
+            <Calculator className="h-4 w-4" />
+            Hesaplama Rehberi
           </div>
         </div>
 
