@@ -6,13 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera } from "lucide-react";
+import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera, Plus, Trash2 } from "lucide-react";
 import SextantCamera from "@/components/SextantCamera";
 import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
 import { DirectionInput } from "@/components/DirectionInput";
 
 interface NavigationData {
+  // Traverse sailing legs
+  traverseLegs: Array<{ course: number; distance: number; speed?: number }>;
   // Position coordinates
   lat1: number; // Departure latitude (degrees)
   lon1: number; // Departure longitude (degrees)
@@ -202,6 +204,11 @@ interface NavigationResult {
 
 export const NavigationCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const [data, setData] = useState<NavigationData>({
+    traverseLegs: [
+      { course: 90, distance: 10 },
+      { course: 135, distance: 15 },
+      { course: 180, distance: 8 }
+    ],
     lat1: 0, lon1: 0, lat2: 0, lon2: 0,
     speed: 12, course: 0,
     currentSet: 0, currentDrift: 0,
@@ -232,11 +239,30 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
   });
 
   const [result, setResult] = useState<NavigationResult | null>(null);
+  const [traverseResult, setTraverseResult] = useState<{
+    totalDistance: number;
+    totalCourse: number;
+    totalDLat: number;
+    totalDeparture: number;
+    finalLat: number;
+    finalLon: number;
+    totalTime: number;
+    legPositions: Array<{ lat: number; lon: number }>;
+  } | null>(null);
 
   // Utility functions for calculations
   const toRadians = (degrees: number) => degrees * Math.PI / 180;
   const toDegrees = (radians: number) => radians * 180 / Math.PI;
   const normalizeAngle = (angle: number) => ((angle % 360) + 360) % 360;
+  const normalizeLongitude = (lon: number) => {
+    // Normalize longitude to [-180, 180)
+    let x = ((lon + 180) % 360 + 360) % 360 - 180;
+    // Ensure -180 maps to 180 consistently if needed
+    if (x === -180) x = 180;
+    return x;
+  };
+
+  const clampLatitude = (lat: number) => Math.max(-90, Math.min(90, lat));
 
   // Navigation star data (simplified - in reality this would come from an almanac)
   const navigationStars = [
@@ -319,6 +345,69 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
       bearing: normalizeAngle(toDegrees(bearing)),
       reverseBearing: normalizeAngle(toDegrees(bearing) + 180)
     };
+  };
+
+  // Traverse Sailing calculations (multi-leg plane sailing aggregation)
+  const calculateTraverseSailing = () => {
+    if (!data.traverseLegs || data.traverseLegs.length === 0) {
+      toast.error("En az bir ayak ekleyin");
+      return;
+    }
+
+    // Aggregate components (nm)
+    let totalNorthingNm = 0;
+    let totalEastingNm = 0;
+
+    // Stepwise final position
+    let currentLat = data.lat1 || 0;
+    let currentLon = data.lon1 || 0;
+    const legPositions: Array<{ lat: number; lon: number }> = [{ lat: currentLat, lon: currentLon }];
+
+    let totalDistanceNm = 0;
+    let totalTimeHours = 0;
+
+    for (const leg of data.traverseLegs) {
+      const courseRad = toRadians(leg.course || 0);
+      const distNm = Math.max(0, Number(leg.distance) || 0);
+
+      const dLatNm = distNm * Math.cos(courseRad); // +N/-S
+      const depNm = distNm * Math.sin(courseRad);  // +E/-W (east positive by math sin def with 0° at North)
+
+      totalNorthingNm += dLatNm;
+      totalEastingNm += depNm;
+      totalDistanceNm += distNm;
+
+      // Convert to degrees for stepwise position update
+      const dLatDeg = dLatNm / 60;
+      const startLat = currentLat;
+      const meanLatRad = toRadians(startLat + dLatDeg / 2);
+      const cosMeanLat = Math.cos(meanLatRad);
+      const dLonDeg = cosMeanLat === 0 ? 0 : depNm / (60 * cosMeanLat);
+
+      currentLat = clampLatitude(startLat + dLatDeg);
+      currentLon = normalizeLongitude(currentLon + dLonDeg);
+      legPositions.push({ lat: currentLat, lon: currentLon });
+
+      const legSpeed = leg.speed && leg.speed > 0 ? leg.speed : data.speed;
+      if (legSpeed && legSpeed > 0) totalTimeHours += distNm / legSpeed;
+    }
+
+    const totalCourse = normalizeAngle(toDegrees(Math.atan2(totalEastingNm, totalNorthingNm)));
+    const totalDLat = totalNorthingNm;
+    const totalDep = totalEastingNm;
+
+    setTraverseResult({
+      totalDistance: Math.sqrt(totalNorthingNm * totalNorthingNm + totalEastingNm * totalEastingNm),
+      totalCourse,
+      totalDLat: totalDLat,
+      totalDeparture: totalDep,
+      finalLat: currentLat,
+      finalLon: currentLon,
+      totalTime: totalTimeHours,
+      legPositions
+    });
+
+    toast.success("Traverse sailing hesaplandı");
   };
 
   // Enhanced tidal calculations
@@ -1305,71 +1394,128 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="leg1Course">1. Ayak Rotası (°)</Label>
-                        <Input
-                          id="leg1Course"
-                          type="number"
-                          step="0.1"
-                          value={data.course}
-                          onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
-                          placeholder="090"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="leg1Distance">1. Ayak Mesafesi (nm)</Label>
-                        <Input
-                          id="leg1Distance"
-                          type="number"
-                          step="0.1"
-                          defaultValue="10"
-                          placeholder="10"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="leg2Course">2. Ayak Rotası (°)</Label>
-                        <Input
-                          id="leg2Course"
-                          type="number"
-                          step="0.1"
-                          defaultValue="135"
-                          placeholder="135"
-                        />
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-semibold">Ayaklar</h4>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setData(prev => ({
+                            ...prev,
+                            traverseLegs: [...prev.traverseLegs, { course: 0, distance: 0 }]
+                          }));
+                        }}
+                        className="gap-2"
+                      >
+                        <Plus className="w-4 h-4" /> Ayak Ekle
+                      </Button>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="leg2Distance">2. Ayak Mesafesi (nm)</Label>
-                        <Input
-                          id="leg2Distance"
-                          type="number"
-                          step="0.1"
-                          defaultValue="15"
-                          placeholder="15"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="leg3Course">3. Ayak Rotası (°)</Label>
-                        <Input
-                          id="leg3Course"
-                          type="number"
-                          step="0.1"
-                          defaultValue="180"
-                          placeholder="180"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="leg3Distance">3. Ayak Mesafesi (nm)</Label>
-                        <Input
-                          id="leg3Distance"
-                          type="number"
-                          step="0.1"
-                          defaultValue="8"
-                          placeholder="8"
-                        />
-                      </div>
+
+                    <div className="grid grid-cols-1 gap-3">
+                      {data.traverseLegs.map((leg, idx) => (
+                        <div key={idx} className="grid grid-cols-7 gap-2 items-end">
+                          <div className="col-span-2 space-y-1">
+                            <Label>Rota (°)</Label>
+                            <Input
+                              type="number"
+                              step="0.1"
+                              value={leg.course}
+                              onChange={(e) => {
+                                const v = parseFloat(e.target.value) || 0;
+                                setData(prev => {
+                                  const legs = [...prev.traverseLegs];
+                                  legs[idx] = { ...legs[idx], course: v };
+                                  return { ...prev, traverseLegs: legs };
+                                });
+                              }}
+                              placeholder="090"
+                            />
+                          </div>
+                          <div className="col-span-2 space-y-1">
+                            <Label>Mesafe (nm)</Label>
+                            <Input
+                              type="number"
+                              step="0.1"
+                              value={leg.distance}
+                              onChange={(e) => {
+                                const v = parseFloat(e.target.value) || 0;
+                                setData(prev => {
+                                  const legs = [...prev.traverseLegs];
+                                  legs[idx] = { ...legs[idx], distance: v };
+                                  return { ...prev, traverseLegs: legs };
+                                });
+                              }}
+                              placeholder="10"
+                            />
+                          </div>
+                          <div className="col-span-2 space-y-1">
+                            <Label>Hız (knot) - opsiyonel</Label>
+                            <Input
+                              type="number"
+                              step="0.1"
+                              value={leg.speed ?? ''}
+                              onChange={(e) => {
+                                const v = e.target.value === '' ? undefined : (parseFloat(e.target.value) || 0);
+                                setData(prev => {
+                                  const legs = [...prev.traverseLegs];
+                                  legs[idx] = { ...legs[idx], speed: v };
+                                  return { ...prev, traverseLegs: legs };
+                                });
+                              }}
+                              placeholder={`${data.speed}`}
+                            />
+                          </div>
+                          <div className="flex justify-end">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              onClick={() => {
+                                setData(prev => ({
+                                  ...prev,
+                                  traverseLegs: prev.traverseLegs.filter((_, i) => i !== idx)
+                                }));
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button type="button" onClick={calculateTraverseSailing} className="gap-2">
+                        <Calculator className="w-4 h-4" /> Hesapla
+                      </Button>
+                    </div>
+
+                    {traverseResult && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                          <div className="text-sm text-gray-500">Toplam dLat (nm)</div>
+                          <div className="font-mono text-lg">{traverseResult.totalDLat.toFixed(2)}</div>
+                          <div className="text-sm text-gray-500 mt-2">Toplam Departure (nm)</div>
+                          <div className="font-mono text-lg">{traverseResult.totalDeparture.toFixed(2)}</div>
+                        </div>
+                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                          <div className="text-sm text-gray-500">Toplam Mesafe (nm)</div>
+                          <div className="font-mono text-lg">{traverseResult.totalDistance.toFixed(2)}</div>
+                          <div className="text-sm text-gray-500 mt-2">Toplam Rota (°)</div>
+                          <div className="font-mono text-lg">{traverseResult.totalCourse.toFixed(1)}</div>
+                        </div>
+                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                          <div className="text-sm text-gray-500">Son Enlem (°)</div>
+                          <div className="font-mono text-lg">{traverseResult.finalLat.toFixed(5)}</div>
+                          <div className="text-sm text-gray-500 mt-2">Son Boylam (°)</div>
+                          <div className="font-mono text-lg">{traverseResult.finalLon.toFixed(5)}</div>
+                        </div>
+                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                          <div className="text-sm text-gray-500">Toplam Süre (saat)</div>
+                          <div className="font-mono text-lg">{traverseResult.totalTime.toFixed(2)}</div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <h4 className="font-semibold mb-2">Traverse Sailing Hesaplamaları:</h4>
