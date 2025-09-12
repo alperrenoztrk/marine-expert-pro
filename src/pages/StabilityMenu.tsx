@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Brain, BookOpen, Calculator, Sigma } from "lucide-react";
+import { ArrowLeft, Brain, BookOpen, Calculator, Sigma, ListChecks } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
@@ -11,7 +11,8 @@ export default function StabilityMenu() {
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
         { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
         { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
-        { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" }
+        { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
+        { to: "/stability/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" }
       ]
     }
   ];

@@ -33,6 +33,7 @@ import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
+import StabilityQuizPage from "./pages/StabilityQuiz";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ const App = () => {
                     <Route path="/stability/stable-tales" element={<StableTalesPage />} />
                     <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
                     <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
+                    <Route path="/stability/quiz" element={<StabilityQuizPage />} />
                     <Route path="/safety-menu" element={<SafetyMenu />} />
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
