@@ -34,13 +34,12 @@ const Index = () => {
 
   return (
     <div 
-      className="relative min-h-screen overflow-hidden"
+      className="relative min-h-screen overflow-hidden bg-white"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Homepage background with ship image (zoomed out) */}
-      <div className="absolute inset-0 homepage-ship-background homepage-ship-background--zoom-out" />
+      {/* Ship background removed; homepage uses plain white background */}
       {/* Right-side arrow to open Empty Page */}
       <Link to="/empty-page" className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
         <Button
