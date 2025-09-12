@@ -5,16 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Sigma, Calculator, Shield, Anchor, Ship, Wind, Ruler, Activity } from "lucide-react";
-import { useMemo, useState } from "react";
-
-type TankRow = {
-  id: string;
-  length_m: string;
-  breadth_m: string;
-  rho_t: string; // t/m3
-  volume_ship_m3: string; // ∇ of ship
-};
+import { ArrowLeft, BookOpen, Calculator, Ship, Wind, Ruler, Activity, Waves, Shield, Anchor } from "lucide-react";
+import { useState, useMemo } from "react";
 
 export default function StabilityCalculationsPage() {
   const sections = [
@@ -30,177 +22,138 @@ export default function StabilityCalculationsPage() {
     { id: "imo", title: "IMO Kriterleri (Özet)" },
   ];
 
-  // GM calculator states
-  const [kb, setKb] = useState<string>("");
-  const [bm, setBm] = useState<string>("");
-  const [kg, setKg] = useState<string>("");
+  // GM Calculator States
+  const [kb, setKb] = useState("");
+  const [bm, setBm] = useState("");
+  const [kg, setKg] = useState("");
+  
   const gm = useMemo(() => {
-    const KB = parseFloat(kb);
-    const BM = parseFloat(bm);
-    const KG = parseFloat(kg);
-    if ([KB, BM, KG].some((v) => Number.isNaN(v))) return null;
-    return KB + BM - KG;
+    const kbNum = parseFloat(kb);
+    const bmNum = parseFloat(bm);
+    const kgNum = parseFloat(kg);
+    if (isNaN(kbNum) || isNaN(bmNum) || isNaN(kgNum)) return null;
+    return kbNum + bmNum - kgNum;
   }, [kb, bm, kg]);
 
-  // GZ small-angle calculator
-  const [gmForGZ, setGmForGZ] = useState<string>("");
-  const [phiDeg, setPhiDeg] = useState<string>("");
-  const gzSmall = useMemo(() => {
-    const GM = parseFloat(gmForGZ);
-    const PHI = parseFloat(phiDeg);
-    if ([GM, PHI].some((v) => Number.isNaN(v))) return null;
-    return GM * Math.sin((PHI * Math.PI) / 180);
-  }, [gmForGZ, phiDeg]);
+  // GZ Calculator States
+  const [gmForGz, setGmForGz] = useState("");
+  const [angle, setAngle] = useState("");
+  
+  const gz = useMemo(() => {
+    const gmNum = parseFloat(gmForGz);
+    const angleNum = parseFloat(angle);
+    if (isNaN(gmNum) || isNaN(angleNum)) return null;
+    return gmNum * Math.sin((angleNum * Math.PI) / 180);
+  }, [gmForGz, angle]);
 
-  // General GZ via KN
-  const [kn, setKn] = useState<string>("");
-  const [kgForKN, setKgForKN] = useState<string>("");
-  const [phiDeg2, setPhiDeg2] = useState<string>("");
-  const gzGeneral = useMemo(() => {
-    const KN = parseFloat(kn);
-    const KG2 = parseFloat(kgForKN);
-    const PHI2 = parseFloat(phiDeg2);
-    if ([KN, KG2, PHI2].some((v) => Number.isNaN(v))) return null;
-    return KN - KG2 * Math.sin((PHI2 * Math.PI) / 180);
-  }, [kn, kgForKN, phiDeg2]);
+  // Free Surface Calculator States
+  const [tankLength, setTankLength] = useState("");
+  const [tankBreadth, setTankBreadth] = useState("");
+  const [fluidDensity, setFluidDensity] = useState("0.85");
+  const [shipVolume, setShipVolume] = useState("");
+  
+  const fsc = useMemo(() => {
+    const l = parseFloat(tankLength);
+    const b = parseFloat(tankBreadth);
+    const rho = parseFloat(fluidDensity);
+    const volume = parseFloat(shipVolume);
+    if (isNaN(l) || isNaN(b) || isNaN(rho) || isNaN(volume) || volume === 0) return null;
+    const iF = (l * Math.pow(b, 3)) / 12;
+    const seawater = 1.025;
+    return (rho / seawater) * (iF / volume);
+  }, [tankLength, tankBreadth, fluidDensity, shipVolume]);
 
-  // RM = Δ · GZ
-  const [deltaTons, setDeltaTons] = useState<string>("");
-  const rm = useMemo(() => {
-    const D = parseFloat(deltaTons);
-    const GZ = gzSmall ?? gzGeneral ?? NaN;
-    if (Number.isNaN(D) || Number.isNaN(GZ)) return null;
-    return D * GZ; // kN·m not applied here; Δ in ton and GZ in m -> ton·m
-  }, [deltaTons, gzSmall, gzGeneral]);
-
-  // FSC multi-tank
-  const [tanks, setTanks] = useState<TankRow[]>([
-    { id: crypto.randomUUID(), length_m: "", breadth_m: "", rho_t: "0.85", volume_ship_m3: "" },
-  ]);
-  const seawater = 1.025; // t/m3
-  const fscRows = useMemo(() => {
-    return tanks.map((t) => {
-      const l = parseFloat(t.length_m);
-      const b = parseFloat(t.breadth_m);
-      const rho = parseFloat(t.rho_t);
-      const vol = parseFloat(t.volume_ship_m3);
-      if ([l, b, rho, vol].some((v) => Number.isNaN(v)) || vol === 0) return { fsc: null } as { fsc: number | null };
-      const iF = (l * Math.pow(b, 3)) / 12;
-      const fsc = (rho / seawater) * (iF / vol);
-      return { fsc } as { fsc: number | null };
-    });
-  }, [tanks]);
-  const fscSum = useMemo(() => fscRows.reduce((s, r) => s + (r.fsc ?? 0), 0), [fscRows]);
-  const [gmBase, setGmBase] = useState<string>("");
-  const gmCorrected = useMemo(() => {
-    const GMb = parseFloat(gmBase);
-    if (Number.isNaN(GMb)) return null;
-    return GMb - fscSum;
-  }, [gmBase, fscSum]);
-
-  // Trim/List
-  const [ta, setTa] = useState<string>("");
-  const [tf, setTf] = useState<string>("");
-  const [L, setL] = useState<string>("");
+  // Trim Calculator States
+  const [tAft, setTAft] = useState("");
+  const [tFwd, setTFwd] = useState("");
+  const [lpp, setLpp] = useState("");
+  
   const trimAngle = useMemo(() => {
-    const TA = parseFloat(ta);
-    const TF = parseFloat(tf);
-    const LL = parseFloat(L);
-    if ([TA, TF, LL].some((v) => Number.isNaN(v)) || LL === 0) return null;
-    return Math.atan((TA - TF) / LL) * (180 / Math.PI);
-  }, [ta, tf, L]);
+    const ta = parseFloat(tAft);
+    const tf = parseFloat(tFwd);
+    const l = parseFloat(lpp);
+    if (isNaN(ta) || isNaN(tf) || isNaN(l) || l === 0) return null;
+    return Math.atan((ta - tf) / l) * (180 / Math.PI);
+  }, [tAft, tFwd, lpp]);
 
-  const [w, setW] = useState<string>("");
-  const [d, setD] = useState<string>("");
-  const [Delta, setDelta] = useState<string>("");
-  const [GM, setGM] = useState<string>("");
+  // List Calculator States
+  const [weight, setWeight] = useState("");
+  const [distance, setDistance] = useState("");
+  const [displacement, setDisplacement] = useState("");
+  const [gmForList, setGmForList] = useState("");
+  
   const listAngle = useMemo(() => {
-    const W = parseFloat(w);
-    const Dd = parseFloat(d);
-    const De = parseFloat(Delta);
-    const Gm = parseFloat(GM);
-    if ([W, Dd, De, Gm].some((v) => Number.isNaN(v)) || De === 0 || Gm === 0) return null;
-    return Math.atan((W * Dd) / (De * Gm)) * (180 / Math.PI);
-  }, [w, d, Delta, GM]);
+    const w = parseFloat(weight);
+    const d = parseFloat(distance);
+    const delta = parseFloat(displacement);
+    const gmNum = parseFloat(gmForList);
+    if (isNaN(w) || isNaN(d) || isNaN(delta) || isNaN(gmNum) || delta === 0 || gmNum === 0) return null;
+    return Math.atan((w * d) / (delta * gmNum)) * (180 / Math.PI);
+  }, [weight, distance, displacement, gmForList]);
 
-  // Loll
-  const [kgLoll, setKgLoll] = useState<string>("");
-  const [kmLoll, setKmLoll] = useState<string>("");
+  // Loll Calculator States
+  const [kgLoll, setKgLoll] = useState("");
+  const [kmLoll, setKmLoll] = useState("");
+  
   const lollAngle = useMemo(() => {
-    const KG = parseFloat(kgLoll);
-    const KM = parseFloat(kmLoll);
-    if ([KG, KM].some((v) => Number.isNaN(v)) || KM <= KG) return null;
-    return Math.acos(KG / KM) * (180 / Math.PI);
+    const kgNum = parseFloat(kgLoll);
+    const kmNum = parseFloat(kmLoll);
+    if (isNaN(kgNum) || isNaN(kmNum) || kmNum <= kgNum) return null;
+    return Math.acos(kgNum / kmNum) * (180 / Math.PI);
   }, [kgLoll, kmLoll]);
 
-  // Roll period
-  const [breadth, setBreadth] = useState<string>("");
-  const [gmCorr, setGmCorr] = useState<string>("");
-  const [kRadius, setKRadius] = useState<string>("");
+  // Roll Period Calculator States
+  const [breadth, setBreadth] = useState("");
+  const [gmRoll, setGmRoll] = useState("");
+  
   const rollPeriod = useMemo(() => {
-    const B = parseFloat(breadth);
-    const GMc = parseFloat(gmCorr);
-    const kVal = kRadius ? parseFloat(kRadius) : !Number.isNaN(B) ? 0.35 * B : NaN;
-    if ([B, GMc, kVal].some((v) => Number.isNaN(v)) || GMc <= 0) return null;
-    return (2 * Math.PI * kVal) / Math.sqrt(9.81 * GMc);
-  }, [breadth, gmCorr, kRadius]);
+    const b = parseFloat(breadth);
+    const gmNum = parseFloat(gmRoll);
+    if (isNaN(b) || isNaN(gmNum) || gmNum <= 0) return null;
+    const k = 0.35 * b;
+    return (2 * Math.PI * k) / Math.sqrt(9.81 * gmNum);
+  }, [breadth, gmRoll]);
 
-  // Hydrostatic quick calcs
-  const [Lhs, setLhs] = useState<string>("");
-  const [Bhs, setBhs] = useState<string>("");
-  const [Ths, setThs] = useState<string>("");
-  const [Cb, setCb] = useState<string>("");
-  const [Cw, setCw] = useState<string>("");
-  const hydro = useMemo(() => {
-    const Lm = parseFloat(Lhs);
-    const Bm = parseFloat(Bhs);
-    const Tm = parseFloat(Ths);
-    const Cbb = parseFloat(Cb);
-    const Cww = parseFloat(Cw);
-    if ([Lm, Bm, Tm, Cbb, Cww].some((v) => Number.isNaN(v))) return null;
-    const volume = Lm * Bm * Tm * Cbb;
-    const displacement = volume * seawater;
-    const wpa = Lm * Bm * Cww;
-    const KB = Tm * (0.53 + 0.085 * Cbb);
-    const iT = (Lm * Math.pow(Bm, 3) * Cww) / 12;
-    const BMt = iT / volume;
-    const KMt = KB + BMt;
-    const TPC = (wpa * seawater) / 100;
-    return { volume, displacement, wpa, KB, BMt, KMt, TPC };
-  }, [Lhs, Bhs, Ths, Cb, Cw]);
+  // Hydrostatic Calculator States
+  const [length, setLength] = useState("");
+  const [beam, setBeam] = useState("");
+  const [draft, setDraft] = useState("");
+  const [cb, setCb] = useState("");
+  
+  const hydrostatic = useMemo(() => {
+    const l = parseFloat(length);
+    const b = parseFloat(beam);
+    const t = parseFloat(draft);
+    const cbNum = parseFloat(cb);
+    if (isNaN(l) || isNaN(b) || isNaN(t) || isNaN(cbNum)) return null;
+    
+    const volume = l * b * t * cbNum;
+    const displ = volume * 1.025;
+    const kbCalc = t * (0.53 + 0.085 * cbNum);
+    const tpcCalc = (l * b * 1.025) / 100;
+    
+    return { volume, displacement: displ, kb: kbCalc, tpc: tpcCalc };
+  }, [length, beam, draft, cb]);
 
-  // Wind heeling
-  const [q, setQ] = useState<string>("");
-  const [A, setA] = useState<string>("");
-  const [z, setZ] = useState<string>("");
-  const [DeltaH, setDeltaH] = useState<string>("");
-  const wind = useMemo(() => {
-    const qn = parseFloat(q);
-    const An = parseFloat(A);
-    const zn = parseFloat(z);
-    const Dn = parseFloat(DeltaH);
-    if ([qn, An, zn, Dn].some((v) => Number.isNaN(v))) return null;
-    const Mh_kNm = (qn * An * zn) / 1000;
-    const ah_m = Mh_kNm / (Dn * 9.81);
-    return { Mh_kNm, ah_m };
-  }, [q, A, z, DeltaH]);
-
-  // Inclination test
-  const [wT, setWT] = useState<string>("");
-  const [lT, setLT] = useState<string>("");
-  const [DeltaT, setDeltaT] = useState<string>("");
-  const [phiObs, setPhiObs] = useState<string>("");
-  const gmtIncl = useMemo(() => {
-    const wt = parseFloat(wT);
-    const lt = parseFloat(lT);
-    const Dt = parseFloat(DeltaT);
-    const ph = parseFloat(phiObs);
-    if ([wt, lt, Dt, ph].some((v) => Number.isNaN(v)) || Math.tan((ph * Math.PI) / 180) === 0) return null;
-    return (wt * lt) / (Dt * Math.tan((ph * Math.PI) / 180));
-  }, [wT, lT, DeltaT, phiObs]);
-
-  // IMO quick checker (uses hydro + gmCorrected)
-  // For simplicity we only check initial GM threshold here; others require GZ curve.
+  // Wind Heeling Calculator States
+  const [windPressure, setWindPressure] = useState("");
+  const [windArea, setWindArea] = useState("");
+  const [leverArm, setLeverArm] = useState("");
+  const [displWind, setDisplWind] = useState("");
+  
+  const windHeel = useMemo(() => {
+    const p = parseFloat(windPressure);
+    const a = parseFloat(windArea);
+    const h = parseFloat(leverArm);
+    const d = parseFloat(displWind);
+    if (isNaN(p) || isNaN(a) || isNaN(h) || isNaN(d) || d === 0) return null;
+    
+    const force = p * a;
+    const moment = force * h;
+    const heelingLever = moment / (d * 1000 * 9.81);
+    
+    return { force, moment, heelingLever };
+  }, [windPressure, windArea, leverArm, displWind]);
 
   return (
     <MobileLayout>
@@ -221,7 +174,7 @@ export default function StabilityCalculationsPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Sigma className="h-5 w-5" /> Stabilite Hesaplamaları – İçindekiler
+              <Calculator className="h-5 w-5" /> Stabilite Hesaplamaları – İçindekiler
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -237,312 +190,559 @@ export default function StabilityCalculationsPage() {
           </CardContent>
         </Card>
 
-        {/* GM & KG */}
+        {/* GM ve KG Temelleri */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="gm-kg" className="scroll-mt-24">GM ve KG Temelleri</CardTitle>
+            <CardTitle id="gm-kg" className="scroll-mt-24 flex items-center gap-2">
+              <Ship className="h-5 w-5" />
+              GM ve KG Temelleri
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label>KB (m)</Label>
-                <Input type="number" value={kb} onChange={(e)=>setKb(e.target.value)} />
+                <Label htmlFor="kb">KB (m)</Label>
+                <Input
+                  id="kb"
+                  type="number"
+                  step="0.001"
+                  value={kb}
+                  onChange={(e) => setKb(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
               <div>
-                <Label>BM (m)</Label>
-                <Input type="number" value={bm} onChange={(e)=>setBm(e.target.value)} />
+                <Label htmlFor="bm">BM (m)</Label>
+                <Input
+                  id="bm"
+                  type="number"
+                  step="0.001"
+                  value={bm}
+                  onChange={(e) => setBm(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
               <div>
-                <Label>KG (m)</Label>
-                <Input type="number" value={kg} onChange={(e)=>setKg(e.target.value)} />
+                <Label htmlFor="kg">KG (m)</Label>
+                <Input
+                  id="kg"
+                  type="number"
+                  step="0.001"
+                  value={kg}
+                  onChange={(e) => setKg(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
-              <Button className="w-full" variant="default"><Calculator className="h-4 w-4 mr-2"/>Hesapla</Button>
             </div>
             {gm !== null && (
-              <div className="bg-muted/30 rounded p-3">
-                <div className="font-mono">GM = {gm.toFixed(3)} m</div>
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                <div className="text-lg font-mono font-semibold">
+                  GM = {gm.toFixed(3)} m
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  GM = KB + BM - KG = {kb} + {bm} - {kg} = {gm.toFixed(3)} m
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* GZ & RM */}
+        {/* GZ Hesaplaması */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="gz" className="scroll-mt-24">Doğrultucu Kol (GZ) ve Moment (RM)</CardTitle>
+            <CardTitle id="gz" className="scroll-mt-24 flex items-center gap-2">
+              <Ruler className="h-5 w-5" />
+              Doğrultucu Kol (GZ) ve Moment (RM)
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <div className="bg-muted/30 rounded p-3 space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-                <div>
-                  <Label>GM (m)</Label>
-                  <Input type="number" value={gmForGZ} onChange={(e)=>setGmForGZ(e.target.value)} />
-                </div>
-                <div>
-                  <Label>φ (°)</Label>
-                  <Input type="number" value={phiDeg} onChange={(e)=>setPhiDeg(e.target.value)} />
-                </div>
-                <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>GZ (küçük açı)</Button>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="gm-gz">GM (m)</Label>
+                <Input
+                  id="gm-gz"
+                  type="number"
+                  step="0.001"
+                  value={gmForGz}
+                  onChange={(e) => setGmForGz(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
-              {gzSmall !== null && (
-                <div className="font-mono">GZ ≈ {gzSmall.toFixed(4)} m</div>
+              <div>
+                <Label htmlFor="angle">Yatma Açısı φ (°)</Label>
+                <Input
+                  id="angle"
+                  type="number"
+                  step="0.1"
+                  value={angle}
+                  onChange={(e) => setAngle(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+            </div>
+            {gz !== null && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                <div className="text-lg font-mono font-semibold">
+                  GZ = {gz.toFixed(4)} m
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  GZ = GM × sin(φ) = {gmForGz} × sin({angle}°) = {gz.toFixed(4)} m
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Serbest Yüzey Düzeltmesi */}
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="free-surface" className="scroll-mt-24 flex items-center gap-2">
+              <Waves className="h-5 w-5" />
+              Serbest Yüzey Düzeltmesi (FSC)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="tank-length">Tank Uzunluğu l (m)</Label>
+                <Input
+                  id="tank-length"
+                  type="number"
+                  step="0.1"
+                  value={tankLength}
+                  onChange={(e) => setTankLength(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="tank-breadth">Tank Genişliği b (m)</Label>
+                <Input
+                  id="tank-breadth"
+                  type="number"
+                  step="0.1"
+                  value={tankBreadth}
+                  onChange={(e) => setTankBreadth(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="fluid-density">Sıvı Yoğunluğu ρ (t/m³)</Label>
+                <Input
+                  id="fluid-density"
+                  type="number"
+                  step="0.01"
+                  value={fluidDensity}
+                  onChange={(e) => setFluidDensity(e.target.value)}
+                  placeholder="0.85"
+                />
+              </div>
+              <div>
+                <Label htmlFor="ship-volume">Gemi Hacmi ∇ (m³)</Label>
+                <Input
+                  id="ship-volume"
+                  type="number"
+                  step="1"
+                  value={shipVolume}
+                  onChange={(e) => setShipVolume(e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            {fsc !== null && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                <div className="text-lg font-mono font-semibold">
+                  FSC = {fsc.toFixed(4)} m
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  FSC = (ρ_tank/ρ_deniz) × (i_f/∇) = ({fluidDensity}/1.025) × ({((parseFloat(tankLength) * Math.pow(parseFloat(tankBreadth), 3)) / 12).toFixed(2)}/{shipVolume})
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Trim ve List */}
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="trim-list" className="scroll-mt-24 flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Trim ve List Açıları
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <h4 className="font-semibold">Trim Açısı Hesaplaması</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="t-aft">Kıç Draft Ta (m)</Label>
+                  <Input
+                    id="t-aft"
+                    type="number"
+                    step="0.01"
+                    value={tAft}
+                    onChange={(e) => setTAft(e.target.value)}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="t-fwd">Baş Draft Tf (m)</Label>
+                  <Input
+                    id="t-fwd"
+                    type="number"
+                    step="0.01"
+                    value={tFwd}
+                    onChange={(e) => setTFwd(e.target.value)}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lpp">Gemiler Arası L (m)</Label>
+                  <Input
+                    id="lpp"
+                    type="number"
+                    step="0.1"
+                    value={lpp}
+                    onChange={(e) => setLpp(e.target.value)}
+                    placeholder="0.0"
+                  />
+                </div>
+              </div>
+              {trimAngle !== null && (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                  <div className="text-lg font-mono font-semibold">
+                    Trim Açısı = {trimAngle.toFixed(3)}°
+                  </div>
+                </div>
               )}
             </div>
 
-            <div className="bg-muted/30 rounded p-3 space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-                <div>
-                  <Label>KN (m)</Label>
-                  <Input type="number" value={kn} onChange={(e)=>setKn(e.target.value)} />
-                </div>
-                <div>
-                  <Label>KG (m)</Label>
-                  <Input type="number" value={kgForKN} onChange={(e)=>setKgForKN(e.target.value)} />
-                </div>
-                <div>
-                  <Label>φ (°)</Label>
-                  <Input type="number" value={phiDeg2} onChange={(e)=>setPhiDeg2(e.target.value)} />
-                </div>
-                <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>GZ (genel)</Button>
-              </div>
-              {gzGeneral !== null && (
-                <div className="font-mono">GZ = {gzGeneral.toFixed(4)} m</div>
-              )}
-            </div>
+            <Separator />
 
-            <div className="bg-muted/30 rounded p-3 space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+            <div className="space-y-4">
+              <h4 className="font-semibold">List Açısı Hesaplaması</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Δ (ton)</Label>
-                  <Input type="number" value={deltaTons} onChange={(e)=>setDeltaTons(e.target.value)} />
+                  <Label htmlFor="weight">Ağırlık w (t)</Label>
+                  <Input
+                    id="weight"
+                    type="number"
+                    step="0.1"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="0.0"
+                  />
                 </div>
-                <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>RM</Button>
+                <div>
+                  <Label htmlFor="distance">Mesafe d (m)</Label>
+                  <Input
+                    id="distance"
+                    type="number"
+                    step="0.1"
+                    value={distance}
+                    onChange={(e) => setDistance(e.target.value)}
+                    placeholder="0.0"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="displacement">Deplasman Δ (t)</Label>
+                  <Input
+                    id="displacement"
+                    type="number"
+                    step="1"
+                    value={displacement}
+                    onChange={(e) => setDisplacement(e.target.value)}
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gm-list">GM (m)</Label>
+                  <Input
+                    id="gm-list"
+                    type="number"
+                    step="0.001"
+                    value={gmForList}
+                    onChange={(e) => setGmForList(e.target.value)}
+                    placeholder="0.000"
+                  />
+                </div>
               </div>
-              {rm !== null && (
-                <div className="font-mono">RM = {rm.toFixed(2)} ton·m</div>
+              {listAngle !== null && (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                  <div className="text-lg font-mono font-semibold">
+                    List Açısı = {listAngle.toFixed(3)}°
+                  </div>
+                </div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        {/* FSC */}
+        {/* Angle of Loll */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="free-surface" className="scroll-mt-24">Serbest Yüzey Düzeltmesi (FSC)</CardTitle>
+            <CardTitle id="loll" className="scroll-mt-24 flex items-center gap-2">
+              <Anchor className="h-5 w-5" />
+              Angle of Loll
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            {tanks.map((t, idx) => (
-              <div key={t.id} className="bg-muted/30 rounded p-3">
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 items-end">
-                  <div>
-                    <Label>L (m)</Label>
-                    <Input type="number" value={t.length_m} onChange={(e)=> setTanks(prev => prev.map((p,i)=> i===idx?{...p, length_m:e.target.value}:p))} />
-                  </div>
-                  <div>
-                    <Label>b (m)</Label>
-                    <Input type="number" value={t.breadth_m} onChange={(e)=> setTanks(prev => prev.map((p,i)=> i===idx?{...p, breadth_m:e.target.value}:p))} />
-                  </div>
-                  <div>
-                    <Label>ρ_t (t/m³)</Label>
-                    <Input type="number" value={t.rho_t} onChange={(e)=> setTanks(prev => prev.map((p,i)=> i===idx?{...p, rho_t:e.target.value}:p))} />
-                  </div>
-                  <div>
-                    <Label>∇ (m³)</Label>
-                    <Input type="number" value={t.volume_ship_m3} onChange={(e)=> setTanks(prev => prev.map((p,i)=> i===idx?{...p, volume_ship_m3:e.target.value}:p))} />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="w-full" onClick={() => setTanks(prev => prev.filter((_,i)=>i!==idx))}>Sil</Button>
-                  </div>
-                </div>
-                <div className="mt-2 font-mono">FSC[{idx+1}] = {fscRows[idx]?.fsc?.toFixed(4) ?? '-'} m</div>
-              </div>
-            ))}
-            <div className="flex gap-2">
-              <Button variant="secondary" onClick={() => setTanks(prev => [...prev, { id: crypto.randomUUID(), length_m: "", breadth_m: "", rho_t: "0.85", volume_ship_m3: prev[prev.length-1]?.volume_ship_m3 || "" }])}>Tank Ekle</Button>
-            </div>
-            <div className="bg-muted/30 rounded p-3 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-              <div className="font-mono">ΣFSC = {fscSum.toFixed(4)} m</div>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label>Başlangıç GM (m)</Label>
-                <Input type="number" value={gmBase} onChange={(e)=>setGmBase(e.target.value)} />
-              </div>
-              <div className="font-mono">GM_düz = {(gmCorrected ?? NaN).toFixed ? gmCorrected!.toFixed(3) : '-'} m</div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Trim & List */}
-        <Card className="shadow">
-          <CardHeader>
-            <CardTitle id="trim-list" className="scroll-mt-24">Trim ve List Açıları</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <div className="bg-muted/30 rounded p-3">
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-                <div>
-                  <Label>Ta (m)</Label>
-                  <Input type="number" value={ta} onChange={(e)=>setTa(e.target.value)} />
-                </div>
-                <div>
-                  <Label>Tf (m)</Label>
-                  <Input type="number" value={tf} onChange={(e)=>setTf(e.target.value)} />
-                </div>
-                <div>
-                  <Label>L (m)</Label>
-                  <Input type="number" value={L} onChange={(e)=>setL(e.target.value)} />
-                </div>
-                <Button className="w-full"><Ruler className="h-4 w-4 mr-2"/>Trim Açısı</Button>
-              </div>
-              {trimAngle !== null && <div className="font-mono mt-2">φ_trim = {trimAngle.toFixed(4)}°</div>}
-            </div>
-
-            <div className="bg-muted/30 rounded p-3">
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
-                <div>
-                  <Label>W (t)</Label>
-                  <Input type="number" value={w} onChange={(e)=>setW(e.target.value)} />
-                </div>
-                <div>
-                  <Label>d (m)</Label>
-                  <Input type="number" value={d} onChange={(e)=>setD(e.target.value)} />
-                </div>
-                <div>
-                  <Label>Δ (t)</Label>
-                  <Input type="number" value={Delta} onChange={(e)=>setDelta(e.target.value)} />
-                </div>
-                <div>
-                  <Label>GM (m)</Label>
-                  <Input type="number" value={GM} onChange={(e)=>setGM(e.target.value)} />
-                </div>
-                <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>List Açısı</Button>
-              </div>
-              {listAngle !== null && <div className="font-mono mt-2">φ_list = {listAngle.toFixed(4)}°</div>}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Loll */}
-        <Card className="shadow">
-          <CardHeader>
-            <CardTitle id="loll" className="scroll-mt-24">Angle of Loll</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-              <div>
-                <Label>KG (m)</Label>
-                <Input type="number" value={kgLoll} onChange={(e)=>setKgLoll(e.target.value)} />
+                <Label htmlFor="kg-loll">KG (m)</Label>
+                <Input
+                  id="kg-loll"
+                  type="number"
+                  step="0.001"
+                  value={kgLoll}
+                  onChange={(e) => setKgLoll(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
               <div>
-                <Label>KM (m)</Label>
-                <Input type="number" value={kmLoll} onChange={(e)=>setKmLoll(e.target.value)} />
+                <Label htmlFor="km-loll">KM (m)</Label>
+                <Input
+                  id="km-loll"
+                  type="number"
+                  step="0.001"
+                  value={kmLoll}
+                  onChange={(e) => setKmLoll(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
-              <Button className="w-full"><Activity className="h-4 w-4 mr-2"/>Loll Açısı</Button>
             </div>
             {lollAngle !== null && (
-              <div className="bg-muted/30 rounded p-3 font-mono">φ_loll = {lollAngle.toFixed(2)}°</div>
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                <div className="text-lg font-mono font-semibold">
+                  Angle of Loll = {lollAngle.toFixed(3)}°
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  φ_loll = arccos(KG/KM) = arccos({kgLoll}/{kmLoll}) = {lollAngle.toFixed(3)}°
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Roll period */}
+        {/* Yalpa Periyodu */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="roll-period" className="scroll-mt-24">Yalpa Periyodu</CardTitle>
+            <CardTitle id="roll-period" className="scroll-mt-24 flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Yalpa Periyodu
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label>B (m)</Label>
-                <Input type="number" value={breadth} onChange={(e)=>setBreadth(e.target.value)} />
+                <Label htmlFor="breadth">Genişlik B (m)</Label>
+                <Input
+                  id="breadth"
+                  type="number"
+                  step="0.1"
+                  value={breadth}
+                  onChange={(e) => setBreadth(e.target.value)}
+                  placeholder="0.0"
+                />
               </div>
               <div>
-                <Label>GM_düz (m)</Label>
-                <Input type="number" value={gmCorr} onChange={(e)=>setGmCorr(e.target.value)} />
+                <Label htmlFor="gm-roll">GM_düzeltilmiş (m)</Label>
+                <Input
+                  id="gm-roll"
+                  type="number"
+                  step="0.001"
+                  value={gmRoll}
+                  onChange={(e) => setGmRoll(e.target.value)}
+                  placeholder="0.000"
+                />
               </div>
-              <div>
-                <Label>k (m)</Label>
-                <Input type="number" value={kRadius} onChange={(e)=>setKRadius(e.target.value)} placeholder="Otomatik 0.35·B" />
-              </div>
-              <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>Periyot</Button>
             </div>
             {rollPeriod !== null && (
-              <div className="bg-muted/30 rounded p-3 font-mono">T = {rollPeriod.toFixed(2)} s</div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Hydrostatic foundations */}
-        <Card className="shadow">
-          <CardHeader>
-            <CardTitle id="hydrostatic" className="scroll-mt-24">Hidrostatik Temeller</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 items-end">
-              <div><Label>L (m)</Label><Input type="number" value={Lhs} onChange={(e)=>setLhs(e.target.value)} /></div>
-              <div><Label>B (m)</Label><Input type="number" value={Bhs} onChange={(e)=>setBhs(e.target.value)} /></div>
-              <div><Label>T (m)</Label><Input type="number" value={Ths} onChange={(e)=>setThs(e.target.value)} /></div>
-              <div><Label>C_B</Label><Input type="number" value={Cb} onChange={(e)=>setCb(e.target.value)} /></div>
-              <div><Label>C_W</Label><Input type="number" value={Cw} onChange={(e)=>setCw(e.target.value)} /></div>
-              <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>Hesapla</Button>
-            </div>
-            {hydro && (
-              <div className="bg-muted/30 rounded p-3 font-mono space-y-1">
-                <div>Δ = {hydro.displacement.toFixed(1)} t, ∇ = {hydro.volume.toFixed(1)} m³</div>
-                <div>KB = {hydro.KB.toFixed(3)} m, BM_T = {hydro.BMt.toFixed(3)} m, KM_T = {hydro.KMt.toFixed(3)} m</div>
-                <div>WPA = {hydro.wpa.toFixed(1)} m², TPC = {hydro.TPC.toFixed(2)} t/cm</div>
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                <div className="text-lg font-mono font-semibold">
+                  Yalpa Periyodu = {rollPeriod.toFixed(2)} saniye
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  T = 2π × k / √(g × GM) (k ≈ 0.35 × B)
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Wind heeling */}
+        {/* Hidrostatik Hesaplamalar */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="wind" className="scroll-mt-24">Rüzgâr Heeling</CardTitle>
+            <CardTitle id="hydrostatic" className="scroll-mt-24 flex items-center gap-2">
+              <Ship className="h-5 w-5" />
+              Hidrostatik Temeller
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
-              <div><Label>q (N/m²)</Label><Input type="number" value={q} onChange={(e)=>setQ(e.target.value)} /></div>
-              <div><Label>A (m²)</Label><Input type="number" value={A} onChange={(e)=>setA(e.target.value)} /></div>
-              <div><Label>z (m)</Label><Input type="number" value={z} onChange={(e)=>setZ(e.target.value)} /></div>
-              <div><Label>Δ (t)</Label><Input type="number" value={DeltaH} onChange={(e)=>setDeltaH(e.target.value)} /></div>
-              <Button className="w-full"><Wind className="h-4 w-4 mr-2"/>Hesapla</Button>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="length">Uzunluk L (m)</Label>
+                <Input
+                  id="length"
+                  type="number"
+                  step="0.1"
+                  value={length}
+                  onChange={(e) => setLength(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="beam">Genişlik B (m)</Label>
+                <Input
+                  id="beam"
+                  type="number"
+                  step="0.1"
+                  value={beam}
+                  onChange={(e) => setBeam(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="draft">Draft T (m)</Label>
+                <Input
+                  id="draft"
+                  type="number"
+                  step="0.01"
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder="0.00"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cb">Blok Katsayısı Cb</Label>
+                <Input
+                  id="cb"
+                  type="number"
+                  step="0.001"
+                  value={cb}
+                  onChange={(e) => setCb(e.target.value)}
+                  placeholder="0.000"
+                />
+              </div>
             </div>
-            {wind && (
-              <div className="bg-muted/30 rounded p-3 font-mono">M_h = {wind.Mh_kNm.toFixed(1)} kN·m, a_h = {wind.ah_m.toFixed(4)} m</div>
+            {hydrostatic !== null && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 space-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono">
+                  <div>∇ = {hydrostatic.volume.toFixed(2)} m³</div>
+                  <div>Δ = {hydrostatic.displacement.toFixed(2)} ton</div>
+                  <div>KB = {hydrostatic.kb.toFixed(3)} m</div>
+                  <div>TPC = {hydrostatic.tpc.toFixed(2)} ton/cm</div>
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Inclination test */}
+        {/* Rüzgâr Heeling */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="inclination" className="scroll-mt-24">İnklinasyon Deneyi</CardTitle>
+            <CardTitle id="wind" className="scroll-mt-24 flex items-center gap-2">
+              <Wind className="h-5 w-5" />
+              Rüzgâr Heeling
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
-              <div><Label>w (t)</Label><Input type="number" value={wT} onChange={(e)=>setWT(e.target.value)} /></div>
-              <div><Label>l (m)</Label><Input type="number" value={lT} onChange={(e)=>setLT(e.target.value)} /></div>
-              <div><Label>Δ (t)</Label><Input type="number" value={DeltaT} onChange={(e)=>setDeltaT(e.target.value)} /></div>
-              <div><Label>φ (°)</Label><Input type="number" value={phiObs} onChange={(e)=>setPhiObs(e.target.value)} /></div>
-              <Button className="w-full"><Calculator className="h-4 w-4 mr-2"/>GM_T</Button>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="wind-pressure">Rüzgâr Basıncı q (N/m²)</Label>
+                <Input
+                  id="wind-pressure"
+                  type="number"
+                  step="1"
+                  value={windPressure}
+                  onChange={(e) => setWindPressure(e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="wind-area">Rüzgâr Alanı A (m²)</Label>
+                <Input
+                  id="wind-area"
+                  type="number"
+                  step="0.1"
+                  value={windArea}
+                  onChange={(e) => setWindArea(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="lever-arm">Kol Mesafesi z (m)</Label>
+                <Input
+                  id="lever-arm"
+                  type="number"
+                  step="0.1"
+                  value={leverArm}
+                  onChange={(e) => setLeverArm(e.target.value)}
+                  placeholder="0.0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="displ-wind">Deplasman (ton)</Label>
+                <Input
+                  id="displ-wind"
+                  type="number"
+                  step="1"
+                  value={displWind}
+                  onChange={(e) => setDisplWind(e.target.value)}
+                  placeholder="0"
+                />
+              </div>
             </div>
-            {gmtIncl !== null && (
-              <div className="bg-muted/30 rounded p-3 font-mono">GM_T = {gmtIncl.toFixed(3)} m</div>
+            {windHeel !== null && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 space-y-2">
+                <div className="font-mono space-y-1">
+                  <div>Rüzgâr Kuvveti: {windHeel.force.toFixed(0)} N</div>
+                  <div>Heeling Momenti: {windHeel.moment.toFixed(0)} N·m</div>
+                  <div>Heeling Kolu: {windHeel.heelingLever.toFixed(4)} m</div>
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Minimal IMO check note */}
+        {/* İnklinasyon Deneyi */}
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="imo" className="scroll-mt-24">IMO Kriterleri (Özet)</CardTitle>
+            <CardTitle id="inclination" className="scroll-mt-24 flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              İnklinasyon Deneyi
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm">
+          <CardContent className="space-y-4">
             <div className="bg-muted/30 rounded p-3">
-              <div className="font-mono">Başlangıç GM ≥ 0.15 m — GM_düz: {gmCorrected !== null && !Number.isNaN(gmCorrected) ? gmCorrected!.toFixed(3) + ' m' : '-'}</div>
+              <div className="font-mono text-sm">GM = (w × l) / (Δ × tan φ)</div>
+              <p className="text-sm text-muted-foreground mt-2">
+                İnklinasyon deneyi için detaylı hesaplama modülü ayrı bir sayfada mevcuttur.
+              </p>
             </div>
-            <p>Alan kriterleri ve tam doğrulama için GZ eğrisi entegrasyonu ayrı analiz modülünde yapılır.</p>
+          </CardContent>
+        </Card>
+
+        {/* IMO Kriterleri */}
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="imo" className="scroll-mt-24 flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              IMO Kriterleri (Özet)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <div className="font-mono text-sm leading-6 space-y-1">
+                <div>• Alan (0–30°) ≥ 0.055 m·rad</div>
+                <div>• Alan (0–40°) ≥ 0.090 m·rad</div>
+                <div>• Alan (30–40°) ≥ 0.030 m·rad</div>
+                <div>• Maksimum GZ ≥ 0.20 m (tepe ≥ 30°)</div>
+                <div>• Başlangıç GM ≥ 0.15 m</div>
+              </div>
+            </div>
+            <p className="text-muted-foreground">
+              Detaylı IMO kriter kontrolleri için GZ eğrisi hesaplanması gereklidir.
+            </p>
           </CardContent>
         </Card>
 
@@ -559,4 +759,3 @@ export default function StabilityCalculationsPage() {
     </MobileLayout>
   );
 }
-
