@@ -9,6 +9,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "types": ["react", "react-dom"],
     "noImplicitAny": false,
     "noUnusedParameters": false,
     "skipLibCheck": true,

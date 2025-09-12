@@ -33,6 +33,7 @@ import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
 import StabilityQuizPage from "./pages/StabilityQuiz";
+import ClockPage from "./pages/Clock";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => {
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/formulas" element={<Formulas />} />
                     <Route path="/regulations" element={<Regulations />} />
+                    <Route path="/clock" element={<ClockPage />} />
                     <Route path="*" element={<Index />} />
                     </Routes>
                   </BrowserRouter>
