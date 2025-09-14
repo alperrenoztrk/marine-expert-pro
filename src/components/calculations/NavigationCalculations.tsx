@@ -2344,7 +2344,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       <Globe className="h-4 w-4" />
                       Gözlemci Pozisyonu
                     </h4>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <CoordinateInput
                         label="Gözlemci Enlemi"
                         value={data.observerLatitude}
@@ -2500,7 +2500,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       <Eye className="h-4 w-4" />
                       Gözlemci Pozisyonu
                     </h4>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <CoordinateInput
                         label="Gözlemci Enlemi"
                         value={data.observerLatitude}
