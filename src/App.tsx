@@ -14,6 +14,7 @@ import NavigationMenu from "./pages/NavigationMenu";
 import EconomicsMenu from "./pages/EconomicsMenu";
 import TankMenu from "./pages/TankMenu";
 import Navigation from "./pages/Navigation";
+import NavigationCalculationsPage from "./pages/NavigationCalculationsPage";
 import Economics from "./pages/Economics";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
@@ -71,7 +72,7 @@ const App = () => {
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
                     <Route path="/tank-menu" element={<TankMenu />} />
-                    <Route path="/navigation" element={<Navigation />} />
+                    <Route path="/navigation" element={<NavigationCalculationsPage />} />
                     <Route path="/economics" element={<Economics />} />
                     <Route path="/empty-page" element={<EmptyPage />} />
                     <Route path="/settings" element={<Settings />} />

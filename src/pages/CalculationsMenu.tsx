@@ -4,7 +4,7 @@ import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lu
 
 const categories = [
   { title: 'Stabilite', icon: Ship, link: '/stability' },
-  { title: 'Seyir', icon: Compass, link: '/navigation-menu' },
+  { title: 'Seyir', icon: Compass, link: '/navigation' },
   { title: 'Mali', icon: DollarSign, link: '/economics-menu' },
   { title: 'Emniyet', icon: LifeBuoy, link: '/safety-menu' },
   { title: 'Operasyonel', icon: Database, link: '/tank-menu' },
