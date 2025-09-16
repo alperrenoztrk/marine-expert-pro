@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Brain, MessageCircle, Loader2, Compass, MapPin, Waves, Wind, Radar, Clock, Copy, ClipboardPaste, Anchor } from "lucide-react";
 import { callNavigationAssistant, type AIMessage } from "@/services/aiClient";
 import { useToast } from "@/hooks/use-toast";
+import { calculateEtaHours, calculateCompassTotalError, solveCurrentTriangle, computeArpaCpaTcpa } from "@/components/calculations/navigationMath";
 
 type AssistantMode = 'idle' | 'route' | 'current' | 'compass' | 'arpa' | 'tidal' | 'eta';
 
@@ -102,8 +103,12 @@ export default function NavigationAssistantPopup({ variant = 'floating' as 'floa
     const d = parseFloat(etaDistance);
     const s = parseFloat(etaSpeed);
     if ([d,s].some(isNaN) || s <= 0) { appendAssistant('Geçerli mesafe ve hız girin.'); return; }
-    const hours = d / s;
-    appendAssistant(`ETA ≈ ${hours.toFixed(1)} saat sonra. (d=${d} nm, v=${s} kn)`);
+    try {
+      const hours = calculateEtaHours(d, s);
+      appendAssistant(`ETA ≈ ${hours.toFixed(1)} saat sonra. (d=${d} nm, v=${s} kn)`);
+    } catch {
+      appendAssistant('ETA hesaplanamadı, girişleri kontrol edin.');
+    }
   };
 
   const startCompass = () => {
@@ -114,8 +119,12 @@ export default function NavigationAssistantPopup({ variant = 'floating' as 'floa
     const v = parseFloat(varDeg) || 0;
     const dv = parseFloat(devDeg) || 0;
     const g = parseFloat(gyroErr) || 0;
-    const tce = v + dv + g; // simplistic aggregate
-    appendAssistant(`Toplam pusula hatası (yaklaşık) ≈ ${tce.toFixed(1)}°. (Var=${v}, Dev=${dv}, Gyro=${g})`);
+    try {
+      const { totalErrorDeg } = calculateCompassTotalError(v, dv, g);
+      appendAssistant(`Toplam pusula hatası (yaklaşık) ≈ ${totalErrorDeg.toFixed(1)}°. (Var=${v}, Dev=${dv}, Gyro=${g})`);
+    } catch {
+      appendAssistant('Pusula hesabı yapılamadı, değerleri kontrol edin.');
+    }
   };
 
   const startCurrent = () => {
@@ -129,7 +138,13 @@ export default function NavigationAssistantPopup({ variant = 'floating' as 'floa
     const drf = parseFloat(driftKn);
     const lw = parseFloat(leeway) || 0;
     if ([crs,spd,setd,drf].some(isNaN) || spd <= 0) { appendAssistant('Geçerli kurs, hız, set ve drift girin.'); return; }
-    appendAssistant(`Akıntı düzeltmesi için CTS yaklaşık hesaplanacak. (CRS=${crs}°, S=${spd} kn, Set=${setd}°, Drift=${drf} kn, Leeway≈${lw}°)`);
+    try {
+      const res = solveCurrentTriangle({ courseDeg: crs, speedKn: spd, setDeg: setd, driftKn: drf, leewayDeg: lw });
+      const feas = res.feasible ? '' : ' (hedef rota akıntı nedeniyle tam gerçekleştirilemez)';
+      appendAssistant(`CTS ≈ ${res.courseToSteerDeg.toFixed(1)}°, CMG ≈ ${res.madeGoodCourseDeg.toFixed(1)}°, SOG ≈ ${res.groundSpeedKn.toFixed(1)} kn.${feas}`);
+    } catch {
+      appendAssistant('Akıntı hesabı yapılamadı, girişleri kontrol edin.');
+    }
   };
 
   const startARPA = () => {
@@ -142,7 +157,12 @@ export default function NavigationAssistantPopup({ variant = 'floating' as 'floa
     const crs = parseFloat(targetCrs);
     const spd = parseFloat(targetSpd);
     if ([brg,dst,crs,spd].some(isNaN) || dst <= 0) { appendAssistant('Geçerli brg, mesafe, kurs, hız girin.'); return; }
-    appendAssistant(`ARPA analizi başlatıldı (yaklaşık). BRG=${brg}°, D=${dst} nm, CRS=${crs}°, S=${spd} kn.`);
+    try {
+      const res = computeArpaCpaTcpa({ targetBearingDeg: brg, targetDistanceNm: dst, targetCourseDeg: crs, targetSpeedKn: spd });
+      appendAssistant(`CPA ≈ ${res.cpaNm.toFixed(2)} nm, TCPA ≈ ${res.tcpaMin.toFixed(0)} dk, RelSpd ≈ ${res.relativeSpeedKn.toFixed(1)} kn, RelBrg ≈ ${res.relativeBearingDeg.toFixed(0)}°.`);
+    } catch {
+      appendAssistant('ARPA hesabı yapılamadı, girişleri kontrol edin.');
+    }
   };
 
   const startTidal = () => {
