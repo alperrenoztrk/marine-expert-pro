@@ -62,7 +62,7 @@ export default function StabilityFormulasPage() {
             <div className="bg-muted/30 rounded p-3">
               <pre className="font-mono text-sm leading-6">{`GM = KM − KG
 KM = KB + BM
-BM = I_T / ∇`}</pre>
+BM = IT / ∇`}</pre>
             </div>
             <p>Uygulamada sık kullanılan eşdeğer ifade:</p>
             <div className="bg-muted/30 rounded p-3">
@@ -96,9 +96,9 @@ Doğrultucu moment: RM = Δ · GZ`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`GM_düz = GM − ΣFSC
-FSC = (ρ_tank / ρ_deniz) · (i_f / ∇)
-i_f (dikdörtgen tank) = l · b³ / 12`}</pre>
+              <pre className="font-mono text-sm leading-6">{`GMdüz = GM − ΣFSC
+FSC = (ρtank / ρdeniz) · (if / ∇)
+if (dikdörtgen tank) = l · b³ / 12`}</pre>
             </div>
             <p>Birden fazla yarı dolu tank varsa FSC değerleri toplanır.</p>
           </CardContent>
@@ -110,8 +110,8 @@ i_f (dikdörtgen tank) = l · b³ / 12`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`Trim açısı: φ_trim = arctan((T_aft − T_fwd)/L)
-List açısı: φ_list = arctan((w · d)/(Δ · GM))
+              <pre className="font-mono text-sm leading-6">{`Trim açısı: φtrim = arctan((Taft − Tfwd)/L)
+List açısı: φlist = arctan((w · d)/(Δ · GM))
 Düşey şift sonucu KG değişimi: ΔKG = w · h / Δ`}</pre>
             </div>
             <div className="bg-muted/30 rounded p-3">
@@ -126,8 +126,8 @@ Düşey şift sonucu KG değişimi: ΔKG = w · h / Δ`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`φ_loll = arccos(KG / KM)
-Yaklaşım: tan φ_loll ≈ √(−2 · GM / BM_T), GM < 0`}</pre>
+              <pre className="font-mono text-sm leading-6">{`φloll = arccos(KG / KM)
+Yaklaşım: tan φloll ≈ √(−2 · GM / BMT), GM < 0`}</pre>
             </div>
           </CardContent>
         </Card>
@@ -138,7 +138,7 @@ Yaklaşım: tan φ_loll ≈ √(−2 · GM / BM_T), GM < 0`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`T = 2π · k / √(g · GM_düz)`}</pre>
+              <pre className="font-mono text-sm leading-6">{`T = 2π · k / √(g · GMdüz)`}</pre>
             </div>
             <p>k tipik olarak ~0.35·B alınabilir (yaklaşım).</p>
           </CardContent>
@@ -150,13 +150,13 @@ Yaklaşım: tan φ_loll ≈ √(−2 · GM / BM_T), GM < 0`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`∇ = L · B · T · C_B
-Δ = ∇ · ρ_deniz
-WPA = L · B · C_W
-I_T ≈ (L · B³ · C_W)/12
-BM_T = I_T / ∇
-KM_T = KB + BM_T
-TPC = WPA · ρ_deniz / 100`}</pre>
+              <pre className="font-mono text-sm leading-6">{`∇ = L · B · T · CB
+Δ = ∇ · ρdeniz
+WPA = L · B · CW
+IT ≈ (L · B³ · CW)/12
+BMT = IT / ∇
+KMT = KB + BMT
+TPC = WPA · ρdeniz / 100`}</pre>
             </div>
           </CardContent>
         </Card>
@@ -183,10 +183,10 @@ Başlangıç GM ≥ 0.15 m`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`Rüzgâr basıncı: q = 0.5 · ρ_hava · V²
+              <pre className="font-mono text-sm leading-6">{`Rüzgâr basıncı: q = 0.5 · ρhava · V²
 Kuvvet: F = q · A
-Devirme momenti: M_h = F · z
-Heeling kolu: a_h = M_h / (Δ · g)`}</pre>
+Devirme momenti: Mh = F · z
+Heeling kolu: ah = Mh / (Δ · g)`}</pre>
             </div>
             <p>Weather Criterion: Heeling alanı, GZ eğrisi altında kalan sağlama alanını aşmamalıdır (özet).</p>
           </CardContent>
@@ -198,7 +198,7 @@ Heeling kolu: a_h = M_h / (Δ · g)`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`GM_T = (w · l) / (Δ · tan φ)`}</pre>
+              <pre className="font-mono text-sm leading-6">{`GMT = (w · l) / (Δ · tan φ)`}</pre>
             </div>
           </CardContent>
         </Card>

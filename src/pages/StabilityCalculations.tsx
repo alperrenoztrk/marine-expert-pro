@@ -354,7 +354,7 @@ export default function StabilityCalculationsPage() {
                   FSC = {fsc.toFixed(4)} m
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  FSC = (ρ_tank/ρ_deniz) × (i_f/∇) = ({fluidDensity}/1.025) × ({((parseFloat(tankLength) * Math.pow(parseFloat(tankBreadth), 3)) / 12).toFixed(2)}/{shipVolume})
+                  FSC = (ρtank/ρdeniz) × (if/∇) = ({fluidDensity}/1.025) × ({((parseFloat(tankLength) * Math.pow(parseFloat(tankBreadth), 3)) / 12).toFixed(2)}/{shipVolume})
                 </div>
               </div>
             )}
@@ -516,7 +516,7 @@ export default function StabilityCalculationsPage() {
                   Angle of Loll = {lollAngle.toFixed(3)}°
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  φ_loll = arccos(KG/KM) = arccos({kgLoll}/{kmLoll}) = {lollAngle.toFixed(3)}°
+                  φloll = arccos(KG/KM) = arccos({kgLoll}/{kmLoll}) = {lollAngle.toFixed(3)}°
                 </div>
               </div>
             )}
@@ -545,7 +545,7 @@ export default function StabilityCalculationsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="gm-roll">GM_düzeltilmiş (m)</Label>
+                <Label htmlFor="gm-roll">GMdüzeltilmiş (m)</Label>
                 <Input
                   id="gm-roll"
                   type="number"

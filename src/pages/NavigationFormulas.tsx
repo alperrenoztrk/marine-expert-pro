@@ -143,9 +143,9 @@ Ct = Cc + Var + Dev`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
-              <pre className="font-mono text-sm leading-6">{`t_CPA = − (R · V_rel) / |V_rel|²
-d_CPA = |R + V_rel · t_CPA|`}</pre>
-              <div className="text-xs text-muted-foreground">t_CPA (saat) → dakika için ×60</div>
+              <pre className="font-mono text-sm leading-6">{`tCPA = − (R · Vrel) / |Vrel|²
+dCPA = |R + Vrel · tCPA|`}</pre>
+              <div className="text-xs text-muted-foreground">tCPA (saat) → dakika için ×60</div>
             </div>
           </CardContent>
         </Card>

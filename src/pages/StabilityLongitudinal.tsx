@@ -1014,12 +1014,12 @@ export default function StabilityLongitudinal() {
                 <p className="text-xs text-muted-foreground mt-1">Neden: Trim dağıtımı CF etrafında yapılır.</p>
               </div>
               <div>
-                <Label>Baş Draftı T_fwd (m)</Label>
+                <Label>Baş Draftı Tfwd (m)</Label>
                 <Input type="number" step="0.01" value={initialDraftFwd} onChange={(e) => setInitialDraftFwd(parseFloat(e.target.value) || 0)} />
                 <p className="text-xs text-muted-foreground mt-1">Ne: Baştaki mevcut draft.</p>
               </div>
               <div>
-                <Label>Kıç Draftı T_aft (m)</Label>
+                <Label>Kıç Draftı Taft (m)</Label>
                 <Input type="number" step="0.01" value={initialDraftAft} onChange={(e) => setInitialDraftAft(parseFloat(e.target.value) || 0)} />
                 <p className="text-xs text-muted-foreground mt-1">Ne: Kıçtaki mevcut draft.</p>
               </div>
