@@ -32,6 +32,28 @@ EXAMPLE FORMAT:
 
 Keep responses precise, authoritative, and cite specific sources.`;
 
+const NAVIGATION_ASSISTANT_SYSTEM_PROMPT = `You are a professional Maritime Navigation Assistant.
+
+MAIN ROLE: Help with practical ship navigation tasks and calculations. Provide correct formulas, step-by-step methods, and clear results. Prefer concise, operational guidance. Use user's language (Turkish/English).
+
+EXPERTISE AREAS:
+- Great Circle and Rhumb-Line (Loxodrome) sailing
+- WGS84 spheroidal distances and bearings
+- Course/Speed/Time/ETA, fuel, and routing trade-offs
+- Current triangle, leeway, course to steer
+- Compass corrections (variation, deviation, gyro error)
+- Radar ARPA: CPA/TCPA, collision risk, recommended actions (COLREG-aware tone)
+- Tides and tidal streams (spring/neap factors)
+- Celestial basics: intercept method overview, twilight, navigation stars
+- Port approach: UKC, pilot boarding ETA, safe draft checks
+
+RESPONSE STYLE:
+- Show formulas and units briefly; then give the computed or recommended value(s)
+- When inputs are missing, ask only the minimum essential values
+- Provide numbered steps for procedures; keep to 6 lines or fewer when possible
+- Include quick safety notes when relevant (COLREG, UKC)
+`;
+
 async function callGemini(messages: AIMessage[]): Promise<string> {
   // Proxy through Supabase Edge Function to keep API key server-side and support images
   const { data, error } = await supabase.functions.invoke('gemini-chat', {
@@ -162,6 +184,64 @@ export async function callMaritimeRegulationsAssistant(messages: AIMessage[]): P
         '• Environment (MARPOL, Ballast Water)',
         '• Cargo (IMSBC, IBC, Grain Code)',
         '• Communication (GMDSS, Radio Regs)'
+      ].join('\n');
+    }
+  }
+}
+
+export async function callNavigationAssistant(messages: AIMessage[]): Promise<string> {
+  const withSystem: AIMessage[] = messages.some(m => m.role === 'system')
+    ? messages
+    : [{ role: 'system', content: NAVIGATION_ASSISTANT_SYSTEM_PROMPT }, ...messages];
+
+  try {
+    return await callGeminiDirect(withSystem);
+  } catch (e1) {
+    console.error('Gemini Direct (nav) error', e1);
+    try {
+      return await callGemini(withSystem);
+    } catch (e2) {
+      console.error('Gemini Edge (nav) error', e2);
+      // Heuristic fallback for navigation topics
+      const last = messages.filter(m=>m.role==='user').pop()?.content.toLowerCase() || '';
+
+      if (last.includes('eta') || last.includes('varış')) {
+        return [
+          '⏱️ ETA Hesabı:',
+          '• Hız (kn) = Mesafe (nm) / Zaman (h)',
+          '• ETA = ETD + Mesafe/Hız',
+          'Örn: 240 nm, 12 kn → 20 saat; ETD 08:00 → ETA 04:00+1d'
+        ].join('\n');
+      }
+
+      if (last.includes('büyük daire') || last.includes('great circle')) {
+        return [
+          '🧭 Büyük Daire (GC):',
+          '• d = arccos(sin φ1 sin φ2 + cos φ1 cos φ2 cos Δλ)',
+          '• İlk rota = atan2(sin Δλ · cos φ2, cos φ1 · sin φ2 − sin φ1 · cos φ2 · cos Δλ)'
+        ].join('\n');
+      }
+
+      if (last.includes('akıntı') || last.includes('current') || last.includes('leeway')) {
+        return [
+          '🌊 Akıntı Üçgeni:',
+          '• Vektörler: fener kursu, akıntı set/drift, rüzgar leeway',
+          '• SOG/COG = vektörel toplama, CTS = istenen COG için ters vektörleme'
+        ].join('\n');
+      }
+
+      if (last.includes('cpa') || last.includes('tcpa') || last.includes('arpa') || last.includes('çatma')) {
+        return [
+          '📡 ARPA: CPA/TCPA:',
+          '• Rel. hız ve doğrultudan yaklaşıp en yakın nokta (CPA) ve zamanı (TCPA) bulunur',
+          '• Risk yüksekse: Erken, büyük ve net rota/hız değişimi (COLREG)' 
+        ].join('\n');
+      }
+
+      return [
+        '🧭 Seyir Asistanı hazır.',
+        'Kısa bilgi: GC/Rhumb, ETA, akıntı düzeltmesi, pusula, ARPA, gelgit, göksel.',
+        'Gerekli girdileri yazın (örn: lat/lon, hız, varyasyon/deviayon).'
       ].join('\n');
     }
   }

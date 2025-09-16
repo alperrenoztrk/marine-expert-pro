@@ -6,11 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera, Plus, Trash2 } from "lucide-react";
+import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera, Plus, Trash2, Brain } from "lucide-react";
 import SextantCamera from "@/components/SextantCamera";
 import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
 import { DirectionInput } from "@/components/DirectionInput";
+import NavigationAssistantPopup from "@/components/NavigationAssistantPopup";
 
 interface NavigationData {
   // Traverse sailing legs
@@ -1159,6 +1160,19 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
 
   return (
     <div className="space-y-6">
+      {/* Seyir Asistanı */}
+      <Card className="shadow border border-emerald-200/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+            <Brain className="h-5 w-5" />
+            Seyir Asistanı
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <NavigationAssistantPopup variant="inline" />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
