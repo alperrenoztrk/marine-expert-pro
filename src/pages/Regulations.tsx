@@ -533,7 +533,7 @@ const Regulations = () => {
                     <Button
                       variant="default"
                       size="sm"
-                      onClick={() => openAsset('/COLREG-Navigation-Rules.pdf')}
+                      onClick={() => openAsset('/USCG-Navigation-Rules.pdf')}
                       className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
                     >
                       <Download className="h-4 w-4" />
@@ -553,7 +553,7 @@ const Regulations = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openAsset('/COLREG-Navigation-Rules.pdf')}
+                        onClick={() => openAsset('/USCG-Navigation-Rules.pdf')}
                         className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
