@@ -29,9 +29,6 @@ export default function StabilityMenu() {
         </Link>
       </div>
       <Card>
-        <CardHeader>
-          <CardTitle data-no-translate>Stabilite Hesaplamaları</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {/* All Items (Assistant, Rules, Formulas, Calculations) */}
