@@ -23,7 +23,6 @@ export default function NavigationMenu(){
     { to: "/navigation?tab=celestial", icon: <Book className="h-4 w-4" />, label: "Göksel" },
     { to: "/navigation?tab=astronomical", icon: <Book className="h-4 w-4" />, label: "Astronomik" },
     { to: "/navigation?tab=almanac", icon: <Book className="h-4 w-4" />, label: "Almanac" },
-    { to: "/navigation/quiz", icon: <Star className="h-4 w-4" />, label: "Seyir Quiz" },
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">

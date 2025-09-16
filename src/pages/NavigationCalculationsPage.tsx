@@ -8,8 +8,7 @@ const NavigationCalculationsPage = () => {
     { to: "/navigation-menu", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
     { to: "/regulations", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
     { to: "/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
-    { to: "/navigation", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
-    { to: "/navigation/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" }
+    { to: "/navigation", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" }
   ];
 
   return (
