@@ -16,7 +16,13 @@ import {
   FileText, 
   Download, 
   Search, 
-  AlertTriangle
+  AlertTriangle,
+  Globe,
+  Compass,
+  Map,
+  Landmark,
+  Radio,
+  Radar
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Capacitor } from '@capacitor/core';
@@ -376,11 +382,13 @@ const Regulations = () => {
                   {activeTab === "chapters" && "SOLAS 2020 Edition"}
                   {activeTab === "uscg" && "COLREG Navigation Rules"}
                   {activeTab === "amendments" && "SOLAS 2024 Updates"}
+                  {activeTab === "navrules" && "Seyir Kuralları"}
                 </h1>
                 <p className="text-muted-foreground">
                   {activeTab === "chapters" && "International Convention for the Safety of Life at Sea"}
                   {activeTab === "uscg" && "International Regulations for Preventing Collisions at Sea"}
                   {activeTab === "amendments" && "Latest SOLAS Amendments and Updates"}
+                  {activeTab === "navrules" && "Navigasyonla ilgili uluslararası, teknik ve yerel düzenlemeler"}
                 </p>
               </div>
             </div>
@@ -436,10 +444,11 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 h-auto p-1">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1">
             <TabsTrigger value="chapters" className="data-[state=active]:bg-background data-[state=active]:text-foreground">SOLAS 2020</TabsTrigger>
             <TabsTrigger value="uscg" className="data-[state=active]:bg-background data-[state=active]:text-foreground">COLREG</TabsTrigger>
             <TabsTrigger value="amendments" className="data-[state=active]:bg-background data-[state=active]:text-foreground">2024 Updates</TabsTrigger>
+            <TabsTrigger value="navrules" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Seyir Kuralları</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
@@ -807,6 +816,202 @@ const Regulations = () => {
                       </ul>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="navrules" className="space-y-6">
+            {/* Uluslararası Regülasyonlar */}
+            <Card className="border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-emerald-600" />
+                  Uluslararası Regülasyonlar
+                </CardTitle>
+                <CardDescription>IMO tarafından belirlenen ve tüm gemiler için bağlayıcı ana düzenlemeler</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-red-600" />
+                        COLREGs (1972) – Denizde Çatışmayı Önleme
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2 text-muted-foreground">
+                      <p>IMO düzenlemesi. Seyir fenerleri, işaretler ve manevra kuralları (karşılaşma, kavşak, yetişme, dar kanal, sisli hava vb.).</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Tüm gemiler için geçerlidir</li>
+                        <li>Işıklar ve işaretler, görünürlük kısıtlı koşullarda ses işaretleri</li>
+                        <li>Çatışmayı önleme manevraları ve geçiş hakları</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Compass className="h-4 w-4 text-indigo-600" />
+                        SOLAS (1974) – Bölüm V: Seyir Emniyeti
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2 text-muted-foreground">
+                      <p>Köprüüstü teçhizatı ve operasyonel gereklilikler için asgari standartları belirler.</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Zorunlu teçhizat: Radar, AIS, ECDIS, VHF, pusula</li>
+                        <li>Seyir planlama zorunluluğu</li>
+                        <li>Seyir defteri (logbook) tutulması</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                        STCW (1978)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2 text-muted-foreground">
+                      <p>Zabitan ve gemi adamlarının eğitim, belgelendirme ve vardiya yeterliliklerini düzenler.</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Köprüüstü vardiya düzeni, BRM (Bridge Resource Management)</li>
+                        <li>Radar/ECDIS kullanım yeterliliği</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-amber-600" />
+                        MARPOL (1973/78)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2 text-muted-foreground">
+                      <p>Deniz kirliliğini önleme hükümleri. Seyir güzergâhı üzerindeki özel alanlarda (Special Areas) deşarj yasakları.</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Özel alanlardan geçişte sıkı kısıtlamalar</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-emerald-600" />
+                        ISM Code (Uluslararası Güvenlik Yönetimi)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2 text-muted-foreground">
+                      <p>Gemi işletmesinin emniyetli prosedürleri uygulamasını zorunlu kılar.</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Operasyonel risk yönetimi ve sürekli iyileştirme</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Radio className="h-4 w-4 text-purple-600" />
+                        AIS ve VTS (SOLAS kapsamı)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2 text-muted-foreground">
+                      <p>Gemilerin sürekli konum, rota ve hız bilgisi paylaşması; liman/VTS otoriteleri ile iletişim.</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>AIS yayını ve VTS talimatlarına uyum</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Seyir Yardımcıları ve Teknik Regülasyonlar */}
+            <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Radar className="h-5 w-5 text-blue-600" />
+                  Seyir Yardımcıları ve Teknik Regülasyonlar
+                </CardTitle>
+                <CardDescription>Teçhizat zorunlulukları gemi tipi/boyuna göre değişir; IMO/SOLAS standartları geçerlidir</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Map className="h-4 w-4 text-indigo-600" />
+                        ECDIS
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground space-y-1">
+                      <p>Elektronik harita sistemi. Kağıt haritaların yerini alabilir (zorunluluk gemi tipine/boyuna göre).</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Radio className="h-4 w-4 text-purple-600" />
+                        GMDSS
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground space-y-1">
+                      <p>Küresel denizcilik tehlike ve emniyet haberleşme sistemi; denizde güvenlik için iletişim ekipmanları.</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Radar className="h-4 w-4 text-blue-600" />
+                        Radar, ARPA, GNSS, Gyro & Manyetik Pusula
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground space-y-1">
+                      <p>IMO ve SOLAS standartlarına göre sertifikalı olmalıdır; performans ve kalibrasyon gereklilikleri.</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Bölgesel ve Ulusal Kurallar */}
+            <Card className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Landmark className="h-5 w-5 text-yellow-700" />
+                  Bölgesel ve Ulusal Kurallar
+                </CardTitle>
+                <CardDescription>IMO onaylı TSS'ler ve yerel idare düzenlemeleri</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Compass className="h-4 w-4 text-yellow-700" />
+                        TSS (Traffic Separation Schemes)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground space-y-1">
+                      <p>IMO onaylı trafik ayırım düzenleri; boğaz, kanal ve dar sularda uygulanır.</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Landmark className="h-4 w-4 text-yellow-700" />
+                        Yerel Denizcilik İdareleri
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground space-y-2">
+                      <p>Örn. Türkiye: Ulaştırma ve Altyapı Bakanlığı, Kıyı Emniyeti, Sahil Güvenlik.</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Liman yönetmelikleri</li>
+                        <li>Kılavuz kaptan alma zorunlulukları</li>
+                        <li>Boğazlar Tüzüğü (İstanbul ve Çanakkale Boğazları)</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
