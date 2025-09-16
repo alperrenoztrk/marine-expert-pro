@@ -178,11 +178,6 @@ export default function WeatherWidget() {
 
   return (
     <Card className="w-full bg-transparent border-none shadow-none">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg" data-translatable>
-          Anlık Hava Durumu
-        </CardTitle>
-      </CardHeader>
       <CardContent className="pt-2">
         {loading ? (
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
