@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Compass, Calculator } from "lucide-react";
+import { ArrowLeft, Compass, Calculator, Brain, BookOpen, Sigma, ListChecks } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Link, useLocation } from "react-router-dom";
 import { NavigationCalculations } from "@/components/calculations/NavigationCalculations";
@@ -10,6 +10,13 @@ const NavigationCalculationsPage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const initialTab = searchParams.get("tab") || undefined;
+  const navMenuItems = [
+    { to: "/navigation-menu", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
+    { to: "/regulations", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
+    { to: "/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
+    { to: "/navigation", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
+    { to: "/empty-page", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
@@ -37,6 +44,25 @@ const NavigationCalculationsPage = () => {
             Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
           </p>
         </div>
+
+        {/* Top Menu (Assistant, Rules, Formulas, Calculations, Quiz) */}
+        <Card>
+          <CardHeader>
+            <CardTitle data-no-translate>Seyir Hesaplamaları</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2 py-1">
+              {navMenuItems.map((it) => (
+                <Link key={it.to} to={it.to}>
+                  <Button variant="outline" className="justify-start gap-2 whitespace-nowrap" data-no-translate>
+                    {it.icon}
+                    {it.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Navigation Calculations */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
