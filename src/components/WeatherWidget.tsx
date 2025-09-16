@@ -177,22 +177,36 @@ export default function WeatherWidget() {
   }, [nowMs, data?.utcOffsetSeconds, data?.longitude]);
 
   return (
-    <Card className="w-full bg-transparent border-none shadow-none">
-      <CardContent className="pt-2">
+    <Card className="w-full relative overflow-hidden border border-border/20 shadow-lg backdrop-blur-sm bg-gradient-to-br from-card/80 via-card/60 to-background/40">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+      <div className="absolute inset-0 shadow-inner pointer-events-none" />
+      <CardContent className="relative pt-6 space-y-6">
         {loading ? (
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <span data-translatable>Konum ve hava verisi alınıyor...</span>
+          <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground p-8">
+            <div className="relative">
+              <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              <div className="absolute inset-0 animate-ping">
+                <svg className="h-8 w-8 text-primary/30" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1"></circle>
+                </svg>
+              </div>
+            </div>
+            <span data-translatable className="animate-pulse">Konum ve hava verisi alınıyor...</span>
           </div>
         ) : error ? (
-          <div className="flex items-start gap-3 text-sm text-red-600">
-            <AlertTriangle className="h-5 w-5 mt-0.5" />
+          <div className="flex items-start gap-4 text-sm text-destructive p-6 rounded-lg bg-destructive/5 border border-destructive/20">
+            <div className="relative">
+              <AlertTriangle className="h-6 w-6 mt-0.5 animate-pulse" />
+              <div className="absolute inset-0 animate-ping opacity-30">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
+            </div>
             <div>
-              <div className="font-semibold" data-translatable>Hava verisi alınamadı</div>
-              <div className="text-muted-foreground" data-translatable>{error}</div>
+              <div className="font-semibold mb-1" data-translatable>Hava verisi alınamadı</div>
+              <div className="text-muted-foreground text-xs" data-translatable>{error}</div>
             </div>
           </div>
         ) : data ? (
@@ -209,75 +223,132 @@ export default function WeatherWidget() {
                     { label: "LMT", value: fmt(analogTimes.lmt) },
                     { label: "ZT", value: fmt(analogTimes.zt) },
                   ] as const;
-                  return tiles.map((tile) => (
-                    <div key={tile.label} className="mx-auto flex flex-col items-center rounded-md border bg-white/50 dark:bg-black/20 shadow-sm px-3 py-2 min-w-[96px]">
-                      <div className="text-xs text-muted-foreground">{tile.label}</div>
-                      <div className="font-mono text-xl sm:text-2xl tracking-widest tabular-nums">{tile.value}</div>
-                    </div>
+                   return tiles.map((tile, index) => (
+                     <div 
+                       key={tile.label} 
+                       className="group relative mx-auto flex flex-col items-center rounded-xl bg-gradient-to-br from-card via-card/90 to-background/50 border border-border/30 shadow-lg backdrop-blur-sm px-4 py-3 min-w-[96px] hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10"
+                       style={{
+                         animationDelay: `${index * 0.1}s`,
+                         animation: 'fadeIn 0.6s ease-out forwards'
+                       }}
+                     >
+                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                       <div className="relative z-10">
+                         <div className="text-xs font-medium text-muted-foreground mb-1">{tile.label}</div>
+                         <div className="font-mono text-xl sm:text-2xl font-semibold tracking-widest tabular-nums text-foreground drop-shadow-sm">{tile.value}</div>
+                       </div>
+                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm" />
+                     </div>
                   ));
                 })()}
               </div>
             </div>
-            <div className="col-span-2 flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-red-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Konum</div>
-                <div className="text-base font-medium">{locationLabel ?? "Bilinmiyor"}</div>
-              </div>
-              <div className="ml-auto text-xs text-muted-foreground">
-                {Number.isFinite(data.latitude) && Number.isFinite(data.longitude)
-                  ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`
-                  : null}
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Thermometer className="h-5 w-5 text-blue-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Sıcaklık</div>
-                <div className="text-base font-medium">{Number.isFinite(data.temperatureC) ? `${data.temperatureC.toFixed(1)} °C` : "-"}</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Droplets className="h-5 w-5 text-cyan-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Nem</div>
-                <div className="text-base font-medium">{Number.isFinite(data.humidityPct) ? `${Math.round(data.humidityPct)} %` : "-"}</div>
+            <div className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center gap-4">
+                <div className="relative">
+                  <MapPin className="h-6 w-6 text-destructive drop-shadow-sm" />
+                  <div className="absolute inset-0 animate-pulse opacity-30">
+                    <MapPin className="h-6 w-6 text-destructive" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Konum</div>
+                  <div className="text-lg font-semibold text-foreground">{locationLabel ?? "Bilinmiyor"}</div>
+                </div>
+                <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-1 rounded-md">
+                  {Number.isFinite(data.latitude) && Number.isFinite(data.longitude)
+                    ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`
+                    : null}
+                </div>
               </div>
             </div>
-
-            <div className="flex items-center gap-3">
-              <Gauge className="h-5 w-5 text-amber-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Basınç (hPa)</div>
-                <div className="text-base font-medium">{Number.isFinite(data.pressureHpa) ? `${Math.round(data.pressureHpa)}` : "-"}</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Wind className="h-5 w-5 text-emerald-600" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Rüzgar</div>
-                <div className="text-base font-medium">
-                  {Number.isFinite(data.windSpeedKt) ? `${data.windSpeedKt.toFixed(0)} kt` : "-"}
-                  {Number.isFinite(data.windDirectionDeg) && (
-                    <span className="ml-2 inline-flex items-center gap-1 text-muted-foreground">
-                      <Compass className="h-4 w-4" style={{ transform: `rotate(${data.windDirectionDeg}deg)` }} />
-                      <span>{windCompass} ({Math.round(data.windDirectionDeg)}°)</span>
-                    </span>
-                  )}
+            <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-info/5 to-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center gap-4">
+                <div className="relative">
+                  <Thermometer className="h-6 w-6 text-info drop-shadow-sm" />
+                  <div className="absolute inset-0 animate-pulse opacity-20">
+                    <Thermometer className="h-6 w-6 text-info" />
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Sıcaklık</div>
+                  <div className="text-lg font-bold text-foreground">{Number.isFinite(data.temperatureC) ? `${data.temperatureC.toFixed(1)} °C` : "-"}</div>
                 </div>
               </div>
             </div>
 
-            <div className="col-span-2 flex items-center gap-3">
-              <div className="h-2 w-2 rounded-full bg-green-500" />
-              <div>
-                <div className="text-sm text-muted-foreground" data-translatable>Durum</div>
-                <div className="text-base font-medium">{wmoToTr(data.weatherCode)}</div>
+            <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-secondary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center gap-4">
+                <div className="relative">
+                  <Droplets className="h-6 w-6 text-accent drop-shadow-sm" />
+                  <div className="absolute inset-0 animate-pulse opacity-20">
+                    <Droplets className="h-6 w-6 text-accent" />
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Nem</div>
+                  <div className="text-lg font-bold text-foreground">{Number.isFinite(data.humidityPct) ? `${Math.round(data.humidityPct)} %` : "-"}</div>
+                </div>
               </div>
-              <div className="ml-auto text-xs text-muted-foreground">
-                {data.timeIso ? new Date(data.timeIso).toLocaleTimeString() : null}
+            </div>
+
+            <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-warning/5 to-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center gap-4">
+                <div className="relative">
+                  <Gauge className="h-6 w-6 text-warning drop-shadow-sm" />
+                  <div className="absolute inset-0 animate-pulse opacity-20">
+                    <Gauge className="h-6 w-6 text-warning" />
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Basınç (hPa)</div>
+                  <div className="text-lg font-bold text-foreground">{Number.isFinite(data.pressureHpa) ? `${Math.round(data.pressureHpa)}` : "-"}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-success/5 to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center gap-4">
+                <div className="relative">
+                  <Wind className="h-6 w-6 text-success drop-shadow-sm" />
+                  <div className="absolute inset-0 animate-pulse opacity-20">
+                    <Wind className="h-6 w-6 text-success" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Rüzgar</div>
+                  <div className="text-lg font-bold text-foreground">
+                    {Number.isFinite(data.windSpeedKt) ? `${data.windSpeedKt.toFixed(0)} kt` : "-"}
+                    {Number.isFinite(data.windDirectionDeg) && (
+                      <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                        <Compass className="h-4 w-4 transition-transform duration-500" style={{ transform: `rotate(${data.windDirectionDeg}deg)` }} />
+                        <span className="font-medium">{windCompass} ({Math.round(data.windDirectionDeg)}°)</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-r from-success/5 to-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center gap-4">
+                <div className="relative">
+                  <div className="h-3 w-3 rounded-full bg-success animate-pulse shadow-lg shadow-success/30" />
+                  <div className="absolute inset-0 h-3 w-3 rounded-full bg-success animate-ping opacity-30" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Durum</div>
+                  <div className="text-lg font-semibold text-foreground">{wmoToTr(data.weatherCode)}</div>
+                </div>
+                <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-3 py-1 rounded-full border">
+                  {data.timeIso ? new Date(data.timeIso).toLocaleTimeString() : null}
+                </div>
               </div>
             </div>
 

@@ -95,6 +95,18 @@ All colors MUST be HSL.
     }
   }
 
+  /* Weather widget animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Global compact density mode */
   .density-compact {
     --density-scale: 0.85;
