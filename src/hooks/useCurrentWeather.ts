@@ -178,30 +178,43 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
   }, [fetchReverse, fetchWeather, haversineMeters, movementReverseThresholdM, movementWeatherThresholdM]);
 
   const requestOnce = useCallback(async () => {
+    console.log("🌤️ Hava durumu verisi alınmaya başlandı...");
     setLoading(true);
     setError(null);
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        console.log("📍 Konum servisi kontrol ediliyor...");
         if (!("geolocation" in navigator)) {
+          console.error("❌ Konum servisi desteklenmiyor");
           reject(new Error("Konum servisi desteklenmiyor"));
           return;
         }
+        console.log("📍 Konum bilgisi isteniyor...");
         navigator.geolocation.getCurrentPosition(
-          (pos) => resolve(pos),
-          (err) => reject(err),
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 600000 }
+          (pos) => {
+            console.log("✅ Konum alındı:", pos.coords.latitude, pos.coords.longitude);
+            resolve(pos);
+          },
+          (err) => {
+            console.error("❌ Konum alınamadı:", err.message);
+            reject(err);
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 600000 }
         );
       });
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       lastPositionRef.current = { lat, lon };
+      console.log("🌤️ Hava durumu ve konum verisi alınıyor...");
       await Promise.allSettled([
         fetchWeather(lat, lon),
         fetchReverse(lat, lon),
       ]);
+      console.log("✅ Hava durumu verisi başarıyla alındı");
       return dataRef.current;
     } catch (e: any) {
       const message = e?.message || "Bilinmeyen hata";
+      console.error("❌ Hava durumu hatası:", message);
       setError(message);
       return null;
     } finally {

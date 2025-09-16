@@ -128,12 +128,25 @@ function wmoToTr(code?: number): string {
 export default function WeatherWidget() {
   const { loading, error, data, locationLabel } = useCurrentWeather();
   const [nowMs, setNowMs] = useState<number>(Date.now());
+  const [loadingTimeout, setLoadingTimeout] = useState<boolean>(false);
 
   // Tick every 1s to refresh time displays (GMT/LMT/ZT)
   useEffect(() => {
     const id = window.setInterval(() => setNowMs(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
+
+  // Loading timeout - eğer 30 saniye sonra hala yüklüyorsa timeout göster
+  useEffect(() => {
+    if (loading) {
+      const timeoutId = setTimeout(() => {
+        setLoadingTimeout(true);
+      }, 30000);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setLoadingTimeout(false);
+    }
+  }, [loading]);
 
   useEffect(() => {
     // Weather fetching and reverse geocoding handled by useCurrentWeather hook
@@ -181,8 +194,8 @@ export default function WeatherWidget() {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
       <div className="absolute inset-0 shadow-inner pointer-events-none" />
       <CardContent className="relative pt-6 space-y-6">
-        {loading ? (
-          <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground p-8">
+        {loading && !loadingTimeout ? (
+          <div className="flex flex-col items-center justify-center gap-4 text-sm text-muted-foreground p-8">
             <div className="relative">
               <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -194,7 +207,22 @@ export default function WeatherWidget() {
                 </svg>
               </div>
             </div>
-            <span data-translatable className="animate-pulse">Konum ve hava verisi alınıyor...</span>
+            <div className="text-center">
+              <div className="animate-pulse mb-2" data-translatable>Konum ve hava verisi alınıyor...</div>
+              <div className="text-xs text-muted-foreground/70" data-translatable>Konum iznini verdiğinizden emin olun</div>
+            </div>
+          </div>
+        ) : loadingTimeout ? (
+          <div className="flex flex-col items-center justify-center gap-4 text-sm text-warning p-8 rounded-lg bg-warning/5 border border-warning/20">
+            <div className="text-warning text-lg">⏱️</div>
+            <div className="text-center">
+              <div className="font-semibold mb-2" data-translatable>Yükleme uzun sürüyor</div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <div data-translatable>• Konum iznini verdiğinizden emin olun</div>
+                <div data-translatable>• Internet bağlantınızı kontrol edin</div>
+                <div data-translatable>• Sayfayı yenilemeyi deneyin</div>
+              </div>
+            </div>
           </div>
         ) : error ? (
           <div className="flex items-start gap-4 text-sm text-destructive p-6 rounded-lg bg-destructive/5 border border-destructive/20">
