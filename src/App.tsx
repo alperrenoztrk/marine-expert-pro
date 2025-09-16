@@ -32,6 +32,7 @@ import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
+import NavigationFormulasPage from "./pages/NavigationFormulas";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
 import StabilityQuizPage from "./pages/StabilityQuiz";
 import NavigationQuizPage from "./pages/NavigationQuiz";
@@ -75,6 +76,7 @@ const App = () => {
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
                     <Route path="/tank-menu" element={<TankMenu />} />
                     <Route path="/navigation" element={<Navigation />} />
+                    <Route path="/navigation/formulas" element={<NavigationFormulasPage />} />
                     <Route path="/navigation/assistant" element={<NavigationAssistantPage />} />
                     <Route path="/navigation/quiz" element={<NavigationQuizPage />} />
                     <Route path="/economics" element={<Economics />} />

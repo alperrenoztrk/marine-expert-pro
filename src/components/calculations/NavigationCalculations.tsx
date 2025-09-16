@@ -1382,15 +1382,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     </div>
                   </div>
-                  <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <h4 className="font-semibold mb-2">Plane Sailing Formülleri:</h4>
-                    <div className="text-sm space-y-1">
-                      <p>• dLat = (Lat2 - Lat1) × 60 nm</p>
-                      <p>• Departure = (Lon2 - Lon1) × 60 × cos(Mean Lat) nm</p>
-                      <p>• Distance = √(dLat² + Departure²)</p>
-                      <p>• Course = arctan(Departure / dLat)</p>
-                    </div>
-                  </div>
+                  {/* Plane Sailing formulas moved to /navigation/formulas */}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1531,16 +1523,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     )}
                   </div>
-                  <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <h4 className="font-semibold mb-2">Traverse Sailing Hesaplamaları:</h4>
-                    <div className="text-sm space-y-1">
-                      <p>• Her ayak için dLat ve Departure hesaplanır</p>
-                      <p>• Toplam dLat = Σ (Distance × cos(Course))</p>
-                      <p>• Toplam Departure = Σ (Distance × sin(Course))</p>
-                      <p>• Final Course = arctan(Total Departure / Total dLat)</p>
-                      <p>• Total Distance = √(Total dLat² + Total Departure²)</p>
-                    </div>
-                  </div>
+                  {/* Traverse formulas moved to /navigation/formulas */}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1904,15 +1887,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     </div>
                   </div>
-                  <div className="mt-6 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
-                    <h4 className="font-semibold mb-2">Current & Wind Triangle:</h4>
-                    <div className="text-sm space-y-1">
-                      <p>• Course to Steer = Track ± (Leeway + Current Correction)</p>
-                      <p>• Ground Speed = √((STW + Current)² - 2×STW×Current×cos(angle))</p>
-                      <p>• Drift Angle = arcsin(Current×sin(angle)/Ground Speed)</p>
-                      <p>• Combined effect includes both current set/drift and wind leeway</p>
-                    </div>
-                  </div>
+                  {/* Current & Wind triangle formulas moved to /navigation/formulas */}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -3517,7 +3492,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               Seyir Hesaplamaları Menüsü
             </CardTitle>
             <CardDescription>
-              Seyir hesaplamaları için kapsamlı hesaplama türleri ve formüller
+              Seyir hesaplamaları için kapsamlı hesaplama türleri
             </CardDescription>
           </CardHeader>
           <CardContent>
