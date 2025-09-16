@@ -3173,13 +3173,6 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               </div>
             </TabsContent>
           </Tabs>
-
-          <div className="mt-6">
-            <Button onClick={calculate} className="w-full">
-              <Calculator className="mr-2 h-4 w-4" />
-              Hesapla
-            </Button>
-          </div>
         </CardContent>
       </Card>
 
@@ -3689,6 +3682,12 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
             </Card>
           </CardContent>
         </Card>
+        <div className="mt-6">
+          <Button onClick={calculate} className="w-full">
+            <Calculator className="mr-2 h-4 w-4" />
+            Hesapla
+          </Button>
+        </div>
       </div>
     );
   }
