@@ -26,8 +26,10 @@ const splashEl = document.getElementById('splash-root');
 if (splashEl) {
   // Let first paint happen, then fade out
   requestAnimationFrame(() => {
-    splashEl.classList.add('splash-hide');
-    // Remove from DOM after transition
-    setTimeout(() => splashEl.remove(), 600);
+    setTimeout(() => {
+      splashEl.classList.add('splash-hide');
+      // Remove from DOM after transition
+      setTimeout(() => splashEl.remove(), 600);
+    }, 1000);
   });
 }
