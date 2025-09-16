@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
-import AnalogClock from "@/components/ui/AnalogClock";
+// Removed analog clock in favor of digital time tiles
 
 type WeatherResponse = {
   latitude: number;
@@ -202,13 +202,25 @@ export default function WeatherWidget() {
           </div>
         ) : data ? (
           <div className="grid grid-cols-2 gap-4">
-            {/* Analog clocks at top: TRT, GMT, LMT, ZT */}
+            {/* Dijital saatler: TRT, GMT, LMT, ZT */}
             <div className="col-span-2">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <AnalogClock size={96} hours={analogTimes.trt.h} minutes={analogTimes.trt.m} seconds={analogTimes.trt.s} label="TRT" className="mx-auto" />
-                <AnalogClock size={96} hours={analogTimes.gmt.h} minutes={analogTimes.gmt.m} seconds={analogTimes.gmt.s} label="GMT" className="mx-auto" />
-                <AnalogClock size={96} hours={analogTimes.lmt.h} minutes={analogTimes.lmt.m} seconds={analogTimes.lmt.s} label="LMT" className="mx-auto" />
-                <AnalogClock size={96} hours={analogTimes.zt.h} minutes={analogTimes.zt.m} seconds={analogTimes.zt.s} label="ZT" className="mx-auto" />
+                {(() => {
+                  const pad2 = (n: number) => n.toString().padStart(2, "0");
+                  const fmt = (t: { h: number; m: number; s: number }) => `${pad2(t.h)}:${pad2(t.m)}:${pad2(t.s)}`;
+                  const tiles = [
+                    { label: "TRT", value: fmt(analogTimes.trt) },
+                    { label: "GMT", value: fmt(analogTimes.gmt) },
+                    { label: "LMT", value: fmt(analogTimes.lmt) },
+                    { label: "ZT", value: fmt(analogTimes.zt) },
+                  ] as const;
+                  return tiles.map((tile) => (
+                    <div key={tile.label} className="mx-auto flex flex-col items-center rounded-md border bg-white/50 dark:bg-black/20 shadow-sm px-3 py-2 min-w-[96px]">
+                      <div className="text-xs text-muted-foreground">{tile.label}</div>
+                      <div className="font-mono text-xl sm:text-2xl tracking-widest tabular-nums">{tile.value}</div>
+                    </div>
+                  ));
+                })()}
               </div>
             </div>
             <div className="col-span-2 flex items-center gap-3">
