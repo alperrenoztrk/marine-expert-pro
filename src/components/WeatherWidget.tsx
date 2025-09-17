@@ -239,38 +239,6 @@ export default function WeatherWidget() {
           </div>
         ) : data ? (
           <div className="grid grid-cols-2 gap-4">
-            {/* Dijital saatler: TRT, GMT, LMT, ZT */}
-            <div className="col-span-2">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {(() => {
-                  const pad2 = (n: number) => n.toString().padStart(2, "0");
-                  const fmt = (t: { h: number; m: number; s: number }) => `${pad2(t.h)}:${pad2(t.m)}:${pad2(t.s)}`;
-                  const tiles = [
-                    { label: "TRT", value: fmt(analogTimes.trt) },
-                    { label: "GMT", value: fmt(analogTimes.gmt) },
-                    { label: "LMT", value: fmt(analogTimes.lmt) },
-                    { label: "ZT", value: fmt(analogTimes.zt) },
-                  ] as const;
-                   return tiles.map((tile, index) => (
-                     <div 
-                       key={tile.label} 
-                       className="group relative mx-auto flex flex-col items-center rounded-xl bg-gradient-to-br from-card via-card/90 to-background/50 border border-border/30 shadow-lg backdrop-blur-sm px-4 py-3 min-w-[96px] hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10"
-                       style={{
-                         animationDelay: `${index * 0.1}s`,
-                         animation: 'fadeIn 0.6s ease-out forwards'
-                       }}
-                     >
-                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                       <div className="relative z-10">
-                         <div className="text-xs font-medium text-muted-foreground mb-1">{tile.label}</div>
-                         <div className="font-mono text-xl sm:text-2xl font-semibold tracking-widest tabular-nums text-foreground drop-shadow-sm">{tile.value}</div>
-                       </div>
-                       <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm" />
-                     </div>
-                  ));
-                })()}
-              </div>
-            </div>
             <div className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative flex items-center gap-4">
@@ -371,7 +339,7 @@ export default function WeatherWidget() {
                   <div className="absolute inset-0 h-3 w-3 rounded-full bg-success animate-ping opacity-30" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Durum</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Hava durumu</div>
                   <div className="text-lg font-semibold text-foreground">{wmoToTr(data.weatherCode)}</div>
                 </div>
                 <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-3 py-1 rounded-full border">
