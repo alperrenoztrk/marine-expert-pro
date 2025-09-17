@@ -127,14 +127,7 @@ function wmoToTr(code?: number): string {
 
 export default function WeatherWidget() {
   const { loading, error, data, locationLabel } = useCurrentWeather();
-  const [nowMs, setNowMs] = useState<number>(Date.now());
   const [loadingTimeout, setLoadingTimeout] = useState<boolean>(false);
-
-  // Tick every 1s to refresh time displays (GMT/LMT/ZT)
-  useEffect(() => {
-    const id = window.setInterval(() => setNowMs(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
 
   // Loading timeout - eğer 30 saniye sonra hala yüklüyorsa timeout göster
   useEffect(() => {
@@ -156,38 +149,6 @@ export default function WeatherWidget() {
     return degreesToCompass(data?.windDirectionDeg ?? NaN);
   }, [data?.windDirectionDeg]);
 
-  const analogTimes = useMemo(() => {
-    const utcMs = nowMs;
-    const offsetSeconds = data?.utcOffsetSeconds ?? 0;
-    const ztMs = utcMs + offsetSeconds * 1000;
-    const lmtMs = utcMs + (data?.longitude ?? 0) * 4 * 60 * 1000; // 4 min per degree
-
-    const asParts = (ms: number) => {
-      const d = new Date(ms);
-      return { h: d.getUTCHours(), m: d.getUTCMinutes(), s: d.getUTCSeconds() };
-    };
-
-    const gmt = asParts(utcMs);
-    const zt = asParts(ztMs);
-    const lmt = asParts(lmtMs);
-    const trt = (() => {
-      try {
-        const parts = new Intl.DateTimeFormat("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZone: "Europe/Istanbul",
-        }).formatToParts(utcMs);
-        const get = (t: string) => parseInt(parts.find(p => p.type === t)?.value ?? "0", 10);
-        return { h: get("hour"), m: get("minute"), s: get("second") };
-      } catch {
-        return zt;
-      }
-    })();
-
-    return { gmt, zt, lmt, trt } as const;
-  }, [nowMs, data?.utcOffsetSeconds, data?.longitude]);
 
   return (
     <Card className="w-full relative overflow-hidden border border-border/20 shadow-lg backdrop-blur-sm bg-gradient-to-br from-card/80 via-card/60 to-background/40">
