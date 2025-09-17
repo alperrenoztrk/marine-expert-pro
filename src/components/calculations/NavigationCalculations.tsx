@@ -3322,22 +3322,22 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Beaufort Skalası</Label>
+                <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+                  <Label className="text-sm font-medium text-muted-foreground">Beaufort Skalası</Label>
                   <p className="text-xl lg:text-2xl font-bold text-info">{result.beaufortScale}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Rüzgar şiddeti</p>
+                  <p className="text-xs text-muted-foreground">Rüzgar şiddeti</p>
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Deniz Durumu</Label>
+                <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+                  <Label className="text-sm font-medium text-muted-foreground">Deniz Durumu</Label>
                   <p className="text-xl lg:text-2xl font-bold text-green-600">{result.seaState}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Douglas skalası</p>
+                  <p className="text-xs text-muted-foreground">Douglas skalası</p>
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Hava Gecikmesi</Label>
+                <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+                  <Label className="text-sm font-medium text-muted-foreground">Hava Gecikmesi</Label>
                   <p className="text-lg font-semibold">{result.weatherDelay.toFixed(1)} saat</p>
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Güvenli Rota</Label>
+                <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+                  <Label className="text-sm font-medium text-muted-foreground">Güvenli Rota</Label>
                   <p className="text-lg font-semibold">{result.safeCourse.toFixed(1)}°</p>
                 </div>
               </div>
@@ -3411,14 +3411,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {result.navigationStars.slice(0, 6).map((star, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 bg-muted rounded-lg">
-                      <div>
-                        <p className="font-medium">{star.name}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Mag: {star.magnitude.toFixed(1)}</p>
+                    <div key={index} className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-muted rounded-lg space-y-1 sm:space-y-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium truncate">{star.name}</p>
+                        <p className="text-sm text-muted-foreground">Mag: {star.magnitude.toFixed(1)}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="flex flex-col text-right flex-shrink-0">
                         <p className="text-sm">Alt: {star.altitude.toFixed(1)}°</p>
                         <p className="text-sm">Az: {star.azimuth.toFixed(1)}°</p>
                       </div>
@@ -3438,14 +3438,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {result.planetPositions.map((planet, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 bg-muted rounded-lg">
-                      <div>
-                        <p className="font-medium">{planet.name}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Mag: {planet.magnitude.toFixed(1)}</p>
+                    <div key={index} className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-muted rounded-lg space-y-1 sm:space-y-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium truncate">{planet.name}</p>
+                        <p className="text-sm text-muted-foreground">Mag: {planet.magnitude.toFixed(1)}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="flex flex-col text-right flex-shrink-0">
                         <p className="text-sm">Alt: {planet.altitude.toFixed(1)}°</p>
                         <p className="text-sm">Az: {planet.azimuth.toFixed(1)}°</p>
                       </div>
