@@ -138,14 +138,34 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
       const res = await fetch(reverseUrl.toString());
       if (!res.ok) return;
       const reverseJson = (await res.json()) as BigDataCloudReverse;
+      
+      // Önce deniz/okyanus gibi su alanlarını kontrol et
       const informative = reverseJson?.localityInfo?.informative || [];
-      const waterPriority = ["sea", "ocean", "gulf", "bay", "strait", "channel", "sound"];
+      const waterKeywords = ["sea", "ocean", "gulf", "bay", "strait", "channel", "sound", "deniz", "okyanus", "körfez"];
       let seaLikeName: string | undefined;
-      for (const keyword of waterPriority) {
-        const match = informative.find((x) => (x.description || "").toLowerCase().includes(keyword));
-        if (match?.name) { seaLikeName = match.name; break; }
+      
+      for (const keyword of waterKeywords) {
+        const match = informative.find((x) => {
+          const desc = (x.description || "").toLowerCase();
+          const name = (x.name || "").toLowerCase();
+          return desc.includes(keyword) || name.includes(keyword);
+        });
+        if (match?.name && !match.name.includes("Türkiye") && !match.name.includes("Turkey")) {
+          seaLikeName = match.name;
+          break;
+        }
       }
-      const cityLikeName = reverseJson.city || reverseJson.locality || reverseJson.principalSubdivision || reverseJson.countryName;
+      
+      // Şehir/konum bilgisini al - daha spesifik bilgiyi önce göster
+      let cityLikeName: string | undefined;
+      if (reverseJson.city && reverseJson.locality && reverseJson.city !== reverseJson.locality) {
+        // Eğer şehir ve mahalle farklıysa, ikisini birlikte göster
+        cityLikeName = `${reverseJson.locality}, ${reverseJson.city}`;
+      } else {
+        // Tek bir bilgi varsa onu göster, yoksa hiyerarşik sırala
+        cityLikeName = reverseJson.city || reverseJson.locality || reverseJson.principalSubdivision || reverseJson.countryName;
+      }
+      
       const label = seaLikeName || cityLikeName || null;
       setLocationLabel(label);
       lastReverseRef.current = { lat, lon, label };
