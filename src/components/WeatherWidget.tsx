@@ -94,6 +94,56 @@ function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
   return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"${direction}`;
 }
 
+function wmoToEmoji(code?: number): string {
+  switch (code) {
+    case 0:
+      return "☀️"; // Açık
+    case 1:
+      return "🌤️"; // Az bulutlu
+    case 2:
+      return "⛅"; // Parçalı bulutlu
+    case 3:
+      return "☁️"; // Kapalı
+    case 45:
+    case 48:
+      return "🌫️"; // Sis
+    case 51:
+    case 53:
+    case 55:
+      return "🌦️"; // Çiseleme
+    case 56:
+    case 57:
+      return "🌨️"; // Donan çiseleme
+    case 61:
+    case 63:
+    case 65:
+      return "🌧️"; // Yağmur
+    case 66:
+    case 67:
+      return "🌨️"; // Donan yağmur
+    case 71:
+    case 73:
+    case 75:
+      return "❄️"; // Kar
+    case 77:
+      return "🌨️"; // Kar taneleri
+    case 80:
+    case 81:
+    case 82:
+      return "🌦️"; // Sağanak yağmur
+    case 85:
+    case 86:
+      return "❄️"; // Kar sağanağı
+    case 95:
+      return "⛈️"; // Gök gürültülü fırtına
+    case 96:
+    case 99:
+      return "⛈️"; // Dolu fırtınası
+    default:
+      return "❓"; // Belirsiz
+  }
+}
+
 function wmoToTr(code?: number): string {
   switch (code) {
     case 0:
@@ -388,12 +438,11 @@ export default function WeatherWidget() {
             <div className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-r from-success/5 to-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative flex items-center gap-4">
-                <div className="relative">
-                  <div className="h-3 w-3 rounded-full bg-success animate-pulse shadow-lg shadow-success/30" />
-                  <div className="absolute inset-0 h-3 w-3 rounded-full bg-success animate-ping opacity-30" />
+                <div className="relative text-2xl">
+                  {wmoToEmoji(data.weatherCode)}
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Durum</div>
+                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Hava durumu</div>
                   <div className="text-lg font-semibold text-foreground">{wmoToTr(data.weatherCode)}</div>
                 </div>
                 <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-3 py-1 rounded-full border">
