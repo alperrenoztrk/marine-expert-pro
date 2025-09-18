@@ -82,7 +82,7 @@ function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
   const degrees = Math.floor(abs);
   const minutesFloat = (abs - degrees) * 60;
   const minutes = Math.floor(minutesFloat);
-  const seconds = (minutesFloat - minutes) * 60;
+  const seconds = Math.round((minutesFloat - minutes) * 60);
   
   let direction: string;
   if (isLatitude) {
@@ -91,7 +91,7 @@ function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
     direction = decimal >= 0 ? "D" : "B"; // Doğu/Batı
   }
   
-  return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toFixed(1).padStart(4, '0')}"${direction}`;
+  return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"${direction}`;
 }
 
 function wmoToTr(code?: number): string {
