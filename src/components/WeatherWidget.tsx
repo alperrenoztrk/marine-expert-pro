@@ -75,6 +75,25 @@ function degreesToCompass(degrees: number): string {
   return directions[index];
 }
 
+function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
+  if (!Number.isFinite(decimal)) return "-";
+  
+  const abs = Math.abs(decimal);
+  const degrees = Math.floor(abs);
+  const minutesFloat = (abs - degrees) * 60;
+  const minutes = Math.floor(minutesFloat);
+  const seconds = (minutesFloat - minutes) * 60;
+  
+  let direction: string;
+  if (isLatitude) {
+    direction = decimal >= 0 ? "K" : "G"; // Kuzey/Güney
+  } else {
+    direction = decimal >= 0 ? "D" : "B"; // Doğu/Batı
+  }
+  
+  return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toFixed(1).padStart(4, '0')}"${direction}`;
+}
+
 function wmoToTr(code?: number): string {
   switch (code) {
     case 0:
@@ -285,9 +304,12 @@ export default function WeatherWidget() {
                   <div className="text-lg font-semibold text-foreground">{locationLabel ?? "Bilinmiyor"}</div>
                 </div>
                 <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-1 rounded-md">
-                  {Number.isFinite(data.latitude) && Number.isFinite(data.longitude)
-                    ? `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`
-                    : null}
+                  {Number.isFinite(data.latitude) && Number.isFinite(data.longitude) ? (
+                    <div className="space-y-1">
+                      <div>{decimalToDMS(data.latitude, true)}</div>
+                      <div>{decimalToDMS(data.longitude, false)}</div>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
