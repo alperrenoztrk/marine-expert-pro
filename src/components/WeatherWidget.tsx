@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
@@ -196,6 +197,7 @@ function wmoToTr(code?: number): string {
 
 export default function WeatherWidget() {
   const { loading, error, data, locationLabel } = useCurrentWeather();
+  const navigate = useNavigate();
   const [nowMs, setNowMs] = useState<number>(Date.now());
   const [loadingTimeout, setLoadingTimeout] = useState<boolean>(false);
 
@@ -435,7 +437,14 @@ export default function WeatherWidget() {
               </div>
             </div>
 
-            <div className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div 
+              className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+              onClick={() => {
+                if (data && Number.isFinite(data.latitude) && Number.isFinite(data.longitude)) {
+                  navigate(`/weather-forecast?lat=${data.latitude}&lon=${data.longitude}`);
+                }
+              }}
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-success/5 to-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative flex items-center gap-4">
                 <div className="relative text-2xl">
@@ -444,6 +453,7 @@ export default function WeatherWidget() {
                 <div className="flex-1">
                   <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Hava durumu</div>
                   <div className="text-lg font-semibold text-foreground">{wmoToTr(data.weatherCode)}</div>
+                  <div className="text-xs text-muted-foreground mt-1">5 günlük tahmin için tıklayın</div>
                 </div>
                 <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-3 py-1 rounded-full border">
                   {data.timeIso ? new Date(data.timeIso).toLocaleTimeString() : null}

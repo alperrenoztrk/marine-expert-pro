@@ -38,6 +38,7 @@ import StabilityQuizPage from "./pages/StabilityQuiz";
 import NavigationQuizPage from "./pages/NavigationQuiz";
 import NavigationAssistantPage from "./pages/NavigationAssistant";
 import ClockPage from "./pages/Clock";
+import WeatherForecast from "./pages/WeatherForecast";
 
 const queryClient = new QueryClient();
 
@@ -82,10 +83,11 @@ const App = () => {
                     <Route path="/economics" element={<Economics />} />
                     <Route path="/empty-page" element={<EmptyPage />} />
                     <Route path="/settings" element={<Settings />} />
-                    <Route path="/formulas" element={<Formulas />} />
-                    <Route path="/regulations" element={<Regulations />} />
-                    <Route path="/clock" element={<ClockPage />} />
-                    <Route path="*" element={<Index />} />
+                     <Route path="/formulas" element={<Formulas />} />
+                     <Route path="/regulations" element={<Regulations />} />
+                     <Route path="/clock" element={<ClockPage />} />
+                     <Route path="/weather-forecast" element={<WeatherForecast />} />
+                     <Route path="*" element={<Index />} />
                     </Routes>
                   </BrowserRouter>
                 </div>
