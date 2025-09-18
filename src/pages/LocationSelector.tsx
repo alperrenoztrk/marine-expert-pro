@@ -8,6 +8,27 @@ import { useLocationSearch, type LocationResult } from '@/hooks/useLocationSearc
 import { useWeatherForecast } from '@/hooks/useWeatherForecast';
 import { useCurrentWeather } from '@/hooks/useCurrentWeather';
 
+function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
+  if (!Number.isFinite(decimal)) return "-";
+  
+  const abs = Math.abs(decimal);
+  const degrees = Math.floor(abs);
+  const minutesFloat = (abs - degrees) * 60;
+  const minutes = Math.floor(minutesFloat);
+  const secondsFloat = (minutesFloat - minutes) * 60;
+  const seconds = Math.round(secondsFloat * 100) / 100; // Tam saniye hassasiyeti için 2 decimal
+  
+  let direction: string;
+  if (isLatitude) {
+    direction = decimal >= 0 ? "K" : "G"; // Kuzey/Güney
+  } else {
+    direction = decimal >= 0 ? "D" : "B"; // Doğu/Batı
+  }
+  
+  const secondsStr = seconds < 10 ? `0${seconds.toFixed(2)}` : seconds.toFixed(2);
+  return `${degrees}°${minutes.toString().padStart(2, '0')}'${secondsStr}"${direction}`;
+}
+
 function LocationCard({ location, onSelect }: { location: LocationResult; onSelect: (location: LocationResult) => void }) {
   return (
     <Card 
@@ -34,8 +55,9 @@ function LocationCard({ location, onSelect }: { location: LocationResult; onSele
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <span>📍</span>
-                <span className="font-mono">
-                  {location.latitude.toFixed(2)}°, {location.longitude.toFixed(2)}°
+                <span className="font-mono text-xs">
+                  <div>{decimalToDMS(location.latitude, true)}</div>
+                  <div>{decimalToDMS(location.longitude, false)}</div>
                 </span>
               </div>
               
