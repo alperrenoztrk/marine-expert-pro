@@ -39,6 +39,7 @@ import NavigationQuizPage from "./pages/NavigationQuiz";
 import NavigationAssistantPage from "./pages/NavigationAssistant";
 import ClockPage from "./pages/Clock";
 import WeatherForecast from "./pages/WeatherForecast";
+import LocationSelector from "./pages/LocationSelector";
 
 const queryClient = new QueryClient();
 
@@ -86,7 +87,8 @@ const App = () => {
                      <Route path="/formulas" element={<Formulas />} />
                      <Route path="/regulations" element={<Regulations />} />
                      <Route path="/clock" element={<ClockPage />} />
-                     <Route path="/weather-forecast" element={<WeatherForecast />} />
+          <Route path="/weather-forecast" element={<WeatherForecast />} />
+          <Route path="/location-selector" element={<LocationSelector />} />
                      <Route path="*" element={<Index />} />
                     </Routes>
                   </BrowserRouter>

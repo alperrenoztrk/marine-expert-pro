@@ -88,6 +88,7 @@ export default function WeatherForecast() {
   
   const lat = Number(searchParams.get('lat'));
   const lon = Number(searchParams.get('lon'));
+  const selectedLocationName = searchParams.get('location');
   
   const { loading, error, data } = useWeatherForecast(lat, lon);
 
@@ -126,7 +127,7 @@ export default function WeatherForecast() {
           <CardContent className="pt-6">
             <div className="text-center">
               <h2 className="text-xl font-semibold text-foreground mb-2">
-                {locationLabel || "Konum bilgisi alınıyor..."}
+                {selectedLocationName || locationLabel || "Konum bilgisi alınıyor..."}
               </h2>
               <p className="text-sm text-muted-foreground">
                 {Number.isFinite(lat) && Number.isFinite(lon) 

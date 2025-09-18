@@ -342,7 +342,10 @@ export default function WeatherWidget() {
                 })()}
               </div>
             </div>
-            <div className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div 
+              className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+              onClick={() => navigate('/location-selector')}
+            >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative flex items-center gap-4">
                 <div className="relative">
@@ -355,13 +358,18 @@ export default function WeatherWidget() {
                   <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Konum</div>
                   <div className="text-lg font-semibold text-foreground">{locationLabel ?? "Bilinmiyor"}</div>
                 </div>
-                <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-1 rounded-md">
-                  {Number.isFinite(data.latitude) && Number.isFinite(data.longitude) ? (
-                    <div className="space-y-1">
-                      <div>{decimalToDMS(data.latitude, true)}</div>
-                      <div>{decimalToDMS(data.longitude, false)}</div>
-                    </div>
-                  ) : null}
+                <div className="flex items-center gap-2">
+                  <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-2 py-1 rounded-md">
+                    {Number.isFinite(data.latitude) && Number.isFinite(data.longitude) ? (
+                      <div className="space-y-1">
+                        <div>{decimalToDMS(data.latitude, true)}</div>
+                        <div>{decimalToDMS(data.longitude, false)}</div>
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="text-primary opacity-70 group-hover:opacity-100 transition-opacity">
+                    →
+                  </div>
                 </div>
               </div>
             </div>
