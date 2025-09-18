@@ -83,8 +83,7 @@ function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
   const degrees = Math.floor(abs);
   const minutesFloat = (abs - degrees) * 60;
   const minutes = Math.floor(minutesFloat);
-  const secondsFloat = (minutesFloat - minutes) * 60;
-  const seconds = Math.round(secondsFloat * 100) / 100; // Tam saniye hassasiyeti için 2 decimal
+  const seconds = Math.round((minutesFloat - minutes) * 60);
   
   let direction: string;
   if (isLatitude) {
@@ -93,8 +92,7 @@ function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
     direction = decimal >= 0 ? "D" : "B"; // Doğu/Batı
   }
   
-  const secondsStr = seconds < 10 ? `0${seconds.toFixed(2)}` : seconds.toFixed(2);
-  return `${degrees}°${minutes.toString().padStart(2, '0')}'${secondsStr}"${direction}`;
+  return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"${direction}`;
 }
 
 function wmoToEmoji(code?: number): string {
