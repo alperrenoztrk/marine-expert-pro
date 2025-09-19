@@ -33,6 +33,116 @@ export type ARPAResult = {
   relativeBearingDeg: number; // Bearing of relative motion vector (deg)
 };
 
+export type PlaneSailingInput = {
+  lat1Deg: number;
+  lon1Deg: number;
+  lat2Deg: number;
+  lon2Deg: number;
+};
+
+export type PlaneSailingResult = {
+  dLatMin: number;    // Difference of latitude in minutes
+  depMin: number;     // Departure in minutes
+  courseDeg: number;  // Course angle
+  distanceNm: number; // Distance in nautical miles
+};
+
+export type SightReductionInput = {
+  latDeg: number;     // Observer latitude
+  decDeg: number;     // Celestial body declination
+  lhaDeg: number;     // Local hour angle
+};
+
+export type SightReductionResult = {
+  hcDeg: number;      // Calculated altitude
+  azimuthDeg: number; // Azimuth
+};
+
+export type BearingCalculationInput = {
+  initialBearingDeg: number;
+  runNm: number;      // Distance run
+  bearingFactor: number; // 2 for doubling angle, etc.
+};
+
+export type BearingCalculationResult = {
+  distanceOffNm: number;
+};
+
+export type TideInput = {
+  hour: number;       // Hour from HW (1-6)
+  tidalRangeM: number; // Tidal range in meters
+};
+
+export type TideResult = {
+  heightM: number;    // Tidal height for that hour
+};
+
+export type DistanceCalculationInput = {
+  heightM: number;    // Height of eye or object in meters
+  type: 'dip' | 'radar' | 'light';
+  lightHeightM?: number; // For light visibility
+};
+
+export type DistanceCalculationResult = {
+  distanceNm: number;
+};
+
+export type TurningCalculationInput = {
+  shipLengthM: number;
+  courseChangeDeg: number;
+  speedKn: number;
+};
+
+export type TurningCalculationResult = {
+  tacticalDiameterM: number;
+  advanceM: number;
+  transferM: number;
+  rotDegPerMin: number;
+  wheelOverPointM: number;
+};
+
+export type WeatherCalculationInput = {
+  beaufortNumber?: number;
+  windSpeedKn?: number;
+  windAreaM2?: number;
+  shipSpeedKn?: number;
+};
+
+export type WeatherCalculationResult = {
+  windSpeedKn?: number;
+  waveHeightM?: number;
+  leewayAngleDeg?: number;
+  windForceN?: number;
+};
+
+export type CelestialInput = {
+  latDeg: number;
+  decDeg: number;
+  type: 'meridian' | 'amplitude' | 'sunrise';
+};
+
+export type CelestialResult = {
+  latitudeDeg?: number;
+  amplitudeDeg?: number;
+  bearingDeg?: number;
+};
+
+export type EmergencyInput = {
+  searchType: 'square' | 'sector';
+  trackSpacingNm?: number;
+  initialRadiusNm?: number;
+  driftSpeedKn?: number;
+  rescueSpeedKn?: number;
+  distanceNm?: number;
+};
+
+export type EmergencyResult = {
+  legDistanceNm?: number;
+  newRadiusNm?: number;
+  timeToRescueHours?: number;
+  vhfRangeNm?: number;
+};
+
 const toRadians = (deg: number) => (deg * Math.PI) / 180;
 const toDegrees = (rad: number) => (rad * 180) / Math.PI;
 const normalizeAngle = (deg: number) => {
@@ -151,5 +261,226 @@ export function computeArpaCpaTcpa(input: ARPAInput): ARPAResult {
   const tcpaMin = tcpaHours * 60;
 
   return { cpaNm, tcpaMin, relativeSpeedKn, relativeBearingDeg };
+}
+
+// Great Circle calculations (matching formula exactly)
+export function calculateGreatCircle(lat1Deg: number, lon1Deg: number, lat2Deg: number, lon2Deg: number) {
+  const R = 3440.065; // nautical miles
+  const lat1Rad = toRadians(lat1Deg);
+  const lat2Rad = toRadians(lat2Deg);
+  const deltaLatRad = toRadians(lat2Deg - lat1Deg);
+  const deltaLonRad = toRadians(lon2Deg - lon1Deg);
+
+  const a = Math.sin(deltaLatRad/2) * Math.sin(deltaLatRad/2) + 
+            Math.cos(lat1Rad) * Math.cos(lat2Rad) * 
+            Math.sin(deltaLonRad/2) * Math.sin(deltaLonRad/2);
+  const c = 2 * Math.asin(Math.sqrt(a));
+  const distance = R * c;
+
+  const y = Math.sin(deltaLonRad) * Math.cos(lat2Rad);
+  const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - 
+            Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(deltaLonRad);
+  const initialCourse = normalizeAngle(toDegrees(Math.atan2(y, x)));
+
+  return { distance, initialCourse };
+}
+
+// Rhumb Line calculations (matching formula exactly)
+export function calculateRhumbLine(lat1Deg: number, lon1Deg: number, lat2Deg: number, lon2Deg: number) {
+  const lat1Rad = toRadians(lat1Deg);
+  const lat2Rad = toRadians(lat2Deg);
+  const deltaLatRad = lat2Rad - lat1Rad;
+  let deltaLonRad = toRadians(lon2Deg - lon1Deg);
+
+  if (Math.abs(deltaLonRad) > Math.PI) {
+    deltaLonRad = deltaLonRad > 0 ? -(2*Math.PI-deltaLonRad) : (2*Math.PI+deltaLonRad);
+  }
+
+  const q = Math.log(Math.tan(Math.PI/4 + lat2Rad/2) / Math.tan(Math.PI/4 + lat1Rad/2)) / deltaLatRad;
+  const qSafe = Math.abs(deltaLatRad) > 1e-12 ? q : Math.cos(lat1Rad);
+
+  const distance = 60 * Math.sqrt(Math.pow(toDegrees(deltaLatRad), 2) + Math.pow(qSafe * toDegrees(deltaLonRad), 2));
+  const course = normalizeAngle(toDegrees(Math.atan2(deltaLonRad, q * deltaLatRad)));
+
+  return { distance, course };
+}
+
+// Plane Sailing calculations
+export function calculatePlaneSailing(input: PlaneSailingInput): PlaneSailingResult {
+  const { lat1Deg, lon1Deg, lat2Deg, lon2Deg } = input;
+  
+  const dLatMin = 60 * (lat2Deg - lat1Deg);
+  const meanLatRad = toRadians((lat1Deg + lat2Deg) / 2);
+  const depMin = 60 * (lon2Deg - lon1Deg) * Math.cos(meanLatRad);
+  
+  const courseDeg = normalizeAngle(toDegrees(Math.atan2(depMin, dLatMin)));
+  const distanceNm = Math.sqrt(dLatMin * dLatMin + depMin * depMin);
+
+  return { dLatMin, depMin, courseDeg, distanceNm };
+}
+
+// Sight Reduction calculations
+export function calculateSightReduction(input: SightReductionInput): SightReductionResult {
+  const { latDeg, decDeg, lhaDeg } = input;
+  
+  const latRad = toRadians(latDeg);
+  const decRad = toRadians(decDeg);
+  const lhaRad = toRadians(lhaDeg);
+
+  const sinHc = Math.sin(latRad) * Math.sin(decRad) + 
+                Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad);
+  const hcDeg = toDegrees(Math.asin(sinHc));
+
+  const cosZ = (Math.sin(decRad) - Math.sin(latRad) * Math.sin(toRadians(hcDeg))) / 
+               (Math.cos(latRad) * Math.cos(toRadians(hcDeg)));
+  const azimuthDeg = normalizeAngle(toDegrees(Math.acos(Math.max(-1, Math.min(1, cosZ)))));
+
+  return { hcDeg, azimuthDeg };
+}
+
+// Bearing calculations - Doubling the angle on bow
+export function calculateDoublingAngle(initialAngleDeg: number, runNm: number): BearingCalculationResult {
+  const finalAngleDeg = 2 * initialAngleDeg;
+  const distanceOffNm = runNm * Math.sin(toRadians(2 * initialAngleDeg)) / Math.sin(toRadians(finalAngleDeg));
+  return { distanceOffNm };
+}
+
+// Four point bearing
+export function calculateFourPointBearing(runNm: number): BearingCalculationResult {
+  const distanceOffNm = runNm * Math.sqrt(2); // 45° angle
+  return { distanceOffNm };
+}
+
+// Seven point bearing  
+export function calculateSevenPointBearing(runNm: number): BearingCalculationResult {
+  const distanceOffNm = runNm; // 30° to 60° gives distance = run
+  return { distanceOffNm };
+}
+
+// Distance calculations
+export function calculateDistance(input: DistanceCalculationInput): DistanceCalculationResult {
+  const { heightM, type, lightHeightM } = input;
+  
+  let distanceNm = 0;
+  
+  switch (type) {
+    case 'dip':
+      distanceNm = 2.075 * Math.sqrt(heightM);
+      break;
+    case 'radar':
+      distanceNm = 2.35 * Math.sqrt(heightM);
+      break;
+    case 'light':
+      if (lightHeightM !== undefined) {
+        distanceNm = 1.17 * (Math.sqrt(heightM) + Math.sqrt(lightHeightM));
+      }
+      break;
+  }
+  
+  return { distanceNm };
+}
+
+// Tide calculations - Rule of Twelfths
+export function calculateTide(input: TideInput): TideResult {
+  const { hour, tidalRangeM } = input;
+  
+  const fractions = [0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12];
+  const heightM = fractions[Math.min(hour, 6)] * tidalRangeM;
+  
+  return { heightM };
+}
+
+// Turning calculations
+export function calculateTurning(input: TurningCalculationInput): TurningCalculationResult {
+  const { shipLengthM, courseChangeDeg, speedKn } = input;
+  
+  const tacticalDiameterM = 3.5 * shipLengthM; // Average 3-4 × L
+  const radiusM = tacticalDiameterM / 2;
+  
+  const courseChangeRad = toRadians(courseChangeDeg);
+  const advanceM = radiusM * Math.sin(courseChangeRad / 2);
+  const transferM = radiusM * (1 - Math.cos(courseChangeRad / 2));
+  
+  const rotDegPerMin = 3438 * (speedKn * 0.514444) / radiusM; // V in m/s, formula gives deg/min
+  const wheelOverPointM = advanceM / Math.sin(courseChangeRad / 2);
+  
+  return { tacticalDiameterM, advanceM, transferM, rotDegPerMin, wheelOverPointM };
+}
+
+// Weather calculations
+export function calculateWeather(input: WeatherCalculationInput): WeatherCalculationResult {
+  const { beaufortNumber, windSpeedKn, windAreaM2, shipSpeedKn } = input;
+  
+  let result: WeatherCalculationResult = {};
+  
+  if (beaufortNumber !== undefined) {
+    result.windSpeedKn = 2 * Math.sqrt(Math.pow(beaufortNumber, 3));
+    result.waveHeightM = 0.025 * Math.pow(result.windSpeedKn, 2);
+  }
+  
+  if (windSpeedKn !== undefined && shipSpeedKn !== undefined) {
+    const k = 0.15; // leeway factor
+    result.leewayAngleDeg = k * Math.pow(windSpeedKn, 2) / Math.pow(shipSpeedKn, 2);
+  }
+  
+  if (windSpeedKn !== undefined && windAreaM2 !== undefined) {
+    result.windForceN = 0.00338 * Math.pow(windSpeedKn, 2) * windAreaM2;
+  }
+  
+  return result;
+}
+
+// Celestial calculations
+export function calculateCelestial(input: CelestialInput): CelestialResult {
+  const { latDeg, decDeg, type } = input;
+  
+  let result: CelestialResult = {};
+  
+  switch (type) {
+    case 'meridian':
+      // Latitude = 90° - zenith distance ± declination
+      result.latitudeDeg = 90 - Math.abs(latDeg - decDeg);
+      break;
+    case 'amplitude':
+      // A = arcsin(sin δ / cos φ)
+      const latRad = toRadians(latDeg);
+      const decRad = toRadians(decDeg);
+      result.amplitudeDeg = toDegrees(Math.asin(Math.sin(decRad) / Math.cos(latRad)));
+      break;
+    case 'sunrise':
+      // Bearing at sunrise/sunset
+      const latRad2 = toRadians(latDeg);
+      const decRad2 = toRadians(decDeg);
+      result.bearingDeg = normalizeAngle(toDegrees(Math.acos(-Math.tan(latRad2) * Math.tan(decRad2))));
+      break;
+  }
+  
+  return result;
+}
+
+// Emergency calculations
+export function calculateEmergency(input: EmergencyInput): EmergencyResult {
+  const { searchType, trackSpacingNm, initialRadiusNm, driftSpeedKn, rescueSpeedKn, distanceNm } = input;
+  
+  let result: EmergencyResult = {};
+  
+  switch (searchType) {
+    case 'square':
+      if (trackSpacingNm !== undefined) {
+        result.legDistanceNm = 2 * trackSpacingNm;
+      }
+      break;
+    case 'sector':
+      if (initialRadiusNm !== undefined) {
+        result.newRadiusNm = initialRadiusNm * Math.sqrt(2);
+      }
+      break;
+  }
+  
+  if (distanceNm !== undefined && rescueSpeedKn !== undefined && driftSpeedKn !== undefined) {
+    result.timeToRescueHours = distanceNm / (rescueSpeedKn + driftSpeedKn);
+  }
+  
+  return result;
 }
 
