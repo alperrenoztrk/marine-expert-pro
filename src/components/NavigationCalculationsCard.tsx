@@ -1,10 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Compass, Navigation, MapPin, Clock, Waves, Calculator, Radar, Sun, AlertTriangle } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Calculator, BookOpen } from "lucide-react";
 import { useState } from "react";
 import { 
   calculateGreatCircle, 
@@ -70,6 +70,28 @@ export const NavigationCalculationsCard = () => {
   const [weatherResults, setWeatherResults] = useState<any>(null);
   const [celestialResults, setCelestialResults] = useState<any>(null);
   const [emergencyResults, setEmergencyResults] = useState<any>(null);
+
+  // Define sections matching the formulas page
+  const sections = [
+    { id: "gc", title: "Büyük Daire (Great Circle)" },
+    { id: "rhumb", title: "Rhumb Line (Mercator)" },
+    { id: "plane", title: "Plane Sailing" },
+    { id: "time-eta", title: "Zaman ve ETA" },
+    { id: "current", title: "Akıntı Üçgeni (CTS)" },
+    { id: "compass", title: "Pusula Dönüşümleri" },
+    { id: "cpa", title: "CPA / TCPA" },
+    { id: "sight", title: "Sight Reduction" },
+    { id: "position", title: "Konum Tespiti" },
+    { id: "bearings", title: "Kerteriz Hesaplamaları" },
+    { id: "distance", title: "Mesafe Hesaplamaları" },
+    { id: "tides", title: "Gelgit Hesaplamaları" },
+    { id: "radar", title: "Radar Hesaplamaları" },
+    { id: "pilotage", title: "Kıyı Seyri" },
+    { id: "turning", title: "Dönüş Hesaplamaları" },
+    { id: "weather", title: "Hava Durumu" },
+    { id: "celestial", title: "Göksel Navigasyon" },
+    { id: "emergency", title: "Acil Durum" }
+  ];
 
   // Calculation handlers
   const handleGreatCircle = () => {
@@ -296,27 +318,37 @@ export const NavigationCalculationsCard = () => {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Compass className="w-5 h-5" />
-          Seyir Hesaplamaları
-        </CardTitle>
-        <CardDescription>
-          Formüllerle birebir eşleşen navigasyon hesaplamaları
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="great-circle" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="great-circle">Büyük Daire</TabsTrigger>
-            <TabsTrigger value="rhumb-line">Rhumb Line</TabsTrigger>
-            <TabsTrigger value="plane-sailing">Plane Sailing</TabsTrigger>
-            <TabsTrigger value="time-eta">Zaman & ETA</TabsTrigger>
-            <TabsTrigger value="current">Akıntı Üçgeni</TabsTrigger>
-          </TabsList>
+    <div className="space-y-4" data-no-translate>
+      <div className="text-sm text-muted-foreground flex items-center gap-2">
+        <BookOpen className="h-4 w-4" />
+        Hesaplama Rehberi
+      </div>
 
-          <TabsContent value="great-circle" className="space-y-4">
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" /> Seyir Hesaplamaları – İçindekiler
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            {sections.map((s) => (
+              <a key={s.id} href={`#${s.id}`}>
+                <Button variant="outline" size="sm" className="whitespace-nowrap">
+                  {s.title}
+                </Button>
+              </a>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="gc" className="scroll-mt-24">Büyük Daire (Great Circle)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="gc-lat1">Başlangıç Enlemi (φ₁)</Label>
@@ -359,16 +391,24 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleGreatCircle} className="w-full">Hesapla</Button>
-            {gcResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Mesafe:</strong> {gcResults.distance.toFixed(2)} nm</p>
-                <p><strong>İlk Kerteriz (θ₀):</strong> {gcResults.initialCourse.toFixed(1)}°</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleGreatCircle} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {gcResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Mesafe: ${gcResults.distance.toFixed(2)} nm
+İlk Kerteriz (θ₀): ${gcResults.initialCourse.toFixed(1)}°`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="rhumb-line" className="space-y-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="rhumb" className="scroll-mt-24">Rhumb Line (Mercator)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="rl-lat1">Başlangıç Enlemi</Label>
@@ -411,16 +451,24 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleRhumbLine} className="w-full">Hesapla</Button>
-            {rhumbResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Mesafe:</strong> {rhumbResults.distance.toFixed(2)} nm</p>
-                <p><strong>Sabit Kerteriz:</strong> {rhumbResults.course.toFixed(1)}°</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleRhumbLine} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {rhumbResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Mesafe: ${rhumbResults.distance.toFixed(2)} nm
+Sabit Kerteriz: ${rhumbResults.course.toFixed(1)}°`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="plane-sailing" className="space-y-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="plane" className="scroll-mt-24">Plane Sailing</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="ps-lat1">Başlangıç Enlemi</Label>
@@ -463,19 +511,27 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handlePlaneSailing} className="w-full">Hesapla</Button>
-            {planeResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>dLat:</strong> {planeResults.dLatMin.toFixed(2)} dakika</p>
-                <p><strong>Departure:</strong> {planeResults.depMin.toFixed(2)} dakika</p>
-                <p><strong>Kurs:</strong> {planeResults.courseDeg.toFixed(1)}°</p>
-                <p><strong>Mesafe:</strong> {planeResults.distanceNm.toFixed(2)} nm</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handlePlaneSailing} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {planeResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+dLat: ${planeResults.dLatMin.toFixed(2)} dk
+Dep: ${planeResults.depMin.toFixed(2)} dk
+Kurs: ${planeResults.courseDeg.toFixed(1)}°
+Mesafe: ${planeResults.distanceNm.toFixed(2)} nm`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="time-eta" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="time-eta" className="scroll-mt-24">Zaman ve ETA</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="eta-distance">Mesafe (nm)</Label>
                 <Input
@@ -487,7 +543,7 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="eta-speed">Hız (knot)</Label>
+                <Label htmlFor="eta-speed">Hız (kn)</Label>
                 <Input
                   id="eta-speed"
                   type="number"
@@ -497,19 +553,27 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleETA} className="w-full">Hesapla</Button>
-            {etaResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Süre:</strong> {etaResults.hours.toFixed(2)} saat</p>
-                <p><strong>Süre:</strong> {etaResults.hoursMinutes}</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleETA} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {etaResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Zaman: ${etaResults.hoursMinutes}
+(${etaResults.hours.toFixed(2)} saat)`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="current" className="space-y-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="current" className="scroll-mt-24">Akıntı Üçgeni (CTS)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="current-course">İstenen Rota (TR) °</Label>
+                <Label htmlFor="current-course">İstenen Rota (°)</Label>
                 <Input
                   id="current-course"
                   type="number"
@@ -519,7 +583,7 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="current-speed">Gemi Hızı (V) kn</Label>
+                <Label htmlFor="current-speed">Gemi Hızı (kn)</Label>
                 <Input
                   id="current-speed"
                   type="number"
@@ -529,17 +593,17 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="current-set">Akıntı Yönü (Set) °</Label>
+                <Label htmlFor="current-set">Akıntı Yönü (°)</Label>
                 <Input
                   id="current-set"
                   type="number"
-                  placeholder="045"
+                  placeholder="180"
                   value={currentInputs.set}
                   onChange={(e) => setCurrentInputs({...currentInputs, set: e.target.value})}
                 />
               </div>
               <div>
-                <Label htmlFor="current-drift">Akıntı Hızı (c) kn</Label>
+                <Label htmlFor="current-drift">Akıntı Hızı (kn)</Label>
                 <Input
                   id="current-drift"
                   type="number"
@@ -549,34 +613,31 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleCurrent} className="w-full">Hesapla</Button>
-            {currentResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Yönlendirilecek Kurs (CTS):</strong> {currentResults.courseToSteerDeg.toFixed(1)}°</p>
-                <p><strong>Yer Üzeri Hız (SOG):</strong> {currentResults.groundSpeedKn.toFixed(1)} kn</p>
-                <p><strong>Sürüklenme Açısı:</strong> {currentResults.driftAngleDeg.toFixed(1)}°</p>
-                <p><strong>Uygulanabilir:</strong> {currentResults.feasible ? "Evet" : "Hayır"}</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            <Button onClick={handleCurrent} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {currentResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Yönlendirilecek Kurs: ${currentResults.courseToSteerDeg.toFixed(1)}°
+Yer Üstü Hızı: ${currentResults.groundSpeedKn.toFixed(1)} kn
+Drift Açısı: ${currentResults.driftAngleDeg.toFixed(1)}°
+Uygulanabilir: ${currentResults.feasible ? 'Evet' : 'Hayır'}`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        {/* Additional tabs for other calculations */}
-        <Tabs defaultValue="compass" className="w-full mt-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="compass">Pusula</TabsTrigger>
-            <TabsTrigger value="cpa-tcpa">CPA/TCPA</TabsTrigger>
-            <TabsTrigger value="sight-reduction">Sight Reduction</TabsTrigger>
-            <TabsTrigger value="bearings">Kerteriz</TabsTrigger>
-            <TabsTrigger value="distances">Mesafe</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="compass" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="compass" className="scroll-mt-24">Pusula Dönüşümleri</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="compass">Pusula Kerterizi (Cc)</Label>
+                <Label htmlFor="compass-reading">Pusula Okuması (°)</Label>
                 <Input
-                  id="compass"
+                  id="compass-reading"
                   type="number"
                   placeholder="090"
                   value={compassInputs.compass}
@@ -584,41 +645,50 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="variation">Manyetik İnhiraf (Var)</Label>
+                <Label htmlFor="compass-variation">Varyasyon (°)</Label>
                 <Input
-                  id="variation"
+                  id="compass-variation"
                   type="number"
-                  placeholder="3.5"
+                  placeholder="2"
                   value={compassInputs.variation}
                   onChange={(e) => setCompassInputs({...compassInputs, variation: e.target.value})}
                 />
               </div>
               <div>
-                <Label htmlFor="deviation">Pusula Hatası (Dev)</Label>
+                <Label htmlFor="compass-deviation">Deviasyon (°)</Label>
                 <Input
-                  id="deviation"
+                  id="compass-deviation"
                   type="number"
-                  placeholder="-1.2"
+                  placeholder="1"
                   value={compassInputs.deviation}
                   onChange={(e) => setCompassInputs({...compassInputs, deviation: e.target.value})}
                 />
               </div>
             </div>
-            <Button onClick={handleCompass} className="w-full">Hesapla</Button>
-            {compassResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Manyetik Kerteriz (Cm):</strong> {compassResults.magnetic.toFixed(1)}°</p>
-                <p><strong>Gerçek Kerteriz (Ct):</strong> {compassResults.true.toFixed(1)}°</p>
-                <p><strong>Toplam Hata:</strong> {compassResults.totalError.toFixed(1)}°</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleCompass} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {compassResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Manyetik Kerteriz: ${compassResults.magnetic.toFixed(1)}°
+Gerçek Kerteriz: ${compassResults.true.toFixed(1)}°
+Toplam Hata: ${compassResults.totalError.toFixed(1)}°`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="cpa-tcpa" className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="cpa" className="scroll-mt-24">CPA / TCPA</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Hedef Kerterizi (°)</Label>
+                <Label htmlFor="cpa-bearing">Hedef Kerterizi (°)</Label>
                 <Input
+                  id="cpa-bearing"
                   type="number"
                   placeholder="045"
                   value={cpaInputs.bearing}
@@ -626,17 +696,19 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Hedef Mesafesi (nm)</Label>
+                <Label htmlFor="cpa-distance">Mesafe (nm)</Label>
                 <Input
+                  id="cpa-distance"
                   type="number"
-                  placeholder="10"
+                  placeholder="5"
                   value={cpaInputs.distance}
                   onChange={(e) => setCpaInputs({...cpaInputs, distance: e.target.value})}
                 />
               </div>
               <div>
-                <Label>Hedef Kursu (°)</Label>
+                <Label htmlFor="cpa-target-course">Hedef Kursu (°)</Label>
                 <Input
+                  id="cpa-target-course"
                   type="number"
                   placeholder="270"
                   value={cpaInputs.targetCourse}
@@ -644,26 +716,29 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Hedef Hızı (kn)</Label>
+                <Label htmlFor="cpa-target-speed">Hedef Hızı (kn)</Label>
                 <Input
+                  id="cpa-target-speed"
                   type="number"
-                  placeholder="15"
+                  placeholder="10"
                   value={cpaInputs.targetSpeed}
                   onChange={(e) => setCpaInputs({...cpaInputs, targetSpeed: e.target.value})}
                 />
               </div>
               <div>
-                <Label>Kendi Kursumuz (°)</Label>
+                <Label htmlFor="cpa-own-course">Kendi Kursumuz (°)</Label>
                 <Input
+                  id="cpa-own-course"
                   type="number"
-                  placeholder="000"
+                  placeholder="090"
                   value={cpaInputs.ownCourse}
                   onChange={(e) => setCpaInputs({...cpaInputs, ownCourse: e.target.value})}
                 />
               </div>
               <div>
-                <Label>Kendi Hızımız (kn)</Label>
+                <Label htmlFor="cpa-own-speed">Kendi Hızımız (kn)</Label>
                 <Input
+                  id="cpa-own-speed"
                   type="number"
                   placeholder="12"
                   value={cpaInputs.ownSpeed}
@@ -671,22 +746,31 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleCPA} className="w-full">Hesapla</Button>
-            {cpaResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>CPA Mesafesi:</strong> {cpaResults.cpaNm.toFixed(2)} nm</p>
-                <p><strong>TCPA:</strong> {cpaResults.tcpaMin.toFixed(1)} dakika</p>
-                <p><strong>Göreceli Hız:</strong> {cpaResults.relativeSpeedKn.toFixed(1)} kn</p>
-                <p><strong>Göreceli Kerteriz:</strong> {cpaResults.relativeBearingDeg.toFixed(1)}°</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleCPA} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {cpaResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+CPA: ${cpaResults.cpaNm.toFixed(2)} nm
+TCPA: ${cpaResults.tcpaMin.toFixed(1)} dk
+Rel. Hız: ${cpaResults.relativeSpeedKn.toFixed(1)} kn
+Rel. Kerteriz: ${cpaResults.relativeBearingDeg.toFixed(1)}°`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="sight-reduction" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="sight" className="scroll-mt-24">Sight Reduction</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Gözlemci Enlemi (φ)</Label>
+                <Label htmlFor="sight-lat">Enlem (°)</Label>
                 <Input
+                  id="sight-lat"
                   type="number"
                   placeholder="41.0"
                   value={sightInputs.lat}
@@ -694,8 +778,9 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Gök Cisminin Deklinasyonu (δ)</Label>
+                <Label htmlFor="sight-dec">Deklinasyon (°)</Label>
                 <Input
+                  id="sight-dec"
                   type="number"
                   placeholder="23.5"
                   value={sightInputs.dec}
@@ -703,8 +788,9 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Yerel Saat Açısı (LHA)</Label>
+                <Label htmlFor="sight-lha">LHA (°)</Label>
                 <Input
+                  id="sight-lha"
                   type="number"
                   placeholder="45"
                   value={sightInputs.lha}
@@ -712,150 +798,180 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleSightReduction} className="w-full">Hesapla</Button>
-            {sightResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Hesaplanan Yükseklik (Hc):</strong> {sightResults.hcDeg.toFixed(2)}°</p>
-                <p><strong>Azimut (Z):</strong> {sightResults.azimuthDeg.toFixed(1)}°</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleSightReduction} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {sightResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Hesaplanan Yükseklik (Hc): ${sightResults.hcDeg.toFixed(2)}°
+Azimut: ${sightResults.azimuthDeg.toFixed(1)}°`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="bearings" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="bearings" className="scroll-mt-24">Kerteriz Hesaplamaları</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Kerteriz Tipi</Label>
+                <Label htmlFor="bearing-type">Yöntem</Label>
                 <Select value={bearingInputs.type} onValueChange={(value) => setBearingInputs({...bearingInputs, type: value})}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="doubling">Doubling the Angle</SelectItem>
-                    <SelectItem value="four">Four Point Bearing</SelectItem>
-                    <SelectItem value="seven">Seven Point Bearing</SelectItem>
+                    <SelectItem value="doubling">Açı İkiye Katlama</SelectItem>
+                    <SelectItem value="four">Four Point</SelectItem>
+                    <SelectItem value="seven">Seven Point</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              {bearingInputs.type === "doubling" && (
-                <div>
-                  <Label>İlk Açı (°)</Label>
-                  <Input
-                    type="number"
-                    placeholder="30"
-                    value={bearingInputs.angle}
-                    onChange={(e) => setBearingInputs({...bearingInputs, angle: e.target.value})}
-                  />
-                </div>
-              )}
               <div>
-                <Label>Koşulan Mesafe (nm)</Label>
+                <Label htmlFor="bearing-angle">Açı (°)</Label>
                 <Input
+                  id="bearing-angle"
                   type="number"
-                  placeholder="5"
+                  placeholder="30"
+                  value={bearingInputs.angle}
+                  onChange={(e) => setBearingInputs({...bearingInputs, angle: e.target.value})}
+                  disabled={bearingInputs.type !== "doubling"}
+                />
+              </div>
+              <div>
+                <Label htmlFor="bearing-run">Alınan Yol (nm)</Label>
+                <Input
+                  id="bearing-run"
+                  type="number"
+                  placeholder="2"
                   value={bearingInputs.run}
                   onChange={(e) => setBearingInputs({...bearingInputs, run: e.target.value})}
                 />
               </div>
             </div>
-            <Button onClick={handleBearing} className="w-full">Hesapla</Button>
-            {bearingResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Mesafe:</strong> {bearingResults.distanceOffNm.toFixed(2)} nm</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleBearing} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {bearingResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Mesafe: ${bearingResults.distanceOffNm.toFixed(2)} nm`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="distances" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="distance" className="scroll-mt-24">Mesafe Hesaplamaları</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Mesafe Tipi</Label>
+                <Label htmlFor="distance-type">Tür</Label>
                 <Select value={distanceInputs.type} onValueChange={(value) => setDistanceInputs({...distanceInputs, type: value})}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="dip">Dip (Horizon) Distance</SelectItem>
-                    <SelectItem value="radar">Radar Horizon</SelectItem>
+                    <SelectItem value="dip">Ufuk (Dip)</SelectItem>
+                    <SelectItem value="radar">Radar Ufku</SelectItem>
                     <SelectItem value="light">Işık Görünürlüğü</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label>Göz/Radar Yüksekliği (m)</Label>
+                <Label htmlFor="distance-height">Yükseklik (m)</Label>
                 <Input
+                  id="distance-height"
                   type="number"
-                  placeholder="10"
+                  placeholder="15"
                   value={distanceInputs.height}
                   onChange={(e) => setDistanceInputs({...distanceInputs, height: e.target.value})}
                 />
               </div>
-              {distanceInputs.type === "light" && (
-                <div>
-                  <Label>Işık Yüksekliği (m)</Label>
-                  <Input
-                    type="number"
-                    placeholder="20"
-                    value={distanceInputs.lightHeight}
-                    onChange={(e) => setDistanceInputs({...distanceInputs, lightHeight: e.target.value})}
-                  />
-                </div>
-              )}
-            </div>
-            <Button onClick={handleDistance} className="w-full">Hesapla</Button>
-            {distanceResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Mesafe:</strong> {distanceResults.distanceNm.toFixed(2)} nm</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-
-        {/* Third set of tabs */}
-        <Tabs defaultValue="tides" className="w-full mt-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="tides">Gelgit</TabsTrigger>
-            <TabsTrigger value="turning">Dönüş</TabsTrigger>
-            <TabsTrigger value="weather">Hava</TabsTrigger>
-            <TabsTrigger value="celestial">Göksel</TabsTrigger>
-            <TabsTrigger value="emergency">Acil Durum</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="tides" className="space-y-4">
-            <div className="grid gap-4">
               <div>
-                <Label>Saat (1-6)</Label>
+                <Label htmlFor="distance-light-height">Işık Yüksekliği (m)</Label>
                 <Input
+                  id="distance-light-height"
                   type="number"
-                  min="1"
-                  max="6"
-                  placeholder="3"
-                  value={tideInputs.hour}
-                  onChange={(e) => setTideInputs({...tideInputs, hour: e.target.value})}
+                  placeholder="20"
+                  value={distanceInputs.lightHeight}
+                  onChange={(e) => setDistanceInputs({...distanceInputs, lightHeight: e.target.value})}
+                  disabled={distanceInputs.type !== "light"}
                 />
               </div>
+            </div>
+            <Button onClick={handleDistance} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {distanceResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Mesafe: ${distanceResults.distanceNm.toFixed(2)} nm`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="tides" className="scroll-mt-24">Gelgit Hesaplamaları</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Gelgit Farkı (m)</Label>
+                <Label htmlFor="tide-hour">Saat (1-6)</Label>
+                <Select value={tideInputs.hour} onValueChange={(value) => setTideInputs({...tideInputs, hour: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Saat seçin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1. Saat</SelectItem>
+                    <SelectItem value="2">2. Saat</SelectItem>
+                    <SelectItem value="3">3. Saat</SelectItem>
+                    <SelectItem value="4">4. Saat</SelectItem>
+                    <SelectItem value="5">5. Saat</SelectItem>
+                    <SelectItem value="6">6. Saat</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="tide-range">Gelgit Aralığı (m)</Label>
                 <Input
+                  id="tide-range"
                   type="number"
-                  placeholder="4.2"
+                  placeholder="3"
                   value={tideInputs.range}
                   onChange={(e) => setTideInputs({...tideInputs, range: e.target.value})}
                 />
               </div>
             </div>
-            <Button onClick={handleTide} className="w-full">Hesapla (Rule of Twelfths)</Button>
-            {tideResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Gelgit Yüksekliği:</strong> {tideResults.heightM.toFixed(2)} m</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleTide} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {tideResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Gelgit Yüksekliği: ${tideResults.heightM.toFixed(2)} m`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="turning" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="turning" className="scroll-mt-24">Dönüş Hesaplamaları</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Gemi Boyu (m)</Label>
+                <Label htmlFor="turning-length">Gemi Boyu (m)</Label>
                 <Input
+                  id="turning-length"
                   type="number"
                   placeholder="200"
                   value={turningInputs.length}
@@ -863,8 +979,9 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Kurs Değişikliği (°)</Label>
+                <Label htmlFor="turning-course-change">Kurs Değişimi (°)</Label>
                 <Input
+                  id="turning-course-change"
                   type="number"
                   placeholder="90"
                   value={turningInputs.courseChange}
@@ -872,8 +989,9 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Hız (kn)</Label>
+                <Label htmlFor="turning-speed">Hız (kn)</Label>
                 <Input
+                  id="turning-speed"
                   type="number"
                   placeholder="12"
                   value={turningInputs.speed}
@@ -881,33 +999,42 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleTurning} className="w-full">Hesapla</Button>
-            {turningResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p><strong>Tactical Diameter:</strong> {turningResults.tacticalDiameterM.toFixed(0)} m</p>
-                <p><strong>Advance:</strong> {turningResults.advanceM.toFixed(0)} m</p>
-                <p><strong>Transfer:</strong> {turningResults.transferM.toFixed(0)} m</p>
-                <p><strong>ROT:</strong> {turningResults.rotDegPerMin.toFixed(1)} °/min</p>
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleTurning} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {turningResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+Taktik Çap: ${turningResults.tacticalDiameterM.toFixed(0)} m
+Advance: ${turningResults.advanceM.toFixed(0)} m
+Transfer: ${turningResults.transferM.toFixed(0)} m
+Dönüş Oranı: ${turningResults.rotDegPerMin.toFixed(1)} °/dk
+WOP: ${turningResults.wheelOverPointM.toFixed(0)} m`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="weather" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="weather" className="scroll-mt-24">Hava Durumu</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Beaufort Numarası</Label>
+                <Label htmlFor="weather-beaufort">Beaufort Numarası</Label>
                 <Input
+                  id="weather-beaufort"
                   type="number"
-                  min="0"
-                  max="12"
-                  placeholder="6"
+                  placeholder="5"
                   value={weatherInputs.beaufort}
                   onChange={(e) => setWeatherInputs({...weatherInputs, beaufort: e.target.value})}
                 />
               </div>
               <div>
-                <Label>Rüzgar Hızı (kn)</Label>
+                <Label htmlFor="weather-wind-speed">Rüzgar Hızı (kn)</Label>
                 <Input
+                  id="weather-wind-speed"
                   type="number"
                   placeholder="25"
                   value={weatherInputs.windSpeed}
@@ -915,8 +1042,19 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
               <div>
-                <Label>Gemi Hızı (kn)</Label>
+                <Label htmlFor="weather-wind-area">Rüzgar Alanı (m²)</Label>
                 <Input
+                  id="weather-wind-area"
+                  type="number"
+                  placeholder="1000"
+                  value={weatherInputs.windArea}
+                  onChange={(e) => setWeatherInputs({...weatherInputs, windArea: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="weather-ship-speed">Gemi Hızı (kn)</Label>
+                <Input
+                  id="weather-ship-speed"
                   type="number"
                   placeholder="12"
                   value={weatherInputs.shipSpeed}
@@ -924,20 +1062,26 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleWeather} className="w-full">Hesapla</Button>
-            {weatherResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                {weatherResults.windSpeedKn && <p><strong>Rüzgar Hızı:</strong> {weatherResults.windSpeedKn.toFixed(1)} kn</p>}
-                {weatherResults.waveHeightM && <p><strong>Dalga Yüksekliği:</strong> {weatherResults.waveHeightM.toFixed(1)} m</p>}
-                {weatherResults.leewayAngleDeg && <p><strong>Sürüklenme Açısı:</strong> {weatherResults.leewayAngleDeg.toFixed(1)}°</p>}
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleWeather} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {weatherResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+${weatherResults.windSpeedKn ? `Rüzgar Hızı: ${weatherResults.windSpeedKn.toFixed(1)} kn\n` : ''}${weatherResults.waveHeightM ? `Dalga Yüksekliği: ${weatherResults.waveHeightM.toFixed(1)} m\n` : ''}${weatherResults.leewayAngleDeg ? `Leeway Açısı: ${weatherResults.leewayAngleDeg.toFixed(1)}°\n` : ''}${weatherResults.windForceN ? `Rüzgar Kuvveti: ${weatherResults.windForceN.toFixed(0)} N` : ''}`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="celestial" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="celestial" className="scroll-mt-24">Göksel Navigasyon</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Hesaplama Tipi</Label>
+                <Label htmlFor="celestial-type">Tür</Label>
                 <Select value={celestialInputs.type} onValueChange={(value) => setCelestialInputs({...celestialInputs, type: value})}>
                   <SelectTrigger>
                     <SelectValue />
@@ -945,22 +1089,24 @@ export const NavigationCalculationsCard = () => {
                   <SelectContent>
                     <SelectItem value="meridian">Meridian Passage</SelectItem>
                     <SelectItem value="amplitude">Amplitude</SelectItem>
-                    <SelectItem value="sunrise">Sunrise/Sunset Bearing</SelectItem>
+                    <SelectItem value="sunrise">Gündoğumu Kerterizi</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label>Enlem (°)</Label>
+                <Label htmlFor="celestial-lat">Enlem (°)</Label>
                 <Input
+                  id="celestial-lat"
                   type="number"
-                  placeholder="41.0"
+                  placeholder="41"
                   value={celestialInputs.lat}
                   onChange={(e) => setCelestialInputs({...celestialInputs, lat: e.target.value})}
                 />
               </div>
               <div>
-                <Label>Deklinasyon (°)</Label>
+                <Label htmlFor="celestial-dec">Deklinasyon (°)</Label>
                 <Input
+                  id="celestial-dec"
                   type="number"
                   placeholder="23.5"
                   value={celestialInputs.dec}
@@ -968,63 +1114,109 @@ export const NavigationCalculationsCard = () => {
                 />
               </div>
             </div>
-            <Button onClick={handleCelestial} className="w-full">Hesapla</Button>
-            {celestialResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                {celestialResults.latitudeDeg && <p><strong>Enlem:</strong> {celestialResults.latitudeDeg.toFixed(2)}°</p>}
-                {celestialResults.amplitudeDeg && <p><strong>Amplitude:</strong> {celestialResults.amplitudeDeg.toFixed(1)}°</p>}
-                {celestialResults.bearingDeg && <p><strong>Kerteriz:</strong> {celestialResults.bearingDeg.toFixed(1)}°</p>}
-              </div>
-            )}
-          </TabsContent>
+            <Button onClick={handleCelestial} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {celestialResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+${celestialResults.latitudeDeg ? `Enlem: ${celestialResults.latitudeDeg.toFixed(2)}°\n` : ''}${celestialResults.amplitudeDeg ? `Amplitude: ${celestialResults.amplitudeDeg.toFixed(2)}°\n` : ''}${celestialResults.bearingDeg ? `Kerteriz: ${celestialResults.bearingDeg.toFixed(1)}°` : ''}`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-          <TabsContent value="emergency" className="space-y-4">
-            <div className="grid gap-4">
+      <Card className="shadow">
+        <CardHeader>
+          <CardTitle id="emergency" className="scroll-mt-24">Acil Durum</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="bg-muted/30 rounded p-3">
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label>Arama Tipi</Label>
+                <Label htmlFor="emergency-type">Arama Tipi</Label>
                 <Select value={emergencyInputs.type} onValueChange={(value) => setEmergencyInputs({...emergencyInputs, type: value})}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="square">Square Search</SelectItem>
-                    <SelectItem value="sector">Sector Search</SelectItem>
+                    <SelectItem value="square">Kare Arama</SelectItem>
+                    <SelectItem value="sector">Sektör Arama</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              {emergencyInputs.type === "square" && (
-                <div>
-                  <Label>Track Spacing (nm)</Label>
-                  <Input
-                    type="number"
-                    placeholder="2"
-                    value={emergencyInputs.trackSpacing}
-                    onChange={(e) => setEmergencyInputs({...emergencyInputs, trackSpacing: e.target.value})}
-                  />
-                </div>
-              )}
-              {emergencyInputs.type === "sector" && (
-                <div>
-                  <Label>İlk Yarıçap (nm)</Label>
-                  <Input
-                    type="number"
-                    placeholder="5"
-                    value={emergencyInputs.radius}
-                    onChange={(e) => setEmergencyInputs({...emergencyInputs, radius: e.target.value})}
-                  />
-                </div>
-              )}
-            </div>
-            <Button onClick={handleEmergency} className="w-full">Hesapla</Button>
-            {emergencyResults && (
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                {emergencyResults.legDistanceNm && <p><strong>Leg Mesafesi:</strong> {emergencyResults.legDistanceNm.toFixed(1)} nm</p>}
-                {emergencyResults.newRadiusNm && <p><strong>Yeni Yarıçap:</strong> {emergencyResults.newRadiusNm.toFixed(1)} nm</p>}
+              <div>
+                <Label htmlFor="emergency-track-spacing">İz Aralığı (nm)</Label>
+                <Input
+                  id="emergency-track-spacing"
+                  type="number"
+                  placeholder="1"
+                  value={emergencyInputs.trackSpacing}
+                  onChange={(e) => setEmergencyInputs({...emergencyInputs, trackSpacing: e.target.value})}
+                  disabled={emergencyInputs.type !== "square"}
+                />
               </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+              <div>
+                <Label htmlFor="emergency-radius">Başlangıç Yarıçapı (nm)</Label>
+                <Input
+                  id="emergency-radius"
+                  type="number"
+                  placeholder="2"
+                  value={emergencyInputs.radius}
+                  onChange={(e) => setEmergencyInputs({...emergencyInputs, radius: e.target.value})}
+                  disabled={emergencyInputs.type !== "sector"}
+                />
+              </div>
+              <div>
+                <Label htmlFor="emergency-distance">Mesafe (nm)</Label>
+                <Input
+                  id="emergency-distance"
+                  type="number"
+                  placeholder="10"
+                  value={emergencyInputs.distance}
+                  onChange={(e) => setEmergencyInputs({...emergencyInputs, distance: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="emergency-rescue-speed">Kurtarma Hızı (kn)</Label>
+                <Input
+                  id="emergency-rescue-speed"
+                  type="number"
+                  placeholder="15"
+                  value={emergencyInputs.rescueSpeed}
+                  onChange={(e) => setEmergencyInputs({...emergencyInputs, rescueSpeed: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="emergency-drift-speed">Sürüklenme Hızı (kn)</Label>
+                <Input
+                  id="emergency-drift-speed"
+                  type="number"
+                  placeholder="2"
+                  value={emergencyInputs.driftSpeed}
+                  onChange={(e) => setEmergencyInputs({...emergencyInputs, driftSpeed: e.target.value})}
+                />
+              </div>
+            </div>
+            <Button onClick={handleEmergency} className="w-full mt-4">Hesapla</Button>
+          </div>
+          {emergencyResults && (
+            <div className="bg-muted/30 rounded p-3">
+              <pre className="font-mono text-sm leading-6">{`Sonuç:
+${emergencyResults.legDistanceNm ? `Bacak Mesafesi: ${emergencyResults.legDistanceNm.toFixed(2)} nm\n` : ''}${emergencyResults.newRadiusNm ? `Yeni Yarıçap: ${emergencyResults.newRadiusNm.toFixed(2)} nm\n` : ''}${emergencyResults.timeToRescueHours ? `Kurtarma Zamanı: ${emergencyResults.timeToRescueHours.toFixed(2)} saat` : ''}`}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end">
+        <Button asChild variant="default" className="gap-2">
+          <a href="#gc">
+            <Calculator className="h-4 w-4" /> Başa Dön
+          </a>
+        </Button>
+      </div>
+
+      <Separator />
+    </div>
   );
 };
