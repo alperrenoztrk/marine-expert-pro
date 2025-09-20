@@ -66,15 +66,15 @@ const Index = () => {
       </Link>
 
       {/* Page indicators - dots at bottom */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index}
             onClick={() => handleDotClick(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-200 ${
+            className={`h-2 rounded-full transition-all duration-300 ${
               currentPage === index 
-                ? 'bg-blue-600 w-6' 
-                : 'bg-white/60 hover:bg-white/80'
+                ? 'bg-white w-6 shadow-lg' 
+                : 'bg-white/50 w-2 hover:bg-white/70'
             }`}
           />
         ))}
