@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { weatherPreloader } from "@/services/weatherPreloader";
 
 type WeatherResponse = {
   latitude: number;
@@ -199,6 +200,40 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
 
   const requestOnce = useCallback(async () => {
     console.log("🌤️ Hava durumu verisi alınmaya başlandı...");
+    
+    // Check if we have preloaded data first
+    const preloadedData = weatherPreloader.getPreloadedData();
+    if (preloadedData) {
+      console.log("✅ Preload edilmiş hava durumu verisi kullanılıyor");
+      setData({
+        temperatureC: preloadedData.temperatureC,
+        humidityPct: preloadedData.humidityPct,
+        pressureHpa: preloadedData.pressureHpa,
+        windSpeedKt: preloadedData.windSpeedKt,
+        windDirectionDeg: preloadedData.windDirectionDeg,
+        weatherCode: preloadedData.weatherCode,
+        timeIso: preloadedData.timeIso,
+        latitude: preloadedData.latitude,
+        longitude: preloadedData.longitude,
+        timezoneId: preloadedData.timezoneId,
+        utcOffsetSeconds: preloadedData.utcOffsetSeconds,
+      });
+      if (preloadedData.locationLabel) {
+        setLocationLabel(preloadedData.locationLabel);
+      }
+      lastPositionRef.current = { lat: preloadedData.latitude, lon: preloadedData.longitude };
+      setLoading(false);
+      
+      // Clear preloaded data since we've used it
+      weatherPreloader.clearPreloadedData();
+      return dataRef.current;
+    }
+
+    const preloadError = weatherPreloader.getPreloadError();
+    if (preloadError) {
+      console.log("⚠️ Preload hatası mevcut, normal yükleme yapılıyor:", preloadError);
+    }
+    
     setLoading(true);
     setError(null);
     try {
