@@ -1,13 +1,15 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Plus, Shield, FileText, Settings, ChevronRight, Star } from "lucide-react";
+import { Plus, Shield, FileText, Settings, Star } from "lucide-react";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
   const navigate = useNavigate();
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalPages = 2; // Ana sayfa ve boş sayfa
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -21,15 +23,28 @@ const Index = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
     
     const distance = touchEndX.current - touchStartX.current;
-    const isRightSwipe = distance > 100; // Minimum swipe distance for right swipe
+    const isLeftSwipe = distance < -100; // Sol kaydırma
+    const isRightSwipe = distance > 100; // Sağ kaydırma
     
-    if (isRightSwipe) {
-      navigate('/empty-page');
+    if (isLeftSwipe && currentPage < totalPages - 1) {
+      if (currentPage === 0) {
+        navigate('/empty-page');
+      }
+    } else if (isRightSwipe && currentPage > 0) {
+      navigate('/');
     }
     
     // Reset values
     touchStartX.current = null;
     touchEndX.current = null;
+  };
+
+  const handleDotClick = (pageIndex: number) => {
+    if (pageIndex === 0) {
+      navigate('/');
+    } else if (pageIndex === 1) {
+      navigate('/empty-page');
+    }
   };
 
   return (
@@ -39,17 +54,6 @@ const Index = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Ship background removed; homepage uses plain white background */}
-      {/* Right-side arrow to open Empty Page */}
-      <Link to="/empty-page" className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
-        <Button
-          size="icon"
-          className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-2 border-white/30 transition-all duration-200"
-          title="Sağ sayfa"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </Button>
-      </Link>
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
@@ -60,6 +64,21 @@ const Index = () => {
           <Settings className="w-6 h-6" />
         </Button>
       </Link>
+
+      {/* Page indicators - dots at bottom */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handleDotClick(index)}
+            className={`w-2 h-2 rounded-full transition-all duration-200 ${
+              currentPage === index 
+                ? 'bg-blue-600 w-6' 
+                : 'bg-white/60 hover:bg-white/80'
+            }`}
+          />
+        ))}
+      </div>
 
       {/* Main content - centered */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
