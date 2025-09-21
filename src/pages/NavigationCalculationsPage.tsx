@@ -51,6 +51,8 @@ export default function NavigationCalculationsPage() {
   const [bearingInputs, setBearingInputs] = useState({ angle: "", run: "", type: "doubling" });
   const [distanceInputs, setDistanceInputs] = useState({ height: "", type: "dip", lightHeight: "" });
   const [tideInputs, setTideInputs] = useState({ hour: "", range: "" });
+  const [tideTableInputs, setTideTableInputs] = useState({ lowTide: "", highTide: "", lowTideTime: "06:00" });
+  const [tideTable, setTideTable] = useState<any[]>([]);
   const [turningInputs, setTurningInputs] = useState({ length: "", courseChange: "", speed: "" });
   const [weatherInputs, setWeatherInputs] = useState({ beaufort: "", windSpeed: "", windArea: "", shipSpeed: "" });
   const [celestialInputs, setCelestialInputs] = useState({ lat: "", dec: "", type: "meridian" });
@@ -255,6 +257,56 @@ export default function NavigationCalculationsPage() {
       setTideResults(result);
     } catch (error) {
       console.error("Tide calculation error:", error);
+    }
+  };
+
+  const generateTideTable = () => {
+    try {
+      const lowTide = parseFloat(tideTableInputs.lowTide);
+      const highTide = parseFloat(tideTableInputs.highTide);
+      const tidalRange = highTide - lowTide;
+      const [hours, minutes] = tideTableInputs.lowTideTime.split(':').map(Number);
+      
+      const table: any[] = [];
+      const ruleOfTwelfths = [0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12];
+      
+      // Generate 12 hours of tide data
+      for (let i = 0; i < 12; i++) {
+        const time = new Date();
+        time.setHours(hours + i, minutes, 0, 0);
+        const timeStr = time.toTimeString().slice(0, 5);
+        
+        // Determine cycle position (0-6 hours in each half cycle)
+        const cycleHour = i % 6;
+        const isRising = Math.floor(i / 6) % 2 === 0;
+        
+        let height: number;
+        let status: string;
+        
+        if (isRising) {
+          // Rising tide (low to high)
+          height = lowTide + (tidalRange * ruleOfTwelfths[cycleHour]);
+          status = cycleHour === 0 ? 'Alçak Su' : cycleHour === 6 ? 'Yüksek Su' : 'Yükseliyor';
+        } else {
+          // Falling tide (high to low)
+          height = highTide - (tidalRange * ruleOfTwelfths[cycleHour]);
+          status = cycleHour === 0 ? 'Yüksek Su' : cycleHour === 6 ? 'Alçak Su' : 'Alçalıyor';
+        }
+        
+        const prevHeight = i > 0 ? table[i-1].height : height;
+        const change = height - prevHeight;
+        
+        table.push({
+          time: timeStr,
+          height: height,
+          change: change,
+          status: status
+        });
+      }
+      
+      setTideTable(table);
+    } catch (error) {
+      console.error("Tide table generation error:", error);
     }
   };
 
@@ -976,6 +1028,75 @@ Mesafe: ${distanceResults.distanceNm.toFixed(2)} nm`}</pre>
 ${tideResults.hour}. Saatte Değişim: ${tideResults.changeM.toFixed(2)} m
 Toplam Değişim: ${tideResults.totalChangeM.toFixed(2)} m
 Yüzde: ${tideResults.percentageComplete.toFixed(1)}%`}</pre>
+              </div>
+            )}
+
+            {/* Tide Table */}
+            <div className="bg-muted/30 rounded p-3 mt-4">
+              <h4 className="font-semibold mb-3">Gelgit Tablosu</h4>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="tide-low">Alçak Su (m)</Label>
+                    <Input
+                      id="tide-low"
+                      type="number"
+                      placeholder="1.2"
+                      value={tideTableInputs.lowTide}
+                      onChange={(e) => setTideTableInputs({...tideTableInputs, lowTide: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="tide-high">Yüksek Su (m)</Label>
+                    <Input
+                      id="tide-high"
+                      type="number"
+                      placeholder="5.4"
+                      value={tideTableInputs.highTide}
+                      onChange={(e) => setTideTableInputs({...tideTableInputs, highTide: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="tide-time">Alçak Su Zamanı</Label>
+                    <Input
+                      id="tide-time"
+                      type="time"
+                      value={tideTableInputs.lowTideTime}
+                      onChange={(e) => setTideTableInputs({...tideTableInputs, lowTideTime: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <Button onClick={generateTideTable} className="w-full">Gelgit Tablosu Oluştur</Button>
+              </div>
+            </div>
+
+            {tideTable.length > 0 && (
+              <div className="bg-muted/30 rounded p-3">
+                <h4 className="font-semibold mb-3">12 Saatlik Gelgit Tablosu</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">Saat</th>
+                        <th className="text-left p-2">Yükseklik (m)</th>
+                        <th className="text-left p-2">Değişim</th>
+                        <th className="text-left p-2">Durumu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tideTable.map((entry, index) => (
+                        <tr key={index} className={`border-b ${entry.status === 'Yüksek Su' || entry.status === 'Alçak Su' ? 'bg-primary/10' : ''}`}>
+                          <td className="p-2 font-mono">{entry.time}</td>
+                          <td className="p-2 font-mono">{entry.height.toFixed(2)}</td>
+                          <td className="p-2 font-mono">{entry.change > 0 ? '+' : ''}{entry.change.toFixed(2)}</td>
+                          <td className={`p-2 ${entry.status === 'Yükseliyor' ? 'text-green-600' : entry.status === 'Alçalıyor' ? 'text-red-600' : 'text-blue-600'}`}>
+                            {entry.status}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </CardContent>
