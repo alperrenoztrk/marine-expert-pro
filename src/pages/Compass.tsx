@@ -111,42 +111,68 @@ const CompassPage: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Compass Circle */}
-            <div className="relative w-64 h-64 mx-auto">
-              <div className="absolute inset-0 rounded-full border-4 border-muted bg-background shadow-lg">
-                {/* Compass Rose */}
-                <div className="absolute inset-4 rounded-full border border-muted-foreground/20">
-                  {/* Cardinal directions */}
-                  <div className="absolute top-1 left-1/2 transform -translate-x-1/2 text-sm font-bold text-primary">K</div>
-                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-sm font-bold text-muted-foreground">G</div>
-                  <div className="absolute right-1 top-1/2 transform -translate-y-1/2 text-sm font-bold text-muted-foreground">D</div>
-                  <div className="absolute left-1 top-1/2 transform -translate-y-1/2 text-sm font-bold text-muted-foreground">B</div>
-                  
-                  {/* Degree markers */}
+            <div className="relative w-80 h-80 mx-auto">
+              <div className="absolute inset-0 rounded-full border-4 border-muted-foreground/30 bg-gradient-to-br from-background to-muted shadow-2xl">
+                {/* Outer degree ring */}
+                <div className="absolute inset-2 rounded-full">
+                  {/* Degree numbers */}
                   {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((degree) => (
                     <div
                       key={degree}
-                      className="absolute w-0.5 h-4 bg-muted-foreground/40"
+                      className="absolute text-xs font-bold text-muted-foreground"
                       style={{
-                        top: '8px',
+                        top: '50%',
                         left: '50%',
-                        transformOrigin: '50% 104px',
+                        transform: `translate(-50%, -50%) translate(0, -130px) rotate(${degree}deg) translate(0, 15px) rotate(${-degree}deg)`
+                      }}
+                    >
+                      {degree}
+                    </div>
+                  ))}
+                  
+                  {/* Degree markers - small ticks */}
+                  {Array.from({length: 72}, (_, i) => i * 5).map((degree) => (
+                    <div
+                      key={degree}
+                      className={`absolute bg-muted-foreground/40 ${
+                        degree % 30 === 0 ? 'w-0.5 h-6' : 'w-0.5 h-3'
+                      }`}
+                      style={{
+                        top: '6px',
+                        left: '50%',
+                        transformOrigin: '50% 146px',
                         transform: `translateX(-50%) rotate(${degree}deg)`
                       }}
                     />
                   ))}
                 </div>
+
+                {/* Inner compass rose */}
+                <div className="absolute inset-8 rounded-full border-2 border-muted-foreground/20 bg-gradient-to-br from-muted/10 to-muted/30">
+                  {/* Cardinal directions - positioned correctly */}
+                  <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-2xl font-bold text-red-500">K</div>
+                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-2xl font-bold text-muted-foreground">G</div>
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl font-bold text-muted-foreground">D</div>
+                  <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl font-bold text-muted-foreground">B</div>
+                  
+                  {/* Cross lines */}
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted-foreground/20 transform -translate-y-0.5"></div>
+                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-muted-foreground/20 transform -translate-x-0.5"></div>
+                </div>
                 
                 {/* Compass Needle */}
                 <div
-                  className="absolute top-1/2 left-1/2 w-1 h-20 -mt-10 -ml-0.5 transition-transform duration-300 ease-out"
+                  className="absolute top-1/2 left-1/2 w-1 h-24 -mt-12 -ml-0.5 transition-transform duration-500 ease-out"
                   style={{ transform: `rotate(${heading}deg)` }}
                 >
-                  <div className="w-1 h-10 bg-red-500 rounded-t-full"></div>
-                  <div className="w-1 h-10 bg-muted-foreground rounded-b-full"></div>
+                  {/* North pointing part (red) */}
+                  <div className="w-2 h-12 bg-red-500 rounded-t-full shadow-md -ml-0.5"></div>
+                  {/* South pointing part (white/gray) */}
+                  <div className="w-2 h-12 bg-muted-foreground rounded-b-full shadow-md -ml-0.5"></div>
                 </div>
                 
-                {/* Center dot */}
-                <div className="absolute top-1/2 left-1/2 w-3 h-3 -mt-1.5 -ml-1.5 bg-foreground rounded-full"></div>
+                {/* Center circle */}
+                <div className="absolute top-1/2 left-1/2 w-4 h-4 -mt-2 -ml-2 bg-foreground rounded-full shadow-lg border-2 border-background"></div>
               </div>
             </div>
 
