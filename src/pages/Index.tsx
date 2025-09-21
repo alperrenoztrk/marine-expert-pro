@@ -9,7 +9,7 @@ const Index = () => {
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = 2; // Ana sayfa ve boş sayfa
+  const totalPages = 3; // Pusula, ana sayfa ve boş sayfa
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -26,12 +26,10 @@ const Index = () => {
     const isLeftSwipe = distance < -100; // Sol kaydırma
     const isRightSwipe = distance > 100; // Sağ kaydırma
     
-    if (isLeftSwipe && currentPage < totalPages - 1) {
-      if (currentPage === 0) {
-        navigate('/empty-page');
-      }
-    } else if (isRightSwipe && currentPage > 0) {
-      navigate('/');
+    if (isLeftSwipe) {
+      navigate('/empty-page');
+    } else if (isRightSwipe) {
+      navigate('/compass');
     }
     
     // Reset values
@@ -41,8 +39,10 @@ const Index = () => {
 
   const handleDotClick = (pageIndex: number) => {
     if (pageIndex === 0) {
-      navigate('/');
+      navigate('/compass');
     } else if (pageIndex === 1) {
+      navigate('/');
+    } else if (pageIndex === 2) {
       navigate('/empty-page');
     }
   };
@@ -72,7 +72,7 @@ const Index = () => {
             key={index}
             onClick={() => handleDotClick(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
-              currentPage === index 
+              index === 1 // Ana sayfa ortada (index 1)
                 ? 'bg-white w-6 shadow-lg' 
                 : 'bg-white/50 w-2 hover:bg-white/70'
             }`}
