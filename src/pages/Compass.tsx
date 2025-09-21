@@ -162,13 +162,24 @@ const CompassPage: React.FC = () => {
                 
                 {/* Compass Needle */}
                 <div
-                  className="absolute top-1/2 left-1/2 w-1 h-24 -mt-12 -ml-0.5 transition-transform duration-500 ease-out"
+                  className="absolute top-1/2 left-1/2 transition-transform duration-500 ease-out"
                   style={{ transform: `rotate(${heading}deg)` }}
                 >
-                  {/* North pointing part (red) */}
-                  <div className="w-2 h-12 bg-red-500 rounded-t-full shadow-md -ml-0.5"></div>
-                  {/* South pointing part (white/gray) */}
-                  <div className="w-2 h-12 bg-muted-foreground rounded-b-full shadow-md -ml-0.5"></div>
+                  {/* North pointing part (green with arrow) */}
+                  <div className="relative -translate-x-1/2 -translate-y-12">
+                    {/* Arrow tip */}
+                    <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[12px] border-l-transparent border-r-transparent border-b-green-500 mx-auto"></div>
+                    {/* Needle body */}
+                    <div className="w-3 h-10 bg-green-500 shadow-md mx-auto"></div>
+                  </div>
+                  
+                  {/* South pointing part (black with arrow) */}
+                  <div className="relative -translate-x-1/2">
+                    {/* Needle body */}
+                    <div className="w-3 h-10 bg-black shadow-md mx-auto"></div>
+                    {/* Arrow tip */}
+                    <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[12px] border-l-transparent border-r-transparent border-t-black mx-auto"></div>
+                  </div>
                 </div>
                 
                 {/* Center circle */}
