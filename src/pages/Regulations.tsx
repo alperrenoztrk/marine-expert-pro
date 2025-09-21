@@ -22,7 +22,8 @@ import {
   Map,
   Landmark,
   Radio,
-  Radar
+  Radar,
+  Waves
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Capacitor } from '@capacitor/core';
@@ -356,6 +357,159 @@ const Regulations = () => {
   };
 
   const selectedChapterData = solasChapters.find(chapter => chapter.id === selectedChapter);
+
+  // Tide calculation component
+  const TideCalculationCard = () => {
+    const [tideTableInputs, setTideTableInputs] = useState({
+      lowTide: "1.2",
+      highTide: "4.5", 
+      lowTideTime: "06:00"
+    });
+    const [tideTable, setTideTable] = useState<any[]>([]);
+
+    const generateTideTable = () => {
+      try {
+        const lowTide = parseFloat(tideTableInputs.lowTide);
+        const highTide = parseFloat(tideTableInputs.highTide);
+        const tidalRange = highTide - lowTide;
+        const [hours, minutes] = tideTableInputs.lowTideTime.split(':').map(Number);
+        
+        const table: any[] = [];
+        const ruleOfTwelfths = [0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12];
+        
+        // Generate 12 hours of tide data
+        for (let i = 0; i < 12; i++) {
+          const time = new Date();
+          time.setHours(hours + i, minutes, 0, 0);
+          const timeStr = time.toTimeString().slice(0, 5);
+          
+          // Determine cycle position (0-6 hours in each half cycle)
+          const cycleHour = i % 6;
+          const isRising = Math.floor(i / 6) % 2 === 0;
+          
+          let height: number;
+          let status: string;
+          
+          if (isRising) {
+            // Rising tide (low to high)
+            height = lowTide + (tidalRange * ruleOfTwelfths[cycleHour]);
+            status = cycleHour === 0 ? 'Alçak Su' : cycleHour === 6 ? 'Yüksek Su' : 'Yükseliyor';
+          } else {
+            // Falling tide (high to low)
+            height = highTide - (tidalRange * ruleOfTwelfths[cycleHour]);
+            status = cycleHour === 0 ? 'Yüksek Su' : cycleHour === 6 ? 'Alçak Su' : 'Alçalıyor';
+          }
+          
+          const prevHeight = i > 0 ? table[i-1].height : height;
+          const change = height - prevHeight;
+          
+          table.push({
+            time: timeStr,
+            height: height,
+            change: change,
+            status: status
+          });
+        }
+        
+        setTideTable(table);
+      } catch (error) {
+        console.error("Tide table generation error:", error);
+      }
+    };
+
+    return (
+      <Card className="border-cyan-200 bg-cyan-50 dark:bg-cyan-950/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Waves className="h-5 w-5 text-cyan-600" />
+            Gelgit Tablosu ve Hesaplamaları
+          </CardTitle>
+          <CardDescription>Rule of Twelfths kullanarak gelgit tablosu oluşturun</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="tide-low">Alçak Su (m)</Label>
+                <Input
+                  id="tide-low"
+                  type="number"
+                  placeholder="1.2"
+                  value={tideTableInputs.lowTide}
+                  onChange={(e) => setTideTableInputs({...tideTableInputs, lowTide: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="tide-high">Yüksek Su (m)</Label>
+                <Input
+                  id="tide-high"
+                  type="number"
+                  placeholder="4.5"
+                  value={tideTableInputs.highTide}
+                  onChange={(e) => setTideTableInputs({...tideTableInputs, highTide: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="tide-time">Alçak Su Zamanı</Label>
+                <Input
+                  id="tide-time"
+                  type="time"
+                  value={tideTableInputs.lowTideTime}
+                  onChange={(e) => setTideTableInputs({...tideTableInputs, lowTideTime: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <Button onClick={generateTideTable} className="w-full">
+              <Waves className="h-4 w-4 mr-2" />
+              Gelgit Tablosu Oluştur
+            </Button>
+
+            {tideTable.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold mb-3">12 Saatlik Gelgit Tablosu (Rule of Twelfths)</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-xs border border-muted">
+                    <thead>
+                      <tr className="border-b bg-muted/50">
+                        <th className="text-left p-2 border-r">Saat</th>
+                        <th className="text-left p-2 border-r">Yükseklik (m)</th>
+                        <th className="text-left p-2 border-r">Değişim (m)</th>
+                        <th className="text-left p-2">Durumu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tideTable.map((row, index) => (
+                        <tr key={index} className="border-b hover:bg-muted/30">
+                          <td className="p-2 border-r font-mono">{row.time}</td>
+                          <td className="p-2 border-r font-mono">{row.height.toFixed(2)}</td>
+                          <td className="p-2 border-r font-mono">
+                            {row.change > 0 ? '+' : ''}{row.change.toFixed(2)}
+                          </td>
+                          <td className="p-2">
+                            <Badge variant={
+                              row.status === 'Yükseliyor' ? 'default' : 
+                              row.status === 'Alçalıyor' ? 'secondary' :
+                              row.status === 'Yüksek Su' ? 'destructive' : 'outline'
+                            }>
+                              {row.status}
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  <p><strong>Rule of Twelfths:</strong> Gelgit döngüsündeki her saatte oluşan değişim miktarı (1/12, 2/12, 3/12, 3/12, 2/12, 1/12)</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -1015,6 +1169,9 @@ const Regulations = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Gelgit Tablosu ve Hesaplamaları */}
+            <TideCalculationCard />
           </TabsContent>
         </Tabs>
       </div>
