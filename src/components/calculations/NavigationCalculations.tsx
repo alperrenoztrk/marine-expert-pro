@@ -1186,10 +1186,10 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
         <CardContent>
           <Tabs defaultValue={initialTab || "route"} className="w-full">
             <div className="w-full overflow-x-auto">
-              <div className="flex flex-col space-y-4">
+              <TabsList className="h-auto p-2 flex-col items-start w-full space-y-4">
                 {/* 📌 1. Seyir Hesaplamaları */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-primary px-2">📌 1. Seyir Hesaplamaları</h3>
+                <div className="w-full space-y-2">
+                  <div className="text-sm font-semibold text-primary px-2">📌 1. Seyir Hesaplamaları</div>
                   <div className="flex flex-wrap gap-1">
                     <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
                     <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
@@ -1199,8 +1199,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </div>
 
                 {/* 📌 2. Anlık Bilgiler (Real Time Data) */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-primary px-2">📌 2. Anlık Bilgiler (Real Time Data)</h3>
+                <div className="w-full space-y-2">
+                  <div className="text-sm font-semibold text-primary px-2">📌 2. Anlık Bilgiler (Real Time Data)</div>
                   <div className="flex flex-wrap gap-1">
                     <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time (Canlı Konum/Veri)</TabsTrigger>
                     <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind (Mevcut Rüzgâr)</TabsTrigger>
@@ -1211,8 +1211,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </div>
 
                 {/* 📌 3. Meteoroloji ve Çevresel Faktörler */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-primary px-2">📌 3. Meteoroloji ve Çevresel Faktörler</h3>
+                <div className="w-full space-y-2">
+                  <div className="text-sm font-semibold text-primary px-2">📌 3. Meteoroloji ve Çevresel Faktörler</div>
                   <div className="flex flex-wrap gap-1">
                     <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit (Tide)</TabsTrigger>
                     <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava (Weather)</TabsTrigger>
@@ -1222,8 +1222,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </div>
 
                 {/* 📌 4. Liman ve Seyir Yardımları */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-primary px-2">📌 4. Liman ve Seyir Yardımları</h3>
+                <div className="w-full space-y-2">
+                  <div className="text-sm font-semibold text-primary px-2">📌 4. Liman ve Seyir Yardımları</div>
                   <div className="flex flex-wrap gap-1">
                     <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman Bilgileri</TabsTrigger>
                     <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir</TabsTrigger>
@@ -1231,7 +1231,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     <TabsTrigger value="almanac" className="text-xs px-3 py-2 whitespace-nowrap">Almanac</TabsTrigger>
                   </div>
                 </div>
-              </div>
+              </TabsList>
             </div>
 
             <TabsContent value="route" className="space-y-4">
