@@ -411,6 +411,110 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     toast.success("Traverse sailing hesaplandı");
   };
 
+
+  // Mercator Sailing calculation
+  const calculateMercatorSailing = () => {
+    if (!data.lat1 || !data.lon1 || !data.lat2 || !data.lon2) {
+      toast.error("Başlangıç ve varış koordinatlarını girin");
+      return;
+    }
+
+    const lat1Rad = toRadians(data.lat1);
+    const lat2Rad = toRadians(data.lat2);
+    const dLon = toRadians(data.lon2 - data.lon1);
+
+    // Calculate departure
+    const meanLat = toRadians((data.lat1 + data.lat2) / 2);
+    const departure = (data.lon2 - data.lon1) * 60 * Math.cos(meanLat);
+
+    // Calculate dLat in nautical miles
+    const dLat = (data.lat2 - data.lat1) * 60;
+
+    // Calculate rhumb line distance and bearing
+    const rhumbDistance = Math.sqrt(dLat * dLat + departure * departure);
+    const rhumbBearing = normalizeAngle(toDegrees(Math.atan2(departure, dLat)));
+
+    // Calculate mercator distance using meridional parts
+    const mp1 = 7915.7045 * Math.log(Math.tan(Math.PI / 4 + lat1Rad / 2)) - 23.0145 * Math.sin(lat1Rad);
+    const mp2 = 7915.7045 * Math.log(Math.tan(Math.PI / 4 + lat2Rad / 2)) - 23.0145 * Math.sin(lat2Rad);
+    const dmp = mp2 - mp1;
+    const mercatorDistance = Math.sqrt(dmp * dmp + departure * departure);
+
+    setResult(prev => ({
+      ...prev,
+      rhumbDistance,
+      rhumbBearing,
+      departure,
+      dLat,
+      mercatorDistance
+    } as NavigationResult));
+
+    toast.success("Mercator Sailing hesaplandı");
+  };
+
+  // ETA Calculation
+  const calculateETA = () => {
+    const distance = result?.gcDistance || result?.rhumbDistance || 0;
+    if (!distance || !data.speed) {
+      toast.error("Mesafe ve hız bilgilerini girin");
+      return;
+    }
+
+    const timeToGo = distance / data.speed;
+    const currentDate = new Date();
+    const etaDate = new Date(currentDate.getTime() + (timeToGo * 60 * 60 * 1000));
+    
+    const eta = etaDate.toISOString().split('T')[0] + 'T' + 
+                etaDate.toTimeString().split(' ')[0].substring(0, 5);
+
+    const fuelConsumption = distance * 0.25; // Approximate fuel consumption
+    const totalFuelCost = fuelConsumption * 800; // Approximate fuel cost
+
+    setResult(prev => ({
+      ...prev,
+      eta,
+      timeToGo,
+      fuelConsumption,
+      totalFuelCost
+    } as NavigationResult));
+
+    toast.success("ETA hesaplandı");
+  };
+
+  // DR Position Calculation
+  const calculateDRPosition = () => {
+    if (!data.lat1 || !data.lon1 || !data.course || !data.speed) {
+      toast.error("Başlangıç konumu, pusula ve hız bilgilerini girin");
+      return;
+    }
+
+    // Get duration from input (default 2 hours)
+    const duration = 2; // This should come from input
+    const distanceNm = data.speed * duration;
+    
+    const courseRad = toRadians(data.course);
+    const lat1Rad = toRadians(data.lat1);
+    
+    // Calculate new latitude
+    const dLat = distanceNm * Math.cos(courseRad) / 60;
+    const newLat = clampLatitude(data.lat1 + dLat);
+    
+    // Calculate new longitude
+    const meanLatRad = toRadians((data.lat1 + newLat) / 2);
+    const dLon = distanceNm * Math.sin(courseRad) / (60 * Math.cos(meanLatRad));
+    const newLon = normalizeLongitude(data.lon1 + dLon);
+
+    setResult(prev => ({
+      ...prev,
+      estimatedPosition: {
+        lat: newLat,
+        lon: newLon
+      }
+    } as NavigationResult));
+
+    toast.success("DR konumu hesaplandı");
+  };
+
   // Enhanced tidal calculations
   const calculateEnhancedTidal = () => {
     const parseTime = (timeStr: string) => {
@@ -518,15 +622,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
   // Port approach calculations
   const calculatePortApproach = () => {
     const approachGC = calculateGreatCircle();
-    // Use pilot boarding position as destination for these calculations
-    const tempLat2 = data.lat2;
-    const tempLon2 = data.lon2;
+    if (!approachGC) return {};
     
     // Calculate distance to pilot boarding point
-    const pilotDistance = calculateGreatCircle();
-    
-    const pilotBoardingDistance = pilotDistance.distance;
-    const pilotBoardingTime = pilotBoardingDistance / data.speed;
+    const pilotBoardingDistance = approachGC.distance || 0;
+    const pilotBoardingTime = data.speed > 0 ? pilotBoardingDistance / data.speed : 0;
     
     const now = new Date();
     const pilotETA = new Date(now.getTime() + pilotBoardingTime * 60 * 60 * 1000);
@@ -1192,6 +1292,10 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 <div className="text-sm font-semibold text-primary px-2">📌 1. Seyir Hesaplamaları</div>
                 <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
                   <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
+                  <TabsTrigger value="great-circle" className="text-xs px-3 py-2 whitespace-nowrap">Great Circle Sailing (Büyük Daire Seyri)</TabsTrigger>
+                  <TabsTrigger value="mercator-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Mercator Sailing</TabsTrigger>
+                  <TabsTrigger value="eta-calculation" className="text-xs px-3 py-2 whitespace-nowrap">ETA Hesabı</TabsTrigger>
+                  <TabsTrigger value="dr-plotting" className="text-xs px-3 py-2 whitespace-nowrap">DR (Dead Reckoning) Plotting</TabsTrigger>
                   <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
                   <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
                   <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan (Rota Planlama)</TabsTrigger>
@@ -1232,6 +1336,405 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 </TabsList>
               </div>
             </div>
+
+            {/* Great Circle Sailing Tab */}
+            <TabsContent value="great-circle" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Globe className="h-5 w-5 text-blue-500" />
+                    Great Circle Sailing (Büyük Daire Seyri)
+                  </CardTitle>
+                  <CardDescription>
+                    En kısa mesafe hesaplaması - küre üzerinde iki nokta arası minimum mesafe
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-green-700">Başlangıç Konumu</h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="gcLat1">Enlem (°)</Label>
+                          <Input
+                            id="gcLat1"
+                            type="number"
+                            step="0.001"
+                            value={data.lat1}
+                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            placeholder="41.0082"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="gcLon1">Boylam (°)</Label>
+                          <Input
+                            id="gcLon1"
+                            type="number"
+                            step="0.001"
+                            value={data.lon1}
+                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            placeholder="28.9784"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-red-700">Varış Konumu</h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="gcLat2">Enlem (°)</Label>
+                          <Input
+                            id="gcLat2"
+                            type="number"
+                            step="0.001"
+                            value={data.lat2}
+                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            placeholder="36.8969"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="gcLon2">Boylam (°)</Label>
+                          <Input
+                            id="gcLon2"
+                            type="number"
+                            step="0.001"
+                            value={data.lon2}
+                            onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                            placeholder="30.7133"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button onClick={() => calculateGreatCircle()} className="gap-2">
+                      <Calculator className="w-4 h-4" /> Hesapla
+                    </Button>
+                  </div>
+                  {result && (
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Great Circle Mesafe</div>
+                        <div className="font-mono text-xl text-blue-600">{result.gcDistance?.toFixed(2)} nm</div>
+                      </div>
+                      <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
+                        <div className="text-sm text-gray-500">İlk Pusula</div>
+                        <div className="font-mono text-xl text-green-600">{result.gcInitialBearing?.toFixed(1)}°</div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Mercator Sailing Tab */}
+            <TabsContent value="mercator-sailing" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <MapPin className="h-5 w-5 text-purple-500" />
+                    Mercator Sailing
+                  </CardTitle>
+                  <CardDescription>
+                    Mercator projeksiyon haritası üzerinde sabit pusula ile seyir hesaplamaları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-green-700">Başlangıç Konumu</h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="mercLat1">Enlem (°)</Label>
+                          <Input
+                            id="mercLat1"
+                            type="number"
+                            step="0.001"
+                            value={data.lat1}
+                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            placeholder="41.0082"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="mercLon1">Boylam (°)</Label>
+                          <Input
+                            id="mercLon1"
+                            type="number"
+                            step="0.001"
+                            value={data.lon1}
+                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            placeholder="28.9784"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-red-700">Varış Konumu</h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="mercLat2">Enlem (°)</Label>
+                          <Input
+                            id="mercLat2"
+                            type="number"
+                            step="0.001"
+                            value={data.lat2}
+                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            placeholder="36.8969"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="mercLon2">Boylam (°)</Label>
+                          <Input
+                            id="mercLon2"
+                            type="number"
+                            step="0.001"
+                            value={data.lon2}
+                            onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                            placeholder="30.7133"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button onClick={() => calculateMercatorSailing()} className="gap-2">
+                      <Calculator className="w-4 h-4" /> Hesapla
+                    </Button>
+                  </div>
+                  {result && (
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                      <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Rhumb Line Mesafe</div>
+                        <div className="font-mono text-xl text-purple-600">{result.rhumbDistance?.toFixed(2)} nm</div>
+                      </div>
+                      <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Pusula (Sabit)</div>
+                        <div className="font-mono text-xl text-indigo-600">{result.rhumbBearing?.toFixed(1)}°</div>
+                      </div>
+                      <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Departure</div>
+                        <div className="font-mono text-xl text-cyan-600">{result.departure?.toFixed(2)} nm</div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* ETA Calculation Tab */}
+            <TabsContent value="eta-calculation" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Clock className="h-5 w-5 text-orange-500" />
+                    ETA Hesabı (Estimated Time of Arrival)
+                  </CardTitle>
+                  <CardDescription>
+                    Varış zamanı, hız ve mesafe hesaplamaları
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="etaDistance">Mesafe (nm)</Label>
+                        <Input
+                          id="etaDistance"
+                          type="number"
+                          step="0.1"
+                          value={result?.gcDistance || result?.rhumbDistance || 0}
+                          onChange={(e) => setResult(prev => prev ? {...prev, gcDistance: parseFloat(e.target.value) || 0} : null)}
+                          placeholder="150"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="etaSpeed">Ortalama Hız (knot)</Label>
+                        <Input
+                          id="etaSpeed"
+                          type="number"
+                          step="0.1"
+                          value={data.speed}
+                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          placeholder="12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="etdTime">Hareket Zamanı (ETD)</Label>
+                        <Input
+                          id="etdTime"
+                          type="datetime-local"
+                          defaultValue="2024-01-15T08:00"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="weatherDelay">Hava Gecikmesi (saat)</Label>
+                        <Input
+                          id="weatherDelay"
+                          type="number"
+                          step="0.5"
+                          defaultValue="0"
+                          placeholder="2"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="portDelay">Liman Gecikmesi (saat)</Label>
+                        <Input
+                          id="portDelay"
+                          type="number"
+                          step="0.5"
+                          defaultValue="0"
+                          placeholder="1"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fuelStop">Yakıt Molası (saat)</Label>
+                        <Input
+                          id="fuelStop"
+                          type="number"
+                          step="0.5"
+                          defaultValue="0"
+                          placeholder="0.5"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button onClick={() => calculateETA()} className="gap-2">
+                      <Clock className="w-4 h-4" /> ETA Hesapla
+                    </Button>
+                  </div>
+                  {result?.eta && (
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Tahmini Varış Zamanı (ETA)</div>
+                        <div className="font-mono text-xl text-orange-600">{result.eta}</div>
+                      </div>
+                      <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Seyir Süresi</div>
+                        <div className="font-mono text-xl text-yellow-600">{result.timeToGo?.toFixed(1)} saat</div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* DR Plotting Tab */}
+            <TabsContent value="dr-plotting" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Navigation className="h-5 w-5 text-red-500" />
+                    DR (Dead Reckoning) Plotting
+                  </CardTitle>
+                  <CardDescription>
+                    Akıntı ve rüzgâr etkisi olmaksızın tahmini konum hesaplaması
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-green-700">Başlangıç Konumu</h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="drLat">Son Bilinen Enlem (°)</Label>
+                          <Input
+                            id="drLat"
+                            type="number"
+                            step="0.001"
+                            value={data.lat1}
+                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            placeholder="41.0082"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="drLon">Son Bilinen Boylam (°)</Label>
+                          <Input
+                            id="drLon"
+                            type="number"
+                            step="0.001"
+                            value={data.lon1}
+                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            placeholder="28.9784"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="drTime">Son Konum Zamanı</Label>
+                          <Input
+                            id="drTime"
+                            type="datetime-local"
+                            defaultValue="2024-01-15T08:00"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-blue-700">Seyir Verileri</h4>
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="drCourse">Seyir Edilen Pusula (°)</Label>
+                          <Input
+                            id="drCourse"
+                            type="number"
+                            step="0.1"
+                            value={data.course}
+                            onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                            placeholder="090"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="drSpeed">Hız (knot)</Label>
+                          <Input
+                            id="drSpeed"
+                            type="number"
+                            step="0.1"
+                            value={data.speed}
+                            onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                            placeholder="12"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="drDuration">Seyir Süresi (saat)</Label>
+                          <Input
+                            id="drDuration"
+                            type="number"
+                            step="0.1"
+                            defaultValue="2"
+                            placeholder="2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button onClick={() => calculateDRPosition()} className="gap-2">
+                      <Navigation className="w-4 h-4" /> DR Konum Hesapla
+                    </Button>
+                  </div>
+                  {result?.estimatedPosition && (
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded border">
+                        <div className="text-sm text-gray-500">DR Enlemi</div>
+                        <div className="font-mono text-xl text-red-600">{result.estimatedPosition.lat?.toFixed(5)}°</div>
+                      </div>
+                      <div className="p-3 bg-pink-50 dark:bg-pink-900/20 rounded border">
+                        <div className="text-sm text-gray-500">DR Boylamı</div>
+                        <div className="font-mono text-xl text-pink-600">{result.estimatedPosition.lon?.toFixed(5)}°</div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded border">
+                    <div className="text-sm">
+                      <strong>Not:</strong> DR (Dead Reckoning) sadece pusula ve hızı temel alır. 
+                      Akıntı, rüzgâr ve diğer dış etkenler hesaba katılmaz. Gerçek konum için 
+                      celestial navigation, GPS veya radar ile kontrol edilmelidir.
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
             <TabsContent value="route" className="space-y-4">
               {/* Coordinate Input Section */}
