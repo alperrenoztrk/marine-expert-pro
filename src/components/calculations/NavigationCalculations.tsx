@@ -1186,31 +1186,53 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
         <CardContent>
           <Tabs defaultValue={initialTab || "route"} className="w-full">
             <div className="w-full overflow-x-auto">
-              <TabsList className="inline-flex w-auto min-w-full h-auto py-2 px-2 space-x-1">
-                <TabsTrigger value="calculations" className="text-xs px-3 py-2 whitespace-nowrap">📊 Hesaplamalar</TabsTrigger>
-                <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
-                <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
-                <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
-                <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan</TabsTrigger>
-                <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time</TabsTrigger>
-                <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind</TabsTrigger>
-                <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Akıntı</TabsTrigger>
-                <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula</TabsTrigger>
-                <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">Radar</TabsTrigger>
-                <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit</TabsTrigger>
-                <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava</TabsTrigger>
-                <TabsTrigger value="marine-weather" className="text-xs px-2 whitespace-nowrap">Deniz Hava</TabsTrigger>
-                <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu</TabsTrigger>
-                <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman</TabsTrigger>
-                <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel</TabsTrigger>
-                <TabsTrigger value="astronomical" className="text-xs px-3 py-2 whitespace-nowrap">Astronomik</TabsTrigger>
-                <TabsTrigger value="almanac" className="text-xs px-3 py-2 whitespace-nowrap">Almanac</TabsTrigger>
-              </TabsList>
-            </div>
+              <div className="flex flex-col space-y-4">
+                {/* 📌 1. Seyir Hesaplamaları */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-primary px-2">📌 1. Seyir Hesaplamaları</h3>
+                  <div className="flex flex-wrap gap-1">
+                    <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
+                    <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
+                    <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
+                    <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan (Rota Planlama)</TabsTrigger>
+                  </div>
+                </div>
 
-            <TabsContent value="calculations" className="space-y-4">
-              {renderCalculationsContent()}
-            </TabsContent>
+                {/* 📌 2. Anlık Bilgiler (Real Time Data) */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-primary px-2">📌 2. Anlık Bilgiler (Real Time Data)</h3>
+                  <div className="flex flex-wrap gap-1">
+                    <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time (Canlı Konum/Veri)</TabsTrigger>
+                    <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind (Mevcut Rüzgâr)</TabsTrigger>
+                    <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Akıntı</TabsTrigger>
+                    <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula</TabsTrigger>
+                    <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">Radar</TabsTrigger>
+                  </div>
+                </div>
+
+                {/* 📌 3. Meteoroloji ve Çevresel Faktörler */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-primary px-2">📌 3. Meteoroloji ve Çevresel Faktörler</h3>
+                  <div className="flex flex-wrap gap-1">
+                    <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit (Tide)</TabsTrigger>
+                    <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava (Weather)</TabsTrigger>
+                    <TabsTrigger value="marine-weather" className="text-xs px-3 py-2 whitespace-nowrap">Deniz Hava (Marine Weather)</TabsTrigger>
+                    <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu (Sunrise/Sunset)</TabsTrigger>
+                  </div>
+                </div>
+
+                {/* 📌 4. Liman ve Seyir Yardımları */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-primary px-2">📌 4. Liman ve Seyir Yardımları</h3>
+                  <div className="flex flex-wrap gap-1">
+                    <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman Bilgileri</TabsTrigger>
+                    <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir</TabsTrigger>
+                    <TabsTrigger value="astronomical" className="text-xs px-3 py-2 whitespace-nowrap">Astronomik Hesaplamalar</TabsTrigger>
+                    <TabsTrigger value="almanac" className="text-xs px-3 py-2 whitespace-nowrap">Almanac</TabsTrigger>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <TabsContent value="route" className="space-y-4">
               {/* Coordinate Input Section */}
