@@ -196,13 +196,25 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
     if (saved) {
       try { setMessages(JSON.parse(saved)); } catch {}
     } else {
-      const contextualFormula = calculationContext ? getContextualFormulas(calculationContext) : null;
-      const initialMessage = contextualFormula 
-        ? contextualFormula
-        : 'Hazır. Soru sorabilirsiniz.';
-      setMessages([{ role: 'assistant', content: initialMessage }]);
+      setMessages([{ role: 'assistant', content: 'Hazır. Soru sorabilirsiniz.' }]);
     }
-  },[calculationContext]);
+  },[]); 
+
+  // Auto-show formulas when calculation context changes
+  useEffect(()=>{
+    if (calculationContext) {
+      const formulas = getContextualFormulas(calculationContext);
+      if (formulas) {
+        setMessages(prev => {
+          // Don't add if last message is already the same formula
+          if (prev.length > 0 && prev[prev.length - 1].content === formulas) {
+            return prev;
+          }
+          return [...prev, { role: 'assistant', content: formulas }];
+        });
+      }
+    }
+  }, [calculationContext]);
   useEffect(()=>{
     try { localStorage.setItem('navigationAssistantChat', JSON.stringify(messages)); } catch {}
   },[messages]);
@@ -348,14 +360,6 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
               <div className="flex-1 overflow-auto p-3">
                 {/* Quick buttons */}
                 <div className="flex flex-wrap gap-1 mb-2">
-                  {calculationContext && (
-                    <Button variant="default" size="sm" onClick={() => {
-                      const formulas = getContextualFormulas(calculationContext);
-                      if (formulas) appendAssistant(formulas);
-                    }}>
-                      <Brain className="h-3 w-3" />
-                    </Button>
-                  )}
                   <Button variant={mode==='eta'? 'default':'outline'} size="sm" onClick={startETA}><Clock className="h-3 w-3" /></Button>
                   <Button variant={mode==='current'? 'default':'outline'} size="sm" onClick={startCurrent}><Waves className="h-3 w-3" /></Button>
                   <Button variant={mode==='compass'? 'default':'outline'} size="sm" onClick={startCompass}><Compass className="h-3 w-3" /></Button>
