@@ -199,7 +199,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
       const contextualFormula = calculationContext ? getContextualFormulas(calculationContext) : null;
       const initialMessage = contextualFormula 
         ? contextualFormula
-        : 'Seyir Asistanı hazır. Örn: "ETA 240 nm 12 kn" veya hızlı butonları kullanın.';
+        : 'Hazır. Soru sorabilirsiniz.';
       setMessages([{ role: 'assistant', content: initialMessage }]);
     }
   },[calculationContext]);
@@ -252,7 +252,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
   // Quick intents
   const startETA = () => {
     setMode('eta');
-    appendAssistant('ETA için mesafe (nm) ve hız (kn) girin.');
+    appendAssistant('Mesafe ve hız girin.');
   };
   const computeETA = () => {
     const d = parseFloat(etaDistance);
@@ -268,7 +268,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 
   const startCompass = () => {
     setMode('compass');
-    appendAssistant('Pusula düzeltmeleri için varyasyon, deviasyon, gyro hatası girin.');
+    appendAssistant('Varyasyon, deviasyon, gyro hatası girin.');
   };
   const computeCompass = () => {
     const v = parseFloat(varDeg) || 0;
@@ -284,7 +284,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 
   const startCurrent = () => {
     setMode('current');
-    appendAssistant('Akıntı üçgeni için kurs, hız, set (°) ve drift (kn) girin.');
+    appendAssistant('Kurs, hız, set, drift girin.');
   };
   const computeCurrent = () => {
     const crs = parseFloat(shipCourse);
@@ -304,7 +304,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 
   const startARPA = () => {
     setMode('arpa');
-    appendAssistant('CPA/TCPA için hedefin kerterizi, mesafesi, kursu ve hızı gerekli.');
+    appendAssistant('Hedef kerteriz, mesafe, kurs, hız girin.');
   };
   const computeARPA = () => {
     const brg = parseFloat(targetBrg);
@@ -322,7 +322,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 
   const startTidal = () => {
     setMode('tidal');
-    appendAssistant('Gelgit için HW/LW saatleri ve yükseklikleri, spring/neap bilgisi gerekebilir.');
+    appendAssistant('Gelgit verileri girin.');
   };
 
   return (
@@ -340,100 +340,56 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
           </DialogTrigger>
           <DialogContent className="left-0 top-0 translate-x-0 translate-y-0 max-w-none w-screen h-screen sm:rounded-none p-0">
             <div className="flex flex-col h-full">
-              <div className="border-b p-4">
+              <div className="border-b p-3">
                 <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Seyir Asistanı</DialogTitle>
+                  <DialogTitle className="flex items-center gap-2 text-sm"><Compass className="h-4 w-4" /> Seyir Asistanı</DialogTitle>
                 </DialogHeader>
               </div>
-              <div className="flex-1 overflow-auto p-4">
-                {/* Quick intents */}
-                <div className="flex flex-wrap gap-2 mb-3">
+              <div className="flex-1 overflow-auto p-3">
+                {/* Quick buttons */}
+                <div className="flex flex-wrap gap-1 mb-2">
                   {calculationContext && (
-                    <Button 
-                      variant="default" 
-                      size="sm" 
-                      onClick={() => {
-                        const formulas = getContextualFormulas(calculationContext);
-                        if (formulas) appendAssistant(formulas);
-                      }}
-                      className="gap-1"
-                    >
-                      <Brain className="h-4 w-4" /> Formülleri Göster
+                    <Button variant="default" size="sm" onClick={() => {
+                      const formulas = getContextualFormulas(calculationContext);
+                      if (formulas) appendAssistant(formulas);
+                    }}>
+                      <Brain className="h-3 w-3" />
                     </Button>
                   )}
-                  <Button variant={mode==='eta'? 'default':'outline'} size="sm" onClick={startETA}><Clock className="h-4 w-4 mr-1" /> ETA</Button>
-                  <Button variant={mode==='route'? 'default':'outline'} size="sm" onClick={()=>setMode('route')}><MapPin className="h-4 w-4 mr-1" /> Rota</Button>
-                  <Button variant={mode==='current'? 'default':'outline'} size="sm" onClick={startCurrent}><Waves className="h-4 w-4 mr-1" /> Akıntı</Button>
-                  <Button variant={mode==='compass'? 'default':'outline'} size="sm" onClick={startCompass}><Compass className="h-4 w-4 mr-1" /> Pusula</Button>
-                  <Button variant={mode==='arpa'? 'default':'outline'} size="sm" onClick={startARPA}><Radar className="h-4 w-4 mr-1" /> ARPA</Button>
-                  <Button variant={mode==='tidal'? 'default':'outline'} size="sm" onClick={startTidal}><Anchor className="h-4 w-4 mr-1" /> Gelgit</Button>
+                  <Button variant={mode==='eta'? 'default':'outline'} size="sm" onClick={startETA}><Clock className="h-3 w-3" /></Button>
+                  <Button variant={mode==='current'? 'default':'outline'} size="sm" onClick={startCurrent}><Waves className="h-3 w-3" /></Button>
+                  <Button variant={mode==='compass'? 'default':'outline'} size="sm" onClick={startCompass}><Compass className="h-3 w-3" /></Button>
+                  <Button variant={mode==='arpa'? 'default':'outline'} size="sm" onClick={startARPA}><Radar className="h-3 w-3" /></Button>
                 </div>
 
-                {/* Chat window */}
-                <div className="border rounded p-2 h-[50vh] bg-muted">
-                  <ScrollArea className="h-full pr-2">
+                {/* Chat */}
+                <div className="border rounded p-2 h-[60vh] bg-muted/30">
+                  <ScrollArea className="h-full">
                     <div className="space-y-2">
                       {messages.map((m, i)=> (
                         <div key={i} className={`text-sm ${m.role==='user'?'text-right':''}`}>
-                          <div className={`inline-flex items-center gap-2`}>
-                            <div className={`inline-block px-2 py-1 rounded ${m.role==='user'?'bg-blue-600 text-white':'bg-white'}`}>{m.content}</div>
-                            <button aria-label="Kopyala" onClick={()=> copyText(m.content)} className="text-xs text-muted-foreground hover:text-foreground">
-                              <Copy className="h-3 w-3" />
-                            </button>
+                          <div className={`inline-block px-2 py-1 rounded max-w-[80%] ${m.role==='user'?'bg-primary text-primary-foreground':'bg-background border'}`}>
+                            {m.content}
                           </div>
                         </div>
                       ))}
+                      {busy && <div className="text-center text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin mx-auto" /></div>}
                     </div>
                   </ScrollArea>
                 </div>
 
-                {/* Guided forms */}
-                {mode==='eta' && (
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-3 items-end">
-                    <div><Label>Mesafe (nm)</Label><Input value={etaDistance} onChange={(e)=> setEtaDistance(e.target.value)} /></div>
-                    <div><Label>Hız (kn)</Label><Input value={etaSpeed} onChange={(e)=> setEtaSpeed(e.target.value)} /></div>
-                    <div className="md:col-span-2"><Button onClick={computeETA}>Hesapla</Button></div>
-                  </div>
-                )}
-
-                {mode==='compass' && (
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-2 mt-3 items-end">
-                    <div><Label>Varyasyon (°)</Label><Input value={varDeg} onChange={(e)=> setVarDeg(e.target.value)} /></div>
-                    <div><Label>Deviasyon (°)</Label><Input value={devDeg} onChange={(e)=> setDevDeg(e.target.value)} /></div>
-                    <div><Label>Gyro Hatası (°)</Label><Input value={gyroErr} onChange={(e)=> setGyroErr(e.target.value)} /></div>
-                    <div className="md:col-span-3"><Button onClick={computeCompass}>Düzelt</Button></div>
-                  </div>
-                )}
-
-                {mode==='current' && (
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-2 mt-3 items-end">
-                    <div><Label>Kurs (°)</Label><Input value={shipCourse} onChange={(e)=> setShipCourse(e.target.value)} /></div>
-                    <div><Label>Hız (kn)</Label><Input value={shipSpeed} onChange={(e)=> setShipSpeed(e.target.value)} /></div>
-                    <div><Label>Set (°)</Label><Input value={setDeg} onChange={(e)=> setSetDeg(e.target.value)} /></div>
-                    <div><Label>Drift (kn)</Label><Input value={driftKn} onChange={(e)=> setDriftKn(e.target.value)} /></div>
-                    <div><Label>Leeway (°)</Label><Input value={leeway} onChange={(e)=> setLeeway(e.target.value)} /></div>
-                    <div><Button onClick={computeCurrent}>Hesapla</Button></div>
-                  </div>
-                )}
-
-                {mode==='arpa' && (
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-2 mt-3 items-end">
-                    <div><Label>Kerteriz (°)</Label><Input value={targetBrg} onChange={(e)=> setTargetBrg(e.target.value)} /></div>
-                    <div><Label>Mesafe (nm)</Label><Input value={targetDist} onChange={(e)=> setTargetDist(e.target.value)} /></div>
-                    <div><Label>Hedef Kurs (°)</Label><Input value={targetCrs} onChange={(e)=> setTargetCrs(e.target.value)} /></div>
-                    <div><Label>Hedef Hız (kn)</Label><Input value={targetSpd} onChange={(e)=> setTargetSpd(e.target.value)} /></div>
-                    <div className="md:col-span-2"><Button onClick={computeARPA}>Hesapla</Button></div>
-                  </div>
-                )}
-
-                {/* Freeform input */}
-                <div className="flex gap-2 items-end mt-3">
-                  <Textarea value={input} onChange={(e)=> setInput(e.target.value)} placeholder="Örn: 41N 029E → 36N 033E GC mesafesi?" className="min-h-[60px]" />
-                  <div className="flex flex-col gap-2">
-                    <Button variant="outline" size="sm" onClick={pasteIntoInput} className="gap-1"><ClipboardPaste className="h-4 w-4" /> Yapıştır</Button>
-                    <Button variant="outline" size="sm" onClick={()=> copyText(lastAssistant())} disabled={!lastAssistant()} className="gap-1"><Copy className="h-4 w-4" /> Son Yanıtı Kopyala</Button>
-                  </div>
-                  <Button onClick={send} disabled={busy}>{busy? <Loader2 className="h-4 w-4 animate-spin" /> : 'Gönder'}</Button>
+                {/* Input */}
+                <div className="flex gap-2 mt-2">
+                  <Textarea 
+                    value={input} 
+                    onChange={(e)=> setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
+                    placeholder="Soru sorun..." 
+                    className="min-h-[40px] flex-1" 
+                  />
+                  <Button onClick={send} disabled={busy} size="sm">
+                    {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : '→'}
+                  </Button>
                 </div>
               </div>
             </div>
