@@ -204,6 +204,7 @@ interface NavigationResult {
 }
 
 export const NavigationCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
+  const [activeCalculation, setActiveCalculation] = useState<string>(initialTab || "route");
   const [data, setData] = useState<NavigationData>({
     traverseLegs: [
       { course: 90, distance: 10 },
@@ -1269,7 +1270,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <NavigationAssistantPopup variant="inline" />
+          <NavigationAssistantPopup variant="inline" calculationContext={activeCalculation} />
         </CardContent>
       </Card>
 
@@ -1284,7 +1285,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue={initialTab || "route"} className="w-full">
+          <Tabs value={activeCalculation} onValueChange={setActiveCalculation} className="w-full">
             {/* Category Headers */}
             <div className="w-full space-y-4 mb-4">
               {/* 📌 1. Seyir Hesaplamaları */}
