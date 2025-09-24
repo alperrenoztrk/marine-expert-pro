@@ -22,144 +22,239 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
   // Formula content for different calculation contexts
   const getContextualFormulas = (context: string) => {
     const formulas: Record<string, string> = {
-      'route': `**Genel Rota Planlama Formülleri:**
+      'route': `**Rota Planlama Formülleri:**
 
-🔸 **Toplam Mesafe:** Σ d_i (tüm leg mesafeleri)
-🔸 **Ortalama Hız:** v_avg = toplam_mesafe / toplam_zaman
-🔸 **Yakıt Tüketimi:** fuel = mesafe × tüketim_oranı × hız_faktörü
+🔸 **Toplam Mesafe:** Σ d_i (tüm leg mesafeleri toplamı)
+🔸 **Ortalama Hız:** V_avg = Toplam_Mesafe / Toplam_Zaman  
+🔸 **Seyir Süresi:** T = D / V (saat cinsinden)
+🔸 **Yakıt Tüketimi:** F = D × FC × SF 
+   - D: Mesafe (nm), FC: Yakıt oranı (ton/nm), SF: Hız faktörü
 
-**Rota Optimizasyonu:**
-- Weather routing ile %10-15 yakıt tasarrufu
-- Great Circle vs Rhumb Line karşılaştırması`,
+**Optimizasyon:**
+- Great Circle: En kısa mesafe
+- Rhumb Line: Sabit kurs
+- Weather Routing: %10-15 yakıt tasarrufu`,
 
-      'great-circle': `**Büyük Daire (Great Circle) Formülleri:**
+      'great-circle': `**Büyük Daire Hesaplamaları:**
 
-🔸 **Mesafe:** d = arccos(sin φ₁ × sin φ₂ + cos φ₁ × cos φ₂ × cos Δλ) × R
-🔸 **Başlangıç Kursu:** θ₁ = arctan2(sin Δλ × cos φ₂, cos φ₁ × sin φ₂ - sin φ₁ × cos φ₂ × cos Δλ)
-🔸 **Vertex Enlem:** φ_v = arcsin(cos θ₁ × sin φ₁)
+🔸 **Mesafe (nm):** 
+   d = 60 × arccos(sin φ₁ × sin φ₂ + cos φ₁ × cos φ₂ × cos Δλ)
+
+🔸 **Başlangıç Kursu (°T):**
+   C₁ = arctan2(sin Δλ × cos φ₂, cos φ₁ × sin φ₂ - sin φ₁ × cos φ₂ × cos Δλ)
+
+🔸 **Vertex Enlemi:**
+   φ_v = arccos(cos C₁ × cos φ₁)
+
+🔸 **Ara Nokta Hesaplama:**
+   φ = arcsin(sin φ₁ × cos σ + cos φ₁ × sin σ × cos C₁)
+   λ = λ₁ + arctan2(sin C₁ × sin σ × cos φ₁, cos σ - sin φ₁ × sin φ)
+
+**Semboller:** φ = Enlem, λ = Boylam, σ = Açısal mesafe`,
+
+      'mercator-sailing': `**Mercator Seyri (Rhumb Line):**
+
+🔸 **DMP (Meridyen Parçası Farkı):**
+   DMP = 7915.7 × log₁₀(tan(45° + φ₂/2) ÷ tan(45° + φ₁/2))
+
+🔸 **Departure:**
+   Dep = DLong × cos φ_m (φ_m = orta enlem)
+
+🔸 **Mesafe:**
+   D = DLat ÷ cos C (kurs doğu-batı değilse)
+   D = Dep ÷ sin C (kurs kuzey-güney değilse)
+
+🔸 **Kurs:**
+   C = arctan(Dep ÷ DMP)
+
+**Avantaj:** Sabit kurs, kolay navigasyon
+**Dezavantaj:** Great Circle'dan daha uzun`,
+
+      'eta-calculation': `**Varış Zamanı Hesaplaması:**
+
+🔸 **Temel ETA:**
+   T = D ÷ V (saat cinsinden)
+   Saat = floor(T), Dakika = (T - Saat) × 60
+
+🔸 **Akıntılı Seyir:**
+   SOG = √(V² + C² + 2×V×C×cos α)
+   ETA = D ÷ SOG
+
+🔸 **Hava Durumu Düzeltmesi:**
+   ETA_düzeltilmiş = ETA × Hava_Faktörü
+
+**Hava Faktörleri:**
+- Rüzgâr lehte: 0.90-0.95
+- Rüzgâr aleyhte: 1.10-1.25  
+- Deniz durumu kötü: 1.15-1.30
+- Fırtına: 1.40-1.60`,
+
+      'dr-plotting': `**Dead Reckoning (Kestirme Konum):**
+
+🔸 **DR Koordinatları:**
+   Lat_DR = Lat₀ + (D × cos C) ÷ 60
+   Long_DR = Long₀ + (D × sin C) ÷ (60 × cos Lat_orta)
+
+🔸 **Estimated Position (EP):**
+   EP_Lat = DR_Lat + (Set × cos Drift_Yönü) ÷ 60
+   EP_Long = DR_Long + (Set × sin Drift_Yönü) ÷ (60 × cos Lat)
+
+🔸 **Set ve Drift:**
+   Set = Akıntı mesafesi (nm)
+   Drift = Akıntı yönü (°T)
+
+**DR Güvenilirliği:**
+- 0-4 saat: %95 doğru
+- 4-8 saat: %85 doğru  
+- 8+ saat: Fix gerekli`,
+
+      'plane-sailing': `**Düzlem Seyri:**
+
+🔸 **Departure:**
+   Dep = DLong × cos Lat_orta × 60 (nm)
+
+🔸 **Difference of Latitude:**
+   DLat = (Lat₂ - Lat₁) × 60 (nm)
+
+🔸 **Distance:**
+   D = √(Dep² + DLat²)
+
+🔸 **Course:**
+   C = arctan(Dep ÷ DLat)
+   
+**Kuadrant Düzeltmeleri:**
+- NE: C = arctan(Dep/DLat)
+- SE: C = 180° - arctan(Dep/DLat)  
+- SW: C = 180° + arctan(Dep/DLat)
+- NW: C = 360° - arctan(Dep/DLat)
+
+**Kısıt:** Max 600 nm, orta enlemler`,
+
+      'current': `**Akıntı Hesaplamaları:**
+
+🔸 **Course To Steer (CTS):**
+   CTS = TR ± CA (Current Allowance)
+
+🔸 **Current Triangle:**
+   SOG² = V² + C² - 2×V×C×cos(180°-α)
+   CMG = arcsin((C × sin α) ÷ SOG)
+
+🔸 **Current Allowance:**
+   CA = arcsin((C × sin β) ÷ V)
+   
+**Semboller:**
+- V: Gemi hızı, C: Akıntı hızı
+- α: Akıntı set'i ile TR arası açı
+- β: Akıntı set'i ile CTS arası açı
+- TR: Track Required
+- CMG: Course Made Good
+
+**Pratik Kural:** CA ≈ (C ÷ V) × sin α × 57.3`,
+
+      'compass': `**Pusula Düzeltmeleri:**
+
+🔸 **Ana Formül:**
+   True = Compass + Variation + Deviation
+
+🔸 **TVMDC Sistemi:**
+   T = M + Var (Doğu +, Batı -)
+   M = C + Dev (Doğu +, Batı -)
+
+🔸 **Gyro Compass:**
+   True Course = Gyro Course + Gyro Error
+
+🔸 **Bearing Düzeltmeleri:**
+   True Bearing = Compass Bearing + Total Error
+
+**Hafıza Kuralı:** "True Virgins Make Dull Company"
+**Error Kuralı:** Doğu error'ları topla, Batı error'larını çıkar
+
+**Deviation Tablosu kullanımı zorunlu**`,
+
+      'radar': `**Radar Navigasyon (CPA/TCPA):**
+
+🔸 **Relative Motion:**
+   Rel_Speed = √[(Vt×sin Rt)² + (Vo - Vt×cos Rt)²]
+   Rel_Course = arctan2(Vt×sin Rt, Vo - Vt×cos Rt)
+
+🔸 **CPA (Closest Point of Approach):**
+   CPA = Range × sin(Rel_Bearing - Rel_Course)
+
+🔸 **TCPA (Time to CPA):**
+   TCPA = Range × cos(Rel_Bearing - Rel_Course) ÷ Rel_Speed
+
+🔸 **Risk Assessment:**
+   Risk = CPA < 0.5nm VE TCPA < 6dk
+
+**COLREG Limitleri:**
+- CPA < 0.5nm: Acil eylem gerekli
+- CPA < 1nm: Dikkatli takip
+- TCPA < 6dk: Son müdahale şansı`,
+
+      'tides': `**Gelgit Hesaplamaları:**
+
+🔸 **Yükseklik (Cosine Rule):**
+   h = Range/2 × [1 - cos(π×t/6)]
+   
+🔸 **12'de Bir Kuralı:**
+   1. saat: Range/12, 2. saat: 3×Range/12
+   3. saat: 5×Range/12, 4. saat: 5×Range/12
+   5. saat: 3×Range/12, 6. saat: Range/12
+
+🔸 **Tidal Stream:**
+   Stream Rate = Max_Rate × cos(π×(t-HW)/6)
+
+🔸 **Secondary Port:**
+   Time Diff = ±ΔT, Height = Factor × Standard_Height
+
+**t:** HW/LW'den geçen saat
+**Range:** MHWS - MLWS`,
+
+      'celestial': `**Celestial Navigation:**
+
+🔸 **Sight Reduction (Computed Altitude):**
+   Hc = arcsin(sin L × sin d + cos L × cos d × cos LHA)
+
+🔸 **Azimuth:**
+   Z = arccos((sin d - sin L × sin Hc) ÷ (cos L × cos Hc))
+
+🔸 **Intercept:**
+   Int = Ho - Hc (Towards/Away)
+
+🔸 **Position Line:**
+   Bearing = Az ± 90°
 
 **Semboller:**
-- φ₁, φ₂: enleme (latitude) 
-- λ₁, λ₂: boylam (longitude)
-- Δλ = λ₂ - λ₁
-- R = Dünya yarıçapı (3440 nm)`,
+- L: Gözlemci enlemi
+- d: Declination  
+- LHA: Local Hour Angle = GHA ± Long
+- Ho: Gözlenen yükseklik (sextant + düzeltmeler)
+- Hc: Hesaplanan yükseklik
 
-      'mercator-sailing': `**Rhumb Line (Mercator) Formülleri:**
+**Sight Reduction Tables: Pub.249 veya Pub.229**`,
 
-🔸 **Mesafe:** d = Δφ / cos θ  (eğer kurs E-W değilse)
-🔸 **Sabit Kurs:** θ = arctan(Δλ / Δm)
-🔸 **Meridyen Parçaları:** Δm = 7915.7 × log₁₀(tan(45° + φ₂/2) / tan(45° + φ₁/2))
-🔸 **Departure:** dep = Δλ × cos φ_m
+      'weather': `**Meteoroloji Hesaplamaları:**
 
-**Not:** Rhumb line sabit kursta seyir, Great Circle'dan daha uzun mesafe`,
+🔸 **Rüzgâr Hızı (Beaufort):**
+   V(m/s) = 0.836 × B^(3/2)
+   V(knot) = 1.625 × B^(3/2)
 
-      'eta-calculation': `**ETA Hesaplama Formülleri:**
+🔸 **Dalga Yüksekliği:**
+   H = 0.22 × V² / g (derin deniz)
+   H = 0.016 × V × F^0.5 (sığ deniz)
 
-🔸 **Temel ETA:** t = d / v
-🔸 **Saat:Dakika:** t_h = floor(t), t_m = (t - t_h) × 60
-🔸 **Akıntılı ETA:** t = d / SOG (Speed Over Ground)
-🔸 **Hava Durumu Etkisi:** ETA_adj = ETA × weather_factor
+🔸 **Rüzgâr Basıncı:**
+   P = 0.613 × V² (N/m²)
 
-**Weather Factor:**
-- Rüzgâr lehte: 0.9-0.95
-- Rüzgâr aleyhte: 1.1-1.2
-- Fırtına: 1.3-1.5`,
+🔸 **Hız Kaybı (Baş Rüzgâr):**
+   ΔV = k × H² × cos θ / L_vessel
 
-      'dr-plotting': `**Dead Reckoning (DR) Formülleri:**
+**Rüzgâr Etki Faktörleri:**
+- Baş: %15-25 hız kaybı
+- Kuyruk: %5-10 hız artışı  
+- Yan: Leeway 2-5°
 
-🔸 **DR Konum:** lat_dr = lat₀ + (d × cos θ) / 60
-🔸 **DR Konum:** lon_dr = lon₀ + (d × sin θ) / (60 × cos lat_m)
-🔸 **Estimated Position:** EP = DR + set/drift düzeltmesi
-
-**DR Güvenilirlik:**
-- 4 saatte %90 doğruluk
-- 8 saatte %70 doğruluk
-- Fix alındıktan sonra DR sıfırla`,
-
-      'plane-sailing': `**Plane Sailing Formülleri:**
-
-🔸 **Departure:** dep = (lon₂ - lon₁) × cos lat_m × 60
-🔸 **D.Lat:** d_lat = (lat₂ - lat₁) × 60
-🔸 **Distance:** d = √(dep² + d_lat²)
-🔸 **Course:** θ = arctan(dep / d_lat)
-
-**Kısıtlamalar:**
-- 600 nm'den kısa mesafeler için
-- Orta enlemlerde kullanılır`,
-
-      'current': `**Akıntı Üçgeni (CTS) Formülleri:**
-
-🔸 **Hız Üçgeni:** V² = V₁² + V₂² + 2×V₁×V₂×cos α
-🔸 **Kurs Düzeltmesi:** CTS = θ ± drift_angle
-🔸 **Course Made Good:** CMG = arctan2(V_drift×sin α, V_ship + V_drift×cos α)
-🔸 **Speed Over Ground:** SOG = √(V_ship² + V_drift² + 2×V_ship×V_drift×cos α)
-
-**Semboller:**
-- CTS: Course To Steer
-- CMG: Course Made Good  
-- α: akıntı ile kurs arası açı`,
-
-      'compass': `**Pusula Düzeltme Formülleri:**
-
-🔸 **True → Magnetic:** M = T - Variation
-🔸 **Magnetic → Compass:** C = M - Deviation  
-🔸 **Toplam Düzeltme:** T = C + Var + Dev
-🔸 **Gyro Compass:** T = Gyro + Gyro_Error
-
-**TVMDC Kuralı:**
-- **T**rue (Gerçek)
-- **V**ariation (Varyasyon)
-- **M**agnetic (Manyetik)  
-- **D**eviation (Sapma)
-- **C**ompass (Pusula)`,
-
-      'radar': `**CPA/TCPA (ARPA) Formülleri:**
-
-🔸 **Relative Motion:** V_rel = √[(V_t×sin θ)² + (V_o - V_t×cos θ)²]
-🔸 **CPA:** CPA = D × sin(relative_bearing) 
-🔸 **TCPA:** TCPA = D × cos(relative_bearing) / V_rel
-🔸 **Risk Assessment:** Risk = CPA < 2nm ve TCPA < 20dk
-
-**COLREG Kuralları:**
-- CPA < 0.5 nm: Acil eylem
-- CPA < 1 nm: Erken eylem
-- TCPA < 6 dk: Son fırsat`,
-
-      'tides': `**Gelgit Hesaplama Formülleri:**
-
-🔸 **12'de Bir Kuralı:** h = (t/6)² × Range (ilk 3 saat)
-🔸 **Cosine Metodu:** h = (Range/2) × [1 - cos(π×t/6)]
-🔸 **Tidal Stream:** V_t = V_max × cos(π×t/6)
-
-**Semboller:**
-- h: gelgit yüksekliği
-- t: HW/LW'den geçen saat
-- Range: gelgit aralığı`,
-
-      'celestial': `**Sight Reduction Formülleri:**
-
-🔸 **Computed Altitude:** Hc = arcsin(sin L × sin d + cos L × cos d × cos LHA)
-🔸 **Azimut:** Z = arctan2(sin LHA, cos L × tan d - sin L × cos LHA)
-🔸 **Intercept:** Int = Ho - Hc
-🔸 **Position Line:** Konum çizgisi = Az ± 90°
-
-**Semboller:**
-- L: observer latitude
-- d: declination  
-- LHA: Local Hour Angle
-- Ho: observed altitude`,
-
-      'weather': `**Hava Durumu Hesaplamaları:**
-
-🔸 **Beaufort Scale:** V = 1.87 × B^(3/2) (m/s)
-🔸 **Wave Height:** H = 0.22 × V² / g (deep water)
-🔸 **Wind Force:** F = 0.613 × V² × A (Newton)
-🔸 **Speed Loss:** ΔV = k × H² / L (baş rüzgâr)
-
-**Rüzgâr Etkileri:**
-- Baş rüzgâr: %10-20 hız kaybı
-- Kuyruk rüzgâr: %5-10 hız artışı
-- Yan rüzgâr: Leeway açısı`
+**Beaufort Skalası: 0-12, her derece ~3 knot fark**`
     };
 
     return formulas[context] || null;
@@ -181,11 +276,11 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
       const formulas = getContextualFormulas(calculationContext);
       if (formulas) {
         setMessages(prev => {
-          // Don't add if last message is already the same formula
-          if (prev.length > 0 && prev[prev.length - 1].content === formulas) {
-            return prev;
-          }
-          return [...prev, { role: 'assistant', content: formulas }];
+          // Clear previous messages and show only the new calculation formulas
+          return [
+            { role: 'assistant', content: 'Hazır. Soru sorabilirsiniz.' },
+            { role: 'assistant', content: formulas }
+          ];
         });
       }
     }
