@@ -1288,52 +1288,51 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
           <Tabs value={activeCalculation} onValueChange={setActiveCalculation} className="w-full">
             {/* Category Headers */}
             <div className="w-full space-y-4 mb-4">
-              {/* 📌 1. Seyir Hesaplamaları */}
+              {/* 1. Seyir Hesaplamaları */}
               <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">📌 1. Seyir Hesaplamaları</div>
+                <div className="text-sm font-semibold text-primary px-2">1. Seyir Hesaplamaları</div>
                 <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
                   <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
-                  <TabsTrigger value="great-circle" className="text-xs px-3 py-2 whitespace-nowrap">Great Circle Sailing (Büyük Daire Seyri)</TabsTrigger>
+                  <TabsTrigger value="great-circle" className="text-xs px-3 py-2 whitespace-nowrap">Great Circle Sailing</TabsTrigger>
                   <TabsTrigger value="mercator-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Mercator Sailing</TabsTrigger>
                   <TabsTrigger value="eta-calculation" className="text-xs px-3 py-2 whitespace-nowrap">ETA Hesabı</TabsTrigger>
-                  <TabsTrigger value="dr-plotting" className="text-xs px-3 py-2 whitespace-nowrap">DR (Dead Reckoning) Plotting</TabsTrigger>
+                  <TabsTrigger value="dr-plotting" className="text-xs px-3 py-2 whitespace-nowrap">DR Plotting</TabsTrigger>
                   <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
                   <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
-                  <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan (Rota Planlama)</TabsTrigger>
+                  <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan</TabsTrigger>
                 </TabsList>
               </div>
 
-              {/* 📌 2. Anlık Bilgiler (Real Time Data) */}
+              {/* 2. Anlık Bilgiler */}
               <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">📌 2. Anlık Bilgiler (Real Time Data)</div>
+                <div className="text-sm font-semibold text-primary px-2">2. Anlık Bilgiler</div>
                 <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                  <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time (Canlı Konum/Veri)</TabsTrigger>
-                  <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind (Mevcut Rüzgâr)</TabsTrigger>
+                  <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time</TabsTrigger>
+                  <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind</TabsTrigger>
                   <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Akıntı</TabsTrigger>
                   <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula</TabsTrigger>
                   <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">Radar</TabsTrigger>
                 </TabsList>
               </div>
 
-              {/* 📌 3. Meteoroloji ve Çevresel Faktörler */}
+              {/* 3. Meteoroloji ve Çevresel Faktörler */}
               <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">📌 3. Meteoroloji ve Çevresel Faktörler</div>
+                <div className="text-sm font-semibold text-primary px-2">3. Meteoroloji ve Çevresel Faktörler</div>
                 <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                  <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit (Tide)</TabsTrigger>
-                  <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava (Weather)</TabsTrigger>
-                  <TabsTrigger value="marine-weather" className="text-xs px-3 py-2 whitespace-nowrap">Deniz Hava (Marine Weather)</TabsTrigger>
-                  <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu (Sunrise/Sunset)</TabsTrigger>
+                  <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit</TabsTrigger>
+                  <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava</TabsTrigger>
+                  <TabsTrigger value="marine-weather" className="text-xs px-3 py-2 whitespace-nowrap">Deniz Hava</TabsTrigger>
+                  <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu</TabsTrigger>
                 </TabsList>
               </div>
 
-              {/* 📌 4. Liman ve Seyir Yardımları */}
+              {/* 4. Liman ve Seyir Yardımları */}
               <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">📌 4. Liman ve Seyir Yardımları</div>
+                <div className="text-sm font-semibold text-primary px-2">4. Liman ve Seyir Yardımları</div>
                 <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
                   <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman Bilgileri</TabsTrigger>
-                  <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir</TabsTrigger>
+                  <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir / Almanac</TabsTrigger>
                   <TabsTrigger value="astronomical" className="text-xs px-3 py-2 whitespace-nowrap">Astronomik Hesaplamalar</TabsTrigger>
-                  <TabsTrigger value="almanac" className="text-xs px-3 py-2 whitespace-nowrap">Almanac</TabsTrigger>
                 </TabsList>
               </div>
             </div>
@@ -1432,8 +1431,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
             <TabsContent value="mercator-sailing" className="space-y-4">
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <MapPin className="h-5 w-5 text-purple-500" />
+                  <CardTitle className="text-lg">
                     Mercator Sailing
                   </CardTitle>
                   <CardDescription>
@@ -1526,9 +1524,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
             <TabsContent value="eta-calculation" className="space-y-4">
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Clock className="h-5 w-5 text-orange-500" />
-                    ETA Hesabı (Estimated Time of Arrival)
+                  <CardTitle className="text-lg">
+                    ETA Hesabı
                   </CardTitle>
                   <CardDescription>
                     Varış zamanı, hız ve mesafe hesaplamaları
@@ -2999,9 +2996,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
             <TabsContent value="celestial" className="space-y-4">
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Star className="h-5 w-5 text-yellow-600" />
-                    Göksel Seyir Hesaplamaları
+                  <CardTitle className="text-lg">
+                    Göksel Seyir Hesaplamaları / Almanac
                   </CardTitle>
                   <CardDescription>
                     Sextant ölçümleri ve gözlemci pozisyonu ile celestial navigation hesaplamaları
@@ -3501,6 +3497,83 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     </CardContent>
                   </Card>
                 </CardContent>
+
+                {/* Integrated Almanac Content */}
+                <CardContent className="space-y-4">
+                  <Separator />
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Nautical Almanac</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Denizcilik hesaplamaları için astronomik veriler ve tablolar
+                    </p>
+
+                    {/* Almanac PDF Links */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Card className="border-dashed">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base">
+                            Nautical Almanac 2025
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Güncel yıl için astronomi verileri, güneş, ay ve gezegen pozisyonları
+                          </p>
+                          <Button asChild variant="outline" size="sm" className="w-full">
+                            <a href="https://thenauticalalmanac.com/TNARegular/2025_Nautical_Almanac.pdf" target="_blank" rel="noopener noreferrer">
+                              PDF İndir
+                            </a>
+                          </Button>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="border-dashed">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base">
+                            Sight Reduction Tables
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            HO 229, HO 249 tabloları ve göksel navigasyon hesaplamaları
+                          </p>
+                          <Button asChild variant="outline" size="sm" className="w-full">
+                            <a href="/sight-reduction-guide.html" rel="noopener noreferrer">
+                              İnteraktif Tablolar
+                            </a>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Quick Reference Tables */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Hızlı Referans Tabloları</h4>
+                      
+                      {/* Dip Table */}
+                      <Card className="bg-muted/30">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-sm">Dip (Ufuk Düzeltmesi) Tablosu</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-4 gap-2 text-xs">
+                            <div className="font-medium">Göz Yük. (m)</div>
+                            <div className="font-medium">Dip (′)</div>
+                            <div className="font-medium">Göz Yük. (m)</div>
+                            <div className="font-medium">Dip (′)</div>
+                            
+                            <div>2.0</div><div>-2.5</div><div>10.0</div><div>-5.6</div>
+                            <div>3.0</div><div>-3.0</div><div>15.0</div><div>-6.8</div>
+                            <div>4.0</div><div>-3.5</div><div>20.0</div><div>-7.9</div>
+                            <div>5.0</div><div>-3.9</div><div>25.0</div><div>-8.8</div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </CardContent>
+
               </Card>
             </TabsContent>
 
