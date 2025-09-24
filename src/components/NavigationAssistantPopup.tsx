@@ -3,14 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Brain, MessageCircle, Loader2, Compass, MapPin, Waves, Wind, Radar, Clock, Copy, ClipboardPaste, Anchor } from "lucide-react";
+import { Compass, Loader2 } from "lucide-react";
 import { callNavigationAssistant, type AIMessage } from "@/services/aiClient";
 import { useToast } from "@/hooks/use-toast";
-import { calculateEtaHours, calculateCompassTotalError, solveCurrentTriangle, computeArpaCpaTcpa } from "@/components/calculations/navigationMath";
-
-type AssistantMode = 'idle' | 'route' | 'current' | 'compass' | 'arpa' | 'tidal' | 'eta';
 
 interface NavigationAssistantProps {
   variant?: 'floating' | 'inline';
@@ -22,27 +17,7 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<AIMessage[]>([]);
-  const [mode, setMode] = useState<AssistantMode>('idle');
   const { toast } = useToast();
-
-  // Quick-form states
-  const [etaDistance, setEtaDistance] = useState<string>("");
-  const [etaSpeed, setEtaSpeed] = useState<string>("");
-
-  const [varDeg, setVarDeg] = useState<string>("");
-  const [devDeg, setDevDeg] = useState<string>("");
-  const [gyroErr, setGyroErr] = useState<string>("");
-
-  const [setDeg, setSetDeg] = useState<string>("");
-  const [driftKn, setDriftKn] = useState<string>("");
-  const [shipCourse, setShipCourse] = useState<string>("");
-  const [shipSpeed, setShipSpeed] = useState<string>("");
-  const [leeway, setLeeway] = useState<string>("2");
-
-  const [targetBrg, setTargetBrg] = useState<string>("");
-  const [targetDist, setTargetDist] = useState<string>("");
-  const [targetSpd, setTargetSpd] = useState<string>("");
-  const [targetCrs, setTargetCrs] = useState<string>("");
 
   // Formula content for different calculation contexts
   const getContextualFormulas = (context: string) => {
@@ -238,105 +213,6 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
     }
   };
 
-  const copyText = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({ title: 'Kopyalandı', description: 'Metin panoya kopyalandı.' });
-    } catch (e) {
-      toast({ title: 'Kopyalama başarısız', description: 'Tarayıcı izinlerini kontrol edin.', variant: 'destructive' });
-    }
-  };
-  const pasteIntoInput = async () => {
-    try {
-      const t = await navigator.clipboard.readText();
-      setInput(prev => prev ? `${prev}${prev.endsWith(' ') ? '' : ' '}${t}` : t);
-    } catch (e) {
-      toast({ title: 'Yapıştırma başarısız', description: 'Panoya erişim izni gerekli olabilir.', variant: 'destructive' });
-    }
-  };
-  const lastAssistant = () => {
-    for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i].role === 'assistant') return messages[i].content;
-    }
-    return '';
-  };
-
-  // Quick intents
-  const startETA = () => {
-    setMode('eta');
-    appendAssistant('Mesafe ve hız girin.');
-  };
-  const computeETA = () => {
-    const d = parseFloat(etaDistance);
-    const s = parseFloat(etaSpeed);
-    if ([d,s].some(isNaN) || s <= 0) { appendAssistant('Geçerli mesafe ve hız girin.'); return; }
-    try {
-      const hours = calculateEtaHours(d, s);
-      appendAssistant(`ETA ≈ ${hours.toFixed(1)} saat sonra. (d=${d} nm, v=${s} kn)`);
-    } catch {
-      appendAssistant('ETA hesaplanamadı, girişleri kontrol edin.');
-    }
-  };
-
-  const startCompass = () => {
-    setMode('compass');
-    appendAssistant('Varyasyon, deviasyon, gyro hatası girin.');
-  };
-  const computeCompass = () => {
-    const v = parseFloat(varDeg) || 0;
-    const dv = parseFloat(devDeg) || 0;
-    const g = parseFloat(gyroErr) || 0;
-    try {
-      const { totalErrorDeg } = calculateCompassTotalError(v, dv, g);
-      appendAssistant(`Toplam pusula hatası (yaklaşık) ≈ ${totalErrorDeg.toFixed(1)}°. (Var=${v}, Dev=${dv}, Gyro=${g})`);
-    } catch {
-      appendAssistant('Pusula hesabı yapılamadı, değerleri kontrol edin.');
-    }
-  };
-
-  const startCurrent = () => {
-    setMode('current');
-    appendAssistant('Kurs, hız, set, drift girin.');
-  };
-  const computeCurrent = () => {
-    const crs = parseFloat(shipCourse);
-    const spd = parseFloat(shipSpeed);
-    const setd = parseFloat(setDeg);
-    const drf = parseFloat(driftKn);
-    const lw = parseFloat(leeway) || 0;
-    if ([crs,spd,setd,drf].some(isNaN) || spd <= 0) { appendAssistant('Geçerli kurs, hız, set ve drift girin.'); return; }
-    try {
-      const res = solveCurrentTriangle({ courseDeg: crs, speedKn: spd, setDeg: setd, driftKn: drf, leewayDeg: lw });
-      const feas = res.feasible ? '' : ' (hedef rota akıntı nedeniyle tam gerçekleştirilemez)';
-      appendAssistant(`CTS ≈ ${res.courseToSteerDeg.toFixed(1)}°, CMG ≈ ${res.madeGoodCourseDeg.toFixed(1)}°, SOG ≈ ${res.groundSpeedKn.toFixed(1)} kn.${feas}`);
-    } catch {
-      appendAssistant('Akıntı hesabı yapılamadı, girişleri kontrol edin.');
-    }
-  };
-
-  const startARPA = () => {
-    setMode('arpa');
-    appendAssistant('Hedef kerteriz, mesafe, kurs, hız girin.');
-  };
-  const computeARPA = () => {
-    const brg = parseFloat(targetBrg);
-    const dst = parseFloat(targetDist);
-    const crs = parseFloat(targetCrs);
-    const spd = parseFloat(targetSpd);
-    if ([brg,dst,crs,spd].some(isNaN) || dst <= 0) { appendAssistant('Geçerli brg, mesafe, kurs, hız girin.'); return; }
-    try {
-      const res = computeArpaCpaTcpa({ targetBearingDeg: brg, targetDistanceNm: dst, targetCourseDeg: crs, targetSpeedKn: spd });
-      appendAssistant(`CPA ≈ ${res.cpaNm.toFixed(2)} nm, TCPA ≈ ${res.tcpaMin.toFixed(0)} dk, RelSpd ≈ ${res.relativeSpeedKn.toFixed(1)} kn, RelBrg ≈ ${res.relativeBearingDeg.toFixed(0)}°.`);
-    } catch {
-      appendAssistant('ARPA hesabı yapılamadı, girişleri kontrol edin.');
-    }
-  };
-
-  const startTidal = () => {
-    setMode('tidal');
-    appendAssistant('Gelgit verileri girin.');
-  };
-
   return (
     <div>
       <div className={variant==='floating' ? "fixed bottom-4 right-4 z-40" : "relative z-0"}>
@@ -358,14 +234,6 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
                 </DialogHeader>
               </div>
               <div className="flex-1 overflow-auto p-3">
-                {/* Quick buttons */}
-                <div className="flex flex-wrap gap-1 mb-2">
-                  <Button variant={mode==='eta'? 'default':'outline'} size="sm" onClick={startETA}><Clock className="h-3 w-3" /></Button>
-                  <Button variant={mode==='current'? 'default':'outline'} size="sm" onClick={startCurrent}><Waves className="h-3 w-3" /></Button>
-                  <Button variant={mode==='compass'? 'default':'outline'} size="sm" onClick={startCompass}><Compass className="h-3 w-3" /></Button>
-                  <Button variant={mode==='arpa'? 'default':'outline'} size="sm" onClick={startARPA}><Radar className="h-3 w-3" /></Button>
-                </div>
-
                 {/* Chat */}
                 <div className="border rounded p-2 h-[60vh] bg-muted/30">
                   <ScrollArea className="h-full">
