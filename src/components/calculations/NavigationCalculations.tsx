@@ -1729,12 +1729,9 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     <MapPin className="h-5 w-5 text-blue-500" />
                     Konum Koordinatları
                   </CardTitle>
-                  <CardDescription>
-                    Enlem/Boylam koordinatlarını ondalık derece formatında girin (örn: 41.0082, 28.9784)
-                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Departure Position */}
                     <div className="space-y-4">
                       <h4 className="font-semibold text-green-700 flex items-center gap-2">
@@ -1756,9 +1753,6 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           placeholder="28.9784"
                           type="longitude"
                         />
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Örnekler: İstanbul (41.0082, 28.9784), İzmir (38.4237, 27.1428)
-                        </div>
                       </div>
                     </div>
 
@@ -1783,9 +1777,6 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           placeholder="30.7133"
                           type="longitude"
                         />
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Örnekler: Antalya (36.8969, 30.7133), Trabzon (41.0027, 39.7168)
-                        </div>
                       </div>
                      </div>
                    </div>
@@ -1801,7 +1792,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   </CardTitle>
                 </CardHeader>
                  <CardContent>
-                   <div className="grid grid-cols-2 gap-4">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                      <div className="space-y-2">
                        <Label htmlFor="speed">Hız (knot)</Label>
                        <Input

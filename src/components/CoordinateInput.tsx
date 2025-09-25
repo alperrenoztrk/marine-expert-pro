@@ -164,11 +164,6 @@ export const CoordinateInput = ({
           ))}
         </div>
       </div>
-      
-      {/* Display formatted result */}
-      <div className="text-xs text-gray-500 dark:text-gray-400">
-        Format: {formatDMS()} = {value.toFixed(4)}°
-      </div>
     </div>
   );
 };
