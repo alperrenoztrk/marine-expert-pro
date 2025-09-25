@@ -1261,19 +1261,6 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
 
   return (
     <div className="space-y-6">
-      {/* Seyir Asistanı */}
-      <Card className="shadow border border-emerald-200/50">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-            <Brain className="h-5 w-5" />
-            Seyir Asistanı
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <NavigationAssistantPopup variant="inline" calculationContext={activeCalculation} />
-        </CardContent>
-      </Card>
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -4076,6 +4063,19 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
           )}
         </div>
       )}
+
+      {/* Seyir Asistanı */}
+      <Card className="shadow border border-emerald-200/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+            <Brain className="h-5 w-5" />
+            Seyir Asistanı
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <NavigationAssistantPopup variant="inline" calculationContext={activeCalculation} />
+        </CardContent>
+      </Card>
 
     </div>
   );
