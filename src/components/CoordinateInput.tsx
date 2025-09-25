@@ -111,18 +111,18 @@ export const CoordinateInput = ({
       <Label>{label}</Label>
       
       {/* DMS Input Fields */}
-      <div className="flex gap-1 items-center">
+      <div className="flex gap-1 items-center flex-wrap sm:flex-nowrap">
         {/* Degrees */}
         <Input
           type="number"
           value={degrees}
           onChange={(e) => handleDegreesChange(parseInt(e.target.value) || 0)}
           placeholder="00"
-          className="w-16 text-center"
+          className="w-14 text-center min-w-0"
           min="0"
           max={type === 'latitude' ? "90" : "180"}
         />
-        <span className="text-sm font-medium">°</span>
+        <span className="text-sm font-medium shrink-0">°</span>
         
         {/* Minutes */}
         <Input
@@ -130,11 +130,11 @@ export const CoordinateInput = ({
           value={minutes}
           onChange={(e) => handleMinutesChange(parseInt(e.target.value) || 0)}
           placeholder="00"
-          className="w-16 text-center"
+          className="w-14 text-center min-w-0"
           min="0"
           max="59"
         />
-        <span className="text-sm font-medium">'</span>
+        <span className="text-sm font-medium shrink-0">'</span>
         
         {/* Seconds */}
         <Input
@@ -142,21 +142,21 @@ export const CoordinateInput = ({
           value={seconds}
           onChange={(e) => handleSecondsChange(parseInt(e.target.value) || 0)}
           placeholder="00"
-          className="w-16 text-center"
+          className="w-14 text-center min-w-0"
           min="0"
           max="59"
         />
-        <span className="text-sm font-medium">''</span>
+        <span className="text-sm font-medium shrink-0">''</span>
         
         {/* Direction Buttons */}
-        <div className="flex gap-1 ml-2">
+        <div className="flex gap-1 ml-1 sm:ml-2 shrink-0">
           {getDirectionButtons().map((button) => (
             <Button
               key={button.value}
               variant={button.variant}
               size="sm"
               onClick={() => handleDirectionChange(button.value)}
-              className="w-10 h-10 p-0"
+              className="w-8 h-8 p-0 text-xs"
               type="button"
             >
               {button.label}

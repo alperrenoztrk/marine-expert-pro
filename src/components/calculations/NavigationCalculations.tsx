@@ -1731,7 +1731,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-6">
                     {/* Departure Position */}
                     <div className="space-y-4">
                       <h4 className="font-semibold text-green-700 flex items-center gap-2">
@@ -1778,8 +1778,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="longitude"
                         />
                       </div>
-                     </div>
-                   </div>
+                    </div>
+                  </div>
                  </CardContent>
                </Card>
 
