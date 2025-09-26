@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,21 +12,48 @@ const CompassPage: React.FC = () => {
   const [isSupported, setIsSupported] = useState<boolean>(false);
   const [permission, setPermission] = useState<string>("unknown");
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [needsCalibration, setNeedsCalibration] = useState<boolean>(false);
+
+  const cleanupRef = useRef<(() => void) | null>(null);
+
+  const normalizeDegrees = (deg: number): number => {
+    let d = deg % 360;
+    if (d < 0) d += 360;
+    return d;
+  };
+
+  const shortestAngleDelta = (from: number, to: number): number => {
+    let delta = (to - from + 540) % 360 - 180; // range [-180, 180)
+    return delta;
+  };
+
+  const smoothAngle = (current: number, target: number, factor: number): number => {
+    const delta = shortestAngleDelta(current, target);
+    const next = current + delta * factor;
+    return normalizeDegrees(next);
+  };
+
+  const getScreenOrientationAngle = (): number => {
+    // Try modern Screen Orientation API, fallback to legacy window.orientation
+    const angle = (window.screen && (window.screen as any).orientation && (window.screen as any).orientation.angle) ?? (window as any).orientation ?? 0;
+    return typeof angle === 'number' ? angle : 0;
+  };
 
   useEffect(() => {
     // Check if device orientation is supported
     if (typeof window !== 'undefined' && 'DeviceOrientationEvent' in window) {
       setIsSupported(true);
-      
       // Request permission for iOS devices
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         setPermission("pending");
       } else {
-        startCompass();
+        setPermission("granted");
+        cleanupRef.current?.();
+        cleanupRef.current = startCompass();
       }
     }
 
-    // Get current location
+    // Get current location (optional for declination in future)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -38,6 +65,11 @@ const CompassPage: React.FC = () => {
         (error) => console.log("Location error:", error)
       );
     }
+
+    // Cleanup on unmount
+    return () => {
+      cleanupRef.current?.();
+    };
   }, []);
 
   const requestPermission = async () => {
@@ -45,7 +77,8 @@ const CompassPage: React.FC = () => {
       const response = await (DeviceOrientationEvent as any).requestPermission();
       setPermission(response);
       if (response === 'granted') {
-        startCompass();
+        cleanupRef.current?.();
+        cleanupRef.current = startCompass();
       }
     } catch (error) {
       console.error('Permission request failed:', error);
@@ -55,18 +88,48 @@ const CompassPage: React.FC = () => {
 
   const startCompass = () => {
     const handleOrientation = (event: DeviceOrientationEvent) => {
-      if (event.alpha !== null) {
-        // Convert to 0-360 degrees
-        let compassHeading = 360 - event.alpha;
-        if (compassHeading >= 360) compassHeading -= 360;
-        if (compassHeading < 0) compassHeading += 360;
-        
-        setHeading(Math.round(compassHeading));
+      let computedHeading: number | null = null;
+
+      // iOS Safari provides webkitCompassHeading (magnetic heading)
+      const webkitHeading = (event as any).webkitCompassHeading;
+      if (typeof webkitHeading === 'number' && !isNaN(webkitHeading)) {
+        computedHeading = normalizeDegrees(webkitHeading);
+        const acc = (event as any).webkitCompassAccuracy;
+        if (typeof acc === 'number') {
+          // >20 degrees generally indicates poor accuracy
+          setNeedsCalibration(isFinite(acc) && acc > 20);
+        }
+      } else if (event.alpha != null) {
+        // Fallback for Android/others using alpha with screen orientation compensation
+        const orientationAngle = getScreenOrientationAngle();
+        const alpha = event.alpha; // 0..360
+        const h = 360 - normalizeDegrees(alpha + orientationAngle);
+        computedHeading = normalizeDegrees(h);
+        if (typeof event.absolute === 'boolean') {
+          setNeedsCalibration(!event.absolute);
+        }
+      }
+
+      if (computedHeading != null) {
+        // Smooth the heading to behave like a physical needle
+        setHeading((prev) => smoothAngle(prev, computedHeading as number, 0.2));
       }
     };
 
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
+    const useAbsolute = 'ondeviceorientationabsolute' in window;
+    if (useAbsolute) {
+      window.addEventListener('deviceorientationabsolute', handleOrientation as any);
+    }
+    window.addEventListener('deviceorientation', handleOrientation as any);
+
+    const calibHandler = () => setNeedsCalibration(true);
+    window.addEventListener('compassneedscalibration' as any, calibHandler as any);
+
+    return () => {
+      if (useAbsolute) window.removeEventListener('deviceorientationabsolute', handleOrientation as any);
+      window.removeEventListener('deviceorientation', handleOrientation as any);
+      window.removeEventListener('compassneedscalibration' as any, calibHandler as any);
+    };
   };
 
   const getCardinalDirection = (degrees: number): string => {
@@ -160,10 +223,10 @@ const CompassPage: React.FC = () => {
                   <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-muted-foreground/20 transform -translate-x-0.5"></div>
                 </div>
                 
-                {/* Compass Needle */}
+                {/* Compass Needle (magnetic) */}
                 <div
-                  className="absolute top-1/2 left-1/2 w-1 h-24 -mt-12 -ml-0.5 transition-transform duration-500 ease-out"
-                  style={{ transform: `rotate(${heading}deg)` }}
+                  className="absolute top-1/2 left-1/2 w-1 h-24 -mt-12 -ml-0.5 transition-transform duration-200 ease-out"
+                  style={{ transform: `rotate(${-heading}deg)` }}
                 >
                   {/* North pointing part (red) */}
                   <div className="w-2 h-12 bg-red-500 rounded-t-full shadow-md -ml-0.5"></div>
@@ -178,10 +241,15 @@ const CompassPage: React.FC = () => {
 
             {/* Heading Display */}
             <div className="text-center space-y-2">
-              <div className="text-4xl font-bold text-primary">{heading}°</div>
+              <div className="text-4xl font-bold text-primary">{Math.round(heading)}°</div>
               <Badge variant="outline" className="text-lg px-4 py-1">
-                {getCardinalDirection(heading)}
+                {getCardinalDirection(Math.round(heading))}
               </Badge>
+              {needsCalibration && (
+                <div className="text-xs text-muted-foreground">
+                  Doğruluk düşük. Cihazı 8 şeklinde hareket ettirerek kalibre edin.
+                </div>
+              )}
             </div>
 
             {/* Permission Request */}
