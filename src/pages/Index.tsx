@@ -6,35 +6,91 @@ import { Plus, Shield, FileText, Settings, Star } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
+  // Gesture tracking for progressive, momentum-like horizontal swipe
   const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
+  const lastTouchX = useRef<number | null>(null);
+  const lastTouchTime = useRef<number | null>(null);
+  const velocityX = useRef<number>(0);
+  const [translateX, setTranslateX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [targetRoute, setTargetRoute] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = 3; // Pusula, ana sayfa ve boş sayfa
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
+    const x = e.touches[0].clientX;
+    touchStartX.current = x;
+    lastTouchX.current = x;
+    lastTouchTime.current = performance.now();
+    velocityX.current = 0;
+    setIsDragging(true);
+    setIsAnimating(false);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
+    if (touchStartX.current == null) return;
+    const x = e.touches[0].clientX;
+    const now = performance.now();
+    const delta = x - touchStartX.current;
+    setTranslateX(delta);
+    // velocity (px/ms)
+    if (lastTouchX.current != null && lastTouchTime.current != null) {
+      const dx = x - lastTouchX.current;
+      const dt = Math.max(1, now - lastTouchTime.current);
+      velocityX.current = dx / dt;
+    }
+    lastTouchX.current = x;
+    lastTouchTime.current = now;
   };
 
   const handleTouchEnd = () => {
-    if (touchStartX.current === null || touchEndX.current === null) return;
-    
-    const distance = touchEndX.current - touchStartX.current;
-    const isLeftSwipe = distance < -100; // Sol kaydırma
-    const isRightSwipe = distance > 100; // Sağ kaydırma
-    
-    if (isLeftSwipe) {
-      navigate('/empty-page');
-    } else if (isRightSwipe) {
-      navigate('/compass');
+    if (touchStartX.current === null || lastTouchX.current === null) return;
+    const distance = lastTouchX.current - touchStartX.current;
+    const speed = velocityX.current; // px/ms
+    const width = typeof window !== 'undefined' ? window.innerWidth : 360;
+    const distanceThreshold = Math.min(180, Math.max(60, width * 0.14));
+    const velocityThreshold = 0.35; // px/ms, daha hassas
+
+    let navigateLeft = false;
+    let navigateRight = false;
+
+    if (distance <= -distanceThreshold || speed <= -velocityThreshold) {
+      navigateLeft = true;
+    } else if (distance >= distanceThreshold || speed >= velocityThreshold) {
+      navigateRight = true;
     }
-    
-    // Reset values
+
+    setIsDragging(false);
+
+    if (navigateLeft) {
+      setIsAnimating(true);
+      setTargetRoute('/empty-page');
+      setTranslateX(-width);
+    } else if (navigateRight) {
+      setIsAnimating(true);
+      setTargetRoute('/compass');
+      setTranslateX(width);
+    } else {
+      // Snap back to center
+      setIsAnimating(true);
+      setTargetRoute(null);
+      setTranslateX(0);
+    }
+
+    // Reset refs
     touchStartX.current = null;
-    touchEndX.current = null;
+    lastTouchX.current = null;
+    lastTouchTime.current = null;
+    velocityX.current = 0;
+  };
+
+  const handleTransitionEnd = () => {
+    if (isAnimating && targetRoute) {
+      navigate(targetRoute);
+    } else {
+      setIsAnimating(false);
+    }
   };
 
   const handleDotClick = (pageIndex: number) => {
@@ -54,6 +110,15 @@ const Index = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      <div
+        className="relative h-full w-full"
+        onTransitionEnd={handleTransitionEnd}
+        style={{
+          transform: `translateX(${translateX}px)`,
+          transition: isAnimating && !isDragging ? 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+          willChange: 'transform',
+        }}
+      >
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
@@ -145,6 +210,7 @@ const Index = () => {
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
