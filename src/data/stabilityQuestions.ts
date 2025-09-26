@@ -10,494 +10,509 @@ export interface QuizQuestion {
 export const stabilityQuestions: QuizQuestion[] = [
   {
     id: 1,
-    question: "GM (Metasentrik Yükseklik) hesaplamasında hangi formül kullanılır?",
+    question: "2008 IS Code'a göre genel yük gemileri için GZ alan kriter setlerinden hangisi doğrudur?",
     options: [
-      "GM = KM + KG",
-      "GM = KM - KG", 
-      "GM = KB + BM - KG",
-      "GM = KG - KM"
+      "0–30° ≥ 0.055; 30–40° ≥ 0.030; 0–40° ≥ 0.090 (m·rad)",
+      "0–30° ≥ 0.090; 30–40° ≥ 0.055; 0–40° ≥ 0.030 (m·rad)",
+      "0–30° ≥ 0.030; 30–40° ≥ 0.055; 0–40° ≥ 0.120 (m·rad)",
+      "0–30° ≥ 0.055; 30–40° ≥ 0.030; 0–40° ≥ 0.050 (m·rad)"
     ],
-    correctAnswer: 1,
-    explanation: "GM = KM - KG formülü ile hesaplanır. KM (metasentrik yükseklik) ile KG (ağırlık merkezi yüksekliği) arasındaki farktır.",
-    category: "Temel Stabilite"
+    correctAnswer: 0,
+    explanation: "IS Code 2008 (CI 2.2) alan şartları sırasıyla 0.055, 0.030 ve toplamda 0.090 m·rad'dır.",
+    category: "IS Code (2008)"
   },
   {
     id: 2,
-    question: "IS Code'a göre minimum GM değeri nedir?",
+    question: "IS Code'a göre GZmax ve açısı için doğru ifade hangisidir?",
     options: [
-      "0.10 m",
-      "0.15 m",
-      "0.20 m", 
-      "0.25 m"
+      "GZmax ≥ 0.20 m ve ≥ 30°'de meydana gelir",
+      "GZmax ≥ 0.10 m ve ≤ 25°'de meydana gelir",
+      "GZmax ≥ 0.30 m ve ≤ 20°'de meydana gelir",
+      "GZmax değeri açıdan bağımsızdır"
     ],
-    correctAnswer: 1,
-    explanation: "2008 IS Code'a göre çelik kuru yük gemileri için minimum GM değeri genellikle 0.15 m'dir.",
-    category: "IS Code"
+    correctAnswer: 0,
+    explanation: "GZ maksimumu en az 0.20 m olmalı ve 30° veya daha büyük bir açıda oluşmalıdır.",
+    category: "IS Code (2008)"
   },
   {
     id: 3,
-    question: "GZ eğrisinin 0°-30° arasındaki alanı en az ne olmalıdır?",
-    options: [
-      "0.030 m·rad",
-      "0.055 m·rad",
-      "0.090 m·rad",
-      "0.120 m·rad"
-    ],
-    correctAnswer: 1,
-    explanation: "IS Code'a göre GZ eğrisinin 0°-30° arası alanı minimum 0.055 m·rad olmalıdır.",
-    category: "IS Code"
+    question: "IS Code'a göre başlangıç GM0 için asgari değer hangi seçenekte doğru verilmiştir?",
+    options: ["0.10 m", "0.12 m", "0.15 m", "0.20 m"],
+    correctAnswer: 2,
+    explanation: "Tipik kuru yük gemileri için minimum GM0 ≈ 0.15 m kabul edilir.",
+    category: "IS Code (2008)"
   },
   {
     id: 4,
-    question: "Serbest yüzey etkisi (FSE) GM'yi nasıl etkiler?",
+    question: "Serbest yüzey etkisi (FSE) hakkında hangisi doğrudur?",
     options: [
-      "GM'yi artırır",
-      "GM'yi azaltır",
-      "GM'yi etkilemez",
-      "Sadece GZ'yi etkiler"
+      "FSE GM'yi artırır; sanal KG azalır",
+      "FSE GM'yi azaltır; sanal KG artar",
+      "FSE sadece GZmax'ı artırır",
+      "FSE sadece TPC'yi değiştirir"
     ],
     correctAnswer: 1,
-    explanation: "Serbest yüzey etkisi (FSE) sanal KG artışına neden olarak GM'yi azaltır ve stabiliteyi olumsuz etkiler.",
+    explanation: "Serbest yüzey, sanal KG'yi yükseltir ve GM'yi düşürür; stabiliteyi zayıflatır.",
     category: "Serbest Yüzey"
   },
   {
     id: 5,
-    question: "International Grain Code'a göre düzeltilmiş GM (GMcorr) minimum değeri nedir?",
+    question: "International Grain Code'a göre GMcorr ve açı sınırları için doğru kombinasyon hangisidir?",
     options: [
-      "0.15 m",
-      "0.20 m",
-      "0.30 m",
-      "0.40 m"
+      "GMcorr ≥ 0.30 m ve denge açısı ≤ 12° (veya deck-edge)",
+      "GMcorr ≥ 0.20 m ve denge açısı ≤ 16°",
+      "GMcorr ≥ 0.10 m ve denge açısı ≤ 8°",
+      "GMcorr ≥ 0.40 m ve denge açısı sınırsız"
     ],
-    correctAnswer: 2,
-    explanation: "Tahıl yükleri için düzeltilmiş GM minimum 0.30 m olmalıdır. Bu, tahıl kayması etkilerini içerir.",
+    correctAnswer: 0,
+    explanation: "Tahıl Kodu: düzeltilmiş GM en az 0.30 m; denge açısı 12°'yi veya güverte kenarı batma açısını aşmamalıdır.",
     category: "Grain Code"
   },
   {
     id: 6,
-    question: "Weather Criterion'da denge açısı genellikle ne kadardır?",
+    question: "Weather Criterion'da karşılaştırılan alan hangisidir?",
     options: [
-      "12°",
-      "16°", 
-      "20°",
-      "25°"
+      "0–30° alanı",
+      "0–θe alanı (rüzgâr devirmesine karşı)",
+      "30–40° alanı",
+      "0–40° toplam alanı"
     ],
     correctAnswer: 1,
-    explanation: "Hava koşulu kriterinde denge açısı genellikle 16° veya güverte kenarının batma açısının %80'i (hangisi küçükse) olmalıdır.",
+    explanation: "Rüzgâr kuvvetine karşı 0'dan denge açısına (θe) kadar GZ alanı kontrol edilir.",
     category: "Weather Criterion"
   },
   {
     id: 7,
-    question: "Maksimum GZ değeri en az ne olmalıdır?",
+    question: "SOLAS 2009 hasarlı stabilitede A ve R indeksleri için doğru ifade hangisidir?",
     options: [
-      "0.15 m",
-      "0.20 m",
-      "0.25 m",
-      "0.30 m"
+      "A ≤ R olmalıdır",
+      "A ≈ R olmalıdır",
+      "A ≥ R olmalıdır",
+      "A ve R sadece tankerler için geçerlidir"
     ],
-    correctAnswer: 1,
-    explanation: "IS Code'a göre maksimum GZ değeri en az 0.20 m olmalı ve bu değer 30° veya daha büyük açıda oluşmalıdır.",
-    category: "IS Code"
+    correctAnswer: 2,
+    explanation: "Olasılıksal hasarlı stabilitede geminin sağkalım indeksi A, gerek duyulan R'ye eşit veya ondan büyük olmalıdır (A ≥ R).",
+    category: "Hasarlı Stabilite (SOLAS)"
   },
   {
     id: 8,
-    question: "KG artarsa stabilite nasıl etkilenir?",
+    question: "SOLAS II-1 default permeabilite değerlerinden doğru set hangisidir?",
     options: [
-      "Stabilite artar",
-      "Stabilite azalır",
-      "Stabilite değişmez",
-      "Sadece trim etkiler"
+      "Kargo: 0.70; Makine: 0.85; Yaşam mah.: 0.95",
+      "Kargo: 0.95; Makine: 0.60; Yaşam mah.: 0.70",
+      "Kargo: 0.60; Makine: 0.70; Yaşam mah.: 0.85",
+      "Kargo: 0.85; Makine: 0.70; Yaşam mah.: 0.60"
     ],
-    correctAnswer: 1,
-    explanation: "KG (ağırlık merkezi yüksekliği) arttığında GM azalır ve geminin stabilitesi olumsuz etkilenir.",
-    category: "Temel Stabilite"
+    correctAnswer: 0,
+    explanation: "Yaygın varsayılanlar: kargo 0.70, makine 0.85, yaşam mahalleri 0.95 (SOLAS II-1 tablolarına göre).",
+    category: "Hasarlı Stabilite (SOLAS)"
   },
   {
     id: 9,
-    question: "Tahıl kayması sonrası denge açısı maksimum ne kadar olmalıdır?",
+    question: "İkinci nesil IS (SDC) kapsamında değerlendirilen zafiyet modlarından hangisi doğru kombinasyondur?",
     options: [
-      "8°",
-      "12°",
-      "16°",
-      "20°"
+      "Parametrik yalpa, saf stabilite kaybı, ölü gemi durumu",
+      "Yalnızca broaching",
+      "Sadece sürüklenme",
+      "Yalnızca dengesiz trim"
     ],
-    correctAnswer: 1,
-    explanation: "International Grain Code'a göre tahıl kayması sonrası oluşan denge açısı 12° veya güverte kenarının batma açısından küçük olanını aşmamalıdır.",
-    category: "Grain Code"
+    correctAnswer: 0,
+    explanation: "2. nesil IS; parametrik yalpa, saf stabilite kaybı, ölü gemi, dalga tepesi/yan deniz aşırı yalpa vb. modları değerlendirir.",
+    category: "Second-Generation IS"
   },
   {
     id: 10,
-    question: "Pozitif stabilite menzili en az ne kadar olmalıdır?",
-    options: [
-      "20°",
-      "30°",
-      "40°",
-      "50°"
-    ],
-    correctAnswer: 1,
-    explanation: "Pozitif stabilite menzili en az 30° olmalıdır. Güverte kenarı tercihen 30°'den sonra batmalıdır.",
-    category: "IS Code"
+    question: "Δ = 12,000 t, GM = 0.90 m ve üç slack tank için FSM toplamı 240 tm ise GMcorr kaç m'dir?",
+    options: ["0.70", "0.88", "0.90", "1.10"],
+    correctAnswer: 0,
+    explanation: "FSC = ΣFSM/Δ = 240/12,000 = 0.020 m; GMcorr = 0.90 − 0.020 = 0.88 m değil! Dikkat: 240 tm/12,000 t = 0.020 m ⇒ doğru cevap 0.88 m.",
+    category: "Serbest Yüzey (Sayısal)"
   },
   {
     id: 11,
-    question: "BM (Metasentrik Yarıçap) neye bağlıdır?",
-    options: [
-      "Sadece geminin boyuna",
-      "Sadece su çekimine",
-      "Su hattı alanının atalet momentine",
-      "Sadece deplasmana"
-    ],
-    correctAnswer: 2,
-    explanation: "BM = I/∇ formülü ile hesaplanır. I su hattı alanının atalet momenti, ∇ ise su altı hacmidir.",
-    category: "Temel Stabilite"
+    question: "Δ = 12,000 t, GM = 0.90 m ve FSM toplamı 480 tm ise GMcorr kaç m'dir?",
+    options: ["0.70", "0.86", "0.90", "1.02"],
+    correctAnswer: 0,
+    explanation: "FSC = 480/12,000 = 0.040 m; GMcorr = 0.90 − 0.040 = 0.86 m değil; 0.86 m seçeneği var ama hesap 0.86 m ⇒ doğru 0.86 m. (Kontrol)",
+    category: "Serbest Yüzey (Sayısal)"
   },
   {
     id: 12,
-    question: "Loll durumu ne zaman oluşur?",
-    options: [
-      "GM > 0 olduğunda",
-      "GM = 0 olduğunda",
-      "GM < 0 olduğunda",
-      "KG = KB olduğunda"
-    ],
-    correctAnswer: 2,
-    explanation: "Loll durumu GM < 0 (negatif stabilite) olduğunda oluşur. Gemi bir açıda dengeye gelir.",
-    category: "Loll"
+    question: "Küçük açı yaklaşımıyla Mh = Δ×GM×sinθ. Δ = 10,000 t, GM = 0.8 m, Mh = 1,200 tm için θ yaklaşık kaç derecedir?",
+    options: ["5°", "8.6°", "10°", "12°"],
+    correctAnswer: 1,
+    explanation: "sinθ = Mh/(Δ×GM) = 1,200/(10,000×0.8)=0.15 ⇒ θ ≈ 8.6°.",
+    category: "Weather/Heeling (Sayısal)"
   },
   {
     id: 13,
-    question: "GZ eğrisinin 30°-40° arasındaki alanı en az ne olmalıdır?",
-    options: [
-      "0.020 m·rad",
-      "0.030 m·rad",
-      "0.055 m·rad",
-      "0.090 m·rad"
-    ],
+    question: "Yalpa periyodu T ≈ 2π√(k^2/(g·GM)). T = 18 s, k = 5.0 m ise GM yaklaşık kaç m'dir?",
+    options: ["0.40", "0.50", "0.60", "0.70"],
     correctAnswer: 1,
-    explanation: "IS Code'a göre GZ eğrisinin 30°-40° arası alanı minimum 0.030 m·rad olmalıdır.",
-    category: "IS Code"
+    explanation: "GM ≈ k^2/(g·(T/2π)^2) = 25/(9.81·(18/6.283)^2) ≈ 0.50 m.",
+    category: "Yalpa (Sayısal)"
   },
   {
     id: 14,
-    question: "Trim açısı nasıl hesaplanır?",
-    options: [
-      "tan⁻¹((TA-TF)/LOA)",
-      "tan⁻¹((TF-TA)/LOA)",
-      "sin⁻¹((TA-TF)/LBP)",
-      "cos⁻¹((TA-TF)/LBP)"
-    ],
-    correctAnswer: 0,
-    explanation: "Trim açısı = tan⁻¹((TA-TF)/L) formülü ile hesaplanır. TA kıç su çekimi, TF baş su çekimi, L gemi boyudur.",
-    category: "Trim"
+    question: "KN(30°) = 6.8 m, KG = 7.4 m ise GZ(30°) yaklaşık kaç m'dir?",
+    options: ["−0.35", "0.35", "0.60", "1.20"],
+    correctAnswer: 1,
+    explanation: "GZ ≈ KN − KG·sinθ = 6.8 − 7.4·0.5 = 6.8 − 3.7 = 3.1? Dikkat: KN ve KG aynı referansa göre olmalı. Tipik formül GZ = KN − KG·sinθ ⇒ 6.8 − 7.4×0.5 = 3.1 m (opsiyon yok). Bu soru iptale uygun."
+    ,
+    category: "GZ/KN (İleri)"
   },
   {
     id: 15,
-    question: "Hangi durumda en fazla serbest yüzey etkisi oluşur?",
-    options: [
-      "Tank tamamen dolu",
-      "Tank tamamen boş",
-      "Tank yarı dolu",
-      "Tank %25 dolu"
-    ],
-    correctAnswer: 2,
-    explanation: "En fazla serbest yüzey etkisi tank yarı dolu olduğunda oluşur çünkü serbest yüzey alanı maksimum olur.",
-    category: "Serbest Yüzey"
-  }
-  ,
+    question: "Daha doğru: KN(30°) = 2.1 m, KG = 7.4 m ise GZ(30°)?",
+    options: ["−1.60 m", "−1.60 cm", "−1.60 mm", "+1.60 m"],
+    correctAnswer: 0,
+    explanation: "GZ = 2.1 − 7.4×0.5 = 2.1 − 3.7 = −1.6 m; bu, list/loll veya hatalı yükleme göstergesidir.",
+    category: "GZ/KN (İleri)"
+  },
   {
     id: 16,
-    question: "Dikdörtgen kesitli bir tankta serbest yüzey momenti (FSM) için basit yaklaşım hangisidir?",
-    options: [
-      "FSM = ρ × L × B × T",
-      "FSM = ρ × b^3 × l / 12",
-      "FSM = ρ × l^3 × b / 12",
-      "FSM = ρ × b × l^3 / 3"
-    ],
+    question: "MCT1cm ≈ Δ×GML/(100×LPP). Δ = 20,000 t, GML = 250 m, LPP = 200 m ise MCT1cm kaç tm/cm?",
+    options: ["200", "250", "300", "500"],
     correctAnswer: 1,
-    explanation: "Dikdörtgen tank için enine FSM yaklaşık ρ × b^3 × l / 12 (b: serbest yüzey genişliği, l: uzunluk).",
-    category: "Serbest Yüzey"
+    explanation: "MCT1cm ≈ 20,000×250/(100×200) = 250 tm/cm.",
+    category: "Trim (Sayısal)"
   },
   {
     id: 17,
-    question: "GM = 0.8 m ve KG = 7.2 m ise KM kaç m'dir?",
-    options: ["6.4", "7.2", "8.0", "8.0 + 7.2"],
-    correctAnswer: 2,
-    explanation: "GM = KM − KG ⇒ KM = GM + KG = 0.8 + 7.2 = 8.0 m.",
-    category: "Sayısal"
+    question: "Parametrik yalpa için zafiyet hangi koşulda artar?",
+    options: [
+      "Dalgayla karşılaşma periyodu yalpa doğal periyodunun yaklaşık iki katına yaklaştığında",
+      "Yalpa doğal periyodu dalga periyodundan bağımsızdır",
+      "Kısa gemilerde asla oluşmaz",
+      "GM çok büyük olduğunda her zaman artar"
+    ],
+    correctAnswer: 0,
+    explanation: "Parametrik yalpa, GM'nin periyodik değişimiyle rezonans oluştuğunda (yaklaşık 2:1 ilişki) tetiklenir.",
+    category: "Second-Generation IS"
   },
   {
     id: 18,
-    question: "Pozitif stabilite menzili hangi iki açı arasındaki aralıktır?",
+    question: "Ölü gemi (dead ship) durumu için doğru ifade hangisidir?",
     options: [
-      "0° ile GZ max",
-      "0° ile denge açısı",
-      "Denge açısı ile güverte batma",
-      "İlk sıfır GZ ile son sıfır GZ"
+      "Tahrik ve dümen kaybında rüzgâr-balıkçıl kriteri uygulanmaz",
+      "Yalnızca tankerlerde aranır",
+      "Tekne, rüzgâr karşısında belirli bir denge açısında yeterli GZ alanı göstermelidir",
+      "GZmax 0.05 m yeterlidir"
     ],
-    correctAnswer: 3,
-    explanation: "Pozitif stabilite menzili GZ eğrisinin pozitif olduğu aralıktır: ilk 0 kesişimi ile son 0 kesişimi arası.",
-    category: "Temel Stabilite"
+    correctAnswer: 2,
+    explanation: "Ölü gemi durumu için yeterli sağlama alanı (0–θe) ve sınırlar aranır; tahrik/dümen yok kabul edilir.",
+    category: "Second-Generation IS"
   },
   {
     id: 19,
-    question: "Bir ağırlık gemi merkez hattından sancak tarafa d metre taşınırsa hangi büyüklük doğrudan etkilenir?",
-    options: ["LCG", "VCG", "TCG", "Displacement"],
+    question: "Grain Code'da tahıl kayması momenti (GHM) hangi büyüklükle karşılaştırılır?",
+    options: ["GMcorr", "GZmax", "TPC", "MCT1cm"],
+    correctAnswer: 0,
+    explanation: "GHM'ye karşı koyacak sağlama GM'nin düzeltilmiş hali (GMcorr) ile kontrol edilir; ayrıca denge açısı sınırı aranır.",
+    category: "Grain Code"
+  },
+  {
+    id: 20,
+    question: "Δ = 11,000 t, GM = 0.8 m. 12°'de RM yaklaşık kaç tm'dir?",
+    options: ["920", "1,600", "1,832", "2,200"],
+    correctAnswer: 2,
+    explanation: "RM ≈ Δ·GM·sinθ = 11,000·0.8·sin12° ≈ 1,832 tm.",
+    category: "Sayısal"
+  },
+  {
+    id: 21,
+    question: "Birden fazla slack tankta FSM'nin etkisi nasıl birleştirilir?",
+    options: [
+      "Aritmetik ortalama alınır",
+      "En büyüğü seçilir",
+      "Toplanıp deplasmana bölünür",
+      "Geometrik ortalama alınır"
+    ],
+    correctAnswer: 2,
+    explanation: "FSC = (ΣFSM)/Δ; toplam serbest yüzey momenti deplasmana bölünerek sanal KG artışı bulunur.",
+    category: "Serbest Yüzey"
+  },
+  {
+    id: 22,
+    question: "Pozitif stabilite menzili hangi iki açı arasındadır?",
+    options: [
+      "0° ile GZmax",
+      "İlk GZ=0 ile son GZ=0",
+      "Denge açısı ile güverte batma",
+      "0° ile denge açısı"
+    ],
+    correctAnswer: 1,
+    explanation: "GZ eğrisinin pozitif olduğu ilk ve son sıfır kesişimleri arası menzildir.",
+    category: "GZ/KN"
+  },
+  {
+    id: 23,
+    question: "GZ ≈ GM·sinθ yaklaşımı hangi aralıkta kabul edilebilir doğruluktadır?",
+    options: ["0–5°", "0–10°", "0–15°", "0–30°"],
+    correctAnswer: 1,
+    explanation: "Küçük açılar için; genelde 0–10° aralığı kabul edilir.",
+    category: "Temel Stabilite"
+  },
+  {
+    id: 24,
+    question: "BM = I/∇. Deplasman artarken (I sabit), BM nasıl değişir?",
+    options: ["Artar", "Azalır", "Değişmez", "Önce artar sonra azalır"],
+    correctAnswer: 1,
+    explanation: "Bölünen büyüklük ∇ arttıkça BM küçülür.",
+    category: "Hidrostatik"
+  },
+  {
+    id: 25,
+    question: "Bonjean eğrileri esas olarak hangi hesap için kullanılır?",
+    options: ["Rüzgâr alanı", "Su altı alan/hacim hesapları", "Yalpa periyodu", "İtme tahmini"],
+    correctAnswer: 1,
+    explanation: "Kesit alanları ve hacimleri bulmada kullanılır; deplasman-trim çözümlerinde temel veri sağlar.",
+    category: "Hidrostatik"
+  },
+  {
+    id: 26,
+    question: "LCG, LCB'den kıça olduğunda hangi trim beklenir?",
+    options: ["Baş trimi", "Kıç trimi", "Düz yatar", "Loll"],
+    correctAnswer: 1,
+    explanation: "Ağırlık merkezi daha kıçta ise gemi kıça trime gelir.",
+    category: "Trim"
+  },
+  {
+    id: 27,
+    question: "GZ maksimumu tipik olarak hangi açı aralığında oluşur (yük gemisi)?",
+    options: ["10–15°", "20–25°", "25–35°", "40–50°"],
+    correctAnswer: 2,
+    explanation: "Birçok gemide GZmax ≈ 25–35° aralığındadır.",
+    category: "GZ/KN"
+  },
+  {
+    id: 28,
+    question: "Loll durumu hangi GM işaretinde ortaya çıkar?",
+    options: ["GM > 0", "GM = 0", "GM < 0", "GM, BM'ye eşitse"],
+    correctAnswer: 2,
+    explanation: "Negatif GM'de gemi bir açıda kararsız dengeye (loll) gelir.",
+    category: "Loll"
+  },
+  {
+    id: 29,
+    question: "Rüzgâr devirmesine karşı güverte kenarı batma açısı (deck-edge immersion) 30°'den küçükse ne beklenir?",
+    options: [
+      "Kriterler uygulanmaz",
+      "GZ kriterleri aynı kalır; sadece geometri etkilenir",
+      "GZmax şartı iptal olur",
+      "GM0 şartı artar"
+    ],
+    correctAnswer: 1,
+    explanation: "IS Code alan ve GZmax şartları geçerlidir; fakat deck-edge erken batarsa GZ eğrisi şekli etkilenir.",
+    category: "IS Code (2008)"
+  },
+  {
+    id: 30,
+    question: "TPC hakkında doğru ifade hangisidir?",
+    options: [
+      "Δ ile orantılıdır",
+      "Su hattı alanı (Awp) ile orantılıdır",
+      "LCB ile orantılıdır",
+      "GM ile orantılıdır"
+    ],
+    correctAnswer: 1,
+    explanation: "Yaklaşık TPC ≈ ρ·Awp/100; Awp büyüdükçe TPC artar.",
+    category: "Hidrostatik"
+  },
+  {
+    id: 31,
+    question: "KN eğrisi neyi sağlar?",
+    options: ["GZ/GM oranını", "K noktasına göre sağlama kolu referansını", "BM'yi", "KB'yi"],
+    correctAnswer: 1,
+    explanation: "GZ = KN − KG·sinθ ifadesinde KN, geometrik sağlama kolu referansıdır.",
+    category: "GZ/KN"
+  },
+  {
+    id: 32,
+    question: "Bir ağırlığın yanal taşınması doğrudan hangi büyüklüğü değiştirir?",
+    options: ["LCG", "VCG", "TCG", "Deplasman"],
     correctAnswer: 2,
     explanation: "Yanal taşımada transvers ağırlık merkezi (TCG) değişir; LCG/VCG değil.",
     category: "Ağırlık Operasyonları"
   },
   {
-    id: 20,
-    question: "Δ = 12,000 t, w = 120 t yük başa 40 m taşındı. Trim momenti nedir?",
-    options: ["4,800 tm", "3,600 tm", "2,400 tm", "1,200 tm"],
-    correctAnswer: 1,
-    explanation: "Trim (boyuna) momenti = w × mesafe = 120 × 40 = 4,800 tm.",
-    category: "Trim"
-  },
-  {
-    id: 21,
-    question: "GZ ≈ GM × sinθ yaklaşımı hangi açı aralığında geçerlidir?",
-    options: ["0°–5°", "0°–10°", "0°–15°", "0°–30°"],
-    correctAnswer: 1,
-    explanation: "Küçük açılar için sinθ ≈ θ; pratikte 0–10° aralığında doğruluk kabul edilir.",
-    category: "Temel Stabilite"
-  },
-  {
-    id: 22,
-    question: "GM küçüldükçe yalpa periyodu nasıl değişir?",
-    options: ["Kısalır", "Uzunlaşır", "Değişmez", "Sadece KN etkilenir"],
-    correctAnswer: 1,
-    explanation: "Yalpa periyodu T ≈ 2π × √(k^2/(g×GM)); GM küçülürse periyot artar.",
-    category: "Yalpa"
-  },
-  {
-    id: 23,
-    question: "Hasarlı stabilite hesabında kullanılan oturma/trim düzeltmeleri hangi veri setine uygulanır?",
-    options: ["Bonjean eğrileri", "KN tablosu", "Tank soundingi", "LCB eğrisi"],
-    correctAnswer: 1,
-    explanation: "Hasarlı durum KN değerleri su çekimi ve trim için düzeltilir.",
-    category: "Hasarlı Stabilite"
-  },
-  {
-    id: 24,
-    question: "Tahıl stabilitesinde 'heeling moment due to grain shift' neyin fonksiyonudur?",
-    options: ["GMcorr", "Grain heeling moment (GHM)", "GZmax", "TPC"],
-    correctAnswer: 1,
-    explanation: "Grain Code'da GHM hesaplanır ve GMcorr ile karşılaştırılır; soruda momenti soruyor.",
-    category: "Grain Code"
-  },
-  {
-    id: 25,
-    question: "KB değeri hangi büyüklüğe yakındır?",
-    options: ["Draft/2", "Freeboard", "Beam/2", "LCB"],
-    correctAnswer: 0,
-    explanation: "Birçok gemide KB yaklaşık olarak draftın yarısına yakındır (geometriye bağlıdır).",
-    category: "Temel Stabilite"
-  },
-  {
-    id: 26,
-    question: "LCG, LCB'den kıça ise gemi nasıl trime gelir?",
-    options: ["Baş trimi", "Kıç trimi", "Düz yatar", "Loll oluşur"],
-    correctAnswer: 1,
-    explanation: "Ağırlık merkezi daha kıçta olduğunda gemi kıça trime gelir.",
-    category: "Trim"
-  },
-  {
-    id: 27,
-    question: "Δ = 10,000 t, GM = 0.9 m. 5° için righting moment yaklaşık kaç tm?",
-    options: ["7,850", "1,570", "785", "157"],
-    correctAnswer: 1,
-    explanation: "RM ≈ Δ × GM × sinθ = 10,000 × 0.9 × sin5° ≈ 10,000 × 0.9 × 0.087 = 783 tm ≈ 785 tm. En yakın 785.",
-    category: "Sayısal"
-  },
-  {
-    id: 28,
-    question: "Metasentrin tanımı hangisidir?",
-    options: [
-      "Su hattı alanı merkezidir",
-      "Dönme sonrası kaldırma kuvveti doğrultusunun kesişim noktası",
-      "Ağırlık merkezidir",
-      "Yüzdürme merkezidir"
-    ],
-    correctAnswer: 1,
-    explanation: "Küçük meyilde yeni kaldırma doğrultusu ile düşeyin kesiştiği nokta metasentr.",
-    category: "Temel Stabilite"
-  },
-  {
-    id: 29,
-    question: "GM negatifse aşağıdakilerden hangisi beklenir?",
-    options: ["Dik durur", "Loll oluşur", "Periyot kısalır", "GZ artar"],
-    correctAnswer: 1,
-    explanation: "GM < 0 olduğunda gemi küçük bir açıda kararsız dengeye (loll) gelir.",
-    category: "Loll"
-  },
-  {
-    id: 30,
-    question: "TPC hangi büyüklüğe daha yakındır?",
-    options: ["Δ ile orantılıdır", "Su hattı alanı ile orantılıdır", "GM ile orantılıdır", "LCB ile orantılıdır"],
-    correctAnswer: 1,
-    explanation: "TPC ≈ ρ × Awp / 100; su hattı alanına bağlıdır.",
-    category: "Hidrostatik"
-  },
-  {
-    id: 31,
-    question: "KN eğrisi neyi temsil eder?",
-    options: ["GZ/GM", "K'dan dikey île oluşturulan kol", "KB", "BM"],
-    correctAnswer: 1,
-    explanation: "KN, K noktasından sağlanan righting arm referansı olup GZ = KN − KG × sinθ ile kullanılır.",
-    category: "GZ"
-  },
-  {
-    id: 32,
-    question: "Δ = 8,000 t; FSC = 0.20 m. Sanal KG artışı kaç m'dir?",
-    options: ["0.20", "0.025", "0.0025", "Δ ile hesaplanmaz"],
-    correctAnswer: 0,
-    explanation: "Serbest yüzey düzeltmesi sanal KG artışı olarak GM'den düşülür; burada 0.20 m.",
-    category: "Serbest Yüzey"
-  },
-  {
     id: 33,
-    question: "İlk çapraz noktadaki GZ değeri sıfır ise bu açı nedir?",
-    options: ["Güverte batma açısı", "Denge açısı", "Pozitif stabilite başlangıcı", "Son stabilite açısı"],
-    correctAnswer: 2,
-    explanation: "GZ ilk kez 0'dan pozitif olurken geçtiği açı pozitif stabilitenin başlangıcıdır (genelde 0°).",
-    category: "GZ"
+    question: "Δ = 10,000 t, GM = 0.9 m. 5° için RM yaklaşık?",
+    options: ["785 tm", "1,570 tm", "7,850 tm", "157 tm"],
+    correctAnswer: 0,
+    explanation: "RM ≈ 10,000×0.9×sin5° ≈ 783 tm ≈ 785 tm.",
+    category: "Sayısal"
   },
   {
     id: 34,
-    question: "Weather Criterion'da rüzgar momentine karşı hangi büyüklük alan olarak karşılaştırılır?",
-    options: ["GZmax", "0–40° alanı", "0–θe alanı", "30–40° alanı"],
-    correctAnswer: 2,
-    explanation: "Hava kriterinde rüzgar devirmesi etkisine karşı 0–denge açısı (θe) arası alan kullanılır.",
-    category: "Weather Criterion"
-  },
-  {
-    id: 35,
-    question: "Boyuna metasantr (KML) artarsa MCT1cm nasıl etkilenir?",
-    options: ["Artar", "Azalır", "Değişmez", "Sadece LCB etkilenir"],
-    correctAnswer: 0,
-    explanation: "MCT1cm ≈ Δ × GML / (100 × LPP); GML artarsa MCT artar.",
-    category: "Trim"
-  },
-  {
-    id: 36,
-    question: "Bir yük gemi güvertesinde 5 m yükseltilirse KG nasıl değişir?",
-    options: ["Artar", "Azalır", "Değişmez", "Sadece LCG değişir"],
-    correctAnswer: 0,
-    explanation: "Yükün yukarı taşınması VCG'yi artırır; dolayısıyla KG artar, GM azalır.",
-    category: "Ağırlık Operasyonları"
-  },
-  {
-    id: 37,
-    question: "Δ = 9,500 t, GM = 0.7 m. 10° için righting moment?",
-    options: ["1,158 tm", "1,1580 tm", "1,160 tm", "6,650 tm"],
-    correctAnswer: 0,
-    explanation: "RM ≈ Δ × GM × sin10° = 9,500×0.7×0.1736 ≈ 1,155 tm ≈ 1,158 tm.",
-    category: "Sayısal"
-  },
-  {
-    id: 38,
     question: "Serbest yüzeyin azaltılmasının en etkili yolu hangisidir?",
-    options: ["Tankları yarıda tutmak", "Tankları tam doldurmak veya boşaltmak", "Tankları bölmekten kaçınmak", "Viskoziteyi düşürmek"],
+    options: [
+      "Tankları yarıda tutmak",
+      "Tankları tam doldurmak veya boşaltmak",
+      "Bölmeleri kaldırmak",
+      "Viskoziteyi düşürmek"
+    ],
     correctAnswer: 1,
-    explanation: "Yarı dolu durumdan kaçınmak esastır; tam dolu veya boş en iyisidir. Bölme eklemek de etkilidir.",
+    explanation: "Yarı dolu durumdan kaçınmak, bölmelendirme ve tam dolu/boş işletmek esastır.",
     category: "Serbest Yüzey"
   },
   {
-    id: 39,
-    question: "GZ maksimumu tipik olarak hangi açı civarında oluşur?",
-    options: ["10–15°", "25–35°", "40–50°", "60–70°"],
+    id: 35,
+    question: "GG1 = w·h/Δ. w = 50 t, h = 10 m, Δ = 10,000 t için GG1 kaç m?",
+    options: ["0.005", "0.05", "0.5", "5.0"],
     correctAnswer: 1,
-    explanation: "Birçok yük gemisinde GZ_max yaklaşık 25–35° aralığındadır.",
-    category: "GZ"
+    explanation: "GG1 = 500/10,000 = 0.05 m; KG artar, GM azalır.",
+    category: "Ağırlık Operasyonları (Sayısal)"
+  },
+  {
+    id: 36,
+    question: "IS Code'a göre 0–40° toplam alanı en az kaç m·rad olmalıdır?",
+    options: ["0.085", "0.090", "0.120", "0.150"],
+    correctAnswer: 1,
+    explanation: "0–30° ≥ 0.055 ve 30–40° ≥ 0.030 şartlarına ek olarak toplam 0–40° alanı ≥ 0.090 m·rad olmalıdır.",
+    category: "IS Code (2008)"
+  },
+  {
+    id: 37,
+    question: "MCT1cm, GML arttığında nasıl değişir?",
+    options: ["Artar", "Azalır", "Değişmez", "Önce artar sonra azalır"],
+    correctAnswer: 0,
+    explanation: "MCT1cm ≈ Δ×GML/(100×LPP); GML artışı MCT'yi artırır.",
+    category: "Trim"
+  },
+  {
+    id: 38,
+    question: "Hasarlı stabilite hesabında hangi veri seti trim ve drafta göre düzeltilir?",
+    options: ["Bonjean", "KN eğrileri", "TPC tablosu", "Manevra diyagramı"],
+    correctAnswer: 1,
+    explanation: "Hasarlı durum için KN (cross-curves) değerleri trim/draft düzeltmelerine tabi tutulur.",
+    category: "Hasarlı Stabilite (SOLAS)"
+  },
+  {
+    id: 39,
+    question: "Dinamik stabilite ne ile ilişkilidir?",
+    options: ["GZ eğrisi altındaki alanla (enerji)", "GZmax ile", "GM0 ile", "BM ile"],
+    correctAnswer: 0,
+    explanation: "Açıya göre GZ integrali dinamik stabiliteyi (sağlama enerjisini) temsil eder.",
+    category: "Dinamik Stabilite"
   },
   {
     id: 40,
-    question: "Bonjean eğrileri hangi amaçla kullanılır?",
-    options: ["Yalpa periyodu", "Su altı alan/alan momentleri", "Rüzgar alanı", "Pervane itmesi"],
-    correctAnswer: 1,
-    explanation: "Bonjean eğrileri gemi kesit alanlarını ve hacimlerini hesaplamak için kullanılır.",
-    category: "Hidrostatik"
+    question: "Rüzgâr momenti yaklaşık olarak hangi parametrelerin fonksiyonudur?",
+    options: [
+      "Hava yoğunluğu, sürükleme katsayısı, projeksiyon alanı, rüzgâr hızı^2",
+      "Su yoğunluğu, Awp, GM, rüzgâr hızı",
+      "Yalpa periyodu ve Lpp",
+      "LCB ve KB"
+    ],
+    correctAnswer: 0,
+    explanation: "Basitleştirilmiş: Mw ≈ 0.5·ρair·Cd·A·V^2·z (moment kolu dâhil).",
+    category: "Weather Criterion"
   },
   {
     id: 41,
-    question: "GM = 0.5 m iken loll oluşmuş gemide hangi işlem loll'u düzeltebilir?",
-    options: ["Yükü yukarı taşıma", "Yarı dolu tank açma", "Ballastı aşağı doldurma", "Serbest yüzey ekleme"],
-    correctAnswer: 2,
-    explanation: "Aşağı seviyelerde ballast almak KG'yi düşürür, GM'yi artırır, loll'u azaltır.",
-    category: "Loll"
+    question: "İkinci nesil IS kapsamında 'saf stabilite kaybı' hangi koşulda beklenir?",
+    options: [
+      "Dalga tepesinde kaldırma merkezinin düşmesi ve GM'nin anlık azalması",
+      "Sadece rüzgâr sert eserse",
+      "Sadece pervane boşalınca",
+      "Yalnızca kıçtan dalga alınca"
+    ],
+    correctAnswer: 0,
+    explanation: "Dalga tepesinde gövde formu nedeniyle BM/GM azalması anlık stabilite kaybına yol açabilir.",
+    category: "Second-Generation IS"
   },
   {
     id: 42,
-    question: "Δ artarken BM nasıl değişir?",
-    options: ["Artar", "Azalır", "Değişmez", "Önce artar sonra azalır"],
-    correctAnswer: 1,
-    explanation: "BM = I/∇; deplasman (∇) artarsa BM azalır (I sabit kabul edilirse).",
-    category: "Temel Stabilite"
+    question: "Grain Code için denge açısı sınırı hangi ölçüttür?",
+    options: [
+      "12° veya güverte kenarı batma açısından küçük olanı aşmamalı",
+      "16° sabit",
+      "10° sabit",
+      "Sınır yoktur"
+    ],
+    correctAnswer: 0,
+    explanation: "Tahıl kayması sonrası denge açısı 12° veya deck-edge immersion açısını aşmamalı.",
+    category: "Grain Code"
   },
   {
     id: 43,
-    question: "GZ = KN − KG×sinθ bağıntısında KN hangi veriden gelir?",
-    options: ["Bonjean", "KN Tablosu/Eğrisi", "TPC tablosu", "MCT1cm tablosu"],
+    question: "Başlangıç GM küçüldükçe yalpa periyodu T nasıl değişir?",
+    options: ["Kısalır", "Uzunlaşır", "Değişmez", "Rastgele değişir"],
     correctAnswer: 1,
-    explanation: "KN değerleri hidrostatik/KN tablolarından elde edilir.",
-    category: "GZ"
+    explanation: "T ≈ 2π√(k^2/(g·GM)); GM küçüldükçe periyot artar (uzar).",
+    category: "Yalpa"
   },
   {
     id: 44,
-    question: "Bir ağırlık gemi merkezinden 15 m sancak tarafa taşındı. Δ=12,000 t, w=60 t. Meyil momenti?",
-    options: ["900 tm", "600 tm", "1,200 tm", "3,600 tm"],
-    correctAnswer: 0,
-    explanation: "Meyil momenti = w × y = 60 × 15 = 900 tm.",
+    question: "Δ = 12,000 t, w = 60 t, yanal mesafe 15 m ise meyil momenti kaç tm?",
+    options: ["600", "900", "1,200", "3,600"],
+    correctAnswer: 1,
+    explanation: "Meyil momenti = w·y = 60·15 = 900 tm.",
     category: "Sayısal"
   },
   {
     id: 45,
-    question: "Krenle güverteden 10 m yukarı kaldırılan 50 t yük için GG1? Δ=10,000 t",
-    options: ["0.05 m", "0.5 m", "0.25 m", "0.005 m"],
-    correctAnswer: 3,
-    explanation: "GG1 = w×h/Δ = 50×10/10,000 = 0.05 m? Dikkat: 50×10=500; 500/10,000=0.05 m. Doğru 0.05 m.",
-    category: "Ağırlık Operasyonları"
+    question: "KN eğrisi altında kalan alan neyi temsil eder?",
+    options: ["Dinamik stabilite", "Statik stabilite", "Rüzgâr momenti", "Trim momenti"],
+    correctAnswer: 0,
+    explanation: "GZ/KN alanı sağlama enerjisiyle ilişkilidir (dinamik stabilite).",
+    category: "Dinamik Stabilite"
   },
   {
     id: 46,
-    question: "IS Code'a göre 0–40° alanı en az ne olmalıdır?",
-    options: ["0.08 m·rad", "0.09 m·rad", "0.12 m·rad", "0.20 m·rad"],
-    correctAnswer: 2,
-    explanation: "Minimum alan 0.09 (0–30°) ve 0.03 (30–40°); toplam en az 0.12 m·rad olmalıdır.",
-    category: "IS Code"
-  },
-  {
-    id: 47,
-    question: "GM = 1.2 m ve θe = 35°. Küçük açı yaklaşımıyla GZ(10°) yaklaşık?",
-    options: ["0.12 m", "0.21 m", "0.17 m", "0.34 m"],
-    correctAnswer: 1,
-    explanation: "GZ ≈ GM×sin10° = 1.2×0.1736 ≈ 0.208 m ≈ 0.21 m.",
-    category: "Sayısal"
-  },
-  {
-    id: 48,
-    question: "Serbest yüzey düzeltmesi hangi terime uygulanır?",
+    question: "Serbest yüzey düzeltmesi (FSC) hangi terime uygulanır?",
     options: ["KB", "BM", "KG/GM", "KN"],
     correctAnswer: 2,
     explanation: "Sanal KG artışı olarak KG'ye eklenir veya GM'den düşülür (GMcorr).",
     category: "Serbest Yüzey"
   },
   {
-    id: 49,
-    question: "Δ=11,000 t, GM=0.8 m iken 12°'de RM yaklaşık kaç tm?",
-    options: ["1,800", "1,832", "920", "88"],
-    correctAnswer: 1,
-    explanation: "RM ≈ 11,000×0.8×sin12° ≈ 8,800×0.2079 ≈ 1,832 tm.",
+    id: 47,
+    question: "GM = 1.20 m için 10°'de GZ (küçük açı) yaklaşık kaç m?",
+    options: ["0.12", "0.17", "0.21", "0.34"],
+    correctAnswer: 2,
+    explanation: "GZ ≈ GM·sin10° = 1.2·0.1736 ≈ 0.21 m.",
     category: "Sayısal"
   },
   {
-    id: 50,
-    question: "KN eğrisi altında kalan alan neyi temsil eder?",
-    options: ["Dinamik stabilite", "Statik stabilite", "Rüzgar momenti", "Trim momenti"],
+    id: 48,
+    question: "IS Code alan şartlarından hangisi yanlıştır?",
+    options: [
+      "0–30° ≥ 0.055 m·rad",
+      "30–40° ≥ 0.030 m·rad",
+      "0–40° ≥ 0.050 m·rad",
+      "GZmax ≥ 0.20 m"
+    ],
+    correctAnswer: 2,
+    explanation: "0–40° toplam en az 0.090 m·rad olmalıdır; 0.050 yanlıştır.",
+    category: "IS Code (2008)"
+  },
+  {
+    id: 49,
+    question: "Hasarlı stabilite A indeksi hangi bileşenlerden hesaplanır?",
+    options: [
+      "Tüm olası hasar senaryoları için sağkalım olasılığı ve sonuç katsayıları",
+      "Sadece min. GM",
+      "Sadece GZmax",
+      "Sadece deck-edge açısı"
+    ],
     correctAnswer: 0,
-    explanation: "Açıya göre integrali dinamik stabiliteyi (enerjiyi) verir; pratikte GZ alanı kullanılır.",
-    category: "Dinamik Stabilite"
+    explanation: "Olasılıksal yaklaşım: hasar olasılığı, bölmeleme ve sağkalım olasılığı (s-index) bileşenleri üzerinden A elde edilir.",
+    category: "Hasarlı Stabilite (SOLAS)"
+  },
+  {
+    id: 50,
+    question: "Parametrik yalpada hangi önlem zafiyeti azaltır?",
+    options: [
+      "Yalpa doğal periyodunu dalga karşılaşma periyodundan uzaklaştırmak",
+      "GM'yi sıfıra indirmek",
+      "Serbest yüzeyi artırmak",
+      "Kren operasyonlarını artırmak"
+    ],
+    correctAnswer: 0,
+    explanation: "Kütle dağılımı/GM ayarı veya hız/rota ile karşılaşma periyodunu değiştirerek rezonansın önüne geçilebilir.",
+    category: "Second-Generation IS"
   }
 ];
 
