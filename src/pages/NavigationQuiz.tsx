@@ -22,6 +22,11 @@ export default function NavigationQuizPage() {
   };
 
   const maxCount = navigationQuestions.length;
+  const selectableCounts = useMemo(() => {
+    const baseCounts = [10, 25, 50, maxCount];
+    const uniqueCounts = Array.from(new Set(baseCounts.filter((n) => n <= maxCount)));
+    return uniqueCounts.sort((a, b) => a - b);
+  }, [maxCount]);
 
   return (
     <div className="container mx-auto p-6 space-y-4">
@@ -43,13 +48,13 @@ export default function NavigationQuizPage() {
           <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <span>Toplam soru havuzu: {maxCount}</span>
             <span>•</span>
-            <span>Karışık {count} soru</span>
+            <span>Görüntülenen: {count} soru</span>
             <span>•</span>
             <span>Temel ve uygulamalı karışık</span>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {[10, 25, 50].map((c) => (
+            {selectableCounts.map((c) => (
               <Button
                 key={c}
                 variant={count === c ? "default" : "outline"}
