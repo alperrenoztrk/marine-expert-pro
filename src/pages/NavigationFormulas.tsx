@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Sigma, BookOpen, Calculator } from "lucide-react";
+import { ArrowLeft, Sigma, BookOpen, Calculator, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function NavigationFormulasPage() {
   // Kategori başlıkları altında içerik TOC'u
@@ -53,6 +54,21 @@ export default function NavigationFormulasPage() {
     }
   ];
 
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const isOpen = (id: string) => !!openSections[id];
+  const toggleSection = (id: string) => {
+    setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+  const openSection = (id: string) => {
+    setOpenSections(prev => (prev[id] ? prev : { ...prev, [id]: true }));
+  };
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      const id = window.location.hash.slice(1);
+      if (id) openSection(id);
+    }
+  }, []);
+
   return (
     <MobileLayout>
       <div className="space-y-4" data-no-translate>
@@ -82,7 +98,7 @@ export default function NavigationFormulasPage() {
                   <div className="text-sm font-semibold text-primary px-1">{group.header}</div>
                   <div className="flex flex-wrap gap-2">
                     {group.items.map((s) => (
-                      <a key={s.id} href={`#${s.id}`}>
+                      <a key={s.id} href={`#${s.id}`} onClick={() => openSection(s.id)}>
                         <Button variant="outline" size="sm" className="whitespace-nowrap">
                           {s.title}
                         </Button>
@@ -100,9 +116,13 @@ export default function NavigationFormulasPage() {
           <div className="text-sm font-semibold text-primary px-1">1. Seyir Hesaplamaları</div>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="gc" className="scroll-mt-24">Büyük Daire (Great Circle)</CardTitle>
+            <CardHeader onClick={() => toggleSection('gc')} className="cursor-pointer" aria-expanded={isOpen('gc')}>
+              <CardTitle id="gc" className="scroll-mt-24 flex items-center justify-between">
+                Büyük Daire (Great Circle)
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('gc') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('gc') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Mesafe (nm):
@@ -114,12 +134,17 @@ d = 2R × arcsin(√(sin²((φ₂−φ₁)/2) + cosφ₁ · cosφ₂ · sin²((�
 R ≈ 3440.065 nm`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="rhumb" className="scroll-mt-24">Rhumb Line (Mercator)</CardTitle>
+            <CardHeader onClick={() => toggleSection('rhumb')} className="cursor-pointer" aria-expanded={isOpen('rhumb')}>
+              <CardTitle id="rhumb" className="scroll-mt-24 flex items-center justify-between">
+                Rhumb Line (Mercator)
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('rhumb') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('rhumb') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`q = ln(tan(π/4 + φ₂/2) / tan(π/4 + φ₁/2)) / (φ₂ − φ₁)
@@ -128,12 +153,17 @@ Kurs: Brg = atan2(Δλ, q · Δφ)
 Yaklaşık: Departure = 60 · Δλ · cosφ̄, dLat = 60 · Δφ`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="plane" className="scroll-mt-24">Plane Sailing</CardTitle>
+            <CardHeader onClick={() => toggleSection('plane')} className="cursor-pointer" aria-expanded={isOpen('plane')}>
+              <CardTitle id="plane" className="scroll-mt-24 flex items-center justify-between">
+                Plane Sailing
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('plane') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('plane') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`dLat = 60 · Δφ
@@ -142,24 +172,34 @@ Kurs = atan2(Dep, dLat)
 Mesafe = √(dLat² + Dep²)`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="time-eta" className="scroll-mt-24">Zaman ve ETA</CardTitle>
+            <CardHeader onClick={() => toggleSection('time-eta')} className="cursor-pointer" aria-expanded={isOpen('time-eta')}>
+              <CardTitle id="time-eta" className="scroll-mt-24 flex items-center justify-between">
+                Zaman ve ETA
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('time-eta') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('time-eta') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`t (saat) = d / V
 ETA = ETD + t`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="current" className="scroll-mt-24">Akıntı Üçgeni (CTS)</CardTitle>
+            <CardHeader onClick={() => toggleSection('current')} className="cursor-pointer" aria-expanded={isOpen('current')}>
+              <CardTitle id="current" className="scroll-mt-24 flex items-center justify-between">
+                Akıntı Üçgeni (CTS)
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('current') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('current') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`sin(CTS − TR) = (c / V) · sin(set − TR)
@@ -167,12 +207,17 @@ SOG = V · cos(CTS − TR) + c · cos(set − TR)`}</pre>
                 <div className="text-xs text-muted-foreground">TR: istenen rota, V: gemi sürati, c/set: akıntı</div>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="compass" className="scroll-mt-24">Pusula Dönüşümleri</CardTitle>
+            <CardHeader onClick={() => toggleSection('compass')} className="cursor-pointer" aria-expanded={isOpen('compass')}>
+              <CardTitle id="compass" className="scroll-mt-24 flex items-center justify-between">
+                Pusula Dönüşümleri
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('compass') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('compass') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Cm = Ct − Var
@@ -181,12 +226,17 @@ Ct = Cc + Var + Dev`}</pre>
                 <div className="text-xs text-muted-foreground">Kural: E(+) W(−)</div>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="cpa" className="scroll-mt-24">CPA / TCPA</CardTitle>
+            <CardHeader onClick={() => toggleSection('cpa')} className="cursor-pointer" aria-expanded={isOpen('cpa')}>
+              <CardTitle id="cpa" className="scroll-mt-24 flex items-center justify-between">
+                CPA / TCPA
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('cpa') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('cpa') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`tCPA = − (R · Vrel) / |Vrel|²
@@ -194,12 +244,17 @@ dCPA = |R + Vrel · tCPA|`}</pre>
                 <div className="text-xs text-muted-foreground">tCPA (saat) → dakika için ×60</div>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="distance" className="scroll-mt-24">Mesafe Hesaplamaları</CardTitle>
+            <CardHeader onClick={() => toggleSection('distance')} className="cursor-pointer" aria-expanded={isOpen('distance')}>
+              <CardTitle id="distance" className="scroll-mt-24 flex items-center justify-between">
+                Mesafe Hesaplamaları
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('distance') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('distance') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Dip (Horizon) Distance:
@@ -216,6 +271,7 @@ Kavisli Yeryüzü Düzeltmesi:
 d_corrected = d · √(1 + h/R_earth)`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
         </div>
 
@@ -223,9 +279,13 @@ d_corrected = d · √(1 + h/R_earth)`}</pre>
         <div className="space-y-4">
           <div className="text-sm font-semibold text-primary px-1">2. Anlık Bilgiler</div>
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="radar" className="scroll-mt-24">Radar Hesaplamaları</CardTitle>
+            <CardHeader onClick={() => toggleSection('radar')} className="cursor-pointer" aria-expanded={isOpen('radar')}>
+              <CardTitle id="radar" className="scroll-mt-24 flex items-center justify-between">
+                Radar Hesaplamaları
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('radar') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('radar') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Radar Range:
@@ -244,6 +304,7 @@ Parallel Index:
 Sabit mesafe → güvenli geçiş`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
         </div>
 
@@ -251,9 +312,13 @@ Sabit mesafe → güvenli geçiş`}</pre>
         <div className="space-y-4">
           <div className="text-sm font-semibold text-primary px-1">3. Meteoroloji ve Çevresel Faktörler</div>
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="weather" className="scroll-mt-24">Hava Durumu</CardTitle>
+            <CardHeader onClick={() => toggleSection('weather')} className="cursor-pointer" aria-expanded={isOpen('weather')}>
+              <CardTitle id="weather" className="scroll-mt-24 flex items-center justify-between">
+                Hava Durumu
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('weather') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('weather') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Beaufort Scale:
@@ -272,12 +337,17 @@ F = 0.00338 · V² · A
 A: rüzgar alan (m²)`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="tides" className="scroll-mt-24">Gelgit Hesaplamaları</CardTitle>
+            <CardHeader onClick={() => toggleSection('tides')} className="cursor-pointer" aria-expanded={isOpen('tides')}>
+              <CardTitle id="tides" className="scroll-mt-24 flex items-center justify-between">
+                Gelgit Hesaplamaları
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('tides') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('tides') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Rule of Twelfths:
@@ -296,6 +366,7 @@ H₂ = H₁ + Diff
 T₂ = T₁ + Time_Diff`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
         </div>
 
@@ -304,9 +375,13 @@ T₂ = T₁ + Time_Diff`}</pre>
           <div className="text-sm font-semibold text-primary px-1">4. Liman ve Seyir Yardımları</div>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="pilotage" className="scroll-mt-24">Kıyı Seyri</CardTitle>
+            <CardHeader onClick={() => toggleSection('pilotage')} className="cursor-pointer" aria-expanded={isOpen('pilotage')}>
+              <CardTitle id="pilotage" className="scroll-mt-24 flex items-center justify-between">
+                Kıyı Seyri
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('pilotage') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('pilotage') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Clearing Bearing:
@@ -324,12 +399,17 @@ Sounding Pattern:
 3-4-3 metre → konum onayı`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="celestial" className="scroll-mt-24">Göksel Navigasyon</CardTitle>
+            <CardHeader onClick={() => toggleSection('celestial')} className="cursor-pointer" aria-expanded={isOpen('celestial')}>
+              <CardTitle id="celestial" className="scroll-mt-24 flex items-center justify-between">
+                Göksel Navigasyon
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('celestial') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('celestial') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Meridian Passage:
@@ -351,12 +431,17 @@ Sun's Bearing at Sunrise/Sunset:
 Brg = arccos(-tanφ · tanδ)`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
 
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="sight" className="scroll-mt-24">Sight Reduction</CardTitle>
+            <CardHeader onClick={() => toggleSection('sight')} className="cursor-pointer" aria-expanded={isOpen('sight')}>
+              <CardTitle id="sight" className="scroll-mt-24 flex items-center justify-between">
+                Sight Reduction
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('sight') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('sight') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Hesaplanan Yükseklik (Hc):
@@ -371,6 +456,7 @@ a = Ho - Hc (toward/away)
 LHA = GHA + Lon (W(-), E(+))`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
         </div>
 
@@ -378,9 +464,13 @@ LHA = GHA + Lon (W(-), E(+))`}</pre>
         <div className="space-y-4">
           <div className="text-sm font-semibold text-primary px-1">5. Acil Durum</div>
           <Card className="shadow">
-            <CardHeader>
-              <CardTitle id="emergency" className="scroll-mt-24">Acil Durum</CardTitle>
+            <CardHeader onClick={() => toggleSection('emergency')} className="cursor-pointer" aria-expanded={isOpen('emergency')}>
+              <CardTitle id="emergency" className="scroll-mt-24 flex items-center justify-between">
+                Acil Durum
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('emergency') ? "rotate-180" : "")} />
+              </CardTitle>
             </CardHeader>
+            {isOpen('emergency') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Search Pattern:
@@ -402,6 +492,7 @@ VHF Range:
 d = 2.35 · (√h₁ + √h₂) nm`}</pre>
               </div>
             </CardContent>
+            )}
           </Card>
         </div>
 
