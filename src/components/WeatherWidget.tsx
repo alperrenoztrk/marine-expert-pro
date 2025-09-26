@@ -214,6 +214,7 @@ export default function WeatherWidget() {
   const navigate = useNavigate();
   const [nowMs, setNowMs] = useState<number>(Date.now());
   const [loadingTimeout, setLoadingTimeout] = useState<boolean>(false);
+  const [showWindName, setShowWindName] = useState<boolean>(false);
 
   // Tick every 1s to refresh time displays (GMT/LMT/ZT)
   useEffect(() => {
@@ -449,14 +450,30 @@ export default function WeatherWidget() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Rüzgar</div>
+                  <div
+                    className="text-sm font-medium text-muted-foreground mb-1 cursor-pointer select-none"
+                    data-translatable
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setShowWindName(prev => !prev)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setShowWindName(prev => !prev);
+                      }
+                    }}
+                  >
+                    Rüzgar
+                  </div>
                   <div className="text-lg font-bold text-foreground">
                     {Number.isFinite(data.windSpeedKt) ? `${data.windSpeedKt.toFixed(0)} kt` : "-"}
                     {Number.isFinite(data.windDirectionDeg) && (
                       <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                         <Compass className="h-4 w-4 transition-transform duration-500" style={{ transform: `rotate(${data.windDirectionDeg}deg)` }} />
                         <span className="font-medium">{windCompass} ({Math.round(data.windDirectionDeg)}°)</span>
-                        <span className="text-muted-foreground/80">– {windNameTr}</span>
+                        {showWindName && (
+                          <span className="text-muted-foreground/80">– {windNameTr}</span>
+                        )}
                       </div>
                     )}
                   </div>
