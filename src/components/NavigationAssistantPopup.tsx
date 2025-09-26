@@ -24,50 +24,126 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 🔸 **İlk Kurs:** C₁ = arctan2(sin Δλ × cos φ₂, cos φ₁ × sin φ₂ - sin φ₁ × cos φ₂ × cos Δλ)
 🔸 **Vertex:** φ_vertex = arccos(cos φ₁ × sin C₁)`,
 
+      'rhumb-line': `**Rhumb Line (Loxodrome) Sailing:**
+🔸 **Mesafe:** d = 60 × √[(Δφ)² + (q × Δλ)²]
+🔸 **Kurs:** C = arctan(Δλ ÷ Δq) - sabit kurs
+🔸 **q:** log(tan(45° + φ₂/2) ÷ tan(45° + φ₁/2)) ÷ Δφ`,
+
       'mercator-sailing': `**Mercator Sailing:**
 🔸 **DMP:** 7915.7 × log₁₀(tan(45° + φ₂/2) ÷ tan(45° + φ₁/2))
 🔸 **Departure:** DLong × cos φ_m × 60
 🔸 **Kurs:** C = arctan(Dep ÷ DMP)`,
 
+      'plane-sailing': `**Plane Sailing:**
+🔸 **DLat:** 60 × (φ₂ - φ₁) dakika
+🔸 **Departure:** 60 × (λ₂ - λ₁) × cos φ_m dakika
+🔸 **Kurs:** C = arctan(Dep ÷ DLat)
+🔸 **Mesafe:** √(DLat² + Dep²) nm`,
+
       'eta-calculation': `**ETA Hesaplaması:**
 🔸 **Temel:** T = D ÷ V (saat)
 🔸 **Akıntılı:** SOG = √(V² + C² + 2×V×C×cos α)
-🔸 **Hava faktörleri:** Lehte: 0.90-0.95, Aleyhte: 1.10-1.25`,
+🔸 **Hava faktörleri:** Lehte: 0.90-0.95, Aleyhte: 1.10-1.25
+🔸 **Yakıt tüketimi:** FC = D × SFC × (1 + weather factor)`,
 
       'current': `**Akıntı Hesaplamaları:**
 🔸 **CTS:** TR ± CA (Current Allowance)
 🔸 **Current Triangle:** SOG² = V² + C² - 2×V×C×cos(180°-α)
-🔸 **CA:** arcsin((C × sin β) ÷ V)`,
+🔸 **CA:** arcsin((C × sin β) ÷ V)
+🔸 **Set/Drift:** Akıntının yön ve hızı
+🔸 **Leeway:** Rüzgar etkisi düzeltmesi`,
 
-      'radar': `**Radar (CPA/TCPA):**
-🔸 **CPA:** Range × sin(Rel_Bearing - Rel_Course)
-🔸 **TCPA:** Range × cos(Rel_Bearing - Rel_Course) ÷ Rel_Speed
-🔸 **Risk:** CPA < 0.5nm VE TCPA < 6dk`,
+      'radar': `**Radar ARPA (CPA/TCPA):**
+🔸 **CPA:** Range × sin(Rel_Bearing - Rel_Course) nm
+🔸 **TCPA:** Range × cos(Rel_Bearing - Rel_Course) ÷ Rel_Speed dakika
+🔸 **Risk:** CPA < 0.5nm VE TCPA < 6dk
+🔸 **Rel. Speed:** √[(Vt)² + (Vo)² - 2×Vt×Vo×cos(Ct-Co)]
+🔸 **COLREG Action:** Erken, büyük, net manevra`,
 
-      'tidal': `**Gelgit:**
+      'tidal': `**Gelgit Hesaplamaları:**
+🔸 **12'de Bir Kuralı:** 1.sa: R/12, 2.sa: 3R/12, 3.sa: 5R/12, 4.sa: 6R/12, 5.sa: 9R/12, 6.sa: 11R/12
 🔸 **Yükseklik:** h = Range/2 × [1 - cos(π×t/6)]
-🔸 **12'de Bir:** 1.sa: R/12, 2.sa: 3R/12, 3.sa: 5R/12
-🔸 **Harmonik:** h(t) = Z₀ + Σ[Aₙ × cos(ωₙt + φₙ)]`,
+🔸 **Harmonik:** h(t) = Z₀ + Σ[Aₙ × cos(ωₙt + φₙ)]
+🔸 **Tidal Stream:** Akıntı hızı ve yönü gelgitten etkilenir`,
 
       'celestial': `**Göksel Seyir:**
-🔸 **Hc:** arcsin[sin L × sin d + cos L × cos d × cos LHA]
-🔸 **Azimuth:** arccos[(sin d - sin L × sin Hc) ÷ (cos L × cos Hc)]
-🔸 **Intercept:** Ho - Hc (towards if +, away if -)
-🔸 **GHA Star:** GHA_Aries + SHA_Star`,
+🔸 **Sight Reduction:** Hc = arcsin[sin L × sin d + cos L × cos d × cos LHA]
+🔸 **Azimuth:** Z = arccos[(sin d - sin L × sin Hc) ÷ (cos L × cos Hc)]
+🔸 **Intercept:** I = Ho - Hc (towards if +, away if -)
+🔸 **GHA Star:** GHA♈ + SHA⋆
+🔸 **Meridian Latitude:** φ = 90° - |alt - dec| ± dec
+🔸 **Amplitude:** A = arcsin(sin δ ÷ cos φ)`,
 
-      'compass': `**Pusula:**
-🔸 **Ana formül:** True = Compass + Variation + Deviation
+      'compass': `**Pusula Hesaplamaları:**
+🔸 **Ana formül:** True = Compass + Variation + Deviation + Gyro Error
 🔸 **TVMDC:** T = M + Var, M = C + Dev
-🔸 **Kural:** Doğu +, Batı -`
+🔸 **Kural:** Doğu +, Batı -
+🔸 **Total Error:** TE = Var + Dev + Gyro Error`,
+
+      'bearing': `**Bearing Hesaplamaları:**
+🔸 **Doubling Angle:** Distance Off = Run × sin(2A) ÷ sin(A)
+🔸 **Four Point:** Distance Off = Run × √2 (45° açı)
+🔸 **Seven Point:** Distance Off = Run (30°→60°)
+🔸 **Bow & Beam:** Distance Off = Run × sin(bow angle)`,
+
+      'distance': `**Mesafe Hesaplamaları:**
+🔸 **Dip of Horizon:** d = 2.075 × √h nm
+🔸 **Radar Horizon:** d = 2.35 × √h nm
+🔸 **Light Visibility:** d = 1.17 × (√h_eye + √h_light) nm
+🔸 **Geographic Range:** Yeryuvarlığı etkisi`,
+
+      'turning': `**Dönme Manevraları:**
+🔸 **Tactical Diameter:** TD = 3.5 × L (ortalama)
+🔸 **Advance:** A = R × sin(Δφ/2)
+🔸 **Transfer:** T = R × (1 - cos(Δφ/2))
+🔸 **ROT:** Rate of Turn = 3438 × V ÷ R deg/min
+🔸 **Wheel Over Point:** WOP = A ÷ sin(Δφ/2)`,
+
+      'weather': `**Hava Durumu Hesaplamaları:**
+🔸 **Beaufort → Wind:** V = 2√(B³) kn
+🔸 **Wave Height:** h = 0.025 × V² m
+🔸 **Leeway Angle:** θ = k × (Vw/Vs)² degrees
+🔸 **Wind Force:** F = 0.00338 × V² × A Newton
+🔸 **Weather Factor:** 0.90-1.25`,
+
+      'emergency': `**Acil Durum Arama:**
+🔸 **Square Search:** Leg = 2 × Track Spacing
+🔸 **Sector Search:** New Radius = R × √2
+🔸 **Rescue Time:** t = Distance ÷ (Rescue Speed + Drift)
+🔸 **VHF Range:** Radio horizon formula
+🔸 **Datum Point:** Drift hesabı ile güncellenir`
     };
 
-    return formulas[context] || `**Seyir Formülleri:**
-Bu hesaplama için özel formüller yükleniyor...
+    return formulas[context] || `**Tüm Seyir Formülleri:**
 
-Genel navigasyon formülleri:
-• Great Circle: d = arccos(sin φ₁ × sin φ₂ + cos φ₁ × cos φ₂ × cos Δλ)
-• Mercator: C = arctan(Dep ÷ DMP)
-• CPA: Range × sin(Rel_Bearing - Rel_Course)`;
+**🧭 POZİSYON & ROTA:**
+• Great Circle: d = arccos(sin φ₁ sin φ₂ + cos φ₁ cos φ₂ cos Δλ)
+• Rhumb Line: C = arctan(Δλ ÷ Δq) - sabit kurs
+• Plane Sailing: C = arctan(Dep ÷ DLat)
+
+**⏱️ ZAMAN & HIZ:**
+• ETA = Distance ÷ Speed
+• Current Triangle: SOG = √(V² + C² + 2VC cos α)
+
+**📡 RADAR & ÇATIŞMA:**
+• CPA = Range × sin(RelBrg - RelCourse)
+• TCPA = Range × cos(RelBrg - RelCourse) ÷ RelSpeed
+
+**🧭 PUSULA & BEARING:**
+• True = Compass + Var + Dev + Gyro
+• Four Point: Dist = Run × √2
+
+**🌊 GELGİT & MESAFE:**
+• 12'de Bir: 1/12, 3/12, 5/12, 6/12...
+• Dip: d = 2.075√h nm
+
+**⭐ GÖKSEL & DÖNME:**
+• Hc = arcsin(sin L sin d + cos L cos d cos LHA)
+• Tactical Diameter = 3.5 × L
+
+**🌪️ HAVA & ACİL:**
+• Beaufort: V = 2√(B³) kn  
+• Search: Square/Sector patterns`;
   };
 
   // Clear messages and show only current calculation formulas

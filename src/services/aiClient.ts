@@ -32,27 +32,74 @@ EXAMPLE FORMAT:
 
 Keep responses precise, authoritative, and cite specific sources.`;
 
-const NAVIGATION_ASSISTANT_SYSTEM_PROMPT = `You are a professional Maritime Navigation Assistant.
+const NAVIGATION_ASSISTANT_SYSTEM_PROMPT = `You are a professional Maritime Navigation Assistant with comprehensive knowledge of all navigation calculations and formulas.
 
-MAIN ROLE: Help with practical ship navigation tasks and calculations. Provide correct formulas, step-by-step methods, and clear results. Prefer concise, operational guidance. Use user's language (Turkish/English).
+MAIN ROLE: Help with ALL navigation tasks, calculations, and formulas. Provide correct formulas, step-by-step methods, and clear results. Use user's language (Turkish/English).
 
-EXPERTISE AREAS:
-- Great Circle and Rhumb-Line (Loxodrome) sailing
-- WGS84 spheroidal distances and bearings
-- Course/Speed/Time/ETA, fuel, and routing trade-offs
-- Current triangle, leeway, course to steer
-- Compass corrections (variation, deviation, gyro error)
-- Radar ARPA: CPA/TCPA, collision risk, recommended actions (COLREG-aware tone)
-- Tides and tidal streams (spring/neap factors)
-- Celestial basics: intercept method overview, twilight, navigation stars
-- Port approach: UKC, pilot boarding ETA, safe draft checks
+COMPLETE FORMULA DATABASE:
+
+🧭 POSITION & COURSE CALCULATIONS:
+- Great Circle: d = arccos(sin φ₁ sin φ₂ + cos φ₁ cos φ₂ cos Δλ) × 3437.747 nm
+- Initial Course: C₁ = arctan2(sin Δλ cos φ₂, cos φ₁ sin φ₂ - sin φ₁ cos φ₂ cos Δλ)
+- Rhumb Line: d = 60√[(Δφ)² + (q×Δλ)²], C = arctan(Δλ/Δq)
+- Plane Sailing: DLat = 60(φ₂-φ₁), Dep = 60(λ₂-λ₁)cos φₘ, C = arctan(Dep/DLat)
+- Mercator: DMP = 7915.7 × log₁₀(tan(45°+φ₂/2) / tan(45°+φ₁/2))
+
+⏱️ TIME & SPEED:
+- ETA: T = D/V hours
+- Current Triangle: SOG = √(V² + C² + 2VC cos α)
+- Current Allowance: CA = arcsin((C × sin β)/V)
+- Course to Steer: CTS = TR ± CA
+
+📡 RADAR & COLLISION AVOIDANCE:
+- CPA: Range × sin(Relative Bearing - Relative Course)
+- TCPA: Range × cos(Relative Bearing - Relative Course) / Relative Speed
+- Relative Speed: √[Vt² + Vo² - 2VtVo cos(Ct-Co)]
+- Risk Assessment: CPA < 0.5nm AND TCPA < 6min
+
+🧭 COMPASS & BEARING:
+- True Course: T = C + Var + Dev + Gyro Error (East +, West -)
+- Doubling Angle: Distance Off = Run × sin(2A)/sin(A)
+- Four Point Bearing: Distance Off = Run × √2 (45° angle)
+- Seven Point Bearing: Distance Off = Run (30° to 60°)
+- Bow & Beam: Distance Off = Run × sin(bow angle)
+
+🌊 TIDES & DISTANCE:
+- Rule of Twelfths: 1st hr: R/12, 2nd: 3R/12, 3rd: 5R/12, 4th: 6R/12, 5th: 9R/12, 6th: 11R/12
+- Dip of Horizon: d = 2.075√h nm
+- Radar Horizon: d = 2.35√h nm  
+- Light Visibility: d = 1.17(√h_eye + √h_light) nm
+
+⭐ CELESTIAL NAVIGATION:
+- Sight Reduction: Hc = arcsin[sin L sin d + cos L cos d cos LHA]
+- Azimuth: Z = arccos[(sin d - sin L sin Hc)/(cos L cos Hc)]
+- Intercept: I = Ho - Hc (towards if +, away if -)
+- GHA Star: GHA♈ + SHA⋆
+- Meridian Latitude: φ = 90° - |altitude - declination| ± declination
+- Amplitude: A = arcsin(sin δ/cos φ)
+
+🚢 SHIP HANDLING:
+- Tactical Diameter: TD = 3.5 × Ship Length (average)
+- Advance: A = R × sin(Δφ/2)
+- Transfer: T = R × (1 - cos(Δφ/2))
+- Rate of Turn: ROT = 3438 × V/R deg/min
+- Wheel Over Point: WOP = A/sin(Δφ/2)
+
+🌪️ WEATHER & EMERGENCY:
+- Beaufort to Wind: V = 2√(B³) knots
+- Wave Height: h = 0.025 × V² meters
+- Leeway Angle: θ = k × (Vwind/Vship)² degrees
+- Wind Force: F = 0.00338 × V² × Area Newtons
+- Square Search: Leg Distance = 2 × Track Spacing
+- Sector Search: New Radius = R × √2
 
 RESPONSE STYLE:
-- Show formulas and units briefly; then give the computed or recommended value(s)
-- When inputs are missing, ask only the minimum essential values
-- Provide numbered steps for procedures; keep to 6 lines or fewer when possible
-- Include quick safety notes when relevant (COLREG, UKC)
-`;
+- Always provide the exact formula first
+- Show step-by-step calculation when numbers given
+- Include units and practical notes
+- Ask for missing essential values only
+- Provide safety considerations (COLREG, UKC, weather limits)
+- Keep explanations concise but complete`;
 
 async function callGemini(messages: AIMessage[]): Promise<string> {
   // Proxy through Supabase Edge Function to keep API key server-side and support images
@@ -205,43 +252,129 @@ export async function callNavigationAssistant(messages: AIMessage[]): Promise<st
       // Heuristic fallback for navigation topics
       const last = messages.filter(m=>m.role==='user').pop()?.content.toLowerCase() || '';
 
-      if (last.includes('eta') || last.includes('varış')) {
+      if (last.includes('eta') || last.includes('varış') || last.includes('zaman')) {
         return [
-          '⏱️ ETA Hesabı:',
-          '• Hız (kn) = Mesafe (nm) / Zaman (h)',
-          '• ETA = ETD + Mesafe/Hız',
-          'Örn: 240 nm, 12 kn → 20 saat; ETD 08:00 → ETA 04:00+1d'
+          '⏱️ ETA Hesaplamaları:',
+          '• Temel: T = Mesafe(nm) ÷ Hız(kn) saat',
+          '• Akıntılı: SOG = √(V² + C² + 2VC cos α)',
+          '• Hava faktörü: Lehte 0.90-0.95, Aleyhte 1.10-1.25',
+          'Örn: 240nm, 12kn → 20 saat; ETD 08:00 → ETA 04:00+1d'
         ].join('\n');
       }
 
-      if (last.includes('büyük daire') || last.includes('great circle')) {
+      if (last.includes('büyük daire') || last.includes('great circle') || last.includes('gc')) {
         return [
-          '🧭 Büyük Daire (GC):',
-          '• d = arccos(sin φ1 sin φ2 + cos φ1 cos φ2 cos Δλ)',
-          '• İlk rota = atan2(sin Δλ · cos φ2, cos φ1 · sin φ2 − sin φ1 · cos φ2 · cos Δλ)'
+          '🧭 Büyük Daire (Great Circle):',
+          '• Mesafe: d = arccos(sin φ₁ sin φ₂ + cos φ₁ cos φ₂ cos Δλ) × 3437.747nm',
+          '• İlk Kurs: C₁ = arctan2(sin Δλ cos φ₂, cos φ₁ sin φ₂ - sin φ₁ cos φ₂ cos Δλ)',
+          '• En kısa mesafe ama değişken kurs'
+        ].join('\n');
+      }
+
+      if (last.includes('rhumb') || last.includes('loxodrome') || last.includes('sabit kurs')) {
+        return [
+          '🧭 Rhumb Line (Loxodrome):',
+          '• Mesafe: d = 60√[(Δφ)² + (q×Δλ)²]',
+          '• Kurs: C = arctan(Δλ/Δq) - sabit kurs',
+          '• q = log(tan(45°+φ₂/2) / tan(45°+φ₁/2)) / Δφ'
         ].join('\n');
       }
 
       if (last.includes('akıntı') || last.includes('current') || last.includes('leeway')) {
         return [
-          '🌊 Akıntı Üçgeni:',
-          '• Vektörler: fener kursu, akıntı set/drift, rüzgar leeway',
-          '• SOG/COG = vektörel toplama, CTS = istenen COG için ters vektörleme'
+          '🌊 Akıntı Üçgeni & Leeway:',
+          '• SOG = √(V² + C² + 2VC cos α)',
+          '• CA = arcsin((C × sin β) / V)',
+          '• CTS = İstenen Kurs ± CA',
+          '• Leeway: Rüzgar etkisi düzeltmesi'
         ].join('\n');
       }
 
-      if (last.includes('cpa') || last.includes('tcpa') || last.includes('arpa') || last.includes('çatma')) {
+      if (last.includes('cpa') || last.includes('tcpa') || last.includes('arpa') || last.includes('çatışma')) {
         return [
-          '📡 ARPA: CPA/TCPA:',
-          '• Rel. hız ve doğrultudan yaklaşıp en yakın nokta (CPA) ve zamanı (TCPA) bulunur',
-          '• Risk yüksekse: Erken, büyük ve net rota/hız değişimi (COLREG)' 
+          '📡 ARPA: CPA/TCPA Hesabı:',
+          '• CPA = Range × sin(RelBrg - RelCourse)',
+          '• TCPA = Range × cos(RelBrg - RelCourse) ÷ RelSpeed',
+          '• Risk: CPA < 0.5nm VE TCPA < 6dk',
+          '• Rel Speed = √[Vt² + Vo² - 2VtVo cos(Ct-Co)]'
+        ].join('\n');
+      }
+
+      if (last.includes('pusula') || last.includes('compass') || last.includes('varyasyon') || last.includes('deviayon')) {
+        return [
+          '🧭 Pusula Düzeltmeleri:',
+          '• True = Compass + Variation + Deviation + Gyro Error',
+          '• TVMDC kuralı: T = M + Var, M = C + Dev',
+          '• Doğu +, Batı - (East add, West subtract)',
+          '• Total Error = Var + Dev + Gyro'
+        ].join('\n');
+      }
+
+      if (last.includes('bearing') || last.includes('açı') || last.includes('mesafe')) {
+        return [
+          '📐 Bearing & Mesafe:',
+          '• Doubling Angle: Dist = Run × sin(2A) ÷ sin(A)',
+          '• Four Point: Dist = Run × √2 (45°)',
+          '• Seven Point: Dist = Run (30°→60°)',
+          '• Dip Horizon: d = 2.075√h nm',
+          '• Radar Horizon: d = 2.35√h nm'
+        ].join('\n');
+      }
+
+      if (last.includes('gelgit') || last.includes('tide') || last.includes('tidal')) {
+        return [
+          '🌊 Gelgit - 12\'de Bir Kuralı:',
+          '• 1.saat: R/12, 2.saat: 3R/12, 3.saat: 5R/12',
+          '• 4.saat: 6R/12, 5.saat: 9R/12, 6.saat: 11R/12',
+          '• Yükseklik: h = Range/2 × [1 - cos(π×t/6)]',
+          '• Spring tide: Yeniay/Dolunay, Neap: İlk/Son dördün'
+        ].join('\n');
+      }
+
+      if (last.includes('göksel') || last.includes('celestial') || last.includes('yıldız')) {
+        return [
+          '⭐ Göksel Seyir:',
+          '• Sight Reduction: Hc = arcsin[sin L sin d + cos L cos d cos LHA]',
+          '• Azimuth: Z = arccos[(sin d - sin L sin Hc) ÷ (cos L cos Hc)]',
+          '• Intercept: I = Ho - Hc (+ towards, - away)',
+          '• GHA Star = GHA♈ + SHA⋆'
+        ].join('\n');
+      }
+
+      if (last.includes('dönme') || last.includes('turning') || last.includes('manevra')) {
+        return [
+          '🚢 Dönme Manevraları:',
+          '• Tactical Diameter = 3.5 × Gemi Boyu',
+          '• Advance = R × sin(Δφ/2)',
+          '• Transfer = R × (1 - cos(Δφ/2))',
+          '• ROT = 3438 × V ÷ R deg/min'
+        ].join('\n');
+      }
+
+      if (last.includes('hava') || last.includes('weather') || last.includes('rüzgar') || last.includes('beaufort')) {
+        return [
+          '🌪️ Hava Durumu:',
+          '• Beaufort → Rüzgar: V = 2√(B³) kn',
+          '• Dalga Yüksekliği: h = 0.025 × V² m',
+          '• Leeway Açısı: θ = k × (Vrüzgar/Vgemi)²',
+          '• Rüzgar Kuvveti: F = 0.00338 × V² × Alan'
         ].join('\n');
       }
 
       return [
-        '🧭 Seyir Asistanı hazır.',
-        'Kısa bilgi: GC/Rhumb, ETA, akıntı düzeltmesi, pusula, ARPA, gelgit, göksel.',
-        'Gerekli girdileri yazın (örn: lat/lon, hız, varyasyon/deviayon).'
+        '🧭 Kapsamlı Seyir Asistanı - Tüm Formüller Hazır!',
+        '',
+        '📍 Pozisyon: Great Circle, Rhumb Line, Plane Sailing, Mercator',
+        '⏱️ Zaman: ETA, Akıntı üçgeni, Hız hesapları',
+        '📡 Radar: CPA/TCPA, ARPA, Çatışma riski',
+        '🧭 Pusula: Var/Dev/Gyro düzeltmesi, Bearing hesabı',
+        '🌊 Gelgit: 12\'de bir kuralı, Tidal stream',
+        '⭐ Göksel: Sight reduction, Azimuth, Intercept',
+        '🚢 Manevra: Turning circle, ROT, Advance/Transfer',
+        '🌪️ Hava: Beaufort, Dalga, Leeway, Rüzgar kuvveti',
+        '🆘 Acil: Search patterns, Rescue calculations',
+        '',
+        'Hangi hesaplama için yardım istiyorsunuz?'
       ].join('\n');
     }
   }
