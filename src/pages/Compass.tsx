@@ -228,6 +228,8 @@ const CompassPage: React.FC = () => {
                   className="absolute top-1/2 left-1/2 w-1 h-24 -mt-12 -ml-0.5 transition-transform duration-200 ease-out"
                   style={{ transform: `rotate(${-heading}deg)` }}
                 >
+                  {/* Arrowhead at the tip (north) */}
+                  <div className="absolute left-1/2 -translate-x-1/2 -top-2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-8 border-b-red-500"></div>
                   {/* North pointing part (red) */}
                   <div className="w-2 h-12 bg-red-500 rounded-t-full shadow-md -ml-0.5"></div>
                   {/* South pointing part (white/gray) */}
