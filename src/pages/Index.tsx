@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Shield, FileText, Settings, Star } from "lucide-react";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
+import WeatherWidget from "@/components/WeatherWidget";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,6 +18,15 @@ const Index = () => {
   const [targetRoute, setTargetRoute] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = 3; // Pusula, ana sayfa ve boş sayfa
+  const [viewportWidth, setViewportWidth] = useState<number>(
+    typeof window !== "undefined" ? window.innerWidth : 360
+  );
+
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth || 360);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const x = e.touches[0].clientX;
@@ -33,7 +43,9 @@ const Index = () => {
     const x = e.touches[0].clientX;
     const now = performance.now();
     const delta = x - touchStartX.current;
-    setTranslateX(delta);
+    const width = viewportWidth || 360;
+    const clamped = Math.max(-width, Math.min(width, delta));
+    setTranslateX(clamped);
     // velocity (px/ms)
     if (lastTouchX.current != null && lastTouchTime.current != null) {
       const dx = x - lastTouchX.current;
@@ -48,7 +60,7 @@ const Index = () => {
     if (touchStartX.current === null || lastTouchX.current === null) return;
     const distance = lastTouchX.current - touchStartX.current;
     const speed = velocityX.current; // px/ms
-    const width = typeof window !== 'undefined' ? window.innerWidth : 360;
+    const width = viewportWidth || 360;
     const distanceThreshold = Math.min(180, Math.max(60, width * 0.14));
     const velocityThreshold = 0.35; // px/ms, daha hassas
 
@@ -94,12 +106,19 @@ const Index = () => {
   };
 
   const handleDotClick = (pageIndex: number) => {
+    const width = viewportWidth || 360;
     if (pageIndex === 0) {
-      navigate('/compass');
+      setIsAnimating(true);
+      setTargetRoute('/compass');
+      setTranslateX(width);
     } else if (pageIndex === 1) {
-      navigate('/');
+      setIsAnimating(true);
+      setTargetRoute(null);
+      setTranslateX(0);
     } else if (pageIndex === 2) {
-      navigate('/empty-page');
+      setIsAnimating(true);
+      setTargetRoute('/empty-page');
+      setTranslateX(-width);
     }
   };
 
@@ -114,11 +133,22 @@ const Index = () => {
         className="relative h-full w-full"
         onTransitionEnd={handleTransitionEnd}
         style={{
-          transform: `translateX(${translateX}px)`,
+          transform: `translateX(${(-viewportWidth) + translateX}px)`,
           transition: isAnimating && !isDragging ? 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
           willChange: 'transform',
         }}
       >
+      <div className="flex h-full w-[300%]">
+        {/* LEFT preview - Compass */}
+        <div className="w-full shrink-0 grow-0 basis-full min-h-screen flex items-center justify-center px-8">
+          <div className="pointer-events-none select-none text-center">
+            <div className="text-5xl font-bold text-blue-600">Pusula</div>
+            <div className="mt-2 text-sm text-black/60">Sağa kaydır</div>
+          </div>
+        </div>
+
+        {/* CENTER - Home */}
+        <div className="w-full shrink-0 grow-0 basis-full">
       {/* Purple Settings gear icon (top-right) */}
       <Link to="/settings" className="fixed right-6 top-6 z-20">
         <Button
@@ -208,6 +238,16 @@ const Index = () => {
                 <span data-translatable>Formüller</span>
               </Button>
             </Link>
+          </div>
+        </div>
+        </div>
+        {/* close slide 2 wrapper */}
+        </div>
+
+        {/* RIGHT preview - EmptyPage with weather widget */}
+        <div className="w-full shrink-0 grow-0 basis-full min-h-screen flex items-center justify-center px-8">
+          <div className="pointer-events-none select-none w-full max-w-md opacity-95">
+            <WeatherWidget />
           </div>
         </div>
       </div>
