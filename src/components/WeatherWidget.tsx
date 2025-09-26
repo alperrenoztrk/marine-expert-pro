@@ -76,6 +76,20 @@ function degreesToCompass(degrees: number): string {
   return directions[index];
 }
 
+function degreesToWindNameTr(degrees: number): string {
+  if (!Number.isFinite(degrees)) return "-";
+  const d = ((degrees % 360) + 360) % 360; // normalize to 0-360
+  if (d >= 337.5 || d < 22.5) return "Yıldız"; // N
+  if (d < 67.5) return "Poyraz"; // NE
+  if (d < 112.5) return "Gündoğusu"; // E
+  if (d < 157.5) return "Keşişleme"; // SE
+  if (d < 202.5) return "Kıble"; // S
+  if (d < 247.5) return "Lodos"; // SW
+  if (d < 292.5) return "Günbatısı"; // W
+  if (d < 337.5) return "Karayel"; // NW
+  return "-";
+}
+
 function decimalToDMS(decimal: number, isLatitude: boolean = true): string {
   if (!Number.isFinite(decimal)) return "-";
   
@@ -225,6 +239,10 @@ export default function WeatherWidget() {
 
   const windCompass = useMemo(() => {
     return degreesToCompass(data?.windDirectionDeg ?? NaN);
+  }, [data?.windDirectionDeg]);
+
+  const windNameTr = useMemo(() => {
+    return degreesToWindNameTr(data?.windDirectionDeg ?? NaN);
   }, [data?.windDirectionDeg]);
 
   const analogTimes = useMemo(() => {
@@ -438,6 +456,7 @@ export default function WeatherWidget() {
                       <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
                         <Compass className="h-4 w-4 transition-transform duration-500" style={{ transform: `rotate(${data.windDirectionDeg}deg)` }} />
                         <span className="font-medium">{windCompass} ({Math.round(data.windDirectionDeg)}°)</span>
+                        <span className="text-muted-foreground/80">– {windNameTr}</span>
                       </div>
                     )}
                   </div>
