@@ -253,19 +253,19 @@ const CompassPage: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white select-none">
+    <div className="relative min-h-screen bg-white text-black select-none">
       <div className="absolute inset-0 flex flex-col items-center justify-start px-6 py-6 gap-6">
         {/* Readout */}
         <div className="w-full max-w-md">
           <div className={`${bigDigits ? 'text-7xl' : 'text-6xl'} font-bold tracking-widest text-center`}>
             {Math.round(displayedHeading)}°
           </div>
-          <div className="mt-1 text-sm text-white/60 text-center">
+          <div className="mt-1 text-sm text-black/60 text-center">
             {getCardinalDirection(Math.round(displayedHeading))}
-            <span className="ml-2 text-xs text-white/40">{useTrue ? 'Gerçek' : 'Manyetik'}</span>
+            <span className="ml-2 text-xs text-black/40">{useTrue ? 'Gerçek' : 'Manyetik'}</span>
           </div>
           {needsCalibration && (
-            <div className="mt-2 text-xs text-amber-400 text-center">Düşük doğruluk: cihazı 8 çizerek kalibre edin</div>
+            <div className="mt-2 text-xs text-amber-600 text-center">Düşük doğruluk: cihazı 8 çizerek kalibre edin</div>
           )}
         </div>
 
@@ -275,30 +275,30 @@ const CompassPage: React.FC = () => {
             <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[14px] border-l-transparent border-r-transparent border-b-red-500" />
           </div>
           <div
-            className="absolute inset-0 rounded-full border border-white/15 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 rounded-full border border-black/15 bg-white backdrop-blur-sm"
             style={{ transform: `rotate(${displayedHeading}deg)` }}
           >
             {Array.from({ length: 24 }, (_, i) => i * 15).map((deg) => (
               <div key={`maj-${deg}`} className="absolute top-0 left-1/2" style={{ transform: `translateX(-50%) rotate(${deg}deg)` }}>
-                <div className="w-0.5 h-4 bg-white/70" />
-                <div className="absolute -translate-x-1/2 mt-1 text-[10px] text-white/70" style={{ top: "18px", transform: `translateX(-50%) rotate(${-deg}deg)` }}>
+                <div className="w-0.5 h-4 bg-black/70" />
+                <div className="absolute -translate-x-1/2 mt-1 text-[10px] text-black/70" style={{ top: "18px", transform: `translateX(-50%) rotate(${-deg}deg)` }}>
                   {deg}
                 </div>
               </div>
             ))}
             {Array.from({ length: 72 }, (_, i) => i * 5).map((deg) => (
               <div key={`min-${deg}`} className="absolute top-0 left-1/2" style={{ transform: `translateX(-50%) rotate(${deg}deg)` }}>
-                <div className={`bg-white/40 ${deg % 15 === 0 ? 'w-0.5 h-4' : 'w-0.5 h-2'}`} />
+                <div className={`bg-black/40 ${deg % 15 === 0 ? 'w-0.5 h-4' : 'w-0.5 h-2'}`} />
               </div>
             ))}
             <div className="absolute inset-0">
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 text-xl font-semibold text-red-500">K</div>
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xl font-semibold text-white/70">G</div>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xl font-semibold text-white/70">D</div>
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-xl font-semibold text-white/70">B</div>
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 text-xl font-semibold text-red-600">K</div>
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xl font-semibold text-black/70">G</div>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xl font-semibold text-black/70">D</div>
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-xl font-semibold text-black/70">B</div>
             </div>
           </div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black" />
         </div>
 
         {/* Controls */}
@@ -310,7 +310,7 @@ const CompassPage: React.FC = () => {
                 <Switch checked={useTrue} onCheckedChange={setUseTrue} id="true-toggle" />
                 <Label htmlFor="true-toggle">Gerçek (True) göster</Label>
               </div>
-              <div className="text-xs text-white/40">Ham okuma: {Math.round(heading)}°M</div>
+              <div className="text-xs text-black/40">Ham okuma: {Math.round(heading)}°M</div>
             </div>
             <div className="flex items-center gap-3">
               <div className="grow">
@@ -320,7 +320,7 @@ const CompassPage: React.FC = () => {
                   inputMode="decimal"
                   value={Number.isFinite(variationDeg) ? String(variationDeg) : ''}
                   onChange={(e) => setVariationDeg(parseFloat(e.target.value || '0'))}
-                  className="bg-white/5 border-white/10"
+                  className="bg-black/5 border-black/10"
                   placeholder="0"
                 />
               </div>
@@ -334,7 +334,7 @@ const CompassPage: React.FC = () => {
                 </Button>
               </div>
             </div>
-            {!!variationError && <div className="text-xs text-red-400">{variationError}</div>}
+            {!!variationError && <div className="text-xs text-red-600">{variationError}</div>}
           </div>
 
           {/* Target heading */}
@@ -343,7 +343,7 @@ const CompassPage: React.FC = () => {
               <Switch checked={enableTarget} onCheckedChange={setEnableTarget} id="target" />
               <Label htmlFor="target">Hedef Kerteriz</Label>
               {enableTarget && (
-                <span className={`ml-auto text-xs ${onCourseRef.current ? 'text-emerald-400' : 'text-white/50'}`}>
+                <span className={`ml-auto text-xs ${onCourseRef.current ? 'text-emerald-600' : 'text-black/50'}`}>
                   {onCourseRef.current ? 'Hatta' : 'Hattın Dışında'}
                 </span>
               )}
@@ -359,7 +359,7 @@ const CompassPage: React.FC = () => {
                     max={359}
                     value={String(Math.round(targetHeading))}
                     onChange={(e) => setTargetHeading(normalizeDegrees(parseFloat(e.target.value || '0')))}
-                    className="bg-white/5 border-white/10"
+                    className="bg-black/5 border-black/10"
                   />
                 </div>
                 <div className="grow">
@@ -396,17 +396,17 @@ const CompassPage: React.FC = () => {
 
           {/* Permissions and support states */}
           {!isSupported && (
-            <div className="text-sm text-white/70">Bu cihaz pusula sensörünü desteklemiyor</div>
+            <div className="text-sm text-black/70">Bu cihaz pusula sensörünü desteklemiyor</div>
           )}
           {isSupported && permission === 'pending' && (
             <Button onClick={requestPermission} className="w-full">Pusulayı Etkinleştir</Button>
           )}
           {permission === 'denied' && (
-            <div className="text-sm text-red-400">Pusula izni reddedildi. Ayarlardan izin verin.</div>
+            <div className="text-sm text-red-600">Pusula izni reddedildi. Ayarlardan izin verin.</div>
           )}
 
           {/* Technical details */}
-          <div className="mt-2 text-[11px] text-white/30">
+          <div className="mt-2 text-[11px] text-black/40">
             Ham: {Math.round(rawHeading)}°M • Yön: {Math.round(heading)}°M • Varyasyon: {(variationDeg >= 0 ? '+' : '') + (variationDeg || 0)}° • Gösterim: {Math.round(displayedHeading)}°{useTrue ? 'T' : 'M'}
           </div>
         </div>
