@@ -55,22 +55,22 @@ type BigDataCloudReverse = {
 function degreesToCompass(degrees: number): string {
   if (Number.isNaN(degrees)) return "-";
   const directions = [
-    "K", // N - Kuzey
-    "KKB", // NNE
-    "KB", // NE
-    "KDB", // ENE
-    "D", // E - Doğu
-    "GDB", // ESE
-    "GB", // SE
-    "GGB", // SSE
-    "G", // S - Güney
-    "GGB", // SSW (teknik olarak GGD; Türkçe kullanım farklılık gösterebilir)
-    "GB", // SW
-    "GDB", // WSW
-    "B", // W - Batı
-    "KDB", // WNW
-    "KB", // NW
-    "KKB", // NNW
+    "K", // N - Kuzey (0°)
+    "KKD", // NNE - Kuzey-Kuzey-Doğu (22.5°)
+    "KD", // NE - Kuzey-Doğu (45°)
+    "DKD", // ENE - Doğu-Kuzey-Doğu (67.5°)
+    "D", // E - Doğu (90°)
+    "DGD", // ESE - Doğu-Güney-Doğu (112.5°)
+    "GD", // SE - Güney-Doğu (135°)
+    "GGD", // SSE - Güney-Güney-Doğu (157.5°)
+    "G", // S - Güney (180°)
+    "GGB", // SSW - Güney-Güney-Batı (202.5°)
+    "GB", // SW - Güney-Batı (225°)
+    "BGB", // WSW - Batı-Güney-Batı (247.5°)
+    "B", // W - Batı (270°)
+    "BKB", // WNW - Batı-Kuzey-Batı (292.5°)
+    "KB", // NW - Kuzey-Batı (315°)
+    "KKB", // NNW - Kuzey-Kuzey-Batı (337.5°)
   ];
   const index = Math.round(degrees / 22.5) % 16;
   return directions[index];
