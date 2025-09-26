@@ -19,6 +19,11 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 
   const getContextualFormulas = (context: string): string => {
     const formulas: Record<string, string> = {
+      'route': `**Rota Hesaplamaları:**
+🔸 **Mesafe:** d = √[(Δφ×60)² + (Δλ×60×cos φₘ)²] nm
+🔸 **Kurs:** C = arctan(Dep ÷ DLat)
+🔸 **ETA:** T = Mesafe ÷ Hız saat`,
+
       'great-circle': `**Great Circle Sailing:**
 🔸 **Mesafe:** d = arccos(sin φ₁ × sin φ₂ + cos φ₁ × cos φ₂ × cos Δλ) × 3437.747 nm
 🔸 **İlk Kurs:** C₁ = arctan2(sin Δλ × cos φ₂, cos φ₁ × sin φ₂ - sin φ₁ × cos φ₂ × cos Δλ)
@@ -40,11 +45,38 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 🔸 **Kurs:** C = arctan(Dep ÷ DLat)
 🔸 **Mesafe:** √(DLat² + Dep²) nm`,
 
+      'dr-plotting': `**Dead Reckoning Plotting:**
+🔸 **DR Position:** φ₂ = φ₁ + (d×cos C)/60, λ₂ = λ₁ + (d×sin C)/(60×cos φₘ)
+🔸 **Course Made Good:** CMG = arctan(Total Dep ÷ Total DLat)
+🔸 **Speed Made Good:** SMG = Total Distance ÷ Total Time`,
+
+      'traverse-sailing': `**Traverse Sailing:**
+🔸 **Total DLat:** Σ(dᵢ × cos Cᵢ)
+🔸 **Total Dep:** Σ(dᵢ × sin Cᵢ)
+🔸 **Final Course:** C = arctan(Total Dep ÷ Total DLat)
+🔸 **Total Distance:** √(DLat² + Dep²)`,
+
+      'route-plan': `**Route Planning:**
+🔸 **Total Distance:** Σ waypoint distances
+🔸 **ETA:** Start Time + (Total Distance ÷ Average Speed)
+🔸 **Fuel Required:** Distance × SFC × (1 + Reserve %)`,
+
       'eta-calculation': `**ETA Hesaplaması:**
 🔸 **Temel:** T = D ÷ V (saat)
 🔸 **Akıntılı:** SOG = √(V² + C² + 2×V×C×cos α)
 🔸 **Hava faktörleri:** Lehte: 0.90-0.95, Aleyhte: 1.10-1.25
 🔸 **Yakıt tüketimi:** FC = D × SFC × (1 + weather factor)`,
+
+      'real-time': `**Real Time Navigation:**
+🔸 **GPS Position:** Anlık lat/lon koordinatları
+🔸 **SOG:** Speed Over Ground (GPS hızı)
+🔸 **COG:** Course Over Ground (GPS kursu)
+🔸 **Set/Drift:** SOG - STW, COG - Heading`,
+
+      'current-wind': `**Current & Wind:**
+🔸 **True Wind:** TW = √(AW² + V² - 2×AW×V×cos RWA)
+🔸 **Current Triangle:** SOG = √(V² + C² + 2×V×C×cos α)
+🔸 **Leeway:** θ = k × (Vwind/Vship)²`,
 
       'current': `**Akıntı Hesaplamaları:**
 🔸 **CTS:** TR ± CA (Current Allowance)
@@ -52,6 +84,12 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 🔸 **CA:** arcsin((C × sin β) ÷ V)
 🔸 **Set/Drift:** Akıntının yön ve hızı
 🔸 **Leeway:** Rüzgar etkisi düzeltmesi`,
+
+      'compass': `**Pusula Hesaplamaları:**
+🔸 **Ana formül:** True = Compass + Variation + Deviation + Gyro Error
+🔸 **TVMDC:** T = M + Var, M = C + Dev
+🔸 **Kural:** Doğu +, Batı -
+🔸 **Total Error:** TE = Var + Dev + Gyro Error`,
 
       'radar': `**Radar ARPA (CPA/TCPA):**
 🔸 **CPA:** Range × sin(Rel_Bearing - Rel_Course) nm
@@ -66,6 +104,31 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 🔸 **Harmonik:** h(t) = Z₀ + Σ[Aₙ × cos(ωₙt + φₙ)]
 🔸 **Tidal Stream:** Akıntı hızı ve yönü gelgitten etkilenir`,
 
+      'weather': `**Hava Durumu Hesaplamaları:**
+🔸 **Beaufort → Wind:** V = 2√(B³) kn
+🔸 **Wave Height:** h = 0.025 × V² m
+🔸 **Leeway Angle:** θ = k × (Vw/Vs)² degrees
+🔸 **Wind Force:** F = 0.00338 × V² × A Newton
+🔸 **Weather Factor:** 0.90-1.25`,
+
+      'marine-weather': `**Deniz Meteorolojisi:**
+🔸 **Wave Period:** T = 1.2√(fetch/g) saniye
+🔸 **Wave Height:** H = 0.025 × V² × √(fetch) m
+🔸 **Sea State:** Douglas Scale 0-9
+🔸 **Visibility:** Meteorological/Nautical miles`,
+
+      'sunrise-sunset': `**Gündoğumu/Batımı:**
+🔸 **Hour Angle:** H = arccos(-tan φ × tan δ)
+🔸 **Sunrise:** 12 - H/15 (LMT)
+🔸 **Sunset:** 12 + H/15 (LMT)
+🔸 **Twilight:** Civil ±6°, Nautical ±12°, Astronomical ±18°`,
+
+      'port': `**Liman Bilgileri:**
+🔸 **UKC:** Under Keel Clearance = Depth - Draft
+🔸 **Pilot ETA:** Boarding point coordinates & time
+🔸 **Approach Speed:** Reduced speed for safety
+🔸 **Tidal Window:** Safe entry/exit times`,
+
       'celestial': `**Göksel Seyir:**
 🔸 **Sight Reduction:** Hc = arcsin[sin L × sin d + cos L × cos d × cos LHA]
 🔸 **Azimuth:** Z = arccos[(sin d - sin L × sin Hc) ÷ (cos L × cos Hc)]
@@ -74,76 +137,24 @@ export default function NavigationAssistantPopup({ variant = 'floating', calcula
 🔸 **Meridian Latitude:** φ = 90° - |alt - dec| ± dec
 🔸 **Amplitude:** A = arcsin(sin δ ÷ cos φ)`,
 
-      'compass': `**Pusula Hesaplamaları:**
-🔸 **Ana formül:** True = Compass + Variation + Deviation + Gyro Error
-🔸 **TVMDC:** T = M + Var, M = C + Dev
-🔸 **Kural:** Doğu +, Batı -
-🔸 **Total Error:** TE = Var + Dev + Gyro Error`,
-
-      'bearing': `**Bearing Hesaplamaları:**
-🔸 **Doubling Angle:** Distance Off = Run × sin(2A) ÷ sin(A)
-🔸 **Four Point:** Distance Off = Run × √2 (45° açı)
-🔸 **Seven Point:** Distance Off = Run (30°→60°)
-🔸 **Bow & Beam:** Distance Off = Run × sin(bow angle)`,
-
-      'distance': `**Mesafe Hesaplamaları:**
-🔸 **Dip of Horizon:** d = 2.075 × √h nm
-🔸 **Radar Horizon:** d = 2.35 × √h nm
-🔸 **Light Visibility:** d = 1.17 × (√h_eye + √h_light) nm
-🔸 **Geographic Range:** Yeryuvarlığı etkisi`,
-
-      'turning': `**Dönme Manevraları:**
-🔸 **Tactical Diameter:** TD = 3.5 × L (ortalama)
-🔸 **Advance:** A = R × sin(Δφ/2)
-🔸 **Transfer:** T = R × (1 - cos(Δφ/2))
-🔸 **ROT:** Rate of Turn = 3438 × V ÷ R deg/min
-🔸 **Wheel Over Point:** WOP = A ÷ sin(Δφ/2)`,
-
-      'weather': `**Hava Durumu Hesaplamaları:**
-🔸 **Beaufort → Wind:** V = 2√(B³) kn
-🔸 **Wave Height:** h = 0.025 × V² m
-🔸 **Leeway Angle:** θ = k × (Vw/Vs)² degrees
-🔸 **Wind Force:** F = 0.00338 × V² × A Newton
-🔸 **Weather Factor:** 0.90-1.25`,
-
-      'emergency': `**Acil Durum Arama:**
-🔸 **Square Search:** Leg = 2 × Track Spacing
-🔸 **Sector Search:** New Radius = R × √2
-🔸 **Rescue Time:** t = Distance ÷ (Rescue Speed + Drift)
-🔸 **VHF Range:** Radio horizon formula
-🔸 **Datum Point:** Drift hesabı ile güncellenir`
+      'astronomical': `**Astronomik Hesaplamalar:**
+🔸 **GHA/Dec:** Almanac verileri
+🔸 **LHA:** GHA - West Longitude / GHA + East Longitude
+🔸 **Equation of Time:** Sun Mean Time düzeltmesi
+🔸 **Parallax:** Horizontal parallax düzeltmesi`
     };
 
-    return formulas[context] || `**Tüm Seyir Formülleri:**
+    return formulas[context] || `**${context} Hesaplaması:**
+Bu hesaplama türü için formüller yükleniyor...
 
-**🧭 POZİSYON & ROTA:**
-• Great Circle: d = arccos(sin φ₁ sin φ₂ + cos φ₁ cos φ₂ cos Δλ)
-• Rhumb Line: C = arctan(Δλ ÷ Δq) - sabit kurs
-• Plane Sailing: C = arctan(Dep ÷ DLat)
-
-**⏱️ ZAMAN & HIZ:**
-• ETA = Distance ÷ Speed
-• Current Triangle: SOG = √(V² + C² + 2VC cos α)
-
-**📡 RADAR & ÇATIŞMA:**
-• CPA = Range × sin(RelBrg - RelCourse)
-• TCPA = Range × cos(RelBrg - RelCourse) ÷ RelSpeed
-
-**🧭 PUSULA & BEARING:**
-• True = Compass + Var + Dev + Gyro
-• Four Point: Dist = Run × √2
-
-**🌊 GELGİT & MESAFE:**
-• 12'de Bir: 1/12, 3/12, 5/12, 6/12...
-• Dip: d = 2.075√h nm
-
-**⭐ GÖKSEL & DÖNME:**
-• Hc = arcsin(sin L sin d + cos L cos d cos LHA)
-• Tactical Diameter = 3.5 × L
-
-**🌪️ HAVA & ACİL:**
-• Beaufort: V = 2√(B³) kn  
-• Search: Square/Sector patterns`;
+Lütfen hangi hesaplamayı yapmak istediğinizi belirtin:
+• Pozisyon & Rota hesaplamaları
+• Zaman & Hız hesaplamaları  
+• Radar & Çatışma önleme
+• Pusula & Bearing
+• Gelgit & Mesafe
+• Göksel seyir
+• Hava durumu faktörleri`;
   };
 
   // Clear messages and show only current calculation formulas
