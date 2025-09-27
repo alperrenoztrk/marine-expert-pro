@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import WeatherWidget from "@/components/WeatherWidget";
-import DirectionWidget from "@/components/DirectionWidget";
 
 const EmptyPage = () => {
   const navigate = useNavigate();
@@ -65,8 +64,7 @@ const EmptyPage = () => {
         ))}
       </div>
       
-      <div className="w-full max-w-md space-y-4">
-        <DirectionWidget />
+      <div className="w-full max-w-md">
         <WeatherWidget />
       </div>
     </div>

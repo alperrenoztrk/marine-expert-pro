@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Shield, FileText, Settings, Star } from "lucide-react";
+import DirectionWidget from "@/components/DirectionWidget";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
@@ -174,7 +175,10 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Boş sayfa isteği gereği anasayfada widget bulunmuyor */}
+        {/* Yön widget'ı */}
+        <div className="w-full max-w-md mb-8">
+          <DirectionWidget />
+        </div>
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
