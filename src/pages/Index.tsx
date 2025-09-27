@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, Shield, FileText, Settings, Star } from "lucide-react";
-import DirectionWidget from "@/components/DirectionWidget";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
@@ -17,7 +16,7 @@ const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [targetRoute, setTargetRoute] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = 3; // Pusula, ana sayfa ve boş sayfa
+  const totalPages = 2; // Ana sayfa ve sol sayfa (Pusula/Weather)
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const x = e.touches[0].clientX;
@@ -69,9 +68,10 @@ const Index = () => {
       setTargetRoute('/empty-page');
       setTranslateX(-width);
     } else if (navigateRight) {
+      // Sağ sayfa kaldırıldı, merkeze geri dön
       setIsAnimating(true);
-      setTargetRoute('/compass');
-      setTranslateX(width);
+      setTargetRoute(null);
+      setTranslateX(0);
     } else {
       // Snap back to center
       setIsAnimating(true);
@@ -96,10 +96,8 @@ const Index = () => {
 
   const handleDotClick = (pageIndex: number) => {
     if (pageIndex === 0) {
-      navigate('/compass');
-    } else if (pageIndex === 1) {
       navigate('/');
-    } else if (pageIndex === 2) {
+    } else if (pageIndex === 1) {
       navigate('/empty-page');
     }
   };
@@ -138,8 +136,8 @@ const Index = () => {
             key={index}
             onClick={() => handleDotClick(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
-              index === 1 // Ana sayfa ortada (index 1)
-                ? 'bg-white w-6 shadow-lg' 
+              index === 0 // Ana sayfa
+                ? 'bg-white w-6 shadow-lg'
                 : 'bg-white/50 w-2 hover:bg-white/70'
             }`}
           />
@@ -175,10 +173,7 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Yön widget'ı */}
-        <div className="w-full max-w-md mb-8">
-          <DirectionWidget />
-        </div>
+        
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
