@@ -117,6 +117,23 @@ interface StabilityData {
   heel_angle: number; // Heel angle for righting moment [°]
   draft_calculated: number; // Calculated draft [m]
   GM_calculated: number; // Calculated GM for righting moment [m]
+
+  // 🌾 Tahıl Hesabı (Draft Survey) Girdileri
+  draft_fwd_p: number; // Forward draft - Port [m]
+  draft_fwd_s: number; // Forward draft - Starboard [m]
+  draft_mid_p: number; // Midship draft - Port [m]
+  draft_mid_s: number; // Midship draft - Starboard [m]
+  draft_aft_p: number; // Aft draft - Port [m]
+  draft_aft_s: number; // Aft draft - Starboard [m]
+  lbp: number; // Length Between Perpendiculars [m]
+  lcf_from_mid: number; // LCF distance from midships (+aft, -fwd) [m]
+  hydro_displacement: number; // Displacement from hydrostatics at mean draft [t]
+  tpc_hydro: number; // TPC (t/cm) from hydrostatics at mean draft
+  fuel_oil: number; // Fuel Oil onboard [t]
+  diesel_oil: number; // Diesel Oil onboard [t]
+  ballast_water: number; // Ballast Water onboard [t]
+  fresh_water: number; // Fresh Water onboard [t]
+  constant_weight: number; // Constant weight (stores, etc.) [t]
 }
 
 interface StabilityResults {
@@ -221,6 +238,31 @@ interface StabilityResults {
   // 🌾 Grain Stability - Additional Results
   phi_allowable_calculated: number; // [°]
   grain_stability_criterion: boolean;
+
+  // 🌾 Tahıl Hesabı (Draft Survey) Sonuçları
+  grain_account?: {
+    forward_draft: number; // [m]
+    mid_draft?: number; // [m]
+    aft_draft: number; // [m]
+    apparent_mean_draft: number; // [m]
+    true_mean_draft: number; // [m]
+    trim: number; // [m]
+    lbp: number; // [m]
+    lcf_from_mid: number; // [m]
+    tpc: number; // [t/cm]
+    displacement_table: number; // [t]
+    displacement_trim_corrected: number; // [t]
+    displacement_density_corrected: number; // [t]
+    density_used: number; // [t/m³]
+    deductions: {
+      fuel_oil: number;
+      diesel_oil: number;
+      ballast_water: number;
+      fresh_water: number;
+      constant_weight: number;
+    };
+    cargo_on_board: number; // [t]
+  };
   
   // 🔬 Advanced Stability - Additional Results
   GM_standard_calculated: number; // [m]
@@ -290,6 +332,79 @@ export const StabilityCalculations = () => {
     }));
     
     toast.success(`GM: ${GM.toFixed(3)}m - GM_corrected: ${GM_corrected.toFixed(3)}m`);
+  };
+
+  // 🌾 Tahıl Hesabı (Draft Survey)
+  const calculateGrainAccount = () => {
+    const lbp = data.lbp;
+    const lcfFromMid = data.lcf_from_mid ?? 0;
+    const tpc = data.tpc_hydro;
+    const deltaTable = data.hydro_displacement;
+
+    if (
+      lbp == null || lbp <= 0 ||
+      tpc == null || tpc <= 0 ||
+      deltaTable == null || deltaTable <= 0 ||
+      data.draft_fwd_p == null || data.draft_fwd_s == null ||
+      data.draft_aft_p == null || data.draft_aft_s == null
+    ) {
+      toast.error("Lütfen LBP, LCF, TPC, Δ (tablo) ve baş/kıç draft (P/S) değerlerini girin.");
+      return;
+    }
+
+    const fwd = (data.draft_fwd_p + data.draft_fwd_s) / 2;
+    const aft = (data.draft_aft_p + data.draft_aft_s) / 2;
+    const midProvided = Number.isFinite(data.draft_mid_p) && Number.isFinite(data.draft_mid_s);
+    const mid = midProvided && data.draft_mid_p != null && data.draft_mid_s != null
+      ? (data.draft_mid_p + data.draft_mid_s) / 2
+      : undefined;
+
+    const apparent_mean = mid != null ? (fwd + aft + mid) / 3 : (fwd + aft) / 2;
+    const trim = aft - fwd; // +: kıç trimi
+    const true_mean = apparent_mean + (trim * (lcfFromMid / lbp));
+
+    // Δ düzeltmeleri
+    const deltaTrimCorrected = deltaTable + tpc * 100 * (true_mean - apparent_mean);
+    const rho = data.rho_sw ?? 1.025;
+    const deltaDensityCorrected = deltaTrimCorrected * (rho / 1.025);
+
+    // Düşülecekler
+    const fuelOil = data.fuel_oil ?? 0;
+    const dieselOil = data.diesel_oil ?? 0;
+    const ballast = data.ballast_water ?? 0;
+    const freshWater = data.fresh_water ?? 0;
+    const constant = data.constant_weight ?? 0;
+    const deductionsTotal = fuelOil + dieselOil + ballast + freshWater + constant;
+    const cargoOnBoard = deltaDensityCorrected - deductionsTotal;
+
+    setResults(prev => ({
+      ...prev,
+      grain_account: {
+        forward_draft: fwd,
+        mid_draft: mid,
+        aft_draft: aft,
+        apparent_mean_draft: apparent_mean,
+        true_mean_draft: true_mean,
+        trim,
+        lbp,
+        lcf_from_mid: lcfFromMid,
+        tpc,
+        displacement_table: deltaTable,
+        displacement_trim_corrected: deltaTrimCorrected,
+        displacement_density_corrected: deltaDensityCorrected,
+        density_used: rho,
+        deductions: {
+          fuel_oil: fuelOil,
+          diesel_oil: dieselOil,
+          ballast_water: ballast,
+          fresh_water: freshWater,
+          constant_weight: constant
+        },
+        cargo_on_board: cargoOnBoard
+      }
+    }));
+
+    toast.success(`Tahıl Hesabı: Net Yük = ${Math.round(cargoOnBoard)} t`);
   };
 
   const calculateKG = () => {
@@ -1065,7 +1180,7 @@ export const StabilityCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-8">
+            <TabsList className="grid w-full grid-cols-9">
               <TabsTrigger value="basic">🎯 Temel</TabsTrigger>
               <TabsTrigger value="gz">🌊 GZ</TabsTrigger>
               <TabsTrigger value="fsc">🔄 FSC</TabsTrigger>
@@ -1073,6 +1188,7 @@ export const StabilityCalculations = () => {
               <TabsTrigger value="imo">📊 IMO</TabsTrigger>
               <TabsTrigger value="damage">🛡️ Hasar</TabsTrigger>
               <TabsTrigger value="grain">🌾 Tahıl</TabsTrigger>
+              <TabsTrigger value="grainAccount">🌾 Tahıl Hesabı</TabsTrigger>
               <TabsTrigger value="advanced">🔬 Gelişmiş</TabsTrigger>
             </TabsList>
 
@@ -1988,6 +2104,158 @@ export const StabilityCalculations = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+            </TabsContent>
+
+            {/* 🌾 Tahıl Hesabı (Draft Survey) */}
+            <TabsContent value="grainAccount" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Tahıl Hesabı: Draft ve Hidrostatik Veriler
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="draft_fwd_p">Baş Draft P [m]</Label>
+                        <Input id="draft_fwd_p" type="number" step="0.01" value={data.draft_fwd_p || ''} onChange={(e) => setData({ ...data, draft_fwd_p: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="draft_fwd_s">Baş Draft S [m]</Label>
+                        <Input id="draft_fwd_s" type="number" step="0.01" value={data.draft_fwd_s || ''} onChange={(e) => setData({ ...data, draft_fwd_s: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lbp">LBP [m]</Label>
+                        <Input id="lbp" type="number" step="0.1" value={data.lbp || ''} onChange={(e) => setData({ ...data, lbp: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="draft_mid_p">Orta Draft P [m]</Label>
+                        <Input id="draft_mid_p" type="number" step="0.01" value={data.draft_mid_p || ''} onChange={(e) => setData({ ...data, draft_mid_p: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="draft_mid_s">Orta Draft S [m]</Label>
+                        <Input id="draft_mid_s" type="number" step="0.01" value={data.draft_mid_s || ''} onChange={(e) => setData({ ...data, draft_mid_s: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lcf_from_mid">LCF (orta referans, +kıç) [m]</Label>
+                        <Input id="lcf_from_mid" type="number" step="0.1" value={data.lcf_from_mid || 0} onChange={(e) => setData({ ...data, lcf_from_mid: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="draft_aft_p">Kıç Draft P [m]</Label>
+                        <Input id="draft_aft_p" type="number" step="0.01" value={data.draft_aft_p || ''} onChange={(e) => setData({ ...data, draft_aft_p: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="draft_aft_s">Kıç Draft S [m]</Label>
+                        <Input id="draft_aft_s" type="number" step="0.01" value={data.draft_aft_s || ''} onChange={(e) => setData({ ...data, draft_aft_s: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tpc_hydro">TPC (t/cm)</Label>
+                        <Input id="tpc_hydro" type="number" step="0.01" value={data.tpc_hydro || ''} onChange={(e) => setData({ ...data, tpc_hydro: parseFloat(e.target.value) })} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="hydro_displacement">Δ (Tablo) [t]</Label>
+                        <Input id="hydro_displacement" type="number" step="1" value={data.hydro_displacement || ''} onChange={(e) => setData({ ...data, hydro_displacement: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rho_sw">Yoğunluk ρ [t/m³]</Label>
+                        <Input id="rho_sw" type="number" step="0.001" value={data.rho_sw || 1.025} onChange={(e) => setData({ ...data, rho_sw: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>LCF Bilgisi</Label>
+                        <div className="text-sm text-muted-foreground">Pozitif: kıç tarafta, negatif: baş tarafta</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Düşülecekler ve Hesapla
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="fuel_oil">Fuel Oil [t]</Label>
+                        <Input id="fuel_oil" type="number" step="0.1" value={data.fuel_oil || 0} onChange={(e) => setData({ ...data, fuel_oil: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="diesel_oil">Diesel Oil [t]</Label>
+                        <Input id="diesel_oil" type="number" step="0.1" value={data.diesel_oil || 0} onChange={(e) => setData({ ...data, diesel_oil: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ballast_water">Ballast Water [t]</Label>
+                        <Input id="ballast_water" type="number" step="0.1" value={data.ballast_water || 0} onChange={(e) => setData({ ...data, ballast_water: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fresh_water">Fresh Water [t]</Label>
+                        <Input id="fresh_water" type="number" step="0.1" value={data.fresh_water || 0} onChange={(e) => setData({ ...data, fresh_water: parseFloat(e.target.value) })} />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor="constant_weight">Constant (stores, vb.) [t]</Label>
+                        <Input id="constant_weight" type="number" step="0.1" value={data.constant_weight || 0} onChange={(e) => setData({ ...data, constant_weight: parseFloat(e.target.value) })} />
+                      </div>
+                    </div>
+
+                    <Button onClick={calculateGrainAccount} className="w-full">
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Tahıl Hesabı Yap
+                    </Button>
+
+                    {results.grain_account && (
+                      <div className="mt-4 space-y-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                          <div>
+                            <div className="text-muted-foreground">Ortalama Draft (görünen)</div>
+                            <div className="font-semibold">{results.grain_account.apparent_mean_draft.toFixed(3)} m</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Trim</div>
+                            <div className="font-semibold">{results.grain_account.trim.toFixed(3)} m</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Ortalama Draft (gerçek)</div>
+                            <div className="font-semibold">{results.grain_account.true_mean_draft.toFixed(3)} m</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Δ Tablo</div>
+                            <div className="font-semibold">{results.grain_account.displacement_table.toFixed(0)} t</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Δ Trim Düzeltmeli</div>
+                            <div className="font-semibold">{results.grain_account.displacement_trim_corrected.toFixed(0)} t</div>
+                          </div>
+                          <div>
+                            <div className="text-muted-foreground">Δ Yoğunluk Düzeltmeli</div>
+                            <div className="font-semibold">{results.grain_account.displacement_density_corrected.toFixed(0)} t</div>
+                          </div>
+                        </div>
+                        <Separator />
+                        <div className="text-sm">
+                          <div className="mb-1 font-medium">Düşülecekler</div>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            <div>Fuel Oil: {results.grain_account.deductions.fuel_oil.toFixed(1)} t</div>
+                            <div>Diesel Oil: {results.grain_account.deductions.diesel_oil.toFixed(1)} t</div>
+                            <div>Ballast: {results.grain_account.deductions.ballast_water.toFixed(1)} t</div>
+                            <div>Fresh Water: {results.grain_account.deductions.fresh_water.toFixed(1)} t</div>
+                            <div>Constant: {results.grain_account.deductions.constant_weight.toFixed(1)} t</div>
+                          </div>
+                        </div>
+                        <div className="p-3 bg-green-50 rounded-lg text-center">
+                          <div className="text-2xl font-bold">{results.grain_account.cargo_on_board.toFixed(0)} t</div>
+                          <div className="text-sm text-muted-foreground">Cargo on Board (Grain Account)</div>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
 
             {/* 🔬 Advanced Stability */}
