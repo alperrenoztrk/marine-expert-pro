@@ -21,7 +21,7 @@ export default function StabilityMenu() {
   return (
     <div key="stability-menu-v3" className="container mx-auto p-4 space-y-4" data-no-translate>
       <div className="flex items-center justify-between">
-        <Link to="/">
+        <Link to="/calculations">
           <Button variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             Geri
