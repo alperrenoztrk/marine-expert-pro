@@ -204,7 +204,7 @@ interface NavigationResult {
 }
 
 export const NavigationCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
-  const [activeCalculation, setActiveCalculation] = useState<string>(initialTab || "route");
+  const [activeCalculation, setActiveCalculation] = useState<string>(initialTab || "dr-plotting");
   const [data, setData] = useState<NavigationData>({
     traverseLegs: [
       { course: 90, distance: 10 },
@@ -1273,55 +1273,20 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
         </CardHeader>
         <CardContent>
           <Tabs value={activeCalculation} onValueChange={setActiveCalculation} className="w-full">
-            {/* Category Headers */}
-            <div className="w-full space-y-4 mb-4">
-              {/* 1. Seyir Hesaplamaları */}
-              <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">1. Seyir Hesaplamaları</div>
-                <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                  <TabsTrigger value="route" className="text-xs px-3 py-2 whitespace-nowrap">Rota</TabsTrigger>
-                  <TabsTrigger value="great-circle" className="text-xs px-3 py-2 whitespace-nowrap">Great Circle Sailing</TabsTrigger>
-                  <TabsTrigger value="mercator-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Mercator Sailing</TabsTrigger>
-                  <TabsTrigger value="eta-calculation" className="text-xs px-3 py-2 whitespace-nowrap">ETA Hesabı</TabsTrigger>
-                  <TabsTrigger value="dr-plotting" className="text-xs px-3 py-2 whitespace-nowrap">DR Plotting</TabsTrigger>
-                  <TabsTrigger value="plane-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Plane Sailing</TabsTrigger>
-                  <TabsTrigger value="traverse-sailing" className="text-xs px-3 py-2 whitespace-nowrap">Traverse</TabsTrigger>
-                  <TabsTrigger value="route-plan" className="text-xs px-3 py-2 whitespace-nowrap">Route Plan</TabsTrigger>
-                </TabsList>
-              </div>
-
-              {/* 2. Anlık Bilgiler */}
-              <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">2. Anlık Bilgiler</div>
-                <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                  <TabsTrigger value="real-time" className="text-xs px-3 py-2 whitespace-nowrap">Real Time</TabsTrigger>
-                  <TabsTrigger value="current-wind" className="text-xs px-3 py-2 whitespace-nowrap">Current Wind</TabsTrigger>
-                  <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Akıntı</TabsTrigger>
-                  <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula</TabsTrigger>
-                  <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">Radar</TabsTrigger>
-                </TabsList>
-              </div>
-
-              {/* 3. Meteoroloji ve Çevresel Faktörler */}
-              <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">3. Meteoroloji ve Çevresel Faktörler</div>
-                <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                  <TabsTrigger value="tidal" className="text-xs px-3 py-2 whitespace-nowrap">Gelgit</TabsTrigger>
-                  <TabsTrigger value="weather" className="text-xs px-3 py-2 whitespace-nowrap">Hava</TabsTrigger>
-                  <TabsTrigger value="marine-weather" className="text-xs px-3 py-2 whitespace-nowrap">Deniz Hava</TabsTrigger>
-                  <TabsTrigger value="sunrise-sunset" className="text-xs px-3 py-2 whitespace-nowrap">Gündoğumu</TabsTrigger>
-                </TabsList>
-              </div>
-
-              {/* 4. Liman ve Seyir Yardımları */}
-              <div className="space-y-2">
-                <div className="text-sm font-semibold text-primary px-2">4. Liman ve Seyir Yardımları</div>
-                <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                  <TabsTrigger value="port" className="text-xs px-3 py-2 whitespace-nowrap">Liman Bilgileri</TabsTrigger>
-                  <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir / Almanac</TabsTrigger>
-                  <TabsTrigger value="astronomical" className="text-xs px-3 py-2 whitespace-nowrap">Astronomik Hesaplamalar</TabsTrigger>
-                </TabsList>
-              </div>
+            {/* Konu Başlıkları - yalınlaştırılmış */}
+            <div className="w-full space-y-2 mb-4">
+              <div className="text-sm font-semibold text-primary px-2">Seyir Konuları</div>
+              <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
+                <TabsTrigger value="dr-plotting" className="text-xs px-3 py-2 whitespace-nowrap">DR Mevkii</TabsTrigger>
+                <TabsTrigger value="fix" className="text-xs px-3 py-2 whitespace-nowrap">Fix Mevkii</TabsTrigger>
+                <TabsTrigger value="running-fix" className="text-xs px-3 py-2 whitespace-nowrap">Koçanlı Mevki</TabsTrigger>
+                <TabsTrigger value="eta-calculation" className="text-xs px-3 py-2 whitespace-nowrap">Mesafe-Hız-Zaman</TabsTrigger>
+                <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula/Hakiki Rota</TabsTrigger>
+                <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Set-Drift (CTS)</TabsTrigger>
+                <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">CPA/TCPA</TabsTrigger>
+                <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir</TabsTrigger>
+                <TabsTrigger value="anchoring" className="text-xs px-3 py-2 whitespace-nowrap">Demirleme</TabsTrigger>
+              </TabsList>
             </div>
 
             {/* Great Circle Sailing Tab */}
@@ -1716,6 +1681,74 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       Akıntı, rüzgâr ve diğer dış etkenler hesaba katılmaz. Gerçek konum için 
                       celestial navigation, GPS veya radar ile kontrol edilmelidir.
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Fix Mevkii (Position Fix) */}
+            <TabsContent value="fix" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <MapPin className="h-5 w-5 text-green-600" />
+                    Fix Mevkii (Kerteriz / Mesafe ile)
+                  </CardTitle>
+                  <CardDescription>Kara veya sabit cisim kerteriz/mesafeleri ile gerçek mevkii</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <Label>Kerteriz 1 (°)</Label>
+                      <Input type="number" placeholder="045" />
+                      <Label>Mesafe 1 (nm) - opsiyonel</Label>
+                      <Input type="number" step="0.1" placeholder="3.2" />
+                    </div>
+                    <div className="space-y-3">
+                      <Label>Kerteriz 2 (°)</Label>
+                      <Input type="number" placeholder="120" />
+                      <Label>Mesafe 2 (nm) - opsiyonel</Label>
+                      <Input type="number" step="0.1" placeholder="2.5" />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button variant="outline" disabled className="gap-2">
+                      Yakında: Mevki Hesapla
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Running Fix (Koçanlı Mevki) */}
+            <TabsContent value="running-fix" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Navigation className="h-5 w-5 text-purple-600" />
+                    Koçanlı Mevki (Running Fix)
+                  </CardTitle>
+                  <CardDescription>Tek kerteriz hattı ve süre/yol ile mevki</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>İlk Kerteriz (°)</Label>
+                      <Input type="number" placeholder="030" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Süre (saat)</Label>
+                      <Input type="number" step="0.1" placeholder="1.5" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Gemi Hızı (kn)</Label>
+                      <Input type="number" step="0.1" value={data.speed} onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)} />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button variant="outline" disabled className="gap-2">
+                      Yakında: Koçanlı Mevki Hesapla
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -2552,6 +2585,43 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   />
                 </div>
               </div>
+              <div className="mt-4">
+                <Button onClick={() => {
+                  const arpa = calculateARPA();
+                  setResult(prev => prev ? { ...prev, cpa: arpa.cpa, tcpa: arpa.tcpa, relativeSpeed: arpa.relativeSpeed, relativeBearing: arpa.relativeBearing } : {
+                    // minimal result object when prev is null
+                    gcDistance: 0, gcInitialBearing: 0, gcFinalBearing: 0, gcVertexLat: 0, gcWaypointDistances: [],
+                    rhumbDistance: 0, rhumbBearing: 0, departure: 0, dLat: 0, mercatorDistance: 0,
+                    spheroidalDistance: 0, spheroidalBearing: 0, reverseBearing: 0,
+                    eta: '', etd: '', timeToGo: 0, fuelConsumption: 0, totalFuelCost: 0, alternateETA: '',
+                    groundTrack: 0, groundSpeed: 0, driftAngle: 0, courseToSteer: 0, leewayCorrection: 0,
+                    magneticBearing: 0, compassBearing: 0, trueBearing: 0, totalCompassError: 0,
+                    cpa: arpa.cpa, tcpa: arpa.tcpa, relativeSpeed: arpa.relativeSpeed, relativeBearing: arpa.relativeBearing, collisionRisk: 'none', recommendedAction: '', bcpa: arpa.relativeBearing, dcpa: arpa.cpa,
+                    currentTideHeight: 0, tideRange: 0, timeToHW: 0, timeToLW: 0, tidalStream: 0, tidalStreamDirection: 0, springNeapFactor: 0, tidalAcceleration: 0,
+                    intercept: 0, positionLine: '', latitude: 0, longitude: 0, altitudeCorrection: 0, celestialCompassError: 0, estimatedPosition: { lat: 0, lon: 0 },
+                    sunPosition: { altitude: 0, azimuth: 0, declination: 0 }, moonPosition: { altitude: 0, azimuth: 0, phase: 0 }, planetPositions: [], navigationStars: [],
+                    twilightTimes: { sunrise: '', sunset: '', civilTwilightBegin: '', civilTwilightEnd: '', nauticalTwilightBegin: '', nauticalTwilightEnd: '', astronomicalTwilightBegin: '', astronomicalTwilightEnd: '', daylightDuration: 0, goldenHourBegin: '', goldenHourEnd: '', blueHourBegin: '', blueHourEnd: '' },
+                    advance: 0, transfer: 0, tacticalDiameter: 0, finalDiameter: 0, wheelOverPoint: 0, turningRadius: 0,
+                    optimumRoute: '', weatherDelay: 0, safeCourse: 0, seaState: 0, beaufortScale: 0,
+                    pilotBoardingDistance: 0, pilotBoardingETA: '', approachSpeed: 0, minimumDepth: 0, safeDraft: 0,
+                    recommendations: []
+                  });
+                }} className="gap-2">
+                  <Radar className="w-4 h-4" /> CPA/TCPA Hesapla
+                </Button>
+              </div>
+              {result?.cpa !== undefined && (
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                    <div className="text-sm text-gray-500">CPA</div>
+                    <div className="font-mono text-xl text-blue-600">{result.cpa.toFixed(2)} nm</div>
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
+                    <div className="text-sm text-gray-500">TCPA</div>
+                    <div className="font-mono text-xl text-green-600">{result.tcpa.toFixed(1)} dk</div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="tidal" className="space-y-4">
@@ -2780,6 +2850,84 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Demirleme Hesapları */}
+            <TabsContent value="anchoring" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Anchor className="h-5 w-5 text-green-600" />
+                    Demirleme Hesapları
+                  </CardTitle>
+                  <CardDescription>Su derinliği ve hava durumuna göre zincir boyu (scope)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label>Su Derinliği (m)</Label>
+                      <Input id="anch-depth" type="number" step="0.1" defaultValue={10} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Serbest Borda + Baş Mesafesi (m)</Label>
+                      <Input id="anch-freeboard" type="number" step="0.1" defaultValue={2} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Hava Durumu Faktörü</Label>
+                      <select id="anch-weather" className="w-full p-2 border rounded-md">
+                        <option value="6">Sakin (6:1)</option>
+                        <option value="7">Orta (7:1)</option>
+                        <option value="8">Sert (8:1)</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Zincir Kalibre (mm) - opsiyonel</Label>
+                      <Input id="anch-chain" type="number" step="1" placeholder="68" />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Button type="button" onClick={() => {
+                      const depth = parseFloat((document.getElementById('anch-depth') as HTMLInputElement)?.value || '0') || 0;
+                      const freeb = parseFloat((document.getElementById('anch-freeboard') as HTMLInputElement)?.value || '0') || 0;
+                      const scope = parseFloat((document.getElementById('anch-weather') as HTMLSelectElement)?.value || '6') || 6;
+                      const totalDepth = depth + freeb;
+                      const chainLen = totalDepth * scope;
+                      setResult(prev => prev ? { ...prev, minimumDepth: totalDepth, safeDraft: chainLen } : {
+                        // reuse fields to display numbers without adding new types
+                        gcDistance: 0, gcInitialBearing: 0, gcFinalBearing: 0, gcVertexLat: 0, gcWaypointDistances: [],
+                        rhumbDistance: 0, rhumbBearing: 0, departure: 0, dLat: 0, mercatorDistance: 0,
+                        spheroidalDistance: 0, spheroidalBearing: 0, reverseBearing: 0,
+                        eta: '', etd: '', timeToGo: 0, fuelConsumption: 0, totalFuelCost: 0, alternateETA: '',
+                        groundTrack: 0, groundSpeed: 0, driftAngle: 0, courseToSteer: 0, leewayCorrection: 0,
+                        magneticBearing: 0, compassBearing: 0, trueBearing: 0, totalCompassError: 0,
+                        cpa: 0, tcpa: 0, relativeSpeed: 0, relativeBearing: 0, collisionRisk: 'none', recommendedAction: '', bcpa: 0, dcpa: 0,
+                        currentTideHeight: 0, tideRange: 0, timeToHW: 0, timeToLW: 0, tidalStream: 0, tidalStreamDirection: 0, springNeapFactor: 0, tidalAcceleration: 0,
+                        intercept: 0, positionLine: '', latitude: 0, longitude: 0, altitudeCorrection: 0, celestialCompassError: 0, estimatedPosition: { lat: 0, lon: 0 },
+                        sunPosition: { altitude: 0, azimuth: 0, declination: 0 }, moonPosition: { altitude: 0, azimuth: 0, phase: 0 }, planetPositions: [], navigationStars: [],
+                        twilightTimes: { sunrise: '', sunset: '', civilTwilightBegin: '', civilTwilightEnd: '', nauticalTwilightBegin: '', nauticalTwilightEnd: '', daylightDuration: 0, goldenHourBegin: '', goldenHourEnd: '', blueHourBegin: '', blueHourEnd: '' },
+                        advance: 0, transfer: 0, tacticalDiameter: 0, finalDiameter: 0, wheelOverPoint: 0, turningRadius: 0,
+                        optimumRoute: '', weatherDelay: 0, safeCourse: 0, seaState: 0, beaufortScale: 0,
+                        pilotBoardingDistance: 0, pilotBoardingETA: '', approachSpeed: 0, minimumDepth: totalDepth, safeDraft: chainLen,
+                        recommendations: []
+                      });
+                    }} className="gap-2">
+                      <Anchor className="w-4 h-4" /> Zincir Boyu Hesapla
+                    </Button>
+                  </div>
+                  {result && (
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Toplam Derinlik</div>
+                        <div className="font-mono text-xl text-blue-600">{result.minimumDepth.toFixed(1)} m</div>
+                      </div>
+                      <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
+                        <div className="text-sm text-gray-500">Tavsiye Zincir Boyu</div>
+                        <div className="font-mono text-xl text-green-600">{result.safeDraft.toFixed(1)} m</div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
