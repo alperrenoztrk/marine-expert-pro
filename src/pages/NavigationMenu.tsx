@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calculator, Brain, Sigma, BookOpen, ListChecks } from "lucide-react";
@@ -6,9 +5,9 @@ import { ArrowLeft, Calculator, Brain, Sigma, BookOpen, ListChecks } from "lucid
 export default function NavigationMenu(){
   const items = [
     { to: "/navigation", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
-    { to: "/navigation/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
     { to: "/navigation/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
     { to: "/regulations", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
+    { to: "/navigation/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
     { to: "/navigation/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" },
   ];
   return (
@@ -18,18 +17,13 @@ export default function NavigationMenu(){
           <Button variant="ghost" size="sm" className="gap-2"><ArrowLeft className="h-4 w-4" /> Ana Sayfa</Button>
         </Link>
       </div>
-      <Card>
-        <CardHeader><CardTitle>Seyir Menüsü</CardTitle></CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {items.map((it)=> (
-              <Link key={it.label} to={it.to}>
-                <Button variant="outline" className="w-full justify-start gap-2">{it.icon}{it.label}</Button>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-3 max-w-md mx-auto">
+        {items.map((it)=> (
+          <Link key={it.label} to={it.to}>
+            <Button variant="outline" className="w-full justify-start gap-3 h-12">{it.icon}{it.label}</Button>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
