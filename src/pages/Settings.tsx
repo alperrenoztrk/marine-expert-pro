@@ -320,31 +320,6 @@ const Settings = () => {
               </CardContent>
             </Card>
 
-            {/* About Section */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
-              <CardHeader>
-                <CardTitle>
-                  <span data-translatable>Hakkında</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground" data-translatable>Versiyon</span>
-                  <span className="font-medium">1.0.0</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground" data-translatable>Geliştirici</span>
-                  <span className="font-medium">Maritime Calculator Team</span>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    <span data-translatable>Bu uygulama denizcilik hesaplamaları için geliştirilmiştir</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
         </div>
