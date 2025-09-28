@@ -8,10 +8,10 @@ export default function StabilityMenu() {
     {
       title: 'Stabilite',
       items: [
-        { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
-        { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
-        { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
         { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
+        { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
+        { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
+        { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
         { to: "/stability/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" }
       ]
     }
