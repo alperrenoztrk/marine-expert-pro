@@ -28,23 +28,16 @@ export default function StabilityMenu() {
           </Button>
         </Link>
       </div>
-      <Card>
-        <CardContent>
-          <div className="space-y-4">
-            {/* All Items (Assistant, Rules, Formulas, Calculations) */}
-            <div className="flex flex-wrap gap-2 py-1">
-              {items.map((it)=> (
-                <Link key={it.to} to={it.to}>
-                  <Button variant="outline" className="justify-start gap-2 whitespace-nowrap" data-no-translate>
-                    {it.icon}
-                    {it.label}
-                  </Button>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-3 max-w-md mx-auto">
+        {items.map((it)=> (
+          <Link key={it.to} to={it.to}>
+            <Button variant="outline" className="w-full justify-start gap-3 h-12" data-no-translate>
+              {it.icon}
+              {it.label}
+            </Button>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
