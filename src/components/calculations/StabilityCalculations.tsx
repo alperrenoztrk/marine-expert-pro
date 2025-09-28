@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -287,6 +287,29 @@ export const StabilityCalculations = () => {
   });
   const [results, setResults] = useState<Partial<StabilityResults>>({});
   const [activeTab, setActiveTab] = useState("basic");
+
+  // Initialize active tab from URL hash (e.g., #grainAccount) and keep hash in sync
+  useEffect(() => {
+    const initialHash = (typeof window !== 'undefined' && window.location.hash ? window.location.hash.substring(1) : "");
+    if (initialHash) {
+      setActiveTab(initialHash);
+    }
+    const onHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) setActiveTab(hash);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const current = window.location.hash.substring(1);
+      if (current !== activeTab) {
+        window.location.hash = `#${activeTab}`;
+      }
+    }
+  }, [activeTab]);
   const [grainAutoM, setGrainAutoM] = useState<boolean>(true);
   const [grainHelpOpen, setGrainHelpOpen] = useState<boolean>(false);
   const [mGrainHelpOpen, setMGrainHelpOpen] = useState<boolean>(false);

@@ -19,6 +19,7 @@ import Economics from "./pages/Economics";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityRules from "./pages/StabilityRules";
+import StabilityAdvancedPage from "./pages/StabilityAdvanced";
 import StabilityDamagePage from "./pages/StabilityDamage";
 import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
 import StabilityGMPage from "./pages/StabilityGM";
@@ -63,6 +64,7 @@ const App = () => {
                      <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
                      <Route path="/stability/rules" element={<StabilityRules />} />
                     <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
+                    <Route path="/stability/advanced" element={<StabilityAdvancedPage />} />
                     <Route path="/stability/damage" element={<StabilityDamagePage />} />
                     <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
                     <Route path="/stability/gm" element={<StabilityGMPage />} />
