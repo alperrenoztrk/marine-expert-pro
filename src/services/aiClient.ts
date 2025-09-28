@@ -136,8 +136,8 @@ async function callGeminiDirect(messages: AIMessage[]): Promise<string> {
   // Prefer env, fallback to provided Google Cloud API key from user
   const apiKey = ((import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined) || 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
   const contents = toGeminiContents(messages);
-  const model = 'gemini-1.5-flash'; // reliable default
-  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+  const model = 'gemini-2.0-flash'; // valid v1 model
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contents, generationConfig: { temperature: 0.2, maxOutputTokens: 1500 } })
