@@ -13,10 +13,10 @@ const StructuralCalculationsPage = () => {
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
-          <Link to="/structural-menu">
+          <Link to="/">
             <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700">
               <ArrowLeft className="w-4 h-4" />
-              <span data-translatable>Geri</span>
+              <span data-translatable>Ana Sayfa</span>
             </Button>
           </Link>
         </div>

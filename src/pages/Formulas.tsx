@@ -137,7 +137,7 @@ const Formulas = () => {
         >
           <Link to="/">
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden xs:inline" data-translatable>Geri</span>
+            <span className="hidden xs:inline" data-translatable>Ana Sayfa</span>
             <span className="xs:hidden" data-translatable>Geri</span>
           </Link>
         </Button>

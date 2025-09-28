@@ -525,7 +525,7 @@ const Regulations = () => {
             >
               <Link to="/">
                 <ArrowLeft className="h-4 w-4" />
-                Geri
+                Ana Sayfa
               </Link>
             </Button>
             <Separator orientation="vertical" className="h-6" />
