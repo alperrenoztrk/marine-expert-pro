@@ -24,7 +24,7 @@ export default function CalculationsMenu() {
 
         {/* Back button */}
         <div className="mb-8">
-          <BackButton />
+          <BackButton to="/" replace />
         </div>
 
         {/* Categories */}

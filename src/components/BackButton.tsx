@@ -7,18 +7,21 @@ interface BackButtonProps {
   className?: string;
   variant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
+  to?: string; // Optional explicit destination
+  replace?: boolean; // Whether to replace history entry when using `to`
 }
 
-export const BackButton: React.FC<BackButtonProps> = ({ className = "", variant = "ghost", size = "sm" }) => {
+export const BackButton: React.FC<BackButtonProps> = ({ className = "", variant = "ghost", size = "sm", to, replace = false }) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    const canGoBack = (window.history?.length || 0) > 1;
-    if (canGoBack) {
-      navigate(-1);
-    } else {
-      navigate("/");
+    if (to) {
+      navigate(to, { replace });
+      return;
     }
+    const canGoBack = (window.history?.length || 0) > 1;
+    if (canGoBack) navigate(-1);
+    else navigate("/");
   };
 
   return (
