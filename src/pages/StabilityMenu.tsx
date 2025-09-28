@@ -24,7 +24,7 @@ export default function StabilityMenu() {
         <Link to="/">
           <Button variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
-            Ana Sayfa
+            Geri
           </Button>
         </Link>
       </div>
