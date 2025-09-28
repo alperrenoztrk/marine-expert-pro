@@ -183,10 +183,6 @@ const Index = () => {
               <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
                 <Plus className="w-5 h-5 text-blue-600" />
               </div>
-              <div className="text-left">
-                <div className="font-bold">Hesaplamalar</div>
-                <div className="text-xs text-blue-100">Tüm gemi hesaplama araçları</div>
-              </div>
             </Button>
           </Link>
 
