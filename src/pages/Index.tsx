@@ -177,15 +177,32 @@ const Index = () => {
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Main button - Hesaplamalar (now circular, no text) */}
-          <Link to="/calculations" className="w-fit mx-auto">
-            <Button
-              size="icon"
-              aria-label="Hesaplamalar"
-              className="h-16 w-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl border-2 border-white/20 transition-all duration-200 hover:scale-105"
-            />
+          {/* Compass Menu Button */}
+          <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Menü (Pusula)">
+            <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl border-4 border-white/30 transition-transform duration-200 hover:scale-105">
+              {/* Outer glow ring */}
+              <div className="absolute inset-0 rounded-full ring-4 ring-white/30 ring-offset-2 ring-offset-blue-600 pointer-events-none"></div>
+              {/* Inner ring */}
+              <div className="absolute inset-4 rounded-full border-2 border-white/30"></div>
+              {/* Center label */}
+              <div className="absolute inset-0 flex items-center justify-center font-semibold text-lg md:text-xl select-none">
+                Menü
+              </div>
+              {/* Direction labels */}
+              <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                North - N
+              </span>
+              <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                South - S
+              </span>
+              <span className="absolute top-1/2 -right-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                East - E
+              </span>
+              <span className="absolute top-1/2 -left-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                West - W
+              </span>
+            </div>
           </Link>
-
         </div>
       </div>
       </div>
