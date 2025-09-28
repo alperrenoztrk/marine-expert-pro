@@ -169,7 +169,7 @@ const Index = () => {
             data-translatable
             style={{ textShadow: "1px 1px 2px rgba(255,255,255,0.8)" }}
           >
-            Tüm denizciler için pratik hesaplama platformu
+            Tüm denizcilerin ortak uygulaması
           </p>
         </div>
 
