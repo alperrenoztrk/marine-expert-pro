@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Factory, Leaf, Cloud } from "lucide-react";
+import { Factory, Leaf, Cloud } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 export default function EmissionsMenu(){
   const items = [
@@ -12,9 +13,7 @@ export default function EmissionsMenu(){
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <Link to="/">
-          <Button variant="ghost" size="sm" className="gap-2"><ArrowLeft className="h-4 w-4" /> Ana Sayfa</Button>
-        </Link>
+        <BackButton />
       </div>
       <Card>
         <CardHeader><CardTitle>Emisyon Hesaplamaları</CardTitle></CardHeader>

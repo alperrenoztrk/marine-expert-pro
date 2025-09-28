@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Home } from 'lucide-react';
+import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lucide-react';
+import BackButton from '@/components/BackButton';
 
 const categories = [
   { title: 'Stabilite', icon: Ship, link: '/stability' },
@@ -21,23 +22,9 @@ export default function CalculationsMenu() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
 
-        {/* Home button */}
+        {/* Back button */}
         <div className="mb-8">
-          <Link
-            to="/"
-            className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
-          >
-            <div className="flex items-center gap-6">
-              <div className="flex-shrink-0">
-                <Home className="w-16 h-16 text-blue-700 drop-shadow-lg" strokeWidth={1.5} />
-              </div>
-              <div className="flex-1">
-                <span className="text-2xl font-bold text-blue-700 drop-shadow-sm" data-translatable>
-                  Anasayfa
-                </span>
-              </div>
-            </div>
-          </Link>
+          <BackButton />
         </div>
 
         {/* Categories */}

@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Leaf, Calculator } from "lucide-react";
+import { Leaf, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
+import BackButton from "@/components/BackButton";
 import { EmissionCalculations } from "@/components/calculations/EmissionCalculations";
 import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
@@ -13,12 +13,7 @@ const EmissionCalculationsPage = () => {
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800">
-              <ArrowLeft className="w-4 h-4" />
-              <span data-translatable>Ana Sayfa</span>
-            </Button>
-          </Link>
+          <BackButton />
         </div>
 
         {/* Header */}

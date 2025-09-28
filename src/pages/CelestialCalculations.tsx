@@ -8,10 +8,9 @@ import {
   Star, 
   Calculator,
   Navigation,
-  Ruler,
-  ArrowLeft
+  Ruler
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import BackButton from '@/components/BackButton';
 import { useToast } from '@/hooks/use-toast';
 
 export default function CelestialCalculations() {
@@ -123,11 +122,7 @@ export default function CelestialCalculations() {
       {/* Header */}
       <div className="bg-black/50 backdrop-blur-sm border-b border-white/10 p-3 sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
+          <BackButton />
           <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
           <div>
             <h1 className="text-lg font-bold">Göksel Hesaplamalar</h1>

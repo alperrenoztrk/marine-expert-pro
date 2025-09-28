@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Link } from "react-router-dom";
+import BackButton from "@/components/BackButton";
 import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb, Trash2, Printer, Copy, Share2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -129,18 +129,7 @@ const Formulas = () => {
     <MobileLayout>
       {/* Language Selector ve Geri Dönüş */}
       <div className="flex justify-between items-center mb-4 px-1">
-        <Button 
-          asChild 
-          variant="ghost" 
-          size="sm" 
-          className="gap-2 text-sm flex items-center"
-        >
-          <Link to="/">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden xs:inline" data-translatable>Ana Sayfa</span>
-            <span className="xs:hidden" data-translatable>Geri</span>
-          </Link>
-        </Button>
+        <BackButton className="text-sm" />
       </div>
 
       {/* Header Section - Mobil optimize */}

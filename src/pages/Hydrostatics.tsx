@@ -7,8 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Droplets, Calculator } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Droplets, Calculator } from 'lucide-react';
+import BackButton from '@/components/BackButton';
 
 interface HydrostaticsData {
   // Draft Survey Parameters
@@ -117,13 +117,7 @@ export const HydrostaticsCalculations = () => {
             <p className="text-muted-foreground">Draft Survey ve Bonjean Curves hesaplamaları</p>
           </div>
         </div>
-        <Button asChild variant="ghost" size="sm" className="gap-2 text-sm flex items-center">
-          <Link to="/">
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden xs:inline" data-translatable>Ana Sayfa</span>
-            <span className="xs:hidden" data-translatable>Geri</span>
-          </Link>
-        </Button>
+        <BackButton className="text-sm" />
       </div>
 
       <Card>

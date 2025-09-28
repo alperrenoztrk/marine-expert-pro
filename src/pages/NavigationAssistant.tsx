@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Compass, MessageCircle } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import NavigationAssistantPopup from "@/components/NavigationAssistantPopup";
 
 export default function NavigationAssistantPage(){
@@ -23,12 +23,6 @@ export default function NavigationAssistantPage(){
             <ArrowLeft className="w-4 h-4" />
             <span data-translatable>Geri</span>
           </Button>
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              <span data-translatable>Ana Sayfa</span>
-            </Button>
-          </Link>
         </div>
 
         <div className="text-center space-y-4">

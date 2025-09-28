@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Waves } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Waves } from "lucide-react";
+import BackButton from "@/components/BackButton";
 import { CalculationHero } from "@/components/ui/calculation-hero";
 import oceanWaves from "@/assets/maritime/ocean-waves.jpg";
 import { HydrodynamicsCalculations } from "@/components/calculations/HydrodynamicsCalculations";
@@ -13,12 +13,7 @@ const Hydrodynamics = () => {
         
         {/* Back Button */}
         <div className="flex items-center gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-50 dark:hover:bg-gray-700 cyberpunk:hover:bg-gray-800 neon:hover:bg-slate-800">
-              <ArrowLeft className="w-4 h-4" />
-              <span data-translatable>Ana Sayfa</span>
-            </Button>
-          </Link>
+          <BackButton />
         </div>
 
         {/* Hero Section */}
