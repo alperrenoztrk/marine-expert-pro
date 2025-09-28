@@ -190,24 +190,6 @@ const Index = () => {
             </Button>
           </Link>
 
-          {/* Bottom buttons - side by side */}
-          <div className="flex gap-4 w-full">
-            <Link to="/regulations" className="flex-1">
-              <Button className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-2xl gap-2 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
-                <div className="w-6 h-6 rounded-full border-2 border-blue-600 flex items-center justify-center">
-                  <Shield className="w-3 h-3 text-blue-600" />
-                </div>
-                <span data-translatable>Regülasyonlar</span>
-              </Button>
-            </Link>
-
-            <Link to="/formulas" className="flex-1">
-              <Button className="w-full h-14 bg-white/95 hover:bg-white text-blue-700 rounded-2xl gap-2 text-base font-semibold shadow-lg border border-white/60 transition-all duration-200 hover:scale-105">
-                <FileText className="w-5 h-5 text-blue-600" />
-                <span data-translatable>Formüller</span>
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
       </div>
