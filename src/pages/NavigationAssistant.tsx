@@ -23,10 +23,10 @@ export default function NavigationAssistantPage(){
             <ArrowLeft className="w-4 h-4" />
             <span data-translatable>Geri</span>
           </Button>
-          <Link to="/">
+          <Link to="/navigation-menu">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="w-4 h-4" />
-              <span data-translatable>Ana Sayfa</span>
+              <span data-translatable>Geri</span>
             </Button>
           </Link>
         </div>

@@ -13,8 +13,8 @@ export default function HydrodynamicsMenu(){
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <Link to="/">
-          <Button variant="ghost" size="sm" className="gap-2"><ArrowLeft className="h-4 w-4" /> Ana Sayfa</Button>
+        <Link to="/calculations">
+          <Button variant="ghost" size="sm" className="gap-2"><ArrowLeft className="h-4 w-4" /> Geri</Button>
         </Link>
       </div>
       <Card>
