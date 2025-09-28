@@ -34,6 +34,11 @@ export default function StabilityMenu() {
           </Link>
         </div>
 
+        {/* Page title without icon */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white drop-shadow-sm">Stabilite</h1>
+        </div>
+
         {/* Menu items styled like the main menu */}
         <div className="space-y-6">
           {items.map((it)=> (
