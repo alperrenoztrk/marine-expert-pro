@@ -31,7 +31,7 @@ export default function StabilityMenu() {
       <div className="flex flex-col gap-3 max-w-md mx-auto">
         {items.map((it)=> (
           <Link key={it.to} to={it.to}>
-            <Button variant="outline" className="w-full justify-start gap-3 h-12" data-no-translate>
+            <Button variant="outline" className="w-full justify-center gap-3 h-14 text-lg font-semibold" data-no-translate>
               {it.icon}
               {it.label}
             </Button>
