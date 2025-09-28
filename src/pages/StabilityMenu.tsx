@@ -35,8 +35,8 @@ export default function StabilityMenu() {
         </div>
 
         {/* Page title without icon */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white drop-shadow-sm">Stabilite</h1>
+        <div className="mb-6 text-center">
+          <h1 className="text-5xl font-extrabold text-blue-600 dark:text-blue-400 drop-shadow-sm">Stabilite</h1>
         </div>
 
         {/* Menu items styled like the main menu */}
