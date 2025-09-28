@@ -15,11 +15,9 @@ const Index = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [targetRoute, setTargetRoute] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = 2; // Ana sayfa ve sol sayfa (Pusula/Weather)
 
   // Compass state
-  const [compassEnabled, setCompassEnabled] = useState(false);
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -132,39 +130,35 @@ const Index = () => {
   };
 
   useEffect(() => {
+    const initCompass = async () => {
+      try {
+        const anyDOE = DeviceOrientationEvent as any;
+        if (typeof anyDOE?.requestPermission === "function") {
+          try {
+            const response = await anyDOE.requestPermission();
+            if (response === "granted") {
+              startCompass();
+              return;
+            }
+          } catch {}
+          // Fallback: attempt to start even if permission not explicitly granted
+          startCompass();
+        } else {
+          // Non-iOS
+          startCompass();
+        }
+      } catch {
+        // Last resort, try to start listener
+        startCompass();
+      }
+    };
+    initCompass();
     return () => {
       stopCompass();
     };
   }, []);
 
-  const requestCompassPermission = async (): Promise<boolean> => {
-    try {
-      const anyDOE = DeviceOrientationEvent as any;
-      if (typeof anyDOE?.requestPermission === "function") {
-        const response = await anyDOE.requestPermission();
-        if (response === "granted") {
-          startCompass();
-          setCompassEnabled(true);
-          return true;
-        }
-        return false;
-      } else {
-        // Non-iOS browsers usually don't need explicit permission
-        startCompass();
-        setCompassEnabled(true);
-        return true;
-      }
-    } catch {
-      return false;
-    }
-  };
-
-  const handleCompassLinkClick: React.MouseEventHandler<HTMLAnchorElement> = async (e) => {
-    if (!compassEnabled) {
-      e.preventDefault();
-      await requestCompassPermission();
-    }
-  };
+  
 
   const handleDotClick = (pageIndex: number) => {
     if (pageIndex === 0) {
@@ -250,7 +244,7 @@ const Index = () => {
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
           {/* Compass Menu Button with real heading */}
-          <Link to="/calculations" onClick={handleCompassLinkClick} className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
+          <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
             <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl border-4 border-white/30 transition-transform duration-200 hover:scale-105">
               {/* Outer glow ring */}
               <div className="absolute inset-0 rounded-full ring-4 ring-white/30 ring-offset-2 ring-offset-blue-600 pointer-events-none"></div>
@@ -277,14 +271,7 @@ const Index = () => {
                 {headingDeg != null ? `${Math.round(headingDeg)}°` : "Pusula"}
               </div>
 
-              {/* Tap-to-enable hint */}
-              {!compassEnabled && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[11px] md:text-xs font-medium bg-white/80 text-blue-700 rounded px-2 py-0.5 shadow">
-                    Etkinleştirmek için dokun
-                  </span>
-                </div>
-              )}
+              
               {/* Direction labels */}
               <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
                 North - N
