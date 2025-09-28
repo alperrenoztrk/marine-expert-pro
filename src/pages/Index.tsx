@@ -177,9 +177,13 @@ const Index = () => {
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Main button - Hesaplamalar */}
-          <Link to="/calculations" className="w-full">
-            <Button className="w-full h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-base font-semibold shadow-xl border-2 border-white/20 transition-all duration-200 hover:scale-105" />
+          {/* Main button - Hesaplamalar (now circular, no text) */}
+          <Link to="/calculations" className="w-fit mx-auto">
+            <Button
+              size="icon"
+              aria-label="Hesaplamalar"
+              className="h-16 w-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl border-2 border-white/20 transition-all duration-200 hover:scale-105"
+            />
           </Link>
 
         </div>
