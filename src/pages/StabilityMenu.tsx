@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Brain, BookOpen, Calculator, Sigma, ListChecks } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -19,24 +19,40 @@ export default function StabilityMenu() {
   const items = groups.flatMap((g)=> g.items);
 
   return (
-    <div key="stability-menu-v3" className="container mx-auto p-4 space-y-4" data-no-translate>
-      <div className="flex items-center justify-between">
-        <Link to="/calculations">
-          <Button variant="ghost" size="sm" className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Geri
-          </Button>
-        </Link>
-      </div>
-      <div className="flex flex-col gap-3 max-w-md mx-auto">
-        {items.map((it)=> (
-          <Link key={it.to} to={it.to}>
-            <Button variant="outline" className="w-full justify-center gap-3 h-14 text-lg font-semibold" data-no-translate>
-              {it.icon}
-              {it.label}
+    <div key="stability-menu-v4" className="relative min-h-screen overflow-hidden" data-no-translate>
+      {/* Background to match the blue main menu */}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-dark via-primary to-primary-light" />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
+        {/* Back button */}
+        <div className="mb-8">
+          <Link to="/calculations">
+            <Button variant="ghost" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Geri
             </Button>
           </Link>
-        ))}
+        </div>
+
+        {/* Menu items styled like the main menu */}
+        <div className="space-y-6">
+          {items.map((it)=> (
+            <Link
+              key={it.to}
+              to={it.to}
+              className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
+            >
+              <div className="flex items-center gap-6">
+                <div className="flex-shrink-0">
+                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-700 drop-shadow-lg", strokeWidth: 1.5 })}
+                </div>
+                <div className="flex-1">
+                  <span className="text-2xl font-bold text-blue-700 drop-shadow-sm">{it.label}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
