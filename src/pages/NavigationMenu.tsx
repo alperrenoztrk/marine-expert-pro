@@ -20,7 +20,7 @@ export default function NavigationMenu(){
       <div className="flex flex-col gap-3 max-w-md mx-auto">
         {items.map((it)=> (
           <Link key={it.label} to={it.to}>
-            <Button variant="outline" className="w-full justify-center gap-3 h-14 text-lg font-semibold">{it.icon}{it.label}</Button>
+            <Button variant="outline" className="w-full justify-center gap-3 h-14 text-lg font-semibold">{it.icon}<span className="text-blue-600">{it.label}</span></Button>
           </Link>
         ))}
       </div>

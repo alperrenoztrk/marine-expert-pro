@@ -1,7 +1,7 @@
 {
   "name": "maritime-calculator",
   "private": true,
-  "version": "2.5.61",
+  "version": "2.5.62",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -35,7 +35,6 @@
     "@capacitor/filesystem": "^7.1.4",
     "@capacitor/haptics": "^6.0.1",
     "@capacitor/keyboard": "^6.0.2",
-    
     "@capacitor/status-bar": "^6.0.1",
     "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@hookform/resolvers": "^3.9.0",
