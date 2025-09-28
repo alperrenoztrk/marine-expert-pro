@@ -30,7 +30,7 @@ export default function NavigationMenu() {
 
         {/* Page title without icon */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white drop-shadow-sm">Seyir</h1>
+          <h1 className="text-5xl font-bold text-blue-700 dark:text-blue-400 drop-shadow-sm text-center">Seyir</h1>
         </div>
 
         {/* Menu items in card style */}
