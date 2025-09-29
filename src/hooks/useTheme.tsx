@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light" | "neon" | "nature";
+type Theme = "dark" | "light" | "neon";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ export function ThemeProvider({
     const root = window.document.documentElement;
 
     // Always remove legacy class names as well
-    root.classList.remove("light", "dark", "neon", "nature", "cyberpunk");
+    root.classList.remove("light", "dark", "neon", "cyberpunk");
 
     root.classList.add(theme);
   }, [theme]);
