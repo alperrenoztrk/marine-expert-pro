@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light" | "cyberpunk" | "neon" | "nature";
+type Theme = "dark" | "light" | "neon" | "nature";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -26,14 +26,20 @@ export function ThemeProvider({
   storageKey = "maritime-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    const stored = localStorage.getItem(storageKey) as string | null;
+    if (stored === "cyberpunk") {
+      localStorage.setItem(storageKey, "dark");
+      return "dark";
+    }
+    return (stored as Theme) || defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
 
-    root.classList.remove("light", "dark", "cyberpunk", "neon", "nature");
+    // Always remove legacy class names as well
+    root.classList.remove("light", "dark", "neon", "nature", "cyberpunk");
 
     root.classList.add(theme);
   }, [theme]);
