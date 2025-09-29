@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
@@ -17,14 +17,8 @@ const Index = () => {
   const [targetRoute, setTargetRoute] = useState<string | null>(null);
   const totalPages = 2; // Ana sayfa ve sol sayfa (Pusula/Weather)
 
-  // Engine Telegraph UI
-  type TelegraphPosition =
-    | "full-astern"
-    | "half-astern"
-    | "stop"
-    | "half-ahead"
-    | "full-ahead";
-  const [telegraph, setTelegraph] = useState<TelegraphPosition>("stop");
+  // Compass state
+  const [headingDeg, setHeadingDeg] = useState<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const x = e.touches[0].clientX;
@@ -102,13 +96,69 @@ const Index = () => {
     }
   };
 
-  // Navigate to menu when ahead order is given
-  const giveAheadAndOpenMenu = (pos: TelegraphPosition) => {
-    setTelegraph(pos);
-    if (pos === "half-ahead" || pos === "full-ahead") {
-      navigate("/calculations");
+  // --- Compass logic ---
+  const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
+    // iOS Safari provides webkitCompassHeading (0..360, CW from North).
+    const anyEvent: any = event as any;
+    let heading: number | null = null;
+
+    if (typeof anyEvent?.webkitCompassHeading === "number") {
+      const h = anyEvent.webkitCompassHeading;
+      if (Number.isFinite(h)) heading = h;
+    } else if (typeof event.alpha === "number") {
+      // Convert alpha (0..360, CCW from device z-axis) to compass heading
+      // Many devices use alpha=0 at North when absolute; 360-alpha gives CW from North
+      heading = 360 - (event.alpha ?? 0);
+    }
+
+    if (heading != null && Number.isFinite(heading)) {
+      const normalized = ((heading % 360) + 360) % 360;
+      setHeadingDeg(normalized);
     }
   };
+
+  const startCompass = () => {
+    try {
+      window.addEventListener("deviceorientation", handleDeviceOrientation, true);
+    } catch {}
+  };
+
+  const stopCompass = () => {
+    try {
+      window.removeEventListener("deviceorientation", handleDeviceOrientation, true);
+    } catch {}
+  };
+
+  useEffect(() => {
+    const initCompass = async () => {
+      try {
+        const anyDOE = DeviceOrientationEvent as any;
+        if (typeof anyDOE?.requestPermission === "function") {
+          try {
+            const response = await anyDOE.requestPermission();
+            if (response === "granted") {
+              startCompass();
+              return;
+            }
+          } catch {}
+          // Fallback: attempt to start even if permission not explicitly granted
+          startCompass();
+        } else {
+          // Non-iOS
+          startCompass();
+        }
+      } catch {
+        // Last resort, try to start listener
+        startCompass();
+      }
+    };
+    initCompass();
+    return () => {
+      stopCompass();
+    };
+  }, []);
+
+  
 
   const handleDotClick = (pageIndex: number) => {
     if (pageIndex === 0) {
@@ -191,89 +241,52 @@ const Index = () => {
 
         
 
-        {/* Engine Telegraph */}
+        {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          <div className="relative w-fit mx-auto" aria-label="Makine Telgrafı">
-            <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full bg-emerald-600 text-white shadow-xl border-4 border-white/30">
-              {/* Outer glow */}
-              <div className="absolute inset-0 rounded-full ring-4 ring-white/30 ring-offset-2 ring-offset-emerald-600 pointer-events-none"></div>
+          {/* Compass Menu Button with real heading */}
+          <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
+            <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl border-4 border-white/30 transition-transform duration-200 hover:scale-105">
+              {/* Outer glow ring */}
+              <div className="absolute inset-0 rounded-full ring-4 ring-white/30 ring-offset-2 ring-offset-blue-600 pointer-events-none"></div>
               {/* Inner ring */}
               <div className="absolute inset-4 rounded-full border-2 border-white/30"></div>
 
-              {/* Telegraph handle */}
-              {(() => {
-                const angleMap: Record<TelegraphPosition, number> = {
-                  "full-astern": -60,
-                  "half-astern": -30,
-                  "stop": 0,
-                  "half-ahead": 30,
-                  "full-ahead": 60,
-                };
-                const angle = angleMap[telegraph];
-                return (
-                  <div
-                    className="absolute left-1/2 top-1/2 origin-center"
-                    style={{ transform: `translate(-50%, -50%) rotate(${angle}deg)` }}
-                    aria-hidden
-                  >
-                    <div className="flex flex-col items-center">
-                      <div className="w-0 h-0 border-l-[7px] border-r-[7px] border-l-transparent border-r-transparent border-b-[58px] border-b-yellow-300 drop-shadow-sm"></div>
-                      <div className="w-0 h-0 border-l-[7px] border-r-[7px] border-l-transparent border-r-transparent border-t-[42px] border-t-white/80"></div>
-                    </div>
-                  </div>
-                );
-              })()}
+              {/* Compass needle (rotates using headingDeg) */}
+              <div
+                className="absolute left-1/2 top-1/2 origin-center pointer-events-none"
+                style={{ transform: `translate(-50%, -50%) rotate(${(headingDeg ?? 0).toFixed(1)}deg)` }}
+                aria-hidden
+              >
+                <div className="flex flex-col items-center">
+                  <div className="w-0 h-0 border-l-[7px] border-r-[7px] border-l-transparent border-r-transparent border-b-[58px] border-b-red-500 drop-shadow-sm"></div>
+                  <div className="w-0 h-0 border-l-[7px] border-r-[7px] border-l-transparent border-r-transparent border-t-[42px] border-t-white/70"></div>
+                </div>
+              </div>
 
               {/* Center pivot */}
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-white/90 shadow"></div>
 
-              {/* Current order */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold select-none bg-white/90 text-emerald-700 rounded px-2 py-0.5 shadow">
-                {telegraph === "stop" && "Durdur"}
-                {telegraph === "half-astern" && "Yarım Yol Geri"}
-                {telegraph === "full-astern" && "Tam Yol Geri"}
-                {telegraph === "half-ahead" && "Yarım Yol İleri"}
-                {telegraph === "full-ahead" && "Tam Yol İleri"}
+              {/* Heading readout */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold select-none bg-white/90 text-blue-700 rounded px-2 py-0.5 shadow">
+                {headingDeg != null ? `${Math.round(headingDeg)}°` : "Pusula"}
               </div>
 
-              {/* Order buttons around dial */}
-              <button
-                onClick={() => giveAheadAndOpenMenu("full-ahead")}
-                className="absolute top-1/2 -right-10 -translate-y-1/2 text-xs md:text-sm font-semibold text-emerald-700 bg-white/90 rounded-full px-2 py-0.5 shadow hover:bg-white"
-                aria-label="Tam Yol İleri"
-              >
-                Tam İleri
-              </button>
-              <button
-                onClick={() => giveAheadAndOpenMenu("half-ahead")}
-                className="absolute top-[65%] -right-12 -translate-y-1/2 text-xs md:text-sm font-semibold text-emerald-700 bg-white/90 rounded-full px-2 py-0.5 shadow hover:bg-white"
-                aria-label="Yarım Yol İleri"
-              >
-                Yarım İleri
-              </button>
-              <button
-                onClick={() => setTelegraph("stop")}
-                className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-emerald-700 bg-white/90 rounded-full px-2 py-0.5 shadow hover:bg-white"
-                aria-label="Durdur"
-              >
-                Durdur
-              </button>
-              <button
-                onClick={() => setTelegraph("half-astern")}
-                className="absolute top-[65%] -left-12 -translate-y-1/2 text-xs md:text-sm font-semibold text-emerald-700 bg-white/90 rounded-full px-2 py-0.5 shadow hover:bg-white"
-                aria-label="Yarım Yol Geri"
-              >
-                Yarım Geri
-              </button>
-              <button
-                onClick={() => setTelegraph("full-astern")}
-                className="absolute top-1/2 -left-10 -translate-y-1/2 text-xs md:text-sm font-semibold text-emerald-700 bg-white/90 rounded-full px-2 py-0.5 shadow hover:bg-white"
-                aria-label="Tam Yol Geri"
-              >
-                Tam Geri
-              </button>
+              
+              {/* Direction labels */}
+              <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                N
+              </span>
+              <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                S
+              </span>
+              <span className="absolute top-1/2 -right-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                E
+              </span>
+              <span className="absolute top-1/2 -left-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
+                W
+              </span>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
       </div>
