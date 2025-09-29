@@ -219,13 +219,13 @@ const Index = () => {
               className="block text-blue-600 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
               style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.4)" }}
             >
-              Maritime
+              Marine
             </span>
             <span 
               className="block text-blue-500 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
               style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.4)" }}
             >
-              Calculator
+              Expert
             </span>
           </h1>
           
@@ -274,16 +274,16 @@ const Index = () => {
               
               {/* Direction labels */}
               <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                North - N
+                N
               </span>
               <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                South - S
+                S
               </span>
               <span className="absolute top-1/2 -right-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                East - E
+                E
               </span>
               <span className="absolute top-1/2 -left-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                West - W
+                W
               </span>
             </div>
           </Link>
