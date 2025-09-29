@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface SupportedLanguage {
@@ -36,6 +36,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const [currentLanguage, setCurrentLanguage] = useState<string>('tr');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const languageRef = useRef<string>('tr');
 
   // RTL languages
   const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
@@ -52,6 +53,59 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     setIsLoading(false);
   }, []);
 
+  // Keep a ref of the latest language for observers
+  useEffect(() => {
+    languageRef.current = currentLanguage;
+  }, [currentLanguage]);
+
+  // Helper: translate a single element marked with data-translatable
+  const translateElementText = (el: Element, languageCode: string) => {
+    const element = el as HTMLElement;
+    const originalTextAttr = element.getAttribute('data-original-text');
+    const originalText = originalTextAttr != null ? originalTextAttr : (element.textContent || '').trim();
+    if (originalTextAttr == null) {
+      element.setAttribute('data-original-text', originalText);
+    }
+    const translated = getTranslation('', originalText, languageCode);
+    if (translated && element.textContent !== translated) {
+      element.textContent = translated;
+    }
+  };
+
+  // Helper: translate placeholder for inputs/textarea marked with data-translatable-placeholder
+  const translateElementPlaceholder = (el: Element, languageCode: string) => {
+    const element = el as HTMLInputElement | HTMLTextAreaElement;
+    const originalPlaceholderAttr = element.getAttribute('data-original-placeholder');
+    const originalPlaceholder = originalPlaceholderAttr != null ? originalPlaceholderAttr : (element.placeholder || '').trim();
+    if (originalPlaceholderAttr == null) {
+      element.setAttribute('data-original-placeholder', originalPlaceholder);
+    }
+    const translated = getTranslation('', originalPlaceholder, languageCode);
+    if (translated && element.placeholder !== translated) {
+      element.placeholder = translated;
+    }
+  };
+
+  // Translate an element and its descendants
+  const translateNode = (node: Element, languageCode: string) => {
+    if ((node as Element).hasAttribute && (node as Element).hasAttribute('data-translatable')) {
+      translateElementText(node, languageCode);
+    }
+    if ((node as Element).hasAttribute && (node as Element).hasAttribute('data-translatable-placeholder')) {
+      translateElementPlaceholder(node, languageCode);
+    }
+    const textNodes = node.querySelectorAll('[data-translatable]');
+    textNodes.forEach(el => translateElementText(el, languageCode));
+    const placeholderNodes = node.querySelectorAll('[data-translatable-placeholder]');
+    placeholderNodes.forEach(el => translateElementPlaceholder(el, languageCode));
+  };
+
+  // Translate the whole document
+  const translateDocument = (languageCode: string) => {
+    if (typeof document === 'undefined') return;
+    translateNode(document.body, languageCode);
+  };
+
   const changeLanguage = (languageCode: string) => {
     if (languageCode === currentLanguage) return;
 
@@ -66,6 +120,30 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       description: `Uygulama dili ${getLanguageName(languageCode)} olarak değiştirildi`,
     });
   };
+
+  // Update document language/dir and apply translations when language changes
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.lang = currentLanguage;
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    translateDocument(currentLanguage);
+  }, [currentLanguage, isRTL]);
+
+  // Observe DOM changes to translate dynamically added elements
+  useEffect(() => {
+    if (typeof MutationObserver === 'undefined' || typeof document === 'undefined') return;
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            translateNode(node as Element, languageRef.current);
+          }
+        });
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
 
   const getLanguageName = (code: string): string => {
     return SUPPORTED_LANGUAGES.find(lang => lang.language === code)?.displayName || code;
