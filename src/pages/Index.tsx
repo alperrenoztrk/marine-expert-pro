@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import compassDial from "@/assets/maritime/navigation-compass.jpg";
 import { Settings } from "lucide-react";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
@@ -243,48 +244,36 @@ const Index = () => {
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Compass Menu Button with real heading */}
+          {/* Compass Menu Button with image dial and real heading */}
           <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
-            <div className="relative h-40 w-40 md:h-48 md:w-48 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl border-4 border-white/30 transition-transform duration-200 hover:scale-105">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full ring-4 ring-white/30 ring-offset-2 ring-offset-blue-600 pointer-events-none"></div>
-              {/* Inner ring */}
-              <div className="absolute inset-4 rounded-full border-2 border-white/30"></div>
+            <div className="relative h-44 w-44 md:h-52 md:w-52 transition-transform duration-200 hover:scale-105">
+              {/* Dial image */}
+              <img
+                src={compassDial}
+                alt="Pusula kadranı"
+                className="h-full w-full object-contain select-none pointer-events-none drop-shadow-xl"
+                draggable={false}
+              />
 
-              {/* Compass needle (rotates using headingDeg) */}
+              {/* Compass needle (rotates with headingDeg) */}
               <div
                 className="absolute left-1/2 top-1/2 origin-center pointer-events-none"
                 style={{ transform: `translate(-50%, -50%) rotate(${(headingDeg ?? 0).toFixed(1)}deg)` }}
                 aria-hidden
               >
                 <div className="flex flex-col items-center">
-                  <div className="w-0 h-0 border-l-[7px] border-r-[7px] border-l-transparent border-r-transparent border-b-[58px] border-b-red-500 drop-shadow-sm"></div>
-                  <div className="w-0 h-0 border-l-[7px] border-r-[7px] border-l-transparent border-r-transparent border-t-[42px] border-t-white/70"></div>
+                  <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-l-transparent border-r-transparent border-b-[56px] border-b-red-500 drop-shadow-sm"></div>
+                  <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-l-transparent border-r-transparent border-t-[40px] border-t-white/80"></div>
                 </div>
               </div>
 
               {/* Center pivot */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-white/90 shadow"></div>
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-white/95 shadow"></div>
 
-              {/* Heading readout */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold select-none bg-white/90 text-blue-700 rounded px-2 py-0.5 shadow">
+              {/* Heading readout tag inside the dial bottom */}
+              <div className="absolute bottom-[18%] left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold select-none bg-white/95 text-blue-700 rounded px-2 py-0.5 shadow">
                 {headingDeg != null ? `${Math.round(headingDeg)}°` : "Pusula"}
               </div>
-
-              
-              {/* Direction labels */}
-              <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                N
-              </span>
-              <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                S
-              </span>
-              <span className="absolute top-1/2 -right-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                E
-              </span>
-              <span className="absolute top-1/2 -left-9 -translate-y-1/2 text-xs md:text-sm font-semibold text-blue-700 bg-white/90 rounded-full px-2 py-0.5 shadow">
-                W
-              </span>
             </div>
           </Link>
         </div>
