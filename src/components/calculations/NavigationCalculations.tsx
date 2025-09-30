@@ -2875,11 +2875,23 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       <Input id="anch-freeboard" type="number" step="0.1" defaultValue={2} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Hava Durumu Faktörü</Label>
-                      <select id="anch-weather" className="w-full p-2 border rounded-md">
-                        <option value="6">Sakin (6:1)</option>
-                        <option value="7">Orta (7:1)</option>
-                        <option value="8">Sert (8:1)</option>
+                      <Label>Rüzgar Hızı (knot)</Label>
+                      <Input id="anch-wind" type="number" step="1" defaultValue={20} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Deniz Durumu (0-9)</Label>
+                      <Input id="anch-seastate" type="number" min="0" max="9" step="1" defaultValue={3} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Gelgit Aralığı (m) - opsiyonel</Label>
+                      <Input id="anch-tide" type="number" step="0.1" placeholder="0" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Zemin Kalitesi</Label>
+                      <select id="anch-ground" className="w-full p-2 border rounded-md">
+                        <option value="good">İyi</option>
+                        <option value="fair">Orta</option>
+                        <option value="poor">Kötü</option>
                       </select>
                     </div>
                     <div className="space-y-2">
@@ -2891,10 +2903,26 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     <Button type="button" onClick={() => {
                       const depth = parseFloat((document.getElementById('anch-depth') as HTMLInputElement)?.value || '0') || 0;
                       const freeb = parseFloat((document.getElementById('anch-freeboard') as HTMLInputElement)?.value || '0') || 0;
-                      const scope = parseFloat((document.getElementById('anch-weather') as HTMLSelectElement)?.value || '6') || 6;
-                      const totalDepth = depth + freeb;
-                      const chainLen = totalDepth * scope;
-                      setResult(prev => prev ? { ...prev, minimumDepth: totalDepth, safeDraft: chainLen } : {
+                      const wind = parseFloat((document.getElementById('anch-wind') as HTMLInputElement)?.value || '0') || 0;
+                      const ss = Math.max(0, Math.min(9, parseFloat((document.getElementById('anch-seastate') as HTMLInputElement)?.value || '0') || 0));
+                      const tide = Math.max(0, parseFloat((document.getElementById('anch-tide') as HTMLInputElement)?.value || '0') || 0);
+                      const ground = ((document.getElementById('anch-ground') as HTMLSelectElement)?.value || 'fair') as 'good' | 'fair' | 'poor';
+
+                      // Effective depth with tide and waves
+                      const waveHeight = ss * 0.5; // m
+                      const tideMargin = 0.5 * tide; // m
+                      const effectiveDepth = Math.max(1, depth + freeb + tideMargin + 0.5 * waveHeight);
+
+                      // Base scope from wind
+                      let baseScope: number;
+                      if (wind <= 10) baseScope = 3; else if (wind <= 20) baseScope = 5; else if (wind <= 30) baseScope = 7; else baseScope = 10;
+                      const seaStateFactor = 1 + 0.03 * ss;
+                      const groundFactor = ground === 'good' ? 1.0 : ground === 'fair' ? 1.10 : 1.25;
+                      const recommendedScope = Math.max(3, Math.min(12, baseScope * seaStateFactor * groundFactor));
+
+                      const chainLen = effectiveDepth * recommendedScope;
+
+                      setResult(prev => prev ? { ...prev, minimumDepth: effectiveDepth, safeDraft: chainLen } : {
                         // reuse fields to display numbers without adding new types
                         gcDistance: 0, gcInitialBearing: 0, gcFinalBearing: 0, gcVertexLat: 0, gcWaypointDistances: [],
                         rhumbDistance: 0, rhumbBearing: 0, departure: 0, dLat: 0, mercatorDistance: 0,
@@ -2909,7 +2937,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         twilightTimes: { sunrise: '', sunset: '', civilTwilightBegin: '', civilTwilightEnd: '', nauticalTwilightBegin: '', nauticalTwilightEnd: '', astronomicalTwilightBegin: '', astronomicalTwilightEnd: '', daylightDuration: 0, goldenHourBegin: '', goldenHourEnd: '', blueHourBegin: '', blueHourEnd: '' },
                         advance: 0, transfer: 0, tacticalDiameter: 0, finalDiameter: 0, wheelOverPoint: 0, turningRadius: 0,
                         optimumRoute: '', weatherDelay: 0, safeCourse: 0, seaState: 0, beaufortScale: 0,
-                        pilotBoardingDistance: 0, pilotBoardingETA: '', approachSpeed: 0, minimumDepth: totalDepth, safeDraft: chainLen,
+                        pilotBoardingDistance: 0, pilotBoardingETA: '', approachSpeed: 0, minimumDepth: effectiveDepth, safeDraft: chainLen,
                         recommendations: []
                       });
                     }} className="gap-2">

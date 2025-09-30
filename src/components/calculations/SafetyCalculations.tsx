@@ -141,43 +141,82 @@ export const SafetyCalculations = () => {
 
   // Anchoring calculations
   const calculateAnchoring = () => {
-    // Wind force calculation (Windage formula)
-    const windPressure = 0.613 * Math.pow(data.windSpeed * 0.514, 2); // N/m²
-    const lateralWindArea = data.shipLength * (data.shipDepth + 3); // Approximate lateral area
-    const windForce = (windPressure * lateralWindArea) / 9810; // Convert to tonnes
-    
-    // Current force calculation
-    const currentPressure = 50 * Math.pow(data.currentSpeed * 0.514, 2); // N/m²
-    const underwaterArea = data.shipLength * data.summerDraft * 0.7; // Approximate underwater area
-    const currentForce = (currentPressure * underwaterArea) / 9810; // Convert to tonnes
-    
-    const totalForce = windForce + currentForce;
-    
-    // Anchor holding power (empirical formula)
-    const holdingFactor = data.holdingGround === 'good' ? 8 : data.holdingGround === 'fair' ? 6 : 4;
-    const anchorHoldingPower = (data.anchorWeight / 1000) * holdingFactor;
-    
-    // Chain scope calculation
-    const basicScope = Math.max(6, data.waterDepth / 10 * 6); // 6:1 ratio minimum
-    const weatherFactor = 1 + (data.windSpeed - 20) / 100; // Increase scope for heavy weather
-    const seaStateFactor = 1 + data.seaState / 20;
-    
-    const recommendedScope = basicScope * weatherFactor * seaStateFactor;
-    const recommendedChainLength = recommendedScope * data.waterDepth;
-    const minimumChainLength = 6 * data.waterDepth;
-    
-    const safetyFactor = anchorHoldingPower / totalForce;
-    
+    // --- Environmental forces (more realistic) ---
+    const windSpeedMs = data.windSpeed * 0.514444; // m/s
+    const currentSpeedMs = data.currentSpeed * 0.514444; // m/s
+
+    // Aerodynamic drag: F = 0.5 * rho_air * C_D * A * V^2
+    const rhoAir = 1.225; // kg/m³
+    const windCd = 1.1; // broadside coefficient (approx.)
+    const projectedAreaAboveWater = data.shipLength * (data.shipDepth * 0.65); // m², superstructure + hull above WL
+    const windForceN = 0.5 * rhoAir * windCd * projectedAreaAboveWater * Math.pow(windSpeedMs, 2);
+    const windForce = windForceN / 9810; // tonnes
+
+    // Hydrodynamic drag: F = 0.5 * rho_water * C_D * A * V^2
+    const rhoWater = 1025; // kg/m³ (seawater)
+    const currentCd = 0.7; // hull drag coefficient (approx.)
+    const draft = data.summerDraft; // m
+    const projectedAreaUnderwater = data.shipLength * draft * 0.7; // m² (effective area)
+    const currentForceN = 0.5 * rhoWater * currentCd * projectedAreaUnderwater * Math.pow(currentSpeedMs, 2);
+    const currentForce = currentForceN / 9810; // tonnes
+
+    // Wave drift amplification (approx.): up to ~27% at sea state 9
+    const waveAmplification = 1 + 0.03 * Math.max(0, Math.min(9, data.seaState));
+    const totalForce = (windForce + currentForce) * waveAmplification; // tonnes
+
+    // --- Scope and chain length (industry rules of thumb) ---
+    const waveHeight = Math.max(0, data.seaState) * 0.5; // m, coarse mapping
+    const tideMargin = Math.max(0, data.tidalRange) * 0.5; // use half the tidal range for margin
+    const effectiveDepth = Math.max(1, data.waterDepth + tideMargin + 0.5 * waveHeight); // m
+
+    // Base scope by wind
+    let baseScope: number;
+    if (data.windSpeed <= 10) baseScope = 3;
+    else if (data.windSpeed <= 20) baseScope = 5;
+    else if (data.windSpeed <= 30) baseScope = 7;
+    else baseScope = 10;
+
+    // Adjust by sea state and holding ground
+    const seaStateFactor = 1 + 0.03 * Math.max(0, Math.min(9, data.seaState));
+    const groundFactor = data.holdingGround === 'good' ? 1.0 : data.holdingGround === 'fair' ? 1.10 : 1.25;
+    const recommendedScope = Math.max(3, Math.min(12, baseScope * seaStateFactor * groundFactor));
+
+    const recommendedChainLength = recommendedScope * effectiveDepth; // m
+    const minimumChainLength = 3 * effectiveDepth; // m (absolute minimum ~3:1)
+
+    // --- Holding: anchor + chain friction on seabed ---
+    // Anchor holding (depends on ground). SHHP/HHP-style factors (approx.)
+    const baseHoldingFactor = data.holdingGround === 'good' ? 10 : data.holdingGround === 'fair' ? 7 : 4; // per tonne of anchor
+    const anchorHoldingPower = (data.anchorWeight / 1000) * baseHoldingFactor; // tonnes
+
+    // Reduce anchor effectiveness if scope < 5 (chain lift increases shank angle)
+    const scopeRatio = recommendedChainLength / effectiveDepth;
+    const anchorEffectivenessFactor = Math.min(1, scopeRatio / 5);
+    const anchorEffectiveHolding = anchorHoldingPower * anchorEffectivenessFactor; // tonnes
+
+    // Chain friction capacity on seabed: F = mu * W' * L_seabed
+    // Stud-link chain mass per m ≈ 0.022 * d^2 (kg/m), d in mm
+    const chainMassPerMeter = 0.022 * Math.pow(data.chainDiameter, 2); // kg/m (air)
+    const inWaterWeightPerMeterN = chainMassPerMeter * 9.81 * 0.86; // N/m
+    const inWaterWeightPerMeterTonnes = inWaterWeightPerMeterN / 9810; // tonnes/m
+    const mu = data.holdingGround === 'good' ? 0.30 : data.holdingGround === 'fair' ? 0.25 : 0.20;
+    // Approximate suspended length ≈ 1.3 * depth; remainder lies on seabed
+    const seabedLength = Math.max(0, recommendedChainLength - 1.3 * effectiveDepth); // m
+    const chainFrictionCapacity = mu * inWaterWeightPerMeterTonnes * seabedLength; // tonnes
+
+    const totalHoldingCapacity = anchorEffectiveHolding + chainFrictionCapacity; // tonnes
+    const safetyFactor = totalHoldingCapacity / Math.max(0.001, totalForce);
+
     let anchoringStatus: 'safe' | 'marginal' | 'unsafe';
     if (safetyFactor >= 2.0) anchoringStatus = 'safe';
     else if (safetyFactor >= 1.5) anchoringStatus = 'marginal';
     else anchoringStatus = 'unsafe';
-    
+
     return {
       windForce,
       currentForce,
       totalForce,
-      anchorHoldingPower,
+      anchorHoldingPower: totalHoldingCapacity, // report combined capacity (anchor + chain)
       recommendedChainLength,
       minimumChainLength,
       safetyFactor,
