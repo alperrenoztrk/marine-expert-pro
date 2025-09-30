@@ -213,7 +213,7 @@ export default function WeatherWidget() {
   const navigate = useNavigate();
   const [nowMs, setNowMs] = useState<number>(Date.now());
   const [loadingTimeout, setLoadingTimeout] = useState<boolean>(false);
-  const [showWindName, setShowWindName] = useState<boolean>(false);
+  const [isWindFlipped, setIsWindFlipped] = useState<boolean>(false);
 
   // Tick every 1s to refresh time displays (GMT/LMT/ZT)
   useEffect(() => {
@@ -437,42 +437,72 @@ export default function WeatherWidget() {
               </div>
             </div>
 
-            <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <div 
+              className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+              style={{ perspective: '1000px', minHeight: '120px' }}
+              onClick={() => setIsWindFlipped(!isWindFlipped)}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-success/5 to-accent/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative flex items-center gap-4">
-                <div className="relative">
-                  <Wind className="h-6 w-6 text-success drop-shadow-sm" />
-                  <div className="absolute inset-0 animate-pulse opacity-20">
-                    <Wind className="h-6 w-6 text-success" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div
-                    className="text-sm font-medium text-muted-foreground mb-1 cursor-pointer select-none"
-                    data-translatable
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => setShowWindName(prev => !prev)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setShowWindName(prev => !prev);
-                      }
-                    }}
-                  >
-                    Rüzgar
-                  </div>
-                  <div className="text-lg font-bold text-foreground">
-                    {Number.isFinite(data.windSpeedKt) ? `${data.windSpeedKt.toFixed(0)} kt` : "-"}
-                    {Number.isFinite(data.windDirectionDeg) && (
-                      <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                        <Compass className="h-4 w-4 transition-transform duration-500" style={{ transform: `rotate(${data.windDirectionDeg}deg)` }} />
-                        <span className="font-medium">{windCompass} ({Math.round(data.windDirectionDeg)}°)</span>
-                        {showWindName && (
-                          <span className="text-muted-foreground/80">– {windNameTr}</span>
+              
+              {/* Flip container */}
+              <div 
+                className="relative w-full h-full transition-transform duration-500"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: isWindFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                }}
+              >
+                {/* Front side - Wind speed and direction */}
+                <div 
+                  className="absolute inset-0 p-4"
+                  style={{ 
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden'
+                  }}
+                >
+                  <div className="relative flex items-center gap-4 h-full">
+                    <div className="relative">
+                      <Wind className="h-6 w-6 text-success drop-shadow-sm" />
+                      <div className="absolute inset-0 animate-pulse opacity-20">
+                        <Wind className="h-6 w-6 text-success" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>
+                        Rüzgar
+                      </div>
+                      <div className="text-lg font-bold text-foreground">
+                        {Number.isFinite(data.windSpeedKt) ? `${data.windSpeedKt.toFixed(0)} kt` : "-"}
+                        {Number.isFinite(data.windDirectionDeg) && (
+                          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                            <Compass className="h-4 w-4 transition-transform duration-500" style={{ transform: `rotate(${data.windDirectionDeg}deg)` }} />
+                            <span className="font-medium">{windCompass} ({Math.round(data.windDirectionDeg)}°)</span>
+                          </div>
                         )}
                       </div>
-                    )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Back side - Wind name in Turkish */}
+                <div 
+                  className="absolute inset-0 p-4"
+                  style={{ 
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)'
+                  }}
+                >
+                  <div className="relative flex flex-col items-center justify-center h-full gap-3">
+                    <Wind className="h-8 w-8 text-success drop-shadow-sm" />
+                    <div className="text-center">
+                      <div className="text-sm font-medium text-muted-foreground mb-2" data-translatable>
+                        Rüzgar Adı
+                      </div>
+                      <div className="text-2xl font-bold text-foreground">
+                        {windNameTr}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
