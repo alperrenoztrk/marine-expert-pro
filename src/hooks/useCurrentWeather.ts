@@ -17,6 +17,11 @@ type WeatherResponse = {
     wind_direction_10m?: number;
     weather_code?: number;
   };
+  daily?: {
+    time?: string[];
+    sunrise?: string[];
+    sunset?: string[];
+  };
 };
 
 export type WeatherData = {
@@ -31,6 +36,8 @@ export type WeatherData = {
   longitude: number;
   timezoneId?: string;
   utcOffsetSeconds?: number;
+  sunriseIso?: string;
+  sunsetIso?: string;
 };
 
 type BigDataCloudReverse = {
@@ -102,6 +109,14 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
           "weather_code",
         ].join(",")
       );
+      weatherUrl.searchParams.set(
+        "daily",
+        [
+          "sunrise",
+          "sunset",
+        ].join(",")
+      );
+      weatherUrl.searchParams.set("forecast_days", "1");
       weatherUrl.searchParams.set("wind_speed_unit", "kn");
       weatherUrl.searchParams.set("timezone", "auto");
 
@@ -109,6 +124,8 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
       if (!res.ok) throw new Error(`Hava verisi alınamadı (${res.status})`);
       const json = (await res.json()) as WeatherResponse;
       const cur = json.current ?? {};
+      const sunriseIso = json.daily?.sunrise?.[0];
+      const sunsetIso = json.daily?.sunset?.[0];
       setData({
         temperatureC: cur.temperature_2m ?? NaN,
         humidityPct: cur.relative_humidity_2m ?? NaN,
@@ -121,6 +138,8 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
         longitude: json.longitude,
         timezoneId: json.timezone,
         utcOffsetSeconds: json.utc_offset_seconds,
+        sunriseIso,
+        sunsetIso,
       });
     } finally {
       weatherInFlightRef.current = false;
@@ -170,8 +189,8 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
       const label = seaLikeName || cityLikeName || null;
       setLocationLabel(label);
       lastReverseRef.current = { lat, lon, label };
-    } catch {
-      // ignore
+    } catch (_err) {
+      console.debug("Reverse geocoding failed (ignored)");
     } finally {
       reverseInFlightRef.current = false;
     }
@@ -217,6 +236,8 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
         longitude: preloadedData.longitude,
         timezoneId: preloadedData.timezoneId,
         utcOffsetSeconds: preloadedData.utcOffsetSeconds,
+        sunriseIso: preloadedData.sunriseIso,
+        sunsetIso: preloadedData.sunsetIso,
       });
       if (preloadedData.locationLabel) {
         setLocationLabel(preloadedData.locationLabel);
@@ -267,8 +288,8 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
       ]);
       console.log("✅ Hava durumu verisi başarıyla alındı");
       return dataRef.current;
-    } catch (e: any) {
-      const message = e?.message || "Bilinmeyen hata";
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Bilinmeyen hata";
       console.error("❌ Hava durumu hatası:", message);
       setError(message);
       return null;
@@ -311,7 +332,7 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
     return () => {
       cancelled = true;
       if (watchId !== null) {
-        try { navigator.geolocation.clearWatch(watchId); } catch {}
+        try { navigator.geolocation.clearWatch(watchId); } catch (_err) { console.debug("clearWatch failed (ignored)"); }
       }
       if (intervalId !== null) {
         clearInterval(intervalId);

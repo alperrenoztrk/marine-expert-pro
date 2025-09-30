@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
+// @ts-ignore - linter type resolution quirk in isolated file checks
 import { useNavigate } from "react-router-dom";
-import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
+// @ts-ignore - linter type resolution quirk in isolated file checks
+import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin, Sunrise, Sunset } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 // Removed analog clock in favor of digital time tiles
 
@@ -278,6 +280,32 @@ export default function WeatherWidget() {
     return { gmt, zt, lmt, trt } as const;
   }, [nowMs, data?.utcOffsetSeconds, data?.longitude]);
 
+  const sunriseSunset = useMemo(() => {
+    const formatTimeHHMM = (isoLike?: string) => {
+      if (!isoLike) return "-";
+      // Open-Meteo returns local times like YYYY-MM-DDTHH:MM
+      const match = isoLike.match(/T?(\d{2}):(\d{2})/);
+      if (match) {
+        const hh = match[1];
+        const mm = match[2];
+        return `${hh}:${mm}`;
+      }
+      // Fallback: try Date parse but avoid TZ shifts
+      try {
+        const d = new Date(isoLike);
+        const hh = d.getHours().toString().padStart(2, '0');
+        const mm = d.getMinutes().toString().padStart(2, '0');
+        return `${hh}:${mm}`;
+      } catch {
+        return "-";
+      }
+    };
+    return {
+      sunrise: formatTimeHHMM(data?.sunriseIso),
+      sunset: formatTimeHHMM(data?.sunsetIso),
+    } as const;
+  }, [data?.sunriseIso, data?.sunsetIso]);
+
   return (
     <div className="w-full relative">
       <div className="space-y-6">{/* Content wrapper */}
@@ -356,6 +384,39 @@ export default function WeatherWidget() {
                      </div>
                   ));
                 })()}
+              </div>
+            </div>
+            {/* Sunrise / Sunset */}
+            <div className="col-span-2 grid grid-cols-2 gap-4">
+              <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative flex items-center gap-4">
+                  <div className="relative">
+                    <Sunrise className="h-6 w-6 text-orange-500 drop-shadow-sm" />
+                    <div className="absolute inset-0 animate-pulse opacity-20">
+                      <Sunrise className="h-6 w-6 text-orange-500" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Gündoğumu</div>
+                    <div className="text-lg font-bold text-foreground">{sunriseSunset.sunrise}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative flex items-center gap-4">
+                  <div className="relative">
+                    <Sunset className="h-6 w-6 text-indigo-500 drop-shadow-sm" />
+                    <div className="absolute inset-0 animate-pulse opacity-20">
+                      <Sunset className="h-6 w-6 text-indigo-500" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Günbatımı</div>
+                    <div className="text-lg font-bold text-foreground">{sunriseSunset.sunset}</div>
+                  </div>
+                </div>
               </div>
             </div>
             <div 

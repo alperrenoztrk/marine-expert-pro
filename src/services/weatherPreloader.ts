@@ -14,6 +14,11 @@ type WeatherResponse = {
     wind_direction_10m?: number;
     weather_code?: number;
   };
+  daily?: {
+    time?: string[];
+    sunrise?: string[];
+    sunset?: string[];
+  };
 };
 
 type BigDataCloudReverse = {
@@ -44,6 +49,8 @@ export type PreloadedWeatherData = {
   timezoneId?: string;
   utcOffsetSeconds?: number;
   locationLabel?: string;
+  sunriseIso?: string;
+  sunsetIso?: string;
 };
 
 class WeatherPreloader {
@@ -112,7 +119,7 @@ class WeatherPreloader {
         this.fetchLocationLabel(lat, lon)
       ]);
 
-      let weatherData: any = null;
+      let weatherData: PreloadedWeatherData | null = null;
       let locationLabel: string | null = null;
 
       if (weatherResult.status === 'fulfilled') {
@@ -137,8 +144,8 @@ class WeatherPreloader {
       } else {
         throw new Error("Hava durumu verisi alınamadı");
       }
-    } catch (e: any) {
-      const message = e?.message || "Bilinmeyen hata";
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Bilinmeyen hata";
       console.error("❌ [Preloader] Hava durumu preload hatası:", message);
       this.preloadError = message;
       return null;
@@ -162,6 +169,14 @@ class WeatherPreloader {
         "weather_code",
       ].join(",")
     );
+    weatherUrl.searchParams.set(
+      "daily",
+      [
+        "sunrise",
+        "sunset",
+      ].join(",")
+    );
+    weatherUrl.searchParams.set("forecast_days", "1");
     weatherUrl.searchParams.set("wind_speed_unit", "kn");
     weatherUrl.searchParams.set("timezone", "auto");
 
@@ -169,6 +184,8 @@ class WeatherPreloader {
     if (!res.ok) throw new Error(`Hava verisi alınamadı (${res.status})`);
     const json = (await res.json()) as WeatherResponse;
     const cur = json.current ?? {};
+    const sunriseIso = json.daily?.sunrise?.[0];
+    const sunsetIso = json.daily?.sunset?.[0];
     
     return {
       temperatureC: cur.temperature_2m ?? NaN,
@@ -182,6 +199,8 @@ class WeatherPreloader {
       longitude: json.longitude,
       timezoneId: json.timezone,
       utcOffsetSeconds: json.utc_offset_seconds,
+      sunriseIso,
+      sunsetIso,
     };
   }
 
