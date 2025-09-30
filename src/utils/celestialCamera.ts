@@ -1,5 +1,6 @@
 // Centralized camera and device-orientation utilities for sextant/celestial features
 // Note: Keep browser-only APIs isolated here for reuse across components
+import { computeHeadingFromEvent, smoothAngle } from './heading';
 
 export type DeviceOrientationAngles = { alpha: number; beta: number; gamma: number };
 
@@ -59,13 +60,18 @@ export const requestDeviceOrientationPermission = async (): Promise<boolean> => 
 export const addDeviceOrientationListener = (
   handler: (angles: DeviceOrientationAngles, ev: DeviceOrientationEvent) => void
 ) => {
+  let lastHeading: number | null = null;
   const listener = (ev: DeviceOrientationEvent) => {
-    const alpha = typeof ev.alpha === 'number' ? ev.alpha : 0;
+    const heading = computeHeadingFromEvent(ev);
     const beta = typeof ev.beta === 'number' ? ev.beta : 0;
     const gamma = typeof ev.gamma === 'number' ? ev.gamma : 0;
+    const alpha = heading !== null ? smoothAngle(lastHeading, heading, 0.25) : (typeof ev.alpha === 'number' ? ev.alpha : 0);
+    if (heading !== null) {
+      lastHeading = alpha;
+    }
     handler({ alpha, beta, gamma }, ev);
   };
-  window.addEventListener('deviceorientation', listener);
+  window.addEventListener('deviceorientation', listener, { passive: true });
   return () => window.removeEventListener('deviceorientation', listener);
 };
 
