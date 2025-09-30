@@ -66,7 +66,7 @@ const App = () => {
                     <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
                     <Route path="/stability/advanced" element={<StabilityAdvancedPage />} />
                     <Route path="/stability/damage" element={<StabilityDamagePage />} />
-                    <Route path="/stability/grain" element={<StabilityGrainPlaceholder />} />
+                    {/* Grain stability route removed; grain account remains within calculations */}
                     <Route path="/stability/gm" element={<StabilityGMPage />} />
                     <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
                     <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />

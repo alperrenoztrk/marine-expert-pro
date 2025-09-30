@@ -8,8 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor } from "lucide-react";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface StabilityData {
   // 🎯 Temel Stabilite Formülleri
@@ -310,10 +308,7 @@ export const StabilityCalculations = () => {
       }
     }
   }, [activeTab]);
-  const [grainAutoM, setGrainAutoM] = useState<boolean>(true);
-  const [grainHelpOpen, setGrainHelpOpen] = useState<boolean>(false);
-  const [mGrainHelpOpen, setMGrainHelpOpen] = useState<boolean>(false);
-  const [grainErrors, setGrainErrors] = useState<{ delta?: boolean; B?: boolean; M_grain?: boolean }>({});
+  
 
   // 🎯 Temel Stabilite Formülleri
   const calculateGM = () => {
@@ -752,127 +747,11 @@ export const StabilityCalculations = () => {
     toast.success(`Hasar Sonrası GM: ${GM_residual.toFixed(3)}m - Yatma Açısı: ${heel_angle.toFixed(2)}° - Cross Flooding: ${t_cross.toFixed(1)} min`);
   };
 
-  // 🌾 Grain Stability
-  const calculateGrainStability = () => {
-    const currentErrors: { delta?: boolean; B?: boolean; M_grain?: boolean } = {};
-    const deltaVal = data.delta;
-    const breadthVal = data.B;
-    const gmCorrVal = results.GM_corrected;
-    const useAuto = grainAutoM;
-    const mGrainVal = useAuto ? undefined : data.M_grain;
+  
 
-    if (deltaVal == null || Number.isNaN(deltaVal)) currentErrors.delta = true;
-    if (breadthVal == null || Number.isNaN(breadthVal)) currentErrors.B = true;
-    if (!useAuto && (mGrainVal == null || Number.isNaN(mGrainVal))) currentErrors.M_grain = true;
+  
 
-    if (Object.keys(currentErrors).length > 0 || gmCorrVal == null || Number.isNaN(gmCorrVal)) {
-      setGrainErrors(currentErrors);
-      toast.error("Lütfen tüm gerekli alanları doldurunuz");
-      return;
-    }
-    if ((deltaVal as number) <= 0 || (breadthVal as number) <= 0 || (gmCorrVal as number) <= 0 || (!useAuto && (mGrainVal as number) <= 0)) {
-      toast.error("Değerler mantıklı aralıkta olmalı (negatif veya sıfır olamaz)");
-      return;
-    }
-
-    const M_grain = useAuto
-      ? (deltaVal as number) * 0.05 * ((breadthVal as number) / 2)
-      : (mGrainVal as number);
-    const phi_grain = Math.atan(M_grain / ((deltaVal as number) * (gmCorrVal as number))) * (180 / Math.PI);
-    const SF_grain = 12 / phi_grain;
-    const grain_compliance = phi_grain <= 12;
-
-    setResults(prev => ({
-      ...prev,
-      M_grain_calculated: M_grain,
-      phi_grain_calculated: phi_grain,
-      SF_grain_calculated: SF_grain,
-      grain_compliance
-    }));
-
-    toast.success(`Tahıl Yatma Açısı: ${Number.isFinite(phi_grain) ? phi_grain.toFixed(2) : 'Hesaplama yapılamadı - Eksik veri'}° - Güvenlik Faktörü: ${Number.isFinite(SF_grain) ? SF_grain.toFixed(2) : '-'}`);
-  };
-
-  // 🔬 Advanced Stability
-  const calculateAdvancedStability = () => {
-    if (!results.GM_corrected || !data.k || !data.B) {
-      toast.error("Lütfen GM, k (radius of gyration) ve B değerlerini girin.");
-      return;
-    }
-    
-    const k = data.k || data.B * 0.4; // Default radius of gyration
-    const T_roll = 2 * Math.PI * Math.sqrt(Math.pow(k, 2) / ((data.g || 9.81) * results.GM_corrected));
-    const T_natural = 2 * Math.PI * Math.sqrt(Math.pow(k, 2) / ((data.g || 9.81) * results.GM_corrected));
-    const E_heel = results.GZ_small * (data.phi || 15) * (Math.PI / 180); // Simplified energy calculation
-    const SI = (results.GM_corrected / 1.0) * 100; // Standard GM = 1.0m
-    const SM = ((results.GM_corrected - 0.15) / 0.15) * 100; // Minimum GM = 0.15m
-    const T_wave = data.T_wave || 8; // Default wave period
-    const resonance_check = Math.abs(T_wave / T_roll - 1) < 0.2; // Resonance check
-    const stability_range = 90 - (results.angle_of_list || 0); // Simplified range
-    const stability_quality = results.area_0to30 / (results.GM_corrected * 30 * Math.PI / 180);
-    
-    setResults(prev => ({ 
-      ...prev, 
-      T_roll_calculated: T_roll,
-      T_natural_calculated: T_natural,
-      E_heel_calculated: E_heel,
-      SI_calculated: SI,
-      SM_calculated: SM,
-      resonance_check,
-      stability_range_calculated: stability_range,
-      stability_quality_calculated: stability_quality
-    }));
-    
-    toast.success(`Yalpalama Periyodu: ${T_roll.toFixed(1)}s - Stabilite İndeksi: ${SI.toFixed(1)}%`);
-  };
-
-  // 📈 GZ Curve Generation
-  const calculateGZCurve = () => {
-    if (!results.GM_corrected || !data.KM || !data.KG) {
-      toast.error("Lütfen GM, KM ve KG değerlerini girin.");
-      return;
-    }
-    
-    const gz_curve_points = [];
-    let gz_max = 0;
-    let phi_max_gz = 0;
-    
-    for (let angle = 0; angle <= 90; angle += 5) {
-      const angleRad = (angle * Math.PI) / 180;
-      let gz: number;
-      
-      if (angle <= 15) {
-        // Small angle approximation
-        gz = results.GM_corrected * Math.sin(angleRad);
-      } else {
-        // Large angle calculation
-        gz = (data.KM - data.KG) * Math.sin(angleRad);
-        
-        // Deck edge immersion effect (simplified)
-        const deck_edge_angle = Math.atan((data.T || 8) / ((data.B || 25) / 2)) * (180 / Math.PI);
-        if (angle > deck_edge_angle) {
-          const reduction_factor = Math.pow((angle - deck_edge_angle) / 90, 2) * 0.3;
-          gz = gz * (1 - reduction_factor);
-        }
-      }
-      
-      gz_curve_points.push({ angle, gz });
-      
-      if (gz > gz_max) {
-        gz_max = gz;
-        phi_max_gz = angle;
-      }
-    }
-    
-    setResults(prev => ({ 
-      ...prev, 
-      gz_curve_points,
-      gz_max_calculated: gz_max,
-      phi_max_gz_calculated: phi_max_gz
-    }));
-    
-    toast.success(`GZ Eğrisi Oluşturuldu - Max GZ: ${gz_max.toFixed(3)}m @ ${phi_max_gz}°`);
-  };
+  
 
   // 🔄 Total FSC Calculation
   const calculateTotalFSC = () => {
@@ -1038,103 +917,13 @@ export const StabilityCalculations = () => {
     toast.success(`Eşitlenmiş Açı: ${phi_eq.toFixed(2)}°`);
   };
 
-  // 🌾 Grain Allowable Heel
-  const calculateGrainAllowableHeel = () => {
-    if (data.delta == null || data.B == null || results.GM_corrected == null) {
-      toast.error("Lütfen tüm gerekli alanları doldurunuz");
-      return;
-    }
-    if (data.delta <= 0 || data.B <= 0 || results.GM_corrected <= 0) {
-      toast.error("Değerler mantıklı aralıkta olmalı (negatif veya sıfır olamaz)");
-      return;
-    }
-    
-    // φ_allowable = arctan(M_grain / (Δ × GM))
-    const M_grain = data.delta * 0.05 * (data.B / 2);
-    const phi_allowable = Math.atan(M_grain / (data.delta * results.GM_corrected)) * (180 / Math.PI);
-    const grain_stability_criterion = phi_allowable <= 12;
-    
-    setResults(prev => ({ 
-      ...prev, 
-      phi_allowable_calculated: phi_allowable,
-      grain_stability_criterion
-    }));
-    
-    toast.success(`Grain Allowable Heel: ${Number.isFinite(phi_allowable) ? phi_allowable.toFixed(2) : 'Hesaplama yapılamadı - Eksik veri'}° - ${grain_stability_criterion ? 'UYGUN' : 'Güvenlik kriterleri sağlanmıyor'}`);
-  };
+  
 
-  // 🔬 Yatma Enerjisi
-  const calculateEnergyToHeel = () => {
-    if (results.GZ_small == null || data.phi_max == null) {
-      toast.error("Lütfen önce GZ hesaplayın ve φ_max değerini girin.");
-      return;
-    }
-    
-    // E_heel = ∫GZ dφ (0 to φ_max)
-    const phi_max_rad = (data.phi_max * Math.PI) / 180;
-    const E_heel = results.GZ_small * phi_max_rad; // Simplified integration
-    
-    setResults(prev => ({ 
-      ...prev, 
-      E_heel_calculated: E_heel
-    }));
-    
-    toast.success(`Yatma Enerjisi: ${E_heel.toFixed(3)} m.rad`);
-  };
+  
 
-  // 🔬 GM Standard and Min
-  const calculateGMStandards = () => {
-    if (results.GM_corrected == null) {
-      toast.error("Lütfen önce GM hesaplayın.");
-      return;
-    }
-    
-    const GM_standard = 1.0; // Standard GM value
-    const GM_min = 0.15; // Minimum GM value
-    const SI = (results.GM_corrected / GM_standard) * 100;
-    const SM = ((results.GM_corrected - GM_min) / GM_min) * 100;
-    
-    setResults(prev => ({ 
-      ...prev, 
-      GM_standard_calculated: GM_standard,
-      GM_min_calculated: GM_min,
-      SI_calculated: SI,
-      SM_calculated: SM
-    }));
-    
-    toast.success(`GM Standard: ${GM_standard}m - GM Min: ${GM_min}m - SI: ${SI.toFixed(1)}% - SM: ${SM.toFixed(1)}%`);
-  };
+  
 
-  // 📈 GZ Eğrisi Analizi
-  const calculateGZCurveAnalysis = () => {
-    if (!results.gz_curve_points || results.gz_max_calculated == null) {
-      toast.error("Lütfen önce GZ Eğrisi hesaplayın.");
-      return;
-    }
-    
-    // Calculate area under curve
-    let area = 0;
-    for (let i = 0; i < results.gz_curve_points.length - 1; i++) {
-      const dphi = (results.gz_curve_points[i + 1].angle - results.gz_curve_points[i].angle) * (Math.PI / 180);
-      const gz_avg = (results.gz_curve_points[i].gz + results.gz_curve_points[i + 1].gz) / 2;
-      area += gz_avg * dphi;
-    }
-    
-    // Calculate dynamic stability
-    const dynamic_stability = area;
-    
-    // Calculate righting moment
-    const righting_moment = results.gz_max_calculated * (data.delta || 25000) * (data.g || 9.81);
-    
-    setResults(prev => ({ 
-      ...prev, 
-      area_calculated: area,
-      dynamic_stability_calculated: dynamic_stability,
-      righting_moment_calculated: righting_moment
-    }));
-    
-    toast.success(`GZ Eğrisi Analizi - Alan: ${area.toFixed(3)} m.rad - Dinamik Stabilite: ${dynamic_stability.toFixed(3)} m.rad - Doğrultucu Moment: ${righting_moment.toFixed(1)} kN.m`);
-  };
+  
 
   // 🚢 Doğrultucu Moment Hesaplama
   const calculateRightingMoment = () => {
@@ -1203,16 +992,14 @@ export const StabilityCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-9">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="basic">🎯 Temel</TabsTrigger>
               <TabsTrigger value="gz">🌊 GZ</TabsTrigger>
               <TabsTrigger value="fsc">🔄 FSC</TabsTrigger>
               <TabsTrigger value="wind">🌪️ Rüzgar</TabsTrigger>
               <TabsTrigger value="imo">📊 IMO</TabsTrigger>
               <TabsTrigger value="damage">🛡️ Hasar</TabsTrigger>
-              <TabsTrigger value="grain">🌾 Tahıl</TabsTrigger>
               <TabsTrigger value="grainAccount">🌾 Tahıl Hesabı</TabsTrigger>
-              <TabsTrigger value="advanced">🔬 Gelişmiş</TabsTrigger>
             </TabsList>
 
             {/* 🎯 Temel Stabilite Formülleri */}
@@ -1973,161 +1760,7 @@ export const StabilityCalculations = () => {
               </div>
             </TabsContent>
 
-            {/* 🌾 Grain Stability */}
-            <TabsContent value="grain" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5" />
-                      Grain Stability (SOLAS Ch. VI)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-2 rounded bg-muted/20">
-                      <div className="text-sm">Tahıl Kayma Momenti (M_grain)</div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs opacity-80">Manuel</span>
-                        <Switch checked={grainAutoM} onCheckedChange={setGrainAutoM} />
-                        <span className="text-xs opacity-80">Otomatik</span>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="delta_grain">Δ [ton]</Label>
-                        <Input
-                          id="delta_grain"
-                          type="number"
-                          className={grainErrors.delta ? 'border-red-500' : undefined}
-                          value={data.delta || ''}
-                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
-                          placeholder="25000"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="B_grain">B [m]</Label>
-                        <Input
-                          id="B_grain"
-                          type="number"
-                          className={grainErrors.B ? 'border-red-500' : undefined}
-                          value={data.B || ''}
-                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
-                          placeholder="25"
-                        />
-                      </div>
-                      {!grainAutoM && (
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="M_grain">M_grain [ton·m] (Tahıl Kayma Momenti)</Label>
-                          <Input
-                            id="M_grain"
-                            type="number"
-                            className={grainErrors.M_grain ? 'border-red-500' : undefined}
-                            value={data.M_grain || ''}
-                            onChange={(e) => setData({...data, M_grain: parseFloat(e.target.value)})}
-                            placeholder="Örn: 0.05×Δ×(B/2)"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Button variant="outline" onClick={() => setGrainHelpOpen(true)}>Bu değerler ne anlama geliyor?</Button>
-                      <Button variant="outline" onClick={() => setMGrainHelpOpen(true)}>Tahıl Kayma Momenti nasıl hesaplanır?</Button>
-                    </div>
-                    <Button onClick={calculateGrainStability} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      Tahıl Stabilitesi Hesapla
-                    </Button>
-                    {results.phi_grain_calculated !== undefined && (
-                      <div className="text-center p-3 bg-orange-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.phi_grain_calculated.toFixed(2)}°</div>
-                        <div className="text-sm text-muted-foreground">Tahıl Yatma Açısı</div>
-                        <Badge className={`mt-2 ${results.grain_compliance ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.grain_compliance ? 'UYGUN' : 'Güvenlik kriterleri sağlanmıyor'}
-                        </Badge>
-                        {results.SF_grain_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">SF: {results.SF_grain_calculated.toFixed(2)}</div>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5" />
-                      Grain Allowable Heel: φ_allowable = arctan(M_grain / (Δ × GM))
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="delta_allowable">Δ [ton]</Label>
-                        <Input
-                          id="delta_allowable"
-                          type="number"
-                          value={data.delta || ''}
-                          onChange={(e) => setData({...data, delta: parseFloat(e.target.value)})}
-                          placeholder="25000"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="B_allowable">B [m]</Label>
-                        <Input
-                          id="B_allowable"
-                          type="number"
-                          value={data.B || ''}
-                          onChange={(e) => setData({...data, B: parseFloat(e.target.value)})}
-                          placeholder="25"
-                        />
-                      </div>
-                    </div>
-                    <Button onClick={calculateGrainAllowableHeel} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      Grain Allowable Heel Hesapla
-                    </Button>
-                    {results.phi_allowable_calculated !== undefined && (
-                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.phi_allowable_calculated.toFixed(2)}°</div>
-                        <div className="text-sm text-muted-foreground">Allowable Heel</div>
-                        <Badge className={`mt-2 ${results.grain_stability_criterion ? 'bg-green-500' : 'bg-red-500'}`}>
-                          {results.grain_stability_criterion ? 'UYGUN' : 'Güvenlik kriterleri sağlanmıyor'}
-                        </Badge>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-              <Dialog open={grainHelpOpen} onOpenChange={setGrainHelpOpen}>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Bu değerler ne anlama geliyor?</DialogTitle>
-                    <DialogDescription>
-                      Δ: Gemi deplasmanı (ton). B: Gemi genişliği (m). GM: Metasantrik yükseklik (m). Tahıl yüklerinde yatma açısı, tahılın kayma momenti ile doğrultucu moment dengesinden bulunur. Güvenlik faktörü, yatma açısının 12° sınırına göre değerlendirilir.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="text-sm space-y-2">
-                    <p><strong>Güvenlik faktörü neden önemli?</strong> GM küçüldükçe geminin doğrultucu kabiliyeti azalır. Tahılın kayması ilave meyil momenti yaratarak dengenin bozulmasına sebep olabilir. SOLAS, tahıl yatma açısının 12°’yi aşmamasını ister.</p>
-                    <p><strong>Neleri değiştirmeli?</strong> GM’yi artırmak için balast almak veya ağırlıkları aşağıya taşımak; B’yi artırmak (geometrik); tahıl boşluklarını doldurmak ve sahil şilteleri ile boşlukları azaltmak M_grain’i küçültür.</p>
-                  </div>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog open={mGrainHelpOpen} onOpenChange={setMGrainHelpOpen}>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Tahıl Kayma Momenti (M_grain) nasıl hesaplanır?</DialogTitle>
-                    <DialogDescription>
-                      Pratik yaklaşım: M_grain ≈ 0.05 × Δ × (B/2). Bu, tipik kararlılık kitapçıklarında verilen muhafazakâr bir tahmindir. Geminize özel tahıl kılavuzunda daha kesin katsayılar bulunabilir.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="text-sm space-y-2">
-                    <p><strong>Tipik değerler:</strong> Δ=25,000 t ve B=25 m için M_grain ≈ 0.05×25,000×12.5 ≈ 15,625 ton·m.</p>
-                    <p><strong>Otomatik hesaplama:</strong> Anahtarı “Otomatik” konumunda bırakırsanız bu pratik formül kullanılır. “Manuel” seçerseniz M_grain alanına kendi değerinizi girebilirsiniz.</p>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </TabsContent>
+            {/* Grain stability tab removed */}
 
             {/* 🌾 Tahıl Hesabı (Draft Survey) */}
             <TabsContent value="grainAccount" className="space-y-6">
@@ -2281,174 +1914,7 @@ export const StabilityCalculations = () => {
               </div>
             </TabsContent>
 
-            {/* 🔬 Advanced Stability */}
-            <TabsContent value="advanced" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      Gelişmiş Stabilite Analizi
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="k">k (Radius of Gyration) [m]</Label>
-                        <Input
-                          id="k"
-                          type="number"
-                          step="0.1"
-                          value={data.k || ''}
-                          onChange={(e) => setData({...data, k: parseFloat(e.target.value)})}
-                          placeholder="10.0"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="T_wave">T_wave (Wave Period) [s]</Label>
-                        <Input
-                          id="T_wave"
-                          type="number"
-                          step="0.1"
-                          value={data.T_wave || ''}
-                          onChange={(e) => setData({...data, T_wave: parseFloat(e.target.value)})}
-                          placeholder="8.0"
-                        />
-                      </div>
-                    </div>
-                    <Button onClick={calculateAdvancedStability} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      Gelişmiş Stabilite Analizi
-                    </Button>
-                    {results.T_roll_calculated !== undefined && (
-                      <div className="text-center p-3 bg-teal-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.T_roll_calculated.toFixed(1)} s</div>
-                        <div className="text-sm text-muted-foreground">Yalpalama Periyodu</div>
-                        {results.SI_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">SI: {results.SI_calculated.toFixed(1)}%</div>
-                        )}
-                        <Badge className={`mt-2 ${results.resonance_check ? 'bg-red-500' : 'bg-green-500'}`}>
-                          {results.resonance_check ? 'REZONANS' : 'GÜVENLİ'}
-                        </Badge>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      GZ Curve Generation
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button onClick={calculateGZCurve} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      GZ Eğrisi Oluştur
-                    </Button>
-                    {results.gz_max_calculated !== undefined && (
-                      <div className="text-center p-3 bg-purple-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.gz_max_calculated.toFixed(3)} m</div>
-                        <div className="text-sm text-muted-foreground">Max GZ</div>
-                        {results.phi_max_gz_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">@ {results.phi_max_gz_calculated}°</div>
-                        )}
-                        <div className="text-sm mt-2">GZ Eğrisi 0–90° arası oluşturuldu</div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      Yatma Enerjisi: E_heel = ∫GZ dφ (0 → φ_max)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="phi_max">φ_max [°]</Label>
-                      <Input
-                        id="phi_max"
-                        type="number"
-                        value={data.phi_max || ''}
-                        onChange={(e) => setData({...data, phi_max: parseFloat(e.target.value)})}
-                        placeholder="30"
-                      />
-                    </div>
-                    <Button onClick={calculateEnergyToHeel} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      Yatma Enerjisi Hesapla
-                    </Button>
-                    {results.E_heel_calculated !== undefined && (
-                      <div className="text-center p-3 bg-indigo-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.E_heel_calculated.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Yatma Enerjisi</div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      GM Standartları: SI = (GM_corr / GM_std) × 100
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button onClick={calculateGMStandards} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      GM Standartları Hesapla
-                    </Button>
-                    {results.GM_standard_calculated !== undefined && (
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.GM_standard_calculated.toFixed(2)} m</div>
-                        <div className="text-sm text-muted-foreground">GM Standart</div>
-                        {results.GM_min_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">GM Min: {results.GM_min_calculated.toFixed(2)} m</div>
-                        )}
-                        {results.SI_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">SI: {results.SI_calculated.toFixed(1)}%</div>
-                        )}
-                        {results.SM_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">SM: {results.SM_calculated.toFixed(1)}%</div>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
-                      GZ Eğrisi Analizi: Alan, Dinamik Stabilite, Doğrultucu Moment
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button onClick={calculateGZCurveAnalysis} className="w-full">
-                      <Calculator className="h-4 w-4 mr-2" />
-                      GZ Eğrisi Analizi Hesapla
-                    </Button>
-                    {results.area_calculated !== undefined && (
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-2xl font-bold">{results.area_calculated.toFixed(3)} m.rad</div>
-                        <div className="text-sm text-muted-foreground">Eğri Altı Alan</div>
-                        {results.dynamic_stability_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">Dinamik Stabilite: {results.dynamic_stability_calculated.toFixed(3)} m.rad</div>
-                        )}
-                        {results.righting_moment_calculated !== undefined && (
-                          <div className="text-lg font-semibold mt-1">Doğrultucu Moment: {results.righting_moment_calculated.toFixed(1)} kN.m</div>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
+            {/* Advanced tab removed */}
 
             {/* 🛡️ Damage Stability */}
             <TabsContent value="damage" className="space-y-6">

@@ -15,7 +15,7 @@ export default function StabilityAdvancedPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Gelişmiş Stabilite Hesaplamaları</CardTitle>
+          <CardTitle>Stabilite Hesaplamaları</CardTitle>
         </CardHeader>
         <CardContent>
           <StabilityCalculations />
