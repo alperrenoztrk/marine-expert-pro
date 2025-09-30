@@ -133,20 +133,6 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           })}
         </g>
 
-        {/* Cardinal labels (Turkish) */}
-        <g fill="#0f172a" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="16" fontWeight={800}>
-          {cardinalLabels.map(({ text, angle }) => {
-            const radius = 50;
-            const rad = (Math.PI / 180) * angle;
-            const x = 100 + radius * Math.sin(rad);
-            const y = 100 - radius * Math.cos(rad);
-            return (
-              <text key={`card-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
-                {text}
-              </text>
-            );
-          })}
-        </g>
 
         {/* Gloss highlight */}
         <circle cx="100" cy="90" r="80" fill="url(#gloss)" opacity="0.7" />
