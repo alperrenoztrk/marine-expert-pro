@@ -217,14 +217,18 @@ const Index = () => {
         <div className="mb-12">
           <h1 className="maritime-title text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
             <span 
-              className="block text-blue-600 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
+              className="block text-blue-600 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] no-copy"
               style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.4)" }}
+              onContextMenu={(e) => e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
             >
               Marine
             </span>
             <span 
-              className="block text-blue-500 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
+              className="block text-blue-500 drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] no-copy"
               style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.4)" }}
+              onContextMenu={(e) => e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
             >
               Expert
             </span>
@@ -232,9 +236,11 @@ const Index = () => {
           
           {/* Subtitle */}
           <p 
-            className="maritime-subtitle text-lg md:text-xl text-black font-medium mt-6 drop-shadow-md" 
+            className="maritime-subtitle text-lg md:text-xl text-black font-medium mt-6 drop-shadow-md no-copy" 
             data-translatable
             style={{ textShadow: "1px 1px 2px rgba(255,255,255,0.8)" }}
+            onContextMenu={(e) => e.preventDefault()}
+            onCopy={(e) => e.preventDefault()}
           >
             Tüm denizcilerin ortak uygulaması
           </p>

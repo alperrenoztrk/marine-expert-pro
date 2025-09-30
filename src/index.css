@@ -1062,6 +1062,17 @@ All colors MUST be HSL.
   }
 }
 
+@layer utilities {
+  /* Prevent text selection and long-press copy/callout */
+  .no-copy {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+}
+
 /* Logo theme support */
 .nature .maritime-logo {
   filter: hue-rotate(120deg) saturate(1.2);
