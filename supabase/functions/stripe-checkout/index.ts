@@ -110,8 +110,9 @@ serve(async (req: Request) => {
     return await createStripeCheckoutSession(body);
   } catch (e) {
     console.error("Function error:", e);
+    const errorMessage = e instanceof Error ? e.message : "Unknown error";
     return new Response(
-      JSON.stringify({ error: e?.message || "Unknown error" }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }

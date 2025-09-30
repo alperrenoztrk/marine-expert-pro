@@ -65,9 +65,7 @@ const EmptyPage = () => {
         ))}
       </div>
       
-      <div className="w-full max-w-md">
-        <WeatherWidget />
-      </div>
+      <WeatherWidget />
     </div>
   );
 };

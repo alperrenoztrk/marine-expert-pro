@@ -12,13 +12,16 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
+  let question: string = '';
+  let conversationHistory: Array<{question: string, answer: string}> | undefined;
+  
   try {
     console.log('Request received:', req.method);
     
     const body = await req.json();
     console.log('Request body:', body);
     
-    const { question, values, conversationHistory } = body;
+    ({ question, values: body.values, conversationHistory } = body);
     
     // Input validation and sanitization
     if (!question || typeof question !== 'string') {
@@ -96,12 +99,13 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('Error in ask-ai function:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     const localAnswer = getLocalAnswer(question, conversationHistory);
     return new Response(
       JSON.stringify({ 
         answer: localAnswer,
         source: 'local',
-        error: error.message
+        error: errorMessage
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -822,7 +826,7 @@ function extractWolframResults(pods: any[]): any {
   const results = {
     input: '',
     result: '',
-    steps: [],
+    steps: [] as string[],
     interpretation: ''
   };
 
