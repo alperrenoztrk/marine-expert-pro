@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 // Removed analog clock in favor of digital time tiles
@@ -280,10 +279,8 @@ export default function WeatherWidget() {
   }, [nowMs, data?.utcOffsetSeconds, data?.longitude]);
 
   return (
-    <Card className="w-full relative overflow-hidden border border-border/20 shadow-lg backdrop-blur-sm bg-gradient-to-br from-card/80 via-card/60 to-background/40">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
-      <div className="absolute inset-0 shadow-inner pointer-events-none" />
-      <CardContent className="relative pt-6 space-y-6">
+    <div className="w-full relative">
+      <div className="space-y-6">{/* Content wrapper */}
         {loading && !loadingTimeout ? (
           <div className="flex flex-col items-center justify-center gap-4 text-sm text-muted-foreground p-8">
             <div className="relative">
@@ -507,8 +504,8 @@ export default function WeatherWidget() {
 
           </div>
         ) : null}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
