@@ -496,9 +496,6 @@ export default function WeatherWidget() {
                   <div className="text-lg font-semibold text-foreground">{wmoToTr(data.weatherCode)}</div>
                   <div className="text-xs text-muted-foreground mt-1">5 günlük tahmin için tıklayın</div>
                 </div>
-                <div className="text-xs text-muted-foreground font-mono bg-muted/30 px-3 py-1 rounded-full border">
-                  {data.timeIso ? new Date(data.timeIso).toLocaleTimeString() : null}
-                </div>
               </div>
             </div>
 
