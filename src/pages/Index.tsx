@@ -251,11 +251,6 @@ const Index = () => {
                 headingDeg={headingDeg ?? 0}
                 className="h-full w-full select-none pointer-events-none drop-shadow-xl"
               />
-
-              {/* Heading readout tag inside the dial bottom */}
-              <div className="absolute bottom-[18%] left-1/2 -translate-x-1/2 text-xs md:text-sm font-semibold select-none bg-white/95 text-blue-700 rounded px-2 py-0.5 shadow">
-                {headingDeg != null ? `${Math.round(headingDeg)}°` : "Pusula"}
-              </div>
             </div>
           </Link>
         </div>

@@ -2906,7 +2906,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         currentTideHeight: 0, tideRange: 0, timeToHW: 0, timeToLW: 0, tidalStream: 0, tidalStreamDirection: 0, springNeapFactor: 0, tidalAcceleration: 0,
                         intercept: 0, positionLine: '', latitude: 0, longitude: 0, altitudeCorrection: 0, celestialCompassError: 0, estimatedPosition: { lat: 0, lon: 0 },
                         sunPosition: { altitude: 0, azimuth: 0, declination: 0 }, moonPosition: { altitude: 0, azimuth: 0, phase: 0 }, planetPositions: [], navigationStars: [],
-                        twilightTimes: { sunrise: '', sunset: '', civilTwilightBegin: '', civilTwilightEnd: '', nauticalTwilightBegin: '', nauticalTwilightEnd: '', daylightDuration: 0, goldenHourBegin: '', goldenHourEnd: '', blueHourBegin: '', blueHourEnd: '' },
+                        twilightTimes: { sunrise: '', sunset: '', civilTwilightBegin: '', civilTwilightEnd: '', nauticalTwilightBegin: '', nauticalTwilightEnd: '', astronomicalTwilightBegin: '', astronomicalTwilightEnd: '', daylightDuration: 0, goldenHourBegin: '', goldenHourEnd: '', blueHourBegin: '', blueHourEnd: '' },
                         advance: 0, transfer: 0, tacticalDiameter: 0, finalDiameter: 0, wheelOverPoint: 0, turningRadius: 0,
                         optimumRoute: '', weatherDelay: 0, safeCourse: 0, seaState: 0, beaufortScale: 0,
                         pilotBoardingDistance: 0, pilotBoardingETA: '', approachSpeed: 0, minimumDepth: totalDepth, safeDraft: chainLen,

@@ -30,14 +30,12 @@ const Settings = () => {
   }, []);
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark" | "neon" | "nature");
+    setTheme(newTheme as "light" | "dark" | "neon");
     
     const themeNames = {
       light: "Açık Tema",
       dark: "Koyu Tema", 
       neon: "Neon Tema",
-      nature: "Doğa Teması",
-      
     };
     
     toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
