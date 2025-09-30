@@ -423,14 +423,14 @@ export default function WeatherWidget() {
 
             <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-warning/5 to-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative flex items-center gap-4">
+              <div className="relative flex flex-col items-center justify-center gap-3 h-full">
                 <div className="relative">
                   <Gauge className="h-6 w-6 text-warning drop-shadow-sm" />
                   <div className="absolute inset-0 animate-pulse opacity-20">
                     <Gauge className="h-6 w-6 text-warning" />
                   </div>
                 </div>
-                <div>
+                <div className="text-center">
                   <div className="text-sm font-medium text-muted-foreground mb-1" data-translatable>Basınç (hPa)</div>
                   <div className="text-lg font-bold text-foreground">{Number.isFinite(data.pressureHpa) ? `${Math.round(data.pressureHpa)}` : "-"}</div>
                 </div>
