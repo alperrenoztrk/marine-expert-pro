@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Compass, Calculator } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { Compass, Calculator, Sigma, FileText } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
 import BackButton from "@/components/BackButton";
 
 import { NavigationCalculations } from "@/components/calculations/NavigationCalculations";
@@ -31,6 +31,20 @@ const Navigation = () => {
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
           </p>
+          <div className="flex items-center justify-center gap-2">
+            <Link to="/navigation/formulas">
+              <Button variant="secondary" size="sm" className="gap-2">
+                <Sigma className="h-4 w-4" />
+                Formüller
+              </Button>
+            </Link>
+            <Link to="/navigation/topics">
+              <Button variant="default" size="sm" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Konu Anlatımı
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Navigation Calculations */}
