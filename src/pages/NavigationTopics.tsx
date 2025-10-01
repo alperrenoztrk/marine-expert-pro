@@ -1023,8 +1023,124 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
           {isOpen('sar') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>Square/Sector search kalıpları, drift hesapları, OSC/SMC koordinasyonu ve raporlama.</p>
-              <p>Emniyet mesajları, DSC, Mayday/Pan-Pan/Securité uygulaması ve kayıt tutma.</p>
+              <p><strong>İAMSAR Çerçevesi ve Roller:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>SMC (SAR Mission Coordinator):</strong> Operasyonun genel koordinasyonu; görev atamaları, arama alanlarının tanımlanması ve rapor akışının yönetimi.</li>
+                <li><strong>RCC/MRCC:</strong> Kurtarma Koordinasyon Merkezi; distress alarmlarının toplanması/dağıtımı, SMC ataması ve otoritelerle bağlantı.</li>
+                <li><strong>OSC (On-Scene Coordinator):</strong> Olay sahasında birimlerin (SRU) yönetimi; arama kalıbı ve güvenlik koordinasyonu.</li>
+                <li><strong>SRU (Search and Rescue Unit):</strong> Sahadaki arayan/yardım eden birimler (gemi, bot, helikopter, uçak).</li>
+                <li><strong>ACO (Air Coordinator):</strong> Hava unsurları arasında dikey/zemin ayırmayı ve emniyeti koordine eder.</li>
+              </ul>
+
+              <p><strong>İlk Saatte Yapılacaklar (OOW/OSC bakışı):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Alarmı Al:</strong> Zamanı, LKP (Last Known Position), kaynak (DSC/Mayday/Pan-Pan/EPIRB) ve içerik ayrıntılarını kaydet.</li>
+                <li><strong>GMDSS Prosedürü:</strong> VHF DSC distress (Ch70) için kıyı istasyonu cevap verene kadar DSC onayı yapma; makul süre içinde yanıt yoksa uygun onay ve Ch16 ses teyidi.</li>
+                <li><strong>MRCC/SMC Bildir:</strong> Mevcut bilgiler, kendi konumun, imkan ve kabiliyetlerini (speed, sensors, medical) ilet; görevlendirme iste.</li>
+                <li><strong>DR/Datum Hesabı:</strong> LKP'den itibaren rüzgar (leeway) ve akıntı (set/drift) vektörlerini topla; zamanla çarparak datum'u ve belirsizlik yarıçapını tahmin et.</li>
+                <li><strong>Emniyet:</strong> Köprüüstü ekibini briefe et; lookout tahsisi, ışık/ses/flood light hazırlığı, fall overboard riskine karşı emniyet.</li>
+                <li><strong>Kayıt:</strong> Tüm haberleşme ve manevraları logbook'a dakika-dakika yaz.</li>
+              </ul>
+
+              <p><strong>Datum, Drift ve Belirsizlik:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Vektörel Yaklaşım:</strong> <em>Drift vektörü</em> = Akıntı (set/drift) + Leeway (rüzgar etkisi).</li>
+                <li><strong>Leeway Yaklaşıkları:</strong> PIW (suda kişi): rüzgar hızının ≈ %2–3'ü; can salı: ≈ %3–4 (rüzgar yönüne yakın sapar).</li>
+                <li><strong>Datum(t):</strong> LKP + (drift vektörü × t). Belirsizlik yarıçapı R ≈ √(σ<sub>poz</sub>² + (σ<sub>hız</sub> × t)²).</li>
+                <li><strong>Güncelleme:</strong> Yeni raporlar/izler geldikçe datum ve arama alanı merkez/yarıçapı revize edilir.</li>
+              </ul>
+
+              <p><strong>Standart Arama Kalıpları (IAMSAR):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Expanding Square (SS):</strong> Datum hatası küçük (≤ 2 nm) tek SRU için uygundur.</li>
+                <li><strong>Sector Search (VS):</strong> Çok küçük alanlarda (MOB/ELT pinpoint) yüksek doğruluk; 6×60° veya 12×30° sektör.</li>
+                <li><strong>Parallel Track (PS):</strong> Geniş alan ve/veya birden fazla SRU; eşit aralıklı paralel şeritler.</li>
+                <li><strong>Creeping Line (CS):</strong> Kıyı/baseline boyunca; tehlike hattı veya drift hattı referanslı.</li>
+              </ul>
+
+              <div className="bg-muted/20 rounded p-3">
+                <p className="font-semibold mb-2">Şema: Expanding Square (SS)</p>
+                <pre className="font-mono text-[11px] leading-5">{`S = 0.5 nm, start 000°
+    ↑ N
+   ┌─┐→→
+   │ │↑↑
+←← └─┘
+←←←←┌─────┐
+    │     │↑
+    └─────┘↑↑
+Bacaklar: 1S,1S,2S,2S,3S,3S ... (her iki yönde S artar)`}</pre>
+              </div>
+
+              <div className="bg-muted/20 rounded p-3">
+                <p className="font-semibold mb-2">Şema: Sector Search (VS)</p>
+                <pre className="font-mono text-[11px] leading-5">{`Merkez = datum, 6 bacak × 60° (veya 12 × 30°)
+      ↑ N
+      │\
+   ←──┼─→  Her bacak aynı mesafe (R)
+      │/
+      ↓
+Dönüşler 60°; her bacak sonunda merkezden geçilir`}</pre>
+              </div>
+
+              <div className="bg-muted/20 rounded p-3">
+                <p className="font-semibold mb-2">Şema: Parallel Track (PS) / Creeping Line (CS)</p>
+                <pre className="font-mono text-[11px] leading-5">{`S = track spacing
+┌──────────────────────┐
+│→→→→→→→→→→→→→→→→→→→→→│  PS: uzun kenara paralel gidiş-dönüş
+│←←←←←←←←←←←←←←←←←←←←←│
+│→→→→→→→→→→→→→→→→→→→→→│  CS: baseline'a (kısa kenar) paralel
+└──────────────────────┘`}</pre>
+              </div>
+
+              <p><strong>Tarama Parametreleri ve Kapsama:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Arama Hızı:</strong> Deniz durumu ve görüşe bağlı; küçük bot/gemi için gündüz görsel 8–12 kn, gece 5–8 kn.</li>
+                <li><strong>Sweep Width (W) ve Track Spacing (S):</strong> Tek arayıcı için kabaca <em>S ≈ W</em>. PIW gündüz W ≈ 0.5–1.0 nm, gece ≈ 0.2–0.4 nm; can salı W daha büyük olabilir.</li>
+                <li><strong>Kapsama Faktörü (C):</strong> Artan C için S azaltılır; hava/deniz kötüleştikçe S küçült.</li>
+                <li><strong>Deconfliction:</strong> Çoklu SRU'da başlangıç noktaları/başlar farklı; OSC zaman ofseti ve menzil ayrımı uygular.</li>
+              </ul>
+
+              <p><strong>Sahada Emniyet (OSC Kontrolleri):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Çakışan rotalar ve yakın geçişlere karşı ayırma (mesafe/zaman); ortak rapor noktası.</li>
+                <li>Hava unsurları için irtifa blokları; gemiler için hız limitleri ve dönüş kuralları.</li>
+                <li>Görüş/sis durumunda ses işaretleri, projectör ve radar gözetlemesi.</li>
+                <li>Yakıt/kalış süresi izleme; geri dönüş noktası ve emniyetli ayrılma planı.</li>
+              </ul>
+
+              <p><strong>Haberleşme ve Çağrı Örnekleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>MAYDAY:</strong> Can/tekne tehlikede; Ch16 ses, ardından çalışma kanalına geçiş talebi.</li>
+                <li><strong>PAN-PAN:</strong> Aciliyet, tehlike değil; medikal tahliye vb.</li>
+                <li><strong>SÉCURITÉ:</strong> Seyir/meteoroloji emniyet duyuruları.</li>
+                <li><strong>DSC:</strong> Ch70 (VHF) / 2,187.5 kHz (MF); ardından ilgili ses kanalı.</li>
+              </ul>
+              <div className="bg-muted/20 rounded p-3">
+                <p className="font-semibold mb-2">Ses/SITREP Şablonu</p>
+                <pre className="font-mono text-[11px] leading-5">{`"MAYDAY, MAYDAY, MAYDAY"
+THIS IS M/V EXAMPLE, CALLSIGN TXXX, MMSI 2710XXXXXX
+POSITION 36°00'N 028°00'E, PERSON OVERBOARD, 1 POB MISSING
+WIND 330/20 KN, CURRENT SET 090/1.5 KN, VIS 3 NM, SEA 3
+TAKING ACTION: TURNING, LAUNCHING RESCUE BOAT, OSC IF REQUIRED
+REQUEST ASSISTANCE AND COORDINATION BY MRCC
+OVER
+
+SITREP (OSC→SMC): TIME, DATUM, SEARCH PATTERN/PARAMETERS (S, SPEED),
+UNITS ON SCENE, WX/SEA, AREA COVERED, NEGATIVE/ POSITIVE CONTACTS,
+INTENTIONS/NEXT ACTIONS, FUEL/ENDURANCE, REQUESTS.`}</pre>
+              </div>
+
+              <p><strong>Çözümlü Örnek (Drift + SS Planı):</strong></p>
+              <div className="bg-muted/20 rounded p-3">
+                <pre className="font-mono text-[11px] leading-5">{`LKP: 36°00.0'N 028°00.0'E @ 1200Z
+Rüzgar: 330°/20 kn (blows → 150°), Nesne: PIW (k≈0.03) → Leeway ≈ 0.6 kn @150°
+Akıntı: 1.5 kn @090°
+Birleşik drift ≈ 1.87 kn @106° (vektörel toplam)
+t = 2 h → d ≈ 3.75 nm @106°
+Datum ≈ 35°59.0'N, 028°04.5'E (yaklaşık)
+Arama: SS, S=0.5 nm, start 000°, ilk bacak 0.5 nm
+Kapsama: Gündüz görsel W≈0.6 nm ⇒ S≈0.5–0.6 nm`}</pre>
+              </div>
             </div>
           </CardContent>
           )}
