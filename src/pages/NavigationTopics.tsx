@@ -472,18 +472,18 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
           {isOpen('compass') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p><strong>Dönüşümler:</strong> Cm → Ct: Ct = Cc + Var + Dev; işaret kuralı E(+) W(−).</p>
-              <p><strong>Deviasyon Eğrisi:</strong> Swing test; periyodik doğrulama ve kayıt.</p>
+              <p><strong>Dönüşümler:</strong> Cc → Ct: Ct = Cc + Var + Dev; işaret kuralı E(+) W(−).</p>
+              <p><strong>Deviasyon Eğrisi:</strong> Swing test; periyodik doğrulama ve kayıt. Not: Compass Error (CE) = Var + Dev; doğu (+), batı (−).</p>
               <p><strong>Jiroskop:</strong> Latitude error, speed error; düzeltme kartları ve alarm yönetimi.</p>
             </div>
             <div className="bg-muted/20 rounded p-3">
               <p className="font-semibold mb-2">Çözümlü Örnek:</p>
-              <pre className="font-mono text-[11px] leading-5">{`Verilen: Cc = 212°, Var = +3.0°, Dev = −1.5°
-İstenen: Ct
+              <pre className="font-mono text-[11px] leading-5">{`Verilen: Cc = 212°, Var = +3.0° (E), Dev = −1.5° (W)
+İstenen: Ct ve Compass Error (CE)
 Adımlar:
-  1) Cc → Ct = Cc + Var + Dev
-  2) Ct = 212 + 3.0 − 1.5 = 213.5°
-Cevap: Ct ≈ 214°`}</pre>
+  1) CE = Var + Dev = +3.0 − 1.5 = +1.5° (E)
+  2) Ct = Cc + CE = 212 + 1.5 = 213.5°
+Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
             </div>
           </CardContent>
           )}
