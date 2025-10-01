@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 
 export default function SeamanshipMenu() {
   const items = [
-    { to: "/empty-page", icon: <Anchor className="h-4 w-4" />, label: "Demirleme" },
-    { to: "/empty-page", icon: <Waves className="h-4 w-4" />, label: "Halat ve Bağlama" },
-    { to: "/empty-page", icon: <Wind className="h-4 w-4" />, label: "Fırtına Manevraları" },
-    { to: "/empty-page", icon: <LifeBuoy className="h-4 w-4" />, label: "Can Kurtarma (MOB)" },
-    { to: "/empty-page", icon: <Ruler className="h-4 w-4" />, label: "Güverte İşleri" },
-    { to: "/empty-page", icon: <Wrench className="h-4 w-4" />, label: "Günlük Operasyonlar" },
+    { to: "/seamanship/topics#anchoring", icon: <Anchor className="h-4 w-4" />, label: "Demirleme" },
+    { to: "/seamanship/topics#mooring", icon: <Waves className="h-4 w-4" />, label: "Halat ve Bağlama" },
+    { to: "/seamanship/topics#heavy-weather", icon: <Wind className="h-4 w-4" />, label: "Fırtına Manevraları" },
+    { to: "/seamanship/topics#mob", icon: <LifeBuoy className="h-4 w-4" />, label: "Can Kurtarma (MOB)" },
+    { to: "/seamanship/topics#deck-ops", icon: <Ruler className="h-4 w-4" />, label: "Güverte İşleri" },
+    { to: "/seamanship/topics#daily-ops", icon: <Wrench className="h-4 w-4" />, label: "Günlük Operasyonlar" },
   ];
 
   return (
