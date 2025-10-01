@@ -16,7 +16,8 @@ export default function StabilityFormulasPage() {
     { id: "hydrostatic", title: "Hidrostatik Temeller (KB, BM, KM, Δ, ∇, TPC)" },
     { id: "imo", title: "IMO Kriterleri (Özet)" },
     { id: "wind", title: "Rüzgâr Heeling ve Weather Criterion" },
-    { id: "inclination", title: "İnklinasyon Deneyi" }
+    { id: "inclination", title: "İnklinasyon Deneyi" },
+    { id: "konu-anlatimi", title: "Konu Anlatımı" }
   ];
 
   return (
@@ -200,6 +201,14 @@ Heeling kolu: ah = Mh / (Δ · g)`}</pre>
             <div className="bg-muted/30 rounded p-3">
               <pre className="font-mono text-sm leading-6">{`GMT = (w · l) / (Δ · tan φ)`}</pre>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="konu-anlatimi" className="scroll-mt-24">Konu Anlatımı</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
           </CardContent>
         </Card>
 
