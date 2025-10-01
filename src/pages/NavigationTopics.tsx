@@ -649,7 +649,7 @@ SOG = 12·cos(−6.8°) + 2·cos(−45°) ≈ 11.9 + 1.41 ≈ 13.3 kn`}</pre>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Horizontal Danger Angle:</strong> İki işaret arası açı; geminin tehlikeli bölgede olup olmadığını gösterir.</li>
                 <li><strong>Yöntem:</strong> İki işaret seçilir (A ve B); haritada tehlike sınırından geçen bir daire çizilir; daire üzerinde sextant açısı ölçülür; gemide ölçülen açı ile karşılaştırılır.</li>
-                <li><strong>Kural:</strong> Ölçülen açı > danger açısı ise tehlikeli bölgedesiniz; < ise emniyetli.</li>
+                <li><strong>Kural:</strong> Ölçülen açı {'>'} danger açısı ise tehlikeli bölgedesiniz; {'<'} ise emniyetli.</li>
                 <li><strong>Vertical Danger Angle:</strong> Bir yapının (fener, tepe) yüksekliği bilinir; sextant ile dikey açı ölçülür; mesafe hesaplanır; minimum mesafe kontrolü.</li>
                 <li><strong>Formül:</strong> Distance (nm) ≈ Height (m) / (1852 × tan(angle)).</li>
               </ul>
