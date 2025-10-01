@@ -804,11 +804,9 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Saatlik Tüketim</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.hourlyConsumption.toFixed(1)} kg/h</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Günlük Tüketim</Label>
-                  <p className="text-2xl font-bold text-orange-600">{result.dailyConsumption.toFixed(1)} ton</p>
+                  <p className="text-2xl font-bold text-green-700">{result.hourlyConsumption.toFixed(1)} kg/h</p>
+...
+                  <p className="text-2xl font-bold text-orange-700">{result.dailyConsumption.toFixed(1)} ton</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Toplam Verim</Label>

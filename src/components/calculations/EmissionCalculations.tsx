@@ -584,7 +584,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">SOₓ Emisyonu</Label>
-                  <p className="text-2xl font-bold text-orange-600">{result.soxEmissions.toFixed(1)} ton/yıl</p>
+                  <p className="text-2xl font-bold text-orange-700">{result.soxEmissions.toFixed(1)} ton/yıl</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">NOₓ Emisyonu</Label>
@@ -639,24 +639,9 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Çevresel Skor</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.environmentalScore.toFixed(0)}/100</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                SEEMP Potansiyeli
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Potansiyel Yakıt Tasarrufu</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.fuelSavings.toFixed(0)} ton/yıl</p>
+                  <p className="text-2xl font-bold text-green-700">{result.environmentalScore.toFixed(0)}/100</p>
+...
+                  <p className="text-2xl font-bold text-green-700">{result.fuelSavings.toFixed(0)} ton/yıl</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Emisyon Azalması</Label>

@@ -717,7 +717,7 @@ export const HydrodynamicsCalculations = ({ initialTab }: { initialTab?: string 
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Dalga Direnci</Label>
-                  <p className="text-2xl font-bold text-orange-600">{result.waveResistance.toFixed(1)} kN</p>
+                  <p className="text-2xl font-bold text-orange-700">{result.waveResistance.toFixed(1)} kN</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Pervane Verimi</Label>
@@ -750,7 +750,7 @@ export const HydrodynamicsCalculations = ({ initialTab }: { initialTab?: string 
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Tangage Genliği</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.pitchAmplitude.toFixed(1)}°</p>
+                  <p className="text-2xl font-bold text-green-700">{result.pitchAmplitude.toFixed(1)}°</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Dalıp Çıkma</Label>
@@ -832,7 +832,7 @@ export const HydrodynamicsCalculations = ({ initialTab }: { initialTab?: string 
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Efektif Güç</Label>
-                  <p className="text-2xl font-bold text-green-600">{result.effectivePower.toFixed(0)} kW</p>
+                  <p className="text-2xl font-bold text-green-700">{result.effectivePower.toFixed(0)} kW</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">İtki Gücü</Label>
@@ -840,7 +840,7 @@ export const HydrodynamicsCalculations = ({ initialTab }: { initialTab?: string 
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Teslim Edilen Güç</Label>
-                  <p className="text-2xl font-bold text-orange-600">{result.deliveredPower.toFixed(0)} kW</p>
+                  <p className="text-2xl font-bold text-orange-700">{result.deliveredPower.toFixed(0)} kW</p>
                 </div>
               </div>
             </CardContent>

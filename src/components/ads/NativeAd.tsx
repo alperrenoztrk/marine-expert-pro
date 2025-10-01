@@ -103,7 +103,7 @@ export const MaritimeEquipmentAd = () => (
     <CardHeader className="pb-3">
       <div className="flex items-center justify-between">
         <Badge variant="secondary" className="text-xs">Equipment</Badge>
-        <Badge variant="outline" className="text-xs text-green-600">New Tech</Badge>
+        <Badge variant="outline" className="text-xs text-green-700">New Tech</Badge>
       </div>
       <CardTitle className="text-lg">Maritime Navigation Systems</CardTitle>
     </CardHeader>

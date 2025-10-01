@@ -354,7 +354,7 @@ export const EconomicCalculations = () => {
                   </div>
                   <div>
                     <span className="font-medium">Net Kâr:</span>
-                    <span className={`ml-2 font-bold ${voyageResult.netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className={`ml-2 font-bold ${voyageResult.netProfit >= 0 ? 'text-green-700' : 'text-red-700'}`}>
                       ${voyageResult.netProfit.toLocaleString()}
                     </span>
                   </div>

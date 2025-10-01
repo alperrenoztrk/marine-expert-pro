@@ -1669,31 +1669,31 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Alan (0-30°):</span>
-                      <span className={`font-medium ${analysis.imoCriteria.area0to30 >= 0.055 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`font-medium ${analysis.imoCriteria.area0to30 >= 0.055 ? 'text-green-700' : 'text-red-700'}`}>
                         {analysis.imoCriteria.area0to30.toFixed(3)} mrad
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Alan (0-40°):</span>
-                      <span className={`font-medium ${analysis.imoCriteria.area0to40 >= 0.09 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`font-medium ${analysis.imoCriteria.area0to40 >= 0.09 ? 'text-green-700' : 'text-red-700'}`}>
                         {analysis.imoCriteria.area0to40.toFixed(3)} mrad
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Maksimum GZ:</span>
-                      <span className={`font-medium ${analysis.imoCriteria.maxGz >= 0.20 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`font-medium ${analysis.imoCriteria.maxGz >= 0.20 ? 'text-green-700' : 'text-red-700'}`}>
                         {analysis.imoCriteria.maxGz.toFixed(3)} m
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Başlangıç GM:</span>
-                      <span className={`font-medium ${analysis.imoCriteria.initialGM >= 0.15 ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`font-medium ${analysis.imoCriteria.initialGM >= 0.15 ? 'text-green-700' : 'text-red-700'}`}>
                         {analysis.imoCriteria.initialGM.toFixed(3)} m
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Weather Criterion:</span>
-                      <span className={`font-medium ${analysis.imoCriteria.weatherCriterion ? 'text-green-600' : 'text-red-600'}`}>
+                      <span className={`font-medium ${analysis.imoCriteria.weatherCriterion ? 'text-green-700' : 'text-red-700'}`}>
                         {analysis.imoCriteria.weatherCriterion ? 'Sağlandı' : 'Sağlanmadı'}
                       </span>
                     </div>
@@ -1844,7 +1844,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     <div className="mt-2 text-sm">
                       <div className="flex justify-between">
                         <span>Sonuç:</span>
-                        <span className={`font-medium ${weatherResult.ok ? 'text-green-600' : 'text-red-600'}`}>{weatherResult.ok ? 'Sağlandı' : 'Sağlanmadı'}</span>
+                        <span className={`font-medium ${weatherResult.ok ? 'text-green-700' : 'text-red-700'}`}>{weatherResult.ok ? 'Sağlandı' : 'Sağlanmadı'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Denge Açısı φ_eq:</span>

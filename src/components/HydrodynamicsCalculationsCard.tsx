@@ -10,7 +10,7 @@ export const HydrodynamicsCalculationsCard = () => {
       <CardHeader className="pb-3">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg">
-            <Waves className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+            <Waves className="w-5 h-5 text-cyan-700 dark:text-cyan-400" />
           </div>
           <div>
             <CardTitle className="text-lg">Hidrodinamik</CardTitle>

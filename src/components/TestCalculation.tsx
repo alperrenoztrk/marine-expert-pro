@@ -80,7 +80,7 @@ export const TestCalculation = () => {
                 <p className="text-lg font-semibold text-green-800">
                   Deplasman: {result.toFixed(2)} ton
                 </p>
-                <p className="text-sm text-green-600 mt-2">
+                <p className="text-sm text-green-700 mt-2">
                   Hesaplama: {L} × {B} × {T} × 0.7 × 1.025 = {result.toFixed(2)}
                 </p>
               </div>

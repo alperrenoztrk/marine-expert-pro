@@ -180,7 +180,7 @@ export const WolframIntegration = () => {
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <BarChart3 className="w-6 h-6 text-orange-600" />
+            <BarChart3 className="w-6 h-6 text-orange-700" />
             <div>
               <CardTitle className="text-xl text-orange-800">Wolfram Alpha Maritime Calculator</CardTitle>
               <CardDescription className="text-sm">

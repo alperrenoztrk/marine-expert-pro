@@ -271,7 +271,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
           </div>
           <div className="flex items-center gap-2">
             {apiStatus === 'active' && (
-              <div className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-1 rounded-full">
+              <div className="flex items-center gap-2 text-green-700 bg-green-50 px-3 py-1 rounded-full">
                 <CheckCircle className="w-4 h-4" />
                 <span className="text-sm font-medium">Gemini Aktif</span>
               </div>
@@ -283,7 +283,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
               </div>
             )}
             {apiStatus === 'testing' && (
-              <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+              <div className="flex items-center gap-2 text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-sm font-medium">Bağlanıyor</span>
               </div>
