@@ -14,14 +14,25 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        console.log('🔐 Auth callback başlatıldı');
+        console.log('Current URL:', window.location.href);
+        
         // URL'den auth code'u al ve session'ı exchange et
         const { data, error } = await supabase.auth.getSession();
         
+        console.log('Session response:', { data, error });
+        
         if (error) {
+          console.error('❌ Session error:', error);
           throw error;
         }
 
         if (data.session) {
+          console.log('✅ Session başarılı:', {
+            user: data.session.user.email,
+            expires_at: data.session.expires_at
+          });
+          
           // Başarılı giriş
           setStatus('success');
           setMessage(`Hoş geldiniz, ${data.session.user.user_metadata?.full_name || data.session.user.email}!`);
@@ -34,15 +45,47 @@ const AuthCallback = () => {
           }, 2000);
           
         } else {
-          throw new Error('Session oluşturulamadı');
+          console.warn('⚠️ Session yok, exchange deneniyor...');
+          
+          // Alternatif: URL'den code parametresini al ve manuel exchange dene
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          
+          if (accessToken) {
+            console.log('✅ Access token bulundu, session set ediliyor');
+            const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
+            
+            if (userError) {
+              throw userError;
+            }
+            
+            if (userData.user) {
+              setStatus('success');
+              setMessage(`Hoş geldiniz, ${userData.user.email}!`);
+              toast.success('Google ile başarıyla giriş yaptınız! 🎉');
+              
+              setTimeout(() => {
+                navigate('/', { replace: true });
+              }, 2000);
+              return;
+            }
+          }
+          
+          throw new Error('Session oluşturulamadı - URL parametreleri kontrol edildi');
         }
         
       } catch (error: any) {
-        console.error('Auth callback error:', error);
-        setStatus('error');
-        setMessage(`Giriş hatası: ${error.message}`);
+        console.error('❌ Auth callback error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name
+        });
         
-        toast.error('Giriş işlemi başarısız oldu');
+        setStatus('error');
+        setMessage(`Giriş hatası: ${error.message || 'Bilinmeyen hata'}`);
+        
+        toast.error('Giriş işlemi başarısız oldu. Lütfen tekrar deneyin.');
         
         // 3 saniye sonra ana sayfaya yönlendir
         setTimeout(() => {
