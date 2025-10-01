@@ -6,6 +6,7 @@ import BackButton from '@/components/BackButton';
 const categories = [
   { title: 'Stabilite', icon: Ship, link: '/stability' },
   { title: 'Seyir', icon: Compass, link: '/navigation-menu' },
+  { title: 'Gemicilik', icon: Anchor, link: '/seamanship-menu' },
   { title: 'Mali', icon: DollarSign, link: '/economics-menu' },
   { title: 'Emniyet', icon: LifeBuoy, link: '/safety-menu' },
   { title: 'Operasyonel', icon: Database, link: '/tank-menu' },
