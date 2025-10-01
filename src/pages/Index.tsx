@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
 import { Settings } from "lucide-react";
+import { GoogleAuth } from "@/components/auth/GoogleAuth";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
@@ -185,16 +186,22 @@ const Index = () => {
           willChange: 'transform',
         }}
       >
-      {/* Purple Settings gear icon (top-right) */}
-      <Link to="/settings" className="fixed right-6 top-6 z-20">
-        <Button
-          size="icon"
-          className="h-12 w-12 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg border-2 border-white/30 transition-all duration-200"
-          title="Ayarlar"
-        >
-          <Settings className="w-6 h-6" />
-        </Button>
-      </Link>
+      {/* Top right controls */}
+      <div className="fixed right-6 top-6 z-20 flex items-center gap-3">
+        {/* Google Auth */}
+        <GoogleAuth />
+        
+        {/* Settings gear icon */}
+        <Link to="/settings">
+          <Button
+            size="icon"
+            className="h-12 w-12 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg border-2 border-white/30 transition-all duration-200"
+            title="Ayarlar"
+          >
+            <Settings className="w-6 h-6" />
+          </Button>
+        </Link>
+      </div>
 
       {/* Page indicators - dots at bottom */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">

@@ -39,6 +39,7 @@ import StabilityQuizPage from "./pages/StabilityQuiz";
 import NavigationQuizPage from "./pages/NavigationQuiz";
 import NavigationAssistantPage from "./pages/NavigationAssistant";
 import ClockPage from "./pages/Clock";
+import AuthCallback from "./pages/AuthCallback";
 
 import WeatherForecast from "./pages/WeatherForecast";
 import LocationSelector from "./pages/LocationSelector";
@@ -90,6 +91,7 @@ const App = () => {
                      <Route path="/formulas" element={<Formulas />} />
                      <Route path="/regulations" element={<Regulations />} />
                      <Route path="/clock" element={<ClockPage />} />
+                     <Route path="/auth/callback" element={<AuthCallback />} />
                      
           <Route path="/weather-forecast" element={<WeatherForecast />} />
           <Route path="/location-selector" element={<LocationSelector />} />

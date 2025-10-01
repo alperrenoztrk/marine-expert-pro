@@ -13,6 +13,7 @@ serve(async (req) => {
   }
 
   let question: string = '';
+  let values: any;
   let conversationHistory: Array<{question: string, answer: string}> | undefined;
   
   try {
@@ -21,7 +22,7 @@ serve(async (req) => {
     const body = await req.json();
     console.log('Request body:', body);
     
-    ({ question, values: body.values, conversationHistory } = body);
+    ({ question, values, conversationHistory } = body);
     
     // Input validation and sanitization
     if (!question || typeof question !== 'string') {
