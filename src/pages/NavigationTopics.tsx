@@ -77,6 +77,7 @@ export default function NavigationTopicsPage() {
   const toc = [
     { id: "foundations", title: "Temel Kavramlar" },
     { id: "mini-tools", title: "Hızlı Mini Araçlar" },
+    { id: "buoys", title: "IALA Şamandıra Sistemi" },
     { id: "charts", title: "Haritalar ve Projeksiyonlar" },
     { id: "routes", title: "Rotalar: Büyük Daire, Rhumb, Plane" },
     { id: "dr", title: "Dead Reckoning (DR) ve Konum Güncelleme" },
@@ -276,6 +277,49 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                 <li><strong>Semboller:</strong> Fener, şamandıra, batık, kaya, kablo bölgeleri standart IHO sembolleriyle işaretlenir.</li>
               </ul>
             </div>
+          </CardContent>
+          )}
+        </Card>
+
+        {/* Buoys (IALA) */}
+        <Card className="shadow">
+          <CardHeader onClick={() => toggle('buoys')} className="cursor-pointer" aria-expanded={isOpen('buoys')}>
+            <CardTitle id="buoys" className="scroll-mt-24 flex items-center justify-between">
+              IALA Şamandıra Sistemi
+              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('buoys') ? "rotate-180" : "")} />
+            </CardTitle>
+          </CardHeader>
+          {isOpen('buoys') && (
+          <CardContent className="space-y-3 text-sm">
+            <div className="space-y-2">
+              <p><strong>Genel Bakış:</strong> IALA A/B sistemleri; kanal sınırları, tehlikeler ve güvenli su işaretleri için standart renk/şekil/tepelik ve ışık karakterleri.</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Lateral (Yanlaç):</strong> Sistem A'da iskele kırmızı (silindir tepelik), sancak yeşil (koni tepelik). Girişte kırmızı iskelede, yeşil sancakta bırakılır.</li>
+                <li><strong>Kardinal (Yönleç):</strong> Tehlikenin güvenli tarafından geçişi gösterir. Kuzey (▲▲), Doğu (▲▼), Güney (▼▼), Batı (▼▲) koni tepelikleri ve siyah/sarı bant kombinasyonları.</li>
+                <li><strong>Tecrit (İzole) Tehlike:</strong> Kırmızı-siyah yatay bant; tepelik iki siyah küre; ışık: Fl(2).</li>
+                <li><strong>Emniyetli Su:</strong> Kırmızı-beyaz dikey bant; tepelik kırmızı küre; ışık: Iso veya LFl10s.</li>
+                <li><strong>Özel İşaret:</strong> Sarı gövde ve X tepelik; kablo/askeri alan vb. için bilgi işaretleri.</li>
+              </ul>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <figure className="bg-muted/20 rounded p-3">
+                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/IALA_A_Buoyage_System_Lateral_Marks.svg/640px-IALA_A_Buoyage_System_Lateral_Marks.svg.png" />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (IALA A lateral işaretler)</figcaption>
+              </figure>
+              <figure className="bg-muted/20 rounded p-3">
+                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Cardinal_marks.svg/640px-Cardinal_marks.svg.png" />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Kardinal işaretler)</figcaption>
+              </figure>
+              <figure className="bg-muted/20 rounded p-3">
+                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Isolated_danger_mark.svg/480px-Isolated_danger_mark.svg.png" />
+                <figcaption className="text:[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Tecrit tehlike işareti)</figcaption>
+              </figure>
+              <figure className="bg-muted/20 rounded p-3">
+                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Safe_water_mark.svg/480px-Safe_water_mark.svg.png" />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Emniyetli su işareti)</figcaption>
+              </figure>
+            </div>
+            <p className="text-xs text-muted-foreground">Not: Yerel otorite yayınları ve NtM ile güncel işaretlemeleri teyit edin.</p>
           </CardContent>
           )}
         </Card>
