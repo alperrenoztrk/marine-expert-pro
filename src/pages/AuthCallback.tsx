@@ -14,83 +14,85 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        console.log('🔐 Auth callback başlatıldı');
-        console.log('Current URL:', window.location.href);
-        
-        // URL'den auth code'u al ve session'ı exchange et
-        const { data, error } = await supabase.auth.getSession();
-        
-        console.log('Session response:', { data, error });
-        
-        if (error) {
-          console.error('❌ Session error:', error);
-          throw error;
+        console.log('🔐 Auth callback başladı (PKCE exchange)');
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        const errorParam = url.searchParams.get('error');
+        const errorDescription = url.searchParams.get('error_description');
+
+        // Sağlayıcıdan dönen bir hata varsa
+        if (errorParam) {
+          console.error('❌ OAuth error from provider:', { errorParam, errorDescription });
+          setStatus('error');
+          setMessage(`Giriş hatası: ${errorDescription || errorParam}`);
+          toast.error('Google ile giriş reddedildi.');
+          setTimeout(() => navigate('/', { replace: true }), 3000);
+          return;
         }
 
-        if (data.session) {
-          console.log('✅ Session başarılı:', {
-            user: data.session.user.email,
-            expires_at: data.session.expires_at
-          });
-          
-          // Başarılı giriş
-          setStatus('success');
-          setMessage(`Hoş geldiniz, ${data.session.user.user_metadata?.full_name || data.session.user.email}!`);
-          
-          toast.success('Google ile başarıyla giriş yaptınız! 🎉');
-          
-          // 2 saniye sonra ana sayfaya yönlendir
-          setTimeout(() => {
-            navigate('/', { replace: true });
-          }, 2000);
-          
-        } else {
-          console.warn('⚠️ Session yok, exchange deneniyor...');
-          
-          // Alternatif: URL'den code parametresini al ve manuel exchange dene
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const accessToken = hashParams.get('access_token');
-          
-          if (accessToken) {
-            console.log('✅ Access token bulundu, session set ediliyor');
-            const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
-            
-            if (userError) {
-              throw userError;
-            }
-            
-            if (userData.user) {
-              setStatus('success');
-              setMessage(`Hoş geldiniz, ${userData.user.email}!`);
-              toast.success('Google ile başarıyla giriş yaptınız! 🎉');
-              
-              setTimeout(() => {
-                navigate('/', { replace: true });
-              }, 2000);
-              return;
-            }
+        // URL'de code varsa PKCE exchange yap
+        if (code) {
+          console.log('🔄 Code bulundu, exchangeCodeForSession çalıştırılıyor...');
+          const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+          if (error) {
+            console.error('❌ Code exchange hatası:', error);
+            throw error;
           }
-          
-          throw new Error('Session oluşturulamadı - URL parametreleri kontrol edildi');
+          console.log('✅ Code exchange başarılı:', {
+            user: data?.user?.email,
+            session: !!data?.session
+          });
+
+          // URL'den query parametrelerini temizle
+          window.history.replaceState({}, document.title, window.location.pathname);
+
+          setStatus('success');
+          const email = data.session?.user?.email || data.user?.email;
+          const fullName = data.session?.user?.user_metadata?.full_name;
+          setMessage(`Hoş geldiniz, ${fullName || email || 'kullanıcı'}!`);
+          toast.success('Google ile başarıyla giriş yaptınız! 🎉');
+          setTimeout(() => navigate('/', { replace: true }), 1500);
+          return;
         }
-        
+
+        // Code yoksa mevcut session var mı kontrol et
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        console.log('ℹ️ getSession sonucu:', { sessionData, sessionError });
+        if (sessionError) throw sessionError;
+
+        if (sessionData.session) {
+          setStatus('success');
+          const email = sessionData.session.user.email;
+          const fullName = sessionData.session.user.user_metadata?.full_name;
+          setMessage(`Hoş geldiniz, ${fullName || email}!`);
+          toast.success('Google ile başarıyla giriş yaptınız! 🎉');
+          setTimeout(() => navigate('/', { replace: true }), 1500);
+          return;
+        }
+
+        // Son çare: implicit flow ile dönmüş access_token var mı (hash'ten)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        if (accessToken) {
+          console.log('ℹ️ Hash access_token bulundu, getUser ile doğrulanıyor...');
+          const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
+          if (userError) throw userError;
+          if (userData.user) {
+            setStatus('success');
+            setMessage(`Hoş geldiniz, ${userData.user.email}!`);
+            toast.success('Google ile başarıyla giriş yaptınız! 🎉');
+            setTimeout(() => navigate('/', { replace: true }), 1500);
+            return;
+          }
+        }
+
+        throw new Error('Session oluşturulamadı. Lütfen tekrar deneyin.');
       } catch (error: any) {
         console.error('❌ Auth callback error:', error);
-        console.error('Error details:', {
-          message: error.message,
-          status: error.status,
-          name: error.name
-        });
-        
         setStatus('error');
-        setMessage(`Giriş hatası: ${error.message || 'Bilinmeyen hata'}`);
-        
+        setMessage(`Giriş hatası: ${error?.message || 'Bilinmeyen hata'}`);
         toast.error('Giriş işlemi başarısız oldu. Lütfen tekrar deneyin.');
-        
-        // 3 saniye sonra ana sayfaya yönlendir
-        setTimeout(() => {
-          navigate('/', { replace: true });
-        }, 3000);
+        setTimeout(() => navigate('/', { replace: true }), 2500);
       }
     };
 
