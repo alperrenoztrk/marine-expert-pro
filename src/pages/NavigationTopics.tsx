@@ -236,10 +236,45 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
           {isOpen('foundations') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p><strong>Referans Yönleri:</strong> True (T), Magnetic (M), Compass (C). Dönüşüm kuralı: E(+) W(−).</p>
-              <p><strong>Temel Büyüklükler:</strong> Course/Heading, Bearing, Set/Drift, Speed/Velocity, SOG/COG.</p>
-              <p><strong>Konum Notasyonu:</strong> Enlem (φ), Boylam (λ), dakika (′), saniye (″), ondalık dakikaya dönüştürme.</p>
-              <p><strong>Harita Temelleri:</strong> Datums (WGS84), ölçek, izohips, izobat, kısaltmalar ve semboller.</p>
+              <p><strong>Referans Yönleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>True (T):</strong> Gerçek kuzeye göre ölçülen yön (coğrafi kuzey).</li>
+                <li><strong>Magnetic (M):</strong> Manyetik kuzeye göre ölçülen yön.</li>
+                <li><strong>Compass (C):</strong> Geminin pusulasının gösterdiği yön.</li>
+                <li><strong>Dönüşüm kuralı:</strong> Ct = Cc + Var + Dev; işaret kuralı E(doğu) +, W(batı) −</li>
+                <li><strong>Varyasyon (Variation):</strong> Gerçek kuzey ile manyetik kuzey arasındaki açı; harita üzerinde işaretlidir.</li>
+                <li><strong>Deviasyon (Deviation):</strong> Geminin demir yapısından kaynaklanan manyetik hatalar; deviasyon kartında gösterilir.</li>
+              </ul>
+              
+              <p><strong>Temel Büyüklükler:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Course (Rota):</strong> Geminin gittiği yön (planlanan).</li>
+                <li><strong>Heading (Baş):</strong> Geminin burnunun gösterdiği yön.</li>
+                <li><strong>Bearing (Kerteriz):</strong> Bir nesnenin referans noktasına göre yönü.</li>
+                <li><strong>Set:</strong> Akıntının yönü (derece cinsinden).</li>
+                <li><strong>Drift:</strong> Akıntının hızı (knot cinsinden).</li>
+                <li><strong>Speed:</strong> Geminin su içindeki hızı.</li>
+                <li><strong>SOG (Speed Over Ground):</strong> Deniz dibine göre hız.</li>
+                <li><strong>COG (Course Over Ground):</strong> Deniz dibine göre gerçek iz.</li>
+              </ul>
+              
+              <p><strong>Konum Notasyonu:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Enlem (Latitude, φ):</strong> Ekvatora paralel, 0° (Ekvator) ile ±90° (kutuplar) arası. Kuzey (+), Güney (−).</li>
+                <li><strong>Boylam (Longitude, λ):</strong> Meridyenler, 0° (Greenwich) ile ±180° arası. Doğu (+), Batı (−).</li>
+                <li><strong>Format:</strong> DD°MM.mm' (derece ve ondalık dakika) veya DD°MM'SS" (derece, dakika, saniye).</li>
+                <li><strong>Dönüşüm:</strong> 1° = 60', 1' = 60"; örnek: 41°00.5'N = 41°00'30"N.</li>
+                <li><strong>Mesafe:</strong> 1 deniz mili = 1 enlem dakikası (≈1852 m).</li>
+              </ul>
+              
+              <p><strong>Harita Temelleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Datums:</strong> WGS84 modern standart; eski haritalar ED50, NAD27 gibi datumlar kullanabilir.</li>
+                <li><strong>Ölçek:</strong> 1:50,000 = haritada 1 cm gerçekte 500 m. Küçük ölçek (1:500,000) genel görünüm, büyük ölçek (1:10,000) detay için.</li>
+                <li><strong>İzohips (Contour lines):</strong> Karada aynı yükseklikteki noktaları birleştiren eğriler.</li>
+                <li><strong>İzobat (Depth contours):</strong> Aynı derinlikteki noktaları gösteren eğriler; emniyetli seyir planlaması için kritik.</li>
+                <li><strong>Semboller:</strong> Fener, şamandıra, batık, kaya, kablo bölgeleri standart IHO sembolleriyle işaretlenir.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -256,10 +291,43 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
           {isOpen('charts') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p><strong>Mercator:</strong> Rhumb line doğruları sabit kerterizdir; ölçek enleme göre değişir.</p>
-              <p><strong>Gnomonik:</strong> Büyük daireler düz çizgi olur; uzun mesafe rota planlamada kullanılır.</p>
-              <p><strong>Harita Türleri:</strong> General, Sailing, Coastal, Approach, Harbour; kullanım amaçları ve ölçekleri.</p>
-              <p><strong>Yardımcı Yayınlar:</strong> Pilot books, List of Lights, Tide Tables, Notices to Mariners.</p>
+              <p><strong>Mercator Projeksiyonu:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Özellikler:</strong> Silindirik projeksiyon; meridyenler ve paraleller dik açı yapar.</li>
+                <li><strong>Rhumb Line (Loxodrome):</strong> Sabit kerterizli rotalar düz çizgi olarak görünür; seyir planlaması kolaydır.</li>
+                <li><strong>Ölçek Değişimi:</strong> Ekvatorda doğru, kutuplara doğru artar; yüksek enlemlerde dikkatli kullanılmalı.</li>
+                <li><strong>Avantaj:</strong> Açı ve yön korunur; kolay çizim ve ölçüm imkanı.</li>
+                <li><strong>Dezavantaj:</strong> Büyük daire uzaklıkları doğru gösterilmez; alan bozulması vardır.</li>
+              </ul>
+              
+              <p><strong>Gnomonik Projeksiyonu:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Özellikler:</strong> Merkezi projeksiyon; Dünya'nın merkezi izdüşüm noktasıdır.</li>
+                <li><strong>Büyük Daire (Great Circle):</strong> İki nokta arası en kısa mesafe düz çizgi olarak görünür.</li>
+                <li><strong>Kullanım:</strong> Uzun mesafe seyir planlaması; okyanus geçişlerinde tercih edilir.</li>
+                <li><strong>Yöntem:</strong> Gnomonik'te GC çizilir, ara noktalar belirlenir, Mercator'a aktarılır ve RL segmentlerle bağlanır.</li>
+                <li><strong>Kısıtlama:</strong> Ekvatoru ve antipodları (karşı nokta) gösteremez; sınırlı kapsama alanı.</li>
+              </ul>
+              
+              <p><strong>Harita Türleri ve Ölçekleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>General Charts:</strong> 1:1,500,000 veya daha küçük; okyanus geçişleri, genel planlama için.</li>
+                <li><strong>Sailing Charts:</strong> 1:600,000 - 1:1,500,000; açık deniz seyri.</li>
+                <li><strong>Coastal Charts:</strong> 1:50,000 - 1:600,000; kıyı seyri, landfall yapma.</li>
+                <li><strong>Approach Charts:</strong> 1:25,000 - 1:50,000; liman yaklaşmaları.</li>
+                <li><strong>Harbour/Berthing Plans:</strong> 1:25,000'den büyük; liman içi manevra ve yanaşma.</li>
+              </ul>
+              
+              <p><strong>Yardımcı Denizcilik Yayınları:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Pilot Books (Sailing Directions):</strong> Kıyı özellikleri, liman bilgileri, yerel düzenlemeler, iklim ve akıntı bilgileri.</li>
+                <li><strong>List of Lights:</strong> Fener karakteristikleri, konumları, menzilleri ve tanımlama bilgileri.</li>
+                <li><strong>Tide Tables:</strong> Gelgit zamanları ve yükseklikleri; harmonic constants ve tahmin yöntemleri.</li>
+                <li><strong>Tidal Stream Atlases:</strong> Akıntı setleri ve hızları; saatlik akıntı değişimleri.</li>
+                <li><strong>Notices to Mariners (NtM):</strong> Haftalık harita düzeltmeleri; tehlike ve değişiklik bildirimleri.</li>
+                <li><strong>Radio Signals:</strong> Navtex, DSC, coastal radio station bilgileri.</li>
+                <li><strong>Symbols & Abbreviations:</strong> INT-1 standardı; uluslararası sembol ve kısaltmalar.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -310,9 +378,40 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
           {isOpen('dr') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>DR: Son bilinen konumdan hız ve rota ile tahmini konum. EP: Set/Drift ve rüzgar etkisi ilavesi.</p>
-              <p>Plot aralığı: açık denizde 1-2 saatte bir, kıyıda daha sık; log ve gyro karşılaştırması.</p>
-              <p>GPS ile karşılaştır: Anomali tespiti için COG/SOG vs HDG/Speed farklarını izle.</p>
+              <p><strong>Dead Reckoning (DR) - Ölü Hesap:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Son bilinen kesin konumdan, geminin hızı ve rotası kullanılarak tahmini konumun hesaplanması.</li>
+                <li><strong>Yöntem:</strong> Son fix konumundan itibaren, compass course ve log speed ile mesafe ve yön hesaplanır.</li>
+                <li><strong>Sembol:</strong> DR konumu haritada yarım daire ile işaretlenir.</li>
+                <li><strong>Amaç:</strong> Sürekli konum takibi; GPS arızasında yedek sistem; seyir güvenliği.</li>
+                <li><strong>Hata Kaynakları:</strong> Log kalibrasyon hatası, gyro hatası, rüzgar/akıntı etkisi ihmal edilmesi.</li>
+              </ul>
+              
+              <p><strong>Estimated Position (EP) - Tahmini Konum:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> DR konumuna set/drift (akıntı) ve leeway (rüzgar sapması) etkilerinin eklenmesiyle bulunan daha doğru tahmini konum.</li>
+                <li><strong>Fark:</strong> DR sadece hız ve rotayı kullanır; EP dış etkileri de dikkate alır.</li>
+                <li><strong>Sembol:</strong> EP haritada üçgen (△) ile gösterilir.</li>
+                <li><strong>Uygulama:</strong> Akıntı atlaslarından veya tahminlerden set/drift bilgisi alınır, vektörel olarak DR'ye eklenir.</li>
+              </ul>
+              
+              <p><strong>Plot (İşaretleme) Aralıkları ve İyi Uygulamalar:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Açık Deniz:</strong> Her 1-2 saatte bir DR/EP güncellemesi; daha az tehlike nedeniyle uzun aralık.</li>
+                <li><strong>Kıyı Seyri:</strong> 15-30 dakikada bir veya daha sık; navigasyon tehlikelerine yakınlık.</li>
+                <li><strong>Pilotage (Liman Yaklaşma):</strong> Sürekli konum güncellemesi; her major course change ve fix sonrası.</li>
+                <li><strong>Kayıt:</strong> Log book'ta zaman, konum, hız, rota, akıntı/rüzgar bilgileri not edilmeli.</li>
+                <li><strong>Karşılaştırma:</strong> Log speed ile SOG, compass course ile COG karşılaştırılmalı; farklar akıntı/rüzgar etkisini gösterir.</li>
+              </ul>
+              
+              <p><strong>GPS ile DR/EP Karşılaştırması:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Amaç:</strong> Anomali tespiti; GPS arıza/hata kontrolü; set/drift doğrulama.</li>
+                <li><strong>COG vs HDG:</strong> Fark akıntı/rüzgar sapmasını gösterir; büyük farklar analiz edilmeli.</li>
+                <li><strong>SOG vs Speed:</strong> Akıntının gemiye etkisini gösterir; hız kaybı veya kazancı.</li>
+                <li><strong>GPS Fix Güvenilirliği:</strong> HDOP, PDOP değerleri izlenmeli; satellite geometry ve signal quality önemli.</li>
+                <li><strong>Bağımsız Doğrulama:</strong> GPS konumları radar, visual bearings veya celestial ile desteklenmeli.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -357,8 +456,57 @@ Cevap: Ct ≈ 214°`}</pre>
           {isOpen('bearings') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>Doubling angle, four/seven point methods; distance off ve emniyetli yaklaşım teknikleri.</p>
-              <p>Hata kaynakları: paralaks, sapma, okuma hatası, işaret seçimi; en iyi uygulamalar.</p>
+              <p><strong>Doubling the Angle (Açıyı İkiye Katlama):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Prensip:</strong> Bir işaretin bow açısı ölçülür (A₁), gemi ilerler, açı ikiye katlanınca (A₂ = 2×A₁) tekrar ölçülür.</li>
+                <li><strong>Sonuç:</strong> İkinci ölçümdeki distance off, iki ölçüm arası koşulan mesafeye eşittir.</li>
+                <li><strong>Formül:</strong> Distance off = Run × sin(A₁) / sin(180° - 3×A₁)</li>
+                <li><strong>Özel Durumlar:</strong> 45°-90° (7 point bearing) veya 22.5°-45° (4 point bearing) yaygın kullanımlar.</li>
+                <li><strong>Avantaj:</strong> Tek işaretle distance off bulunur; basit ve hızlıdır.</li>
+                <li><strong>Dezavantaj:</strong> Sabit hız ve rota gerektirir; akıntı/rüzgar etkisi hata kaynağıdır.</li>
+              </ul>
+              
+              <p><strong>Four Point Bearing (22.5° - 45°):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>İlk Kerteriz:</strong> Bow açısı 22.5° (2 points) olduğunda zaman ve konum not edilir.</li>
+                <li><strong>İkinci Kerteriz:</strong> Bow açısı 45° (4 points) olduğunda tekrar ölçülür.</li>
+                <li><strong>Hesap:</strong> Distance off ≈ Run (iki ölçüm arası mesafe).</li>
+                <li><strong>Kullanım:</strong> Landfall, kıyı yaklaşma; emniyet mesafesi kontrolü.</li>
+              </ul>
+              
+              <p><strong>Seven Point Bearing (45° - 90°):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>İlk Kerteriz:</strong> Bow açısı 45° (4 points) olduğunda işaretlenir.</li>
+                <li><strong>İkinci Kerteriz:</strong> Bow açısı 90° (abeam, 8 points) olduğunda ölçülür.</li>
+                <li><strong>Hesap:</strong> Distance off abeam = Run × 1.0 (basitleştirilmiş).</li>
+                <li><strong>Avantaj:</strong> Geminin abeam geçişi net; kolay görsel referans.</li>
+              </ul>
+              
+              <p><strong>Running Fix (Koşan Fix):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Yöntem:</strong> Farklı zamanlarda alınan iki veya daha fazla kerteriz, geminin hareketi hesaplanarak ortak noktada kesiştirilir.</li>
+                <li><strong>Adımlar:</strong> İlk kerteriz alınır ve çizilir; belirli süre sonra ikinci kerteriz alınır; ilk kerteriz geminin koştuğu mesafe kadar transfer edilir; kesişim noktası fix konumunu verir.</li>
+                <li><strong>En İyi Açı:</strong> Kerterizler arası 30°-150° açı ideal; 90° civarı en iyisidir.</li>
+              </ul>
+              
+              <p><strong>Hata Kaynakları ve Azaltma Teknikleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Paralaks Hatası:</strong> Gözlem açısı ve işaret yüksekliği kaynaklı; düşük ufuk ve yüksek yapılarda dikkat.</li>
+                <li><strong>Sapma (Deviation):</strong> Pusula hatası; doğru deviasyon kartı kullanımı kritik.</li>
+                <li><strong>Okuma Hatası:</strong> İnsan faktörü; birden fazla ölçüm alıp ortalama almak faydalı.</li>
+                <li><strong>İşaret Seçimi:</strong> Net, kesin tanımlı, haritada doğru konumlanmış işaretler seçilmeli (fener, church spire, tangent points).</li>
+                <li><strong>Zaman Senkronizasyonu:</strong> Kerterizler mümkünse aynı anda alınmalı (2-3 kişiyle); running fix'te zaman kaydı önemli.</li>
+                <li><strong>Rota ve Hız Sabitliği:</strong> Doubling angle ve running fix sırasında değişikliklerden kaçınılmalı.</li>
+              </ul>
+              
+              <p><strong>En İyi Uygulamalar:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Her fix sonrası DR/EP ile karşılaştır; büyük farkları araştır.</li>
+                <li>Minimum 3 kerteriz al (cocked hat); küçük üçgen daha güvenilir.</li>
+                <li>Kerteriz açıları 30°-150° arası olmalı; 60°-120° ideal.</li>
+                <li>Haritada açık, sembolü net işaretler tercih et.</li>
+                <li>Elektronik ve visual yöntemleri karşılaştır (radar range/bearing vs visual).</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -375,8 +523,61 @@ Cevap: Ct ≈ 214°`}</pre>
           {isOpen('tides') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>Rule of twelfths, harmonic constituents, secondary port yöntemleri ve örnek uygulama adımları.</p>
-              <p>Akıntı atlaslarının kullanımı, set/drift tahmini ve ETA etkisi.</p>
+              <p><strong>Gelgit (Tide) Temelleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Ay ve Güneş'in çekim kuvvetlerinden kaynaklanan deniz seviyesi değişimleri.</li>
+                <li><strong>Yükselme (High Water - HW):</strong> Gelgitin en yüksek seviyesi.</li>
+                <li><strong>Alçalma (Low Water - LW):</strong> Gelgitin en düşük seviyesi.</li>
+                <li><strong>Range:</strong> HW ile LW arasındaki fark; spring tide'da büyük, neap tide'da küçük.</li>
+                <li><strong>Spring Tide:</strong> Dolunay ve yeni ay dönemlerinde; Ay ve Güneş hizalı; maksimum range.</li>
+                <li><strong>Neap Tide:</strong> İlk ve son dördün; Ay ve Güneş dik açıda; minimum range.</li>
+                <li><strong>Chart Datum:</strong> Harita derinliklerinin referansı; genellikle LAT (Lowest Astronomical Tide).</li>
+              </ul>
+              
+              <p><strong>Rule of Twelfths (Onikide Bir Kuralı):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Prensip:</strong> Gelgit değişimi 6 saatte tamamlanır; her saatte farklı oranda yükselir/alçalır.</li>
+                <li><strong>Dağılım:</strong> 1. saat: 1/12, 2. saat: 2/12, 3. saat: 3/12, 4. saat: 3/12, 5. saat: 2/12, 6. saat: 1/12 (toplam range'in).</li>
+                <li><strong>Örnek:</strong> Range 6 m ise; 1. saat 0.5 m, 2. saat 1.0 m, 3. saat 1.5 m, 4. saat 1.5 m, 5. saat 1.0 m, 6. saat 0.5 m değişir.</li>
+                <li><strong>Kullanım:</strong> Belirli bir zamandaki gelgit yüksekliğini tahmin etmek; liman giriş/çıkış zamanlaması.</li>
+                <li><strong>Sınırlama:</strong> Yaklaşık yöntem; anomali bölgeler ve hava etkisi göz ardı edilir.</li>
+              </ul>
+              
+              <p><strong>Harmonic Constituents (Harmonik Bileşenler):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Gelgiti oluşturan farklı periyodik kuvvetler (M2, S2, K1, O1 vb.).</li>
+                <li><strong>M2:</strong> Ay'ın yarı günlük bileşeni (12.42 saat); en dominant faktör.</li>
+                <li><strong>S2:</strong> Güneş'in yarı günlük bileşeni (12 saat).</li>
+                <li><strong>Tahmin:</strong> Harmonik analiz ile gelgit yükseklikleri yüksek doğrulukla hesaplanır; Tide Tables bu yöntemle hazırlanır.</li>
+                <li><strong>Avantaj:</strong> Uzun vadeli tahmin imkanı; bilgisayar programlarıyla entegrasyon.</li>
+              </ul>
+              
+              <p><strong>Secondary Port Yöntemleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Standard Port:</strong> Ana liman; tam gelgit verileri mevcut (HW/LW zamanları ve yükseklikleri).</li>
+                <li><strong>Secondary Port:</strong> Küçük liman/yer; standard port'a göre time ve height differences verilir.</li>
+                <li><strong>Adımlar:</strong> 1) Standard port HW/LW bul, 2) Time difference ekle/çıkar, 3) Height difference ekle/çıkar, 4) Secondary port HW/LW elde et.</li>
+                <li><strong>Örnek:</strong> Std port HW 12:00/4.5m; sec port diff: +0:25/+0.3m → Sec port HW 12:25/4.8m.</li>
+              </ul>
+              
+              <p><strong>Akıntı Atlasları ve Set/Drift Tahmini:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tidal Stream Atlas:</strong> Saatlik akıntı yönü (set) ve hızı (drift); HW Dover, HW local port gibi referanslara göre.</li>
+                <li><strong>Kullanım:</strong> Seyir planlamasında akıntı etkisini öngörmek; CTS/SOG hesaplarında kullanılır.</li>
+                <li><strong>Interpolasyon:</strong> Springs/Neaps arası değerler linear olarak tahmin edilir.</li>
+                <li><strong>Diamond Notasyonu:</strong> Haritada ◊ sembolü; tabloda o bölgenin saatlik set/drift verileri.</li>
+                <li><strong>ETA Etkisi:</strong> Favorable tide (yardımcı akıntı) ETA'yı kısaltır; foul tide (zıt akıntı) uzatır; planlama sırasında akıntı pencereleri optimize edilir.</li>
+              </ul>
+              
+              <p><strong>Under Keel Clearance (UKC) Hesabı:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Formül:</strong> UKC = (Chart depth + Tide height) - Draft - Safety margin.</li>
+                <li><strong>Chart Depth:</strong> Haritadan okunan derinlik (datum'a göre).</li>
+                <li><strong>Tide Height:</strong> O andaki gelgit yüksekliği (+ HW artı, − LW eksi olabilir).</li>
+                <li><strong>Draft:</strong> Geminin su çekimi; load condition'a göre değişir.</li>
+                <li><strong>Safety Margin:</strong> Squat, swell, wave action için yedek; genellikle 10-20% draft veya min 0.5-1.0m.</li>
+                <li><strong>Kritik Noktalar:</strong> Liman girişi, sığ kanallar, bar geçişleri; tide window hesaplanmalı.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -429,8 +630,64 @@ SOG = 12·cos(−6.8°) + 2·cos(−45°) ≈ 11.9 + 1.41 ≈ 13.3 kn`}</pre>
           {isOpen('pilotage') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>Clearing bearings, danger angles, transits, parallel indexing ile emniyetli geçiş.</p>
-              <p>Yerel talimatlar, VTS, pilot talimatları, minimum under keel clearance hesapları.</p>
+              <p><strong>Kıyı Seyri (Pilotage) Tanımı:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Kıyıya yakın, tehlikeli sularda, liman yaklaşma ve iç sularda yapılan seyir; yüksek dikkat gerektirir.</li>
+                <li><strong>Amaç:</strong> Emniyetli navigasyon; tehlikelerden kaçınma; doğru liman/rıhtım yaklaşımı.</li>
+                <li><strong>Özellikler:</strong> Sık konum güncellemesi; visual ve radar kombinasyonu; yerel bilgi kritik.</li>
+              </ul>
+              
+              <p><strong>Clearing Bearings (Emniyet Kerterizi):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Bir tehlikeden emniyetli mesafede kalmayı garanti eden kerteriz çizgisi.</li>
+                <li><strong>Yöntem:</strong> Haritada tehlike belirlenir; emniyetli yan taraftan bir işaret seçilir; tehlike sınırına接的 kerteriz çizilir ve "not less than" veya "not more than" kuralı uygulanır.</li>
+                <li><strong>Örnek:</strong> Sağ tarafta bir kayalık var; sol taraftan fener alınır; kerteriz 045° olarak belirlenir; "fener kerterizi 045°'den büyük olmalı" kuralı uygulanır.</li>
+                <li><strong>Avantaj:</strong> Tek ölçümle emniyet kontrolü; basit ve etkili.</li>
+              </ul>
+              
+              <p><strong>Danger Angles (Tehlike Açıları):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Horizontal Danger Angle:</strong> İki işaret arası açı; geminin tehlikeli bölgede olup olmadığını gösterir.</li>
+                <li><strong>Yöntem:</strong> İki işaret seçilir (A ve B); haritada tehlike sınırından geçen bir daire çizilir; daire üzerinde sextant açısı ölçülür; gemide ölçülen açı ile karşılaştırılır.</li>
+                <li><strong>Kural:</strong> Ölçülen açı > danger açısı ise tehlikeli bölgedesiniz; < ise emniyetli.</li>
+                <li><strong>Vertical Danger Angle:</strong> Bir yapının (fener, tepe) yüksekliği bilinir; sextant ile dikey açı ölçülür; mesafe hesaplanır; minimum mesafe kontrolü.</li>
+                <li><strong>Formül:</strong> Distance (nm) ≈ Height (m) / (1852 × tan(angle)).</li>
+              </ul>
+              
+              <p><strong>Transits (Hizalama/Transit Geçişleri):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> İki işaretin (fener, beacon, landmark) hizalanması; çok kesin konum çizgisi verir.</li>
+                <li><strong>Kullanım:</strong> Kanal merkez çizgisi; tehlikeli geçiş rotası; liman yaklaşma hattı.</li>
+                <li><strong>Avantaj:</strong> Pusula gerektirmez; çok yüksek doğruluk; görsel kontrol kolay.</li>
+                <li><strong>Örnek:</strong> Ön ve arka fener hizalandığında gemi emniyetli kanalda; hizadan sapma hemen fark edilir.</li>
+                <li><strong>Natural Transits:</strong> Doğal nesneler (tepe tepeleri, tangent noktalar) kullanılarak improvize edilebilir.</li>
+              </ul>
+              
+              <p><strong>Parallel Indexing (PI - Paralel İndeksleme):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Radar ekranında sabit bir referans çizgisi; geminin rotasına paralel; belirli bir mesafede.</li>
+                <li><strong>Kurulum:</strong> Planlanan rotaya paralel, emniyetli mesafede (örn. 0.5 nm) haritada çizgi çizilir; radar EBL/VRM ile bu çizgi simüle edilir; kıyı/işaret bu çizgi üzerinde hareket etmelidir.</li>
+                <li><strong>Kullanım:</strong> Kanal seyri; dar geçitler; emniyet mesafesi kontrolü; rota sapması hemen tespit edilir.</li>
+                <li><strong>Avantaj:</strong> Sürekli izleme; harita plot gerektirmez; hızlı tepki imkanı.</li>
+                <li><strong>Örnek:</strong> Sancak tarafta 0.5 nm mesafede PI kurulur; radar echo bu çizgide ilerler; çizgiden sapma rota düzeltmesi gerektirir.</li>
+              </ul>
+              
+              <p><strong>Yerel Talimatlar ve Prosedürler:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Pilot Books:</strong> Yerel tehlikeler, yaklaşma prosedürleri, liman düzenleri, iklim özellikleri.</li>
+                <li><strong>VTS (Vessel Traffic Service):</strong> Liman otorite talimatları; trafik ayrım şemaları; yaklaşma izni ve slot zamanları.</li>
+                <li><strong>Local Notices:</strong> Geçici tehlikeler; inşaat, dredging, wreck; updated chart bilgileri.</li>
+                <li><strong>Pilot Onboard:</strong> Kılavuz kaptanın tavsiyeleri; yerel bilgi aktarımı; köprüüstü iletişimi ve coordination.</li>
+              </ul>
+              
+              <p><strong>Minimum Under Keel Clearance (UKC):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Geminin omurgası ile deniz tabanı arası minimum güvenli mesafe.</li>
+                <li><strong>Hesaplama:</strong> Gelgit bölümünde detaylı; UKC = (Chart depth + Tide) - Draft - Margin.</li>
+                <li><strong>Squat Etkisi:</strong> Geminin hızından kaynaklanan su seviyesi düşüşü; sığ sularda artış gösterir; genellikle speed² ile orantılı.</li>
+                <li><strong>Margin:</strong> Dalga, swell, bank effect için; genellikle 10-20% draft veya min 0.5-1.0m.</li>
+                <li><strong>Kritik Bölgeler:</strong> Liman girişi barı; sığ kanallar; tide window hesaplanmalı; hız azaltma gerekebilir.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -565,8 +822,61 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
           {isOpen('passage') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>Appraisal, Planning, Execution, Monitoring adımlarının kontrol listeleri ve teslim belgeleri.</p>
-              <p>Kontenjan yakıt, speed profile, no-go areas, contingency tracks ve pilot card eşleştirmeleri.</p>
+              <p><strong>Passage Planning Dört Aşaması (SOLAS ve IMO Gereksinimleri):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>1. Appraisal (Değerlendirme):</strong> Bilgi toplama aşaması; tüm mevcut kaynaklar incelenir.</li>
+                <li><strong>2. Planning (Planlama):</strong> Rota çizimi, waypoint belirleme, risk değerlendirmesi.</li>
+                <li><strong>3. Execution (Uygulama):</strong> Planın gemide uygulanması; köprüüstü ekip bilgilendirmesi.</li>
+                <li><strong>4. Monitoring (İzleme):</strong> Seyir sırasında sürekli kontrol; sapmaları tespit ve düzeltme.</li>
+              </ul>
+              
+              <p><strong>1. Appraisal (Değerlendirme) - Kontrol Listesi:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Haritalar:</strong> En güncel edisyonlar ve Notice to Mariners ile düzeltmeler; uygun ölçekler (general, coastal, approach, harbour).</li>
+                <li><strong>Yayınlar:</strong> Sailing Directions (Pilot Books), List of Lights, Tide Tables, Tidal Stream Atlases, Radio Signals, IALA buoyage.</li>
+                <li><strong>Meteoroloji:</strong> Hava tahminleri, seasonal weather patterns, tropical storm zones.</li>
+                <li><strong>Gemi Özellikleri:</strong> Draft, UKC requirements, maneuvering data, fuel capacity, speed capabilities.</li>
+                <li><strong>Düzenlemeler:</strong> TSS, IMO routing, restricted areas, ECDIS regulations, port state requirements.</li>
+                <li><strong>Acil Durum Limanları:</strong> Alternatif limanlar, refuge ports, emergency contacts.</li>
+              </ul>
+              
+              <p><strong>2. Planning (Planlama) - Detaylar:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Rota Seçimi:</strong> Great Circle vs Rhumb Line; TSS compliance; weather routing; piracy/war risk areas.</li>
+                <li><strong>Waypoints:</strong> Net tanımlı WP pozisyonları; leg mesafeleri ve rotaları; wheel over points ve turning radii.</li>
+                <li><strong>No-Go Areas:</strong> Haritada kırmızı tarama; shallow water, wrecks, restricted zones, environmentally sensitive areas.</li>
+                <li><strong>Safety Contours/Depths:</strong> ECDIS'te safety depth ve contour ayarları; UKC minimum değerleri; squat hesaplamaları.</li>
+                <li><strong>Clearing Bearings:</strong> Kritik noktalarda clearing lines, danger angles, transits belirlenmesi.</li>
+                <li><strong>Contingency Plans:</strong> Alternatif rotalar; engine failure scenarios; heavy weather tracks; emergency anchorages.</li>
+                <li><strong>Speed Profile:</strong> ETA optimization; tide windows; fuel consumption planning; ECA (Emission Control Area) speed restrictions.</li>
+              </ul>
+              
+              <p><strong>3. Execution (Uygulama) - Ekip Briefing:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Master's Review:</strong> Tüm plan kaptan tarafından onaylanmalı; imza ve tarih.</li>
+                <li><strong>Ekip Bilgilendirmesi:</strong> Passage plan tüm köprüüstü ekibi ile paylaşılır; kritik noktalar vurgulanır.</li>
+                <li><strong>Pilot Card:</strong> Liman yaklaşımları için; gemi maneuvering data, UKC requirements, pilot boarding arrangements.</li>
+                <li><strong>VTS/Port Authority:</strong> ETA notifications; berth booking; pilotage arrangements; port clearances.</li>
+                <li><strong>Wheelhouse Poster:</strong> Kritik bilgiler özetlenmeli; waypoint listesi, kritik kerterizler, tide windows, emergency contacts.</li>
+              </ul>
+              
+              <p><strong>4. Monitoring (İzleme) - Sürekli Kontrol:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Position Fixing:</strong> Düzenli aralıklarla (açık deniz: 1-2h, kıyı: 15-30dk, pilotage: sürekli); multiple sources (GPS, radar, visual).</li>
+                <li><strong>Cross Track Error (XTE):</strong> ECDIS/GPS ile izleme; alarm limitleri ayarlama; rota sapması tespit ve düzeltme.</li>
+                <li><strong>ETA Updates:</strong> Weather, current etkisi ile ETA revize; port/pilot notification; fuel check.</li>
+                <li><strong>Weather Watch:</strong> Tahmin vs gerçek karşılaştırma; route alteration ihtiyacı; heavy weather precautions.</li>
+                <li><strong>Log Book:</strong> Tüm önemli olaylar, course changes, fixes, alarms, abnormal situations kayıt altına alınmalı.</li>
+                <li><strong>Deviation from Plan:</strong> Sebep ve düzeltme eylemleri not edilmeli; Master'a rapor; revised plan hazırlanmalı.</li>
+              </ul>
+              
+              <p><strong>Özel Hususlar:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Fuel Budget:</strong> Voyage consumption + contingency (genellikle 10-15%); ECA fuel planning; bunkering ports.</li>
+                <li><strong>Restricted Waters:</strong> Speed limits, overtaking prohibitions, one-way channels, tidal restrictions.</li>
+                <li><strong>Pilot Embarkation:</strong> Pilot boarding location, time, pilot ladder/combination ladder requirements, PPE.</li>
+                <li><strong>Master-Pilot Exchange:</strong> Passage plan sharing; local conditions; maneuvering limitations; communication protocols.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -583,8 +893,76 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
           {isOpen('brm') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
-              <p>Rol ve sorumluluklar, challenge-and-response, closed-loop communication, fatigue yönetimi.</p>
-              <p>Olay örneklerinden dersler: durum farkındalığı ve iş yükü dengelemesi.</p>
+              <p><strong>BRM (Bridge Resource Management) Tanımı:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Köprüüstündeki tüm kaynakların (insan, ekipman, prosedür, bilgi) etkili ve güvenli kullanımı için yönetim sistemi.</li>
+                <li><strong>Amaç:</strong> İnsan hatası azaltma; ekip çalışması optimizasyonu; güvenli seyir ve karar verme.</li>
+                <li><strong>Kaynak:</strong> IMO Model Courses 1.22 (Proficiency in Bridge Resource Management); STCW Regulation II/1, II/2.</li>
+              </ul>
+              
+              <p><strong>BRM Temel Prensipleri:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Situational Awareness (Durum Farkındalığı):</strong> Mevcut durumu anlama; gelişmeleri öngörme; değişiklikleri tespit etme.</li>
+                <li><strong>Teamwork (Ekip Çalışması):</strong> Açık roller ve sorumluluklar; işbirliği ve destek; kolektif karar verme.</li>
+                <li><strong>Communication (İletişim):</strong> Net, açık, zamanlı bilgi paylaşımı; closed-loop communication; challenge and response.</li>
+                <li><strong>Decision Making:</strong> Bilgi toplama; alternatifleri değerlendirme; zamanında ve uygun karar; risk yönetimi.</li>
+                <li><strong>Leadership:</strong> Master/OOW liderliği; otorite ve sorumluluk dengesi; ekibi motive etme.</li>
+              </ul>
+              
+              <p><strong>Rol ve Sorumluluklar:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Master (Kaptan):</strong> Nihai sorumluluk; passage plan onayı; kritik kararlar; ekip denetimi; BRM kültürü oluşturma.</li>
+                <li><strong>OOW (Officer of Watch - Vardiya Zabitı):</strong> Watch keeping; seyir güvenliği; alarm/sapma tespiti; Master'ı bilgilendirme.</li>
+                <li><strong>Lookout:</strong> Görsel ve işitsel izleme; tehlike/hedef raporlama; sürekli dikkat.</li>
+                <li><strong>Helmsman (Dümenci):</strong> Dümen kontrolü; rota/heading takibi; komutları tekrarlama ve uygulama.</li>
+                <li><strong>Pilot (Kılavuz Kaptan):</strong> Yerel bilgi; tavsiye ve rehberlik; Master ile koordinasyon; Master-Pilot Information Exchange.</li>
+              </ul>
+              
+              <p><strong>Closed-Loop Communication:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Komut/bilgi verme → Tekrarlama → Onay → Uygulama → Rapor döngüsü.</li>
+                <li><strong>Örnek:</strong> OOW: "Steer 045°" → Helmsman: "Steer 045°, aye sir" → OOW: "Yes" → Helmsman uygular → Helmsman: "Steady on 045°" → OOW: "Very well".</li>
+                <li><strong>Amaç:</strong> Yanlış anlamayı önleme; komut doğruluğunu teyit etme; accountability sağlama.</li>
+                <li><strong>Kritik Durumlar:</strong> Course changes, speed alterations, engine orders, critical maneuvers.</li>
+              </ul>
+              
+              <p><strong>Challenge and Response:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Alt rütbeli ekip üyesinin, hatalı veya tehlikeli gördüğü durumu sorgulaması ve dile getirmesi.</li>
+                <li><strong>Önem:</strong> İnsan hatası azaltma; farklı bakış açıları; güvenlik kültürü.</li>
+                <li><strong>Yöntem:</strong> Saygılı ama net ifade; alternatif önerme; sebep açıklama.</li>
+                <li><strong>Örnek:</strong> 3rd Officer: "Sir, I observe target on port bow, CPA less than 0.5nm, should we alter course?" → OOW değerlendirir ve cevaplar.</li>
+                <li><strong>Kültür:</strong> Challengeları teşvik etme; hatalar kabul edilebilir ortam; öğrenme kültürü.</li>
+              </ul>
+              
+              <p><strong>Fatigue Management (Yorgunluk Yönetimi):</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Tanım:</strong> Uzun vardiyalar, uyku eksikliği, circadian rhythm bozulması kaynaklı performans düşüşü.</li>
+                <li><strong>Etkiler:</strong> Yavaş tepki, dikkat eksikliği, kötü karar verme, hata artışı.</li>
+                <li><strong>ISM Code & MLC:</strong> Rest hour requirements (min 10h/24h, min 77h/7 days); rest hour kayıt zorunluluğu.</li>
+                <li><strong>Önlemler:</strong> Vardiya planlaması (2x4, 3x8 sistemleri); critical operation öncesi dinlenme; yeterli personel; fatigue signs izleme.</li>
+                <li><strong>Self-Awareness:</strong> Ekip üyeleri kendi yorgunluklarını rapor etmeli; Master uygun önlem almalı.</li>
+              </ul>
+              
+              <p><strong>Olay Örnekleri ve Dersler:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Costa Concordia (2012):</strong> Durum farkındalığı kaybı; yetersiz passage planning; challenge eksikliği; sonuç: 32 ölü.</li>
+                <li><strong>Lesson:</strong> Passage plan'a uymak; tehlikeli manevralardan kaçınmak; ekip görüşlerini dinlemek.</li>
+                <li><strong>Herald of Free Enterprise (1987):</strong> İletişim kopukluğu; rol belirsizliği; kontrol eksikliği; sonuç: 193 ölü.</li>
+                <li><strong>Lesson:</strong> Net prosedürler; checklist kullanımı; ekip briefing; sorumluluk netliği.</li>
+                <li><strong>Exxon Valdez (1989):</strong> Fatigue; tek kişiye bağımlılık; yetersiz gözetim; sonuç: büyük çevre felaketi.</li>
+                <li><strong>Lesson:</strong> Fatigue management; backup sistemler; Master involvement kritik durumlarda.</li>
+              </ul>
+              
+              <p><strong>İyi BRM Uygulamaları:</strong></p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Düzenli ekip toplantıları ve briefing; passage plan review.</li>
+                <li>Checklist kullanımı (departure, arrival, heavy weather, emergency).</li>
+                <li>Simülasyon ve drilllerle ekip antrenmanı.</li>
+                <li>Açık kapı politikası; challengeları teşvik; hatalardan öğrenme.</li>
+                <li>Master'ı bilgilendirme kriterleri net tanımlı (COLREG, company SMS).</li>
+                <li>Fatigue monitoring ve rest hour compliance.</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -675,7 +1053,7 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
         </Card>
 
         <div className="flex justify-between items-center">
-          <div className="text-xs text-muted-foreground">Sürüm: v1.0 • Planlanan: görsel şemalar, etkileşimli örnekler, daha fazla vaka.</div>
+          <div className="text-xs text-muted-foreground">Sürüm: v2.1 • Detaylandırılmış konu anlatımları, kapsamlı açıklamalar ve örneklerle güncellenmiştir.</div>
           <Button asChild variant="default" className="gap-2">
             <a href="#foundations">
               Başa Dön
