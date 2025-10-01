@@ -25,6 +25,20 @@ export default function NavigationTopicsPage() {
   const [doublingInputs, setDoublingInputs] = useState({ angle: "", run: "" });
   const [doublingResult, setDoublingResult] = useState<string>("");
 
+  // Real-world buoy photos (fetched from Wikimedia Commons)
+  type BuoyPhoto = {
+    key: string;
+    title: string;
+    alt: string;
+    src: string;
+    pageUrl: string;
+    credit: string;
+  };
+  const [buoyPhotos, setBuoyPhotos] = useState<BuoyPhoto[]>([]);
+  const [buoyLoading, setBuoyLoading] = useState<boolean>(false);
+  const [buoyLoadedOnce, setBuoyLoadedOnce] = useState<boolean>(false);
+  const [buoyError, setBuoyError] = useState<string>("");
+
   const normalize360 = (deg: number) => {
     const x = deg % 360;
     return x < 0 ? x + 360 : x;
@@ -73,6 +87,78 @@ export default function NavigationTopicsPage() {
       if (id) open(id);
     }
   }, []);
+
+  // Helper: fetch one image from Wikimedia Commons by search query (File namespace)
+  async function fetchCommonsImage(query: string): Promise<{ title?: string; url?: string; pageUrl?: string; credit?: string; }>
+  {
+    try {
+      const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(query)}&srnamespace=6&srlimit=1`;
+      const searchRes = await fetch(searchUrl);
+      const searchJson = await searchRes.json();
+      const fileTitle: string | undefined = searchJson?.query?.search?.[0]?.title;
+      if (!fileTitle) return {};
+      const infoUrl = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&prop=imageinfo&iiprop=url|extmetadata|mime&iiurlwidth=640&titles=${encodeURIComponent(fileTitle)}`;
+      const infoRes = await fetch(infoUrl);
+      const infoJson = await infoRes.json();
+      const pages = infoJson?.query?.pages || {};
+      const firstPage = Object.values(pages)[0] as any;
+      const ii = firstPage?.imageinfo?.[0];
+      const url: string | undefined = ii?.thumburl || ii?.url;
+      const pageUrl: string | undefined = ii?.descriptionurl;
+      const creditMeta = ii?.extmetadata?.Credit?.value || ii?.extmetadata?.Artist?.value || "Wikimedia Commons";
+      return { title: fileTitle, url, pageUrl, credit: creditMeta };
+    } catch (e) {
+      return {};
+    }
+  }
+
+  // Fetch buoy photos lazily when the section first opens
+  useEffect(() => {
+    const opened = isOpen('buoys');
+    if (!opened || buoyLoadedOnce || buoyLoading) return;
+    setBuoyLoading(true);
+    setBuoyError("");
+    const searches: Array<{ key: string; q: string; alt: string; }> = [
+      { key: 'lateral-port', q: '"port hand buoy" OR "port lateral buoy" IALA A filetype:bitmap', alt: 'İskele lateral şamandıra (A Sistemi, kırmızı)' },
+      { key: 'lateral-starboard', q: '"starboard hand buoy" OR "starboard lateral buoy" IALA A filetype:bitmap', alt: 'Sancak lateral şamandıra (A Sistemi, yeşil)' },
+      { key: 'preferred-port', q: '"preferred channel to port" buoy filetype:bitmap', alt: 'Tercihli kanal iskele (preferred channel to port)' },
+      { key: 'preferred-starboard', q: '"preferred channel to starboard" buoy filetype:bitmap', alt: 'Tercihli kanal sancak (preferred channel to starboard)' },
+      { key: 'cardinal-north', q: '"north cardinal buoy" filetype:bitmap', alt: 'Kuzey kardinal şamandıra' },
+      { key: 'cardinal-east', q: '"east cardinal buoy" filetype:bitmap', alt: 'Doğu kardinal şamandıra' },
+      { key: 'cardinal-south', q: '"south cardinal buoy" filetype:bitmap', alt: 'Güney kardinal şamandıra' },
+      { key: 'cardinal-west', q: '"west cardinal buoy" filetype:bitmap', alt: 'Batı kardinal şamandıra' },
+      { key: 'isolated-danger', q: '"isolated danger mark" buoy filetype:bitmap', alt: 'İzole tehlike işareti' },
+      { key: 'safe-water', q: '"safe water mark" buoy filetype:bitmap', alt: 'Emniyetli su işareti' },
+      { key: 'special-mark', q: '"special mark" buoy filetype:bitmap', alt: 'Özel işaret (sarı)' },
+      { key: 'emergency-wreck', q: '"emergency wreck marking buoy" filetype:bitmap', alt: 'Acil batık işaretleme şamandırası' },
+    ];
+    (async () => {
+      try {
+        const results = await Promise.all(searches.map(async s => {
+          const info = await fetchCommonsImage(s.q);
+          if (info?.url) {
+            return {
+              key: s.key,
+              title: info.title || s.key,
+              alt: s.alt,
+              src: info.url,
+              pageUrl: info.pageUrl || 'https://commons.wikimedia.org',
+              credit: info.credit || 'Wikimedia Commons',
+            } as BuoyPhoto;
+          }
+          return undefined;
+        }));
+        const filtered = results.filter(Boolean) as BuoyPhoto[];
+        setBuoyPhotos(filtered);
+        setBuoyLoadedOnce(true);
+      } catch (err: any) {
+        setBuoyError('Görseller yüklenemedi. İnternet bağlantısını veya ağ kısıtlarını kontrol edin.');
+      } finally {
+        setBuoyLoading(false);
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openSections]);
 
   const toc = [
     { id: "foundations", title: "Temel Kavramlar" },
@@ -318,6 +404,32 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                 <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Safe_water_mark.svg/480px-Safe_water_mark.svg.png" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Emniyetli su işareti)</figcaption>
               </figure>
+            </div>
+            <div className="mt-2">
+              <p className="font-semibold mb-2">Gerçek Görseller</p>
+              {buoyLoading && (
+                <div className="text-xs text-muted-foreground">Fotoğraflar yükleniyor…</div>
+              )}
+              {buoyError && (
+                <div className="text-xs text-red-500">{buoyError}</div>
+              )}
+              {!!buoyPhotos.length && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {buoyPhotos.map(photo => (
+                    <figure key={photo.key} className="bg-muted/20 rounded p-3">
+                      <img
+                        alt={photo.alt}
+                        className="w-full h-auto rounded"
+                        src={photo.src}
+                        loading="lazy"
+                      />
+                      <figcaption className="text-[11px] text-muted-foreground mt-1">
+                        {photo.title} — Kaynak: <a className="underline" href={photo.pageUrl} target="_blank" rel="noopener noreferrer">{photo.credit.replace(/<[^>]*>/g, '')}</a>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              )}
             </div>
             <p className="text-xs text-muted-foreground">Not: Yerel otorite yayınları ve NtM ile güncel işaretlemeleri teyit edin.</p>
           </CardContent>
