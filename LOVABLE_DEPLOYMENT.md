@@ -2,6 +2,10 @@
 
 ## 📋 Son Güncellemeler
 - **Tarih:** 2025-10-01
+- **Sürüm:** v2.5.64
+- **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
+
+- **Tarih:** 2025-10-01
 - **Sürüm:** v2.5.63
 - **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
 
