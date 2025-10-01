@@ -343,6 +343,32 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                 <li><strong>Avantaj:</strong> Açı ve yön korunur; kolay çizim ve ölçüm imkanı.</li>
                 <li><strong>Dezavantaj:</strong> Büyük daire uzaklıkları doğru gösterilmez; alan bozulması vardır.</li>
               </ul>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                <figure className="bg-muted/20 rounded p-3">
+                  <img
+                    className="w-full h-auto rounded"
+                    alt="Mercator projeksiyonunda dünya haritası"
+                    src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Mercator_projection_SW.jpg"
+                    loading="lazy"
+                  />
+                  <figcaption className="text-[11px] text-muted-foreground mt-1">
+                    Kaynak: Wikimedia Commons — Mercator Projection (SW), CC BY-SA
+                  </figcaption>
+                </figure>
+
+                <figure className="bg-muted/20 rounded p-3">
+                  <img
+                    className="w-full h-auto rounded"
+                    alt="Gnomonik projeksiyonda dünya haritası ve büyük daireler düz çizgi"
+                    src="https://upload.wikimedia.org/wikipedia/commons/5/59/Gnomonic_projection_SW.jpg"
+                    loading="lazy"
+                  />
+                  <figcaption className="text-[11px] text-muted-foreground mt-1">
+                    Kaynak: Wikimedia Commons — Gnomonic Projection (SW), CC BY-SA
+                  </figcaption>
+                </figure>
+              </div>
               
               <p><strong>Gnomonik Projeksiyonu:</strong></p>
               <ul className="list-disc pl-5 space-y-1">
@@ -352,6 +378,31 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                 <li><strong>Yöntem:</strong> Gnomonik'te GC çizilir, ara noktalar belirlenir, Mercator'a aktarılır ve RL segmentlerle bağlanır.</li>
                 <li><strong>Kısıtlama:</strong> Ekvatoru ve antipodları (karşı nokta) gösteremez; sınırlı kapsama alanı.</li>
               </ul>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                <figure className="bg-muted/20 rounded p-3">
+                  <img
+                    className="w-full h-auto rounded"
+                    alt="Mercator üzerinde rhumb line düz çizgi, great circle eğri"
+                    src="https://upload.wikimedia.org/wikipedia/commons/0/09/Great_circle_vs_rhumb_line.svg"
+                    loading="lazy"
+                  />
+                  <figcaption className="text-[11px] text-muted-foreground mt-1">
+                    Kaynak: Wikimedia Commons — Great circle vs rhumb line (Mercator), CC BY-SA
+                  </figcaption>
+                </figure>
+                <figure className="bg-muted/20 rounded p-3">
+                  <img
+                    className="w-full h-auto rounded"
+                    alt="Azimutal eşit uzaklık projeksiyonu (kutuplar merkezli örnek)"
+                    src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Azimuthal_equidistant_projection_SW.jpg"
+                    loading="lazy"
+                  />
+                  <figcaption className="text-[11px] text-muted-foreground mt-1">
+                    Kaynak: Wikimedia Commons — Azimuthal Equidistant Projection (SW), CC BY-SA
+                  </figcaption>
+                </figure>
+              </div>
               
               <p><strong>Harita Türleri ve Ölçekleri:</strong></p>
               <ul className="list-disc pl-5 space-y-1">
