@@ -291,7 +291,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
               </div>
               {/* Doubling angle */}
               <div className="bg-muted/30 rounded p-3">
-                <p className="font-semibold mb-2">Doubling Angle</p>
+                <p className="font-semibold mb-2">Doubling Angle (Genel)</p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <Label htmlFor="mt-angle">A₁ (°)</Label>
@@ -306,7 +306,8 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <Button size="sm" onClick={handleDoublingCalc}>Hesapla</Button>
                   <div className="text-xs text-muted-foreground">Distance off: <span className="font-mono">{doublingResult || '-'}</span></div>
                 </div>
-                <pre className="mt-2 font-mono text-[11px] leading-5">{`A₂=2·A₁, Distance off ≈ s·sin(2A₁)/sin(A₂)`}</pre>
+                <pre className="mt-2 font-mono text-[11px] leading-5">{`Genel: Distance off = s·sin(A₁)/sin(A₂−A₁)
+Özel:  A₂ = 2·A₁ ⇒ Distance off = s`}</pre>
               </div>
             </div>
           </CardContent>
@@ -667,7 +668,8 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Prensip:</strong> Bir işaretin bow açısı ölçülür (A₁), gemi ilerler, açı ikiye katlanınca (A₂ = 2×A₁) tekrar ölçülür.</li>
                 <li><strong>Sonuç:</strong> İkinci ölçümdeki distance off, iki ölçüm arası koşulan mesafeye eşittir.</li>
-                <li><strong>Formül:</strong> Distance off = Run × sin(A₁) / sin(180° - 3×A₁)</li>
+                <li><strong>Formül:</strong> Distance off (2. ölçüm anı) = Run × sin(A₁) / sin(A₂ − A₁)</li>
+                <li><strong>Özel:</strong> A₂ = 2×A₁ ⇒ Distance off = Run</li>
                 <li><strong>Özel Durumlar:</strong> 45°-90° (7 point bearing) veya 22.5°-45° (4 point bearing) yaygın kullanımlar.</li>
                 <li><strong>Avantaj:</strong> Tek işaretle distance off bulunur; basit ve hızlıdır.</li>
                 <li><strong>Dezavantaj:</strong> Sabit hız ve rota gerektirir; akıntı/rüzgar etkisi hata kaynağıdır.</li>
@@ -847,10 +849,17 @@ SOG = 12·cos(−6.8°) + 2·cos(−45°) ≈ 11.9 + 1.41 ≈ 13.3 kn`}</pre>
               <p><strong>Clearing Bearings (Emniyet Kerterizi):</strong></p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Tanım:</strong> Bir tehlikeden emniyetli mesafede kalmayı garanti eden kerteriz çizgisi.</li>
-                <li><strong>Yöntem:</strong> Haritada tehlike belirlenir; emniyetli yan taraftan bir işaret seçilir; tehlike sınırına接的 kerteriz çizilir ve "not less than" veya "not more than" kuralı uygulanır.</li>
+                <li><strong>Yöntem:</strong> Haritada tehlike belirlenir; emniyetli yan taraftan bir işaret seçilir; tehlike sınırına teğet bir kerteriz çizilir ve “not less than”/“not more than” kuralı uygulanır.</li>
                 <li><strong>Örnek:</strong> Sağ tarafta bir kayalık var; sol taraftan fener alınır; kerteriz 045° olarak belirlenir; "fener kerterizi 045°'den büyük olmalı" kuralı uygulanır.</li>
                 <li><strong>Avantaj:</strong> Tek ölçümle emniyet kontrolü; basit ve etkili.</li>
               </ul>
+
+              <div className="bg-muted/20 rounded p-3">
+                <p className="font-semibold mb-2">Fenerlerin Coğrafi Menzili</p>
+                <pre className="font-mono text-[11px] leading-5">{`Coğrafi menzil (nm) ≈ 2.08·(√h_obs + √h_light)
+Radar/VHF ≈ 2.23·(√h_tx + √h_rx)
+Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</pre>
+              </div>
               
               <p><strong>Danger Angles (Tehlike Açıları):</strong></p>
               <ul className="list-disc pl-5 space-y-1">
@@ -995,6 +1004,11 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
             <div className="space-y-2">
               <p>Meridian passage, azimut ve sight reduction adımları; sextant düzeltmeleri (IE, dip, refraction vs.).</p>
               <p>Navigasyon yıldızları ve hızlı seçim ipuçları; pratik örnek akışı.</p>
+              <div className="bg-muted/20 rounded p-3">
+                <p className="font-semibold mb-2">Temel İlişki (LHA Tanımı):</p>
+                <pre className="font-mono text-[11px] leading-5">{`LHA = normalize(GHA − λ)
+λ (longitude): E(+) W(−), sonuç 0–360° aralığına normalize edilir`}</pre>
+              </div>
             </div>
           </CardContent>
           )}
@@ -1369,6 +1383,11 @@ Kapsama: Gündüz görsel W≈0.6 nm ⇒ S≈0.5–0.6 nm`}</pre>
               <li>IALA Maritime Buoyage System – Şamandıra ve işaretleme prensipleri.</li>
               <li>Admiralty Manual of Navigation – Rota planlama ve deniz seyri prensipleri.</li>
               <li>NGA Publication 1310 – Radar Navigation and Maneuvering Board Manual.</li>
+              <li>Dutton's Nautical Navigation – Coastal ve celestial yöntemler, bearing teknikleri.</li>
+              <li>UKHO Admiralty List of Lights & Fog Signals (ALRS) – Fener menzilleri ve tanımları.</li>
+              <li>USCG Light List – Coğrafi ve ışıklı menzil kavramları, görünürlük.</li>
+              <li>IAMSAR Manual Vol. II/III – Arama kalıpları ve tarama parametreleri.</li>
+              <li>NP100 Admiralty Manual of Seamanship – Pilotage ve yaklaşma teknikleri.</li>
             </ul>
             <p className="text-xs text-muted-foreground">Not: Resmi yayınların güncel baskılarını kullanın; yerel otorite duyurularını (NtM) takip edin.</p>
           </CardContent>
@@ -1376,7 +1395,7 @@ Kapsama: Gündüz görsel W≈0.6 nm ⇒ S≈0.5–0.6 nm`}</pre>
         </Card>
 
         <div className="flex justify-between items-center">
-          <div className="text-xs text-muted-foreground">Sürüm: v2.1 • Detaylandırılmış konu anlatımları, kapsamlı açıklamalar ve örneklerle güncellenmiştir.</div>
+          <div className="text-xs text-muted-foreground">Sürüm: v2.2 • Formül düzeltmeleri ve kaynakça genişletmesi uygulandı.</div>
           <Button asChild variant="default" className="gap-2">
             <a href="#foundations">
               Başa Dön
