@@ -1286,6 +1286,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">CPA/TCPA</TabsTrigger>
                 <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir</TabsTrigger>
                 <TabsTrigger value="anchoring" className="text-xs px-3 py-2 whitespace-nowrap">Demirleme</TabsTrigger>
+                <TabsTrigger value="ukc" className="text-xs px-3 py-2 whitespace-nowrap">UKC Hesabı</TabsTrigger>
               </TabsList>
             </div>
 
@@ -2956,6 +2957,304 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* UKC (Under Keel Clearance) Tab */}
+            <TabsContent value="ukc" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Ship className="h-5 w-5 text-blue-600" />
+                    UKC (Under Keel Clearance) Hesabı
+                  </CardTitle>
+                  <CardDescription>
+                    Gemi su çekimi, gelgit ve güvenlik marjını dikkate alarak minimum gerekli su derinliği hesaplama
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Ship Parameters */}
+                    <div>
+                      <h4 className="font-semibold text-blue-700 mb-3 flex items-center gap-2">
+                        <Ship className="h-4 w-4" />
+                        Gemi Parametreleri
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-draft">Gemi Su Çekimi (Draft) (m)</Label>
+                          <Input
+                            id="ukc-draft"
+                            type="number"
+                            step="0.1"
+                            value={data.shipDraft}
+                            onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                            placeholder="8.5"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-squat">Squat Etkisi (m)</Label>
+                          <Input
+                            id="ukc-squat"
+                            type="number"
+                            step="0.1"
+                            defaultValue="0.5"
+                            placeholder="0.5"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-trim">Trim Düzeltmesi (m)</Label>
+                          <Input
+                            id="ukc-trim"
+                            type="number"
+                            step="0.1"
+                            defaultValue="0"
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tidal Information */}
+                    <div>
+                      <h4 className="font-semibold text-green-700 mb-3 flex items-center gap-2">
+                        <Waves className="h-4 w-4" />
+                        Gelgit Bilgileri
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-chart-datum">Kart Datumu Derinliği (m)</Label>
+                          <Input
+                            id="ukc-chart-datum"
+                            type="number"
+                            step="0.1"
+                            defaultValue="10.0"
+                            placeholder="10.0"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-tide-height">Gelgit Yüksekliği (m)</Label>
+                          <Input
+                            id="ukc-tide-height"
+                            type="number"
+                            step="0.1"
+                            defaultValue="2.0"
+                            placeholder="2.0"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-wave-allowance">Dalga İlavesi (m)</Label>
+                          <Input
+                            id="ukc-wave-allowance"
+                            type="number"
+                            step="0.1"
+                            defaultValue="0.5"
+                            placeholder="0.5"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Safety Margins */}
+                    <div>
+                      <h4 className="font-semibold text-orange-700 mb-3 flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        Güvenlik Marjları
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-min-clearance">Minimum UKC (m)</Label>
+                          <Input
+                            id="ukc-min-clearance"
+                            type="number"
+                            step="0.1"
+                            value={data.requiredUKC}
+                            onChange={(e) => updateData('requiredUKC', parseFloat(e.target.value) || 0)}
+                            placeholder="2.0"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-safety-factor">Güvenlik Faktörü (%)</Label>
+                          <Input
+                            id="ukc-safety-factor"
+                            type="number"
+                            step="5"
+                            defaultValue="10"
+                            placeholder="10"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ukc-area-type">Bölge Tipi</Label>
+                          <select id="ukc-area-type" className="w-full p-2 border rounded-md">
+                            <option value="open">Açık Deniz</option>
+                            <option value="coastal">Kıyı</option>
+                            <option value="restricted">Kısıtlı Sular</option>
+                            <option value="port">Liman</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Calculate Button */}
+                    <div className="pt-2">
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          const draft = parseFloat((document.getElementById('ukc-draft') as HTMLInputElement)?.value || '0') || 0;
+                          const squat = parseFloat((document.getElementById('ukc-squat') as HTMLInputElement)?.value || '0') || 0;
+                          const trim = parseFloat((document.getElementById('ukc-trim') as HTMLInputElement)?.value || '0') || 0;
+                          const chartDatum = parseFloat((document.getElementById('ukc-chart-datum') as HTMLInputElement)?.value || '0') || 0;
+                          const tideHeight = parseFloat((document.getElementById('ukc-tide-height') as HTMLInputElement)?.value || '0') || 0;
+                          const waveAllowance = parseFloat((document.getElementById('ukc-wave-allowance') as HTMLInputElement)?.value || '0') || 0;
+                          const minClearance = data.requiredUKC || 2.0;
+                          const safetyFactor = parseFloat((document.getElementById('ukc-safety-factor') as HTMLInputElement)?.value || '0') || 10;
+                          const areaType = (document.getElementById('ukc-area-type') as HTMLSelectElement)?.value || 'open';
+
+                          // Calculate effective draft
+                          const effectiveDraft = draft + squat + Math.abs(trim);
+                          
+                          // Calculate available water depth
+                          const availableDepth = chartDatum + tideHeight - waveAllowance;
+                          
+                          // Calculate actual UKC
+                          const actualUKC = availableDepth - effectiveDraft;
+                          
+                          // Area-specific minimum UKC
+                          const areaMinUKC = areaType === 'port' ? minClearance * 0.8 : 
+                                           areaType === 'restricted' ? minClearance * 1.0 :
+                                           areaType === 'coastal' ? minClearance * 1.2 : 
+                                           minClearance * 1.5;
+                          
+                          // Calculate required depth with safety margin
+                          const safetyMargin = effectiveDraft * (safetyFactor / 100);
+                          const requiredDepth = effectiveDraft + areaMinUKC + safetyMargin;
+                          
+                          // Determine safety status
+                          const isSafe = actualUKC >= areaMinUKC;
+                          const ukcMargin = actualUKC - areaMinUKC;
+
+                          setResult(prev => prev ? {
+                            ...prev,
+                            minimumDepth: requiredDepth,
+                            safeDraft: effectiveDraft,
+                            currentTideHeight: actualUKC,
+                            tidalStream: ukcMargin,
+                            collisionRisk: isSafe ? 'none' : 'high',
+                            recommendations: [
+                              isSafe ? '✓ UKC güvenli sınırlar içinde' : '⚠ UKC yetersiz - GEÇİŞ TEHLİKELİ!',
+                              `Efektif su çekimi: ${effectiveDraft.toFixed(2)} m`,
+                              `Mevcut UKC: ${actualUKC.toFixed(2)} m`,
+                              `Minimum gerekli UKC: ${areaMinUKC.toFixed(2)} m`,
+                              `Güvenlik marjı: ${ukcMargin.toFixed(2)} m`,
+                              areaType === 'port' ? 'Liman bölgesi - daha düşük UKC kabul edilebilir' :
+                              areaType === 'restricted' ? 'Kısıtlı sular - standart UKC gerekli' :
+                              areaType === 'coastal' ? 'Kıyı bölgesi - artırılmış UKC önerilir' :
+                              'Açık deniz - maksimum güvenlik marjı önerilir'
+                            ]
+                          } : {
+                            gcDistance: 0, gcInitialBearing: 0, gcFinalBearing: 0, gcVertexLat: 0, gcWaypointDistances: [],
+                            rhumbDistance: 0, rhumbBearing: 0, departure: 0, dLat: 0, mercatorDistance: 0,
+                            spheroidalDistance: 0, spheroidalBearing: 0, reverseBearing: 0,
+                            eta: '', etd: '', timeToGo: 0, fuelConsumption: 0, totalFuelCost: 0, alternateETA: '',
+                            groundTrack: 0, groundSpeed: 0, driftAngle: 0, courseToSteer: 0, leewayCorrection: 0,
+                            magneticBearing: 0, compassBearing: 0, trueBearing: 0, totalCompassError: 0,
+                            cpa: 0, tcpa: 0, relativeSpeed: 0, relativeBearing: 0, collisionRisk: isSafe ? 'none' : 'high', recommendedAction: '', bcpa: 0, dcpa: 0,
+                            currentTideHeight: actualUKC, tideRange: 0, timeToHW: 0, timeToLW: 0, tidalStream: ukcMargin, tidalStreamDirection: 0, springNeapFactor: 0, tidalAcceleration: 0,
+                            intercept: 0, positionLine: '', latitude: 0, longitude: 0, altitudeCorrection: 0, celestialCompassError: 0, estimatedPosition: { lat: 0, lon: 0 },
+                            sunPosition: { altitude: 0, azimuth: 0, declination: 0 }, moonPosition: { altitude: 0, azimuth: 0, phase: 0 }, planetPositions: [], navigationStars: [],
+                            twilightTimes: { sunrise: '', sunset: '', civilTwilightBegin: '', civilTwilightEnd: '', nauticalTwilightBegin: '', nauticalTwilightEnd: '', astronomicalTwilightBegin: '', astronomicalTwilightEnd: '', daylightDuration: 0, goldenHourBegin: '', goldenHourEnd: '', blueHourBegin: '', blueHourEnd: '' },
+                            advance: 0, transfer: 0, tacticalDiameter: 0, finalDiameter: 0, wheelOverPoint: 0, turningRadius: 0,
+                            optimumRoute: '', weatherDelay: 0, safeCourse: 0, seaState: 0, beaufortScale: 0,
+                            pilotBoardingDistance: 0, pilotBoardingETA: '', approachSpeed: 0, minimumDepth: requiredDepth, safeDraft: effectiveDraft,
+                            recommendations: [
+                              isSafe ? '✓ UKC güvenli sınırlar içinde' : '⚠ UKC yetersiz - GEÇİŞ TEHLİKELİ!',
+                              `Efektif su çekimi: ${effectiveDraft.toFixed(2)} m`,
+                              `Mevcut UKC: ${actualUKC.toFixed(2)} m`,
+                              `Minimum gerekli UKC: ${areaMinUKC.toFixed(2)} m`,
+                              `Güvenlik marjı: ${ukcMargin.toFixed(2)} m`,
+                              areaType === 'port' ? 'Liman bölgesi - daha düşük UKC kabul edilebilir' :
+                              areaType === 'restricted' ? 'Kısıtlı sular - standart UKC gerekli' :
+                              areaType === 'coastal' ? 'Kıyı bölgesi - artırılmış UKC önerilir' :
+                              'Açık deniz - maksimum güvenlik marjı önerilir'
+                            ]
+                          });
+                          
+                          toast.success(isSafe ? 'UKC hesaplaması tamamlandı - Geçiş güvenli' : 'UKC yetersiz - Dikkatli olun!', {
+                            description: `Mevcut UKC: ${actualUKC.toFixed(2)} m`
+                          });
+                        }}
+                        className="gap-2"
+                      >
+                        <Calculator className="w-4 h-4" /> UKC Hesapla
+                      </Button>
+                    </div>
+
+                    {/* Results Display */}
+                    {result && result.recommendations && result.recommendations.length > 0 && (
+                      <div className="space-y-4">
+                        {/* Main Results */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+                            <div className="text-sm text-gray-500">Efektif Draft</div>
+                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-blue-600' : 'text-red-600'}`}>
+                              {result.safeDraft.toFixed(2)} m
+                            </div>
+                          </div>
+                          <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-orange-50 dark:bg-orange-900/20'}`}>
+                            <div className="text-sm text-gray-500">Mevcut UKC</div>
+                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-green-600' : 'text-orange-600'}`}>
+                              {result.currentTideHeight.toFixed(2)} m
+                            </div>
+                          </div>
+                          <div className={`p-3 rounded border ${result.tidalStream >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+                            <div className="text-sm text-gray-500">Güvenlik Marjı</div>
+                            <div className={`font-mono text-lg ${result.tidalStream >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                              {result.tidalStream.toFixed(2)} m
+                            </div>
+                          </div>
+                          <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-cyan-50 dark:bg-cyan-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20'}`}>
+                            <div className="text-sm text-gray-500">Min. Gerekli Derinlik</div>
+                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-cyan-600' : 'text-yellow-600'}`}>
+                              {result.minimumDepth.toFixed(2)} m
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Status and Recommendations */}
+                        <div className={`p-4 rounded-lg border-2 ${result.collisionRisk === 'none' ? 'bg-green-50 dark:bg-green-900/20 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-red-500'}`}>
+                          <div className="flex items-start gap-3">
+                            {result.collisionRisk === 'none' ? (
+                              <CheckCircle className="h-6 w-6 text-green-600 mt-0.5" />
+                            ) : (
+                              <Target className="h-6 w-6 text-red-600 mt-0.5" />
+                            )}
+                            <div className="flex-1 space-y-2">
+                              <div className={`font-semibold text-lg ${result.collisionRisk === 'none' ? 'text-green-700' : 'text-red-700'}`}>
+                                {result.recommendations[0]}
+                              </div>
+                              <div className="text-sm space-y-1">
+                                {result.recommendations.slice(1).map((rec, idx) => (
+                                  <div key={idx} className="text-gray-700 dark:text-gray-300">• {rec}</div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Additional Information */}
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                          <h5 className="font-semibold text-blue-700 mb-2">UKC Hesaplama Formülü:</h5>
+                          <div className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                            <div>• <strong>Efektif Draft</strong> = Draft + Squat + |Trim|</div>
+                            <div>• <strong>Mevcut Su Derinliği</strong> = Kart Datumu + Gelgit Yüksekliği - Dalga İlavesi</div>
+                            <div>• <strong>Mevcut UKC</strong> = Mevcut Su Derinliği - Efektif Draft</div>
+                            <div>• <strong>Minimum UKC</strong> = Bölge tipine göre değişir (Liman: %80, Kısıtlı: %100, Kıyı: %120, Açık: %150)</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
