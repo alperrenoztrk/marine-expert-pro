@@ -390,19 +390,19 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/IALA_A_Buoyage_System_Lateral_Marks.svg/640px-IALA_A_Buoyage_System_Lateral_Marks.svg.png" />
+                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/IALA_A_Buoyage_System_Lateral_Marks.svg/800px-IALA_A_Buoyage_System_Lateral_Marks.svg.png" loading="lazy" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (IALA A lateral işaretler)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Cardinal_marks.svg/640px-Cardinal_marks.svg.png" />
+                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Cardinal_marks.svg/800px-Cardinal_marks.svg.png" loading="lazy" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Kardinal işaretler)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Isolated_danger_mark.svg/480px-Isolated_danger_mark.svg.png" />
+                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Isolated_danger_mark.svg/640px-Isolated_danger_mark.svg.png" loading="lazy" />
                 <figcaption className="text:[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Tecrit tehlike işareti)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Safe_water_mark.svg/480px-Safe_water_mark.svg.png" />
+                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Safe_water_mark.svg/640px-Safe_water_mark.svg.png" loading="lazy" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Emniyetli su işareti)</figcaption>
               </figure>
             </div>
@@ -462,7 +462,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Mercator projeksiyonunda dünya haritası"
-                    src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Mercator_projection_SW.jpg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Mercator_projection_SW.jpg/800px-Mercator_projection_SW.jpg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -474,7 +474,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Gnomonik projeksiyonda dünya haritası ve büyük daireler düz çizgi"
-                    src="https://upload.wikimedia.org/wikipedia/commons/5/59/Gnomonic_projection_SW.jpg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Gnomonic_projection_SW.jpg/800px-Gnomonic_projection_SW.jpg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -497,7 +497,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Mercator üzerinde rhumb line düz çizgi, great circle eğri"
-                    src="https://upload.wikimedia.org/wikipedia/commons/0/09/Great_circle_vs_rhumb_line.svg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Great_circle_vs_rhumb_line.svg/800px-Great_circle_vs_rhumb_line.svg.png"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -508,7 +508,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Azimutal eşit uzaklık projeksiyonu (kutuplar merkezli örnek)"
-                    src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Azimuthal_equidistant_projection_SW.jpg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Azimuthal_equidistant_projection_SW.jpg/800px-Azimuthal_equidistant_projection_SW.jpg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
