@@ -1625,6 +1625,124 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
           )}
         </Card>
 
+        {/* Meteorology */}
+        <Card className="shadow">
+          <CardHeader onClick={() => toggle('met')} className="cursor-pointer" aria-expanded={isOpen('met')}>
+            <CardTitle id="met" className="scroll-mt-24 flex items-center justify-between">
+              Meteoroloji ve Görünürlük (Denizcilik Odaklı)
+              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('met') ? "rotate-180" : "")} />
+            </CardTitle>
+          </CardHeader>
+          {isOpen('met') && (
+          <CardContent className="space-y-6 text-sm">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Atmosfer Temelleri ve Basınç-Rüzgar İlişkisi</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Basınç Alanları:</strong> Alçak basınçta havanın yükselmesi, konverjans ve genelde kötü hava; yüksek basınçta alçalma, diverjans ve genelde açık hava görülür.</li>
+                <li data-translatable="true"><strong>Rüzgarın Sürükleyici Kuvvetleri:</strong> Basınç gradyanı, Coriolis, sürtünme; serbest atmosferde (geostrofik) rüzgar izobarlara paralel, yüzeye yakın (gradient) rüzgar izobarlara hafifçe keser.</li>
+                <li data-translatable="true"><strong>Buys-Ballot Kuralı:</strong> Kuzey Yarımküre’de rüzgarı sırtınıza alırsanız alçak basınç solunuzdadır.</li>
+                <li data-translatable="true"><strong>Bariklinik/Barotropik:</strong> Cepheli (bariklinik) ortamlarda dikey kesitlerde sıcaklık gradyanı ve güçlü rüzgar değişimleri beklenir.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Rüzgarlar ve Beaufort Skalası (Seyir Etkileri)</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Beaufort 0-2:</strong> Hafif esinti; duman yönü değişir, deniz yüzeyi düzdür. Manevra kolay; sis olasılığı.</li>
+                <li data-translatable="true"><strong>Beaufort 3-4:</strong> Küçük dalgalar, kısa kırılmalar; küçük teknelerde konfor etkilenir; serpinti başlar.</li>
+                <li data-translatable="true"><strong>Beaufort 5-6:</strong> Orta/sert rüzgar; dalga yüksekliği 2-4 m; pruvalama ve güverte ıslanması; emniyetli hız düşürülmeli.</li>
+                <li data-translatable="true"><strong>Beaufort 7-8:</strong> Kuvvetli rüzgar/sert fırtına; dalga 4-7 m; rotadan sapma (leeway) belirgin; rota ve trim revizyonu gerekir.</li>
+                <li data-translatable="true"><strong>Beaufort 9-10:</strong> Şiddetli fırtına; ağır serpinti, görüş azalır; güverte emniyeti, bordadan su alma riski.</li>
+                <li data-translatable="true"><strong>Beaufort 11-12:</strong> Çok şiddetli fırtına/kasırga; barometre hızlı düşer; kaçınma manevrası ve fırtına prosedürleri.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Görüş, Sis ve Optik Etkiler</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Görüş Tanımları:</strong> Sis (&lt;1 km), pus/haze (1-5 km), iyi görüş (&gt;5-10+ km). Denizcilikte <em>meteorolojik görüş</em> emniyetli hız ve seyir yardımcılarının görünürlüğünü belirler.</li>
+                <li data-translatable="true"><strong>Sis Türleri:</strong> Adveksiyon (ılık-nemli hava soğuk yüzeyle), radyasyon (gece sükûneti), buhar/deniz dumanı (soğuk hava-sıcak su), orografik (yükselti boyunca).</li>
+                <li data-translatable="true"><strong>Görünürlük ve Işık Menzili:</strong> Coğrafi menzil eğriliğe bağlıdır; <em>luminous range</em> ise ışık gücü ve meteorolojik görüşe bağlıdır (ışık listelerindeki nominal değerler ve meteorolojik görünürlük tablosu birlikte değerlendirilir).</li>
+                <li data-translatable="true"><strong>Navigasyon Etkileri:</strong> COLREG kural 6 (emniyetli hız), kural 19 (kısıtlı görüşte seyir) gereği hız, ses işaretleri, radar gözetimi ve pozisyon güncellemesi zorunlu dikkat başlıklarıdır.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Bulutlar ve Konvektif Sistemler</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Stratiform vs Konvektif:</strong> Stratiform (Ns, St, As) geniş alanlı, uzun süreli yağış; konvektif (Cu, TCu, Cb) kısa süreli, şiddetli sağanak, dolu ve yıldırım.</li>
+                <li data-translatable="true"><strong>Gelişim Döngüsü:</strong> Kümülüs → Olgun Fırtına (Cb, örs) → Sönüm; downburst/squall hatları ani rüzgar artışı ve yön değişimi yapar.</li>
+                <li data-translatable="true"><strong>Uydu Ürünleri:</strong> VIS (gündüz bulut dokusu), IR (tepe sıcaklığı → konveksiyon şiddeti), WV (üst seviye nem/jet). Denizcilik için CB tespiti, kıyı fırtınaları ve hatalı eko ayrımı.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Cepheler ve Orta Enlem Alçakları</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Sıcak Cephe:</strong> Altostratus/Nimbostratus ile uzun süreli yağış; rüzgar yavaş saat yönünde döner (K. Yarımküre).</li>
+                <li data-translatable="true"><strong>Soğuk Cephe:</strong> TCu/Cb ve sağanak/CB hatları; rüzgar hızlı yön değiştirir ve serinleme olur; geçişte ani şiddet artışı.</li>
+                <li data-translatable="true"><strong>Okluzyon:</strong> Karmaşık yağış; sistem olgunluğa yakındır. İzobar sıklaşması → rüzgar artışı ve deniz sertleşmesi.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Tropikal Siklonlar (Kaçınma ve Seyir)</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Yapı:</strong> Göz, göz duvarı, yağış bantları; 34-50-64 kt yarıçapları ve hareket yönü kritik.</li>
+                <li data-translatable="true"><strong>Tehlikeli/Yarı Güvenli Yarım Daire:</strong> K. Yarımküre’de hareket yönüne göre sağ yan tehlikelidir (fırtına rüzgarı + ilerleme vektörü).</li>
+                <li data-translatable="true"><strong>Kaçınma:</strong> 1-2-3 Kuralı (OPC/NHC): 24-48-72 saatlik tahmin hatası poligonları içinde kalmaktan kaçın; erken rota değiştir.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Dalga, Şişme (Swell) ve Deniz Durumu</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Üretim:</strong> Rüzgar şiddeti, esme süresi ve fetch birlikte dalga spektrumunu belirler.</li>
+                <li data-translatable="true"><strong>Parametreler:</strong> Anlamlı dalga yüksekliği (Hs), tepe-periyot (Tp), grup hızı; swell genellikle uzun periyotlu ve yön süreklidir.</li>
+                <li data-translatable="true"><strong>Seyir Etkileri:</strong> Pruvalama/baş-kıç vurma, yalpa ve bordadan su alma; periyoda göre hız/rota ayarı ve güverte emniyeti.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Sinoptik Ürünler ve Yorum</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>Yüzey Analizi/Prog:</strong> İzobarlar, cepheler, L/H; 24-72h ilerletilmiş haritalar.</li>
+                <li data-translatable="true"><strong>Rüzgar/Dalga Haritaları:</strong> Ortalama rüzgar alanları, Hs ve Tp; tehlikeli kombinasyonları (yüksek Hs + kısa Tp) belirleyin.</li>
+                <li data-translatable="true"><strong>Uydu/Scatterometer:</strong> Open ocean rüzgar alanlarını doğrular; şiddetli hava uyarılarıyla birlikte ele alın.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Deniz Meteoroloji Servisleri ve Yayınlar</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true"><strong>NAVTEX:</strong> 518 kHz (İngilizce), 490 kHz (yerel dil) — denizcilik meteoroloji/seyir uyarıları.</li>
+                <li data-translatable="true"><strong>SafetyNET/EGC (Inmarsat-C):</strong> METAREA yayınları, fırtına uyarıları ve sinoptik özetler.</li>
+                <li data-translatable="true"><strong>Weather Fax (Radiofacsimile):</strong> <em>ALRS Cilt 3</em> frekans/zaman çizelgeleri; yüzey analiz/prog haritaları alımı.</li>
+                <li data-translatable="true"><strong>Resmi Kaynaklar:</strong> WMO, NOAA OPC, METAREA/ NAVAREA, yerel MGM/Met Office bültenleri.</li>
+              </ul>
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+              <h4 className="font-semibold mb-2" data-translatable="true">Kısıtlı Görüşte Asgari Prosedürler</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true">Emniyetli hız; ses işaretleri; seyir fenerleri kontrolü.</li>
+                <li data-translatable="true">Radar/ECDIS gözetimi, PI (parallel indexing) ve CPA/TCPA takibi.</li>
+                <li data-translatable="true">Ek gözcü tahsisi; makineler hazır; Master haberdar.</li>
+              </ul>
+            </div>
+
+            <div className="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg">
+              <h4 className="font-semibold mb-2" data-translatable="true">Kritik Notlar</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li data-translatable="true">Barometrede hızlı düşüş + rüzgâr yön/sürat artışı → hava kötüleşmesi işaretidir.</li>
+                <li data-translatable="true">CB yaklaşımında ani squall ve dolu; güverte emniyeti ve rota ayarlayın.</li>
+                <li data-translatable="true">Luminous range, meteorolojik görünürlüğe duyarlıdır; fener menzillerini iyimser yorumlamayın.</li>
+              </ul>
+            </div>
+          </CardContent>
+          )}
+        </Card>
+
         {/* ECDIS */}
         <Card className="shadow">
           <CardHeader onClick={() => toggle('ecdis')} className="cursor-pointer" aria-expanded={isOpen('ecdis')}>
