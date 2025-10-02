@@ -390,19 +390,19 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/IALA_A_Buoyage_System_Lateral_Marks.svg/800px-IALA_A_Buoyage_System_Lateral_Marks.svg.png" loading="lazy" />
+                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="/src/assets/navigation/iala-lateral-marks.svg" loading="lazy" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (IALA A lateral işaretler)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Cardinal_marks.svg/800px-Cardinal_marks.svg.png" loading="lazy" />
+                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="/src/assets/navigation/cardinal-marks.svg" loading="lazy" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Kardinal işaretler)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Isolated_danger_mark.svg/640px-Isolated_danger_mark.svg.png" loading="lazy" />
+                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/isolated-danger-mark.svg" loading="lazy" />
                 <figcaption className="text:[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Tecrit tehlike işareti)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Safe_water_mark.svg/640px-Safe_water_mark.svg.png" loading="lazy" />
+                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/safe-water-mark.svg" loading="lazy" />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Emniyetli su işareti)</figcaption>
               </figure>
             </div>
@@ -462,7 +462,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Mercator projeksiyonunda dünya haritası"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Mercator_projection_SW.jpg/800px-Mercator_projection_SW.jpg"
+                    src="/src/assets/navigation/mercator-projection.svg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -474,7 +474,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Gnomonik projeksiyonda dünya haritası ve büyük daireler düz çizgi"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Gnomonic_projection_SW.jpg/800px-Gnomonic_projection_SW.jpg"
+                    src="/src/assets/navigation/gnomonic-projection.svg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -497,7 +497,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Mercator üzerinde rhumb line düz çizgi, great circle eğri"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Great_circle_vs_rhumb_line.svg/800px-Great_circle_vs_rhumb_line.svg.png"
+                    src="/src/assets/navigation/great-circle-vs-rhumb.svg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -508,7 +508,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <img
                     className="w-full h-auto rounded"
                     alt="Azimutal eşit uzaklık projeksiyonu (kutuplar merkezli örnek)"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Azimuthal_equidistant_projection_SW.jpg/800px-Azimuthal_equidistant_projection_SW.jpg"
+                    src="/src/assets/navigation/azimuthal-projection.svg"
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -640,6 +640,32 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
               <p><strong>Deviasyon Eğrisi:</strong> Swing test; periyodik doğrulama ve kayıt. Not: Compass Error (CE) = Var + Dev; doğu (+), batı (−).</p>
               <p><strong>Jiroskop:</strong> Latitude error, speed error; düzeltme kartları ve alarm yönetimi.</p>
             </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <figure className="bg-muted/20 rounded p-3">
+                <img
+                  className="w-full h-auto rounded"
+                  alt="Manyetik pusula ve bileşenleri"
+                  src="/src/assets/navigation/compass.svg"
+                  loading="lazy"
+                />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">
+                  Manyetik Pusula Bileşenleri
+                </figcaption>
+              </figure>
+              
+              <figure className="bg-muted/20 rounded p-3">
+                <img
+                  className="w-full h-auto rounded"
+                  alt="Sekstant ve kullanımı"
+                  src="/src/assets/navigation/sextant.svg"
+                  loading="lazy"
+                />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">
+                  Sekstant ve Bileşenleri
+                </figcaption>
+              </figure>
+            </div>
             <div className="bg-muted/20 rounded p-3">
               <p className="font-semibold mb-2">Çözümlü Örnek:</p>
               <pre className="font-mono text-[11px] leading-5">{`Verilen: Cc = 212°, Var = +3.0° (E), Dev = −1.5° (W)
@@ -734,6 +760,18 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
           {isOpen('tides') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
+              <figure className="bg-muted/20 rounded p-3">
+                <img
+                  className="w-full h-auto rounded"
+                  alt="Gelgit eğrisi ve akıntı akışı"
+                  src="/src/assets/navigation/tide-current.svg"
+                  loading="lazy"
+                />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">
+                  Gelgit Eğrisi ve Akıntı Akışı - HW/LW Döngüsü ve Akıntı Etkisi
+                </figcaption>
+              </figure>
+              
               <p><strong>Gelgit (Tide) Temelleri:</strong></p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Tanım:</strong> Ay ve Güneş'in çekim kuvvetlerinden kaynaklanan deniz seviyesi değişimleri.</li>
@@ -925,6 +963,18 @@ Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</p
               <p>PI, EBL, VRM kullanımı; relative vs true motion farkları ve iz yönetimi.</p>
               <p>ARPA vektörlerinin yorumlanması; CPA/TCPA değerlendirmesi ve COLREG ile uyum.</p>
             </div>
+            
+            <figure className="bg-muted/20 rounded p-3">
+              <img
+                className="w-full h-auto rounded"
+                alt="Radar ekranı ve ARPA elemanları"
+                src="/src/assets/navigation/radar-display.svg"
+                loading="lazy"
+              />
+              <figcaption className="text-[11px] text-muted-foreground mt-1">
+                Radar Ekranı - EBL, VRM, Hedefler ve Menzil Halkaları
+              </figcaption>
+            </figure>
             <div className="bg-muted/20 rounded p-3">
               <p className="font-semibold mb-2">Şema (PI ve EBL):</p>
               <pre className="font-mono text-[11px] leading-5">{`[Merkez Own Ship]
@@ -963,6 +1013,18 @@ CPA = |R0 + Vr·t| ≈ 1.9 nm`}</pre>
               <p>AIS sınıfları, mesaj tipleri, veri doğrulama ve kısıtlar; hedef takibi ve alarm ayarları.</p>
               <p>GNSS hataları, RAIM ve bütünlük izleme; sensör füzyonu (GPS, gyro, log).</p>
             </div>
+            
+            <figure className="bg-muted/20 rounded p-3">
+              <img
+                className="w-full h-auto rounded"
+                alt="GPS uydu konumlandırması ve çalışma prensibi"
+                src="/src/assets/navigation/gps-satellites.svg"
+                loading="lazy"
+              />
+              <figcaption className="text-[11px] text-muted-foreground mt-1">
+                GPS Uydu Konumlandırması - En az 4 uydu ile 3D konumlandırma
+              </figcaption>
+            </figure>
           </CardContent>
           )}
         </Card>
@@ -981,6 +1043,18 @@ CPA = |R0 + Vr·t| ≈ 1.9 nm`}</pre>
               <p>ENC katmanları, CATZOC, SCAMIN; güvenlik derinliği ve konturleri ayarlama.</p>
               <p>Route check, anti-grounding alarmı, safety corridor; Passage plan entegrasyonu.</p>
             </div>
+            
+            <figure className="bg-muted/20 rounded p-3">
+              <img
+                className="w-full h-auto rounded"
+                alt="ECDIS ekranı ve elektronik harita navigasyonu"
+                src="/src/assets/navigation/ecdis-display.svg"
+                loading="lazy"
+              />
+              <figcaption className="text-[11px] text-muted-foreground mt-1">
+                ECDIS Ekranı - Elektronik Harita, Rota, Waypoint ve Safety Contour
+              </figcaption>
+            </figure>
             <div className="bg-muted/20 rounded p-3">
               <p className="font-semibold mb-2">Şema (Safety Contours):</p>
               <pre className="font-mono text-[11px] leading-5">{`Derinlik (m)
@@ -1006,6 +1080,19 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
             <div className="space-y-2">
               <p>Meridian passage, azimut ve sight reduction adımları; sextant düzeltmeleri (IE, dip, refraction vs.).</p>
               <p>Navigasyon yıldızları ve hızlı seçim ipuçları; pratik örnek akışı.</p>
+              
+              <figure className="bg-muted/20 rounded p-3">
+                <img
+                  className="w-full h-auto rounded"
+                  alt="Gök üçgeni ve celestial navigation elemanları"
+                  src="/src/assets/navigation/celestial-triangle.svg"
+                  loading="lazy"
+                />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">
+                  Gök Üçgeni (Celestial Triangle) - Celestial Navigation Temel Elemanları
+                </figcaption>
+              </figure>
+              
               <div className="bg-muted/20 rounded p-3">
                 <p className="font-semibold mb-2">Temel İlişki (LHA Tanımı):</p>
                 <pre className="font-mono text-[11px] leading-5">{`LHA = normalize(GHA − λ)
@@ -1030,6 +1117,18 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
               <p>Rüzgar, dalga, akıntı tahmini kaynakları; sis ve az görüşte seyir teknikleri.</p>
               <p>Barometre eğilimleri, cephe geçişleri ve rota tercihlerine etkileri.</p>
             </div>
+            
+            <figure className="bg-muted/20 rounded p-3">
+              <img
+                className="w-full h-auto rounded"
+                alt="Hava sistemleri ve navigasyona etkisi"
+                src="/src/assets/navigation/weather-systems.svg"
+                loading="lazy"
+              />
+              <figcaption className="text-[11px] text-muted-foreground mt-1">
+                Hava Sistemleri - Yüksek/Alçak Basınç, Cepheler ve Navigasyona Etkisi
+              </figcaption>
+            </figure>
           </CardContent>
           )}
         </Card>
@@ -1202,6 +1301,18 @@ Safety corridor = rota etrafında tolerans bandı`}</pre>
           {isOpen('sar') && (
           <CardContent className="space-y-3 text-sm">
             <div className="space-y-2">
+              <figure className="bg-muted/20 rounded p-3">
+                <img
+                  className="w-full h-auto rounded"
+                  alt="Gemi güvenlik ekipmanları ve acil durum prosedürleri"
+                  src="/src/assets/navigation/safety-equipment.svg"
+                  loading="lazy"
+                />
+                <figcaption className="text-[11px] text-muted-foreground mt-1">
+                  Gemi Güvenlik Ekipmanları - EPIRB, Can Yeleği, İşaret Fişeği ve Diğer Acil Durum Ekipmanları
+                </figcaption>
+              </figure>
+              
               <p><strong>İAMSAR Çerçevesi ve Roller:</strong></p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>SMC (SAR Mission Coordinator):</strong> Operasyonun genel koordinasyonu; görev atamaları, arama alanlarının tanımlanması ve rapor akışının yönetimi.</li>

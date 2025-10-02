@@ -1,0 +1,66 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: bold; }
+      .compass-face { fill: #f0f0f0; stroke: #000; stroke-width: 2; }
+      .compass-card { fill: #fff; stroke: #000; stroke-width: 1; }
+      .north { fill: #ff0000; }
+      .south { fill: #0000ff; }
+      .east { fill: #00ff00; }
+      .west { fill: #ffff00; }
+      .needle { fill: #ff0000; stroke: #000; stroke-width: 1; }
+      .lubber-line { stroke: #000; stroke-width: 3; }
+      .bearing-line { stroke: #ff0000; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="200" y="30" class="text title">Manyetik Pusula</text>
+  
+  <!-- Compass -->
+  <g transform="translate(200, 200)">
+    <!-- Compass face -->
+    <circle cx="0" cy="0" r="120" class="compass-face"/>
+    
+    <!-- Compass card -->
+    <circle cx="0" cy="0" r="100" class="compass-card"/>
+    
+    <!-- Cardinal points -->
+    <text x="0" y="-80" class="text north">N</text>
+    <text x="0" y="90" class="text south">S</text>
+    <text x="80" y="5" class="text east">E</text>
+    <text x="-80" y="5" class="text west">W</text>
+    
+    <!-- Intercardinal points -->
+    <text x="57" y="-57" class="text">NE</text>
+    <text x="57" y="67" class="text">SE</text>
+    <text x="-57" y="67" class="text">SW</text>
+    <text x="-57" y="-57" class="text">NW</text>
+    
+    <!-- Degree markings -->
+    <text x="0" y="-60" class="text">0°</text>
+    <text x="60" y="-60" class="text">90°</text>
+    <text x="0" y="80" class="text">180°</text>
+    <text x="-60" y="-60" class="text">270°</text>
+    
+    <!-- Magnetic needle -->
+    <line x1="0" y1="-60" x2="0" y2="60" class="needle"/>
+    <polygon points="0,-70 -5,-60 5,-60" class="needle"/>
+    <polygon points="0,70 -5,60 5,60" fill="#0000ff"/>
+    
+    <!-- Lubber line -->
+    <line x1="-10" y1="-120" x2="-10" y2="-100" class="lubber-line"/>
+    <line x1="10" y1="-120" x2="10" y2="-100" class="lubber-line"/>
+    
+    <!-- Bearing line example -->
+    <line x1="0" y1="0" x2="70" y2="-70" class="bearing-line"/>
+    <text x="75" y="-75" class="text">045°</text>
+  </g>
+  
+  <!-- Description -->
+  <rect x="50" y="320" width="300" height="60" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="200" y="340" class="text title">Pusula Bileşenleri</text>
+  <text x="200" y="360" class="text">Kırmızı ok: Kuzey, Mavi ok: Güney</text>
+  <text x="200" y="375" class="text">Lubber Line: Geminin baş yönü</text>
+</svg>

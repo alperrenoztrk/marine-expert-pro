@@ -1,0 +1,63 @@
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-size: 18px; font-weight: bold; }
+      .great-circle { stroke: #ff0000; stroke-width: 3; fill: none; }
+      .rhumb-line { stroke: #0000ff; stroke-width: 2; fill: none; stroke-dasharray: 5,5; }
+      .land { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .water { fill: #87CEEB; stroke: #000; stroke-width: 1; }
+      .start-point { fill: #00ff00; stroke: #000; stroke-width: 2; }
+      .end-point { fill: #ff0000; stroke: #000; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">Büyük Daire vs Rhumb Çizgisi</text>
+  
+  <!-- World Map -->
+  <g transform="translate(400, 200)">
+    <!-- Background -->
+    <rect x="-350" y="-150" width="700" height="300" class="water"/>
+    
+    <!-- Continents (simplified) -->
+    <!-- North America -->
+    <path d="M -300 -100 L -200 -100 L -150 -60 L -180 -20 L -250 -20 L -300 -60 Z" class="land"/>
+    
+    <!-- Europe -->
+    <path d="M -100 -80 L -50 -80 L -30 -60 L -50 -40 L -100 -40 Z" class="land"/>
+    
+    <!-- Asia -->
+    <path d="M -50 -80 L 100 -80 L 150 -60 L 130 -40 L 50 -40 L 0 -60 L -50 -60 Z" class="land"/>
+    
+    <!-- Australia -->
+    <path d="M 80 40 L 180 40 L 200 70 L 180 100 L 80 100 Z" class="land"/>
+    
+    <!-- Start point (New York) -->
+    <circle cx="-200" cy="-40" r="8" class="start-point"/>
+    <text x="-200" y="-60" class="text">New York</text>
+    
+    <!-- End point (Tokyo) -->
+    <circle cx="120" cy="-20" r="8" class="end-point"/>
+    <text x="120" y="-40" class="text">Tokyo</text>
+    
+    <!-- Great Circle (curved) -->
+    <path d="M -200 -40 Q 0 -80 120 -20" class="great-circle"/>
+    
+    <!-- Rhumb Line (straight) -->
+    <line x1="-200" y1="-40" x2="120" y2="-20" class="rhumb-line"/>
+    
+    <!-- Labels -->
+    <text x="-50" y="-100" class="text">Büyük Daire (Kırmızı)</text>
+    <text x="-50" y="-85" class="text">En kısa mesafe</text>
+    
+    <text x="-50" y="-20" class="text">Rhumb Çizgisi (Mavi)</text>
+    <text x="-50" y="-5" class="text">Sabit kerteriz</text>
+  </g>
+  
+  <!-- Distance comparison -->
+  <rect x="50" y="320" width="700" height="60" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="400" y="340" class="text title">Mesafe Karşılaştırması</text>
+  <text x="400" y="360" class="text">Büyük Daire: ~10,800 km | Rhumb Çizgisi: ~11,200 km</text>
+  <text x="400" y="375" class="text">Fark: ~400 km (yaklaşık %3.7 daha uzun)</text>
+</svg>

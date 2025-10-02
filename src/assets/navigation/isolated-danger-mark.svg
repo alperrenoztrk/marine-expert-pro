@@ -1,0 +1,39 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .buoy { fill: none; stroke: #000; stroke-width: 2; }
+      .red { fill: #ff0000; }
+      .black { fill: #000000; }
+      .white { fill: #ffffff; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-size: 18px; font-weight: bold; }
+      .sphere { fill: #000; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="200" y="30" class="text title">Tecrit Tehlike İşareti</text>
+  
+  <!-- Buoy -->
+  <g transform="translate(200, 120)">
+    <circle cx="0" cy="0" r="50" class="buoy"/>
+    <rect x="-35" y="-35" width="70" height="70" class="black"/>
+    <rect x="-35" y="-5" width="70" height="10" class="red"/>
+    <rect x="-35" y="5" width="70" height="10" class="red"/>
+    
+    <!-- Two black spheres on top -->
+    <circle cx="-15" cy="-60" r="8" class="sphere"/>
+    <circle cx="15" cy="-60" r="8" class="sphere"/>
+    
+    <text x="0" y="100" class="text">TECRİT TEHLİKE</text>
+    <text x="0" y="115" class="text">İki siyah küre tepelik</text>
+    <text x="0" y="130" class="text">Siyah-kırmızı-siyah</text>
+  </g>
+  
+  <!-- Description -->
+  <rect x="50" y="200" width="300" height="80" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="200" y="225" class="text title">Anlamı</text>
+  <text x="200" y="245" class="text">Bu işaretin çevresinde güvenli</text>
+  <text x="200" y="260" class="text">geçiş mümkündür, ancak işaretin</text>
+  <text x="200" y="275" class="text">tam üzerinde tehlike bulunur.</text>
+</svg>

@@ -1,0 +1,68 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: bold; }
+      .sextant-body { fill: #c0c0c0; stroke: #000; stroke-width: 2; }
+      .mirror { fill: #e0e0e0; stroke: #000; stroke-width: 1; }
+      .telescope { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .handle { fill: #654321; stroke: #000; stroke-width: 1; }
+      .arc { fill: none; stroke: #000; stroke-width: 2; }
+      .scale { stroke: #000; stroke-width: 1; }
+      .sun { fill: #ffff00; stroke: #ff6600; stroke-width: 2; }
+      .horizon { stroke: #0000ff; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="300" y="30" class="text title">Sekstant</text>
+  
+  <!-- Sextant -->
+  <g transform="translate(300, 200)">
+    <!-- Main body -->
+    <path d="M -80 -20 L -60 -40 L 60 -40 L 80 -20 L 80 20 L 60 40 L -60 40 L -80 20 Z" class="sextant-body"/>
+    
+    <!-- Arc -->
+    <path d="M -60 -40 A 60 60 0 0 1 60 -40" class="arc"/>
+    
+    <!-- Scale markings -->
+    <line x1="-50" y1="-35" x2="-50" y2="-45" class="scale"/>
+    <line x1="-30" y1="-30" x2="-30" y2="-40" class="scale"/>
+    <line x1="-10" y1="-25" x2="-10" y2="-35" class="scale"/>
+    <line x1="10" y1="-25" x2="10" y2="-35" class="scale"/>
+    <line x1="30" y1="-30" x2="30" y2="-40" class="scale"/>
+    <line x1="50" y1="-35" x2="50" y2="-45" class="scale"/>
+    
+    <!-- Index mirror -->
+    <rect x="-5" y="-35" width="10" height="10" class="mirror"/>
+    
+    <!-- Horizon mirror -->
+    <rect x="-5" y="25" width="10" height="10" class="mirror"/>
+    
+    <!-- Telescope -->
+    <rect x="-3" y="-50" width="6" height="30" class="telescope"/>
+    
+    <!-- Handle -->
+    <rect x="-10" y="35" width="20" height="15" class="handle"/>
+    
+    <!-- Index arm -->
+    <line x1="0" y1="-40" x2="0" y2="-60" stroke="#000" stroke-width="2"/>
+    <circle cx="0" cy="-60" r="3" fill="#000"/>
+    
+    <!-- Vernier scale -->
+    <rect x="-15" y="-65" width="30" height="5" fill="#f0f0f0" stroke="#000"/>
+  </g>
+  
+  <!-- Sun and horizon -->
+  <g transform="translate(100, 100)">
+    <circle cx="0" cy="0" r="15" class="sun"/>
+    <line x1="-50" y1="50" x2="50" y2="50" class="horizon"/>
+    <text x="0" y="70" class="text">Ufuk</text>
+  </g>
+  
+  <!-- Description -->
+  <rect x="50" y="320" width="500" height="60" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="300" y="340" class="text title">Sekstant Bileşenleri</text>
+  <text x="300" y="360" class="text">1. Ana Gövde 2. Yay ve Ölçek 3. İndeks Aynası 4. Ufuk Aynası</text>
+  <text x="300" y="375" class="text">5. Teleskop 6. İndeks Kolu 7. Vernier Ölçeği</text>
+</svg>

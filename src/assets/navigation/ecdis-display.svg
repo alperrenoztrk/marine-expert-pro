@@ -1,0 +1,91 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: bold; }
+      .screen { fill: #000080; stroke: #00ff00; stroke-width: 2; }
+      .land { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .water { fill: #87CEEB; stroke: #000; stroke-width: 1; }
+      .route { fill: none; stroke: #ffff00; stroke-width: 3; }
+      .waypoint { fill: #ffff00; stroke: #000; stroke-width: 2; }
+      .ship { fill: #00ff00; stroke: #000; stroke-width: 2; }
+      .safety-contour { fill: none; stroke: #ff0000; stroke-width: 2; stroke-dasharray: 5,5; }
+      .depth { fill: #0000ff; stroke: #0000ff; stroke-width: 1; }
+      .alarm { fill: #ff0000; stroke: #ffff00; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">ECDIS Ekranı</text>
+  
+  <!-- ECDIS Screen -->
+  <g transform="translate(400, 300)">
+    <!-- Screen background -->
+    <rect x="-350" y="-250" width="700" height="500" class="screen"/>
+    
+    <!-- Land areas -->
+    <path d="M -300 -200 L -200 -200 L -150 -150 L -200 -100 L -300 -100 Z" class="land"/>
+    <path d="M 200 -200 L 300 -200 L 350 -150 L 300 -100 L 200 -100 Z" class="land"/>
+    
+    <!-- Water areas -->
+    <rect x="-350" y="-250" width="700" height="500" class="water"/>
+    
+    <!-- Depth contours -->
+    <ellipse cx="0" cy="0" rx="100" ry="80" class="depth"/>
+    <ellipse cx="0" cy="0" rx="150" ry="120" class="depth"/>
+    <ellipse cx="0" cy="0" rx="200" ry="160" class="depth"/>
+    
+    <!-- Safety contour -->
+    <ellipse cx="0" cy="0" rx="120" ry="100" class="safety-contour"/>
+    
+    <!-- Route -->
+    <path d="M -250 -100 L -150 -50 L -50 0 L 50 50 L 150 100 L 250 150" class="route"/>
+    
+    <!-- Waypoints -->
+    <circle cx="-150" cy="-50" r="8" class="waypoint"/>
+    <text x="-150" y="-70" class="text" fill="#ffff00">WP1</text>
+    
+    <circle cx="-50" cy="0" r="8" class="waypoint"/>
+    <text x="-50" y="-20" class="text" fill="#ffff00">WP2</text>
+    
+    <circle cx="50" cy="50" r="8" class="waypoint"/>
+    <text x="50" y="30" class="text" fill="#ffff00">WP3</text>
+    
+    <circle cx="150" cy="100" r="8" class="waypoint"/>
+    <text x="150" y="80" class="text" fill="#ffff00">WP4</text>
+    
+    <!-- Own ship -->
+    <circle cx="0" cy="0" r="10" class="ship"/>
+    <line x1="0" y1="0" x2="0" y2="-20" stroke="#00ff00" stroke-width="3"/>
+    
+    <!-- Alarm area -->
+    <circle cx="80" cy="-80" r="15" class="alarm"/>
+    <text x="80" y="-100" class="text" fill="#ffff00">ALARM</text>
+    
+    <!-- Scale -->
+    <line x1="-300" y1="200" x2="-200" y2="200" stroke="#00ff00" stroke-width="2"/>
+    <text x="-250" y="220" class="text" fill="#00ff00">1nm</text>
+  </g>
+  
+  <!-- Information Panel -->
+  <rect x="50" y="50" width="200" height="150" fill="#000080" stroke="#00ff00" stroke-width="1"/>
+  <text x="150" y="70" class="text" fill="#00ff00">ECDIS Bilgileri</text>
+  <text x="150" y="90" class="text" fill="#00ff00">• Safety Depth: 10m</text>
+  <text x="150" y="110" class="text" fill="#00ff00">• Safety Contour: 20m</text>
+  <text x="150" y="130" class="text" fill="#00ff00">• CATZOC: A1</text>
+  <text x="150" y="150" class="text" fill="#00ff00">• SCAMIN: 1:50,000</text>
+  <text x="150" y="170" class="text" fill="#00ff00">• Route Check: OK</text>
+  <text x="150" y="190" class="text" fill="#00ff00">• Anti-grounding: ON</text>
+  
+  <!-- Legend -->
+  <rect x="550" y="50" width="200" height="200" fill="#000080" stroke="#00ff00" stroke-width="1"/>
+  <text x="650" y="70" class="text" fill="#00ff00">ECDIS Elemanları</text>
+  <text x="650" y="90" class="text" fill="#ffff00">• Sarı: Rota ve Waypoint</text>
+  <text x="650" y="110" class="text" fill="#00ff00">• Yeşil: Own Ship</text>
+  <text x="650" y="130" class="text" fill="#ff0000">• Kırmızı: Safety Contour</text>
+  <text x="650" y="150" class="text" fill="#0000ff">• Mavi: Derinlik Konturları</text>
+  <text x="650" y="170" class="text" fill="#ff0000">• Kırmızı: Alarm Alanları</text>
+  <text x="650" y="190" class="text" fill="#8B4513">• Kahverengi: Kara</text>
+  <text x="650" y="210" class="text" fill="#87CEEB">• Açık Mavi: Su</text>
+  <text x="650" y="230" class="text" fill="#00ff00">• Yeşil: Ekran Çerçevesi</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: bold; }
+      .triangle { fill: none; stroke: #ff0000; stroke-width: 3; }
+      .angle { fill: #ffff00; stroke: #000; stroke-width: 1; }
+      .star { fill: #ffff00; stroke: #000; stroke-width: 1; }
+      .pole { fill: #0000ff; stroke: #000; stroke-width: 1; }
+      .zenith { fill: #00ff00; stroke: #000; stroke-width: 1; }
+      .arc { fill: none; stroke: #000; stroke-width: 1; }
+      .label { font-size: 10px; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="300" y="30" class="text title">Gök Üçgeni (Celestial Triangle)</text>
+  
+  <!-- Celestial sphere -->
+  <g transform="translate(300, 250)">
+    <!-- Outer circle (celestial sphere) -->
+    <circle cx="0" cy="0" r="180" fill="none" stroke="#000" stroke-width="2"/>
+    
+    <!-- Horizon -->
+    <line x1="-180" y1="0" x2="180" y2="0" stroke="#0000ff" stroke-width="2"/>
+    
+    <!-- Meridian -->
+    <line x1="0" y1="-180" x2="0" y2="180" stroke="#0000ff" stroke-width="2"/>
+    
+    <!-- North Pole -->
+    <circle cx="0" cy="-150" r="8" class="pole"/>
+    <text x="0" y="-170" class="text">Kuzey Kutbu</text>
+    
+    <!-- Zenith -->
+    <circle cx="0" cy="-120" r="8" class="zenith"/>
+    <text x="0" y="-100" class="text">Zenith</text>
+    
+    <!-- Star -->
+    <circle cx="80" cy="-100" r="6" class="star"/>
+    <text x="100" y="-95" class="text">Yıldız</text>
+    
+    <!-- Celestial triangle -->
+    <polygon points="0,-150 0,-120 80,-100" class="triangle"/>
+    
+    <!-- Angles -->
+    <path d="M 0 -120 A 20 20 0 0 1 20 -100" class="angle"/>
+    <text x="10" y="-105" class="label">H</text>
+    
+    <path d="M 0 -150 A 15 15 0 0 1 15 -135" class="angle"/>
+    <text x="8" y="-140" class="label">LHA</text>
+    
+    <path d="M 80 -100 A 15 15 0 0 1 65 -85" class="angle"/>
+    <text x="75" y="-90" class="label">Dec</text>
+    
+    <!-- Labels -->
+    <text x="40" y="-125" class="text">Co-latitude</text>
+    <text x="40" y="-80" class="text">Co-altitude</text>
+    <text x="20" y="-140" class="text">Polar Distance</text>
+  </g>
+  
+  <!-- Description -->
+  <rect x="50" y="420" width="500" height="60" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="300" y="440" class="text title">Gök Üçgeni Elemanları</text>
+  <text x="300" y="460" class="text">H: Yükseklik Açısı, LHA: Yerel Saat Açısı, Dec: Deklinasyon</text>
+  <text x="300" y="475" class="text">Co-latitude: 90° - Enlem, Co-altitude: 90° - Yükseklik</text>
+</svg>

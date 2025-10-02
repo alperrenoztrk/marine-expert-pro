@@ -1,0 +1,117 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .buoy { fill: none; stroke: #000; stroke-width: 2; }
+      .red { fill: #ff0000; }
+      .green { fill: #00ff00; }
+      .black { fill: #000000; }
+      .white { fill: #ffffff; }
+      .yellow { fill: #ffff00; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-size: 18px; font-weight: bold; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">IALA A Sistemi - Lateral İşaretler</text>
+  
+  <!-- Port Hand Mark (Red) -->
+  <g transform="translate(100, 100)">
+    <circle cx="0" cy="0" r="30" class="buoy red"/>
+    <text x="0" y="5" class="text" fill="white">P</text>
+    <text x="0" y="80" class="text">İskele</text>
+    <text x="0" y="95" class="text">(Kırmızı)</text>
+  </g>
+  
+  <!-- Starboard Hand Mark (Green) -->
+  <g transform="translate(300, 100)">
+    <circle cx="0" cy="0" r="30" class="buoy green"/>
+    <text x="0" y="5" class="text" fill="white">S</text>
+    <text x="0" y="80" class="text">Sancak</text>
+    <text x="0" y="95" class="text">(Yeşil)</text>
+  </g>
+  
+  <!-- Preferred Channel Starboard -->
+  <g transform="translate(500, 100)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="green"/>
+    <rect x="-20" y="0" width="40" height="20" class="red"/>
+    <text x="0" y="80" class="text">Tercih Edilen</text>
+    <text x="0" y="95" class="text">Kanal Sancak</text>
+  </g>
+  
+  <!-- Preferred Channel Port -->
+  <g transform="translate(700, 100)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="red"/>
+    <rect x="-20" y="0" width="40" height="20" class="green"/>
+    <text x="0" y="80" class="text">Tercih Edilen</text>
+    <text x="0" y="95" class="text">Kanal İskele</text>
+  </g>
+  
+  <!-- Cardinal Marks -->
+  <text x="400" y="250" class="text title">Kardinal İşaretler</text>
+  
+  <!-- North Cardinal -->
+  <g transform="translate(100, 300)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="yellow"/>
+    <rect x="-20" y="0" width="40" height="20" class="black"/>
+    <text x="0" y="80" class="text">Kuzey</text>
+    <text x="0" y="95" class="text">(Kuzeyde Güvenli)</text>
+  </g>
+  
+  <!-- East Cardinal -->
+  <g transform="translate(300, 300)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="20" height="40" class="black"/>
+    <rect x="0" y="-20" width="20" height="40" class="yellow"/>
+    <text x="0" y="80" class="text">Doğu</text>
+    <text x="0" y="95" class="text">(Doğuda Güvenli)</text>
+  </g>
+  
+  <!-- South Cardinal -->
+  <g transform="translate(500, 300)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="yellow"/>
+    <rect x="-20" y="-20" width="40" height="20" class="black"/>
+    <text x="0" y="80" class="text">Güney</text>
+    <text x="0" y="95" class="text">(Güneyde Güvenli)</text>
+  </g>
+  
+  <!-- West Cardinal -->
+  <g transform="translate(700, 300)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="20" height="40" class="yellow"/>
+    <rect x="0" y="-20" width="20" height="40" class="black"/>
+    <text x="0" y="80" class="text">Batı</text>
+    <text x="0" y="95" class="text">(Batıda Güvenli)</text>
+  </g>
+  
+  <!-- Special Marks -->
+  <text x="400" y="450" class="text title">Özel İşaretler</text>
+  
+  <!-- Isolated Danger -->
+  <g transform="translate(200, 500)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="black"/>
+    <rect x="-20" y="-5" width="40" height="10" class="red"/>
+    <text x="0" y="80" class="text">Tecrit Tehlike</text>
+  </g>
+  
+  <!-- Safe Water -->
+  <g transform="translate(400, 500)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="red"/>
+    <rect x="-20" y="-5" width="40" height="10" class="white"/>
+    <text x="0" y="80" class="text">Emniyetli Su</text>
+  </g>
+  
+  <!-- Special Purpose -->
+  <g transform="translate(600, 500)">
+    <circle cx="0" cy="0" r="30" class="buoy"/>
+    <rect x="-20" y="-20" width="40" height="40" class="yellow"/>
+    <text x="0" y="5" class="text" fill="black">X</text>
+    <text x="0" y="80" class="text">Özel Amaç</text>
+  </g>
+</svg>

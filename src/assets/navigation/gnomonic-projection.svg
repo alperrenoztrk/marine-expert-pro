@@ -1,0 +1,61 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-size: 18px; font-weight: bold; }
+      .great-circle { stroke: #ff0000; stroke-width: 3; fill: none; }
+      .rhumb-line { stroke: #0000ff; stroke-width: 2; fill: none; stroke-dasharray: 5,5; }
+      .land { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .water { fill: #87CEEB; stroke: #000; stroke-width: 1; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">Gnomonik Projeksiyonu</text>
+  
+  <!-- World Map -->
+  <g transform="translate(400, 250)">
+    <!-- Background -->
+    <circle cx="0" cy="0" r="200" class="water"/>
+    
+    <!-- Continents (simplified, distorted) -->
+    <!-- North America -->
+    <path d="M -150 -100 L -80 -120 L -50 -80 L -80 -40 L -120 -40 L -150 -60 Z" class="land"/>
+    
+    <!-- South America -->
+    <path d="M -80 -40 L -40 -50 L -20 -20 L -40 10 L -60 20 L -80 10 Z" class="land"/>
+    
+    <!-- Europe -->
+    <path d="M -40 -60 L -10 -70 L 10 -50 L -10 -30 L -40 -30 Z" class="land"/>
+    
+    <!-- Africa -->
+    <path d="M -10 -60 L 20 -70 L 40 -40 L 20 -10 L 0 20 L -20 30 L -30 10 Z" class="land"/>
+    
+    <!-- Asia -->
+    <path d="M 20 -60 L 120 -80 L 150 -60 L 130 -40 L 80 -40 L 40 -50 L 20 -50 Z" class="land"/>
+    
+    <!-- Australia -->
+    <path d="M 60 40 L 120 50 L 140 80 L 120 100 L 60 90 Z" class="land"/>
+    
+    <!-- Great Circles (straight lines) -->
+    <line x1="-180" y1="-100" x2="180" y2="100" class="great-circle"/>
+    <line x1="-150" y1="-150" x2="150" y2="150" class="great-circle"/>
+    <line x1="-200" y1="0" x2="200" y2="0" class="great-circle"/>
+    
+    <!-- Rhumb Lines (curved) -->
+    <path d="M -150 -80 Q -75 -40 0 0 Q 75 40 150 80" class="rhumb-line"/>
+    <path d="M -120 -100 Q -60 -50 0 0 Q 60 50 120 100" class="rhumb-line"/>
+    
+    <!-- Labels -->
+    <text x="0" y="-220" class="text">Büyük Daireler Düz Çizgi</text>
+    <text x="0" y="230" class="text">Rhumb Çizgileri Eğri</text>
+  </g>
+  
+  <!-- Characteristics -->
+  <rect x="50" y="350" width="700" height="120" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="400" y="375" class="text title">Gnomonik Projeksiyonu Özellikleri</text>
+  <text x="400" y="400" class="text">• Büyük daireler düz çizgi olarak görünür</text>
+  <text x="400" y="420" class="text">• Navigasyon için idealdir</text>
+  <text x="400" y="440" class="text">• Merkez noktadan uzaklaştıkça distorsiyon artar</text>
+  <text x="400" y="460" class="text">• Kısa mesafe navigasyonu için kullanılır</text>
+</svg>

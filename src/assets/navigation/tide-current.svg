@@ -1,0 +1,70 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: bold; }
+      .tide-curve { fill: none; stroke: #0000ff; stroke-width: 3; }
+      .current-arrow { stroke: #ff0000; stroke-width: 2; fill: #ff0000; }
+      .ship { fill: #8B4513; stroke: #000; stroke-width: 2; }
+      .water { fill: #87CEEB; stroke: #000; stroke-width: 1; }
+      .land { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .grid { stroke: #ccc; stroke-width: 0.5; fill: none; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">Gelgit ve Akıntı Seyri</text>
+  
+  <!-- Tide Curve -->
+  <g transform="translate(200, 150)">
+    <text x="0" y="-80" class="text title">Gelgit Eğrisi</text>
+    <!-- Grid -->
+    <line x1="0" y1="0" x2="300" y2="0" class="grid"/>
+    <line x1="0" y1="-50" x2="300" y2="-50" class="grid"/>
+    <line x1="0" y1="-100" x2="300" y2="-100" class="grid"/>
+    <line x1="0" y1="50" x2="300" y2="50" class="grid"/>
+    
+    <!-- Tide curve -->
+    <path d="M 0 0 Q 75 -100 150 0 Q 225 100 300 0" class="tide-curve"/>
+    
+    <!-- Labels -->
+    <text x="0" y="70" class="text">HW</text>
+    <text x="150" y="70" class="text">LW</text>
+    <text x="300" y="70" class="text">HW</text>
+    <text x="75" y="-120" class="text">Yüksek Su</text>
+    <text x="225" y="120" class="text">Alçak Su</text>
+  </g>
+  
+  <!-- Current Flow -->
+  <g transform="translate(600, 200)">
+    <text x="0" y="-100" class="text title">Akıntı Akışı</text>
+    
+    <!-- Water -->
+    <rect x="-100" y="-50" width="200" height="100" class="water"/>
+    
+    <!-- Current arrows -->
+    <path d="M -80 -30 Q -40 -20 0 -30 Q 40 -40 80 -30" class="current-arrow"/>
+    <path d="M -80 0 Q -40 10 0 0 Q 40 -10 80 0" class="current-arrow"/>
+    <path d="M -80 30 Q -40 20 0 30 Q 40 40 80 30" class="current-arrow"/>
+    
+    <!-- Ship -->
+    <g transform="translate(0, 0)">
+      <rect x="-15" y="-10" width="30" height="20" class="ship"/>
+      <line x1="0" y1="-10" x2="0" y2="-25" stroke="#000" stroke-width="2"/>
+      <text x="0" y="-35" class="text">Gemi</text>
+    </g>
+    
+    <!-- Current effect -->
+    <path d="M 0 0 Q 20 10 40 0" stroke="#ff0000" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+    <text x="20" y="25" class="text">Akıntı Etkisi</text>
+  </g>
+  
+  <!-- Tide Tables -->
+  <rect x="50" y="350" width="700" height="120" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="400" y="370" class="text title">Gelgit Tablosu Örneği</text>
+  <text x="400" y="390" class="text">HW: 06:30 (4.2m) | LW: 12:45 (1.8m) | HW: 19:00 (4.5m)</text>
+  <text x="400" y="410" class="text">Range: 4.5m - 1.8m = 2.7m</text>
+  <text x="400" y="430" class="text">Mean Range: (2.7m + 2.4m) / 2 = 2.55m</text>
+  <text x="400" y="450" class="text">Spring Tide: Büyük gelgit (yeni/dolunay)</text>
+  <text x="400" y="470" class="text">Neap Tide: Küçük gelgit (ilk/son dördün)</text>
+</svg>

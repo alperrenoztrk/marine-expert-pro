@@ -1,0 +1,78 @@
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .buoy { fill: none; stroke: #000; stroke-width: 2; }
+      .red { fill: #ff0000; }
+      .green { fill: #00ff00; }
+      .black { fill: #000000; }
+      .white { fill: #ffffff; }
+      .yellow { fill: #ffff00; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-size: 18px; font-weight: bold; }
+      .cone { fill: #000; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">Kardinal İşaretler - Tepelikler ve Renkler</text>
+  
+  <!-- North Cardinal -->
+  <g transform="translate(100, 100)">
+    <circle cx="0" cy="0" r="40" class="buoy"/>
+    <rect x="-25" y="-25" width="50" height="50" class="yellow"/>
+    <rect x="-25" y="0" width="50" height="25" class="black"/>
+    <!-- Two cones pointing up -->
+    <polygon points="-10,-35 -5,-45 0,-35" class="cone"/>
+    <polygon points="0,-35 5,-45 10,-35" class="cone"/>
+    <text x="0" y="90" class="text">KUZEY</text>
+    <text x="0" y="105" class="text">İki koni yukarı</text>
+    <text x="0" y="120" class="text">Sarı-siyah</text>
+  </g>
+  
+  <!-- East Cardinal -->
+  <g transform="translate(300, 100)">
+    <circle cx="0" cy="0" r="40" class="buoy"/>
+    <rect x="-25" y="-25" width="25" height="50" class="black"/>
+    <rect x="0" y="-25" width="25" height="50" class="yellow"/>
+    <!-- Two cones pointing outward -->
+    <polygon points="-15,-20 -25,-30 -15,-10" class="cone"/>
+    <polygon points="15,-20 25,-30 15,-10" class="cone"/>
+    <text x="0" y="90" class="text">DOĞU</text>
+    <text x="0" y="105" class="text">İki koni dışa</text>
+    <text x="0" y="120" class="text">Siyah-sarı</text>
+  </g>
+  
+  <!-- South Cardinal -->
+  <g transform="translate(500, 100)">
+    <circle cx="0" cy="0" r="40" class="buoy"/>
+    <rect x="-25" y="-25" width="50" height="50" class="yellow"/>
+    <rect x="-25" y="-25" width="50" height="25" class="black"/>
+    <!-- Two cones pointing down -->
+    <polygon points="-10,35 -5,45 0,35" class="cone"/>
+    <polygon points="0,35 5,45 10,35" class="cone"/>
+    <text x="0" y="90" class="text">GÜNEY</text>
+    <text x="0" y="105" class="text">İki koni aşağı</text>
+    <text x="0" y="120" class="text">Sarı-siyah</text>
+  </g>
+  
+  <!-- West Cardinal -->
+  <g transform="translate(700, 100)">
+    <circle cx="0" cy="0" r="40" class="buoy"/>
+    <rect x="-25" y="-25" width="25" height="50" class="yellow"/>
+    <rect x="0" y="-25" width="25" height="50" class="black"/>
+    <!-- Two cones pointing inward -->
+    <polygon points="-15,20 -25,30 -15,10" class="cone"/>
+    <polygon points="15,20 25,30 15,10" class="cone"/>
+    <text x="0" y="90" class="text">BATI</text>
+    <text x="0" y="105" class="text">İki koni içe</text>
+    <text x="0" y="120" class="text">Sarı-siyah</text>
+  </g>
+  
+  <!-- Memory Aid -->
+  <rect x="50" y="250" width="700" height="120" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="400" y="275" class="text title">Hafıza Yardımcısı</text>
+  <text x="400" y="300" class="text">"Kuzeyde İki Konuşkan" - Kuzey: İki koni yukarı</text>
+  <text x="400" y="320" class="text">"Doğuda Dışarı" - Doğu: İki koni dışa</text>
+  <text x="400" y="340" class="text">"Güneyde Gömülü" - Güney: İki koni aşağı</text>
+  <text x="400" y="360" class="text">"Batıda Birleşik" - Batı: İki koni içe</text>
+</svg>

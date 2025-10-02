@@ -1,0 +1,62 @@
+<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: bold; }
+      .meridian { stroke: #0000ff; stroke-width: 2; fill: none; }
+      .parallel { stroke: #ff0000; stroke-width: 2; fill: none; }
+      .land { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .water { fill: #87CEEB; stroke: #000; stroke-width: 1; }
+      .center { fill: #ffff00; stroke: #000; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="300" y="30" class="text title">Azimutal Eşit Uzaklık Projeksiyonu</text>
+  
+  <!-- Projection -->
+  <g transform="translate(300, 250)">
+    <!-- Background -->
+    <circle cx="0" cy="0" r="180" class="water"/>
+    
+    <!-- Center point -->
+    <circle cx="0" cy="0" r="8" class="center"/>
+    <text x="0" y="-200" class="text">Kutup Merkezli</text>
+    
+    <!-- Continents (distorted) -->
+    <!-- North America -->
+    <path d="M -120 -80 L -60 -100 L -30 -70 L -60 -40 L -100 -40 L -120 -60 Z" class="land"/>
+    
+    <!-- Europe -->
+    <path d="M -40 -60 L -20 -70 L 0 -50 L -20 -30 L -40 -30 Z" class="land"/>
+    
+    <!-- Asia -->
+    <path d="M -20 -60 L 80 -80 L 120 -60 L 100 -40 L 40 -40 L 0 -50 L -20 -50 Z" class="land"/>
+    
+    <!-- Meridians (radial lines) -->
+    <line x1="0" y1="0" x2="-150" y2="-90" class="meridian"/>
+    <line x1="0" y1="0" x2="-90" y2="-150" class="meridian"/>
+    <line x1="0" y1="0" x2="0" y2="-180" class="meridian"/>
+    <line x1="0" y1="0" x2="90" y2="-150" class="meridian"/>
+    <line x1="0" y1="0" x2="150" y2="-90" class="meridian"/>
+    <line x1="0" y1="0" x2="150" y2="90" class="meridian"/>
+    <line x1="0" y1="0" x2="0" y2="180" class="meridian"/>
+    <line x1="0" y1="0" x2="-150" y2="90" class="meridian"/>
+    
+    <!-- Parallels (concentric circles) -->
+    <circle cx="0" cy="0" r="60" class="parallel"/>
+    <circle cx="0" cy="0" r="120" class="parallel"/>
+    <circle cx="0" cy="0" r="180" class="parallel"/>
+    
+    <!-- Labels -->
+    <text x="0" y="-70" class="text">30°</text>
+    <text x="0" y="-130" class="text">60°</text>
+    <text x="0" y="-190" class="text">90°</text>
+  </g>
+  
+  <!-- Characteristics -->
+  <rect x="50" y="420" width="500" height="60" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="300" y="440" class="text title">Azimutal Eşit Uzaklık Özellikleri</text>
+  <text x="300" y="460" class="text">• Merkez noktadan uzaklıklar doğru</text>
+  <text x="300" y="475" class="text">• Azimutlar merkez noktadan doğru</text>
+</svg>

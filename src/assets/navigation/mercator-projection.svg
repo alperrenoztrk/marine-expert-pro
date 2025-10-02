@@ -1,0 +1,82 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .title { font-size: 18px; font-weight: bold; }
+      .meridian { stroke: #0000ff; stroke-width: 2; fill: none; }
+      .parallel { stroke: #ff0000; stroke-width: 2; fill: none; }
+      .land { fill: #8B4513; stroke: #000; stroke-width: 1; }
+      .water { fill: #87CEEB; stroke: #000; stroke-width: 1; }
+      .grid { stroke: #ccc; stroke-width: 0.5; fill: none; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="text title">Mercator Projeksiyonu</text>
+  
+  <!-- World Map -->
+  <g transform="translate(400, 250)">
+    <!-- Background -->
+    <rect x="-350" y="-200" width="700" height="400" class="water"/>
+    
+    <!-- Continents (simplified) -->
+    <!-- North America -->
+    <path d="M -300 -150 L -200 -150 L -150 -100 L -180 -50 L -250 -50 L -300 -100 Z" class="land"/>
+    
+    <!-- South America -->
+    <path d="M -200 -50 L -150 -50 L -120 0 L -150 50 L -200 50 L -220 0 Z" class="land"/>
+    
+    <!-- Europe -->
+    <path d="M -100 -100 L -50 -100 L -30 -80 L -50 -60 L -100 -60 Z" class="land"/>
+    
+    <!-- Africa -->
+    <path d="M -50 -100 L 0 -100 L 20 -50 L 0 0 L -20 50 L -50 50 Z" class="land"/>
+    
+    <!-- Asia -->
+    <path d="M 0 -100 L 150 -100 L 200 -80 L 180 -60 L 100 -60 L 50 -80 L 0 -80 Z" class="land"/>
+    
+    <!-- Australia -->
+    <path d="M 100 50 L 200 50 L 220 80 L 200 100 L 100 100 Z" class="land"/>
+    
+    <!-- Meridians (vertical lines) -->
+    <line x1="-300" y1="-200" x2="-300" y2="200" class="meridian"/>
+    <line x1="-200" y1="-200" x2="-200" y2="200" class="meridian"/>
+    <line x1="-100" y1="-200" x2="-100" y2="200" class="meridian"/>
+    <line x1="0" y1="-200" x2="0" y2="200" class="meridian"/>
+    <line x1="100" y1="-200" x2="100" y2="200" class="meridian"/>
+    <line x1="200" y1="-200" x2="200" y2="200" class="meridian"/>
+    <line x1="300" y1="-200" x2="300" y2="200" class="meridian"/>
+    
+    <!-- Parallels (horizontal lines) -->
+    <line x1="-350" y1="-150" x2="350" y2="-150" class="parallel"/>
+    <line x1="-350" y1="-100" x2="350" y2="-100" class="parallel"/>
+    <line x1="-350" y1="-50" x2="350" y2="-50" class="parallel"/>
+    <line x1="-350" y1="0" x2="350" y2="0" class="parallel"/>
+    <line x1="-350" y1="50" x2="350" y2="50" class="parallel"/>
+    <line x1="-350" y1="100" x2="350" y2="100" class="parallel"/>
+    <line x1="-350" y1="150" x2="350" y2="150" class="parallel"/>
+    
+    <!-- Labels -->
+    <text x="-300" y="-220" class="text">180°W</text>
+    <text x="-200" y="-220" class="text">120°W</text>
+    <text x="-100" y="-220" class="text">60°W</text>
+    <text x="0" y="-220" class="text">0°</text>
+    <text x="100" y="-220" class="text">60°E</text>
+    <text x="200" y="-220" class="text">120°E</text>
+    <text x="300" y="-220" class="text">180°E</text>
+    
+    <text x="-380" y="-150" class="text">60°N</text>
+    <text x="-380" y="-100" class="text">30°N</text>
+    <text x="-380" y="-50" class="text">0°</text>
+    <text x="-380" y="0" class="text">30°S</text>
+    <text x="-380" y="50" class="text">60°S</text>
+  </g>
+  
+  <!-- Characteristics -->
+  <rect x="50" y="350" width="700" height="120" fill="#f0f0f0" stroke="#000" stroke-width="1"/>
+  <text x="400" y="375" class="text title">Mercator Projeksiyonu Özellikleri</text>
+  <text x="400" y="400" class="text">• Meridyenler paralel düz çizgiler</text>
+  <text x="400" y="420" class="text">• Paraleller paralel düz çizgiler</text>
+  <text x="400" y="440" class="text">• Açılar korunur (konform)</text>
+  <text x="400" y="460" class="text">• Kutuplarda distorsiyon artar</text>
+</svg>
