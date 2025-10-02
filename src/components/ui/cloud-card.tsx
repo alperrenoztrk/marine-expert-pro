@@ -86,27 +86,36 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
           </div>
           <div className="flex flex-col gap-2 items-end">
             {getDangerBadge(cloud.danger)}
-            <Badge className={cn("text-xs", getLevelColor(cloud.level))}>
-              {cloud.mgmCode}
-            </Badge>
+            <div className="flex flex-col gap-1 items-end">
+              <Badge className={cn("text-xs font-bold px-3 py-1", getLevelColor(cloud.level))}>
+                MGM: {cloud.mgmCode}
+              </Badge>
+              <Badge variant="outline" className="text-xs font-mono border-purple-400 text-purple-700 dark:text-purple-300 dark:border-purple-500">
+                {cloud.code}
+              </Badge>
+            </div>
           </div>
         </div>
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* Görsel */}
-        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+        {/* Görsel - Gerçek Bulut Fotoğrafı */}
+        <div className="relative w-full h-48 rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 shadow-lg">
           {cloud.imageUrl ? (
-            <img 
-              src={cloud.imageUrl} 
-              alt={`${cloud.name} - ${cloud.descriptionTr}`}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = 'flex';
-              }}
-            />
+            <>
+              <img 
+                src={cloud.imageUrl} 
+                alt={`${cloud.name} - ${cloud.descriptionTr}`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              {/* Gradient overlay for better text visibility */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40"></div>
+            </>
           ) : null}
           <div 
             className={`${cloud.imageUrl ? 'hidden' : 'flex'} absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 items-center justify-center`}
@@ -117,21 +126,35 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
               <div className="text-sm text-sky-700">{cloud.nameTr}</div>
             </div>
           </div>
+          
+          {/* Altitude badges - Top */}
           <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="text-xs backdrop-blur-sm">
+            <Badge variant="secondary" className="text-xs backdrop-blur-md bg-white/90 dark:bg-gray-800/90 border border-white/50 font-semibold shadow-lg">
               <Thermometer className="h-3 w-3 mr-1" />
               {cloud.altitude}
             </Badge>
           </div>
           <div className="absolute top-2 right-2">
-            <Badge variant="secondary" className="text-xs backdrop-blur-sm">
+            <Badge variant="secondary" className="text-xs backdrop-blur-md bg-white/90 dark:bg-gray-800/90 border border-white/50 font-semibold shadow-lg">
               {cloud.altitudeFt}
             </Badge>
           </div>
-          <div className="absolute bottom-2 left-2">
-            <Badge className={cn("text-xs font-bold backdrop-blur-sm", getLevelColor(cloud.level))}>
-              {cloud.code}
-            </Badge>
+          
+          {/* Cloud name and code overlay - Bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-white font-bold text-lg tracking-wide drop-shadow-lg">
+                  {cloud.name}
+                </div>
+                <div className="text-white/90 text-sm drop-shadow-md">
+                  {cloud.nameTr}
+                </div>
+              </div>
+              <Badge className={cn("text-sm font-bold px-3 py-1 shadow-lg", getLevelColor(cloud.level))}>
+                {cloud.code}
+              </Badge>
+            </div>
           </div>
         </div>
 
@@ -189,29 +212,56 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
           </div>
         </div>
 
-        {/* Uydu Kanalları */}
+        {/* Uydu Kanalları - Daha Belirgin Tasarım */}
         {cloud.satelliteChannels && cloud.satelliteChannels.length > 0 && (
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 neon:from-cyan-900/30 neon:to-purple-900/30 rounded-lg p-3 space-y-2 border border-purple-200 dark:border-purple-700 neon:border-cyan-400">
-            <h4 className="font-semibold text-sm flex items-center gap-1 text-purple-900 dark:text-purple-200 neon:text-cyan-400">
-              <Satellite className="h-4 w-4" />
-              Uydu Görüntüleme Kanalları
-            </h4>
-            <div className="flex flex-wrap gap-1">
-              {cloud.satelliteChannels.map((channel, index) => (
-                <Badge 
-                  key={index} 
-                  variant="secondary" 
-                  className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100 neon:bg-cyan-700 neon:text-cyan-100"
-                >
-                  {channel}
-                </Badge>
-              ))}
+          <div className="bg-gradient-to-br from-purple-100 via-indigo-100 to-blue-100 dark:from-purple-900/30 dark:via-indigo-900/30 dark:to-blue-900/30 neon:from-cyan-900/40 neon:via-purple-900/40 neon:to-blue-900/40 rounded-xl p-4 space-y-3 border-2 border-purple-300 dark:border-purple-600 neon:border-cyan-400 shadow-md">
+            <div className="flex items-center gap-2">
+              <div className="bg-purple-600 dark:bg-purple-500 neon:bg-cyan-500 rounded-full p-2">
+                <Satellite className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-purple-900 dark:text-purple-100 neon:text-cyan-300">
+                  🛰️ Meteorolojik Uydu Kanalları
+                </h4>
+                <p className="text-xs text-purple-700 dark:text-purple-300 neon:text-cyan-400">
+                  Tespit için kullanılan spektral bantlar
+                </p>
+              </div>
             </div>
+            
+            <div className="bg-white/50 dark:bg-gray-800/50 neon:bg-slate-800/50 rounded-lg p-2">
+              <div className="flex flex-wrap gap-2">
+                {cloud.satelliteChannels.map((channel, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="secondary" 
+                    className="text-xs font-semibold px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-0 shadow-sm hover:shadow-md transition-shadow neon:from-cyan-600 neon:to-blue-600"
+                  >
+                    {channel}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
             {cloud.bestDetectionChannel && (
-              <div className="text-xs text-purple-700 dark:text-purple-300 neon:text-cyan-300 mt-2 pt-2 border-t border-purple-200 dark:border-purple-700 neon:border-cyan-600">
-                <span className="font-semibold">🎯 En İyi Kanal:</span> {cloud.bestDetectionChannel}
+              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/30 dark:to-orange-900/30 neon:from-cyan-900/50 neon:to-purple-900/50 rounded-lg p-3 border-2 border-yellow-300 dark:border-yellow-600 neon:border-cyan-500">
+                <div className="flex items-start gap-2">
+                  <span className="text-lg">🎯</span>
+                  <div className="flex-1">
+                    <div className="font-bold text-xs text-yellow-900 dark:text-yellow-100 neon:text-cyan-300 mb-1">
+                      ÖNERİLEN PRİMER KANAL
+                    </div>
+                    <div className="text-xs text-yellow-800 dark:text-yellow-200 neon:text-cyan-400 font-medium">
+                      {cloud.bestDetectionChannel}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
+            
+            <div className="text-xs text-purple-600 dark:text-purple-300 neon:text-cyan-400 italic pt-2 border-t border-purple-200 dark:border-purple-700 neon:border-cyan-600">
+              💡 Bu kanallar EUMETSAT MSG uydu sisteminin spektral bantlarıdır
+            </div>
           </div>
         )}
       </CardContent>
