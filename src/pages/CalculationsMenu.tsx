@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Cloud } from 'lucide-react';
+import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lucide-react';
 import BackButton from '@/components/BackButton';
 
 const categories = [
   { title: 'Stabilite', icon: Ship, link: '/stability' },
   { title: 'Seyir', icon: Compass, link: '/navigation-menu' },
-  { title: 'Meteoroloji', icon: Cloud, link: '/comprehensive-meteorology' },
   { title: 'Gemicilik', icon: Anchor, link: '/seamanship-menu' },
   { title: 'Mali', icon: DollarSign, link: '/economics-menu' },
   { title: 'Emniyet', icon: LifeBuoy, link: '/safety-menu' },
