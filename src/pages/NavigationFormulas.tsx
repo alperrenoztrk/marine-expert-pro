@@ -263,20 +263,18 @@ dCPA = |R + Vrel · tCPA|`}</pre>
               </CardTitle>
             </CardHeader>
             {isOpen('distance') && (
-            <CardContent className="space-y-3 text-sm">
+          <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`Dip (Horizon) Distance:
-d = 2.075 · √h (nm, h: metre)
+                <pre className="font-mono text-sm leading-6">{`Geographical (Horizon) Range:
+d = 2.08 · √h_m  (nm, h metre)
+veya d = 1.17 · √h_ft (nm, h feet)
 
-Radar Horizon:
-d = 2.35 · √h (radar)
+Radar/VHF Horizon (refraksiyon dahil):
+d = 2.23 · (√h₁ + √h₂)  (h metre)
 
-Işık Görünürlük Mesafesi:
-d = 1.17 · (√h₁ + √h₂ + √R)
-R: ışık yüksekliği
-
-Kavisli Yeryüzü Düzeltmesi:
-d_corrected = d · √(1 + h/R_earth)`}</pre>
+Light Geographic Range (USCG Light List):
+d = 2.08 · (√h_observer + √h_light)  (h metre)
+Not: Luminous range; nominal ışık gücü ve meteorolojik görüşe bağlıdır.`}</pre>
               </div>
             </CardContent>
             )}

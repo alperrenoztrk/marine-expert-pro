@@ -527,13 +527,13 @@ const Regulations = () => {
               <div>
                 <h1 className="text-2xl font-bold">
                   {activeTab === "chapters" && "SOLAS 2020 Edition"}
-                  {activeTab === "uscg" && "COLREG Navigation Rules"}
+                  {activeTab === "uscg" && "Navigation Rules (COLREG/US Inland)"}
                   {activeTab === "amendments" && "SOLAS 2024 Updates"}
                   {activeTab === "navrules" && "Seyir Kuralları"}
                 </h1>
                 <p className="text-muted-foreground">
                   {activeTab === "chapters" && "International Convention for the Safety of Life at Sea"}
-                  {activeTab === "uscg" && "International Regulations for Preventing Collisions at Sea"}
+                  {activeTab === "uscg" && "COLREG (International) ve US Inland Navigation Rules kaynakları"}
                   {activeTab === "amendments" && "Latest SOLAS Amendments and Updates"}
                   {activeTab === "navrules" && "Navigasyonla ilgili uluslararası, teknik ve yerel düzenlemeler"}
                 </p>
@@ -679,7 +679,7 @@ const Regulations = () => {
                   <div className="space-y-1">
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
-                      COLREG Navigation Rules
+                      Navigation Rules
                     </CardTitle>
                     <CardDescription>
                       International Regulations for Preventing Collisions at Sea
@@ -727,12 +727,12 @@ const Regulations = () => {
                     </div>
                   </div>
                   
-                  <div className="text-sm text-red-800 bg-red-100/50 p-3 rounded">
-                    <p className="font-medium mb-1">📋 Available COLREG Resources:</p>
-                    <p>• COLREG Navigation Rules (PDF)</p>
-                    <p>• International collision avoidance regulations</p>
-                    <p>• Navigation lights, shapes, and signals</p>
-                    <p className="mt-2 text-xs">Not: En güncel versiyonu USCG Navigation Center'dan alınabilir.</p>
+                    <div className="text-sm text-red-800 bg-red-100/50 p-3 rounded">
+                    <p className="font-medium mb-1">📋 Navigation Rules Kaynakları:</p>
+                    <p>• COLREG (International) – Lights, shapes, sound, steering rules</p>
+                    <p>• US Inland Navigation Rules – ABD iç sularına özel hükümler</p>
+                    <p>• USCG Navigation Center – güncel bültenler ve kılavuzlar</p>
+                    <p className="mt-2 text-xs">Not: En güncel metin ve değişiklikler için USCG Navigation Center'a bakınız.</p>
                   </div>
                 </div>
               </CardContent>

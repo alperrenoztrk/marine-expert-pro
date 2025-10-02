@@ -464,7 +464,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
             <div className="space-y-2">
               <p><strong>Genel Bakış:</strong> IALA A/B sistemleri; kanal sınırları, tehlikeler ve güvenli su işaretleri için standart renk/şekil/tepelik ve ışık karakterleri.</p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Lateral (Yanlaç):</strong> Sistem A'da iskele kırmızı (silindir tepelik), sancak yeşil (koni tepelik). Girişte kırmızı iskelede, yeşil sancakta bırakılır.</li>
+                <li><strong>Lateral (Yanlaç):</strong> Sistem A'da iskele kırmızı (silindir tepelik), sancak yeşil (koni tepelik). Sistem B (US/Canada/Japan/Korea/Philippines) için girişte <em>kırmızı sağda</em> ("red right returning"). Yerel idare duyurularını kontrol edin.</li>
                 <li><strong>Kardinal (Yönleç):</strong> Tehlikenin güvenli tarafından geçişi gösterir. Kuzey (▲▲), Doğu (▲▼), Güney (▼▼), Batı (▼▲) koni tepelikleri ve siyah/sarı bant kombinasyonları.</li>
                 <li><strong>Tecrit (İzole) Tehlike:</strong> Kırmızı-siyah yatay bant; tepelik iki siyah küre; ışık: Fl(2).</li>
                 <li><strong>Emniyetli Su:</strong> Kırmızı-beyaz dikey bant; tepelik kırmızı küre; ışık: Iso veya LFl10s.</li>
@@ -481,7 +481,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     <div>🟢 Sancak Şamandırası (Yeşil)</div>
                   </div>
                 </div>
-                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: IALA A lateral işaretler (yerel çizim)</figcaption>
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: IALA A lateral işaretler (not: ABD sularında IALA B uygulanır)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="/src/assets/navigation/cardinal-marks.svg" loading="lazy" />

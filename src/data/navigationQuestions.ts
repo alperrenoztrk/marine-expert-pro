@@ -595,10 +595,10 @@ export const navigationQuestions: QuizQuestion[] = [
   },
   {
     id: 74,
-    question: "Radar horizon gemiden 20 NM uzakta ise radar anteni yaklaşık kaç metre yükseklikte?",
-    options: ["15 m", "30 m", "45 m", "60 m"],
-    correctAnswer: 1,
-    explanation: "Radar horizon = 1.23 × √h (metre). 20 = 1.23 × √h → h ≈ 264 m² ÷ 1.23² ≈ 30m antenna yüksekliği.",
+    question: "Radar ufuk mesafesi 20 NM ise radar anten yüksekliği yaklaşık kaç metredir?",
+    options: ["8 m", "20 m", "30 m", "45 m"],
+    correctAnswer: 2,
+    explanation: "Radar/VHF horizon ≈ 2.23·√h (h metre). 20 = 2.23·√h ⇒ √h ≈ 8.97 ⇒ h ≈ 80.5 m; yalnız kendi anten yüksekliği varsayımıyla d ≈ 2.23·√h olduğu için 20 NM için ~80 m çıkar. Ancak pratikte karşı hedef yüksekliği de katkı verir: d ≈ 2.23(√h₁+√h₂). Hedef ~10 m ise 20 = 2.23(√h_r + 3.16) ⇒ √h_r ≈ 6.06 ⇒ h_r ≈ 36.7 m ≈ 30 m.",
     category: "Radar Theory"
   },
   {
@@ -691,10 +691,10 @@ export const navigationQuestions: QuizQuestion[] = [
   },
   {
     id: 86,
-    question: "ECDIS display scale 1:25000 iken over-scale indication ne zaman aktif olur?",
-    options: ["1:12500", "1:50000", "1:100000", "Scale limit yok"],
-    correctAnswer: 1,
-    explanation: "ECDIS over-scale warning, chart compilation scale'den daha büyük scale'de görüntüleme yapıldığında aktif olur.",
+    question: "ECDIS'te over-scale uyarısı ne zaman görünür?",
+    options: ["Compilation scale'den daha büyük ölçeğe yakınlaştırınca", "Compilation scale'den daha küçük ölçeğe uzaklaştırınca", "Sadece raster haritalarda", "TSS içinde her zaman"],
+    correctAnswer: 0,
+    explanation: "Over-scale, ENC compilation scale'in ötesinde yakınlaştırıldığında (daha büyük ölçek) görünür; detay güvenilir olmayabilir.",
     category: "ECDIS Display"
   },
   {

@@ -1106,10 +1106,10 @@ export default function SeamanshipTopicsPage() {
           <CardContent className="space-y-3 text-sm">
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>IALA A Bölgesi:</strong> Kırmızı iskele, yeşil sancak (Avrupa, Afrika, Asya)</li>
-              <li><strong>IALA B Bölgesi:</strong> Kırmızı sancak, yeşil iskele (Amerika)</li>
-              <li><strong>Lateral Marks:</strong> Port/starboard buoys, preferred channel marks</li>
-              <li><strong>Cardinal Marks:</strong> N, E, S, W işaretleri, top marks, light characteristics</li>
-              <li><strong>Özel İşaretler:</strong> Isolated danger, safe water, special marks (yellow)</li>
+              <li><strong>IALA B Bölgesi:</strong> ABD/Kanada/Japonya/Kore/Filipinler; girişte <em>kırmızı sağda</em> ("red right returning")</li>
+              <li><strong>Lateral İşaretler:</strong> İskele silindir (kırmızı), sancak koni (yeşil); tercihli kanal işaretlerinde üst renk tercih yönünü gösterir</li>
+              <li><strong>Kardinal İşaretler:</strong> N/E/S/W; tepelik koni kombinasyonları ve siyah-sarı boyama; karakteristik ışıklar</li>
+              <li><strong>Diğer İşaretler:</strong> İzole tehlike (Fl(2)), emniyetli su (Iso/LFl), özel işaret (sarı, X tepelik)</li>
             </ul>
           </CardContent>
           )}
