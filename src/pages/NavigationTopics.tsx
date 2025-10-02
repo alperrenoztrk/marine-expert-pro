@@ -391,18 +391,48 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="/src/assets/navigation/iala-lateral-marks.svg" loading="lazy" />
+                <div className="text-center mt-2">
+                  <div className="font-semibold text-sm text-blue-600">Lateral Şamandıralar</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    <div>🔴 İskele Şamandırası (Kırmızı)</div>
+                    <div>🟢 Sancak Şamandırası (Yeşil)</div>
+                  </div>
+                </div>
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (IALA A lateral işaretler)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="/src/assets/navigation/cardinal-marks.svg" loading="lazy" />
+                <div className="text-center mt-2">
+                  <div className="font-semibold text-sm text-blue-600">Kardinal Şamandıralar</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    <div>🔺 Kuzey Kardinal</div>
+                    <div>🔺🔻 Doğu Kardinal</div>
+                    <div>🔻 Güney Kardinal</div>
+                    <div>🔻🔺 Batı Kardinal</div>
+                  </div>
+                </div>
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Kardinal işaretler)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/isolated-danger-mark.svg" loading="lazy" />
-                <figcaption className="text:[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Tecrit tehlike işareti)</figcaption>
+                <div className="text-center mt-2">
+                  <div className="font-semibold text-sm text-red-600">İzole Tehlike İşareti</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    <div>⚫⚫ İki Siyah Küre</div>
+                    <div>🔴⚫ Kırmızı-Siyah Bant</div>
+                  </div>
+                </div>
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Tecrit tehlike işareti)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/safe-water-mark.svg" loading="lazy" />
+                <div className="text-center mt-2">
+                  <div className="font-semibold text-sm text-green-600">Emniyetli Su İşareti</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    <div>🔴⚪ Kırmızı-Beyaz Bant</div>
+                    <div>🔴 Kırmızı Küre</div>
+                  </div>
+                </div>
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Emniyetli su işareti)</figcaption>
               </figure>
             </div>
@@ -416,19 +446,42 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
               )}
               {!!buoyPhotos.length && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {buoyPhotos.map(photo => (
-                    <figure key={photo.key} className="bg-muted/20 rounded p-3">
-                      <img
-                        alt={photo.alt}
-                        className="w-full h-auto rounded"
-                        src={photo.src}
-                        loading="lazy"
-                      />
-                      <figcaption className="text-[11px] text-muted-foreground mt-1">
-                        {photo.title} — Kaynak: <a className="underline" href={photo.pageUrl} target="_blank" rel="noopener noreferrer">{photo.credit.replace(/<[^>]*>/g, '')}</a>
-                      </figcaption>
-                    </figure>
-                  ))}
+                  {buoyPhotos.map(photo => {
+                    // Map photo keys to Turkish names
+                    const buoyNames: { [key: string]: string } = {
+                      'lateral-port': 'İskele Lateral Şamandırası',
+                      'lateral-starboard': 'Sancak Lateral Şamandırası',
+                      'preferred-port': 'Tercihli Kanal İskele',
+                      'preferred-starboard': 'Tercihli Kanal Sancak',
+                      'cardinal-north': 'Kuzey Kardinal Şamandırası',
+                      'cardinal-east': 'Doğu Kardinal Şamandırası',
+                      'cardinal-south': 'Güney Kardinal Şamandırası',
+                      'cardinal-west': 'Batı Kardinal Şamandırası',
+                      'isolated-danger': 'İzole Tehlike İşareti',
+                      'safe-water': 'Emniyetli Su İşareti',
+                      'special-mark': 'Özel İşaret',
+                      'emergency-wreck': 'Acil Batık İşaretleme'
+                    };
+                    
+                    return (
+                      <figure key={photo.key} className="bg-muted/20 rounded p-3">
+                        <img
+                          alt={photo.alt}
+                          className="w-full h-auto rounded"
+                          src={photo.src}
+                          loading="lazy"
+                        />
+                        <div className="text-center mt-2">
+                          <div className="font-semibold text-sm text-blue-600">
+                            {buoyNames[photo.key] || photo.title}
+                          </div>
+                        </div>
+                        <figcaption className="text-[11px] text-muted-foreground mt-1">
+                          {photo.title} — Kaynak: <a className="underline" href={photo.pageUrl} target="_blank" rel="noopener noreferrer">{photo.credit.replace(/<[^>]*>/g, '')}</a>
+                        </figcaption>
+                      </figure>
+                    );
+                  })}
                 </div>
               )}
             </div>
