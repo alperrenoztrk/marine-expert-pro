@@ -339,11 +339,11 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                 <div>
                   <h5 className="font-medium mb-2">Dönüşüm Kuralları:</h5>
                   <ul className="list-disc pl-5 space-y-1">
-                    <li><strong>C→M→T:</strong> Ct = Cc + Var + Dev</li>
-                    <li><strong>İşaret Kuralı:</strong> E(doğu) +, W(batı) −</li>
-                    <li><strong>Varyasyon:</strong> Harita üzerinde işaretli</li>
-                    <li><strong>Deviasyon:</strong> Deviasyon kartında gösterilir</li>
-                    <li><strong>Gyro Error:</strong> Ciro pusula hatası</li>
+                    <li><strong>C→M→T:</strong> Ct = Cc + Var + Dev (E +, W −)</li>
+                    <li><strong>İşaret Kuralı:</strong> Doğu varyasyon/deviasyon +, Batı varyasyon/deviasyon −</li>
+                    <li><strong>Varyasyon:</strong> Harita üzerinde işaretli, coğrafi konuma bağlı</li>
+                    <li><strong>Deviasyon:</strong> Deviasyon kartında gösterilir, gemi manyetizmasına bağlı</li>
+                    <li><strong>Gyro Error:</strong> Ciro pusula hatası, enlem ve hıza bağlı</li>
                   </ul>
                 </div>
               </div>
@@ -367,11 +367,11 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                   <div>
                     <h6 className="font-medium mb-1">Hız Terimleri:</h6>
                     <ul className="list-disc pl-5 space-y-1 text-xs">
-                      <li><strong>Speed:</strong> Su içindeki hız</li>
-                      <li><strong>SOG:</strong> Deniz dibine göre hız</li>
-                      <li><strong>COG:</strong> Deniz dibine göre gerçek iz</li>
-                      <li><strong>STW:</strong> Su içindeki hız</li>
-                      <li><strong>Log Speed:</strong> Log cihazından hız</li>
+                      <li><strong>STW:</strong> Speed Through Water - Su içindeki hız</li>
+                      <li><strong>SOG:</strong> Speed Over Ground - Deniz dibine göre hız</li>
+                      <li><strong>COG:</strong> Course Over Ground - Deniz dibine göre gerçek iz</li>
+                      <li><strong>Log Speed:</strong> Log cihazından okunan hız (STW'ye yakın)</li>
+                      <li><strong>Engine Speed:</strong> Makine devrine göre hesaplanan hız</li>
                     </ul>
                   </div>
                 </div>
@@ -464,8 +464,8 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
             <div className="space-y-2">
               <p><strong>Genel Bakış:</strong> IALA A/B sistemleri; kanal sınırları, tehlikeler ve güvenli su işaretleri için standart renk/şekil/tepelik ve ışık karakterleri.</p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Lateral (Yanlaç):</strong> Sistem A'da iskele kırmızı (silindir tepelik), sancak yeşil (koni tepelik). Sistem B (US/Canada/Japan/Korea/Philippines) için girişte <em>kırmızı sağda</em> ("red right returning"). Yerel idare duyurularını kontrol edin.</li>
-                <li><strong>Kardinal (Yönleç):</strong> Tehlikenin güvenli tarafından geçişi gösterir. Kuzey (▲▲), Doğu (▲▼), Güney (▼▼), Batı (▼▲) koni tepelikleri ve siyah/sarı bant kombinasyonları.</li>
+                <li><strong>Lateral (Yanlaç):</strong> Sistem A'da iskele kırmızı (silindir tepelik), sancak yeşil (koni tepelik). Sistem B (US/Canada/Japan/Korea/Philippines) için <em>"red right returning"</em> kuralı: limana girerken kırmızı şamandıra sağda kalmalı. Yerel idare duyurularını kontrol edin.</li>
+                <li><strong>Kardinal (Yönleç):</strong> Tehlikenin güvenli tarafından geçişi gösterir. Kuzey (▲▲), Doğu (▲▼), Güney (▼▼), Batı (▼▲) koni tepelikleri ve siyah/sarı bant kombinasyonları. Renk: Kuzey-siyah üstte sarı altta, Doğu-siyah ortada sarı üstte ve altta, Güney-sarı üstte siyah altta, Batı-sarı ortada siyah üstte ve altta.</li>
                 <li><strong>Tecrit (İzole) Tehlike:</strong> Kırmızı-siyah yatay bant; tepelik iki siyah küre; ışık: Fl(2).</li>
                 <li><strong>Emniyetli Su:</strong> Kırmızı-beyaz dikey bant; tepelik kırmızı küre; ışık: Iso veya LFl10s.</li>
                 <li><strong>Özel İşaret:</strong> Sarı gövde ve X tepelik; kablo/askeri alan vb. için bilgi işaretleri.</li>
@@ -621,7 +621,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
               
               <p><strong>Gnomonik Projeksiyonu:</strong></p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Özellikler:</strong> Merkezi projeksiyon; Dünya'nın merkezi izdüşüm noktasıdır.</li>
+                <li><strong>Özellikler:</strong> Azimutal projeksiyon; düzlemsel bir projeksiyondur, merkezi değil.</li>
                 <li><strong>Büyük Daire (Great Circle):</strong> İki nokta arası en kısa mesafe düz çizgi olarak görünür.</li>
                 <li><strong>Kullanım:</strong> Uzun mesafe seyir planlaması; okyanus geçişlerinde tercih edilir.</li>
                 <li><strong>Yöntem:</strong> Gnomonik'te GC çizilir, ara noktalar belirlenir, Mercator'a aktarılır ve RL segmentlerle bağlanır.</li>
@@ -655,9 +655,9 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
               
               <p><strong>Harita Türleri ve Ölçekleri:</strong></p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>General Charts:</strong> 1:1,500,000 veya daha küçük; okyanus geçişleri, genel planlama için.</li>
-                <li><strong>Sailing Charts:</strong> 1:600,000 - 1:1,500,000; açık deniz seyri.</li>
-                <li><strong>Coastal Charts:</strong> 1:50,000 - 1:600,000; kıyı seyri, landfall yapma.</li>
+                <li><strong>General Charts:</strong> 1:1,500,000 ve daha küçük; okyanus geçişleri, genel planlama için.</li>
+                <li><strong>Sailing Charts:</strong> 1:500,000 - 1:1,500,000; açık deniz seyri.</li>
+                <li><strong>Coastal Charts:</strong> 1:50,000 - 1:500,000; kıyı seyri, landfall yapma.</li>
                 <li><strong>Approach Charts:</strong> 1:25,000 - 1:50,000; liman yaklaşmaları.</li>
                 <li><strong>Harbour/Berthing Plans:</strong> 1:25,000'den büyük; liman içi manevra ve yanaşma.</li>
               </ul>
@@ -807,9 +807,9 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
               <pre className="font-mono text-[11px] leading-5">{`Verilen: Cc = 212°, Var = +3.0° (E), Dev = −1.5° (W)
 İstenen: Ct ve Compass Error (CE)
 Adımlar:
-  1) CE = Var + Dev = +3.0 − 1.5 = +1.5° (E)
+  1) CE = Var + Dev = +3.0 + (−1.5) = +1.5° (E)
   2) Ct = Cc + CE = 212 + 1.5 = 213.5°
-Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
+Cevap: CE = 1.5°E, Ct = 213.5°`}</pre>
             </div>
           </CardContent>
           )}
@@ -830,9 +830,9 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Prensip:</strong> Bir işaretin bow açısı ölçülür (A₁), gemi ilerler, açı ikiye katlanınca (A₂ = 2×A₁) tekrar ölçülür.</li>
                 <li><strong>Sonuç:</strong> İkinci ölçümdeki distance off, iki ölçüm arası koşulan mesafeye eşittir.</li>
-                <li><strong>Formül:</strong> Distance off (2. ölçüm anı) = Run × sin(A₁) / sin(A₂ − A₁)</li>
-                <li><strong>Özel:</strong> A₂ = 2×A₁ ⇒ Distance off = Run</li>
-                <li><strong>Özel Durumlar:</strong> 22.5°-45° veya 45°-90° açılarında özel yöntemler mevcuttur.</li>
+                <li><strong>Genel Formül:</strong> Distance off (2. ölçüm anı) = Run × sin(A₁) / sin(A₂ − A₁)</li>
+                <li><strong>Özel Durum:</strong> A₂ = 2×A₁ ⇒ Distance off = Run (en basit hali)</li>
+                <li><strong>Özel Durumlar:</strong> 22.5°-45° (Special Angle) ve 45°-90° (Four Point) açılarında özel yöntemler mevcuttur.</li>
                 <li><strong>Avantaj:</strong> Tek işaretle distance off bulunur; basit ve hızlıdır.</li>
                 <li><strong>Dezavantaj:</strong> Sabit hız ve rota gerektirir; akıntı/rüzgar etkisi hata kaynağıdır.</li>
               </ul>
@@ -852,7 +852,7 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
                 <li><strong>İkinci Kerteriz:</strong> İşaret travese (abeam, 90° veya 8 points) geldiğinde ölçülür.</li>
                 <li><strong>Hesap:</strong> Distance off abeam = Run (iki ölçüm arası koşulan mesafe).</li>
                 <li><strong>Avantaj:</strong> Basit hesap; geminin abeam geçişi net; emniyet mesafesi kontrolü için ideal.</li>
-                <li><strong>Not:</strong> 32 pusula noktası sisteminde (her nokta 11.25°) 4 point = 45°, 8 point = 90° demektir.</li>
+                <li><strong>Not:</strong> 32 pusula noktası sisteminde (her nokta 11.25°) 4 point = 45°, 8 point = 90° demektir. Abeam = geminin yanından geçiş.</li>
               </ul>
               
               <p><strong>Running Fix (Koşan Fix):</strong></p>
@@ -921,7 +921,7 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
               
               <p><strong>Rule of Twelfths (Onikide Bir Kuralı):</strong></p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Prensip:</strong> Gelgit değişimi 6 saatte tamamlanır; her saatte farklı oranda yükselir/alçalır.</li>
+                <li><strong>Prensip:</strong> Gelgit değişimi 6 saatte tamamlanır; her saatte farklı oranda yükselir/alçalır. Bu kural sinüs eğrisine yakın bir yaklaşımdır.</li>
                 <li><strong>Dağılım:</strong> 1. saat: 1/12, 2. saat: 2/12, 3. saat: 3/12, 4. saat: 3/12, 5. saat: 2/12, 6. saat: 1/12 (toplam range'in).</li>
                 <li><strong>Örnek:</strong> Range 6 m ise; 1. saat 0.5 m, 2. saat 1.0 m, 3. saat 1.5 m, 4. saat 1.5 m, 5. saat 1.0 m, 6. saat 0.5 m değişir.</li>
                 <li><strong>Kullanım:</strong> Belirli bir zamandaki gelgit yüksekliğini tahmin etmek; liman giriş/çıkış zamanlaması.</li>
@@ -942,7 +942,7 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
                 <li><strong>Standard Port:</strong> Ana liman; tam gelgit verileri mevcut (HW/LW zamanları ve yükseklikleri).</li>
                 <li><strong>Secondary Port:</strong> Küçük liman/yer; standard port'a göre time ve height differences verilir.</li>
                 <li><strong>Adımlar:</strong> 1) Standard port HW/LW bul, 2) Time difference ekle/çıkar, 3) Height difference ekle/çıkar, 4) Secondary port HW/LW elde et.</li>
-                <li><strong>Örnek:</strong> Std port HW 12:00/4.5m; sec port diff: +0:25/+0.3m → Sec port HW 12:25/4.8m.</li>
+                <li><strong>Örnek:</strong> Std port HW 12:00/4.5m; sec port time diff: +0:25, height diff: +0.3m → Sec port HW 12:25/4.8m.</li>
               </ul>
               
               <p><strong>Akıntı Atlasları ve Set/Drift Tahmini:</strong></p>
@@ -996,8 +996,9 @@ Ground vector = Ship vector + Current vector`}</pre>
               <p className="font-semibold mb-2">Çözümlü Örnek (CTS/SOG):</p>
               <pre className="font-mono text-[11px] leading-5">{`TR = 090°, V = 12 kn, set = 045°, c = 2 kn
 Formül: sin(CTS−TR) = (c/V)·sin(set−TR)
-  RHS = (2/12)·sin(−45°) = 0.1667·(−0.7071) = −0.1179
+  RHS = (2/12)·sin(045°−090°) = 0.1667·sin(−45°) = 0.1667·(−0.7071) = −0.1179
   CTS−TR = arcsin(−0.1179) ≈ −6.8° ⇒ CTS ≈ 083.2°
+SOG = V·cos(CTS−TR) + c·cos(set−TR)
 SOG = 12·cos(−6.8°) + 2·cos(−45°) ≈ 11.9 + 1.41 ≈ 13.3 kn`}</pre>
             </div>
           </CardContent>
@@ -1134,7 +1135,7 @@ Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</p
                     <ul className="space-y-1 text-xs">
                       <li data-translatable="true">• Yüksek çözünürlük ve detay</li>
                       <li data-translatable="true">• Kısa menzil (32-48 nm)</li>
-                      <li data-translatable="true">• Yağmur/denizden fazla etkilenir</li>
+                      <li data-translatable="true">• Yağmur/denizden fazla etkilenir (3 cm dalga boyu küçük)</li>
                       <li data-translatable="true">• Küçük hedefler için ideal</li>
                     </ul>
                   </div>
@@ -1142,7 +1143,7 @@ Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</p
                     <p className="font-semibold text-primary mb-1">S-Band (3 GHz, 10 cm)</p>
                     <ul className="space-y-1 text-xs">
                       <li data-translatable="true">• Uzun menzil (64-96 nm)</li>
-                      <li data-translatable="true">• Kötü havada az etkilenir</li>
+                      <li data-translatable="true">• Kötü havada az etkilenir (10 cm dalga boyu büyük)</li>
                       <li data-translatable="true">• Daha az sea/rain clutter</li>
                       <li data-translatable="true">• Açık deniz seyri için</li>
                     </ul>
@@ -1306,7 +1307,7 @@ Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</p
                   <ul className="text-xs space-y-1">
                     <li data-translatable="true">• <strong>Manuel:</strong> Ekranda hedefe tıkla, ARPA takip başlat</li>
                     <li data-translatable="true">• <strong>Otomatik:</strong> Belirli CPA/TCPA sınırlarındaki hedefler otomatik edinilir</li>
-                    <li data-translatable="true">• <strong>Acquisition Time:</strong> 1-3 dakika (hedef hız/rota hesabı için)</li>
+                    <li data-translatable="true">• <strong>Acquisition Time:</strong> 1-3 dakika (güvenilir track için minimum süre)</li>
                     <li data-translatable="true">• <strong>Lost Target:</strong> 3+ missed scan → hedef kaybedildi alarmı</li>
                   </ul>
                 </div>
@@ -1434,7 +1435,7 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
                     <ul className="space-y-1 text-xs">
                       <li data-translatable="true">• SOLAS gemilerinde zorunlu</li>
                       <li data-translatable="true">• 12W gönderici gücü (uzun menzil)</li>
-                      <li data-translatable="true">• 2-10 saniye güncelleme aralığı</li>
+                      <li data-translatable="true">• Hıza bağlı güncelleme: 2-10 saniye (hızlı), 6 saniye (orta), 10 saniye (yavaş)</li>
                       <li data-translatable="true">• Tam veri seti (static, dynamic, voyage)</li>
                     </ul>
                   </div>
@@ -1564,7 +1565,7 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
                     <li data-translatable="true">• <strong>HDOP:</strong> Horizontal Dilution of Precision (yatay doğruluk bozulması)</li>
                     <li data-translatable="true">• <strong>PDOP:</strong> Position Dilution of Precision (3D pozisyon doğruluğu)</li>
                     <li data-translatable="true">• <strong>GDOP:</strong> Geometric DOP (uydu geometrisi etkisi)</li>
-                    <li data-translatable="true">• <strong>İyi değer:</strong> DOP {'<'} 2 (excellent), DOP 2-5 (good)</li>
+                    <li data-translatable="true">• <strong>İyi değer:</strong> DOP {'<'} 3 (excellent), DOP 3-5 (good)</li>
                     <li data-translatable="true">• <strong>Kötü değer:</strong> DOP {'>'} 10 (poor) → Pozisyon güvenilmez</li>
                   </ul>
                 </div>
@@ -1648,12 +1649,12 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
             <div className="space-y-4">
               <h3 className="text-lg font-semibold" data-translatable="true">Rüzgarlar ve Beaufort Skalası (Seyir Etkileri)</h3>
               <ul className="list-disc pl-5 space-y-1">
-                <li data-translatable="true"><strong>Beaufort 0-2:</strong> Hafif esinti; duman yönü değişir, deniz yüzeyi düzdür. Manevra kolay; sis olasılığı.</li>
-                <li data-translatable="true"><strong>Beaufort 3-4:</strong> Küçük dalgalar, kısa kırılmalar; küçük teknelerde konfor etkilenir; serpinti başlar.</li>
-                <li data-translatable="true"><strong>Beaufort 5-6:</strong> Orta/sert rüzgar; dalga yüksekliği 2-4 m; pruvalama ve güverte ıslanması; emniyetli hız düşürülmeli.</li>
-                <li data-translatable="true"><strong>Beaufort 7-8:</strong> Kuvvetli rüzgar/sert fırtına; dalga 4-7 m; rotadan sapma (leeway) belirgin; rota ve trim revizyonu gerekir.</li>
-                <li data-translatable="true"><strong>Beaufort 9-10:</strong> Şiddetli fırtına; ağır serpinti, görüş azalır; güverte emniyeti, bordadan su alma riski.</li>
-                <li data-translatable="true"><strong>Beaufort 11-12:</strong> Çok şiddetli fırtına/kasırga; barometre hızlı düşer; kaçınma manevrası ve fırtına prosedürleri.</li>
+                <li data-translatable="true"><strong>Beaufort 0-2:</strong> Hafif esinti (0-6 kn); duman yönü değişir, deniz yüzeyi düzdür. Manevra kolay; sis olasılığı.</li>
+                <li data-translatable="true"><strong>Beaufort 3-4:</strong> Hafif/orta rüzgar (7-16 kn); küçük dalgalar (0.2-1.0 m), kısa kırılmalar; küçük teknelerde konfor etkilenir; serpinti başlar.</li>
+                <li data-translatable="true"><strong>Beaufort 5-6:</strong> Orta/sert rüzgar (17-27 kn); orta dalgalar (1.0-3.0 m); pruvalama ve güverte ıslanması; emniyetli hız düşürülmeli.</li>
+                <li data-translatable="true"><strong>Beaufort 7-8:</strong> Kuvvetli rüzgar/sert fırtına (28-40 kn); büyük dalgalar (3.0-7.5 m); rotadan sapma (leeway) belirgin; rota ve trim revizyonu gerekir.</li>
+                <li data-translatable="true"><strong>Beaufort 9-10:</strong> Şiddetli fırtına (41-55 kn); çok büyük dalgalar (7.0-12.5 m); ağır serpinti, görüş azalır; güverte emniyeti, bordadan su alma riski.</li>
+                <li data-translatable="true"><strong>Beaufort 11-12:</strong> Çok şiddetli fırtına/kasırga (56+ kn); olağanüstü dalgalar (12+ m); barometre hızlı düşer; kaçınma manevrası ve fırtına prosedürleri.</li>
               </ul>
             </div>
 
@@ -1690,7 +1691,7 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
               <ul className="list-disc pl-5 space-y-1">
                 <li data-translatable="true"><strong>Yapı:</strong> Göz, göz duvarı, yağış bantları; 34-50-64 kt yarıçapları ve hareket yönü kritik.</li>
                 <li data-translatable="true"><strong>Tehlikeli/Yarı Güvenli Yarım Daire:</strong> K. Yarımküre’de hareket yönüne göre sağ yan tehlikelidir (fırtına rüzgarı + ilerleme vektörü).</li>
-                <li data-translatable="true"><strong>Kaçınma:</strong> 1-2-3 Kuralı (OPC/NHC): 24-48-72 saatlik tahmin hatası poligonları içinde kalmaktan kaçın; erken rota değiştir.</li>
+                <li data-translatable="true"><strong>Kaçınma:</strong> 1-2-3 Kuralı (OPC/NHC): 24 saatlik tahmin hatası 100 nm, 48 saatlik 200 nm, 72 saatlik 300 nm poligonları içinde kalmaktan kaçın; erken rota değiştir.</li>
               </ul>
             </div>
 
