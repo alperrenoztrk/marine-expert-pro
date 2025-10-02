@@ -10,7 +10,8 @@ import {
   AlertTriangle, 
   Info,
   Navigation,
-  Thermometer
+  Thermometer,
+  Satellite
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -187,6 +188,32 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
             <div className="text-gray-700 dark:text-gray-300 neon:text-cyan-300">{cloud.precipitation}</div>
           </div>
         </div>
+
+        {/* Uydu Kanalları */}
+        {cloud.satelliteChannels && cloud.satelliteChannels.length > 0 && (
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 neon:from-cyan-900/30 neon:to-purple-900/30 rounded-lg p-3 space-y-2 border border-purple-200 dark:border-purple-700 neon:border-cyan-400">
+            <h4 className="font-semibold text-sm flex items-center gap-1 text-purple-900 dark:text-purple-200 neon:text-cyan-400">
+              <Satellite className="h-4 w-4" />
+              Uydu Görüntüleme Kanalları
+            </h4>
+            <div className="flex flex-wrap gap-1">
+              {cloud.satelliteChannels.map((channel, index) => (
+                <Badge 
+                  key={index} 
+                  variant="secondary" 
+                  className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100 neon:bg-cyan-700 neon:text-cyan-100"
+                >
+                  {channel}
+                </Badge>
+              ))}
+            </div>
+            {cloud.bestDetectionChannel && (
+              <div className="text-xs text-purple-700 dark:text-purple-300 neon:text-cyan-300 mt-2 pt-2 border-t border-purple-200 dark:border-purple-700 neon:border-cyan-600">
+                <span className="font-semibold">🎯 En İyi Kanal:</span> {cloud.bestDetectionChannel}
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

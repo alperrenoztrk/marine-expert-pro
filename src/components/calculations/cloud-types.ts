@@ -34,6 +34,8 @@ export interface CloudType {
   precipitation: string;
   danger: 'low' | 'medium' | 'high';
   imageUrl?: string;
+  satelliteChannels?: string[];
+  bestDetectionChannel?: string;
 }
 
 // MGM Bulut Kataloğu'na göre tüm bulut tipleri
@@ -61,7 +63,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Hafif (< 10 knot)',
     precipitation: 'Çisenti veya hafif kar',
     danger: 'high',
-    imageUrl: stratusImage
+    imageUrl: stratusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch1 (VIS0.6) - Düşük alçak bulutlar için en iyi kanal'
   },
   {
     id: 'stratocumulus',
@@ -85,7 +89,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Orta (10-20 knot)',
     precipitation: 'Hafif yağmur veya kar serpintisi',
     danger: 'low',
-    imageUrl: stratocumulusImage
+    imageUrl: stratocumulusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch2 (VIS0.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch12 (HRV) - Yüksek çözünürlüklü görüş için'
   },
   {
     id: 'cumulus',
@@ -109,7 +115,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Hafif-orta (5-15 knot)',
     precipitation: 'Genelde yok',
     danger: 'low',
-    imageUrl: cumulusImage
+    imageUrl: cumulusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch2 (VIS0.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch2 (VIS0.8) - Kümülüs gölgeleme tespiti'
   },
   {
     id: 'cumulonimbus',
@@ -133,7 +141,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok güçlü (> 35 knot)',
     precipitation: 'Şiddetli yağmur, dolu, kar',
     danger: 'high',
-    imageUrl: cumulonimbusImage
+    imageUrl: cumulonimbusImage,
+    satelliteChannels: ['Ch4 (IR3.9)', 'Ch9 (IR10.8)', 'Ch10 (IR12.0)'],
+    bestDetectionChannel: 'Ch4 (IR3.9) - Fırtına tepesi tespiti, gece/gündüz'
   },
   {
     id: 'nimbostratus',
@@ -157,7 +167,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Orta-güçlü (15-30 knot)',
     precipitation: 'Sürekli orta/şiddetli yağmur',
     danger: 'medium',
-    imageUrl: nimbostratusImage
+    imageUrl: nimbostratusImage,
+    satelliteChannels: ['Ch9 (IR10.8)', 'Ch10 (IR12.0)', 'Ch5 (WV6.2)'],
+    bestDetectionChannel: 'Ch10 (IR12.0) - Kalın yağış bulutları'
   },
 
   // ORTA BULUTLAR (2-7 km)
@@ -183,7 +195,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Artan (15-25 knot)',
     precipitation: '12 saat içinde başlar',
     danger: 'medium',
-    imageUrl: altostratusImage
+    imageUrl: altostratusImage,
+    satelliteChannels: ['Ch7 (IR8.7)', 'Ch9 (IR10.8)', 'Ch5 (WV6.2)'],
+    bestDetectionChannel: 'Ch7 (IR8.7) - Orta seviye bulutlar'
   },
   {
     id: 'altocumulus',
@@ -207,7 +221,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Orta (10-25 knot)',
     precipitation: '24 saat içinde olası',
     danger: 'low',
-    imageUrl: altocumulusImage
+    imageUrl: altocumulusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch7 (IR8.7)', 'Ch9 (IR10.8)'],
+    bestDetectionChannel: 'Ch1 (VIS0.6) - Orta bulut yapıları görsel'
   },
 
   // YÜKSEK BULUTLAR (5-13 km)
@@ -233,7 +249,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Üst seviye güçlü',
     precipitation: 'Yok (48-72 saat sonra olası)',
     danger: 'low',
-    imageUrl: cirrusImage
+    imageUrl: cirrusImage,
+    satelliteChannels: ['Ch5 (WV6.2)', 'Ch6 (WV7.3)', 'Ch11 (IR13.4)'],
+    bestDetectionChannel: 'Ch11 (IR13.4) - Cirrus yüksekliği ve analizi'
   },
   {
     id: 'cirrocumulus',
@@ -257,7 +275,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken',
     precipitation: '24-48 saat içinde olası',
     danger: 'low',
-    imageUrl: cirrocumulusImage
+    imageUrl: cirrocumulusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch11 (IR13.4)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch12 (HRV) - İnce yüksek bulutlar, yüksek çözünürlük'
   },
   {
     id: 'cirrostratus',
@@ -281,7 +301,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Güçleniyor',
     precipitation: '12-24 saat içinde',
     danger: 'medium',
-    imageUrl: cirrostratusImage
+    imageUrl: cirrostratusImage,
+    satelliteChannels: ['Ch5 (WV6.2)', 'Ch11 (IR13.4)', 'Ch3 (NIR1.6)'],
+    bestDetectionChannel: 'Ch3 (NIR1.6) - İnce buz bulutları, bulut fazı tespiti'
   },
 
   // ÖZEL BULUTLAR
@@ -307,7 +329,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok değişken',
     precipitation: 'Yakında şiddetli',
     danger: 'high',
-    imageUrl: mammatusImage
+    imageUrl: mammatusImage,
+    satelliteChannels: ['Ch4 (IR3.9)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch4 (IR3.9) - Fırtına yapıları ve detaylar'
   },
   {
     id: 'lenticularis',
@@ -331,7 +355,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Çok güçlü (yerel)',
     precipitation: 'Genelde yok',
     danger: 'medium',
-    imageUrl: lenticularisImage
+    imageUrl: lenticularisImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch7 (IR8.7)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch1 (VIS0.6) - Mercek bulut yapıları'
   },
   {
     id: 'castellanus',
@@ -355,7 +381,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Artan',
     precipitation: '6-12 saat içinde',
     danger: 'medium',
-    imageUrl: cumulusImage
+    imageUrl: cumulusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch7 (IR8.7)', 'Ch9 (IR10.8)'],
+    bestDetectionChannel: 'Ch1 (VIS0.6) - Kule bulut yapıları'
   },
   {
     id: 'fractus',
@@ -379,7 +407,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Güçlü',
     precipitation: 'Devam eden',
     danger: 'medium',
-    imageUrl: fractusImage
+    imageUrl: fractusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch12 (HRV) - Parçalanmış bulut kırıntıları'
   },
   {
     id: 'tuba',
@@ -403,7 +433,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Döner, çok şiddetli',
     precipitation: 'Şiddetli',
     danger: 'high',
-    imageUrl: tubaImage
+    imageUrl: tubaImage,
+    satelliteChannels: ['Ch4 (IR3.9)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch4 (IR3.9) - Huni bulut tespiti'
   },
   {
     id: 'arcus',
@@ -427,7 +459,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Ani artış (> 40 knot)',
     precipitation: 'Hemen arkasında',
     danger: 'high',
-    imageUrl: arcusImage
+    imageUrl: arcusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch4 (IR3.9)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch4 (IR3.9) - Raf/rulo bulut, squall line'
   },
   {
     id: 'asperitas',
@@ -451,7 +485,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken',
     precipitation: 'Olası',
     danger: 'medium',
-    imageUrl: stratocumulusImage
+    imageUrl: stratocumulusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch1 (VIS0.6) - Dalga benzeri yapılar'
   },
   {
     id: 'pyrocumulus',
@@ -475,7 +511,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken, güçlü',
     precipitation: 'Nadir, kül yağışı',
     danger: 'high',
-    imageUrl: cumulonimbusImage
+    imageUrl: cumulonimbusImage,
+    satelliteChannels: ['Ch4 (IR3.9)', 'Ch7 (IR8.7)', 'Ch9 (IR10.8)'],
+    bestDetectionChannel: 'Ch7 (IR8.7) - Yangın bulutları ve duman'
   },
   {
     id: 'contrails',
@@ -499,7 +537,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Üst seviye',
     precipitation: 'Yok',
     danger: 'low',
-    imageUrl: cirrusImage
+    imageUrl: cirrusImage,
+    satelliteChannels: ['Ch5 (WV6.2)', 'Ch11 (IR13.4)', 'Ch1 (VIS0.6)'],
+    bestDetectionChannel: 'Ch5 (WV6.2) - Üst atmosfer nemi'
   },
   {
     id: 'virga',
@@ -523,7 +563,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Ani değişimler olası',
     precipitation: 'Yere ulaşmaz',
     danger: 'medium',
-    imageUrl: nimbostratusImage
+    imageUrl: nimbostratusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch1 (VIS0.6) - Yağış perdeleri'
   },
   {
     id: 'kelvin-helmholtz',
@@ -547,7 +589,9 @@ export const cloudTypes: CloudType[] = [
     wind: 'Kesme (shear)',
     precipitation: 'Yok',
     danger: 'high',
-    imageUrl: altostratusImage
+    imageUrl: altostratusImage,
+    satelliteChannels: ['Ch1 (VIS0.6)', 'Ch7 (IR8.7)', 'Ch12 (HRV)'],
+    bestDetectionChannel: 'Ch12 (HRV) - Rüzgar kesmesi dalgaları'
   }
 ];
 
