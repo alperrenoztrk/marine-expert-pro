@@ -345,15 +345,18 @@ export function calculateDoublingAngle(initialAngleDeg: number, runNm: number): 
   return { distanceOffNm };
 }
 
-// Four point bearing
+// Four point bearing (45° to 90° / Bow and Beam bearing)
 export function calculateFourPointBearing(runNm: number): BearingCalculationResult {
-  const distanceOffNm = runNm * Math.sqrt(2); // 45° angle
+  // From 45° (4 points) to 90° (8 points/abeam): distance off abeam = run
+  const distanceOffNm = runNm;
   return { distanceOffNm };
 }
 
-// Seven point bearing  
+// Special angle bearing (22.5° to 45°)
 export function calculateSevenPointBearing(runNm: number): BearingCalculationResult {
-  const distanceOffNm = runNm; // 30° to 60° gives distance = run
+  // From 22.5° (2 points) to 45° (4 points): distance = run * cos(22.5°) or approximately 0.707 * run
+  // Trigonometric: Using sine rule, distance off ≈ 0.707 * run
+  const distanceOffNm = runNm * 0.707;
   return { distanceOffNm };
 }
 

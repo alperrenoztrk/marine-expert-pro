@@ -826,7 +826,7 @@ Azimut: ${sightResults.azimuthDeg.toFixed(1)}°`}</pre>
                   <SelectContent>
                     <SelectItem value="doubling">Açı İkiye Katlama</SelectItem>
                     <SelectItem value="four">Four Point</SelectItem>
-                    <SelectItem value="seven">Seven Point</SelectItem>
+                    <SelectItem value="seven">Special Angle (22.5°-45°)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

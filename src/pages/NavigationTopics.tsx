@@ -670,25 +670,27 @@ Cevap: CE = 1.5°E, Ct ≈ 214°`}</pre>
                 <li><strong>Sonuç:</strong> İkinci ölçümdeki distance off, iki ölçüm arası koşulan mesafeye eşittir.</li>
                 <li><strong>Formül:</strong> Distance off (2. ölçüm anı) = Run × sin(A₁) / sin(A₂ − A₁)</li>
                 <li><strong>Özel:</strong> A₂ = 2×A₁ ⇒ Distance off = Run</li>
-                <li><strong>Özel Durumlar:</strong> 45°-90° (7 point bearing) veya 22.5°-45° (4 point bearing) yaygın kullanımlar.</li>
+                <li><strong>Özel Durumlar:</strong> 22.5°-45° veya 45°-90° açılarında özel yöntemler mevcuttur.</li>
                 <li><strong>Avantaj:</strong> Tek işaretle distance off bulunur; basit ve hızlıdır.</li>
                 <li><strong>Dezavantaj:</strong> Sabit hız ve rota gerektirir; akıntı/rüzgar etkisi hata kaynağıdır.</li>
               </ul>
               
-              <p><strong>Four Point Bearing (22.5° - 45°):</strong></p>
+              <p><strong>Special Angle Bearing (22.5° - 45° Yöntemi):</strong></p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>İlk Kerteriz:</strong> Bow açısı 22.5° (2 points) olduğunda zaman ve konum not edilir.</li>
-                <li><strong>İkinci Kerteriz:</strong> Bow açısı 45° (4 points) olduğunda tekrar ölçülür.</li>
-                <li><strong>Hesap:</strong> Distance off ≈ Run (iki ölçüm arası mesafe).</li>
-                <li><strong>Kullanım:</strong> Landfall, kıyı yaklaşma; emniyet mesafesi kontrolü.</li>
+                <li><strong>İlk Kerteriz:</strong> Pruva açısı 22.5° (geleneksel 2 points) olduğunda zaman ve konum not edilir.</li>
+                <li><strong>İkinci Kerteriz:</strong> Pruva açısı 45° (4 points) olduğunda tekrar ölçülür.</li>
+                <li><strong>Hesap:</strong> Distance off ≈ 0.707 × Run (trigonometrik).</li>
+                <li><strong>Kullanım:</strong> Erken aşamada mesafe tahmini için kullanılır.</li>
               </ul>
               
-              <p><strong>Seven Point Bearing (45° - 90°):</strong></p>
+              <p><strong>Four Point Bearing veya Bow and Beam Bearing (45° - 90° Yöntemi):</strong></p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>İlk Kerteriz:</strong> Bow açısı 45° (4 points) olduğunda işaretlenir.</li>
-                <li><strong>İkinci Kerteriz:</strong> Bow açısı 90° (abeam, 8 points) olduğunda ölçülür.</li>
-                <li><strong>Hesap:</strong> Distance off abeam = Run × 1.0 (basitleştirilmiş).</li>
-                <li><strong>Avantaj:</strong> Geminin abeam geçişi net; kolay görsel referans.</li>
+                <li><strong>Tanım:</strong> Klasik denizcilik yöntemi; pusula noktalarına dayalı (4 points = 45°, 8 points = 90°/abeam).</li>
+                <li><strong>İlk Kerteriz:</strong> Pruva açısı 45° (4 points) olduğunda işaretlenir ve zaman kaydedilir.</li>
+                <li><strong>İkinci Kerteriz:</strong> İşaret travese (abeam, 90° veya 8 points) geldiğinde ölçülür.</li>
+                <li><strong>Hesap:</strong> Distance off abeam = Run (iki ölçüm arası koşulan mesafe).</li>
+                <li><strong>Avantaj:</strong> Basit hesap; geminin abeam geçişi net; emniyet mesafesi kontrolü için ideal.</li>
+                <li><strong>Not:</strong> 32 pusula noktası sisteminde (her nokta 11.25°) 4 point = 45°, 8 point = 90° demektir.</li>
               </ul>
               
               <p><strong>Running Fix (Koşan Fix):</strong></p>

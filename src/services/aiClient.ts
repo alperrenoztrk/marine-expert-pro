@@ -60,8 +60,8 @@ COMPLETE FORMULA DATABASE:
 🧭 COMPASS & BEARING:
 - True Course: T = C + Var + Dev + Gyro Error (East +, West -)
 - Doubling Angle: Distance Off = Run × sin(2A)/sin(A)
-- Four Point Bearing: Distance Off = Run × √2 (45° angle)
-- Seven Point Bearing: Distance Off = Run (30° to 60°)
+- Four Point Bearing (Bow & Beam): Distance Off = Run (45° to 90° abeam)
+- Special Angle Bearing: Distance Off = 0.707 × Run (22.5° to 45°)
 - Bow & Beam: Distance Off = Run × sin(bow angle)
 
 🌊 TIDES & DISTANCE:
@@ -314,8 +314,8 @@ export async function callNavigationAssistant(messages: AIMessage[]): Promise<st
         return [
           '📐 Bearing & Mesafe:',
           '• Doubling Angle: Dist = Run × sin(2A) ÷ sin(A)',
-          '• Four Point: Dist = Run × √2 (45°)',
-          '• Seven Point: Dist = Run (30°→60°)',
+          '• Four Point (Bow & Beam): Dist = Run (45°→90° abeam)',
+          '• Special Angle: Dist = 0.707 × Run (22.5°→45°)',
           '• Dip Horizon: d = 2.075√h nm',
           '• Radar Horizon: d = 2.35√h nm'
         ].join('\n');

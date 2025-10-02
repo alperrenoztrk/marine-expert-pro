@@ -898,7 +898,7 @@ Azimut: ${sightResults.azimuthDeg.toFixed(1)}°`}</pre>
                     <SelectContent>
                       <SelectItem value="doubling">Doubling Angle on Bow</SelectItem>
                       <SelectItem value="four">Four Point Bearing</SelectItem>
-                      <SelectItem value="seven">Seven Point Bearing</SelectItem>
+                      <SelectItem value="seven">Special Angle Bearing (22.5°-45°)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
