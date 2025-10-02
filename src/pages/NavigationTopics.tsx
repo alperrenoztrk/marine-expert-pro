@@ -953,47 +953,321 @@ Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</p
         <Card className="shadow">
           <CardHeader onClick={() => toggle('radar')} className="cursor-pointer" aria-expanded={isOpen('radar')}>
             <CardTitle id="radar" className="scroll-mt-24 flex items-center justify-between">
-              Radar Seyri ve ARPA
+              Radar Kullanımı ve ARPA Sistemleri
               <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('radar') ? "rotate-180" : "")} />
             </CardTitle>
           </CardHeader>
           {isOpen('radar') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p>PI, EBL, VRM kullanımı; relative vs true motion farkları ve iz yönetimi.</p>
-              <p>ARPA vektörlerinin yorumlanması; CPA/TCPA değerlendirmesi ve COLREG ile uyum.</p>
+          <CardContent className="space-y-6 text-sm">
+            {/* Gerçek Radar Görselleri */}
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <img 
+                  src="/navigation/bridge/radar-display.jpg" 
+                  alt="Gerçek radar display ekranı" 
+                  className="w-full rounded-lg shadow-lg"
+                />
+                <p className="text-xs text-muted-foreground mt-2 text-center" data-translatable="true">
+                  Modern radar ekranı: Hedefler, menzil halkaları ve navigasyon bilgileri
+                </p>
+              </div>
+              <div>
+                <img 
+                  src="/navigation/bridge/navigation-console.jpg" 
+                  alt="Navigasyon konsolu" 
+                  className="w-full rounded-lg shadow-lg"
+                />
+                <p className="text-xs text-muted-foreground mt-2 text-center" data-translatable="true">
+                  Entegre navigasyon konsolu: Radar, ECDIS ve kontrol panelleri
+                </p>
+              </div>
             </div>
-            
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold" data-translatable="true">Radar Temelleri ve Çalışma Prensibi</h3>
+              <p data-translatable="true">
+                Radar (Radio Detection and Ranging), radyo dalgaları göndererek nesneleri tespit eden ve mesafelerini ölçen bir sistemdir.
+                Gemilerde navigasyon ve çarpışma önleme için kritik öneme sahiptir.
+              </p>
+              
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2" data-translatable="true">Radar Frekans Bantları</h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-semibold text-primary mb-1">X-Band (9 GHz, 3 cm)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li data-translatable="true">• Yüksek çözünürlük ve detay</li>
+                      <li data-translatable="true">• Kısa menzil (32-48 nm)</li>
+                      <li data-translatable="true">• Yağmur/denizden fazla etkilenir</li>
+                      <li data-translatable="true">• Küçük hedefler için ideal</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-primary mb-1">S-Band (3 GHz, 10 cm)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li data-translatable="true">• Uzun menzil (64-96 nm)</li>
+                      <li data-translatable="true">• Kötü havada az etkilenir</li>
+                      <li data-translatable="true">• Daha az sea/rain clutter</li>
+                      <li data-translatable="true">• Açık deniz seyri için</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Radar Display Modları</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="bg-card border rounded-lg p-4">
+                  <h4 className="font-semibold text-primary mb-2" data-translatable="true">Head-Up Mode</h4>
+                  <ul className="space-y-1 text-xs">
+                    <li data-translatable="true">• Gemi başı daima yukarıda</li>
+                    <li data-translatable="true">• Rota değişince ekran döner</li>
+                    <li data-translatable="true">• Göreceli hareket (relative motion)</li>
+                    <li data-translatable="true">• Manevra için tercih edilir</li>
+                  </ul>
+                </div>
+                <div className="bg-card border rounded-lg p-4">
+                  <h4 className="font-semibold text-primary mb-2" data-translatable="true">Course-Up Mode</h4>
+                  <ul className="space-y-1 text-xs">
+                    <li data-translatable="true">• Seçilen rota yönü yukarıda</li>
+                    <li data-translatable="true">• Düz seyirde pratik</li>
+                    <li data-translatable="true">• Kıyı seyri için uygun</li>
+                    <li data-translatable="true">• Harita ile kolay karşılaştırma</li>
+                  </ul>
+                </div>
+                <div className="bg-card border rounded-lg p-4">
+                  <h4 className="font-semibold text-primary mb-2" data-translatable="true">North-Up Mode</h4>
+                  <ul className="space-y-1 text-xs">
+                    <li data-translatable="true">• Kuzey daima yukarıda sabit</li>
+                    <li data-translatable="true">• Harita ile aynı oryantasyon</li>
+                    <li data-translatable="true">• True motion ile ideal</li>
+                    <li data-translatable="true">• ARPA için tercih edilir</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Radar Kontrolleri ve Optimizasyon</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Gain (Kazanç) Ayarı</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Alıcının hassasiyetini kontrol eder. Zayıf sinyalleri görünür kılarken gürültüyü minimize eder.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Çok düşük:</strong> Zayıf hedefler kaybolur</li>
+                    <li data-translatable="true">• <strong>Çok yüksek:</strong> Ekran gürültüyle dolar</li>
+                    <li data-translatable="true">• <strong>Optimal:</strong> Hafif gürültü görününceye kadar artır, sonra azalt</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Sea Clutter (STC)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Deniz dalgalarının yansımalarını azaltır. Sensitivity Time Control kullanır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Yakın mesafeyi etkiler (0-3 nm)</li>
+                    <li data-translatable="true">• Kaba denizde artırılır</li>
+                    <li data-translatable="true">• ⚠️ Aşırı kullanım küçük hedefleri maskeler!</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Rain Clutter (FTC)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Yağmur, kar ve doludan kaynaklanan gürültüyü azaltır. Fast Time Constant kullanır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Tüm menzilleri etkiler</li>
+                    <li data-translatable="true">• Sağanak yağmurda artırılır</li>
+                    <li data-translatable="true">• ⚠️ Yağmur perdesindeki hedefleri zayıflatabilir!</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Range (Menzil) Seçimi</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Kıyı seyri:</strong> 3-6 nm (detay için)</li>
+                    <li data-translatable="true">• <strong>Liman yaklaşması:</strong> 0.75-1.5 nm (hassas pozisyon)</li>
+                    <li data-translatable="true">• <strong>Açık deniz:</strong> 12-24 nm (erken uyarı)</li>
+                    <li data-translatable="true">• <strong>Dual range:</strong> Yakın + uzak menzili birlikte kullan</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Parallel Indexing (PI)</h3>
+              <p className="text-xs mb-3" data-translatable="true">
+                Radar ekranında sabit bir referans çizgisi oluşturarak güvenli seyir mesafesini kontrol etme tekniği.
+                Özellikle dar kanallarda ve kıyı seyirinde kritik öneme sahiptir.
+              </p>
+              
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2" data-translatable="true">PI Kurulum Adımları</h4>
+                <ol className="text-xs space-y-2 ml-4 list-decimal">
+                  <li data-translatable="true"><strong>Planlama:</strong> Haritada güvenli rotanızı çizin</li>
+                  <li data-translatable="true"><strong>Paralel Çizgi:</strong> Rotanıza paralel, güvenli mesafede (ör. 0.5 nm) çizgi çizin</li>
+                  <li data-translatable="true"><strong>Referans Nokta:</strong> Bu çizgi üzerinde sabit bir kıyı objesi seçin (burun, fener, vb.)</li>
+                  <li data-translatable="true"><strong>Radar Setup:</strong> EBL'yi bu objeye çevirin, VRM'i mesafeye ayarlayın</li>
+                  <li data-translatable="true"><strong>İzleme:</strong> Obje EBL/VRM kesişiminde kalmalı; sapma = rota hatası</li>
+                </ol>
+              </div>
+
+              <div className="bg-card border rounded-lg p-4 mt-3">
+                <p className="font-semibold mb-2" data-translatable="true">Pratik Örnek</p>
+                <p className="text-xs" data-translatable="true">
+                  Dar bir kanalda seyir: Sancak tarafta 0.5 nm minimum mesafe gerekli. Kıyıdaki belirgin bir burun seçin.
+                  PI çizgisini 0.5 nm'de kurabilin. Burun bu çizgide ilerlemeli. Çizgiden yaklaşırsa → iskeleye dümene,
+                  uzaklaşırsa → sancağa dümene.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">EBL ve VRM Kullanımı</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">EBL (Electronic Bearing Line)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Elektronik kerteriz çizgisi. Herhangi bir hedefe yönlendirilebilir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Hedef kerterizini ölçme</li>
+                    <li data-translatable="true">• Parallel indexing için referans</li>
+                    <li data-translatable="true">• Harita ile karşılaştırma</li>
+                    <li data-translatable="true">• Çoklu EBL: farklı hedefler için</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">VRM (Variable Range Marker)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Değişken menzil halkası. İstenen mesafeye ayarlanabilir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Hedef mesafesini ölçme</li>
+                    <li data-translatable="true">• Güvenlik mesafesi kontrolü</li>
+                    <li data-translatable="true">• CPA tahmini</li>
+                    <li data-translatable="true">• Çoklu VRM: farklı mesafeler için</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">ARPA (Automatic Radar Plotting Aid)</h3>
+              <p className="text-xs mb-3" data-translatable="true">
+                ARPA, hedefleri otomatik olarak izler, hızlarını ve rotalarını hesaplar, çarpışma riskini değerlendirir.
+              </p>
+
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Hedef Edinme (Target Acquisition)</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Manuel:</strong> Ekranda hedefe tıkla, ARPA takip başlat</li>
+                    <li data-translatable="true">• <strong>Otomatik:</strong> Belirli CPA/TCPA sınırlarındaki hedefler otomatik edinilir</li>
+                    <li data-translatable="true">• <strong>Acquisition Time:</strong> 1-3 dakika (hedef hız/rota hesabı için)</li>
+                    <li data-translatable="true">• <strong>Lost Target:</strong> 3+ missed scan → hedef kaybedildi alarmı</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">ARPA Vektörleri</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Hedeflerin hareket yönü ve hızı vektörlerle gösterilir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>True Vector:</strong> Gerçek rota ve hız (gerçek hareket yönü)</li>
+                    <li data-translatable="true">• <strong>Relative Vector:</strong> Gemiye göre göreceli hareket</li>
+                    <li data-translatable="true">• <strong>Vector Length:</strong> Belirli süredeki hareket mesafesi (ör. 6 dakika)</li>
+                    <li data-translatable="true">• <strong>Vector Time:</strong> 3, 6, 12, 30 dakika seçilebilir</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">CPA/TCPA Alarmları</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>CPA:</strong> Closest Point of Approach (en yakın geçiş mesafesi)</li>
+                    <li data-translatable="true">• <strong>TCPA:</strong> Time to CPA (en yakın geçişe kalan süre)</li>
+                    <li data-translatable="true">• <strong>Tipik Limitler:</strong> CPA {'<'} 1 nm, TCPA {'<'} 12 dakika</li>
+                    <li data-translatable="true">• <strong>Guard Zone:</strong> Belirlenen alan içine giren hedefler alarm verir</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Trial Maneuver</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Rota veya hız değişikliğinin etkisini önceden simüle etme.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Yeni rota/hız gir → ARPA yeni CPA/TCPA hesaplar</li>
+                    <li data-translatable="true">• Manevra öncesi güvenliği değerlendir</li>
+                    <li data-translatable="true">• COLREG ile uyumlu manevra seç</li>
+                    <li data-translatable="true">• ⚠️ Simülasyon: Gerçek manevra değil!</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Radar Performans Kontrolü</h3>
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2" data-translatable="true">Günlük Kontroller</h4>
+                <ul className="text-xs space-y-1">
+                  <li data-translatable="true">• <strong>Performance Monitor:</strong> Gönderici gücü, gürültü seviyesi kontrolü</li>
+                  <li data-translatable="true">• <strong>Test Target:</strong> Sistemin çalışır durumda olduğunu doğrula</li>
+                  <li data-translatable="true">• <strong>Bearing Accuracy:</strong> Bilinen hedeflerle kerteriz doğruluğu testi</li>
+                  <li data-translatable="true">• <strong>Range Accuracy:</strong> Bilinen mesafelerle menzil doğruluğu testi</li>
+                  <li data-translatable="true">• <strong>Blind Sectors:</strong> Direk, baca gibi engellerden kaynaklanan kör sektörler</li>
+                </ul>
+              </div>
+            </div>
+
             <figure className="bg-muted/20 rounded p-3">
               <img
                 className="w-full h-auto rounded"
-                alt="Radar ekranı ve ARPA elemanları"
+                alt="Radar ekranı diyagramı"
                 src="/src/assets/navigation/radar-display.svg"
                 loading="lazy"
               />
-              <figcaption className="text-[11px] text-muted-foreground mt-1">
-                Radar Ekranı - EBL, VRM, Hedefler ve Menzil Halkaları
+              <figcaption className="text-xs text-muted-foreground mt-1">
+                Radar Ekranı Diyagramı - EBL, VRM, Hedefler ve Menzil Halkaları
               </figcaption>
             </figure>
+
             <div className="bg-muted/20 rounded p-3">
-              <p className="font-semibold mb-2">Şema (PI ve EBL):</p>
-              <pre className="font-mono text-[11px] leading-5">{`[Merkez Own Ship]
- ┌───────────────┐
- │   —— PI ——→   │ (Sabit offset çizgisi)
- │  ··EBL····    │ (Elektronik kerteriz çizgisi)
- │   ○ VRM       │ (Menzil halkası)
- └───────────────┘`}</pre>
+              <p className="font-semibold mb-2" data-translatable="true">Çözümlü Örnek (CPA/TCPA Hesaplama)</p>
+              <pre className="font-mono text-[10px] leading-5 overflow-x-auto">{`Senaryo:
+- Hedef başlangıç pozisyonu: R₀ = 5 nm @ 045° (sancak pruva)
+- Hedef hız ve rota: Vₜ = 15 kn @ 270° (batıya gidiyor)
+- Own ship: Vₒ = 12 kn @ 000° (kuzeye gidiyor)
+
+Çözüm (Kartezyen koordinatlar):
+1. Pozisyon: R0x = 5·sin(45°) = 3.54 nm, R0y = 5·cos(45°) = 3.54 nm
+2. Hedef hız: Vtx = 15·sin(270°) = -15 kn, Vty = 15·cos(270°) = 0 kn
+3. Own ship hız: Vox = 0 kn, Voy = 12 kn
+4. Relative hız: Vrx = -15 - 0 = -15 kn, Vry = 0 - 12 = -12 kn
+5. TCPA = -(R₀·Vr) / |Vr|² = -((3.54·-15 + 3.54·-12) / 369) ≈ 0.26 saat ≈ 15.6 dakika
+6. CPA = |R₀ + Vr·TCPA| ≈ 1.9 nm
+
+Sonuç: 15.6 dakika sonra hedef 1.9 nm mesafeden geçecek.
+Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
             </div>
-            <div className="bg-muted/20 rounded p-3">
-              <p className="font-semibold mb-2">Çözümlü Örnek (CPA/TCPA):</p>
-              <pre className="font-mono text-[11px] leading-5">{`R₀ = 5 nm @ 045°, Vₜ = 15 kn @ 270°, Vₒ = 12 kn @ 000°
-X/Y eksenleri: X doğu, Y kuzey
-R0x = 5·sin45 = 3.54, R0y = 5·cos45 = 3.54
-Vtx = 15·sin270 = −15, Vty = 15·cos270 = 0
-Vox = 12·sin0 = 0,   Voy = 12·cos0 = 12
-Vrx = −15 − 0 = −15, Vry = 0 − 12 = −12
-Vr² = 369, tCPA(h) = −(R·V / Vr²) = −((3.54·−15 + 3.54·−12)/369) ≈ 0.26 h ≈ 15.6 dk
-CPA = |R0 + Vr·t| ≈ 1.9 nm`}</pre>
+
+            <div className="bg-card border border-warning p-4 rounded-lg">
+              <h4 className="font-semibold text-warning mb-2" data-translatable="true">⚠️ Radar Kısıtlamaları ve Dikkat Edilecekler</h4>
+              <ul className="text-xs space-y-1">
+                <li data-translatable="true">• Radar COLREG yerine geçmez - visual lookout şarttır</li>
+                <li data-translatable="true">• Küçük hedefler (yelkenli, fiberglass) zayıf echo verir</li>
+                <li data-translatable="true">• Kötü hava (yağmur, dalga) tespiti zorlaştırır</li>
+                <li data-translatable="true">• Shadow sektörler (kör noktalar) kontrol edilmeli</li>
+                <li data-translatable="true">• ARPA verisi 1-3 dakika gecikmeli - ani manevralar yanıltabilir</li>
+                <li data-translatable="true">• Over-reliance riski: Radar + AIS + visual kombinasyonu kullan</li>
+              </ul>
             </div>
           </CardContent>
           )}
@@ -1003,28 +1277,214 @@ CPA = |R0 + Vr·t| ≈ 1.9 nm`}</pre>
         <Card className="shadow">
           <CardHeader onClick={() => toggle('ais')} className="cursor-pointer" aria-expanded={isOpen('ais')}>
             <CardTitle id="ais" className="scroll-mt-24 flex items-center justify-between">
-              AIS ve Elektronik Seyir Yardımları
+              AIS (Automatic Identification System)
               <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('ais') ? "rotate-180" : "")} />
             </CardTitle>
           </CardHeader>
           {isOpen('ais') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p>AIS sınıfları, mesaj tipleri, veri doğrulama ve kısıtlar; hedef takibi ve alarm ayarları.</p>
-              <p>GNSS hataları, RAIM ve bütünlük izleme; sensör füzyonu (GPS, gyro, log).</p>
+          <CardContent className="space-y-6 text-sm">
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">AIS Nedir?</h3>
+              <p className="text-xs mb-3" data-translatable="true">
+                AIS (Automatic Identification System), gemiler arasında otomatik olarak kimlik, pozisyon, rota, hız ve diğer bilgileri paylaşan VHF tabanlı bir iletişim sistemidir. 
+                SOLAS zorunluluğu kapsamında 300 GT üzeri tüm gemiler ve tüm yolcu gemilerinde bulunması şarttır.
+              </p>
+
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2" data-translatable="true">AIS Sınıfları</h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-semibold text-primary mb-1">Class A (Ticari Gemiler)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li data-translatable="true">• SOLAS gemilerinde zorunlu</li>
+                      <li data-translatable="true">• 12W gönderici gücü (uzun menzil)</li>
+                      <li data-translatable="true">• 2-10 saniye güncelleme aralığı</li>
+                      <li data-translatable="true">• Tam veri seti (static, dynamic, voyage)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-primary mb-1">Class B (Küçük Tekneler)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li data-translatable="true">• Ticari olmayan gemiler için</li>
+                      <li data-translatable="true">• 2W gönderici gücü (kısa menzil)</li>
+                      <li data-translatable="true">• 30 saniye güncelleme</li>
+                      <li data-translatable="true">• Sınırlı veri (position, ID)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <figure className="bg-muted/20 rounded p-3">
-              <img
-                className="w-full h-auto rounded"
-                alt="GPS uydu konumlandırması ve çalışma prensibi"
-                src="/src/assets/navigation/gps-satellites.svg"
-                loading="lazy"
-              />
-              <figcaption className="text-[11px] text-muted-foreground mt-1">
-                GPS Uydu Konumlandırması - En az 4 uydu ile 3D konumlandırma
-              </figcaption>
-            </figure>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">AIS Mesaj Tipleri</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Static Data (Statik Veri)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Gemiyle ilgili sabit bilgiler. Programlama sırasında girilir, nadiren değişir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>MMSI:</strong> Maritime Mobile Service Identity (9 haneli benzersiz numara)</li>
+                    <li data-translatable="true">• <strong>IMO Number:</strong> Gemi kayıt numarası</li>
+                    <li data-translatable="true">• <strong>Call Sign:</strong> Telsiz çağrı işareti</li>
+                    <li data-translatable="true">• <strong>Ship Name:</strong> Gemi ismi (20 karakter)</li>
+                    <li data-translatable="true">• <strong>Ship Type:</strong> Gemi tipi kodu (tanker, cargo, passenger, vb.)</li>
+                    <li data-translatable="true">• <strong>Dimensions:</strong> Boyutlar (boy, genişlik, GPS anteni pozisyonu)</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Dynamic Data (Dinamik Veri)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Geminin anlık durumu. GPS ve sensörlerden otomatik olarak alınır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Position:</strong> Enlem/Boylam (GPS'ten)</li>
+                    <li data-translatable="true">• <strong>COG:</strong> Course Over Ground (gerçek rota)</li>
+                    <li data-translatable="true">• <strong>SOG:</strong> Speed Over Ground (gerçek hız)</li>
+                    <li data-translatable="true">• <strong>Heading:</strong> Baş yönü (gyro compass'tan)</li>
+                    <li data-translatable="true">• <strong>ROT:</strong> Rate of Turn (dönüş hızı, °/dakika)</li>
+                    <li data-translatable="true">• <strong>Navigation Status:</strong> Under way, At anchor, Moored, vb.</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Voyage Data (Sefer Verisi)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Mevcut sefer bilgileri. Kalkış öncesi veya sefer sırasında manuel girilir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Destination:</strong> Varış limanı (max 20 karakter)</li>
+                    <li data-translatable="true">• <strong>ETA:</strong> Estimated Time of Arrival (UTC)</li>
+                    <li data-translatable="true">• <strong>Draft:</strong> Maksimum draft (su çekimi, metre)</li>
+                    <li data-translatable="true">• <strong>Cargo Type:</strong> Yük tipi (DG = Dangerous Goods varsa belirtilir)</li>
+                    <li data-translatable="true">• <strong>Persons on Board:</strong> Gemideki kişi sayısı</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">AIS Kullanımı ve Yorumlama</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Hedef Yönetimi</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Active Targets:</strong> Hareket halinde, sürekli güncellenen hedefler</li>
+                    <li data-translatable="true">• <strong>Sleeping Targets:</strong> Demir/rıhtımdaki statik hedefler (güncelleme yavaş)</li>
+                    <li data-translatable="true">• <strong>Lost Targets:</strong> 3+ dakika veri gelmemişse (menzil dışı veya cihaz arızası)</li>
+                    <li data-translatable="true">• <strong>Selected Target:</strong> Detaylı bilgi görüntüleme için seçilen hedef</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">CPA/TCPA Alarmları</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    AIS otomatik olarak CPA/TCPA hesaplar ve alarm verir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Tipik limitler: CPA {'<'} 1 nm, TCPA {'<'} 12-20 dakika</li>
+                    <li data-translatable="true">• Limitleri traffic density'ye göre ayarla</li>
+                    <li data-translatable="true">• AIS + ARPA karşılaştırması: Hedefler eşleşmeli</li>
+                    <li data-translatable="true">• ⚠️ Eğer eşleşmiyorsa: AIS olmayan hedef var demektir!</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">ECDIS/Radar Entegrasyonu</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• AIS hedefleri ECDIS haritası üzerinde gösterilir</li>
+                    <li data-translatable="true">• Radar echo ile AIS hedefi korelasyonu kontrol edilir</li>
+                    <li data-translatable="true">• Vector display: True motion gösterimi</li>
+                    <li data-translatable="true">• Predicted track: Gelecekteki pozisyon tahmini</li>
+                    <li data-translatable="true">• Tıkla → Gemi detayları (name, destination, ETA, vb.)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">GPS/GNSS Sistemleri</h3>
+              <p className="text-xs mb-3" data-translatable="true">
+                Modern gemilerde GPS (ABD), GLONASS (Rusya), Galileo (AB), BeiDou (Çin) sistemlerini birlikte kullanan multi-GNSS alıcılar bulunur.
+              </p>
+
+              <figure className="bg-muted/20 rounded p-3 mb-4">
+                <img
+                  className="w-full h-auto rounded"
+                  alt="GPS uydu konumlandırması"
+                  src="/src/assets/navigation/gps-satellites.svg"
+                  loading="lazy"
+                />
+                <figcaption className="text-xs text-muted-foreground mt-1">
+                  GPS Uydu Konumlandırması - En az 4 uydu ile 3D pozisyon belirlenir
+                </figcaption>
+              </figure>
+
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Doğruluk Faktörleri</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>HDOP:</strong> Horizontal Dilution of Precision (yatay doğruluk bozulması)</li>
+                    <li data-translatable="true">• <strong>PDOP:</strong> Position Dilution of Precision (3D pozisyon doğruluğu)</li>
+                    <li data-translatable="true">• <strong>GDOP:</strong> Geometric DOP (uydu geometrisi etkisi)</li>
+                    <li data-translatable="true">• <strong>İyi değer:</strong> DOP {'<'} 2 (excellent), DOP 2-5 (good)</li>
+                    <li data-translatable="true">• <strong>Kötü değer:</strong> DOP {'>'} 10 (poor) → Pozisyon güvenilmez</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">RAIM (Receiver Autonomous Integrity Monitoring)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    GPS alıcısı, aldığı sinyalleri kendi içinde kontrol eder ve hatalı uydu sinyallerini tespit eder.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• En az 5 uydu gerekir (4 pozisyon + 1 kontrol)</li>
+                    <li data-translatable="true">• Hatalı uydu tespit edilirse alarm verir</li>
+                    <li data-translatable="true">• FDE (Fault Detection and Exclusion): Hatalı uyduyu çıkarır</li>
+                    <li data-translatable="true">• ⚠️ RAIM unavailable → GPS güvenilmez, backup kullan</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">DGPS (Differential GPS)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Bilinen sabit bir istasyondan düzeltme sinyalleri alınarak GPS doğruluğu artırılır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Standart GPS doğruluğu: ±10-15 metre</li>
+                    <li data-translatable="true">• DGPS doğruluğu: ±1-3 metre</li>
+                    <li data-translatable="true">• SBAS (WAAS, EGNOS, MSAS): Uydu tabanlı augmentation</li>
+                    <li data-translatable="true">• Coast stations: Kıyı istasyonları MF band üzerinden düzeltme yayınlar</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">GPS Hataları ve Etkiler</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Ionospheric delay:</strong> İyonosfer gecikmesi (gece/gündüz değişir)</li>
+                    <li data-translatable="true">• <strong>Tropospheric delay:</strong> Troposfer gecikmesi (nem, basınç etkisi)</li>
+                    <li data-translatable="true">• <strong>Multipath error:</strong> Sinyalin yansıması (yapılar, geminin üst yapısı)</li>
+                    <li data-translatable="true">• <strong>Jamming:</strong> Sinyal bozucu cihazlar (savaş/güvenlik bölgelerinde)</li>
+                    <li data-translatable="true">• <strong>Spoofing:</strong> Sahte GPS sinyali gönderme (yanlış pozisyon gösterme)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card border border-warning p-4 rounded-lg">
+              <h4 className="font-semibold text-warning mb-2" data-translatable="true">⚠️ AIS Kısıtlamaları</h4>
+              <ul className="text-xs space-y-1">
+                <li data-translatable="true">• AIS COLREG sorumlulukları ortadan kaldırmaz - visual lookout zorunludur</li>
+                <li data-translatable="true">• Menzil: VHF range (~20-30 nm) - radar menzilinden kısa olabilir</li>
+                <li data-translatable="true">• AIS olmayan hedefler: Küçük tekneler, yelkenliler, askeri gemiler görünmez</li>
+                <li data-translatable="true">• Data accuracy: Yanlış girilmiş voyage data (destination, draft, vb.)</li>
+                <li data-translatable="true">• Spoofing riski: Özellikle hassas bölgelerde sahte AIS sinyalleri</li>
+                <li data-translatable="true">• Target overload: Yoğun trafikte ekran karmaşık, critical targets kaybolabilir</li>
+                <li data-translatable="true">• Cihaz arızası: Hedefin AIS cihazı çalışmıyor olabilir</li>
+                <li data-translatable="true">• <strong>Altın kural:</strong> AIS + Radar + Visual lookout kombinasyonu kullan!</li>
+              </ul>
+            </div>
           </CardContent>
           )}
         </Card>
@@ -1033,171 +1493,280 @@ CPA = |R0 + Vr·t| ≈ 1.9 nm`}</pre>
         <Card className="shadow">
           <CardHeader onClick={() => toggle('ecdis')} className="cursor-pointer" aria-expanded={isOpen('ecdis')}>
             <CardTitle id="ecdis" className="scroll-mt-24 flex items-center justify-between">
-              ECDIS, ENC ve Emniyetli Navigasyon
+              ECDIS (Electronic Chart Display and Information System)
               <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('ecdis') ? "rotate-180" : "")} />
             </CardTitle>
           </CardHeader>
           {isOpen('ecdis') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p>ENC katmanları, CATZOC, SCAMIN; güvenlik derinliği ve konturleri ayarlama.</p>
-              <p>Route check, anti-grounding alarmı, safety corridor; Passage plan entegrasyonu.</p>
+          <CardContent className="space-y-6 text-sm">
+            {/* ECDIS Gerçek Görsel */}
+            <div className="mb-6">
+              <img 
+                src="/navigation/bridge/ecdis-screen.jpg" 
+                alt="ECDIS elektronik harita sistemi" 
+                className="w-full rounded-lg shadow-lg"
+              />
+              <p className="text-xs text-muted-foreground mt-2 text-center" data-translatable="true">
+                ECDIS Ekranı: Elektronik harita, rota planlama ve navigasyon bilgileri
+              </p>
             </div>
-            
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">ECDIS Nedir?</h3>
+              <p className="text-xs mb-3" data-translatable="true">
+                ECDIS (Electronic Chart Display and Information System), kağıt haritaların yerini alabilen, 
+                SOLAS onaylı elektronik harita sistemidir. 2012'den itibaren yeni gemilerde, 2018'e kadar mevcut 
+                gemilerde kademeli olarak zorunlu hale gelmiştir.
+              </p>
+
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2" data-translatable="true">ECDIS vs ECS Farkı</h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-semibold text-primary mb-1">ECDIS (Full System)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li data-translatable="true">• IMO/IHO standartlarına uygun</li>
+                      <li data-translatable="true">• ENC (resmi harita) kullanır</li>
+                      <li data-translatable="true">• Kağıt harita yerine geçer</li>
+                      <li data-translatable="true">• Type approval gerekir</li>
+                      <li data-translatable="true">• Backup sistemi zorunlu</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-primary mb-1">ECS (Chart System)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li data-translatable="true">• Standartlara tam uyumlu değil</li>
+                      <li data-translatable="true">• RNC veya özel haritalar kullanabilir</li>
+                      <li data-translatable="true">• Kağıt harita yerine GEÇMEZ</li>
+                      <li data-translatable="true">• Planlama/yardımcı araç</li>
+                      <li data-translatable="true">• Küçük tekneler için</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">ENC (Electronic Navigational Chart) Yapısı</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">ENC Katmanları</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    ENC verisi vektör tabanlıdır (raster değil). Nesneler katmanlar halinde organize edilir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Base Display:</strong> Zorunlu minimum bilgiler (derinlik konturu, kara, tehlikeler)</li>
+                    <li data-translatable="true">• <strong>Standard Display:</strong> Normal seyir için yeterli bilgiler (şamandıralar, fenerler)</li>
+                    <li data-translatable="true">• <strong>All Other Information:</strong> Tüm detaylar (deniz altı kabloları, balıkçılık bölgeleri, vb.)</li>
+                    <li data-translatable="true">• <strong>Kullanıcı seçimi:</strong> Standart Display önerilir; All Other çok kalabalık olabilir</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">SENC (System ENC)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    ECDIS, ENC dosyalarını kendi formatına (SENC) çevirir ve kullanır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• ENC: Orijinal harita verisi (IHO S-57 standardı)</li>
+                    <li data-translatable="true">• SENC: ECDIS'in kullandığı işlenmiş veri</li>
+                    <li data-translatable="true">• ENC güncellemesi → SENC otomatik yenilenir</li>
+                    <li data-translatable="true">• SENC corrupt olursa → ENC'den yeniden oluşturulur</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">ENC Updates</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>New Edition:</strong> Haritanın tamamen yeni versiyonu (major changes)</li>
+                    <li data-translatable="true">• <strong>Update:</strong> Mevcut harita üzerine düzeltmeler (weekly/monthly)</li>
+                    <li data-translatable="true">• <strong>T&P NM (Temporary & Preliminary):</strong> Geçici değişiklikler (wreck, construction)</li>
+                    <li data-translatable="true">• <strong>Permit:</strong> Harita lisans süresi (genellikle 1 yıl)</li>
+                    <li data-translatable="true">• ⚠️ Update kontrolü: Haftalık yapılmalı, otomatik sistem önerilir</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">CATZOC (Category of Zone of Confidence)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Harita verisinin doğruluk ve güvenilirlik derecesini gösterir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>A1:</strong> En yüksek doğruluk (± 5m pozisyon, ± 0.5m derinlik)</li>
+                    <li data-translatable="true">• <strong>A2/B:</strong> İyi doğruluk (± 20-50m)</li>
+                    <li data-translatable="true">• <strong>C:</strong> Orta doğruluk (± 500m)</li>
+                    <li data-translatable="true">• <strong>D:</strong> Düşük doğruluk (± {'>'} 500m)</li>
+                    <li data-translatable="true">• <strong>U:</strong> Unassessed (değerlendirilmemiş) - en az güvenilir</li>
+                    <li data-translatable="true">• ⚠️ CATZOC C/D/U bölgelerde ekstra dikkat! Harita eski/güvenilmez olabilir</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">SCAMIN (Scale Minimum)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Haritadaki nesnelerin hangi zoom seviyesinde görüneceğini belirler.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Zoom out yapınca detaylar kaybolur (ekran kalabalık olmasın diye)</li>
+                    <li data-translatable="true">• Kritik objeler (kayalıklar, wreck) daha erken görünür</li>
+                    <li data-translatable="true">• ⚠️ Over-zoom uyarısı: Harita detayı yetersiz, daha büyük scale harita gerekli</li>
+                    <li data-translatable="true">• Under-scale uyarısı: Çok fazla detay, ekran kalabalık</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Safety Settings (Güvenlik Ayarları)</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Safety Depth (Güvenlik Derinliği)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Geminin draft'ına göre minimum güvenli derinlik. Bu değerden sığ alanlar vurgulanır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Hesaplama: Safety Depth = Draft + UKC margin + Squat + Waves</li>
+                    <li data-translatable="true">• Örnek: Draft 10m, UKC 2m, Squat 0.5m → Safety Depth = 12.5m</li>
+                    <li data-translatable="true">• Safety depth'ten sığ yerler kırmızı/orange ile gösterilir</li>
+                    <li data-translatable="true">• ⚠️ Dikkat: Gelgit değişince safety depth değişmez, UKC değişir!</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Safety Contour (Güvenlik Konturu)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Haritada vurgulanan kritik derinlik çizgisi. Geminin bu çizginin derin tarafında kalması gerekir.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• Tipik değerler: Safety depth'e en yakın kontur (örn. 15m, 20m, 30m)</li>
+                    <li data-translatable="true">• ECDIS otomatik seçer: Safety depth = 12.5m → Safety contour = 15m</li>
+                    <li data-translatable="true">• Manuel ayarlanabilir (daha conservative seçilebilir)</li>
+                    <li data-translatable="true">• Isolated danger sembolü: Safety contour içinde kalan tehlikeler</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Shallow Contour & Deep Contour</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Shallow Contour:</strong> Sığ suları ayıran çizgi (örn. 5m)</li>
+                    <li data-translatable="true">• <strong>Deep Contour:</strong> Derin suları ayıran çizgi (örn. 30m)</li>
+                    <li data-translatable="true">• Shallow-Safety-Deep contour sıralaması ile renkler değişir</li>
+                    <li data-translatable="true">• Shallow: Kırmızı/Turuncu, Safety arası: Mavi, Deep: Koyu mavi</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Route Planning ve Execution</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Route Planning Adımları</h4>
+                  <ol className="text-xs space-y-1 ml-4 list-decimal">
+                    <li data-translatable="true"><strong>Waypoint Ekleme:</strong> Başlangıç/varış ve dönüş noktalarını işaretle</li>
+                    <li data-translatable="true"><strong>Route Check:</strong> ECDIS otomatik güvenlik kontrolü yapar</li>
+                    <li data-translatable="true"><strong>XTD (Cross Track Distance):</strong> Rota kenarına tolerans mesafesi (örn. 0.2 nm)</li>
+                    <li data-translatable="true"><strong>Turn Radius:</strong> Waypoint'te dönüş yarıçapı (wheel over point)</li>
+                    <li data-translatable="true"><strong>Safety Corridor:</strong> XTD ile oluşan rota koridoru</li>
+                    <li data-translatable="true"><strong>Route Activation:</strong> Rotayı aktive et, monitoring başlat</li>
+                  </ol>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Route Check (Otomatik Kontroller)</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Anti-grounding:</strong> Rota safety contour'u geçiyor mu?</li>
+                    <li data-translatable="true">• <strong>Isolated dangers:</strong> Rota koridoru içinde tehlike var mı?</li>
+                    <li data-translatable="true">• <strong>Navigation aids:</strong> Şamandıra, fener geçişleri</li>
+                    <li data-translatable="true">• <strong>Restricted areas:</strong> TSS, yasak bölgeler, askeri alanlar</li>
+                    <li data-translatable="true">• <strong>Overhead cables:</strong> Geminin yüksekliği köprü clearance'ından fazla mı?</li>
+                    <li data-translatable="true">• ⚠️ Route check FAILED → Rotayı düzelt, tekrar kontrol et</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Wheel Over Point (WOP)</h4>
+                  <p className="text-xs mb-2" data-translatable="true">
+                    Waypoint'e yaklaşırken dönüşe başlama noktası. Turn radius'a bağlıdır.
+                  </p>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• WOP = Waypoint'ten turn radius kadar önce</li>
+                    <li data-translatable="true">• Turn radius ayarı: Geminin dönüş özelliklerine göre</li>
+                    <li data-translatable="true">• Autopilot mod: Nav mode WOP'ta otomatik döner</li>
+                    <li data-translatable="true">• ⚠️ Manuel mod: WOP'ta kendin dümene başla!</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">ECDIS Alarmları</h3>
+              <div className="space-y-3">
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Kritik Alarmlar</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>Anti-grounding alarm:</strong> Gemi safety contour'a yaklaşıyor</li>
+                    <li data-translatable="true">• <strong>Deviation alarm:</strong> Rota koridorundan (XTD) çıkılmış</li>
+                    <li data-translatable="true">• <strong>Approach to waypoint:</strong> Waypoint'e X nm kaldı (örn. 0.5 nm)</li>
+                    <li data-translatable="true">• <strong>Passing waypoint:</strong> Waypoint geçildi, sonraki leg'e geçiliyor</li>
+                    <li data-translatable="true">• <strong>Route crossing:</strong> Başka bir rota/trafik ile kesişme</li>
+                    <li data-translatable="true">• <strong>Anchor watch alarm:</strong> Demir taşıyor (anchor drag)</li>
+                  </ul>
+                </div>
+
+                <div className="bg-accent/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2" data-translatable="true">Sistem Alarmları</h4>
+                  <ul className="text-xs space-y-1">
+                    <li data-translatable="true">• <strong>GPS failure:</strong> Pozisyon kaynağı kayboldu</li>
+                    <li data-translatable="true">• <strong>Gyro failure:</strong> Heading bilgisi alınamıyor</li>
+                    <li data-translatable="true">• <strong>ENC not available:</strong> O bölgede ENC yok (kağıt harita kullan!)</li>
+                    <li data-translatable="true">• <strong>Out of date ENC:</strong> Harita güncel değil (update gerekli)</li>
+                    <li data-translatable="true">• <strong>System malfunction:</strong> ECDIS arızalı (backup sisteme geç)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3" data-translatable="true">Backup Sistemleri</h3>
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2" data-translatable="true">ECDIS Backup Gereksinimleri (SOLAS)</h4>
+                <p className="text-xs mb-2" data-translatable="true">
+                  ECDIS kullanımı durumunda backup sistemi zorunludur. Üç seçenek:
+                </p>
+                <ul className="text-xs space-y-1">
+                  <li data-translatable="true">• <strong>Option 1:</strong> İkinci bağımsız ECDIS sistemi (ayrı GPS, sensörler)</li>
+                  <li data-translatable="true">• <strong>Option 2:</strong> ECDIS + Güncel kağıt haritalar (planned route için)</li>
+                  <li data-translatable="true">• <strong>Option 3:</strong> ECDIS + Appropriate folio of paper charts</li>
+                  <li data-translatable="true">• <strong>ENC Backup:</strong> Tüm ENC'lerin kopyası (USB, harddisk) gemide bulunmalı</li>
+                  <li data-translatable="true">• ⚠️ ECDIS fail → Hemen backup sisteme geç, prosedür uygula</li>
+                </ul>
+              </div>
+            </div>
+
             <figure className="bg-muted/20 rounded p-3">
               <img
                 className="w-full h-auto rounded"
-                alt="ECDIS ekranı ve elektronik harita navigasyonu"
+                alt="ECDIS ekranı diyagramı"
                 src="/src/assets/navigation/ecdis-display.svg"
                 loading="lazy"
               />
-              <figcaption className="text-[11px] text-muted-foreground mt-1">
-                ECDIS Ekranı - Elektronik Harita, Rota, Waypoint ve Safety Contour
+              <figcaption className="text-xs text-muted-foreground mt-1">
+                ECDIS Ekranı Diyagramı - Rota, Waypoint, Safety Contour ve Derinlik Bilgileri
               </figcaption>
             </figure>
-            <div className="bg-muted/20 rounded p-3">
-              <p className="font-semibold mb-2">Şema (Safety Contours):</p>
-              <pre className="font-mono text-[11px] leading-5">{`Derinlik (m)
-  █ < safety depth (tehlike)
-  ▒ ≈ güvenlik konturu
-  · > safety depth (güvenli)
-Safety corridor = rota etrafında tolerans bandı`}</pre>
-            </div>
-          </CardContent>
-          )}
-        </Card>
 
-        {/* Celestial */}
-        <Card className="shadow">
-          <CardHeader onClick={() => toggle('celestial')} className="cursor-pointer" aria-expanded={isOpen('celestial')}>
-            <CardTitle id="celestial" className="scroll-mt-24 flex items-center justify-between">
-              Göksel Navigasyon (Özet)
-              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('celestial') ? "rotate-180" : "")} />
-            </CardTitle>
-          </CardHeader>
-          {isOpen('celestial') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p>Meridian passage, azimut ve sight reduction adımları; sextant düzeltmeleri (IE, dip, refraction vs.).</p>
-              <p>Navigasyon yıldızları ve hızlı seçim ipuçları; pratik örnek akışı.</p>
-              
-              <figure className="bg-muted/20 rounded p-3">
-                <img
-                  className="w-full h-auto rounded"
-                  alt="Gök üçgeni ve celestial navigation elemanları"
-                  src="/src/assets/navigation/celestial-triangle.svg"
-                  loading="lazy"
-                />
-                <figcaption className="text-[11px] text-muted-foreground mt-1">
-                  Gök Üçgeni (Celestial Triangle) - Celestial Navigation Temel Elemanları
-                </figcaption>
-              </figure>
-              
-              <div className="bg-muted/20 rounded p-3">
-                <p className="font-semibold mb-2">Temel İlişki (LHA Tanımı):</p>
-                <pre className="font-mono text-[11px] leading-5">{`LHA = normalize(GHA − λ)
-λ (longitude): E(+) W(−), sonuç 0–360° aralığına normalize edilir`}</pre>
-              </div>
-            </div>
-          </CardContent>
-          )}
-        </Card>
-
-        {/* Meteorology */}
-        <Card className="shadow">
-          <CardHeader onClick={() => toggle('met')} className="cursor-pointer" aria-expanded={isOpen('met')}>
-            <CardTitle id="met" className="scroll-mt-24 flex items-center justify-between">
-              Meteoroloji ve Görünürlük
-              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('met') ? "rotate-180" : "")} />
-            </CardTitle>
-          </CardHeader>
-          {isOpen('met') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p>Rüzgar, dalga, akıntı tahmini kaynakları; sis ve az görüşte seyir teknikleri.</p>
-              <p>Barometre eğilimleri, cephe geçişleri ve rota tercihlerine etkileri.</p>
-            </div>
-            
-            <figure className="bg-muted/20 rounded p-3">
-              <img
-                className="w-full h-auto rounded"
-                alt="Hava sistemleri ve navigasyona etkisi"
-                src="/src/assets/navigation/weather-systems.svg"
-                loading="lazy"
-              />
-              <figcaption className="text-[11px] text-muted-foreground mt-1">
-                Hava Sistemleri - Yüksek/Alçak Basınç, Cepheler ve Navigasyona Etkisi
-              </figcaption>
-            </figure>
-          </CardContent>
-          )}
-        </Card>
-
-        {/* Passage Planning */}
-        <Card className="shadow">
-          <CardHeader onClick={() => toggle('passage')} className="cursor-pointer" aria-expanded={isOpen('passage')}>
-            <CardTitle id="passage" className="scroll-mt-24 flex items-center justify-between">
-              Passage Planning (Appraisal → Monitoring)
-              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('passage') ? "rotate-180" : "")} />
-            </CardTitle>
-          </CardHeader>
-          {isOpen('passage') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p><strong>Passage Planning Dört Aşaması (SOLAS ve IMO Gereksinimleri):</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>1. Appraisal (Değerlendirme):</strong> Bilgi toplama aşaması; tüm mevcut kaynaklar incelenir.</li>
-                <li><strong>2. Planning (Planlama):</strong> Rota çizimi, waypoint belirleme, risk değerlendirmesi.</li>
-                <li><strong>3. Execution (Uygulama):</strong> Planın gemide uygulanması; köprüüstü ekip bilgilendirmesi.</li>
-                <li><strong>4. Monitoring (İzleme):</strong> Seyir sırasında sürekli kontrol; sapmaları tespit ve düzeltme.</li>
-              </ul>
-              
-              <p><strong>1. Appraisal (Değerlendirme) - Kontrol Listesi:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Haritalar:</strong> En güncel edisyonlar ve Notice to Mariners ile düzeltmeler; uygun ölçekler (general, coastal, approach, harbour).</li>
-                <li><strong>Yayınlar:</strong> Sailing Directions (Pilot Books), List of Lights, Tide Tables, Tidal Stream Atlases, Radio Signals, IALA buoyage.</li>
-                <li><strong>Meteoroloji:</strong> Hava tahminleri, seasonal weather patterns, tropical storm zones.</li>
-                <li><strong>Gemi Özellikleri:</strong> Draft, UKC requirements, maneuvering data, fuel capacity, speed capabilities.</li>
-                <li><strong>Düzenlemeler:</strong> TSS, IMO routing, restricted areas, ECDIS regulations, port state requirements.</li>
-                <li><strong>Acil Durum Limanları:</strong> Alternatif limanlar, refuge ports, emergency contacts.</li>
-              </ul>
-              
-              <p><strong>2. Planning (Planlama) - Detaylar:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Rota Seçimi:</strong> Great Circle vs Rhumb Line; TSS compliance; weather routing; piracy/war risk areas.</li>
-                <li><strong>Waypoints:</strong> Net tanımlı WP pozisyonları; leg mesafeleri ve rotaları; wheel over points ve turning radii.</li>
-                <li><strong>No-Go Areas:</strong> Haritada kırmızı tarama; shallow water, wrecks, restricted zones, environmentally sensitive areas.</li>
-                <li><strong>Safety Contours/Depths:</strong> ECDIS'te safety depth ve contour ayarları; UKC minimum değerleri; squat hesaplamaları.</li>
-                <li><strong>Clearing Bearings:</strong> Kritik noktalarda clearing lines, danger angles, transits belirlenmesi.</li>
-                <li><strong>Contingency Plans:</strong> Alternatif rotalar; engine failure scenarios; heavy weather tracks; emergency anchorages.</li>
-                <li><strong>Speed Profile:</strong> ETA optimization; tide windows; fuel consumption planning; ECA (Emission Control Area) speed restrictions.</li>
-              </ul>
-              
-              <p><strong>3. Execution (Uygulama) - Ekip Briefing:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Master's Review:</strong> Tüm plan kaptan tarafından onaylanmalı; imza ve tarih.</li>
-                <li><strong>Ekip Bilgilendirmesi:</strong> Passage plan tüm köprüüstü ekibi ile paylaşılır; kritik noktalar vurgulanır.</li>
-                <li><strong>Pilot Card:</strong> Liman yaklaşımları için; gemi maneuvering data, UKC requirements, pilot boarding arrangements.</li>
-                <li><strong>VTS/Port Authority:</strong> ETA notifications; berth booking; pilotage arrangements; port clearances.</li>
-                <li><strong>Wheelhouse Poster:</strong> Kritik bilgiler özetlenmeli; waypoint listesi, kritik kerterizler, tide windows, emergency contacts.</li>
-              </ul>
-              
-              <p><strong>4. Monitoring (İzleme) - Sürekli Kontrol:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Position Fixing:</strong> Düzenli aralıklarla (açık deniz: 1-2h, kıyı: 15-30dk, pilotage: sürekli); multiple sources (GPS, radar, visual).</li>
-                <li><strong>Cross Track Error (XTE):</strong> ECDIS/GPS ile izleme; alarm limitleri ayarlama; rota sapması tespit ve düzeltme.</li>
-                <li><strong>ETA Updates:</strong> Weather, current etkisi ile ETA revize; port/pilot notification; fuel check.</li>
-                <li><strong>Weather Watch:</strong> Tahmin vs gerçek karşılaştırma; route alteration ihtiyacı; heavy weather precautions.</li>
-                <li><strong>Log Book:</strong> Tüm önemli olaylar, course changes, fixes, alarms, abnormal situations kayıt altına alınmalı.</li>
-                <li><strong>Deviation from Plan:</strong> Sebep ve düzeltme eylemleri not edilmeli; Master'a rapor; revised plan hazırlanmalı.</li>
-              </ul>
-              
-              <p><strong>Özel Hususlar:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Fuel Budget:</strong> Voyage consumption + contingency (genellikle 10-15%); ECA fuel planning; bunkering ports.</li>
-                <li><strong>Restricted Waters:</strong> Speed limits, overtaking prohibitions, one-way channels, tidal restrictions.</li>
-                <li><strong>Pilot Embarkation:</strong> Pilot boarding location, time, pilot ladder/combination ladder requirements, PPE.</li>
-                <li><strong>Master-Pilot Exchange:</strong> Passage plan sharing; local conditions; maneuvering limitations; communication protocols.</li>
+            <div className="bg-card border border-warning p-4 rounded-lg">
+              <h4 className="font-semibold text-warning mb-2" data-translatable="true">⚠️ ECDIS Kullanımında Dikkat Edilecekler</h4>
+              <ul className="text-xs space-y-1">
+                <li data-translatable="true">• ECDIS navigasyon sorumluluğunu ortadan kaldırmaz - OOW dikkatli olmalı</li>
+                <li data-translatable="true">• Safety settings'i her sefer başında kontrol et (draft değişir!)</li>
+                <li data-translatable="true">• ENC güncellemelerini düzenli kontrol et (out of date = tehlikeli)</li>
+                <li data-translatable="true">• CATZOC C/D/U bölgelerde ekstra lookout - harita güvenilmez olabilir</li>
+                <li data-translatable="true">• Route check PASSED olsa bile, visual kontrol yap (hata olabilir)</li>
+                <li data-translatable="true">• Alarm overload: Gereksiz alarmları kapat ama kritik alarmları ASLA susturma</li>
+                <li data-translatable="true">• Over-reliance (aşırı güven): ECDIS + Radar + AIS + Visual kombinasyonu kullan</li>
+                <li data-translatable="true">• Training: Generic ECDIS + Specific type training SOLAS zorunluluğu</li>
               </ul>
             </div>
           </CardContent>
