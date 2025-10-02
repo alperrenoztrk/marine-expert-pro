@@ -46,6 +46,7 @@ import AuthCallback from "./pages/AuthCallback";
 
 import WeatherForecast from "./pages/WeatherForecast";
 import LocationSelector from "./pages/LocationSelector";
+import ComprehensiveMeteorologyPage from "./pages/ComprehensiveMeteorologyPage";
 
 const queryClient = new QueryClient();
 
@@ -101,6 +102,7 @@ const App = () => {
                      
           <Route path="/weather-forecast" element={<WeatherForecast />} />
           <Route path="/location-selector" element={<LocationSelector />} />
+          <Route path="/comprehensive-meteorology" element={<ComprehensiveMeteorologyPage />} />
                      <Route path="*" element={<Index />} />
                     </Routes>
                   </BrowserRouter>
