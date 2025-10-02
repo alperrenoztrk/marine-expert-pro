@@ -322,47 +322,130 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
             </CardTitle>
           </CardHeader>
           {isOpen('foundations') && (
-          <CardContent className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <p><strong>Referans Yönleri:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>True (T):</strong> Gerçek kuzeye göre ölçülen yön (coğrafi kuzey).</li>
-                <li><strong>Magnetic (M):</strong> Manyetik kuzeye göre ölçülen yön.</li>
-                <li><strong>Compass (C):</strong> Geminin pusulasının gösterdiği yön.</li>
-                <li><strong>Dönüşüm kuralı:</strong> Ct = Cc + Var + Dev; işaret kuralı E(doğu) +, W(batı) −</li>
-                <li><strong>Varyasyon (Variation):</strong> Gerçek kuzey ile manyetik kuzey arasındaki açı; harita üzerinde işaretlidir.</li>
-                <li><strong>Deviasyon (Deviation):</strong> Geminin demir yapısından kaynaklanan manyetik hatalar; deviasyon kartında gösterilir.</li>
-              </ul>
-              
-              <p><strong>Temel Büyüklükler:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Course (Rota):</strong> Geminin gittiği yön (planlanan).</li>
-                <li><strong>Heading (Baş):</strong> Geminin burnunun gösterdiği yön.</li>
-                <li><strong>Bearing (Kerteriz):</strong> Bir nesnenin referans noktasına göre yönü.</li>
-                <li><strong>Set:</strong> Akıntının yönü (derece cinsinden).</li>
-                <li><strong>Drift:</strong> Akıntının hızı (knot cinsinden).</li>
-                <li><strong>Speed:</strong> Geminin su içindeki hızı.</li>
-                <li><strong>SOG (Speed Over Ground):</strong> Deniz dibine göre hız.</li>
-                <li><strong>COG (Course Over Ground):</strong> Deniz dibine göre gerçek iz.</li>
-              </ul>
-              
-              <p><strong>Konum Notasyonu:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Enlem (Latitude, φ):</strong> Ekvatora paralel, 0° (Ekvator) ile ±90° (kutuplar) arası. Kuzey (+), Güney (−).</li>
-                <li><strong>Boylam (Longitude, λ):</strong> Meridyenler, 0° (Greenwich) ile ±180° arası. Doğu (+), Batı (−).</li>
-                <li><strong>Format:</strong> DD°MM.mm' (derece ve ondalık dakika) veya DD°MM'SS" (derece, dakika, saniye).</li>
-                <li><strong>Dönüşüm:</strong> 1° = 60', 1' = 60"; örnek: 41°00.5'N = 41°00'30"N.</li>
-                <li><strong>Mesafe:</strong> 1 deniz mili = 1 enlem dakikası (≈1852 m).</li>
-              </ul>
-              
-              <p><strong>Harita Temelleri:</strong></p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Datums:</strong> WGS84 modern standart; eski haritalar ED50, NAD27 gibi datumlar kullanabilir.</li>
-                <li><strong>Ölçek:</strong> 1:50,000 = haritada 1 cm gerçekte 500 m. Küçük ölçek (1:500,000) genel görünüm, büyük ölçek (1:10,000) detay için.</li>
-                <li><strong>İzohips (Contour lines):</strong> Karada aynı yükseklikteki noktaları birleştiren eğriler.</li>
-                <li><strong>İzobat (Depth contours):</strong> Aynı derinlikteki noktaları gösteren eğriler; emniyetli seyir planlaması için kritik.</li>
-                <li><strong>Semboller:</strong> Fener, şamandıra, batık, kaya, kablo bölgeleri standart IHO sembolleriyle işaretlenir.</li>
-              </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Referans Yönleri ve Dönüşümler</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Yön Tipleri:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>True (T):</strong> Gerçek kuzeye göre ölçülen yön (coğrafi kuzey)</li>
+                    <li><strong>Magnetic (M):</strong> Manyetik kuzeye göre ölçülen yön</li>
+                    <li><strong>Compass (C):</strong> Geminin pusulasının gösterdiği yön</li>
+                    <li><strong>Gyro (G):</strong> Ciro pusula ile ölçülen yön</li>
+                    <li><strong>Relative (R):</strong> Geminin başına göre ölçülen yön</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Dönüşüm Kuralları:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>C→M→T:</strong> Ct = Cc + Var + Dev</li>
+                    <li><strong>İşaret Kuralı:</strong> E(doğu) +, W(batı) −</li>
+                    <li><strong>Varyasyon:</strong> Harita üzerinde işaretli</li>
+                    <li><strong>Deviasyon:</strong> Deviasyon kartında gösterilir</li>
+                    <li><strong>Gyro Error:</strong> Ciro pusula hatası</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Temel Navigasyon Büyüklükleri</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Hız ve Yön Kavramları:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Yön Terimleri:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Course (Rota):</strong> Planlanan gidiş yönü</li>
+                      <li><strong>Heading (Baş):</strong> Geminin burnunun gösterdiği yön</li>
+                      <li><strong>Bearing (Kerteriz):</strong> Nesnenin referansa göre yönü</li>
+                      <li><strong>Set:</strong> Akıntının yönü (derece)</li>
+                      <li><strong>Drift:</strong> Akıntının hızı (knot)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Hız Terimleri:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Speed:</strong> Su içindeki hız</li>
+                      <li><strong>SOG:</strong> Deniz dibine göre hız</li>
+                      <li><strong>COG:</strong> Deniz dibine göre gerçek iz</li>
+                      <li><strong>STW:</strong> Su içindeki hız</li>
+                      <li><strong>Log Speed:</strong> Log cihazından hız</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Koordinat Sistemi ve Konum</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Enlem ve Boylam:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Enlem (φ):</strong> 0° (Ekvator) ile ±90° (kutuplar)</li>
+                    <li><strong>Boylam (λ):</strong> 0° (Greenwich) ile ±180°</li>
+                    <li><strong>Format:</strong> DD°MM.mm' veya DD°MM'SS"</li>
+                    <li><strong>Dönüşüm:</strong> 1° = 60', 1' = 60"</li>
+                    <li><strong>Örnek:</strong> 41°00.5'N = 41°00'30"N</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Mesafe ve Hesaplamalar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Deniz Mili:</strong> 1 enlem dakikası ≈ 1852 m</li>
+                    <li><strong>Kablo:</strong> 1/10 deniz mili = 185.2 m</li>
+                    <li><strong>Fathom:</strong> 6 feet = 1.83 m</li>
+                    <li><strong>Knot:</strong> 1 deniz mili/saat</li>
+                    <li><strong>Dönüşüm:</strong> 1 knot = 1.852 km/h</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Harita Temelleri</h4>
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Harita Özellikleri:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Koordinat Sistemleri:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>WGS84:</strong> Modern standart datum</li>
+                      <li><strong>ED50:</strong> Eski Avrupa datum</li>
+                      <li><strong>NAD27:</strong> Eski Kuzey Amerika datum</li>
+                      <li><strong>Ölçek:</strong> 1:50,000 = 1 cm = 500 m</li>
+                      <li><strong>Projeksiyon:</strong> Mercator yaygın kullanım</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Harita Elemanları:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>İzohips:</strong> Aynı yükseklik eğrileri</li>
+                      <li><strong>İzobat:</strong> Aynı derinlik eğrileri</li>
+                      <li><strong>Semboller:</strong> IHO standart semboller</li>
+                      <li><strong>Fenerler:</strong> Işık karakterleri</li>
+                      <li><strong>Şamandıralar:</strong> IALA sistemi</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Pratik Uygulama</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Koordinat sistemleri arası dönüşümlerde dikkatli olun</li>
+                  <li>Harita datumları farklı olabilir, kontrol edin</li>
+                  <li>Varyasyon ve deviasyon değerleri güncel olmalı</li>
+                  <li>Mesafe hesaplamalarında doğru birimleri kullanın</li>
+                  <li>Harita sembollerini doğru yorumlayın</li>
+                  <li>Koordinat formatlarını karıştırmayın</li>
+                </ul>
+              </div>
             </div>
           </CardContent>
           )}

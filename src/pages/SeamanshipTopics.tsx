@@ -106,13 +106,90 @@ export default function SeamanshipTopicsPage() {
             </CardTitle>
           </CardHeader>
           {isOpen('terminology') && (
-          <CardContent className="space-y-3 text-sm">
-            <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Yönler:</strong> Pruva (baş), kıç, iskele, sancak, omurga, borda</li>
-              <li><strong>Boyutlar:</strong> LOA, LBP, B (genişlik), T (draft), D (derinlik), freeboard</li>
-              <li><strong>Hız ve Mesafe:</strong> Knot, deniz mili, kablo, log</li>
-              <li><strong>Terimler:</strong> Amortisör, barbette, bulwark, fairlead, hawse pipe, bitts</li>
-            </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Gemi Yönleri ve Temel Kavramlar</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Ana Yönler:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Pruva (Bow/Fore):</strong> Geminin ön kısmı, hareket yönü</li>
+                    <li><strong>Kıç (Stern/Aft):</strong> Geminin arka kısmı</li>
+                    <li><strong>İskele (Port):</strong> Geminin sol tarafı (kırmızı ışık)</li>
+                    <li><strong>Sancak (Starboard):</strong> Geminin sağ tarafı (yeşil ışık)</li>
+                    <li><strong>Omurga (Keel):</strong> Geminin alt kısmı, temel yapı</li>
+                    <li><strong>Borda (Side):</strong> Geminin yan duvarları</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Boyutlar ve Ölçümler:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>LOA (Length Overall):</strong> Geminin toplam uzunluğu</li>
+                    <li><strong>LBP (Length Between Perpendiculars):</strong> Dikler arası uzunluk</li>
+                    <li><strong>B (Beam):</strong> Geminin maksimum genişliği</li>
+                    <li><strong>T (Draft):</strong> Su çekimi, omurganın su altında kalan kısmı</li>
+                    <li><strong>D (Depth):</strong> Güverte seviyesinden omurgaya derinlik</li>
+                    <li><strong>Freeboard:</strong> Su seviyesinden güverteye olan mesafe</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Hız ve Mesafe Birimleri</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Denizcilik Birimleri:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>Knot (kn):</strong> 1 deniz mili/saat = 1.852 km/h = 0.514 m/s</li>
+                  <li><strong>Deniz Mili (Nautical Mile):</strong> 1.852 metre (1 dakika enlem)</li>
+                  <li><strong>Kablo (Cable):</strong> 1/10 deniz mili = 185.2 metre</li>
+                  <li><strong>Log:</strong> Geminin hızını ölçen cihaz</li>
+                  <li><strong>Fathom:</strong> 6 feet = 1.83 metre (derinlik ölçümü)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Güverte Teçhizatı ve Yapısal Elemanlar</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Güverte Ekipmanları:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Amortisör (Fender):</strong> Gemiyi rıhtımdan koruyan yastık</li>
+                    <li><strong>Barbette:</strong> Top veya vinç için döner platform</li>
+                    <li><strong>Bulwark:</strong> Güverte kenarındaki koruyucu duvar</li>
+                    <li><strong>Fairlead:</strong> Halatın yönlendirildiği delikli metal</li>
+                    <li><strong>Hawse Pipe:</strong> Demir zincirinin geçtiği boru</li>
+                    <li><strong>Bitts:</strong> Halat bağlama direkleri</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Yapısal Elemanlar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Frame:</strong> Geminin kaburga yapısı</li>
+                    <li><strong>Bulkhead:</strong> Gemiyi bölümlere ayıran duvar</li>
+                    <li><strong>Deck:</strong> Geminin katları (güverte)</li>
+                    <li><strong>Hatch:</strong> Güverte açıklığı, kapak</li>
+                    <li><strong>Coaming:</strong> Hatch çevresindeki yüksek kenar</li>
+                    <li><strong>Scupper:</strong> Güverte suyunun akıtıldığı delik</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Pratik Uygulama</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Denizcilik terminolojisi uluslararası standartlara uygun kullanılmalıdır</li>
+                  <li>Yön belirtirken "port" ve "starboard" terimleri kullanılır, "left" ve "right" kullanılmaz</li>
+                  <li>Gemi boyutları tonaj hesaplamalarında kritik önem taşır</li>
+                  <li>Hız ölçümünde knot birimi kullanılır, km/h değil</li>
+                  <li>Mesafe ölçümlerinde deniz mili standart birimdir</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           )}
         </Card>
@@ -126,13 +203,115 @@ export default function SeamanshipTopicsPage() {
             </CardTitle>
           </CardHeader>
           {isOpen('ship-types') && (
-          <CardContent className="space-y-3 text-sm">
-            <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Gemi Tipleri:</strong> Tanker, konteyner, dökme yük, RoRo, kruvaziyer, balıkçı gemisi</li>
-              <li><strong>Gövde Yapısı:</strong> Omurga (keel), bordalar, kaburga (frames), bulkheads</li>
-              <li><strong>Güverte Teçhizatı:</strong> Vinç, ırgat, windlass, capstan, bollard, fairlead</li>
-              <li><strong>Üstyapı:</strong> Köprüüstü, kamaralar, ambarcıklar, hava bacası</li>
-            </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Ana Gemi Tipleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Yük Gemileri:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Tanker:</strong> Sıvı kargo taşıyan gemiler (ham petrol, ürün, kimyasal)</li>
+                    <li><strong>Konteyner:</strong> Standart konteyner taşıyan gemiler (TEU/FEU)</li>
+                    <li><strong>Dökme Yük:</strong> Tahıl, kömür, cevher taşıyan gemiler</li>
+                    <li><strong>RoRo:</strong> Araç taşıyan gemiler (roll-on/roll-off)</li>
+                    <li><strong>Genel Kargo:</strong> Çeşitli yükler taşıyan gemiler</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Özel Amaçlı Gemiler:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Kruvaziyer:</strong> Yolcu taşıyan lüks gemiler</li>
+                    <li><strong>Balıkçı Gemisi:</strong> Balık avlama gemileri</li>
+                    <li><strong>Römorkör:</strong> Diğer gemileri çeken gemiler</li>
+                    <li><strong>Platform:</strong> Offshore çalışma platformları</li>
+                    <li><strong>Yardımcı:</strong> Liman ve deniz hizmet gemileri</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Gemi Yapısal Elemanları</h4>
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Ana Yapısal Bileşenler:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Gövde Yapısı:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Omurga (Keel):</strong> Geminin temel yapısal elemanı</li>
+                      <li><strong>Bordalar (Sides):</strong> Geminin yan duvarları</li>
+                      <li><strong>Kaburga (Frames):</strong> Yapısal destek elemanları</li>
+                      <li><strong>Bulkhead:</strong> Su geçirmez bölme duvarları</li>
+                      <li><strong>Deck:</strong> Geminin katları</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Güverte Teçhizatı:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Vinç (Crane):</strong> Yük kaldırma ekipmanı</li>
+                      <li><strong>Irgat (Winch):</strong> Halat çekme makinesi</li>
+                      <li><strong>Windlass:</strong> Demir zinciri çekme makinesi</li>
+                      <li><strong>Capstan:</strong> Döner halat çekme makinesi</li>
+                      <li><strong>Bollard:</strong> Halat bağlama direği</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Üstyapı ve Özel Bölümler</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Köprüüstü ve Kontrol:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Bridge:</strong> Geminin kontrol merkezi</li>
+                    <li><strong>Wheelhouse:</strong> Dümen evi</li>
+                    <li><strong>Chart Room:</strong> Harita odası</li>
+                    <li><strong>Radio Room:</strong> Haberleşme odası</li>
+                    <li><strong>Engine Room:</strong> Makine dairesi</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Yaşam Alanları:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Kamaralar:</strong> Mürettebat yatakhaneleri</li>
+                    <li><strong>Mess Room:</strong> Yemek salonu</li>
+                    <li><strong>Galley:</strong> Mutfak</li>
+                    <li><strong>Hospital:</strong> Revir</li>
+                    <li><strong>Store Room:</strong> Depo</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Gemi Sınıflandırması</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Boyut ve Kapasite:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>Panamax:</strong> Panama Kanalı'ndan geçebilen maksimum boyut</li>
+                  <li><strong>Post-Panamax:</strong> Panama Kanalı'ndan büyük gemiler</li>
+                  <li><strong>Suezmax:</strong> Süveyş Kanalı'ndan geçebilen maksimum boyut</li>
+                  <li><strong>Capesize:</strong> Cape Horn'dan geçen büyük gemiler</li>
+                  <li><strong>Handymax:</strong> Orta boyutlu çok amaçlı gemiler</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Pratik Bilgiler</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Her gemi tipinin kendine özgü operasyonel gereksinimleri vardır</li>
+                  <li>Gemi yapısı, yük tipine ve operasyonel gereksinimlere göre tasarlanır</li>
+                  <li>Güverte teçhizatı, güvenlik ve operasyonel verimlilik için kritiktir</li>
+                  <li>Üstyapı düzeni, mürettebat konforu ve operasyonel verimliliği etkiler</li>
+                  <li>Gemi sınıflandırması, liman ve kanal kısıtlamalarını belirler</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           )}
         </Card>
@@ -146,13 +325,146 @@ export default function SeamanshipTopicsPage() {
             </CardTitle>
           </CardHeader>
           {isOpen('rope-work') && (
-          <CardContent className="space-y-3 text-sm">
-            <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Halat Tipleri:</strong> Fiber (polyester, nylon, polypropylene), çelik halat, mixed rope</li>
-              <li><strong>Düğümler:</strong> Bowline, clove hitch, sheet bend, rolling hitch, figure-eight</li>
-              <li><strong>Splicing:</strong> Eye splice, back splice, short splice; wire rope splicing</li>
-              <li><strong>Ekipman:</strong> Palanga (tackle), mapalar (shackle), vinç/ırgat kullanımı, güvenli yük limitleri</li>
-            </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Halat Tipleri ve Özellikleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Fiber Halatlar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Polyester:</strong> Güçlü, UV dayanıklı, az esnek</li>
+                    <li><strong>Nylon:</strong> Çok esnek, şok emici, nem çeker</li>
+                    <li><strong>Polypropylene:</strong> Hafif, suda yüzer, UV hassas</li>
+                    <li><strong>Kevlar:</strong> Çok güçlü, kesici aletlere dayanıklı</li>
+                    <li><strong>Dyneema:</strong> Ultra güçlü, hafif, pahalı</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Çelik Halatlar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Galvanized:</strong> Paslanmaz kaplama</li>
+                    <li><strong>Stainless Steel:</strong> Paslanmaz çelik</li>
+                    <li><strong>Wire Rope:</strong> Çok telli yapı</li>
+                    <li><strong>Mixed Rope:</strong> Fiber + çelik kombinasyonu</li>
+                    <li><strong>Chain:</strong> Zincir, demirleme için</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Temel Düğümler ve Kullanım Alanları</h4>
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Ana Düğümler:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Bağlama Düğümleri:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Bowline:</strong> Güvenli halka, kolay çözülür</li>
+                      <li><strong>Clove Hitch:</strong> Hızlı bağlama, kayabilir</li>
+                      <li><strong>Sheet Bend:</strong> Farklı kalınlıkta halatları birleştirir</li>
+                      <li><strong>Rolling Hitch:</strong> Kaymaz bağlama</li>
+                      <li><strong>Figure-Eight:</strong> Uç koruma, durdurucu</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Özel Düğümler:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Reef Knot:</strong> İki ucu birleştirir</li>
+                      <li><strong>Fisherman's Bend:</strong> Güvenli bağlama</li>
+                      <li><strong>Round Turn:</strong> Güçlü bağlama</li>
+                      <li><strong>Marlinspike Hitch:</strong> Halat çekme</li>
+                      <li><strong>Monkey's Fist:</strong> Ağırlık ekleme</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Splicing Teknikleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Fiber Halat Splicing:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Eye Splice:</strong> Halka oluşturma, güvenli</li>
+                    <li><strong>Back Splice:</strong> Uç koruma, estetik</li>
+                    <li><strong>Short Splice:</strong> İki halatı birleştirme</li>
+                    <li><strong>Long Splice:</strong> Kalınlık koruyarak birleştirme</li>
+                    <li><strong>Crown Splice:</strong> Uç koruma, dekoratif</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Çelik Halat Splicing:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Wire Rope Splice:</strong> Çelik halat birleştirme</li>
+                    <li><strong>Thimble Splice:</strong> Göz oluşturma</li>
+                    <li><strong>Flemish Eye:</strong> Güvenli halka</li>
+                    <li><strong>Socket Splice:</strong> Metal soket bağlama</li>
+                    <li><strong>Swage Splice:</strong> Basınçlı birleştirme</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Güverte Ekipmanları ve Kullanım</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Ana Ekipmanlar:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Kaldırma Ekipmanları:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Palanga (Tackle):</strong> Güç artırma sistemi</li>
+                      <li><strong>Vinç (Crane):</strong> Yük kaldırma makinesi</li>
+                      <li><strong>Irgat (Winch):</strong> Halat çekme makinesi</li>
+                      <li><strong>Windlass:</strong> Demir zinciri çekme</li>
+                      <li><strong>Capstan:</strong> Döner halat çekme</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Bağlama Ekipmanları:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Mapa (Shackle):</strong> Bağlantı elemanı</li>
+                      <li><strong>Bollard:</strong> Halat bağlama direği</li>
+                      <li><strong>Fairlead:</strong> Halat yönlendirici</li>
+                      <li><strong>Cleat:</strong> Halat bağlama çıkıntısı</li>
+                      <li><strong>Bitts:</strong> Çift direkli bağlama</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Güvenlik ve Bakım</h4>
+              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Güvenlik Kuralları:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Halat yük limitlerini aşmayın (SWL - Safe Working Load)</li>
+                  <li>Halat hasarını düzenli kontrol edin (aşınma, kesik, yıpranma)</li>
+                  <li>Düğümleri doğru şekilde bağlayın ve kontrol edin</li>
+                  <li>Halat çekme sırasında snap-back bölgesinden uzak durun</li>
+                  <li>Çelik halat kullanırken eldiven giyin</li>
+                  <li>Halatları temiz ve kuru tutun</li>
+                  <li>UV ışınlarından koruyun</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Pratik Uygulama</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Her düğümün kendine özgü kullanım alanı vardır</li>
+                  <li>Splicing, düğümden daha güvenli ve estetiktir</li>
+                  <li>Halat seçimi, kullanım amacına göre yapılmalıdır</li>
+                  <li>Düzenli bakım, halat ömrünü uzatır</li>
+                  <li>Güvenlik her zaman öncelikli olmalıdır</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           )}
         </Card>
@@ -166,14 +478,161 @@ export default function SeamanshipTopicsPage() {
             </CardTitle>
           </CardHeader>
           {isOpen('anchoring') && (
-          <CardContent className="space-y-3 text-sm">
-            <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Hazırlık:</strong> Demir yeri seçimi, derinlik, zemin yapısı (kum, çamur, kaya), serbest salınım dairesi</li>
-              <li><strong>Zincir Miktarı:</strong> Derinliğin 3–5 katı (hava/deniz durumuna göre artırılır), scope hesabı</li>
-              <li><strong>Drop & Heave:</strong> Rüzgâr pruvada; demir bırakma, zincir kontrollü salma; tutuş teyidi</li>
-              <li><strong>Şamandıra Bağlama:</strong> Mooring buoy ile bağlantı, bridle düzeni, emniyet kontrolleri</li>
-              <li><strong>Demir Taraması:</strong> Batık demir kurtarma, dragging anchor prosedürleri, foul anchor durumları</li>
-            </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Demir Tipleri ve Özellikleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Ana Demir Tipleri:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Admiralty Pattern:</strong> Klasik demir, genel amaçlı</li>
+                    <li><strong>Danforth:</strong> Yüksek tutma gücü, kum/çamur için ideal</li>
+                    <li><strong>Bruce:</strong> Çok amaçlı, kayalık zemin için uygun</li>
+                    <li><strong>Plow/CQR:</strong> Derin kazma, çamur için ideal</li>
+                    <li><strong>Rocna:</strong> Modern tasarım, yüksek performans</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Özel Demirler:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Mushroom:</strong> Kalıcı demirleme için</li>
+                    <li><strong>Grapnel:</strong> Batık kurtarma için</li>
+                    <li><strong>Kedge:</strong> Yardımcı demir, manevra için</li>
+                    <li><strong>Stream:</strong> Akıntıda kullanım için</li>
+                    <li><strong>Sea Anchor:</strong> Fırtınada sürüklenme önleme</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Demirleme Hazırlığı</h4>
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Yer Seçimi Kriterleri:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Zemin Analizi:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Kum:</strong> İyi tutma, kolay çıkarma</li>
+                      <li><strong>Çamur:</strong> Mükemmel tutma, zor çıkarma</li>
+                      <li><strong>Kaya:</strong> Riskli, demir takılabilir</li>
+                      <li><strong>Çakıl:</strong> Orta tutma, aşınma riski</li>
+                      <li><strong>Deniz Yosunu:</strong> Zayıf tutma</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Çevre Faktörleri:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Derinlik:</strong> Scope hesabı için kritik</li>
+                      <li><strong>Akıntı:</strong> Yön ve şiddet</li>
+                      <li><strong>Rüzgâr:</strong> Hız ve yön değişimi</li>
+                      <li><strong>Gelgit:</strong> Su seviyesi değişimi</li>
+                      <li><strong>Traffic:</strong> Diğer gemiler</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Scope Hesaplaması ve Zincir Miktarı</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Scope Formülü:</h5>
+                <div className="space-y-2">
+                  <div className="font-mono text-sm bg-white dark:bg-gray-800 p-2 rounded">
+                    Scope = Zincir Uzunluğu / Su Derinliği
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1 text-xs">
+                    <li><strong>Normal Koşullar:</strong> Scope = 3-5 (derinliğin 3-5 katı)</li>
+                    <li><strong>Fırtına:</strong> Scope = 7-10 (güvenlik için artırılır)</li>
+                    <li><strong>Kısa Süreli:</strong> Scope = 2-3 (hızlı demirleme)</li>
+                    <li><strong>Kalıcı:</strong> Scope = 5-7 (uzun süreli demirleme)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Demirleme Prosedürü</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Demir Bırakma:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Hazırlık:</strong> Demir ve zincir kontrolü</li>
+                    <li><strong>Pozisyon:</strong> Rüzgâr pruvada, yavaş hız</li>
+                    <li><strong>Bırakma:</strong> Kontrollü zincir salma</li>
+                    <li><strong>Kontrol:</strong> Tutuş teyidi, pozisyon kontrolü</li>
+                    <li><strong>Güvenlik:</strong> Demir bekçisi, düzenli kontrol</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Demir Çekme:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Hazırlık:</strong> Makine hazırlığı, pozisyon alma</li>
+                    <li><strong>Çekme:</strong> Zincir çekme, demir temizleme</li>
+                    <li><strong>Kontrol:</strong> Demir ve zincir hasar kontrolü</li>
+                    <li><strong>Güvenlik:</strong> Zincir temizleme, demir kilitleme</li>
+                    <li><strong>Kayıt:</strong> Demirleme süresi ve koşulları</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Şamandıra Bağlama</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Mooring Buoy Bağlama:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>Bridle Düzeni:</strong> İki halat ile dengeli bağlama</li>
+                  <li><strong>Halat Seçimi:</strong> Uygun kalınlık ve uzunluk</li>
+                  <li><strong>Bağlama Tekniği:</strong> Güvenli düğüm kullanımı</li>
+                  <li><strong>Kontrol:</strong> Düzenli halat kontrolü</li>
+                  <li><strong>Güvenlik:</strong> Yedek halat hazırlığı</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Demir Taraması ve Sorun Giderme</h4>
+              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Yaygın Sorunlar:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Demir Taraması:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Neden:</strong> Yetersiz scope, zayıf zemin</li>
+                      <li><strong>Belirti:</strong> Pozisyon değişimi</li>
+                      <li><strong>Çözüm:</strong> Scope artırma, yeniden demirleme</li>
+                      <li><strong>Önlem:</strong> Düzenli pozisyon kontrolü</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Foul Anchor:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Neden:</strong> Demir takılması</li>
+                      <li><strong>Belirti:</strong> Çekme zorluğu</li>
+                      <li><strong>Çözüm:</strong> Farklı açılardan çekme</li>
+                      <li><strong>Önlem:</strong> Uygun demir seçimi</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Güvenlik ve Bakım</h4>
+              <div className="bg-gray-50 dark:bg-gray-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Demirleme öncesi hava durumu kontrolü yapın</li>
+                  <li>Zincir ve demir düzenli kontrol edilmeli</li>
+                  <li>Demirleme sırasında düzenli pozisyon kontrolü</li>
+                  <li>Aciliyet durumunda demir kesme prosedürü</li>
+                  <li>Demirleme kayıtları tutulmalı</li>
+                  <li>Yedek demir ve zincir hazır bulundurulmalı</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           )}
         </Card>
@@ -187,14 +646,173 @@ export default function SeamanshipTopicsPage() {
             </CardTitle>
           </CardHeader>
           {isOpen('mooring') && (
-          <CardContent className="space-y-3 text-sm">
-            <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Halat Düzeni:</strong> Baş/kıç spring, head/stern lines, breast lines; simetrik yük paylaşımı</li>
-              <li><strong>Yanaşma:</strong> Rüzgâr/akıntı hesabı, yaklaşma açısı, fender kullanımı, pilot koordinasyonu</li>
-              <li><strong>İskoça Manevraları:</strong> Med-mooring, alongside berthing, trot mooring</li>
-              <li><strong>Römorkörle Çalışma:</strong> Push/pull konfigürasyonu, tow line operasyonları, haberleşme</li>
-              <li><strong>Emniyet:</strong> Snap-back bölgeleri, bight altında kalmama, chafe koruması, gelgit ayarları</li>
-            </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Halat Düzeni ve Bağlama Sistemi</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Ana Halatlar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Head Line:</strong> Baş halat, ön bağlama</li>
+                    <li><strong>Stern Line:</strong> Kıç halat, arka bağlama</li>
+                    <li><strong>Forward Spring:</strong> Baş spring, ileri hareket önleme</li>
+                    <li><strong>Aft Spring:</strong> Kıç spring, geri hareket önleme</li>
+                    <li><strong>Breast Line:</strong> Yan halat, yan hareket önleme</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Yardımcı Halatlar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Heaving Line:</strong> Atma halatı, bağlantı kurma</li>
+                    <li><strong>Messenger Line:</strong> Ana halat çekme</li>
+                    <li><strong>Slip Line:</strong> Hızlı ayrılma halatı</li>
+                    <li><strong>Check Line:</strong> Kontrol halatı</li>
+                    <li><strong>Safety Line:</strong> Güvenlik halatı</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Yanaşma Prosedürü</h4>
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Yanaşma Aşamaları:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Hazırlık:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Pilot Koordinasyonu:</strong> Pilot ile iletişim</li>
+                      <li><strong>Fender Hazırlığı:</strong> Amortisör yerleştirme</li>
+                      <li><strong>Halat Hazırlığı:</strong> Halatların hazırlanması</li>
+                      <li><strong>Makine Hazırlığı:</strong> Makine ve dümen kontrolü</li>
+                      <li><strong>Mürettebat Hazırlığı:</strong> Vardiya düzeni</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Yaklaşma:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Hız Kontrolü:</strong> Yavaş yaklaşma</li>
+                      <li><strong>Açı Hesabı:</strong> Rüzgâr ve akıntı etkisi</li>
+                      <li><strong>Pozisyon Kontrolü:</strong> Doğru konumlama</li>
+                      <li><strong>Halat Atma:</strong> İlk bağlantı</li>
+                      <li><strong>Son Pozisyon:</strong> Final konumlama</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Manevra Tipleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Yanaşma Tipleri:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Alongside:</strong> Rıhtıma yan yana yanaşma</li>
+                    <li><strong>Med-Mooring:</strong> Ortada demirleme</li>
+                    <li><strong>Trot Mooring:</strong> İki demir arası</li>
+                    <li><strong>Single Point:</strong> Tek nokta bağlama</li>
+                    <li><strong>Multi-Point:</strong> Çok nokta bağlama</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Özel Durumlar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Windward:</strong> Rüzgâr üstü yanaşma</li>
+                    <li><strong>Leeward:</strong> Rüzgâr altı yanaşma</li>
+                    <li><strong>Current:</strong> Akıntıda yanaşma</li>
+                    <li><strong>Ice:</strong> Buzlu koşullarda</li>
+                    <li><strong>Emergency:</strong> Acil yanaşma</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Römorkör Operasyonları</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Römorkör Tipleri ve Kullanımı:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Römorkör Tipleri:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Harbor Tug:</strong> Liman römorkörü</li>
+                      <li><strong>Ocean Tug:</strong> Açık deniz römorkörü</li>
+                      <li><strong>Azimuth Tug:</strong> Döner pervane</li>
+                      <li><strong>Conventional Tug:</strong> Klasik römorkör</li>
+                      <li><strong>Voith Tug:</strong> Voith-Schneider pervane</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Operasyon Modları:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Push Mode:</strong> İtme modu</li>
+                      <li><strong>Pull Mode:</strong> Çekme modu</li>
+                      <li><strong>Escort Mode:</strong> Eşlik modu</li>
+                      <li><strong>Emergency Mode:</strong> Acil mod</li>
+                      <li><strong>Standby Mode:</strong> Bekleme modu</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Güvenlik ve Risk Yönetimi</h4>
+              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Güvenlik Kuralları:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>Snap-back Zone:</strong> Halat kopma bölgesinden uzak durun</li>
+                  <li><strong>Bight Safety:</strong> Halat halkası altında kalmayın</li>
+                  <li><strong>Chafe Protection:</strong> Halat aşınma koruması</li>
+                  <li><strong>Tide Adjustment:</strong> Gelgit ayarlamaları</li>
+                  <li><strong>Weather Monitoring:</strong> Hava durumu takibi</li>
+                  <li><strong>Communication:</strong> Sürekli haberleşme</li>
+                  <li><strong>Emergency Procedures:</strong> Acil durum prosedürleri</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Ayrılma Prosedürü</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Hazırlık:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Makine Hazırlığı:</strong> Makine ve dümen kontrolü</li>
+                    <li><strong>Halat Kontrolü:</strong> Halat durumu kontrolü</li>
+                    <li><strong>Fender Kontrolü:</strong> Amortisör kontrolü</li>
+                    <li><strong>Pilot Koordinasyonu:</strong> Pilot ile iletişim</li>
+                    <li><strong>Mürettebat Hazırlığı:</strong> Vardiya düzeni</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Ayrılma:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Halat Çözme:</strong> Sıralı halat çözme</li>
+                    <li><strong>Pozisyon Kontrolü:</strong> Güvenli ayrılma</li>
+                    <li><strong>Hız Kontrolü:</strong> Kontrollü hareket</li>
+                    <li><strong>Fender Toplama:</strong> Amortisör toplama</li>
+                    <li><strong>Final Kontrol:</strong> Son güvenlik kontrolü</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Pratik Uygulama</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Her yanaşma durumu benzersizdir, esnek olun</li>
+                  <li>Rüzgâr ve akıntı her zaman hesaba katılmalı</li>
+                  <li>Pilot deneyimi ve önerileri önemlidir</li>
+                  <li>Güvenlik her zaman öncelikli olmalıdır</li>
+                  <li>Düzenli iletişim kritik önem taşır</li>
+                  <li>Aciliyet durumunda hazırlıklı olun</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           )}
         </Card>
@@ -208,14 +826,186 @@ export default function SeamanshipTopicsPage() {
             </CardTitle>
           </CardHeader>
           {isOpen('steering') && (
-          <CardContent className="space-y-3 text-sm">
-            <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Pivot Noktası:</strong> Dönüş merkezi, forward/aft position, yükleme etkisi</li>
-              <li><strong>Squat Effect:</strong> Sığ suda gemi batma etkisi, UKC hesabı, sürat azaltma</li>
-              <li><strong>Bank Effect:</strong> Kanal kenarı etkisi, yaw moment, dümen kompanzasyonu</li>
-              <li><strong>Dümen Tipleri:</strong> Rudder, azimuth thruster, bow thruster, steerable nozzle</li>
-              <li><strong>Manevra Teknikleri:</strong> Kick ahead/astern, stemming, crabbing, backing and filling</li>
-            </ul>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Gemi Manevra Prensipleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Pivot Noktası:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Forward Position:</strong> İleri yükleme, dönüş yarıçapı küçük</li>
+                    <li><strong>Aft Position:</strong> Geri yükleme, dönüş yarıçapı büyük</li>
+                    <li><strong>Center Position:</strong> Dengeli yükleme, orta dönüş</li>
+                    <li><strong>Yükleme Etkisi:</strong> KG yüksekliği dönüşü etkiler</li>
+                    <li><strong>Hız Etkisi:</strong> Yüksek hızda dönüş zorlaşır</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Manevra Faktörleri:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Gemi Boyutu:</strong> Büyük gemi, zor manevra</li>
+                    <li><strong>Su Derinliği:</strong> Sığ suda manevra zorlaşır</li>
+                    <li><strong>Rüzgâr Etkisi:</strong> Yüksek rüzgârda kontrol zor</li>
+                    <li><strong>Akıntı Etkisi:</strong> Güçlü akıntıda sürüklenme</li>
+                    <li><strong>Yükleme Durumu:</strong> Trim ve list etkisi</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Sığ Su Etkileri</h4>
+              <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Squat Effect:</h5>
+                <div className="space-y-2">
+                  <div className="font-mono text-sm bg-white dark:bg-gray-800 p-2 rounded">
+                    Squat = (Cb × V²) / (100 × √h)
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1 text-xs">
+                    <li><strong>Cb:</strong> Blok katsayısı (0.6-0.8)</li>
+                    <li><strong>V:</strong> Gemi hızı (knot)</li>
+                    <li><strong>h:</strong> Su derinliği (metre)</li>
+                    <li><strong>UKC:</strong> Under Keel Clearance hesabı</li>
+                    <li><strong>Güvenli UKC:</strong> En az 0.5m + squat</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Kanal ve Kıyı Etkileri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Bank Effect:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Yaw Moment:</strong> Kanal kenarına doğru dönme</li>
+                    <li><strong>Suction Effect:</strong> Kanal kenarından emme</li>
+                    <li><strong>Speed Effect:</strong> Hız artışıyla etki artar</li>
+                    <li><strong>Distance Effect:</strong> Kenara yakınlık etkisi</li>
+                    <li><strong>Compensation:</strong> Dümen ile kompanzasyon</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Kanal Navigasyonu:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Center Line:</strong> Kanal merkezi takibi</li>
+                    <li><strong>Speed Control:</strong> Hız kontrolü</li>
+                    <li><strong>Course Correction:</strong> Rota düzeltmeleri</li>
+                    <li><strong>Traffic Management:</strong> Trafik yönetimi</li>
+                    <li><strong>Emergency Procedures:</strong> Acil durum prosedürleri</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Dümen ve Sevk Sistemleri</h4>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Dümen Tipleri:</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium mb-1">Klasik Dümenler:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Rudder:</strong> Klasik dümen</li>
+                      <li><strong>Balanced Rudder:</strong> Denge dümeni</li>
+                      <li><strong>Unbalanced Rudder:</strong> Dengesiz dümen</li>
+                      <li><strong>Spade Rudder:</strong> Kılıç dümen</li>
+                      <li><strong>Skeg Rudder:</strong> Destekli dümen</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 className="font-medium mb-1">Modern Sistemler:</h6>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                      <li><strong>Azimuth Thruster:</strong> Döner pervane</li>
+                      <li><strong>Bow Thruster:</strong> Baş pervane</li>
+                      <li><strong>Stern Thruster:</strong> Kıç pervane</li>
+                      <li><strong>Steerable Nozzle:</strong> Döner nozul</li>
+                      <li><strong>Voith-Schneider:</strong> Dikey pervane</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Manevra Teknikleri</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Temel Manevralar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Kick Ahead:</strong> İleri itme, pozisyon düzeltme</li>
+                    <li><strong>Kick Astern:</strong> Geri itme, durdurma</li>
+                    <li><strong>Stemming:</strong> Akıntıya karşı durma</li>
+                    <li><strong>Crabbing:</strong> Yan hareket</li>
+                    <li><strong>Backing and Filling:</strong> Geri-ileri kombinasyonu</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Özel Manevralar:</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Turning Circle:</strong> Dönüş dairesi</li>
+                    <li><strong>Crash Stop:</strong> Acil durdurma</li>
+                    <li><strong>Mooring Maneuver:</strong> Yanaşma manevrası</li>
+                    <li><strong>Unmooring:</strong> Ayrılma manevrası</li>
+                    <li><strong>Emergency Turn:</strong> Acil dönüş</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Hesaplamalar ve Formüller</h4>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Hesaplamalar:</h5>
+                <div className="space-y-2">
+                  <div className="font-mono text-sm bg-white dark:bg-gray-800 p-2 rounded">
+                    Turning Radius = L × (1 + V/10)
+                  </div>
+                  <div className="font-mono text-sm bg-white dark:bg-gray-800 p-2 rounded">
+                    Stopping Distance = V² / (2 × Deceleration)
+                  </div>
+                  <div className="font-mono text-sm bg-white dark:bg-gray-800 p-2 rounded">
+                    Advance = L × (0.5 + V/20)
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1 text-xs mt-2">
+                    <li><strong>L:</strong> Gemi uzunluğu</li>
+                    <li><strong>V:</strong> Gemi hızı (knot)</li>
+                    <li><strong>Deceleration:</strong> Yavaşlama oranı</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Güvenlik ve Risk Yönetimi</h4>
+              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Güvenlik Kuralları:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Sığ suda hızı azaltın (squat etkisi)</li>
+                  <li>Kanal kenarından yeterli mesafe bırakın</li>
+                  <li>Rüzgâr ve akıntı etkilerini hesaba katın</li>
+                  <li>Manevra öncesi makine kontrolü yapın</li>
+                  <li>Aciliyet durumunda hazırlıklı olun</li>
+                  <li>Traffic separation kurallarına uyun</li>
+                  <li>Pilot önerilerini dikkate alın</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Pratik Uygulama</h4>
+              <div className="bg-gray-50 dark:bg-gray-900/20 p-3 rounded-lg">
+                <h5 className="font-medium mb-2">Önemli Notlar:</h5>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Her gemi farklı manevra karakteristiklerine sahiptir</li>
+                  <li>Deneyim ve pratik önemlidir</li>
+                  <li>Hava koşulları manevrayı etkiler</li>
+                  <li>Güvenlik her zaman öncelikli olmalıdır</li>
+                  <li>Düzenli makine bakımı kritiktir</li>
+                  <li>Manevra kayıtları tutulmalıdır</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           )}
         </Card>
