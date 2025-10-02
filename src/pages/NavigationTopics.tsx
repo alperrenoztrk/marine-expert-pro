@@ -398,7 +398,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     <div>🟢 Sancak Şamandırası (Yeşil)</div>
                   </div>
                 </div>
-                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (IALA A lateral işaretler)</figcaption>
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: IALA A lateral işaretler (yerel çizim)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="/src/assets/navigation/cardinal-marks.svg" loading="lazy" />
@@ -411,7 +411,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     <div>🔻🔺 Batı Kardinal</div>
                   </div>
                 </div>
-                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Kardinal işaretler)</figcaption>
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Kardinal işaretler (yerel çizim)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/isolated-danger-mark.svg" loading="lazy" />
@@ -422,7 +422,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     <div>🔴⚫ Kırmızı-Siyah Bant</div>
                   </div>
                 </div>
-                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Tecrit tehlike işareti)</figcaption>
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Tecrit tehlike işareti (yerel çizim)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
                 <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/safe-water-mark.svg" loading="lazy" />
@@ -433,7 +433,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     <div>🔴 Kırmızı Küre</div>
                   </div>
                 </div>
-                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Wikimedia Commons (Emniyetli su işareti)</figcaption>
+                <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Emniyetli su işareti (yerel çizim)</figcaption>
               </figure>
             </div>
             <div className="mt-2">
@@ -519,7 +519,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
-                    Kaynak: Wikimedia Commons — Mercator Projection (SW), CC BY-SA
+                    Kaynak: Mercator Projeksiyonu (yerel çizim)
                   </figcaption>
                 </figure>
 
@@ -531,7 +531,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
-                    Kaynak: Wikimedia Commons — Gnomonic Projection (SW), CC BY-SA
+                    Kaynak: Gnomonic Projeksiyonu (yerel çizim)
                   </figcaption>
                 </figure>
               </div>
@@ -554,7 +554,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
-                    Kaynak: Wikimedia Commons — Great circle vs rhumb line (Mercator), CC BY-SA
+                    Kaynak: Büyük daire vs rhumb çizgisi (yerel çizim)
                   </figcaption>
                 </figure>
                 <figure className="bg-muted/20 rounded p-3">
@@ -565,7 +565,7 @@ SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
-                    Kaynak: Wikimedia Commons — Azimuthal Equidistant Projection (SW), CC BY-SA
+                    Kaynak: Azimutal eşit uzaklık projeksiyonu (yerel çizim)
                   </figcaption>
                 </figure>
               </div>

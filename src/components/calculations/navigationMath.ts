@@ -162,6 +162,9 @@ export function calculateCompassTotalError(
   deviationDeg: number = 0,
   gyroErrorDeg: number = 0
 ): { totalErrorDeg: number } {
+  // Compass error calculation: Ct = Cc + Var + Dev
+  // East is positive (+), West is negative (-)
+  // The function assumes input values already have correct signs
   const totalErrorDeg = (variationDeg || 0) + (deviationDeg || 0) + (gyroErrorDeg || 0);
   return { totalErrorDeg };
 }
