@@ -4,16 +4,37 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Compass, FileText, ChevronDown } from "lucide-react";
+import { ArrowLeft, BookOpen, Compass, FileText, ChevronDown, CheckCircle, Clock, Star, Bookmark, Lightbulb, Target, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { calculateCompassTotalError, solveCurrentTriangle, calculateDoublingAngle } from "@/components/calculations/navigationMath";
 
 export default function NavigationTopicsPage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [completedSections, setCompletedSections] = useState<Record<string, boolean>>({});
+  const [bookmarkedSections, setBookmarkedSections] = useState<Record<string, boolean>>({});
+  const [readingProgress, setReadingProgress] = useState<number>(0);
+  
   const isOpen = (id: string) => !!openSections[id];
   const toggle = (id: string) => setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
   const open = (id: string) => setOpenSections(prev => (prev[id] ? prev : { ...prev, [id]: true }));
+  
+  const toggleCompleted = (id: string) => {
+    setCompletedSections(prev => ({ ...prev, [id]: !prev[id] }));
+    updateProgress();
+  };
+  
+  const toggleBookmark = (id: string) => {
+    setBookmarkedSections(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+  
+  const updateProgress = () => {
+    const totalSections = toc.length;
+    const completedCount = Object.values(completedSections).filter(Boolean).length;
+    setReadingProgress((completedCount / totalSections) * 100);
+  };
 
   // v1.1 mini calculators state
   const [compassInputs, setCompassInputs] = useState({ cc: "", variation: "", deviation: "" });
@@ -161,28 +182,28 @@ export default function NavigationTopicsPage() {
   }, [openSections]);
 
   const toc = [
-    { id: "foundations", title: "Temel Kavramlar" },
-    { id: "mini-tools", title: "Hızlı Mini Araçlar" },
-    { id: "buoys", title: "IALA Şamandıra Sistemi" },
-    { id: "charts", title: "Haritalar ve Projeksiyonlar" },
-    { id: "routes", title: "Rotalar: Büyük Daire, Rhumb, Plane" },
-    { id: "dr", title: "Dead Reckoning (DR) ve Konum Güncelleme" },
-    { id: "compass", title: "Pusula, Varyasyon, Deviasyon" },
-    { id: "bearings", title: "Kerteriz, Kesim ve Hatalar" },
-    { id: "tides", title: "Gelgit ve Akıntı Seyri" },
-    { id: "current", title: "Akıntı Üçgeni ve Rüzgar Sapması" },
-    { id: "pilotage", title: "Kıyı Seyri ve Yaklaşma Teknikleri" },
-    { id: "radar", title: "Radar Seyri ve ARPA" },
-    { id: "ais", title: "AIS ve Elektronik Seyir Yardımları" },
-    { id: "ecdis", title: "ECDIS, ENC ve Emniyetli Navigasyon" },
-    { id: "celestial", title: "Göksel Navigasyon (Özet)" },
-    { id: "met", title: "Meteoroloji ve Görünürlük" },
-    { id: "passage", title: "Passage Planning (Appraisal → Monitoring)" },
-    { id: "brm", title: "Köprüüstü Kaynak Yönetimi (BRM)" },
-    { id: "sar", title: "Arama Kurtarma Seyri (SAR)" },
-    { id: "examples", title: "Örnek Çalışmalar ve Sınav Tipi Sorular" },
-    { id: "glossary", title: "Sözlük" },
-    { id: "refs", title: "Kaynakça ve İleri Okuma" }
+    { id: "foundations", title: "Temel Kavramlar", icon: <Target className="h-4 w-4" />, difficulty: "Başlangıç", duration: "15 dk" },
+    { id: "mini-tools", title: "Hızlı Mini Araçlar", icon: <Zap className="h-4 w-4" />, difficulty: "Pratik", duration: "10 dk" },
+    { id: "buoys", title: "IALA Şamandıra Sistemi", icon: <Compass className="h-4 w-4" />, difficulty: "Temel", duration: "20 dk" },
+    { id: "charts", title: "Haritalar ve Projeksiyonlar", icon: <FileText className="h-4 w-4" />, difficulty: "Orta", duration: "25 dk" },
+    { id: "routes", title: "Rotalar: Büyük Daire, Rhumb, Plane", icon: <Target className="h-4 w-4" />, difficulty: "Orta", duration: "30 dk" },
+    { id: "dr", title: "Dead Reckoning (DR) ve Konum Güncelleme", icon: <Compass className="h-4 w-4" />, difficulty: "Orta", duration: "20 dk" },
+    { id: "compass", title: "Pusula, Varyasyon, Deviasyon", icon: <Compass className="h-4 w-4" />, difficulty: "Temel", duration: "25 dk" },
+    { id: "bearings", title: "Kerteriz, Kesim ve Hatalar", icon: <Target className="h-4 w-4" />, difficulty: "Orta", duration: "20 dk" },
+    { id: "tides", title: "Gelgit ve Akıntı Seyri", icon: <Compass className="h-4 w-4" />, difficulty: "Orta", duration: "25 dk" },
+    { id: "current", title: "Akıntı Üçgeni ve Rüzgar Sapması", icon: <Target className="h-4 w-4" />, difficulty: "İleri", duration: "30 dk" },
+    { id: "pilotage", title: "Kıyı Seyri ve Yaklaşma Teknikleri", icon: <Compass className="h-4 w-4" />, difficulty: "Orta", duration: "25 dk" },
+    { id: "radar", title: "Radar Seyri ve ARPA", icon: <Target className="h-4 w-4" />, difficulty: "İleri", duration: "35 dk" },
+    { id: "ais", title: "AIS ve Elektronik Seyir Yardımları", icon: <Zap className="h-4 w-4" />, difficulty: "Orta", duration: "20 dk" },
+    { id: "ecdis", title: "ECDIS, ENC ve Emniyetli Navigasyon", icon: <FileText className="h-4 w-4" />, difficulty: "İleri", duration: "30 dk" },
+    { id: "celestial", title: "Göksel Navigasyon (Özet)", icon: <Star className="h-4 w-4" />, difficulty: "İleri", duration: "40 dk" },
+    { id: "met", title: "Meteoroloji ve Görünürlük", icon: <Compass className="h-4 w-4" />, difficulty: "Orta", duration: "25 dk" },
+    { id: "passage", title: "Passage Planning (Appraisal → Monitoring)", icon: <BookOpen className="h-4 w-4" />, difficulty: "İleri", duration: "35 dk" },
+    { id: "brm", title: "Köprüüstü Kaynak Yönetimi (BRM)", icon: <Target className="h-4 w-4" />, difficulty: "İleri", duration: "30 dk" },
+    { id: "sar", title: "Arama Kurtarma Seyri (SAR)", icon: <Compass className="h-4 w-4" />, difficulty: "Orta", duration: "25 dk" },
+    { id: "examples", title: "Örnek Çalışmalar ve Sınav Tipi Sorular", icon: <Lightbulb className="h-4 w-4" />, difficulty: "Pratik", duration: "45 dk" },
+    { id: "glossary", title: "Sözlük", icon: <BookOpen className="h-4 w-4" />, difficulty: "Referans", duration: "10 dk" },
+    { id: "refs", title: "Kaynakça ve İleri Okuma", icon: <BookOpen className="h-4 w-4" />, difficulty: "Referans", duration: "5 dk" }
   ];
 
   return (
@@ -197,19 +218,51 @@ export default function NavigationTopicsPage() {
           </Link>
           <div className="text-sm text-muted-foreground flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            Konu Anlatımı • v2.0
+            Konu Anlatımı • v2.1
           </div>
         </div>
 
-        <div className="text-center space-y-3">
-          <div className="flex items-center justify-center gap-3">
-            <Compass className="h-10 w-10 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-3xl font-bold">Seyir Konu Anlatımı</h1>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Temelden ileri düzeye kapsamlı bir seyir rehberi: tanımlar, yöntemler, prosedürler, örnekler ve iyi uygulamalar.
-          </p>
-        </div>
+        {/* Progress Header */}
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-3">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                  <Compass className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                    Seyir Konu Anlatımı
+                  </h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    Temelden ileri düzeye kapsamlı bir seyir rehberi
+                  </p>
+                </div>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-300">İlerleme</span>
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    {Math.round(readingProgress)}% tamamlandı
+                  </span>
+                </div>
+                <Progress value={readingProgress} className="h-2" />
+                <div className="flex items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    {Object.values(completedSections).filter(Boolean).length} tamamlandı
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Bookmark className="h-3 w-3" />
+                    {Object.values(bookmarkedSections).filter(Boolean).length} yer imi
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="shadow-lg">
           <CardHeader>
@@ -218,133 +271,466 @@ export default function NavigationTopicsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {toc.map(item => (
-                <a key={item.id} href={`#${item.id}`}>
-                  <Button variant="outline" size="sm" onClick={() => open(item.id)}>
-                    {item.title}
-                  </Button>
-                </a>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {toc.map(item => {
+                const isCompleted = completedSections[item.id];
+                const isBookmarked = bookmarkedSections[item.id];
+                const difficultyColor = {
+                  "Başlangıç": "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                  "Temel": "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+                  "Orta": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+                  "İleri": "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+                  "Pratik": "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+                  "Referans": "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                }[item.difficulty] || "bg-gray-100 text-gray-800";
+                
+                return (
+                  <div
+                    key={item.id}
+                    className={`group relative p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-md cursor-pointer ${
+                      isCompleted 
+                        ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' 
+                        : 'border-gray-200 hover:border-blue-200 dark:border-gray-700 dark:hover:border-blue-700'
+                    }`}
+                    onClick={() => open(item.id)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3 flex-1">
+                        <div className={`p-2 rounded-lg ${
+                          isCompleted 
+                            ? 'bg-green-100 dark:bg-green-900' 
+                            : 'bg-blue-100 dark:bg-blue-900'
+                        }`}>
+                          {item.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-sm leading-tight mb-1">
+                            {item.title}
+                          </h3>
+                          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <Badge variant="secondary" className={`text-xs ${difficultyColor}`}>
+                              {item.difficulty}
+                            </Badge>
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {item.duration}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 ml-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleBookmark(item.id);
+                          }}
+                        >
+                          <Bookmark className={`h-3 w-3 ${isBookmarked ? 'fill-current text-yellow-500' : ''}`} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCompleted(item.id);
+                          }}
+                        >
+                          <CheckCircle className={`h-3 w-3 ${isCompleted ? 'text-green-500' : 'text-gray-400'}`} />
+                        </Button>
+                      </div>
+                    </div>
+                    {isCompleted && (
+                      <div className="absolute top-2 right-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
 
         {/* Mini tools */}
-        <Card className="shadow">
-          <CardHeader>
-            <CardTitle id="mini-tools" className="scroll-mt-24">Hızlı Mini Araçlar</CardTitle>
+        <Card className="shadow-lg border-blue-200 dark:border-blue-800">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+            <CardTitle id="mini-tools" className="scroll-mt-24 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              Hızlı Mini Araçlar
+            </CardTitle>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Sık kullanılan hesaplamalar için hızlı erişim araçları
+            </p>
           </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CardContent className="space-y-6 p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Compass converter */}
-              <div className="bg-muted/30 rounded p-3">
-                <p className="font-semibold mb-2">Pusula Dönüşümü</p>
-                <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Compass className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <p className="font-semibold text-blue-800 dark:text-blue-200">Pusula Dönüşümü</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-xs mb-3">
                   <div>
-                    <Label htmlFor="mt-cc">Cc (°)</Label>
-                    <Input id="mt-cc" type="number" value={compassInputs.cc} onChange={(e) => setCompassInputs({ ...compassInputs, cc: e.target.value })} />
+                    <Label htmlFor="mt-cc" className="text-blue-700 dark:text-blue-300">Cc (°)</Label>
+                    <Input 
+                      id="mt-cc" 
+                      type="number" 
+                      value={compassInputs.cc} 
+                      onChange={(e) => setCompassInputs({ ...compassInputs, cc: e.target.value })}
+                      className="border-blue-200 dark:border-blue-700"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="mt-var">Var (°)</Label>
-                    <Input id="mt-var" type="number" value={compassInputs.variation} onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })} />
+                    <Label htmlFor="mt-var" className="text-blue-700 dark:text-blue-300">Var (°)</Label>
+                    <Input 
+                      id="mt-var" 
+                      type="number" 
+                      value={compassInputs.variation} 
+                      onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })}
+                      className="border-blue-200 dark:border-blue-700"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="mt-dev">Dev (°)</Label>
-                    <Input id="mt-dev" type="number" value={compassInputs.deviation} onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })} />
+                    <Label htmlFor="mt-dev" className="text-blue-700 dark:text-blue-300">Dev (°)</Label>
+                    <Input 
+                      id="mt-dev" 
+                      type="number" 
+                      value={compassInputs.deviation} 
+                      onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })}
+                      className="border-blue-200 dark:border-blue-700"
+                    />
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <Button size="sm" onClick={handleCompassCalc}>Hesapla</Button>
-                  <div className="text-xs text-muted-foreground">Ct: <span className="font-mono">{compassCt || '-'}</span></div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Button size="sm" onClick={handleCompassCalc} className="bg-blue-600 hover:bg-blue-700 text-white">
+                    Hesapla
+                  </Button>
+                  <div className="text-xs text-blue-600 dark:text-blue-400 font-semibold">
+                    Ct: <span className="font-mono bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">{compassCt || '-'}</span>
+                  </div>
                 </div>
-                <pre className="mt-2 font-mono text-[11px] leading-5">{`Kural: Ct = Cc + Var + Dev  (E +, W −)`}</pre>
+                <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
+                  <pre className="font-mono text-[11px] leading-5 text-blue-800 dark:text-blue-200">{`Kural: Ct = Cc + Var + Dev  (E +, W −)`}</pre>
+                </div>
               </div>
               {/* CTS/SOG */}
-              <div className="bg-muted/30 rounded p-3">
-                <p className="font-semibold mb-2">CTS / SOG (Özet)</p>
-                <div className="grid grid-cols-4 gap-2 text-xs">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <p className="font-semibold text-green-800 dark:text-green-200">CTS / SOG (Özet)</p>
+                </div>
+                <div className="grid grid-cols-4 gap-2 text-xs mb-3">
                   <div>
-                    <Label htmlFor="mt-tr">TR (°)</Label>
-                    <Input id="mt-tr" type="number" value={currentInputs.tr} onChange={(e) => setCurrentInputs({ ...currentInputs, tr: e.target.value })} />
+                    <Label htmlFor="mt-tr" className="text-green-700 dark:text-green-300">TR (°)</Label>
+                    <Input 
+                      id="mt-tr" 
+                      type="number" 
+                      value={currentInputs.tr} 
+                      onChange={(e) => setCurrentInputs({ ...currentInputs, tr: e.target.value })}
+                      className="border-green-200 dark:border-green-700"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="mt-v">V (kn)</Label>
-                    <Input id="mt-v" type="number" value={currentInputs.v} onChange={(e) => setCurrentInputs({ ...currentInputs, v: e.target.value })} />
+                    <Label htmlFor="mt-v" className="text-green-700 dark:text-green-300">V (kn)</Label>
+                    <Input 
+                      id="mt-v" 
+                      type="number" 
+                      value={currentInputs.v} 
+                      onChange={(e) => setCurrentInputs({ ...currentInputs, v: e.target.value })}
+                      className="border-green-200 dark:border-green-700"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="mt-set">set (°)</Label>
-                    <Input id="mt-set" type="number" value={currentInputs.set} onChange={(e) => setCurrentInputs({ ...currentInputs, set: e.target.value })} />
+                    <Label htmlFor="mt-set" className="text-green-700 dark:text-green-300">set (°)</Label>
+                    <Input 
+                      id="mt-set" 
+                      type="number" 
+                      value={currentInputs.set} 
+                      onChange={(e) => setCurrentInputs({ ...currentInputs, set: e.target.value })}
+                      className="border-green-200 dark:border-green-700"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="mt-drift">c (kn)</Label>
-                    <Input id="mt-drift" type="number" value={currentInputs.drift} onChange={(e) => setCurrentInputs({ ...currentInputs, drift: e.target.value })} />
+                    <Label htmlFor="mt-drift" className="text-green-700 dark:text-green-300">c (kn)</Label>
+                    <Input 
+                      id="mt-drift" 
+                      type="number" 
+                      value={currentInputs.drift} 
+                      onChange={(e) => setCurrentInputs({ ...currentInputs, drift: e.target.value })}
+                      className="border-green-200 dark:border-green-700"
+                    />
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-3">
-                  <Button size="sm" onClick={handleCurrentCalc}>Hesapla</Button>
-                  <div className="text-xs text-muted-foreground">CTS: <span className="font-mono">{currentResult.cts?.toFixed?.(1) || '-' }°</span></div>
-                  <div className="text-xs text-muted-foreground">SOG: <span className="font-mono">{currentResult.sog?.toFixed?.(2) || '-' } kn</span></div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Button size="sm" onClick={handleCurrentCalc} className="bg-green-600 hover:bg-green-700 text-white">
+                    Hesapla
+                  </Button>
+                  <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                    CTS: <span className="font-mono bg-green-100 dark:bg-green-800 px-2 py-1 rounded">{currentResult.cts?.toFixed?.(1) || '-' }°</span>
+                  </div>
+                  <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                    SOG: <span className="font-mono bg-green-100 dark:bg-green-800 px-2 py-1 rounded">{currentResult.sog?.toFixed?.(2) || '-' } kn</span>
+                  </div>
                 </div>
-                <pre className="mt-2 font-mono text-[11px] leading-5">{`sin(CTS−TR) = (c/V)·sin(set−TR)
+                <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
+                  <pre className="font-mono text-[11px] leading-5 text-green-800 dark:text-green-200">{`sin(CTS−TR) = (c/V)·sin(set−TR)
 SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
+                </div>
               </div>
               {/* Doubling angle */}
-              <div className="bg-muted/30 rounded p-3">
-                <p className="font-semibold mb-2">Doubling Angle (Genel)</p>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <p className="font-semibold text-purple-800 dark:text-purple-200">Doubling Angle (Genel)</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs mb-3">
                   <div>
-                    <Label htmlFor="mt-angle">A₁ (°)</Label>
-                    <Input id="mt-angle" type="number" value={doublingInputs.angle} onChange={(e) => setDoublingInputs({ ...doublingInputs, angle: e.target.value })} />
+                    <Label htmlFor="mt-angle" className="text-purple-700 dark:text-purple-300">A₁ (°)</Label>
+                    <Input 
+                      id="mt-angle" 
+                      type="number" 
+                      value={doublingInputs.angle} 
+                      onChange={(e) => setDoublingInputs({ ...doublingInputs, angle: e.target.value })}
+                      className="border-purple-200 dark:border-purple-700"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="mt-run">s (nm)</Label>
-                    <Input id="mt-run" type="number" value={doublingInputs.run} onChange={(e) => setDoublingInputs({ ...doublingInputs, run: e.target.value })} />
+                    <Label htmlFor="mt-run" className="text-purple-700 dark:text-purple-300">s (nm)</Label>
+                    <Input 
+                      id="mt-run" 
+                      type="number" 
+                      value={doublingInputs.run} 
+                      onChange={(e) => setDoublingInputs({ ...doublingInputs, run: e.target.value })}
+                      className="border-purple-200 dark:border-purple-700"
+                    />
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <Button size="sm" onClick={handleDoublingCalc}>Hesapla</Button>
-                  <div className="text-xs text-muted-foreground">Distance off: <span className="font-mono">{doublingResult || '-'}</span></div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Button size="sm" onClick={handleDoublingCalc} className="bg-purple-600 hover:bg-purple-700 text-white">
+                    Hesapla
+                  </Button>
+                  <div className="text-xs text-purple-600 dark:text-purple-400 font-semibold">
+                    Distance off: <span className="font-mono bg-purple-100 dark:bg-purple-800 px-2 py-1 rounded">{doublingResult || '-'}</span>
+                  </div>
                 </div>
-                <pre className="mt-2 font-mono text-[11px] leading-5">{`Genel: Distance off = s·sin(A₁)/sin(A₂−A₁)
+                <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
+                  <pre className="font-mono text-[11px] leading-5 text-purple-800 dark:text-purple-200">{`Genel: Distance off = s·sin(A₁)/sin(A₂−A₁)
 Özel:  A₂ = 2·A₁ ⇒ Distance off = s`}</pre>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Foundations */}
-        <Card className="shadow">
-          <CardHeader onClick={() => toggle('foundations')} className="cursor-pointer" aria-expanded={isOpen('foundations')}>
+        <Card className={`shadow-lg transition-all duration-300 ${isOpen('foundations') ? 'border-blue-300 dark:border-blue-700' : 'border-gray-200 dark:border-gray-700'}`}>
+          <CardHeader 
+            onClick={() => toggle('foundations')} 
+            className={`cursor-pointer transition-colors duration-200 ${
+              isOpen('foundations') 
+                ? 'bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950' 
+                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+            }`}
+            aria-expanded={isOpen('foundations')}
+          >
             <CardTitle id="foundations" className="scroll-mt-24 flex items-center justify-between">
-              Temel Kavramlar
-              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('foundations') ? "rotate-180" : "")} />
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${isOpen('foundations') ? 'bg-blue-100 dark:bg-blue-900' : 'bg-gray-100 dark:bg-gray-800'}`}>
+                  <Target className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <span className="text-lg font-bold">Temel Kavramlar</span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
+                      Başlangıç
+                    </Badge>
+                    <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                      <Clock className="h-3 w-3" />
+                      15 dk
+                    </div>
+                    {completedSections['foundations'] && (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleBookmark('foundations');
+                  }}
+                >
+                  <Bookmark className={`h-4 w-4 ${bookmarkedSections['foundations'] ? 'fill-current text-yellow-500' : ''}`} />
+                </Button>
+                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen('foundations') ? "rotate-180" : ""}`} />
+              </div>
             </CardTitle>
           </CardHeader>
           {isOpen('foundations') && (
           <CardContent className="space-y-4 text-sm">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-base">Referans Yönleri ve Dönüşümler</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h5 className="font-medium mb-2">Yön Tipleri:</h5>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li><strong>True (T):</strong> Gerçek kuzeye göre ölçülen yön (coğrafi kuzey)</li>
-                    <li><strong>Magnetic (M):</strong> Manyetik kuzeye göre ölçülen yön</li>
-                    <li><strong>Compass (C):</strong> Geminin pusulasının gösterdiği yön</li>
-                    <li><strong>Gyro (G):</strong> Ciro pusula ile ölçülen yön</li>
-                    <li><strong>Relative (R):</strong> Geminin başına göre ölçülen yön</li>
-                  </ul>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  Bu bölümü tamamladınız mı?
+                </span>
+              </div>
+              <Button
+                variant={completedSections['foundations'] ? "default" : "outline"}
+                size="sm"
+                onClick={() => toggleCompleted('foundations')}
+                className={completedSections['foundations'] ? 'bg-green-600 hover:bg-green-700 text-white' : ''}
+              >
+                {completedSections['foundations'] ? (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Tamamlandı
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Tamamla
+                  </>
+                )}
+              </Button>
+            </div>
+            <div className="space-y-4">
+              <h4 className="font-semibold text-base flex items-center gap-2">
+                <Compass className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                Referans Yönleri ve Dönüşümler
+              </h4>
+              
+              {/* Interactive Compass Diagram */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                <h5 className="font-semibold mb-4 text-center text-blue-800 dark:text-blue-200">Yön Dönüşüm Diyagramı</h5>
+                <div className="flex justify-center mb-4">
+                  <div className="relative w-48 h-48 bg-white dark:bg-gray-800 rounded-full border-4 border-blue-300 dark:border-blue-700 shadow-lg">
+                    {/* Compass Rose */}
+                    <div className="absolute inset-4 rounded-full border-2 border-gray-300 dark:border-gray-600">
+                      {/* North */}
+                      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                        <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-transparent border-b-red-500"></div>
+                        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-red-600 dark:text-red-400">N</span>
+                      </div>
+                      {/* South */}
+                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                        <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-transparent border-t-gray-500"></div>
+                        <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-600 dark:text-gray-400">S</span>
+                      </div>
+                      {/* East */}
+                      <div className="absolute -right-2 top-1/2 transform -translate-y-1/2">
+                        <div className="w-0 h-0 border-t-4 border-b-4 border-l-8 border-transparent border-l-green-500"></div>
+                        <span className="absolute -right-8 top-1/2 transform -translate-y-1/2 text-xs font-bold text-green-600 dark:text-green-400">E</span>
+                      </div>
+                      {/* West */}
+                      <div className="absolute -left-2 top-1/2 transform -translate-y-1/2">
+                        <div className="w-0 h-0 border-t-4 border-b-4 border-r-8 border-transparent border-r-blue-500"></div>
+                        <span className="absolute -left-8 top-1/2 transform -translate-y-1/2 text-xs font-bold text-blue-600 dark:text-blue-400">W</span>
+                      </div>
+                      
+                      {/* Direction Labels */}
+                      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-xs font-semibold text-blue-600 dark:text-blue-400">True North</div>
+                      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 text-xs text-purple-600 dark:text-purple-400">Magnetic North</div>
+                      <div className="absolute top-12 left-1/2 transform -translate-x-1/2 text-xs text-orange-600 dark:text-orange-400">Compass North</div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h5 className="font-medium mb-2">Dönüşüm Kuralları:</h5>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li><strong>C→M→T:</strong> Ct = Cc + Var + Dev (E +, W −)</li>
-                    <li><strong>İşaret Kuralı:</strong> Doğu varyasyon/deviasyon +, Batı varyasyon/deviasyon −</li>
-                    <li><strong>Varyasyon:</strong> Harita üzerinde işaretli, coğrafi konuma bağlı</li>
-                    <li><strong>Deviasyon:</strong> Deviasyon kartında gösterilir, gemi manyetizmasına bağlı</li>
-                    <li><strong>Gyro Error:</strong> Ciro pusula hatası, enlem ve hıza bağlı</li>
-                  </ul>
+                <div className="text-center text-sm text-gray-600 dark:text-gray-300">
+                  <p className="mb-2">Yön dönüşümleri: True → Magnetic → Compass</p>
+                  <div className="flex justify-center gap-4 text-xs">
+                    <span className="bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded">True (T)</span>
+                    <span className="text-gray-400">→</span>
+                    <span className="bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">Magnetic (M)</span>
+                    <span className="text-gray-400">→</span>
+                    <span className="bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">Compass (C)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h5 className="font-semibold mb-3 text-blue-800 dark:text-blue-200 flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Yön Tipleri
+                  </h5>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
+                      <div>
+                        <strong className="text-blue-700 dark:text-blue-300">True (T):</strong>
+                        <span className="text-sm text-gray-600 dark:text-gray-300"> Gerçek kuzeye göre ölçülen yön (coğrafi kuzey)</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full mt-1 flex-shrink-0"></div>
+                      <div>
+                        <strong className="text-purple-700 dark:text-purple-300">Magnetic (M):</strong>
+                        <span className="text-sm text-gray-600 dark:text-gray-300"> Manyetik kuzeye göre ölçülen yön</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-3 h-3 bg-orange-500 rounded-full mt-1 flex-shrink-0"></div>
+                      <div>
+                        <strong className="text-orange-700 dark:text-orange-300">Compass (C):</strong>
+                        <span className="text-sm text-gray-600 dark:text-gray-300"> Geminin pusulasının gösterdiği yön</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full mt-1 flex-shrink-0"></div>
+                      <div>
+                        <strong className="text-green-700 dark:text-green-300">Gyro (G):</strong>
+                        <span className="text-sm text-gray-600 dark:text-gray-300"> Ciro pusula ile ölçülen yön</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full mt-1 flex-shrink-0"></div>
+                      <div>
+                        <strong className="text-red-700 dark:text-red-300">Relative (R):</strong>
+                        <span className="text-sm text-gray-600 dark:text-gray-300"> Geminin başına göre ölçülen yön</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h5 className="font-semibold mb-3 text-green-800 dark:text-green-200 flex items-center gap-2">
+                    <Zap className="h-4 w-4" />
+                    Dönüşüm Kuralları
+                  </h5>
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
+                      <div className="font-semibold text-blue-800 dark:text-blue-200 mb-1">C→M→T Dönüşümü:</div>
+                      <div className="font-mono text-sm text-blue-700 dark:text-blue-300">Ct = Cc + Var + Dev</div>
+                      <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">(E +, W −)</div>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <span><strong>İşaret Kuralı:</strong> Doğu varyasyon/deviasyon +, Batı varyasyon/deviasyon −</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span><strong>Varyasyon:</strong> Harita üzerinde işaretli, coğrafi konuma bağlı</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <span><strong>Deviasyon:</strong> Deviasyon kartında gösterilir, gemi manyetizmasına bağlı</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span><strong>Gyro Error:</strong> Ciro pusula hatası, enlem ve hıza bağlı</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2331,16 +2717,63 @@ Kapsama: Gündüz görsel W≈0.6 nm ⇒ S≈0.5–0.6 nm`}</pre>
           )}
         </Card>
 
-        <div className="flex justify-between items-center">
-          <div className="text-xs text-muted-foreground">Sürüm: v2.2 • Formül düzeltmeleri ve kaynakça genişletmesi uygulandı.</div>
-          <Button asChild variant="default" className="gap-2">
-            <a href="#foundations">
-              Başa Dön
-            </a>
-          </Button>
-        </div>
-
-        <Separator />
+        {/* Enhanced Footer with Navigation */}
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-center md:text-left">
+                <div className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-1">
+                  Seyir Konu Anlatımı v2.1
+                </div>
+                <div className="text-xs text-gray-600 dark:text-gray-300">
+                  Gelişmiş görsel tasarım, interaktif öğeler ve ilerleme takibi
+                </div>
+                <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    {Object.values(completedSections).filter(Boolean).length} tamamlandı
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Bookmark className="h-3 w-3" />
+                    {Object.values(bookmarkedSections).filter(Boolean).length} yer imi
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button asChild variant="outline" size="sm" className="gap-2">
+                  <a href="#foundations">
+                    <ArrowLeft className="h-4 w-4" />
+                    Başa Dön
+                  </a>
+                </Button>
+                <Button asChild variant="default" size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700">
+                  <Link to="/navigation/quiz">
+                    <Target className="h-4 w-4" />
+                    Quiz'e Git
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm" className="gap-2">
+                  <Link to="/navigation">
+                    <Compass className="h-4 w-4" />
+                    Hesaplamalar
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            
+            {/* Progress Summary */}
+            <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-gray-600 dark:text-gray-300">Genel İlerleme</span>
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                  {Math.round(readingProgress)}% tamamlandı
+                </span>
+              </div>
+              <Progress value={readingProgress} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </MobileLayout>
   );
