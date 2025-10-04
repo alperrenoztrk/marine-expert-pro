@@ -170,47 +170,6 @@ export default function NavigationTopicsPage() {
           </div>
         </div>
 
-        {/* Progress Header */}
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
-          <CardContent className="p-6">
-            <div className="text-center space-y-4">
-              <div className="flex items-center justify-center gap-3">
-                <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
-                  <Compass className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                    Seyir Konu Anlatımı
-                  </h1>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                    Temelden ileri düzeye kapsamlı bir seyir rehberi
-                  </p>
-                </div>
-              </div>
-              
-              {/* Progress Bar */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-300">İlerleme</span>
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">
-                    {Math.round(readingProgress)}% tamamlandı
-                  </span>
-                </div>
-                <Progress value={readingProgress} className="h-2" />
-                <div className="flex items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <CheckCircle className="h-3 w-3" />
-                    {Object.values(completedSections).filter(Boolean).length} tamamlandı
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Bookmark className="h-3 w-3" />
-                    {Object.values(bookmarkedSections).filter(Boolean).length} yer imi
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Foundations */}
         <Card className={`shadow-lg transition-all duration-300 ${isOpen('foundations') ? 'border-blue-300 dark:border-blue-700' : 'border-gray-200 dark:border-gray-700'}`}>
@@ -2402,63 +2361,6 @@ Kapsama: Gündüz görsel W≈0.6 nm ⇒ S≈0.5–0.6 nm`}</pre>
           )}
         </Card>
 
-        {/* Enhanced Footer with Navigation */}
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="text-center md:text-left">
-                <div className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-1">
-                  Seyir Konu Anlatımı v2.1
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-300">
-                  Gelişmiş görsel tasarım, interaktif öğeler ve ilerleme takibi
-                </div>
-                <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <CheckCircle className="h-3 w-3" />
-                    {Object.values(completedSections).filter(Boolean).length} tamamlandı
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Bookmark className="h-3 w-3" />
-                    {Object.values(bookmarkedSections).filter(Boolean).length} yer imi
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Button asChild variant="outline" size="sm" className="gap-2">
-                  <a href="#foundations">
-                    <ArrowLeft className="h-4 w-4" />
-                    Başa Dön
-                  </a>
-                </Button>
-                <Button asChild variant="default" size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700">
-                  <Link to="/navigation/quiz">
-                    <Target className="h-4 w-4" />
-                    Quiz'e Git
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm" className="gap-2">
-                  <Link to="/navigation">
-                    <Compass className="h-4 w-4" />
-                    Hesaplamalar
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            
-            {/* Progress Summary */}
-            <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
-              <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-gray-600 dark:text-gray-300">Genel İlerleme</span>
-                <span className="font-semibold text-blue-600 dark:text-blue-400">
-                  {Math.round(readingProgress)}% tamamlandı
-                </span>
-              </div>
-              <Progress value={readingProgress} className="h-2" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </MobileLayout>
   );
