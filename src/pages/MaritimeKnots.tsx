@@ -4,21 +4,26 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import bowlineImg from "@/assets/knots/bowline.jpg";
+import reefKnotImg from "@/assets/knots/reef-knot.jpg";
+import roundTurnImg from "@/assets/knots/round-turn-two-half-hitches.jpg";
 import cloveHitchImg from "@/assets/knots/clove-hitch.jpg";
-import figureEightImg from "@/assets/knots/figure-eight.jpg";
 import sheetBendImg from "@/assets/knots/sheet-bend.jpg";
+import figureEightImg from "@/assets/knots/figure-eight.jpg";
 import cleatHitchImg from "@/assets/knots/cleat-hitch.jpg";
 import rollingHitchImg from "@/assets/knots/rolling-hitch.jpg";
-import roundTurnImg from "@/assets/knots/round-turn-two-half-hitches.jpg";
-import reefKnotImg from "@/assets/knots/reef-knot.jpg";
 import anchorBendImg from "@/assets/knots/anchor-bend.jpg";
-import truckersHitchImg from "@/assets/knots/truckers-hitch.jpg";
+import bowlineImg2 from "@/assets/knots/bowline.jpg"; // Double Bowline
+import truckersHitchImg from "@/assets/knots/truckers-hitch.jpg"; // Fisherman's Knot placeholder
+import truckersHitchImg2 from "@/assets/knots/truckers-hitch.jpg"; // Carrick Bend placeholder
+import truckersHitchImg3 from "@/assets/knots/truckers-hitch.jpg"; // Overhand Knot placeholder
+import truckersHitchImg4 from "@/assets/knots/truckers-hitch.jpg"; // Timber Hitch placeholder
+import truckersHitchImg5 from "@/assets/knots/truckers-hitch.jpg"; // Chain Knot placeholder
 
 export default function MaritimeKnots() {
   const knots = [
     {
       id: 1,
-      name: "Bowline (Kanlı Düğüm)",
+      name: "İzbarço Bağı (Bowline)",
       image: bowlineImg,
       description: "Halat ucunda sabit bir ilmik oluşturmak için kullanılır. 'Kral düğüm' olarak da bilinir.",
       uses: "Kurtarma operasyonları, demir atma, halat bağlama",
@@ -33,79 +38,21 @@ export default function MaritimeKnots() {
     },
     {
       id: 2,
-      name: "Clove Hitch (Bağlama Düğümü)",
-      image: cloveHitchImg,
-      description: "Halatı bir direğe veya halkaya geçici olarak bağlamak için kullanılır.",
-      uses: "İskele bağlama, çadır germe, geçici tespit",
+      name: "Camadan Bağı (Reef Knot)",
+      image: reefKnotImg,
+      description: "Aynı kalınlıktaki iki halatı düz şekilde birleştirir.",
+      uses: "Yelken sarma, paket bağlama",
       steps: [
-        "Halatı direğin etrafından bir tur sarın",
-        "İkinci turu ilkinin üzerinden geçirerek yapın",
-        "İkinci turun altından geçen ucu çıkartın",
-        "Her iki ucu sıkıca çekin"
+        "Sağ ucu sol ucun üzerinden geçirin ve bağlayın",
+        "Sol ucu (artık sağda) sağ ucun (artık solda) üzerinden geçirin",
+        "İkinci düğümü de yapın",
+        "Düğümü sıkılaştırın"
       ],
-      safety: "Sabit yük altında güvenlidir, ancak değişken yüklerde kayabilir."
+      safety: "UYARI: Kritik yük taşıma için kullanmayın, kayabilir!"
     },
     {
       id: 3,
-      name: "Figure Eight (Sekiz Düğümü)",
-      image: figureEightImg,
-      description: "Halatın ucunda bir durdurma düğümü oluşturur. Halat delikten kaçmasını önler.",
-      uses: "Halat ucu stopper, güvenlik düğümü",
-      steps: [
-        "Halatla bir ilmik oluşturun",
-        "Çalışma ucunu ilmiğin altından geçirin",
-        "Ucu ilmiğin içinden geri geçirin (8 şekli oluşur)",
-        "Düğümü sıkılaştırın"
-      ],
-      safety: "Basit düğümden daha güvenli, çözülmesi kolaydır."
-    },
-    {
-      id: 4,
-      name: "Sheet Bend (İskota Bağı)",
-      image: sheetBendImg,
-      description: "İki farklı kalınlıktaki halatı birbirine bağlamak için kullanılır.",
-      uses: "Farklı halatları birleştirme, yelken bağlama",
-      steps: [
-        "Kalın halatta bir ilmik yapın",
-        "İnce halatı ilmiğin içinden geçirin",
-        "İnce halatı kalın halatın her iki ucunun altından geçirin",
-        "İnce halatı kendi duran ucunun altına sokun",
-        "Düğümü sıkılaştırın"
-      ],
-      safety: "Farklı çaplardaki halatlar için idealdir."
-    },
-    {
-      id: 5,
-      name: "Cleat Hitch (İskele Takozu Bağı)",
-      image: cleatHitchImg,
-      description: "Halatı iskele takozuna güvenli şekilde bağlamak için kullanılır.",
-      uses: "Tekne bağlama, iskele operasyonları",
-      steps: [
-        "Halatı takozun tabanından bir tur sarın",
-        "Halatı takozun bir boynuzunun üzerinden çapraz geçirin",
-        "Halatı diğer boynuzun altından geçirin",
-        "Son turda bir ilmik yaparak kilitleyin",
-        "Halatı gergin tutun"
-      ],
-      safety: "Hızlı bağlama ve çözme imkanı sağlar."
-    },
-    {
-      id: 6,
-      name: "Rolling Hitch (Kayar Bağ)",
-      image: rollingHitchImg,
-      description: "Bir halatı başka bir halata veya direğe kayma yapmadan bağlar.",
-      uses: "Halata ek halat bağlama, çekme operasyonları",
-      steps: [
-        "Halatı ana halatın etrafından iki tur sarın (aynı yönde)",
-        "Üçüncü turu diğer yöne doğru yapın",
-        "Ucu ikinci turların arasından geçirin",
-        "Yük yönünde sıkılaştırın"
-      ],
-      safety: "Yük altında kaymaz, yük olmadığında hareket ettirilebilir."
-    },
-    {
-      id: 7,
-      name: "Round Turn and Two Half Hitches (Kılavuz Düğümü)",
+      name: "Volta Bağı (Round Turn and Two Half Hitches)",
       image: roundTurnImg,
       description: "Halatı bir direğe veya halkaya çok güvenli şekilde bağlar.",
       uses: "Ağır yük bağlama, demir halatı, römork halatı",
@@ -119,22 +66,80 @@ export default function MaritimeKnots() {
       safety: "Çok güvenli, ağır yükler için idealdir."
     },
     {
-      id: 8,
-      name: "Reef Knot (Perde Düğümü)",
-      image: reefKnotImg,
-      description: "Aynı kalınlıktaki iki halatı düz şekilde birleştirir.",
-      uses: "Yelken sarma, paket bağlama",
+      id: 4,
+      name: "Kazık Bağı (Clove Hitch)",
+      image: cloveHitchImg,
+      description: "Halatı bir direğe veya halkaya geçici olarak bağlamak için kullanılır.",
+      uses: "İskele bağlama, çadır germe, geçici tespit",
       steps: [
-        "Sağ ucu sol ucun üzerinden geçirin ve bağlayın",
-        "Sol ucu (artık sağda) sağ ucun (artık solda) üzerinden geçirin",
-        "İkinci düğümü de yapın",
+        "Halatı direğin etrafından bir tur sarın",
+        "İkinci turu ilkinin üzerinden geçirerek yapın",
+        "İkinci turun altından geçen ucu çıkartın",
+        "Her iki ucu sıkıca çekin"
+      ],
+      safety: "Sabit yük altında güvenlidir, ancak değişken yüklerde kayabilir."
+    },
+    {
+      id: 5,
+      name: "Dülger Bağı (Sheet Bend)",
+      image: sheetBendImg,
+      description: "İki farklı kalınlıktaki halatı birbirine bağlamak için kullanılır.",
+      uses: "Farklı halatları birleştirme, yelken bağlama",
+      steps: [
+        "Kalın halatta bir ilmik yapın",
+        "İnce halatı ilmiğin içinden geçirin",
+        "İnce halatı kalın halatın her iki ucunun altından geçirin",
+        "İnce halatı kendi duran ucunun altına sokun",
         "Düğümü sıkılaştırın"
       ],
-      safety: "UYARI: Kritik yük taşıma için kullanmayın, kayabilir!"
+      safety: "Farklı çaplardaki halatlar için idealdir."
+    },
+    {
+      id: 6,
+      name: "Sekizli Bağı (Figure-Eight Knot)",
+      image: figureEightImg,
+      description: "Halatın ucunda bir durdurma düğümü oluşturur. Halat delikten kaçmasını önler.",
+      uses: "Halat ucu stopper, güvenlik düğümü",
+      steps: [
+        "Halatla bir ilmik oluşturun",
+        "Çalışma ucunu ilmiğin altından geçirin",
+        "Ucu ilmiğin içinden geri geçirin (8 şekli oluşur)",
+        "Düğümü sıkılaştırın"
+      ],
+      safety: "Basit düğümden daha güvenli, çözülmesi kolaydır."
+    },
+    {
+      id: 7,
+      name: "Palamar Bağı (Cleat Hitch)",
+      image: cleatHitchImg,
+      description: "Halatı iskele takozuna güvenli şekilde bağlamak için kullanılır.",
+      uses: "Tekne bağlama, iskele operasyonları",
+      steps: [
+        "Halatı takozun tabanından bir tur sarın",
+        "Halatı takozun bir boynuzunun üzerinden çapraz geçirin",
+        "Halatı diğer boynuzun altından geçirin",
+        "Son turda bir ilmik yaparak kilitleyin",
+        "Halatı gergin tutun"
+      ],
+      safety: "Hızlı bağlama ve çözme imkanı sağlar."
+    },
+    {
+      id: 8,
+      name: "Kaşık Bağı (Rolling Hitch)",
+      image: rollingHitchImg,
+      description: "Bir halatı başka bir halata veya direğe kayma yapmadan bağlar.",
+      uses: "Halata ek halat bağlama, çekme operasyonları",
+      steps: [
+        "Halatı ana halatın etrafından iki tur sarın (aynı yönde)",
+        "Üçüncü turu diğer yöne doğru yapın",
+        "Ucu ikinci turların arasından geçirin",
+        "Yük yönünde sıkılaştırın"
+      ],
+      safety: "Yük altında kaymaz, yük olmadığında hareket ettirilebilir."
     },
     {
       id: 9,
-      name: "Anchor Bend (Demir Bağı)",
+      name: "Kanca Bağı (Anchor Bend)",
       image: anchorBendImg,
       description: "Halatı demir veya halkalara çok güvenli şekilde bağlamak için kullanılır.",
       uses: "Demir bağlama, salıncak zinciri",
@@ -149,18 +154,89 @@ export default function MaritimeKnots() {
     },
     {
       id: 10,
-      name: "Trucker's Hitch (Taşıyıcı Bağı)",
-      image: truckersHitchImg,
-      description: "Mekanik avantaj sağlayarak halatı çok sıkı germek için kullanılır.",
-      uses: "Yük bağlama, çadır germe, şerit germe",
+      name: "Fener Bağı (Double Bowline)",
+      image: bowlineImg2,
+      description: "İzbarço bağının güçlendirilmiş versiyonu. Daha güvenli ve güçlü bir ilmik oluşturur.",
+      uses: "Ağır yükler için güvenli ilmik, kurtarma operasyonları",
       steps: [
-        "Halatın ortasında bir ilmik yapın",
-        "Halatın çalışma ucunu sabitleme noktasına bağlayın",
-        "Çalışma ucunu ilmikten geçirin (makara gibi)",
-        "Halatı gergin çekin (3:1 avantaj)",
-        "İki yarım bağ ile kilitleyin"
+        "Halatın ucunda küçük bir ilmik oluşturun",
+        "Çalışma ucunu ilmiğin içinden iki kez geçirin",
+        "Çalışma ucunu ana halatın etrafından dolaştırın",
+        "Çalışma ucunu tekrar ilmiğe sokun",
+        "Düğümü sıkılaştırın"
       ],
-      safety: "Yükün 3 katı germe gücü sağlar."
+      safety: "Tek izbarço bağından daha güvenli, ağır yükler için idealdir."
+    },
+    {
+      id: 11,
+      name: "Balıkçı Bağı (Fisherman's Knot)",
+      image: truckersHitchImg,
+      description: "İki halat ucunu birbirine bağlamak için kullanılan güvenli düğüm.",
+      uses: "Balıkçılık, halat uçlarını birleştirme",
+      steps: [
+        "İlk halatın ucunda bir overhand düğümü yapın",
+        "İkinci halatın ucunu ilk halatın düğümünün içinden geçirin",
+        "İkinci halatın ucunda da bir overhand düğümü yapın",
+        "Her iki düğümü sıkılaştırın"
+      ],
+      safety: "Çok güvenli, halatların çözülmesini önler."
+    },
+    {
+      id: 12,
+      name: "Kral Bağı (Carrick Bend)",
+      image: truckersHitchImg2,
+      description: "İki kalın halatı birbirine bağlamak için kullanılan güçlü düğüm.",
+      uses: "Kalın halatları birleştirme, gemi halatları",
+      steps: [
+        "İlk halatla bir ilmik oluşturun",
+        "İkinci halatı ilmiğin altından geçirin",
+        "İkinci halatı ilk halatın üzerinden ve altından geçirin",
+        "İkinci halatı ilmiğin içinden geçirin",
+        "Düğümü sıkılaştırın"
+      ],
+      safety: "Çok güçlü, kalın halatlar için idealdir."
+    },
+    {
+      id: 13,
+      name: "Düğümleme Bağı (Overhand Knot)",
+      image: truckersHitchImg3,
+      description: "En basit düğüm türü. Halatın ucunda durdurma düğümü olarak kullanılır.",
+      uses: "Halat ucu stopper, basit bağlama",
+      steps: [
+        "Halatın ucunda bir ilmik oluşturun",
+        "Ucu ilmiğin içinden geçirin",
+        "Düğümü sıkılaştırın"
+      ],
+      safety: "Basit ama güvenilir, çözülmesi zor olabilir."
+    },
+    {
+      id: 14,
+      name: "Kırlangıç Bağı (Timber Hitch)",
+      image: truckersHitchImg4,
+      description: "Halatı kütük, direk veya silindirik nesnelere bağlamak için kullanılır.",
+      uses: "Kütük çekme, direk bağlama, silindirik nesne bağlama",
+      steps: [
+        "Halatı nesnenin etrafından bir tur sarın",
+        "Halatın ucunu kendi etrafından dolaştırın",
+        "Ucu turların arasından geçirin",
+        "Düğümü sıkılaştırın"
+      ],
+      safety: "Çekme yönünde güçlü, gevşek yüklerde kayabilir."
+    },
+    {
+      id: 15,
+      name: "Zincir Bağı (Chain Knot)",
+      image: truckersHitchImg5,
+      description: "Halatı kısaltmak veya geçici olarak zincir şeklinde düzenlemek için kullanılır.",
+      uses: "Halat kısaltma, geçici depolama, dekoratif amaçlar",
+      steps: [
+        "Halatın ucunda bir ilmik oluşturun",
+        "Ucu ilmiğin içinden geçirin",
+        "Yeni ilmik oluşturun ve tekrarlayın",
+        "İstediğiniz uzunluğa kadar devam edin",
+        "Son ilmikte ucu sabitleyin"
+      ],
+      safety: "Geçici kullanım için uygun, yük taşımak için kullanmayın."
     }
   ];
 
@@ -183,7 +259,7 @@ export default function MaritimeKnots() {
             Gemici Bağları
           </h1>
           <p className="text-base sm:text-lg text-blue-600 dark:text-blue-300 max-w-3xl mx-auto">
-            Denizcilikte en çok kullanılan 10 temel düğüm ve bağlama tekniği
+            Denizcilikte en çok kullanılan 15 temel düğüm ve bağlama tekniği
           </p>
         </div>
 
