@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Play, Eye } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import AnimatedKnot from "@/components/AnimatedKnot";
-import { animatedKnotsData } from "@/data/animatedKnots";
 // Authentic maritime knot images
 import bowlineImg from "@/assets/knots/authentic/bowline-authentic.svg";
 import reefKnotImg from "@/assets/knots/authentic/reef-knot-authentic.svg";
@@ -23,9 +21,6 @@ import timberHitchImg from "@/assets/knots/authentic/timber-hitch-authentic.svg"
 import chainKnotImg from "@/assets/knots/authentic/chain-knot-authentic.svg";
 
 export default function MaritimeKnots() {
-  const [showAnimated, setShowAnimated] = useState(false);
-  const [selectedKnotId, setSelectedKnotId] = useState<number | null>(null);
-
   const knots = [
     {
       id: 1,
@@ -267,19 +262,8 @@ export default function MaritimeKnots() {
           <p className="text-base sm:text-lg text-blue-600 dark:text-blue-300 max-w-3xl mx-auto">
             Denizcilikte en çok kullanılan 15 temel düğüm ve bağlama tekniği - Güvenilir kaynaklardan alınmış otantik bilgiler
           </p>
-          <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full">
-              <span className="text-green-600 dark:text-green-400 text-sm font-medium">✓ Otantik Denizcilik Kaynakları</span>
-            </div>
-            <Button
-              variant={showAnimated ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowAnimated(!showAnimated)}
-              className="gap-2"
-            >
-              {showAnimated ? <Eye className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-              {showAnimated ? "Statik Görünüm" : "Animasyonlu Görünüm"}
-            </Button>
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full">
+            <span className="text-green-600 dark:text-green-400 text-sm font-medium">✓ Otantik Denizcilik Kaynakları</span>
           </div>
         </div>
 
@@ -299,32 +283,13 @@ export default function MaritimeKnots() {
               </CardHeader>
               
               <CardContent className="p-4 sm:p-6 space-y-6">
-                {/* Image/Animation Section */}
+                {/* Image Section */}
                 <div className="rounded-lg overflow-hidden bg-white shadow-lg">
-                  {showAnimated && animatedKnotsData.find(ak => ak.id === knot.id) ? (
-                    <AnimatedKnot
-                      knotName={knot.name}
-                      steps={animatedKnotsData.find(ak => ak.id === knot.id)!.steps}
-                      className="p-4"
-                    />
-                  ) : showAnimated ? (
-                    <div className="p-8 text-center">
-                      <img 
-                        src={knot.image} 
-                        alt={knot.name}
-                        className="w-full h-auto object-contain max-h-96 mb-4"
-                      />
-                      <p className="text-sm text-gray-600 dark:text-gray-400 italic">
-                        Bu düğüm için animasyon yakında eklenecek
-                      </p>
-                    </div>
-                  ) : (
-                    <img 
-                      src={knot.image} 
-                      alt={knot.name}
-                      className="w-full h-auto object-contain max-h-96"
-                    />
-                  )}
+                  <img 
+                    src={knot.image} 
+                    alt={knot.name}
+                    className="w-full h-auto object-contain max-h-96"
+                  />
                 </div>
 
                 {/* Usage Section */}
