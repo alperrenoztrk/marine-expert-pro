@@ -1,0 +1,30 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .rope { fill: none; stroke: #8B4513; stroke-width: 8; stroke-linecap: round; }
+      .rope-end { fill: #8B4513; }
+      .background { fill: #F5F5DC; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" class="background"/>
+  
+  <!-- Overhand Knot -->
+  <!-- Simple loop -->
+  <path d="M 200 100 Q 250 80 300 100 Q 300 150 250 150 Q 200 170 150 150 Q 150 100 200 100" class="rope"/>
+  
+  <!-- Working end -->
+  <path d="M 200 100 Q 150 80 100 100" class="rope"/>
+  <circle cx="100" cy="100" r="4" class="rope-end"/>
+  
+  <!-- Standing part -->
+  <path d="M 200 100 Q 250 120 300 100" class="rope"/>
+  
+  <!-- Labels -->
+  <text x="120" y="90" font-family="Arial" font-size="12" fill="#333">Working End</text>
+  <text x="280" cy="90" font-family="Arial" font-size="12" fill="#333">Standing Part</text>
+  
+  <!-- Title -->
+  <text x="200" y="30" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">Overhand Knot (Düğümleme Bağı)</text>
+</svg>

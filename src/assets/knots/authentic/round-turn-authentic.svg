@@ -1,0 +1,39 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .rope { fill: none; stroke: #8B4513; stroke-width: 8; stroke-linecap: round; }
+      .rope-end { fill: #8B4513; }
+      .background { fill: #F5F5DC; }
+      .post { fill: #654321; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" class="background"/>
+  
+  <!-- Post -->
+  <rect x="180" y="100" width="40" height="100" class="post"/>
+  
+  <!-- Round Turn and Two Half Hitches -->
+  <!-- First round turn -->
+  <path d="M 50 150 Q 100 120 150 150 Q 200 180 250 150" class="rope"/>
+  
+  <!-- Second round turn -->
+  <path d="M 250 150 Q 200 120 150 150 Q 100 180 50 150" class="rope"/>
+  
+  <!-- First half hitch -->
+  <path d="M 50 150 Q 20 180 20 200" class="rope"/>
+  
+  <!-- Second half hitch -->
+  <path d="M 20 200 Q 50 230 80 200" class="rope"/>
+  
+  <!-- Working end -->
+  <circle cx="80" cy="200" r="4" class="rope-end"/>
+  
+  <!-- Labels -->
+  <text x="80" y="140" font-family="Arial" font-size="12" fill="#333">Round Turns</text>
+  <text x="30" y="190" font-family="Arial" font-size="12" fill="#333">Half Hitches</text>
+  
+  <!-- Title -->
+  <text x="200" y="30" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">Round Turn & Two Half Hitches (Volta Bağı)</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .rope { fill: none; stroke: #8B4513; stroke-width: 8; stroke-linecap: round; }
+      .rope-end { fill: #8B4513; }
+      .background { fill: #F5F5DC; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" class="background"/>
+  
+  <!-- Reef Knot -->
+  <!-- First rope -->
+  <path d="M 50 120 Q 150 100 250 120 Q 350 140 400 120" class="rope"/>
+  
+  <!-- Second rope -->
+  <path d="M 50 180 Q 150 200 250 180 Q 350 160 400 180" class="rope"/>
+  
+  <!-- Knot intersection -->
+  <circle cx="200" cy="150" r="15" fill="#8B4513" opacity="0.3"/>
+  
+  <!-- Labels -->
+  <text x="100" y="110" font-family="Arial" font-size="12" fill="#333">First Rope</text>
+  <text x="100" y="200" font-family="Arial" font-size="12" fill="#333">Second Rope</text>
+  
+  <!-- Title -->
+  <text x="200" y="30" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">Reef Knot (Camadan Bağı)</text>
+  
+  <!-- Warning -->
+  <text x="200" y="250" font-family="Arial" font-size="12" text-anchor="middle" fill="#FF0000">⚠️ Not for critical loads!</text>
+</svg>

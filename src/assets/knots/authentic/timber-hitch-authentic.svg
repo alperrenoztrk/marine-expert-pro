@@ -1,0 +1,33 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .rope { fill: none; stroke: #8B4513; stroke-width: 8; stroke-linecap: round; }
+      .rope-end { fill: #8B4513; }
+      .background { fill: #F5F5DC; }
+      .log { fill: #8B4513; }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" class="background"/>
+  
+  <!-- Log/Timber -->
+  <ellipse cx="200" cy="150" rx="60" ry="30" class="log"/>
+  
+  <!-- Timber Hitch -->
+  <!-- Rope wrapping around log -->
+  <path d="M 50 150 Q 100 120 150 150 Q 200 180 250 150 Q 300 120 350 150" class="rope"/>
+  
+  <!-- Working end wrapping around itself -->
+  <path d="M 350 150 Q 320 180 290 150 Q 260 120 230 150" class="rope"/>
+  
+  <!-- Working end -->
+  <circle cx="230" cy="150" r="4" class="rope-end"/>
+  
+  <!-- Labels -->
+  <text x="100" y="140" font-family="Arial" font-size="12" fill="#333">Around Log</text>
+  <text x="280" y="140" font-family="Arial" font-size="12" fill="#333">Self Wrap</text>
+  
+  <!-- Title -->
+  <text x="200" y="30" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">Timber Hitch (Kırlangıç Bağı)</text>
+</svg>
