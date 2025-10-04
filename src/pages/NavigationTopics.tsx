@@ -9,7 +9,6 @@ import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { ArrowLeft, BookOpen, Compass, FileText, ChevronDown, CheckCircle, Clock, Star, Bookmark, Lightbulb, Target, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
-import { calculateCompassTotalError, solveCurrentTriangle, calculateDoublingAngle } from "@/components/calculations/navigationMath";
 
 export default function NavigationTopicsPage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
@@ -36,15 +35,6 @@ export default function NavigationTopicsPage() {
     setReadingProgress((completedCount / totalSections) * 100);
   };
 
-  // v1.1 mini calculators state
-  const [compassInputs, setCompassInputs] = useState({ cc: "", variation: "", deviation: "" });
-  const [compassCt, setCompassCt] = useState<string>("");
-
-  const [currentInputs, setCurrentInputs] = useState({ tr: "", v: "", set: "", drift: "" });
-  const [currentResult, setCurrentResult] = useState<{ cts?: number; sog?: number }>({});
-
-  const [doublingInputs, setDoublingInputs] = useState({ angle: "", run: "" });
-  const [doublingResult, setDoublingResult] = useState<string>("");
 
   // Real-world buoy photos (fetched from Wikimedia Commons)
   type BuoyPhoto = {
@@ -60,47 +50,6 @@ export default function NavigationTopicsPage() {
   const [buoyLoadedOnce, setBuoyLoadedOnce] = useState<boolean>(false);
   const [buoyError, setBuoyError] = useState<string>("");
 
-  const normalize360 = (deg: number) => {
-    const x = deg % 360;
-    return x < 0 ? x + 360 : x;
-  };
-
-  const handleCompassCalc = () => {
-    const cc = parseFloat(compassInputs.cc);
-    const variation = parseFloat(compassInputs.variation || "0");
-    const deviation = parseFloat(compassInputs.deviation || "0");
-    if (!isFinite(cc)) {
-      setCompassCt("");
-      return;
-    }
-    const { totalErrorDeg } = calculateCompassTotalError(variation, deviation, 0);
-    const ct = normalize360(cc + totalErrorDeg);
-    setCompassCt(ct.toFixed(1) + "°");
-  };
-
-  const handleCurrentCalc = () => {
-    const tr = parseFloat(currentInputs.tr);
-    const v = parseFloat(currentInputs.v);
-    const setDeg = parseFloat(currentInputs.set);
-    const drift = parseFloat(currentInputs.drift);
-    if (![tr, v, setDeg, drift].every(isFinite)) {
-      setCurrentResult({});
-      return;
-    }
-    const r = solveCurrentTriangle({ courseDeg: tr, speedKn: v, setDeg, driftKn: drift });
-    setCurrentResult({ cts: r.courseToSteerDeg, sog: r.groundSpeedKn });
-  };
-
-  const handleDoublingCalc = () => {
-    const angle = parseFloat(doublingInputs.angle);
-    const run = parseFloat(doublingInputs.run);
-    if (![angle, run].every(isFinite)) {
-      setDoublingResult("");
-      return;
-    }
-    const r = calculateDoublingAngle(angle, run);
-    setDoublingResult(r.distanceOffNm.toFixed(2) + " nm");
-  };
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.hash) {
@@ -183,7 +132,6 @@ export default function NavigationTopicsPage() {
 
   const toc = [
     { id: "foundations", title: "Temel Kavramlar", icon: <Target className="h-4 w-4" />, difficulty: "Başlangıç", duration: "15 dk" },
-    { id: "mini-tools", title: "Hızlı Mini Araçlar", icon: <Zap className="h-4 w-4" />, difficulty: "Pratik", duration: "10 dk" },
     { id: "buoys", title: "IALA Şamandıra Sistemi", icon: <Compass className="h-4 w-4" />, difficulty: "Temel", duration: "20 dk" },
     { id: "charts", title: "Haritalar ve Projeksiyonlar", icon: <FileText className="h-4 w-4" />, difficulty: "Orta", duration: "25 dk" },
     { id: "routes", title: "Rotalar: Büyük Daire, Rhumb, Plane", icon: <Target className="h-4 w-4" />, difficulty: "Orta", duration: "30 dk" },
@@ -355,177 +303,6 @@ export default function NavigationTopicsPage() {
           </CardContent>
         </Card>
 
-        {/* Mini tools */}
-        <Card className="shadow-lg border-blue-200 dark:border-blue-800">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
-            <CardTitle id="mini-tools" className="scroll-mt-24 flex items-center gap-2">
-              <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              Hızlı Mini Araçlar
-            </CardTitle>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Sık kullanılan hesaplamalar için hızlı erişim araçları
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-6 p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Compass converter */}
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center gap-2 mb-3">
-                  <Compass className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <p className="font-semibold text-blue-800 dark:text-blue-200">Pusula Dönüşümü</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-xs mb-3">
-                  <div>
-                    <Label htmlFor="mt-cc" className="text-blue-700 dark:text-blue-300">Cc (°)</Label>
-                    <Input 
-                      id="mt-cc" 
-                      type="number" 
-                      value={compassInputs.cc} 
-                      onChange={(e) => setCompassInputs({ ...compassInputs, cc: e.target.value })}
-                      className="border-blue-200 dark:border-blue-700"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mt-var" className="text-blue-700 dark:text-blue-300">Var (°)</Label>
-                    <Input 
-                      id="mt-var" 
-                      type="number" 
-                      value={compassInputs.variation} 
-                      onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })}
-                      className="border-blue-200 dark:border-blue-700"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mt-dev" className="text-blue-700 dark:text-blue-300">Dev (°)</Label>
-                    <Input 
-                      id="mt-dev" 
-                      type="number" 
-                      value={compassInputs.deviation} 
-                      onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })}
-                      className="border-blue-200 dark:border-blue-700"
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Button size="sm" onClick={handleCompassCalc} className="bg-blue-600 hover:bg-blue-700 text-white">
-                    Hesapla
-                  </Button>
-                  <div className="text-xs text-blue-600 dark:text-blue-400 font-semibold">
-                    Ct: <span className="font-mono bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">{compassCt || '-'}</span>
-                  </div>
-                </div>
-                <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                  <pre className="font-mono text-[11px] leading-5 text-blue-800 dark:text-blue-200">{`Kural: Ct = Cc + Var + Dev  (E +, W −)`}</pre>
-                </div>
-              </div>
-              {/* CTS/SOG */}
-              <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-xl p-4 border border-green-200 dark:border-green-800">
-                <div className="flex items-center gap-2 mb-3">
-                  <Target className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  <p className="font-semibold text-green-800 dark:text-green-200">CTS / SOG (Özet)</p>
-                </div>
-                <div className="grid grid-cols-4 gap-2 text-xs mb-3">
-                  <div>
-                    <Label htmlFor="mt-tr" className="text-green-700 dark:text-green-300">TR (°)</Label>
-                    <Input 
-                      id="mt-tr" 
-                      type="number" 
-                      value={currentInputs.tr} 
-                      onChange={(e) => setCurrentInputs({ ...currentInputs, tr: e.target.value })}
-                      className="border-green-200 dark:border-green-700"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mt-v" className="text-green-700 dark:text-green-300">V (kn)</Label>
-                    <Input 
-                      id="mt-v" 
-                      type="number" 
-                      value={currentInputs.v} 
-                      onChange={(e) => setCurrentInputs({ ...currentInputs, v: e.target.value })}
-                      className="border-green-200 dark:border-green-700"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mt-set" className="text-green-700 dark:text-green-300">set (°)</Label>
-                    <Input 
-                      id="mt-set" 
-                      type="number" 
-                      value={currentInputs.set} 
-                      onChange={(e) => setCurrentInputs({ ...currentInputs, set: e.target.value })}
-                      className="border-green-200 dark:border-green-700"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mt-drift" className="text-green-700 dark:text-green-300">c (kn)</Label>
-                    <Input 
-                      id="mt-drift" 
-                      type="number" 
-                      value={currentInputs.drift} 
-                      onChange={(e) => setCurrentInputs({ ...currentInputs, drift: e.target.value })}
-                      className="border-green-200 dark:border-green-700"
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mb-3">
-                  <Button size="sm" onClick={handleCurrentCalc} className="bg-green-600 hover:bg-green-700 text-white">
-                    Hesapla
-                  </Button>
-                  <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
-                    CTS: <span className="font-mono bg-green-100 dark:bg-green-800 px-2 py-1 rounded">{currentResult.cts?.toFixed?.(1) || '-' }°</span>
-                  </div>
-                  <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
-                    SOG: <span className="font-mono bg-green-100 dark:bg-green-800 px-2 py-1 rounded">{currentResult.sog?.toFixed?.(2) || '-' } kn</span>
-                  </div>
-                </div>
-                <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
-                  <pre className="font-mono text-[11px] leading-5 text-green-800 dark:text-green-200">{`sin(CTS−TR) = (c/V)·sin(set−TR)
-SOG = V·cos(CTS−TR) + c·cos(set−TR)`}</pre>
-                </div>
-              </div>
-              {/* Doubling angle */}
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
-                <div className="flex items-center gap-2 mb-3">
-                  <Target className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                  <p className="font-semibold text-purple-800 dark:text-purple-200">Doubling Angle (Genel)</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-                  <div>
-                    <Label htmlFor="mt-angle" className="text-purple-700 dark:text-purple-300">A₁ (°)</Label>
-                    <Input 
-                      id="mt-angle" 
-                      type="number" 
-                      value={doublingInputs.angle} 
-                      onChange={(e) => setDoublingInputs({ ...doublingInputs, angle: e.target.value })}
-                      className="border-purple-200 dark:border-purple-700"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="mt-run" className="text-purple-700 dark:text-purple-300">s (nm)</Label>
-                    <Input 
-                      id="mt-run" 
-                      type="number" 
-                      value={doublingInputs.run} 
-                      onChange={(e) => setDoublingInputs({ ...doublingInputs, run: e.target.value })}
-                      className="border-purple-200 dark:border-purple-700"
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Button size="sm" onClick={handleDoublingCalc} className="bg-purple-600 hover:bg-purple-700 text-white">
-                    Hesapla
-                  </Button>
-                  <div className="text-xs text-purple-600 dark:text-purple-400 font-semibold">
-                    Distance off: <span className="font-mono bg-purple-100 dark:bg-purple-800 px-2 py-1 rounded">{doublingResult || '-'}</span>
-                  </div>
-                </div>
-                <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
-                  <pre className="font-mono text-[11px] leading-5 text-purple-800 dark:text-purple-200">{`Genel: Distance off = s·sin(A₁)/sin(A₂−A₁)
-Özel:  A₂ = 2·A₁ ⇒ Distance off = s`}</pre>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Foundations */}
         <Card className={`shadow-lg transition-all duration-300 ${isOpen('foundations') ? 'border-blue-300 dark:border-blue-700' : 'border-gray-200 dark:border-gray-700'}`}>
