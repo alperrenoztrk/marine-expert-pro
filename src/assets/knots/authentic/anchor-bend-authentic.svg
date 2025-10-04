@@ -5,6 +5,32 @@
       .rope-end { fill: #8B4513; }
       .background { fill: #F5F5DC; }
       .ring { fill: #C0C0C0; stroke: #808080; stroke-width: 2; }
+
+      /* Draw-on animation for rope paths */
+      .rope,
+      .rope-main,
+      .rope-hitch,
+      .rope-thick,
+      .rope-thin {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw 3s ease-in-out forwards;
+      }
+
+      @keyframes draw {
+        to { stroke-dashoffset: 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .rope,
+        .rope-main,
+        .rope-hitch,
+        .rope-thick,
+        .rope-thin {
+          animation: none;
+          stroke-dashoffset: 0;
+        }
+      }
     </style>
   </defs>
   

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 // Authentic maritime knot images
 import bowlineImg from "@/assets/knots/authentic/bowline-authentic.svg";
 import reefKnotImg from "@/assets/knots/authentic/reef-knot-authentic.svg";
@@ -21,6 +22,16 @@ import timberHitchImg from "@/assets/knots/authentic/timber-hitch-authentic.svg"
 import chainKnotImg from "@/assets/knots/authentic/chain-knot-authentic.svg";
 
 export default function MaritimeKnots() {
+  const [refreshKeyById, setRefreshKeyById] = React.useState<Record<number, number>>({});
+  const [showVideoById, setShowVideoById] = React.useState<Record<number, boolean>>({});
+
+  const restartAnimation = (id: number) => {
+    setRefreshKeyById((prev) => ({ ...prev, [id]: Date.now() }));
+  };
+
+  const toggleVideo = (id: number) => {
+    setShowVideoById((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
   const knots = [
     {
       id: 1,
@@ -283,14 +294,66 @@ export default function MaritimeKnots() {
               </CardHeader>
               
               <CardContent className="p-4 sm:p-6 space-y-6">
-                {/* Image Section */}
+                {/* Image + Controls Section */}
                 <div className="rounded-lg overflow-hidden bg-white shadow-lg">
-                  <img 
-                    src={knot.image} 
+                  <img
+                    src={`${knot.image}?t=${refreshKeyById[knot.id] ?? 0}`}
                     alt={knot.name}
                     className="w-full h-auto object-contain max-h-96"
                   />
                 </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="secondary" size="sm" onClick={() => restartAnimation(knot.id)}>
+                    Animasyonu Yeniden Başlat
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => toggleVideo(knot.id)}>
+                    {showVideoById[knot.id] ? "Videoyu Gizle" : "Video Öğretimi"}
+                  </Button>
+                </div>
+
+                {showVideoById[knot.id] && (
+                  <div className="rounded-lg border border-blue-200/60 dark:border-blue-800/60 bg-blue-50/60 dark:bg-blue-950/30 p-3">
+                    {(() => {
+                      const englishName = (knot.name.match(/\((.*?)\)/)?.[1] || knot.name).replace(/Knot/i, "").trim();
+                      const query = `${englishName} knot tutorial`;
+                      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+                      const embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}`;
+                      return (
+                        <>
+                          <AspectRatio ratio={16 / 9}>
+                            <iframe
+                              src={embedUrl}
+                              title={`${knot.name} video öğretimi`}
+                              className="w-full h-full rounded-md"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerPolicy="strict-origin-when-cross-origin"
+                              allowFullScreen
+                            />
+                          </AspectRatio>
+                          <div className="mt-2 text-sm text-blue-800 dark:text-blue-300 flex flex-wrap gap-3">
+                            <a
+                              href={searchUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="underline hover:opacity-80"
+                            >
+                              YouTube'da daha fazla izle
+                            </a>
+                            <span aria-hidden>•</span>
+                            <a
+                              href="https://www.animatedknots.com/"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="underline hover:opacity-80"
+                            >
+                              Animated Knots by Grog
+                            </a>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
 
                 {/* Usage Section */}
                 <div className="bg-blue-50 dark:bg-blue-950/50 rounded-lg p-4">
