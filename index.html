@@ -1,45 +1,186 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Marine Expert</title>
-    <meta name="description" content="Professional ship stability calculator for maritime engineers" />
-    <meta name="author" content="Marine Expert" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemici Bağları - Animasyonlu Rehber</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚢 Gemici Bağları Animasyonlu Rehberi</h1>
+            <p>Denizcilikte kullanılan temel bağları öğrenin</p>
+        </div>
+    </header>
 
-    <meta property="og:title" content="Marine Expert" />
-    <meta property="og:description" content="Professional ship stability calculator for maritime engineers" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <main class="container">
+        <div class="knot-selector">
+            <h2>Bağ Türünü Seçin</h2>
+            <div class="knot-buttons">
+                <button class="knot-btn active" data-knot="bowline">İzbarco Bağı</button>
+                <button class="knot-btn" data-knot="figure-eight">Sekiz Bağı</button>
+                <button class="knot-btn" data-knot="clove-hitch">Kazık Bağı</button>
+                <button class="knot-btn" data-knot="sheet-bend">İki İp Bağı</button>
+                <button class="knot-btn" data-knot="reef-knot">Düğüm Bağı</button>
+                <button class="knot-btn" data-knot="anchor-bend">Çapa Bağı</button>
+            </div>
+        </div>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <div class="animation-container">
+            <div class="knot-animation" id="bowline">
+                <h3>İzbarco Bağı (Bowline)</h3>
+                <div class="rope-container">
+                    <div class="rope rope-1"></div>
+                    <div class="rope rope-2"></div>
+                    <div class="rope rope-3"></div>
+                    <div class="rope rope-4"></div>
+                    <div class="rope rope-5"></div>
+                </div>
+                <div class="controls">
+                    <button class="play-btn">▶️ Başlat</button>
+                    <button class="reset-btn">🔄 Sıfırla</button>
+                </div>
+                <div class="description">
+                    <h4>Kullanım Alanları:</h4>
+                    <ul>
+                        <li>Güvenli halka oluşturmak için</li>
+                        <li>Kurtarma operasyonlarında</li>
+                        <li>Yelken bağlamak için</li>
+                        <li>En güvenli bağlardan biri</li>
+                    </ul>
+                </div>
+            </div>
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-    
-    <!-- Google Analytics (isteğe bağlı) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'GA_MEASUREMENT_ID');
-    </script>
-  </head>
+            <div class="knot-animation" id="figure-eight" style="display: none;">
+                <h3>Sekiz Bağı (Figure Eight)</h3>
+                <div class="rope-container">
+                    <div class="rope rope-1"></div>
+                    <div class="rope rope-2"></div>
+                    <div class="rope rope-3"></div>
+                </div>
+                <div class="controls">
+                    <button class="play-btn">▶️ Başlat</button>
+                    <button class="reset-btn">🔄 Sıfırla</button>
+                </div>
+                <div class="description">
+                    <h4>Kullanım Alanları:</h4>
+                    <ul>
+                        <li>İpin ucunu korumak için</li>
+                        <li>Tırmanışta kullanılır</li>
+                        <li>Kolay çözülebilir</li>
+                        <li>Güvenli durdurma bağı</li>
+                    </ul>
+                </div>
+            </div>
 
-  <body>
-    <div id="splash-root" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,hsl(214 84% 12%),hsl(214 84% 20%));z-index:9999;transition:opacity .5s ease;">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;padding:2rem;">
-        <div style="display:flex;align-items:center;justify-content:center;width:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(2.5rem,6vw,5rem);letter-spacing:.5px;color:white;text-shadow:0 4px 20px rgba(0,0,0,0.4);background:linear-gradient(135deg,#ffffff,#e0f2fe);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;text-align:center;">MARINE EXPERT</div>
-      </div>
-      <style>
-        .splash-hide{opacity:0;pointer-events:none}
-      </style>
-    </div>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+            <div class="knot-animation" id="clove-hitch" style="display: none;">
+                <h3>Kazık Bağı (Clove Hitch)</h3>
+                <div class="rope-container">
+                    <div class="rope rope-1"></div>
+                    <div class="rope rope-2"></div>
+                    <div class="rope rope-3"></div>
+                </div>
+                <div class="controls">
+                    <button class="play-btn">▶️ Başlat</button>
+                    <button class="reset-btn">🔄 Sıfırla</button>
+                </div>
+                <div class="description">
+                    <h4>Kullanım Alanları:</h4>
+                    <ul>
+                        <li>Halatı direğe bağlamak için</li>
+                        <li>Hızlı bağlama gerektiğinde</li>
+                        <li>Geçici bağlar için</li>
+                        <li>Kolay çözülebilir</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="knot-animation" id="sheet-bend" style="display: none;">
+                <h3>İki İp Bağı (Sheet Bend)</h3>
+                <div class="rope-container">
+                    <div class="rope rope-1"></div>
+                    <div class="rope rope-2"></div>
+                    <div class="rope rope-3"></div>
+                </div>
+                <div class="controls">
+                    <button class="play-btn">▶️ Başlat</button>
+                    <button class="reset-btn">🔄 Sıfırla</button>
+                </div>
+                <div class="description">
+                    <h4>Kullanım Alanları:</h4>
+                    <ul>
+                        <li>Farklı kalınlıktaki ipleri birleştirmek</li>
+                        <li>Halat uzatmak için</li>
+                        <li>Güvenli birleştirme</li>
+                        <li>Denizcilikte yaygın kullanım</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="knot-animation" id="reef-knot" style="display: none;">
+                <h3>Düğüm Bağı (Reef Knot)</h3>
+                <div class="rope-container">
+                    <div class="rope rope-1"></div>
+                    <div class="rope rope-2"></div>
+                    <div class="rope rope-3"></div>
+                </div>
+                <div class="controls">
+                    <button class="play-btn">▶️ Başlat</button>
+                    <button class="reset-btn">🔄 Sıfırla</button>
+                </div>
+                <div class="description">
+                    <h4>Kullanım Alanları:</h4>
+                    <ul>
+                        <li>Aynı kalınlıktaki ipleri birleştirmek</li>
+                        <li>Yelken bağlamak için</li>
+                        <li>Paket bağlamak için</li>
+                        <li>Günlük kullanım</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="knot-animation" id="anchor-bend" style="display: none;">
+                <h3>Çapa Bağı (Anchor Bend)</h3>
+                <div class="rope-container">
+                    <div class="rope rope-1"></div>
+                    <div class="rope rope-2"></div>
+                    <div class="rope rope-3"></div>
+                </div>
+                <div class="controls">
+                    <button class="play-btn">▶️ Başlat</button>
+                    <button class="reset-btn">🔄 Sıfırla</button>
+                </div>
+                <div class="description">
+                    <h4>Kullanım Alanları:</h4>
+                    <ul>
+                        <li>Çapayı halata bağlamak için</li>
+                        <li>Güçlü bağlama gerektiğinde</li>
+                        <li>Güvenlik kritik durumlar</li>
+                        <li>Denizcilikte temel bağ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>Nasıl Kullanılır?</h3>
+            <ol>
+                <li>Yukarıdaki bağ türlerinden birini seçin</li>
+                <li>"Başlat" butonuna tıklayarak animasyonu izleyin</li>
+                <li>Her adımı dikkatle takip edin</li>
+                <li>Kendi halatınızla pratik yapın</li>
+            </ol>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Gemici Bağları Rehberi - Denizcilik Eğitimi</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
 </html>

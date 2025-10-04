@@ -1,0 +1,472 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem 0;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header p {
+    font-size: 1.2rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+/* Main Content */
+main {
+    padding: 3rem 0;
+}
+
+/* Knot Selector */
+.knot-selector {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.knot-selector h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
+
+.knot-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.knot-btn {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.knot-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+.knot-btn.active {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+/* Animation Container */
+.animation-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.knot-animation h3 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
+
+/* Rope Container */
+.rope-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    border: 3px solid #dee2e6;
+}
+
+/* Rope Styles */
+.rope {
+    position: absolute;
+    background: linear-gradient(45deg, #8b4513, #a0522d);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.8s ease;
+}
+
+/* Bowline Animation */
+#bowline .rope-1 {
+    width: 300px;
+    height: 12px;
+    top: 50px;
+    left: 50px;
+    transform-origin: left center;
+}
+
+#bowline .rope-2 {
+    width: 12px;
+    height: 200px;
+    top: 50px;
+    left: 350px;
+    transform-origin: top center;
+}
+
+#bowline .rope-3 {
+    width: 200px;
+    height: 12px;
+    top: 250px;
+    left: 350px;
+    transform-origin: left center;
+}
+
+#bowline .rope-4 {
+    width: 12px;
+    height: 150px;
+    top: 100px;
+    left: 200px;
+    transform-origin: top center;
+}
+
+#bowline .rope-5 {
+    width: 100px;
+    height: 12px;
+    top: 250px;
+    left: 200px;
+    transform-origin: left center;
+}
+
+/* Figure Eight Animation */
+#figure-eight .rope-1 {
+    width: 200px;
+    height: 12px;
+    top: 100px;
+    left: 100px;
+    transform-origin: center;
+}
+
+#figure-eight .rope-2 {
+    width: 12px;
+    height: 150px;
+    top: 100px;
+    left: 200px;
+    transform-origin: top center;
+}
+
+#figure-eight .rope-3 {
+    width: 150px;
+    height: 12px;
+    top: 250px;
+    left: 125px;
+    transform-origin: left center;
+}
+
+/* Clove Hitch Animation */
+#clove-hitch .rope-1 {
+    width: 250px;
+    height: 12px;
+    top: 150px;
+    left: 100px;
+    transform-origin: left center;
+}
+
+#clove-hitch .rope-2 {
+    width: 12px;
+    height: 100px;
+    top: 150px;
+    left: 200px;
+    transform-origin: top center;
+}
+
+#clove-hitch .rope-3 {
+    width: 100px;
+    height: 12px;
+    top: 250px;
+    left: 200px;
+    transform-origin: left center;
+}
+
+/* Sheet Bend Animation */
+#sheet-bend .rope-1 {
+    width: 200px;
+    height: 12px;
+    top: 120px;
+    left: 100px;
+    transform-origin: left center;
+}
+
+#sheet-bend .rope-2 {
+    width: 12px;
+    height: 120px;
+    top: 120px;
+    left: 200px;
+    transform-origin: top center;
+}
+
+#sheet-bend .rope-3 {
+    width: 150px;
+    height: 12px;
+    top: 240px;
+    left: 125px;
+    transform-origin: left center;
+}
+
+/* Reef Knot Animation */
+#reef-knot .rope-1 {
+    width: 180px;
+    height: 12px;
+    top: 140px;
+    left: 120px;
+    transform-origin: center;
+}
+
+#reef-knot .rope-2 {
+    width: 12px;
+    height: 100px;
+    top: 140px;
+    left: 210px;
+    transform-origin: top center;
+}
+
+#reef-knot .rope-3 {
+    width: 120px;
+    height: 12px;
+    top: 240px;
+    left: 150px;
+    transform-origin: left center;
+}
+
+/* Anchor Bend Animation */
+#anchor-bend .rope-1 {
+    width: 220px;
+    height: 12px;
+    top: 130px;
+    left: 90px;
+    transform-origin: left center;
+}
+
+#anchor-bend .rope-2 {
+    width: 12px;
+    height: 140px;
+    top: 130px;
+    left: 200px;
+    transform-origin: top center;
+}
+
+#anchor-bend .rope-3 {
+    width: 160px;
+    height: 12px;
+    top: 270px;
+    left: 120px;
+    transform-origin: left center;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.play-btn, .reset-btn {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.reset-btn {
+    background: linear-gradient(45deg, #f39c12, #e67e22);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.play-btn:hover, .reset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Description */
+.description {
+    background: rgba(52, 152, 219, 0.1);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-left: 5px solid #3498db;
+}
+
+.description h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.description ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.description li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: #34495e;
+}
+
+.description li::before {
+    content: "⚓";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+}
+
+/* Instructions */
+.instructions {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.instructions h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.instructions ol {
+    padding-left: 1.5rem;
+}
+
+.instructions li {
+    padding: 0.5rem 0;
+    color: #34495e;
+    font-size: 1.1rem;
+}
+
+/* Footer */
+footer {
+    background: rgba(0, 0, 0, 0.1);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+}
+
+/* Animations */
+@keyframes bowlineStep1 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(90deg); }
+}
+
+@keyframes bowlineStep2 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(180deg); }
+}
+
+@keyframes bowlineStep3 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(270deg); }
+}
+
+@keyframes figureEightStep1 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(180deg); }
+}
+
+@keyframes figureEightStep2 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(90deg); }
+}
+
+@keyframes cloveHitchStep1 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(90deg); }
+}
+
+@keyframes cloveHitchStep2 {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(180deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .knot-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .rope-container {
+        height: 300px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .play-btn, .reset-btn {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .knot-selector, .animation-container, .instructions {
+        padding: 1rem;
+    }
+    
+    .rope-container {
+        height: 250px;
+    }
+}
