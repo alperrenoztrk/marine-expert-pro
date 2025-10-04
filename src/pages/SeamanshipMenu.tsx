@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Anchor, LifeBuoy, Ruler, Wind, Waves, Wrench } from "lucide-react";
+import { ArrowLeft, Anchor, LifeBuoy, Ruler, Wind, Waves, Wrench, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function SeamanshipMenu() {
   const items = [
+    { to: "/seamanship/knots", icon: <Gem className="h-4 w-4" />, label: "Gemici Bağları" },
     { to: "/seamanship/topics#anchoring", icon: <Anchor className="h-4 w-4" />, label: "Demirleme" },
     { to: "/seamanship/topics#mooring", icon: <Waves className="h-4 w-4" />, label: "Halat ve Bağlama" },
     { to: "/seamanship/topics#heavy-weather", icon: <Wind className="h-4 w-4" />, label: "Fırtına Manevraları" },
