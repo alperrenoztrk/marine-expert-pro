@@ -35,6 +35,7 @@ import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
+import StabilityTopicExplanationPage from "./pages/StabilityTopicExplanation";
 import NavigationFormulasPage from "./pages/NavigationFormulas";
 import NavigationTopicsPage from "./pages/NavigationTopics";
 import DetailedMeteorology from "./pages/DetailedMeteorology";
@@ -78,8 +79,9 @@ const App = () => {
                     <Route path="/stability/gz" element={<StabilityGZPage />} />
                     <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                     <Route path="/stability/stable-tales" element={<StableTalesPage />} />
-                    <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
-                    <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
+                     <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
+                     <Route path="/stability/topic-explanation" element={<StabilityTopicExplanationPage />} />
+                     <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
                     <Route path="/stability/quiz" element={<StabilityQuizPage />} />
                     <Route path="/safety-menu" element={<SafetyMenu />} />
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
