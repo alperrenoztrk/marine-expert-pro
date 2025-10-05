@@ -14,7 +14,6 @@ import NavigationMenu from "./pages/NavigationMenu";
 import EconomicsMenu from "./pages/EconomicsMenu";
 import SeamanshipMenu from "./pages/SeamanshipMenu";
 import SeamanshipTopicsPage from "./pages/SeamanshipTopics";
-import MaritimeKnotsPage from "./pages/MaritimeKnots";
 import TankMenu from "./pages/TankMenu";
 import Navigation from "./pages/Navigation";
 // import NavigationCalculationsPage from "./pages/NavigationCalculationsPage";
@@ -89,7 +88,7 @@ const App = () => {
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
                     <Route path="/seamanship-menu" element={<SeamanshipMenu />} />
                     <Route path="/seamanship/topics" element={<SeamanshipTopicsPage />} />
-                    <Route path="/seamanship/knots" element={<MaritimeKnotsPage />} />
+                    {/* Gemici Bağları (sailor knots) route removed */}
                     <Route path="/tank-menu" element={<TankMenu />} />
                     <Route path="/navigation" element={<Navigation />} />
                     <Route path="/navigation/formulas" element={<NavigationFormulasPage />} />
