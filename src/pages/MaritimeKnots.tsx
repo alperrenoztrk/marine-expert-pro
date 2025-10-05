@@ -314,20 +314,29 @@ export default function MaritimeKnots() {
                 {showVideoById[knot.id] && (
                   <div className="rounded-lg border border-blue-200/60 dark:border-blue-800/60 bg-blue-50/60 dark:bg-blue-950/30 p-3">
                     {(() => {
-                      const englishName = (knot.name.match(/\((.*?)\)/)?.[1] || knot.name).replace(/Knot/i, "").trim();
+                      const englishName = (knot.name.match(/\((.*?)\)/)?.[1] || knot.name)
+                        .replace(/Knot/i, "")
+                        .trim();
                       const query = `${englishName} knot tutorial`;
                       const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-                      const embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}`;
+
+                      const origin = typeof window !== "undefined" ? window.location.origin : "";
+                      const embedUrl = `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(
+                        query
+                      )}&rel=0&modestbranding=1&hl=tr&playsinline=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`;
+
                       return (
                         <>
                           <AspectRatio ratio={16 / 9}>
                             <iframe
+                              key={embedUrl}
                               src={embedUrl}
                               title={`${knot.name} video öğretimi`}
                               className="w-full h-full rounded-md"
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                              referrerPolicy="strict-origin-when-cross-origin"
+                              loading="lazy"
                               allowFullScreen
+                              referrerPolicy="strict-origin-when-cross-origin"
                             />
                           </AspectRatio>
                           <div className="mt-2 text-sm text-blue-800 dark:text-blue-300 flex flex-wrap gap-3">
