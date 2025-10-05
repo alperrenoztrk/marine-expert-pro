@@ -24,6 +24,26 @@ import chainKnotImg from "@/assets/knots/authentic/chain-knot-authentic.svg";
 export default function MaritimeKnots() {
   const [refreshKeyById, setRefreshKeyById] = React.useState<Record<number, number>>({});
   const [showVideoById, setShowVideoById] = React.useState<Record<number, boolean>>({});
+  const [videoErrorById, setVideoErrorById] = React.useState<Record<number, boolean>>({});
+
+  // Local video sources served from /public/videos/gemici
+  const videoSourcesById: Record<number, string> = {
+    1: "/videos/gemici/bowline.mp4",
+    2: "/videos/gemici/reef-knot.mp4",
+    3: "/videos/gemici/round-turn-two-half-hitches.mp4",
+    4: "/videos/gemici/clove-hitch.mp4",
+    5: "/videos/gemici/sheet-bend.mp4",
+    6: "/videos/gemici/figure-eight-knot.mp4",
+    7: "/videos/gemici/cleat-hitch.mp4",
+    8: "/videos/gemici/rolling-hitch.mp4",
+    9: "/videos/gemici/anchor-bend.mp4",
+    10: "/videos/gemici/double-bowline.mp4",
+    11: "/videos/gemici/fishermans-knot.mp4",
+    12: "/videos/gemici/carrick-bend.mp4",
+    13: "/videos/gemici/overhand-knot.mp4",
+    14: "/videos/gemici/timber-hitch.mp4",
+    15: "/videos/gemici/chain-knot.mp4",
+  };
 
   const restartAnimation = (id: number) => {
     setRefreshKeyById((prev) => ({ ...prev, [id]: Date.now() }));
@@ -314,55 +334,33 @@ export default function MaritimeKnots() {
                 {showVideoById[knot.id] && (
                   <div className="rounded-lg border border-blue-200/60 dark:border-blue-800/60 bg-blue-50/60 dark:bg-blue-950/30 p-4 space-y-4">
                     {(() => {
-                      const englishName = (knot.name.match(/\((.*?)\)/)?.[1] || knot.name)
-                        .replace(/Knot/i, "")
-                        .trim();
-                      const query = `${englishName} knot tutorial`;
-                      const embedUrl = `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(query)}&modestbranding=1&rel=0`;
-
-                      return (
-                        <>
-                          <div className="overflow-hidden rounded-md bg-black/80">
-                            <AspectRatio ratio={16 / 9}>
-                              <iframe
-                                src={embedUrl}
-                                title={`${knot.name} video`}
-                                className="w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowFullScreen
-                                referrerPolicy="strict-origin-when-cross-origin"
-                              />
-                            </AspectRatio>
-                          </div>
-
-                          <div className="text-xs text-blue-800/80 dark:text-blue-300/80 px-1">
-                            Bu oynatıcı YouTube arama sonuçlarından oluşturulur. İçerik YouTube tarafından sunulur.
-                          </div>
-
-                          <div className="text-center p-4 bg-white/70 dark:bg-gray-800/60 rounded-md">
-                            <p className="text-blue-800 dark:text-blue-300 mb-3">
-                              Daha fazla kaynak isterseniz:
-                            </p>
-                            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-                              <a
-                                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
-                              >
-                                YouTube Araması
-                              </a>
-                              <a
-                                href="https://www.animatedknots.com/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-                              >
-                                Animated Knots
-                              </a>
+                      const videoSrc = videoSourcesById[knot.id];
+                      if (!videoSrc || videoErrorById[knot.id]) {
+                        return (
+                          <div className="p-4 text-center bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-md">
+                            Yerel video bulunamadı. Lütfen şu dosyayı ekleyin:
+                            <div className="mt-2">
+                              <code className="px-2 py-1 rounded bg-yellow-100/70 dark:bg-yellow-800/40">{videoSrc || "/videos/gemici/[knot-name].mp4"}</code>
                             </div>
                           </div>
-                        </>
+                        );
+                      }
+
+                      return (
+                        <div className="overflow-hidden rounded-md bg-black">
+                          <AspectRatio ratio={16 / 9}>
+                            <video
+                              controls
+                              playsInline
+                              className="w-full h-full bg-black"
+                              poster={`${knot.image}`}
+                              onError={() => setVideoErrorById((prev) => ({ ...prev, [knot.id]: true }))}
+                            >
+                              <source src={videoSrc} type="video/mp4" />
+                              Tarayıcınız video etiketini desteklemiyor.
+                            </video>
+                          </AspectRatio>
+                        </div>
                       );
                     })()}
                   </div>
