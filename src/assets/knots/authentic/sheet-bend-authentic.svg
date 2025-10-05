@@ -1,57 +1,48 @@
 <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
-      .rope-thick { fill: none; stroke: #8B4513; stroke-width: 12; stroke-linecap: round; }
-      .rope-thin { fill: none; stroke: #8B4513; stroke-width: 6; stroke-linecap: round; }
+      .rope-thick { fill: none; stroke: #A0522D; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+      .rope-thin { fill: none; stroke: #D2691E; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+      .rope-highlight { fill: none; stroke: #FF6B35; stroke-width: 8; stroke-linecap: round; }
       .rope-end { fill: #8B4513; }
       .background { fill: #F5F5DC; }
+      .label { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; fill: #2C3E50; font-weight: 600; }
+      .title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #1A252F; }
 
-      /* Draw-on animation for rope paths */
-      .rope,
-      .rope-main,
-      .rope-hitch,
-      .rope-thick,
-      .rope-thin {
-        stroke-dasharray: 1000;
-        stroke-dashoffset: 1000;
-        animation: draw 3s ease-in-out forwards;
-      }
+      .step1 { stroke-dasharray: 300; stroke-dashoffset: 300; animation: draw1 1.5s ease-out forwards; }
+      .step2 { stroke-dasharray: 200; stroke-dashoffset: 200; animation: draw2 1.2s ease-out 1.5s forwards; }
+      .step3 { stroke-dasharray: 180; stroke-dashoffset: 180; animation: draw3 1.2s ease-out 2.7s forwards; }
+      .fade-in { opacity: 0; animation: fadeIn 0.8s ease-out 3.9s forwards; }
+      .glow { filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.7)); }
 
-      @keyframes draw {
-        to { stroke-dashoffset: 0; }
-      }
+      @keyframes draw1 { to { stroke-dashoffset: 0; } }
+      @keyframes draw2 { to { stroke-dashoffset: 0; } }
+      @keyframes draw3 { to { stroke-dashoffset: 0; } }
+      @keyframes fadeIn { to { opacity: 1; } }
 
       @media (prefers-reduced-motion: reduce) {
-        .rope,
-        .rope-main,
-        .rope-hitch,
-        .rope-thick,
-        .rope-thin {
-          animation: none;
-          stroke-dashoffset: 0;
-        }
+        .step1, .step2, .step3 { animation: none; stroke-dashoffset: 0; }
+        .fade-in { animation: none; opacity: 1; }
       }
     </style>
   </defs>
   
-  <!-- Background -->
   <rect width="400" height="300" class="background"/>
   
-  <!-- Sheet Bend -->
-  <!-- Thick rope (standing part) -->
-  <path d="M 50 150 Q 150 120 250 150 Q 350 180 400 150" class="rope-thick"/>
+  <!-- Thick rope forming loop -->
+  <path d="M 80 160 Q 130 135 180 145 Q 210 155 230 160 Q 260 165 290 160 Q 330 150 370 155" class="rope-thick step1"/>
   
-  <!-- Thin rope forming bend -->
-  <path d="M 200 100 Q 250 80 300 100 Q 350 120 400 100" class="rope-thin"/>
-  <path d="M 200 100 Q 150 120 100 100 Q 50 80 20 100" class="rope-thin"/>
+  <!-- Thin rope going through and around -->
+  <path d="M 230 100 Q 270 85 310 95 Q 345 110 370 105" class="rope-highlight step2 glow"/>
   
-  <!-- Working end of thin rope -->
-  <circle cx="20" cy="100" r="3" class="rope-end"/>
+  <!-- Thin rope completing the bend -->
+  <path d="M 230 100 Q 195 110 160 105 Q 120 95 80 105 Q 50 115 30 120" class="rope-thin step3"/>
+  <circle cx="30" cy="120" r="4" class="rope-end fade-in"/>
   
   <!-- Labels -->
-  <text x="100" y="140" font-family="Arial" font-size="12" fill="#333">Thick Rope</text>
-  <text x="300" y="90" font-family="Arial" font-size="12" fill="#333">Thin Rope</text>
+  <text x="120" y="130" class="label fade-in">Kalın İp</text>
+  <text x="300" y="80" class="label fade-in">İnce İp</text>
+  <text x="200" y="220" text-anchor="middle" class="label fade-in">Farklı kalınlıktaki ipleri birleştirir</text>
   
-  <!-- Title -->
-  <text x="200" y="30" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">Sheet Bend (Dülger Bağı)</text>
+  <text x="200" y="30" text-anchor="middle" class="title">Sheet Bend (Dülger Bağı)</text>
 </svg>
