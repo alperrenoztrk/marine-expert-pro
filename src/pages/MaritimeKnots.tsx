@@ -312,40 +312,53 @@ export default function MaritimeKnots() {
                 </div>
 
                 {showVideoById[knot.id] && (
-                  <div className="rounded-lg border border-blue-200/60 dark:border-blue-800/60 bg-blue-50/60 dark:bg-blue-950/30 p-4 space-y-3">
+                  <div className="rounded-lg border border-blue-200/60 dark:border-blue-800/60 bg-blue-50/60 dark:bg-blue-950/30 p-4 space-y-4">
                     {(() => {
                       const englishName = (knot.name.match(/\((.*?)\)/)?.[1] || knot.name)
                         .replace(/Knot/i, "")
                         .trim();
                       const query = `${englishName} knot tutorial`;
-                      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-                      const animatedKnotsUrl = `https://www.animatedknots.com/`;
+                      const embedUrl = `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(query)}&modestbranding=1&rel=0`;
 
                       return (
                         <>
-                          <div className="text-center p-6 bg-white/60 dark:bg-gray-800/60 rounded-md">
-                            <p className="text-blue-800 dark:text-blue-300 mb-4">
-                              Bu düğüm için video öğreticileri görmek isterseniz aşağıdaki kaynaklara göz atabilirsiniz:
+                          <div className="overflow-hidden rounded-md bg-black/80">
+                            <AspectRatio ratio={16 / 9}>
+                              <iframe
+                                src={embedUrl}
+                                title={`${knot.name} video`}
+                                className="w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                                referrerPolicy="strict-origin-when-cross-origin"
+                              />
+                            </AspectRatio>
+                          </div>
+
+                          <div className="text-xs text-blue-800/80 dark:text-blue-300/80 px-1">
+                            Bu oynatıcı YouTube arama sonuçlarından oluşturulur. İçerik YouTube tarafından sunulur.
+                          </div>
+
+                          <div className="text-center p-4 bg-white/70 dark:bg-gray-800/60 rounded-md">
+                            <p className="text-blue-800 dark:text-blue-300 mb-3">
+                              Daha fazla kaynak isterseniz:
                             </p>
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
                               <a
-                                href={searchUrl}
+                                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
                               >
-                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                </svg>
-                                YouTube'da {knot.name} Öğreticisi İzle
+                                YouTube Araması
                               </a>
                               <a
-                                href={animatedKnotsUrl}
+                                href="https://www.animatedknots.com/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                               >
-                                Animated Knots - Tüm Düğümleri Keşfet
+                                Animated Knots
                               </a>
                             </div>
                           </div>
