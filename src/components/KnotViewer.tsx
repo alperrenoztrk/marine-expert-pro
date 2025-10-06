@@ -12,6 +12,7 @@ export default function KnotViewer({ title, svgHtml, defaultSpeed = 1 }: KnotVie
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState(defaultSpeed);
   const [key, setKey] = useState(0); // force remount to restart
+  const [realistic, setRealistic] = useState(true);
 
   // Sanitize and memoize the HTML we inject
   const safeHtml = useMemo(() => svgHtml, [svgHtml, key]);
@@ -26,6 +27,17 @@ export default function KnotViewer({ title, svgHtml, defaultSpeed = 1 }: KnotVie
       (el.style as any).animationPlayState = isPlaying ? 'running' : 'paused';
     });
   }, [isPlaying, key]);
+
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!root) return;
+    // Apply a smoother, more realistic easing similar to Knots 3D
+    const easing = realistic ? 'cubic-bezier(0.22, 1, 0.36, 1)' : '';
+    const animated = root.querySelectorAll<HTMLElement>('[class*="step"], .fade-in, [style*="animation"], svg *');
+    animated.forEach((el) => {
+      (el.style as any).animationTimingFunction = easing;
+    });
+  }, [realistic, key]);
 
   useEffect(() => {
     const root = containerRef.current;
@@ -76,6 +88,13 @@ export default function KnotViewer({ title, svgHtml, defaultSpeed = 1 }: KnotVie
           >
             Baştan
           </button>
+          <label className="ml-2 text-sm">Gerçekçilik</label>
+          <input
+            type="checkbox"
+            checked={realistic}
+            onChange={(e) => setRealistic(e.target.checked)}
+            aria-label="Gerçekçi hız/easing"
+          />
           <label className="ml-2 text-sm">Hız</label>
           <input
             type="range"

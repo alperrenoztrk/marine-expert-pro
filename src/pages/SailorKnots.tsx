@@ -59,8 +59,8 @@ export default function SailorKnotsPage() {
 
         <p className="text-sm text-muted-foreground mb-6">
           {mode3D
-            ? '3D (beta) görünüm: Bowline için yaklaşık 3D animasyon. Diğer düğümler yakında.'
-            : '2D SVG görünüm: eğitim amaçlı hazırlanmış animasyonlarla temel gemici bağları.'}
+            ? '3D (beta): Bowline, Sekizli ve Kazık bağında fizik tabanlı daha gerçekçi ip davranışı.'
+            : '2D SVG: Eğitim amaçlı animasyonlar. Geliştirilmiş hız ve gerçekçilik seçenekleri mevcut.'}
         </p>
 
         {mode3D ? (
