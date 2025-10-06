@@ -11,6 +11,7 @@ export default function SeamanshipMenu() {
     { to: "/seamanship/topics#mob", icon: <LifeBuoy className="h-4 w-4" />, label: "Can Kurtarma (MOB)" },
     { to: "/seamanship/topics#deck-ops", icon: <Ruler className="h-4 w-4" />, label: "Güverte İşleri" },
     { to: "/seamanship/topics#daily-ops", icon: <Wrench className="h-4 w-4" />, label: "Günlük Operasyonlar" },
+    { to: "/seamanship/knots", icon: <Waves className="h-4 w-4" />, label: "Gemici Bağları (Animasyon)" },
   ];
 
   return (

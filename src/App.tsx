@@ -28,6 +28,7 @@ import StabilityGMPage from "./pages/StabilityGM";
 import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
 import StabilityFreeSurfacePage from "./pages/StabilityFreeSurface";
 import StabilityGZPage from "./pages/StabilityGZ";
+import SailorKnotsPage from "./pages/SailorKnots";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
 import StableTalesPage from "./pages/StableTales";
 import EmptyPage from "./pages/EmptyPage";
@@ -88,7 +89,7 @@ const App = () => {
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
                     <Route path="/seamanship-menu" element={<SeamanshipMenu />} />
                     <Route path="/seamanship/topics" element={<SeamanshipTopicsPage />} />
-                    {/* Gemici Bağları (sailor knots) route removed */}
+                    <Route path="/seamanship/knots" element={<SailorKnotsPage />} />
                     <Route path="/tank-menu" element={<TankMenu />} />
                     <Route path="/navigation" element={<Navigation />} />
                     <Route path="/navigation/formulas" element={<NavigationFormulasPage />} />
