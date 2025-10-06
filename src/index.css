@@ -642,6 +642,74 @@ All colors MUST be HSL.
     --sidebar-ring: 300 100% 70%;
   }
 
+  /* COLREG Theme - Signal Flags Inspired (Navy, Signal Red, Signal Yellow) */
+  .colreg {
+    --background: 220 27% 98%;
+    --foreground: 220 15% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 12%;
+
+    /* Primary: Deep Signal Navy */
+    --primary: 227 70% 33%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 227 70% 45%;
+    --primary-dark: 227 70% 22%;
+
+    /* Secondary: Signal Red */
+    --secondary: 0 78% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Accent: Signal Yellow */
+    --accent: 48 100% 50%;
+    --accent-foreground: 0 0% 10%;
+
+    --muted: 220 27% 95%;
+    --muted-foreground: 220 15% 40%;
+
+    /* Semantic */
+    --info: 227 70% 33%;
+    --info-foreground: 0 0% 100%;
+    --info-muted: 227 70% 96%;
+    --info-muted-foreground: 227 70% 28%;
+
+    --destructive: 0 84% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 48 100% 50%;
+    --warning-foreground: 0 0% 10%;
+
+    --success: 142 60% 38%;
+    --success-foreground: 0 0% 98%;
+
+    --border: 227 30% 88%;
+    --input: 227 30% 88%;
+    --ring: 227 70% 33%;
+
+    /* Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(227 70% 33%), hsl(0 78% 45%));
+    --gradient-deep: linear-gradient(135deg, hsl(227 70% 22%), hsl(48 100% 50%));
+    --gradient-surface: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
+
+    /* Shadows tuned to navy */
+    --shadow-calculator: 0 8px 32px -4px hsl(227 70% 33% / 0.15);
+    --shadow-card: 0 4px 16px -2px hsl(227 70% 33% / 0.10);
+    --shadow-button: 0 2px 8px -1px hsl(227 70% 33% / 0.20);
+
+    /* Sidebar */
+    --sidebar-background: 220 27% 98%;
+    --sidebar-foreground: 220 15% 12%;
+    --sidebar-primary: 227 70% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 27% 95%;
+    --sidebar-accent-foreground: 220 15% 12%;
+    --sidebar-border: 227 30% 88%;
+    --sidebar-ring: 227 70% 33%;
+  }
+
   /* Neon Global Overrides - Deep black background with intense neon effects */
   .neon {
     background: radial-gradient(ellipse at center, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%) !important;

@@ -512,7 +512,7 @@ const Regulations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${activeTab === "uscg" ? "colreg" : ""}`}>
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -673,12 +673,12 @@ const Regulations = () => {
           </TabsContent>
 
           <TabsContent value="uscg" className="space-y-4">
-            <Card className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200 dark:border-red-800">
+            <Card className="border-primary/30 bg-muted/50">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
+                      <Shield className="h-5 w-5 text-primary" />
                       Navigation Rules
                     </CardTitle>
                     <CardDescription>
@@ -690,7 +690,7 @@ const Regulations = () => {
                       variant="default"
                       size="sm"
                       onClick={() => openAsset('/USCG-Navigation-Rules.pdf')}
-                      className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700"
+                      className="flex items-center gap-2"
                     >
                       <Download className="h-4 w-4" />
                       Open COLREG PDF
@@ -701,7 +701,7 @@ const Regulations = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="p-4 bg-card/80 rounded-lg border border-border">
-                    <h4 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
                       COLREG Resources
                     </h4>
@@ -710,7 +710,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => openAsset('/USCG-Navigation-Rules.pdf')}
-                        className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
+                        className="justify-start text-primary border-primary/30 hover:bg-primary/10 dark:hover:bg-primary/10"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         COLREG Navigation Rules (PDF)
@@ -719,7 +719,7 @@ const Regulations = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => openExternal('https://www.navcen.uscg.gov/')}
-                        className="justify-start text-red-700 border-red-300 hover:bg-red-50 dark:hover:bg-gray-700"
+                        className="justify-start text-primary border-primary/30 hover:bg-primary/10 dark:hover:bg-gray-700/50"
                       >
                         <AlertTriangle className="h-4 w-4 mr-2" />
                         USCG Navigation Center
@@ -727,7 +727,7 @@ const Regulations = () => {
                     </div>
                   </div>
                   
-                    <div className="text-sm text-red-800 bg-red-100/50 p-3 rounded">
+                    <div className="text-sm text-primary bg-primary/10 p-3 rounded">
                     <p className="font-medium mb-1">📋 Navigation Rules Kaynakları:</p>
                     <p>• COLREG (International) – Lights, shapes, sound, steering rules</p>
                     <p>• US Inland Navigation Rules – ABD iç sularına özel hükümler</p>
@@ -744,9 +744,9 @@ const Regulations = () => {
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-red-600" />
+                        <Shield className="h-5 w-5 text-primary" />
                         <CardTitle className="text-lg">Part A: General</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">General</Badge>
+                        <Badge className="bg-primary/10 text-primary">General</Badge>
                       </div>
                       <CardDescription>Application, responsibility, and general definitions</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -793,9 +793,9 @@ const Regulations = () => {
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-red-600" />
+                        <Shield className="h-5 w-5 text-primary" />
                         <CardTitle className="text-lg">Part B: Steering and Sailing Rules</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">Navigation</Badge>
+                        <Badge className="bg-primary/10 text-primary">Navigation</Badge>
                       </div>
                       <CardDescription>Rules for vessel conduct in any condition of visibility</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -842,9 +842,9 @@ const Regulations = () => {
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-red-600" />
+                        <Shield className="h-5 w-5 text-primary" />
                         <CardTitle className="text-lg">Part C: Lights and Shapes</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">Lights</Badge>
+                        <Badge className="bg-primary/10 text-primary">Lights</Badge>
                       </div>
                       <CardDescription>Requirements for lights and shapes to be exhibited by vessels</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -891,9 +891,9 @@ const Regulations = () => {
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-red-600" />
+                        <Shield className="h-5 w-5 text-primary" />
                         <CardTitle className="text-lg">Part D: Sound and Light Signals</CardTitle>
-                        <Badge className="bg-red-100 text-red-800">Signals</Badge>
+                        <Badge className="bg-primary/10 text-primary">Signals</Badge>
                       </div>
                       <CardDescription>Sound and light signals for vessels in sight of one another</CardDescription>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
