@@ -40,6 +40,7 @@ import StabilityTopicExplanationPage from "./pages/StabilityTopicExplanation";
 import NavigationFormulasPage from "./pages/NavigationFormulas";
 import NavigationTopicsPage from "./pages/NavigationTopics";
 import DetailedMeteorology from "./pages/DetailedMeteorology";
+import COLREGPresentation from "./pages/COLREGPresentation";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
 import StabilityQuizPage from "./pages/StabilityQuiz";
 import NavigationQuizPage from "./pages/NavigationQuiz";
@@ -95,6 +96,7 @@ const App = () => {
                     <Route path="/navigation/formulas" element={<NavigationFormulasPage />} />
                     <Route path="/navigation/topics" element={<NavigationTopicsPage />} />
                     <Route path="/navigation/detailed-meteorology" element={<DetailedMeteorology />} />
+                    <Route path="/navigation/colreg-presentation" element={<COLREGPresentation />} />
                     <Route path="/navigation/assistant" element={<NavigationAssistantPage />} />
                     <Route path="/navigation/quiz" element={<NavigationQuizPage />} />
                     <Route path="/economics" element={<Economics />} />

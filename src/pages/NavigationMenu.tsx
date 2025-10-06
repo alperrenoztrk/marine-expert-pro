@@ -10,7 +10,7 @@ export default function NavigationMenu() {
     { to: "/navigation/topics", icon: <FileText className="h-4 w-4" />, label: "Konu Anlatımı" },
     { to: "/navigation/detailed-meteorology", icon: <Cloud className="h-4 w-4" />, label: "Detaylı Meteoroloji" },
     { to: "/regulations", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
-    { to: "/COLREG-Ders-Sunumu.pdf", icon: <FileDown className="h-4 w-4" />, label: "COLREG Ders Sunumu", external: true },
+    { to: "/navigation/colreg-presentation", icon: <FileDown className="h-4 w-4" />, label: "COLREG Ders Sunumu" },
     { to: "/navigation/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
     { to: "/navigation/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" },
   ];
@@ -38,8 +38,12 @@ export default function NavigationMenu() {
 
         {/* Menu items in card style */}
         <div className="space-y-6">
-          {items.map((it) => {
-            const content = (
+          {items.map((it) => (
+            <Link
+              key={it.to}
+              to={it.to}
+              className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
+            >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
                   {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-700 drop-shadow-lg", strokeWidth: 1.5 })}
@@ -48,28 +52,8 @@ export default function NavigationMenu() {
                   <span className="text-2xl font-bold text-blue-700 drop-shadow-sm">{it.label}</span>
                 </div>
               </div>
-            );
-            
-            return it.external ? (
-              <a
-                key={it.to}
-                href={it.to}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
-              >
-                {content}
-              </a>
-            ) : (
-              <Link
-                key={it.to}
-                to={it.to}
-                className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
-              >
-                {content}
-              </Link>
-            );
-          })}
+            </Link>
+          ))}
         </div>
       </div>
     </div>
