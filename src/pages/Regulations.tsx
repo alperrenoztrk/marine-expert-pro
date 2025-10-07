@@ -26,6 +26,7 @@ import {
   Waves
 } from 'lucide-react';
 import jsPDF from 'jspdf';
+import { solas2024Chapters } from '@/data/solas2024';
 import { Capacitor } from '@capacitor/core';
 
 interface SOLASChapter {
@@ -526,7 +527,7 @@ const Regulations = () => {
               <Ship className="h-6 w-6 text-primary" />
               <div>
                 <h1 className="text-2xl font-bold">
-                  {activeTab === "chapters" && "SOLAS 2020 Edition"}
+                  {activeTab === "chapters" && "SOLAS 2024 Consolidated Edition (Özet)"}
                   {activeTab === "uscg" && "Navigation Rules (COLREG/US Inland)"}
                   {activeTab === "amendments" && "SOLAS 2024 Updates"}
                   {activeTab === "navrules" && "Seyir Kuralları"}
@@ -602,7 +603,7 @@ const Regulations = () => {
 
 
             <div className="grid gap-4">
-              {filteredChapters.map((chapter) => (
+              {(filteredChapters.length ? filteredChapters : solas2024Chapters).map((chapter: any) => (
                 <Card key={chapter.id} className="cursor-pointer hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -610,16 +611,20 @@ const Regulations = () => {
                         <div className="flex items-center gap-2">
                           {getCategoryIcon(chapter.category)}
                           <CardTitle className="text-lg">{chapter.chapter}: {chapter.title}</CardTitle>
-                          <Badge className={getCategoryColor(chapter.category)}>
-                            {chapter.category}
-                          </Badge>
+                          {chapter.category && (
+                            <Badge className={getCategoryColor(chapter.category)}>
+                              {chapter.category}
+                            </Badge>
+                          )}
                         </div>
-                        <CardDescription>{chapter.description}</CardDescription>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>Son Güncelleme: {chapter.lastAmended}</span>
-                          <span>•</span>
-                          <span>{chapter.regulations.length} Düzenleme</span>
-                        </div>
+                        <CardDescription>{chapter.description || chapter.overview}</CardDescription>
+                        {chapter.lastAmended && (
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span>Son Güncelleme: {chapter.lastAmended}</span>
+                            <span>•</span>
+                            <span>{chapter.regulations.length} Düzenleme</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardHeader>
@@ -629,7 +634,7 @@ const Regulations = () => {
                       <div>
                         <h4 className="font-medium mb-2">Temel Hükümler:</h4>
                         <ul className="space-y-1">
-                          {chapter.keyProvisions.map((provision, index) => (
+                          {(chapter.keyProvisions || []).map((provision: string, index: number) => (
                             <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
                               <span className="text-primary">•</span>
                               {provision}
@@ -638,14 +643,14 @@ const Regulations = () => {
                         </ul>
                       </div>
                       
-                      {chapter.amendments2024.length > 0 && (
+                      {chapter.amendments2024 && chapter.amendments2024.length > 0 && (
                         <div>
                           <h4 className="font-medium mb-2 flex items-center gap-2">
                             <AlertTriangle className="h-4 w-4 text-orange-500" />
                             2024 Güncellemeleri:
                           </h4>
                           <ul className="space-y-1">
-                            {chapter.amendments2024.map((amendment, index) => (
+                            {chapter.amendments2024.map((amendment: string, index: number) => (
                               <li key={index} className="text-sm text-orange-700 bg-orange-50 p-2 rounded flex items-start gap-2">
                                 <span className="text-orange-500">•</span>
                                 {amendment}
@@ -658,7 +663,7 @@ const Regulations = () => {
                       <div>
                         <h4 className="font-medium mb-2">Uygulama Alanı:</h4>
                         <div className="flex flex-wrap gap-2">
-                          {chapter.applicability.map((scope, index) => (
+                          {(chapter.applicability || []).map((scope: string, index: number) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {scope}
                             </Badge>
