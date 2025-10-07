@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database } from 'lucide-react';
+import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Shield } from 'lucide-react';
 import BackButton from '@/components/BackButton';
 
 const categories = [
@@ -10,6 +10,7 @@ const categories = [
   { title: 'Mali', icon: DollarSign, link: '/economics-menu' },
   { title: 'Emniyet', icon: LifeBuoy, link: '/safety-menu' },
   { title: 'Operasyonel', icon: Database, link: '/tank-menu' },
+  { title: 'SOLAS', icon: Shield, link: '/solas' },
 ];
 
 export default function CalculationsMenu() {
