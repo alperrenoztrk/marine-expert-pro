@@ -480,6 +480,7 @@ const DetailedMeteorology = () => {
                     </div>
                     <div className="text-xs space-y-1">
                       <p><strong>Denizci Notu:</strong> CL bulutlar görüşü hızla düşürür (sis/yağış); CM bulutlar cephe yaklaşımının habercisi olabilir; CH bulutlar uzak/orta vadede hava değişimini işaret eder; Cb ise şiddetli fırtına, ani rüzgar ve dolu riskidir.</p>
+                    </div>
                   </AlertDescription>
                 </Alert>
 

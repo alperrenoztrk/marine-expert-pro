@@ -33,8 +33,10 @@ export function usePro(): ProStatus {
         if (error) throw error;
 
         const profile = data as Tables<'profiles'> | null;
-        const expiresAt = profile?.pro_expires_at ? new Date(profile.pro_expires_at) : null;
-        const active = !!profile?.is_pro && (!expiresAt || expiresAt > new Date());
+        // Pro status fields are not currently in the database schema
+        // Defaulting to non-pro status
+        const active = false;
+        const expiresAt = null;
 
         if (isMounted) setState({ loading: false, isPro: active, expiresAt, profile });
       } catch (e) {
