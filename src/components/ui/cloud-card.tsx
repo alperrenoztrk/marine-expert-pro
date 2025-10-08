@@ -14,6 +14,7 @@ import {
   Satellite
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface CloudCardProps {
   cloud: CloudType;
@@ -21,6 +22,7 @@ interface CloudCardProps {
 }
 
 export function CloudCard({ cloud, className }: CloudCardProps) {
+  const [imageError, setImageError] = useState(false);
   const getDangerColor = (danger: string) => {
     switch (danger) {
       case 'high':
@@ -101,24 +103,20 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
       <CardContent className="space-y-4">
         {/* Görsel - Gerçek Bulut Fotoğrafı */}
         <div className="relative w-full h-48 rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 shadow-lg">
-          {cloud.imageUrl ? (
+          {cloud.imageUrl && !imageError ? (
             <>
               <img 
                 src={cloud.imageUrl} 
                 alt={`${cloud.name} - ${cloud.descriptionTr}`}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = 'flex';
-                }}
+                onError={() => setImageError(true)}
               />
               {/* Gradient overlay for better text visibility */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40"></div>
             </>
           ) : null}
           <div 
-            className={`${cloud.imageUrl ? 'hidden' : 'flex'} absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 items-center justify-center`}
+            className={`${cloud.imageUrl && !imageError ? 'hidden' : 'flex'} absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 items-center justify-center`}
           >
             <div className="text-center">
               <Cloud className="h-16 w-16 text-sky-600 mb-2" />
