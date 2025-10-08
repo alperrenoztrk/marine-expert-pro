@@ -8,7 +8,7 @@ export default function NavigationMenu() {
     { to: "/navigation", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
     { to: "/navigation/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
     { to: "/navigation/topics", icon: <FileText className="h-4 w-4" />, label: "Konu Anlatımı" },
-    { to: "/navigation/detailed-meteorology", icon: <Cloud className="h-4 w-4" />, label: "Detaylı Meteoroloji" },
+    { to: "/navigation/detailed-meteorology", icon: <Cloud className="h-4 w-4" />, label: "Meteoroloji" },
     { to: "/regulations", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
     { to: "/navigation/colreg-presentation", icon: <FileDown className="h-4 w-4" />, label: "COLREG Ders Sunumu" },
     { to: "/navigation/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
