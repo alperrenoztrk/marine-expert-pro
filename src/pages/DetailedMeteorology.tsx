@@ -34,6 +34,8 @@ import {
   ChevronUp
 } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { CloudCard } from "@/components/ui/cloud-card";
+import { cloudTypesByLevel } from "@/components/calculations/cloud-types";
 
 interface WeatherSystem {
   id: string;
@@ -447,13 +449,94 @@ const DetailedMeteorology = () => {
         </Alert>
 
         <Tabs defaultValue="systems" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="systems">Hava Sistemleri</TabsTrigger>
+            <TabsTrigger value="clouds">Bulutlar</TabsTrigger>
             <TabsTrigger value="pressure">Basınç Sistemleri</TabsTrigger>
             <TabsTrigger value="storms">Fırtına Türleri</TabsTrigger>
             <TabsTrigger value="forecasting">Tahmin Yöntemleri</TabsTrigger>
             <TabsTrigger value="safety">Güvenlik Rehberi</TabsTrigger>
           </TabsList>
+
+          {/* Clouds Tab */}
+          <TabsContent value="clouds" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Cloud className="h-6 w-6 text-sky-600" />
+                  Bulut Atlası (Gerçek Görseller + CH/CM/CL)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Legend + Mariner Hints */}
+                <Alert className="border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20">
+                  <Info className="h-4 w-4 text-blue-700 dark:text-blue-300" />
+                  <AlertDescription className="text-sm">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <Badge variant="secondary" className="text-xs">CH: Yüksek bulutlar</Badge>
+                      <Badge variant="secondary" className="text-xs">CM: Orta seviye bulutlar</Badge>
+                      <Badge variant="secondary" className="text-xs">CL: Alçak bulutlar</Badge>
+                      <Badge variant="outline" className="text-xs border-red-400 text-red-700 dark:text-red-300">Cb: Dikey gelişimli (fırtına)</Badge>
+                    </div>
+                    <div className="text-xs space-y-1">
+                      <p><strong>Denizci Notu:</strong> CL bulutlar görüşü hızla düşürür (sis/yağış); CM bulutlar cephe yaklaşımının habercisi olabilir; CH bulutlar uzak/orta vadede hava değişimini işaret eder; Cb ise şiddetli fırtına, ani rüzgar ve dolu riskidir.</p>
+                  </AlertDescription>
+                </Alert>
+
+                {/* Low (CL) */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Badge variant="outline" className="border-blue-400 text-blue-800 dark:text-blue-200">CL</Badge>
+                    Alçak Bulutlar (0-2 km)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {cloudTypesByLevel.low.map((c) => (
+                      <CloudCard key={c.id} cloud={c} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Middle (CM) */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Badge variant="outline" className="border-green-400 text-green-800 dark:text-green-200">CM</Badge>
+                    Orta Bulutlar (2-7 km)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {cloudTypesByLevel.middle.map((c) => (
+                      <CloudCard key={c.id} cloud={c} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* High (CH) */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Badge variant="outline" className="border-purple-400 text-purple-800 dark:text-purple-200">CH</Badge>
+                    Yüksek Bulutlar (5-13 km)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {cloudTypesByLevel.high.map((c) => (
+                      <CloudCard key={c.id} cloud={c} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Vertical Development */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Badge variant="destructive" className="text-white">Cb</Badge>
+                    Dikey Gelişimli Bulutlar (Fırtına)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {cloudTypesByLevel.vertical.map((c) => (
+                      <CloudCard key={c.id} cloud={c} />
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Weather Systems Tab */}
           <TabsContent value="systems" className="space-y-6">
