@@ -55,24 +55,50 @@ export default function SunriseTimes() {
       const start = new Date();
       const end = new Date(start);
       end.setDate(start.getDate() + 29); // 30 gün (bugün dahil)
-      const fmt = (d: Date) => d.toISOString().slice(0, 10);
+      const fmtLocal = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-      const url = new URL("https://api.open-meteo.com/v1/forecast");
-      url.searchParams.set("latitude", String(lat));
-      url.searchParams.set("longitude", String(lon));
-      url.searchParams.set("daily", "sunrise");
-      url.searchParams.set("timezone", "auto");
-      url.searchParams.set("start_date", fmt(start));
-      url.searchParams.set("end_date", fmt(end));
+      const buildAstronomyUrl = () => {
+        const url = new URL("https://api.open-meteo.com/v1/astronomy");
+        url.searchParams.set("latitude", String(lat));
+        url.searchParams.set("longitude", String(lon));
+        url.searchParams.set("daily", "sunrise");
+        url.searchParams.set("timezone", "auto");
+        url.searchParams.set("start_date", fmtLocal(start));
+        url.searchParams.set("end_date", fmtLocal(end));
+        return url;
+      };
 
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`Veri alınamadı (${res.status})`);
-      const json = await res.json();
-      const daily = json.daily || {};
-      const list: SunriseDay[] = (daily.time || []).map((date: string, i: number) => ({
-        date,
-        sunrise: daily.sunrise?.[i] ?? null,
-      }));
+      const buildForecastUrl = () => {
+        const url = new URL("https://api.open-meteo.com/v1/forecast");
+        url.searchParams.set("latitude", String(lat));
+        url.searchParams.set("longitude", String(lon));
+        url.searchParams.set("daily", "sunrise");
+        url.searchParams.set("timezone", "auto");
+        url.searchParams.set("start_date", fmtLocal(start));
+        url.searchParams.set("end_date", fmtLocal(end));
+        return url;
+      };
+
+      const tryFetch = async (url: URL): Promise<SunriseDay[]> => {
+        const res = await fetch(url.toString());
+        if (!res.ok) return [];
+        const json = await res.json();
+        const daily = json?.daily ?? {};
+        const times: string[] = daily.time ?? [];
+        const sunrises: Array<string | null> = daily.sunrise ?? [];
+        if (!times.length || !sunrises.length) return [];
+        return times.map((date, i) => ({ date, sunrise: sunrises[i] ?? null }));
+      };
+
+      let list = await tryFetch(buildAstronomyUrl());
+      if (list.length === 0) {
+        list = await tryFetch(buildForecastUrl());
+      }
+
+      if (list.length === 0) {
+        throw new Error("Gündoğumu verisi bulunamadı");
+      }
+
       setDays(list);
     } catch (e: any) {
       setError(e?.message || "Bilinmeyen hata");
@@ -88,7 +114,7 @@ export default function SunriseTimes() {
   }, [latitude, longitude, fetchSunrises]);
 
   const selectedLocationName = searchParams.get("location");
-  const headerLocation = selectedLocationName || locationLabel || (typeof latitude === "number" && typeof longitude === "number" ? `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°` : "Konum alınıyor...");
+  const headerLocation = (selectedLocationName ? decodeURIComponent(selectedLocationName) : null) || locationLabel || (typeof latitude === "number" && typeof longitude === "number" ? `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°` : "Konum alınıyor...");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-card p-4">
@@ -155,7 +181,15 @@ export default function SunriseTimes() {
               </div>
             </CardContent>
           </Card>
-        ) : null}
+        ) : (
+          <Card className="border-border/20 shadow-lg">
+            <CardContent className="pt-6">
+              <div className="text-center py-8 text-muted-foreground">
+                Veri bulunamadı. Lütfen daha sonra tekrar deneyin veya konumu değiştirin.
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
