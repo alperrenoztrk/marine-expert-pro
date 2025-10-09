@@ -24,7 +24,7 @@ import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityRules from "./pages/StabilityRules";
 import StabilityAdvancedPage from "./pages/StabilityAdvanced";
 import StabilityDamagePage from "./pages/StabilityDamage";
-import StabilityGrainPlaceholder from "./pages/StabilityGrainPlaceholder";
+import StabilityGrainPage from "./pages/StabilityGrain";
 import StabilityGMPage from "./pages/StabilityGM";
 import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
 import StabilityFreeSurfacePage from "./pages/StabilityFreeSurface";
@@ -76,7 +76,7 @@ const App = () => {
                     <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
                     <Route path="/stability/advanced" element={<StabilityAdvancedPage />} />
                     <Route path="/stability/damage" element={<StabilityDamagePage />} />
-                    {/* Grain stability route removed; grain account remains within calculations */}
+                    <Route path="/stability/grain" element={<StabilityGrainPage />} />
                     <Route path="/stability/gm" element={<StabilityGMPage />} />
                     <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
                     <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />

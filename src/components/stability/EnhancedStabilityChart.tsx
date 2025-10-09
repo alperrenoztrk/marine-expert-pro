@@ -11,6 +11,7 @@ interface StabilityChartProps {
     rightingMoment: number;
     kn?: number;
     windHeelingArm?: number;
+    net?: number;
   }>;
   criticalPoints?: {
     maxGZ: { angle: number; value: number };
@@ -26,6 +27,7 @@ interface StabilityChartProps {
   };
   showKN?: boolean;
   showWindHeeling?: boolean;
+  heelingLabel?: string;
   title?: string;
   interactive?: boolean;
 }
@@ -36,6 +38,7 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
   imoCriteria,
   showKN = false,
   showWindHeeling = false,
+  heelingLabel = "Heeling Arm",
   title = "GZ Stability Curve",
   interactive = true
 }) => {
@@ -119,7 +122,18 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
                   stroke="hsl(var(--destructive))"
                   strokeWidth={2}
                   dot={false}
-                  name="Wind Heeling Arm"
+                  name={heelingLabel}
+                />
+              )}
+              {/* Net GZ (GZ - Heeling) when present */}
+              {data.some(d => typeof d.net === 'number') && (
+                <Line
+                  type="monotone"
+                  dataKey="net"
+                  stroke="hsl(var(--accent))"
+                  strokeWidth={2}
+                  dot={false}
+                  name="Net GZ"
                 />
               )}
               

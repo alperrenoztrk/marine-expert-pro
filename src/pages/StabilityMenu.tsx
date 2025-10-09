@@ -14,7 +14,8 @@ export default function StabilityMenu() {
         { to: "/stability/topic-explanation", icon: <GraduationCap className="h-4 w-4" />, label: "Konu Anlatımı" },
         { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
-        { to: "/stability/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" }
+        { to: "/stability/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" },
+        { to: "/stability/grain", icon: <Calculator className="h-4 w-4" />, label: "Tahıl Stabilitesi" }
       ]
     },
     {

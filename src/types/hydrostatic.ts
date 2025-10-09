@@ -217,3 +217,109 @@ export interface BonjeanSet {
   sections: SectionalArea[]; // at target draft
   stationSpacing: number; // m, spacing between stations along LBP
 }
+
+// =========================
+// Grain Stability - Types
+// =========================
+
+export type GrainArrangement = 'full' | 'part' | 'trimmed' | 'untrimmed';
+
+export interface GrainMeasures {
+  shiftingBoard?: boolean;
+  feeders?: boolean;
+  saucering?: boolean;
+  bundlingOrTrimming?: boolean;
+}
+
+export interface GrainCargoType {
+  name: string; // e.g., Wheat, Corn, Barley
+  stowageFactorM3PerT?: number; // m³/t (preferred)
+  densityTPerM3?: number; // t/m³ (alternative to stowage factor)
+  angleOfReposeDeg: number; // movement angle
+}
+
+export interface GrainHoldInfo {
+  holdId: string;
+  location: string; // textual position e.g. "No.3 Hold"
+  length: number; // m
+  width: number; // m
+  height: number; // m
+  volumeM3?: number; // m³ (optional, if not length×width×height)
+  cargoTonnage?: number; // tonnes (optional if volume+SF provided)
+  arrangement: GrainArrangement; // full/part/trimmed/untrimmed
+  cargo: GrainCargoType;
+  measures?: GrainMeasures; // mitigation devices
+  stowageFactorM3PerT?: number; // override cargo SF per hold if needed
+}
+
+export interface GrainLoadingPlan {
+  holds: GrainHoldInfo[];
+}
+
+export interface TankSoundingPoint {
+  soundingMm: number;
+  volumeM3: number;
+}
+
+export interface TankSoundingTable {
+  tankName: string;
+  points: TankSoundingPoint[];
+}
+
+export interface GrainVesselData {
+  geometry: ShipGeometry; // L, B, D, T, coefficients
+  lightweightTonnes: number; // LW
+  LCGm: number; // Longitudinal CG
+  VCGm: number; // Vertical CG (KG)
+  DWTcapacityTonnes?: number; // Deadweight capacity
+  KMm?: number; // KM (transverse)
+  GMm?: number; // GM (initial)
+  tanks?: TankData[]; // capacities and current volumes
+  tankSoundTables?: TankSoundingTable[]; // optional detailed sound tables
+}
+
+export interface GrainCalculationInputs {
+  displacementTonnes?: number; // Δ (if known)
+  KGm?: number; // KG (if known)
+  KBm?: number; // KB (optional)
+  BMm?: number; // BM (optional)
+  freeSurfaceCorrectionM?: number; // FSC (ΔKG)
+  heelCheckAnglesDeg?: number[]; // e.g., [5,10,12]
+  gmMinRequiredM?: number; // Grain Code requirement (default 0.30 m)
+}
+
+export interface GrainCriteria {
+  name: string;
+  value: number;
+  requirement: number;
+  passed: boolean;
+}
+
+export interface GrainComputationResult {
+  angles: number[]; // degrees
+  gz: number[]; // m (righting arm)
+  heelingArm: number[]; // m (grain heeling arm)
+  netGZ: number[]; // m (GZ - heelingArm)
+  phiEquilibriumDeg: number; // where netGZ≈0
+  gmInitialM: number;
+  gmCorrectedM: number;
+  kmM: number;
+  kgM: number;
+  displacementTonnes: number;
+  draftMeanM: number;
+  draftFwdM: number;
+  draftAftM: number;
+  trimM: number;
+  maxGZ: number;
+  maxGZAngleDeg: number;
+  areaGZ_0_30: number; // m·rad
+  areaGZ_0_40: number; // m·rad
+  areaGZ_30_40: number; // m·rad
+  areaNet_0_30: number; // m·rad
+  areaNet_0_40: number; // m·rad
+  areaNet_30_40: number; // m·rad
+  residualAreaEq_40: number; // m·rad (φ_eq to 40°)
+  checkAngles?: Array<{ angle: number; gz: number; heeling: number; net: number }>;
+  criteria: GrainCriteria[];
+  compliant: boolean;
+}
