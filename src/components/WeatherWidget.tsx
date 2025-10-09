@@ -396,7 +396,7 @@ export default function WeatherWidget() {
                     params.set('lat', String(data.latitude));
                     params.set('lon', String(data.longitude));
                     if (locationLabel) params.set('location', encodeURIComponent(locationLabel));
-                    navigate(`/sunset-times?${params.toString()}`);
+                    navigate(`/sunrise-times?${params.toString()}`);
                   }
                 }}
               >

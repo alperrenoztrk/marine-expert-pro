@@ -52,6 +52,7 @@ import AuthCallback from "./pages/AuthCallback";
 
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
+import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
 
 const queryClient = new QueryClient();
@@ -114,6 +115,7 @@ const App = () => {
                      
           <Route path="/weather-forecast" element={<WeatherForecast />} />
           <Route path="/sunset-times" element={<SunsetTimes />} />
+          <Route path="/sunrise-times" element={<SunriseTimes />} />
           <Route path="/location-selector" element={<LocationSelector />} />
                      <Route path="*" element={<Index />} />
                     </Routes>
