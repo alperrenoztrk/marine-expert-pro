@@ -44,6 +44,7 @@ import DetailedMeteorology from "./pages/DetailedMeteorology";
 import COLREGPresentation from "./pages/COLREGPresentation";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
 import StabilityQuizPage from "./pages/StabilityQuiz";
+import StabilityShearingBendingPage from "./pages/StabilityShearingBending";
 import NavigationQuizPage from "./pages/NavigationQuiz";
 import NavigationAssistantPage from "./pages/NavigationAssistant";
 import ClockPage from "./pages/Clock";
@@ -86,6 +87,7 @@ const App = () => {
                      <Route path="/stability/topic-explanation" element={<StabilityTopicExplanationPage />} />
                      <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
                     <Route path="/stability/quiz" element={<StabilityQuizPage />} />
+                    <Route path="/stability/shearing-bending" element={<StabilityShearingBendingPage />} />
                     <Route path="/safety-menu" element={<SafetyMenu />} />
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
