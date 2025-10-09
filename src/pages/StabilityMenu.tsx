@@ -17,12 +17,6 @@ export default function StabilityMenu() {
         { to: "/stability/quiz", icon: <ListChecks className="h-4 w-4" />, label: "Quiz" },
         { to: "/stability/grain", icon: <Calculator className="h-4 w-4" />, label: "Tahıl Stabilitesi" }
       ]
-    },
-    {
-      title: 'Kısayollar',
-      items: [
-        { to: "/stability/advanced#grainAccount", icon: <Calculator className="h-4 w-4" />, label: "Tahıl Hesabı" }
-      ]
     }
   ];
   const items = groups.flatMap((g)=> g.items);
