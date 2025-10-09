@@ -388,7 +388,18 @@ export default function WeatherWidget() {
             </div>
             {/* Sunrise / Sunset */}
             <div className="col-span-2 grid grid-cols-2 gap-4">
-              <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div 
+                className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+                onClick={() => {
+                  if (data && Number.isFinite(data.latitude) && Number.isFinite(data.longitude)) {
+                    const params = new URLSearchParams();
+                    params.set('lat', String(data.latitude));
+                    params.set('lon', String(data.longitude));
+                    if (locationLabel) params.set('location', encodeURIComponent(locationLabel));
+                    navigate(`/sunset-times?${params.toString()}`);
+                  }
+                }}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative flex items-center gap-4">
                   <div className="relative">
@@ -403,7 +414,18 @@ export default function WeatherWidget() {
                   </div>
                 </div>
               </div>
-              <div className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div 
+                className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+                onClick={() => {
+                  if (data && Number.isFinite(data.latitude) && Number.isFinite(data.longitude)) {
+                    const params = new URLSearchParams();
+                    params.set('lat', String(data.latitude));
+                    params.set('lon', String(data.longitude));
+                    if (locationLabel) params.set('location', encodeURIComponent(locationLabel));
+                    navigate(`/sunset-times?${params.toString()}`);
+                  }
+                }}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative flex items-center gap-4">
                   <div className="relative">
