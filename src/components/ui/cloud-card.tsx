@@ -105,10 +105,12 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
         <div className="relative w-full h-48 rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 shadow-lg">
           {cloud.imageUrl && !imageError ? (
             <>
-              <img 
-                src={cloud.imageUrl} 
+              <img
+                src={cloud.imageUrl}
                 alt={`${cloud.name} - ${cloud.descriptionTr}`}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
                 onError={() => setImageError(true)}
               />
               {/* Gradient overlay for better text visibility */}

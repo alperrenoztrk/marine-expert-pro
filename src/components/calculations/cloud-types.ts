@@ -9,7 +9,6 @@ import altocumulusImage from '@/assets/clouds/altocumulus.jpg';
 import cirrusImage from '@/assets/weather/cirrus-clouds.jpg';
 import cirrocumulusImage from '@/assets/clouds/cirrocumulus.jpg';
 import cirrostratusImage from '@/assets/clouds/cirrostratus.jpg';
-import stormImage from '@/assets/weather/storm-clouds.jpg';
 import mammatusImage from '@/assets/clouds/mammatus.jpg';
 import lenticularisImage from '@/assets/clouds/lenticularis.jpg';
 import arcusImage from '@/assets/clouds/arcus.jpg';
