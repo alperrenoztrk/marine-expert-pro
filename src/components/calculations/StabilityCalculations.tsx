@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor } from "lucide-react";
+import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor, Droplets, Info, Plus, Trash2, Layers } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { toast } from "sonner";
 
 interface StabilityData {
