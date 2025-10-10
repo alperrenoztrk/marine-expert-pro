@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1259,6 +1259,20 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     setData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Card-style menu items for calculations (matches NavigationMenu look)
+  const calculationMenuItems = [
+    { value: "dr-plotting", label: "DR Mevkii", icon: Navigation },
+    { value: "fix", label: "Fix Mevkii", icon: MapPin },
+    { value: "running-fix", label: "Koçanlı Mevki", icon: Navigation },
+    { value: "eta-calculation", label: "Mesafe-Hız-Zaman", icon: Clock },
+    { value: "compass", label: "Pusula/Hakiki Rota", icon: Compass },
+    { value: "current", label: "Set-Drift (CTS)", icon: Waves },
+    { value: "radar", label: "CPA/TCPA", icon: Radar },
+    { value: "celestial", label: "Göksel Seyir", icon: Star },
+    { value: "anchoring", label: "Demirleme", icon: Anchor },
+    { value: "ukc", label: "UKC Hesabı", icon: Ship },
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
@@ -1273,21 +1287,30 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
         </CardHeader>
         <CardContent>
           <Tabs value={activeCalculation} onValueChange={setActiveCalculation} className="w-full">
-            {/* Konu Başlıkları - yalınlaştırılmış */}
-            <div className="w-full space-y-2 mb-4">
-              <div className="text-sm font-semibold text-primary px-2">Seyir Konuları</div>
-              <TabsList className="h-auto p-1 flex-wrap justify-start gap-1 w-full">
-                <TabsTrigger value="dr-plotting" className="text-xs px-3 py-2 whitespace-nowrap">DR Mevkii</TabsTrigger>
-                <TabsTrigger value="fix" className="text-xs px-3 py-2 whitespace-nowrap">Fix Mevkii</TabsTrigger>
-                <TabsTrigger value="running-fix" className="text-xs px-3 py-2 whitespace-nowrap">Koçanlı Mevki</TabsTrigger>
-                <TabsTrigger value="eta-calculation" className="text-xs px-3 py-2 whitespace-nowrap">Mesafe-Hız-Zaman</TabsTrigger>
-                <TabsTrigger value="compass" className="text-xs px-3 py-2 whitespace-nowrap">Pusula/Hakiki Rota</TabsTrigger>
-                <TabsTrigger value="current" className="text-xs px-3 py-2 whitespace-nowrap">Set-Drift (CTS)</TabsTrigger>
-                <TabsTrigger value="radar" className="text-xs px-3 py-2 whitespace-nowrap">CPA/TCPA</TabsTrigger>
-                <TabsTrigger value="celestial" className="text-xs px-3 py-2 whitespace-nowrap">Göksel Seyir</TabsTrigger>
-                <TabsTrigger value="anchoring" className="text-xs px-3 py-2 whitespace-nowrap">Demirleme</TabsTrigger>
-                <TabsTrigger value="ukc" className="text-xs px-3 py-2 whitespace-nowrap">UKC Hesabı</TabsTrigger>
-              </TabsList>
+            {/* Kart stilinde menü (ikinci görseldeki gibi) */}
+            <div className="w-full space-y-4 mb-6">
+              {calculationMenuItems.map((item) => {
+                const Icon = item.icon as any;
+                const isActive = activeCalculation === item.value;
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setActiveCalculation(item.value)}
+                    className={
+                      "w-full text-left block rounded-2xl border p-5 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow-md " +
+                      (isActive ? "ring-2 ring-blue-500" : "border-gray-200 dark:border-gray-700")
+                    }
+                  >
+                    <div className="flex items-center gap-5">
+                      <Icon className="w-10 h-10 text-blue-700 dark:text-blue-400 drop-shadow-lg" />
+                      <div className="flex-1">
+                        <div className="text-xl font-bold text-blue-700 dark:text-blue-400">{item.label}</div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Great Circle Sailing Tab */}
