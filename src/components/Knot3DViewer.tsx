@@ -34,6 +34,8 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
   const guidelineRef = useRef<THREE.Line | null>(null);
   const milestonesRef = useRef<number[]>([0.15, 0.5, 0.85]);
   const milestonesFiredRef = useRef<boolean[]>([false, false, false]);
+  const isVisibleRef = useRef(true);
+  const geomAccumRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState(defaultSpeed);
   const [key, setKey] = useState(0); // restart trigger
@@ -48,6 +50,11 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
   }, []);
 
   const ropeRadius = 0.22;
+
+  const isMobile = useMemo(() => {
+    if (typeof navigator === 'undefined') return false;
+    return /Mobi|Android/i.test(navigator.userAgent);
+  }, []);
 
   const bowlinePoints = useMemo(() => {
     // Refined bowline tying path: approach, form loop, around standing part, back through
@@ -178,8 +185,12 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
     camera.position.set(8, 8, 12);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      alpha: false,
+      powerPreference: isMobile ? 'low-power' : 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -252,11 +263,11 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
     composer.addPass(renderPass);
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(container.clientWidth, container.clientHeight),
-      0.35, // strength
-      0.6,  // radius
+      0.28, // strength (slightly reduced)
+      0.55, // radius
       0.95  // threshold
     );
-    bloomPass.enabled = bloomEnabled;
+    bloomPass.enabled = bloomEnabled && !isMobile;
     composer.addPass(bloomPass);
     composerRef.current = composer;
     bloomPassRef.current = bloomPass;
@@ -297,6 +308,19 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
       simRef.current = null;
     };
   }, [key, knot]);
+
+  // Pause heavy work when the viewer is not visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        isVisibleRef.current = entry.isIntersecting;
+      }
+    }, { threshold: 0.01 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     // Prepare curve points and initialize rope simulation (if realistic)
@@ -370,7 +394,6 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
   useEffect(() => {
     let lastTime = performance.now();
     // Lower on mobile/low FPS to save CPU
-    const isMobile = typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent);
     const fixedDt = isMobile ? 1 / 90 : 1 / 120; // target physics step
 
     const tick = () => {
@@ -395,6 +418,12 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
         progressRef.current = gsap.utils.interpolate(progressRef.current, targetProgress, lerpAlpha);
       }
 
+      if (!isVisibleRef.current) {
+        // Skip heavy updates while offscreen; keep RAF running lightly
+        animationRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
       if (scene && camera && renderer && controls && ropeMesh && allPoints.length > 2) {
         // Camera gently follows the rope head
         const headTarget = pointOnPolylineAt(allPoints, progressRef.current);
@@ -414,14 +443,24 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
             steps++;
           }
 
-          const positions = sim.getPositions();
-          const curve = new THREE.CatmullRomCurve3(positions as THREE.Vector3[], false, 'catmullrom', 0.1);
-          const qualityScale = quality === 'high' ? 2.5 : quality === 'low' ? 1.2 : (isMobile ? 1.5 : 2.0);
-          const tubularSegments = Math.max(isMobile ? 60 : 80, Math.floor(positions.length * qualityScale));
-          const radialSegments = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
-          const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
-          ropeMesh.geometry.dispose();
-          ropeMesh.geometry = newGeom;
+          // Throttle geometry rebuilds
+          geomAccumRef.current += dt;
+          const rebuildInterval = quality === 'high' ? 1 / 45 : quality === 'low' ? 1 / 24 : (isMobile ? 1 / 24 : 1 / 33);
+          if (geomAccumRef.current >= rebuildInterval) {
+            geomAccumRef.current = 0;
+            const positions = sim.getPositions();
+            const curve = new THREE.CatmullRomCurve3(positions as THREE.Vector3[], false, 'catmullrom', 0.1);
+            const baseScale = quality === 'high' ? 1.8 : quality === 'low' ? 0.8 : (isMobile ? 0.9 : 1.2);
+            const maxTubular = quality === 'high' ? 260 : 180;
+            const tubularSegments = Math.min(
+              maxTubular,
+              Math.max(isMobile ? 48 : 64, Math.floor(positions.length * baseScale))
+            );
+            const radialSegments = quality === 'high' ? 24 : quality === 'low' ? 12 : 18;
+            const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
+            ropeMesh.geometry.dispose();
+            ropeMesh.geometry = newGeom;
+          }
         } else {
           // Enhanced reveal with subtle rope wobble for more realism
           const drawCount = Math.max(3, Math.floor(allPoints.length * progressRef.current));
@@ -437,13 +476,19 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
             return new THREE.Vector3(pt.x + wobbleX, pt.y + wobbleY, pt.z + wobbleZ);
           });
           
-          const curve = new THREE.CatmullRomCurve3(wobbledPoints, false, 'catmullrom', 0.1);
-          const qualityScale = quality === 'high' ? 3.0 : quality === 'low' ? 1.5 : 2.2;
-          const tubularSegments = Math.max(48, Math.floor(drawCount * qualityScale));
-          const radialSegments = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
-          const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
-          ropeMesh.geometry.dispose();
-          ropeMesh.geometry = newGeom;
+          geomAccumRef.current += dt;
+          const rebuildInterval = quality === 'high' ? 1 / 50 : quality === 'low' ? 1 / 24 : (isMobile ? 1 / 24 : 1 / 35);
+          if (geomAccumRef.current >= rebuildInterval) {
+            geomAccumRef.current = 0;
+            const curve = new THREE.CatmullRomCurve3(wobbledPoints, false, 'catmullrom', 0.1);
+            const baseScale = quality === 'high' ? 2.2 : quality === 'low' ? 1.0 : 1.6;
+            const maxTubular = quality === 'high' ? 240 : 160;
+            const tubularSegments = Math.min(maxTubular, Math.max(40, Math.floor(drawCount * baseScale)));
+            const radialSegments = quality === 'high' ? 24 : quality === 'low' ? 12 : 18;
+            const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
+            ropeMesh.geometry.dispose();
+            ropeMesh.geometry = newGeom;
+          }
         }
         
         // Smooth camera orbit animation following the knot formation
@@ -466,7 +511,7 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
 
         controls.update();
         if (composer && bloomPassRef.current) {
-          bloomPassRef.current.enabled = bloomEnabled;
+          bloomPassRef.current.enabled = bloomEnabled && (quality !== 'low') && isVisibleRef.current && !isMobile;
           composer.render();
         } else {
           renderer.render(scene, camera);

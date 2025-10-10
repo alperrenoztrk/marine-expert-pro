@@ -25,6 +25,8 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
   const [key, setKey] = useState(0);
   const [bloom, setBloom] = useState(true);
   const [quality, setQuality] = useState<'auto' | 'low' | 'high'>('auto');
+  const isVisibleRef = useRef(true);
+  const geomAccumRef = useRef(0);
 
   const ropeRadius = 0.22;
 
@@ -137,7 +139,14 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
     canvas.style.height = '100%';
     container.appendChild(canvas);
 
-    const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, antialias: true });
+    const isMobile = typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent);
+    const engine = new Engine(canvas, true, {
+      preserveDrawingBuffer: false,
+      stencil: false,
+      antialias: !isMobile,
+      powerPreference: isMobile ? 'low-power' : 'high-performance',
+      adaptToDeviceRatio: true,
+    });
     engineRef.current = engine;
     const scene = new Scene(engine);
     scene.performancePriority = ScenePerformancePriority.Aggressive;
@@ -181,9 +190,9 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
     ropeMeshRef.current = tube;
 
     // Glow/bloom layer
-    const glow = new GlowLayer('glow', scene, { blurKernelSize: 32 });
-    glow.intensity = 0.35;
-    glow.isEnabled = bloom;
+    const glow = new GlowLayer('glow', scene, { blurKernelSize: 24 });
+    glow.intensity = 0.25;
+    glow.isEnabled = bloom && !isMobile;
     glowRef.current = glow;
 
     const handleResize = () => {
@@ -194,6 +203,7 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
     const renderLoop = () => {
       scene.render();
     };
+    engine.setHardwareScalingLevel(isMobile ? 1.25 : 1.0);
     engine.runRenderLoop(renderLoop);
 
     return () => {
@@ -209,6 +219,19 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
       }
     };
   }, [key, knot]);
+
+  // Pause heavy work when not visible
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        isVisibleRef.current = entry.isIntersecting;
+      }
+    }, { threshold: 0.01 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     // GSAP-enhanced geometry animation with rope physics
@@ -226,38 +249,52 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
         progressRef.current = gsap.utils.interpolate(progressRef.current, target, 0.18);
       }
 
+      if (!isVisibleRef.current) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
       const scene = sceneRef.current;
       const rope = ropeMeshRef.current;
       const allPoints = getCurvePoints(knot);
 
       if (scene && rope && allPoints.length > 2) {
         const drawCount = Math.max(3, Math.floor(allPoints.length * progressRef.current));
-        const partial = allPoints.slice(0, drawCount);
-        const scale = quality === 'high' ? 3.0 : quality === 'low' ? 1.5 : 2.2;
-        const curve = Curve3.CreateCatmullRomSpline(partial, Math.max(48, Math.floor(drawCount * scale)));
-        let path = curve.getPoints();
-        
-        // Add rope physics: subtle wobble and tension effects
-        const wobbleIntensity = 0.012 * (1 - progressRef.current);
-        const time = now * 0.001;
-        path = path.map((pt, i) => {
-          const wobbleX = Math.sin(time * 2 + i * 0.25) * wobbleIntensity;
-          const wobbleY = Math.cos(time * 1.6 + i * 0.18) * wobbleIntensity;
-          const wobbleZ = Math.sin(time * 1.9 + i * 0.35) * wobbleIntensity * 0.6;
-          return new Vector3(pt.x + wobbleX, pt.y + wobbleY, pt.z + wobbleZ);
-        });
 
-        // Rebuild tube with enhanced physics
-        try {
-          const sceneRefLocal = sceneRef.current!;
-          const mat = rope.material;
-          rope.dispose(false, true);
-          const radial = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
-          const tube = MeshBuilder.CreateTube('rope', { path, radius: ropeRadius, tessellation: radial, cap: 3 }, sceneRefLocal);
-          tube.material = mat ?? undefined;
-          ropeMeshRef.current = tube;
-        } catch {
-          // no-op
+        // Throttle geometry rebuild
+        geomAccumRef.current += dt;
+        const isMobile = typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent);
+        const rebuildInterval = quality === 'high' ? 1 / 50 : quality === 'low' ? 1 / 24 : (isMobile ? 1 / 24 : 1 / 35);
+        if (geomAccumRef.current >= rebuildInterval) {
+          geomAccumRef.current = 0;
+
+          const partial = allPoints.slice(0, drawCount);
+          const scale = quality === 'high' ? 2.2 : quality === 'low' ? 1.0 : (isMobile ? 1.2 : 1.6);
+          const curve = Curve3.CreateCatmullRomSpline(partial, Math.max(40, Math.floor(drawCount * scale)));
+          let path = curve.getPoints();
+
+          // Add rope physics: subtle wobble and tension effects
+          const wobbleIntensity = 0.01 * (1 - progressRef.current);
+          const time = now * 0.001;
+          path = path.map((pt, i) => {
+            const wobbleX = Math.sin(time * 2 + i * 0.25) * wobbleIntensity;
+            const wobbleY = Math.cos(time * 1.6 + i * 0.18) * wobbleIntensity;
+            const wobbleZ = Math.sin(time * 1.9 + i * 0.35) * wobbleIntensity * 0.6;
+            return new Vector3(pt.x + wobbleX, pt.y + wobbleY, pt.z + wobbleZ);
+          });
+
+          // Rebuild tube with fewer allocations: dispose old mesh only, reuse material
+          try {
+            const sceneRefLocal = sceneRef.current!;
+            const mat = rope.material;
+            rope.dispose(false, true);
+            const radial = quality === 'high' ? 24 : quality === 'low' ? 12 : 18;
+            const tube = MeshBuilder.CreateTube('rope', { path, radius: ropeRadius, tessellation: radial, cap: 3 }, sceneRefLocal);
+            tube.material = mat ?? undefined;
+            ropeMeshRef.current = tube;
+          } catch {
+            // no-op
+          }
         }
       }
 
