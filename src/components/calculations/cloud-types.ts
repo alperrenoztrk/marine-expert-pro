@@ -14,12 +14,13 @@ import lenticularisImage from '@/assets/clouds/lenticularis.jpg';
 import arcusImage from '@/assets/clouds/arcus.jpg';
 import fractusImage from '@/assets/clouds/fractus.jpg';
 import tubaImage from '@/assets/clouds/tuba.jpg';
+// Özel türler: gerçek görseller (asset klasöründe mevcut)
+import castellanusImage from '@/assets/clouds/castellanus.jpg';
+import asperitasImage from '@/assets/clouds/asperitas.jpg';
 import pyrocumulusImage from '@/assets/clouds/pyrocumulus.jpg';
 import contrailsImage from '@/assets/clouds/contrails.jpg';
 import virgaImage from '@/assets/clouds/virga.jpg';
 import kelvinHelmholtzImage from '@/assets/clouds/kelvin-helmholtz.jpg';
-import castellanusImage from '@/assets/clouds/castellanus.jpg';
-import asperitasImage from '@/assets/clouds/asperitas.jpg';
 
 export interface CloudType {
   id: string;
