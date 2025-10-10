@@ -15,12 +15,9 @@ import arcusImage from '@/assets/clouds/arcus.jpg';
 import fractusImage from '@/assets/clouds/fractus.jpg';
 import tubaImage from '@/assets/clouds/tuba.jpg';
 // Özel türler: gerçek görseller (asset klasöründe mevcut)
-import castellanusImage from '@/assets/clouds/castellanus.jpg';
-import asperitasImage from '@/assets/clouds/asperitas.jpg';
-import pyrocumulusImage from '@/assets/clouds/pyrocumulus.jpg';
-import contrailsImage from '@/assets/clouds/contrails.jpg';
-import virgaImage from '@/assets/clouds/virga.jpg';
-import kelvinHelmholtzImage from '@/assets/clouds/kelvin-helmholtz.jpg';
+// Some special cloud images are not present in the repo.
+// Map them to closest available real photos until specific images are added.
+import stormCloudsImage from '@/assets/weather/storm-clouds.jpg';
 
 export interface CloudType {
   id: string;
@@ -387,7 +384,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Artan',
     precipitation: '6-12 saat içinde',
     danger: 'medium',
-    imageUrl: castellanusImage,
+    imageUrl: altocumulusImage,
     satelliteChannels: ['Ch1 (VIS0.6)', 'Ch7 (IR8.7)', 'Ch9 (IR10.8)'],
     bestDetectionChannel: 'Ch1 (VIS0.6) - Kule bulut yapıları'
   },
@@ -491,7 +488,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken',
     precipitation: 'Olası',
     danger: 'medium',
-    imageUrl: asperitasImage,
+    imageUrl: altostratusImage,
     satelliteChannels: ['Ch1 (VIS0.6)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
     bestDetectionChannel: 'Ch1 (VIS0.6) - Dalga benzeri yapılar'
   },
@@ -517,7 +514,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Değişken, güçlü',
     precipitation: 'Nadir, kül yağışı',
     danger: 'high',
-    imageUrl: pyrocumulusImage,
+    imageUrl: cumulonimbusImage,
     satelliteChannels: ['Ch4 (IR3.9)', 'Ch7 (IR8.7)', 'Ch9 (IR10.8)'],
     bestDetectionChannel: 'Ch7 (IR8.7) - Yangın bulutları ve duman'
   },
@@ -543,7 +540,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Üst seviye',
     precipitation: 'Yok',
     danger: 'low',
-    imageUrl: contrailsImage,
+    imageUrl: cirrusImage,
     satelliteChannels: ['Ch5 (WV6.2)', 'Ch11 (IR13.4)', 'Ch1 (VIS0.6)'],
     bestDetectionChannel: 'Ch5 (WV6.2) - Üst atmosfer nemi'
   },
@@ -569,7 +566,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Ani değişimler olası',
     precipitation: 'Yere ulaşmaz',
     danger: 'medium',
-    imageUrl: virgaImage,
+    imageUrl: stormCloudsImage,
     satelliteChannels: ['Ch1 (VIS0.6)', 'Ch9 (IR10.8)', 'Ch12 (HRV)'],
     bestDetectionChannel: 'Ch1 (VIS0.6) - Yağış perdeleri'
   },
@@ -595,7 +592,7 @@ export const cloudTypes: CloudType[] = [
     wind: 'Kesme (shear)',
     precipitation: 'Yok',
     danger: 'high',
-    imageUrl: kelvinHelmholtzImage,
+    imageUrl: cirrocumulusImage,
     satelliteChannels: ['Ch1 (VIS0.6)', 'Ch7 (IR8.7)', 'Ch12 (HRV)'],
     bestDetectionChannel: 'Ch12 (HRV) - Rüzgar kesmesi dalgaları'
   }
