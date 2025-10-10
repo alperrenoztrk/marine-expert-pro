@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RopeSimulation, pointOnPolylineAt } from '@/utils/ropeSimulation';
+import gsap from 'gsap';
 
 interface Knot3DViewerProps {
   title: string;
@@ -288,8 +289,10 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
       const sim = simRef.current;
 
       if (isPlaying) {
-        const incrementPerSecond = realistic ? 0.22 : 0.25; // slightly slower for realism
-        progressRef.current = Math.min(1, progressRef.current + incrementPerSecond * speed * dt);
+        const incrementPerSecond = realistic ? 0.22 : 0.25;
+        const targetProgress = Math.min(1, progressRef.current + incrementPerSecond * speed * dt);
+        // GSAP smooth interpolation for fluid animation
+        progressRef.current = gsap.utils.interpolate(progressRef.current, targetProgress, 0.25);
       }
 
       if (scene && camera && renderer && controls && ropeMesh && allPoints.length > 2) {
@@ -339,9 +342,17 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
   }, [isPlaying, speed, key, realistic]);
 
   const handleRestart = () => {
-    progressRef.current = 0;
-    setIsPlaying(true);
-    setKey((v) => v + 1);
+    // Smooth restart animation with GSAP
+    gsap.to(progressRef, {
+      current: 0,
+      duration: 0.4,
+      ease: "power2.out",
+      onComplete: () => {
+        progressRef.current = 0;
+        setIsPlaying(true);
+        setKey((v) => v + 1);
+      }
+    });
   };
 
   return (
