@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
+import Compass3D from "@/components/Compass3D";
+import { Switch } from "@/components/ui/switch";
 import { Settings } from "lucide-react";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
@@ -21,6 +23,22 @@ const Index = () => {
 
   // Compass state
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
+  const [pitchDeg, setPitchDeg] = useState<number | null>(null);
+  const [rollDeg, setRollDeg] = useState<number | null>(null);
+
+  // 2D/3D toggle (persisted)
+  const [is3D, setIs3D] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("compass3D") === "1";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("compass3D", is3D ? "1" : "0");
+    } catch {}
+  }, [is3D]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const x = e.touches[0].clientX;
@@ -116,6 +134,14 @@ const Index = () => {
     if (heading != null && Number.isFinite(heading)) {
       const normalized = ((heading % 360) + 360) % 360;
       setHeadingDeg(normalized);
+    }
+
+    // Capture pitch/roll for 3D tilt if available
+    if (typeof event.beta === "number" && Number.isFinite(event.beta)) {
+      setPitchDeg(event.beta);
+    }
+    if (typeof event.gamma === "number" && Number.isFinite(event.gamma)) {
+      setRollDeg(event.gamma);
     }
   };
 
@@ -257,13 +283,28 @@ const Index = () => {
 
         {/* Buttons with maritime styling */}
         <div className="flex flex-col gap-4 w-full max-w-md">
-          {/* Compass Menu Button with image dial and real heading */}
+          {/* Compass Menu Button with 2D/3D toggle and real heading */}
           <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
             <div className="relative h-44 w-44 md:h-52 md:w-52 transition-transform duration-200 hover:scale-105">
-              <MetalCompassDial
-                headingDeg={headingDeg ?? 0}
-                className="h-full w-full select-none pointer-events-none drop-shadow-xl"
-              />
+              {/* 3D toggle */}
+              <div className="absolute -top-3 right-0 z-10 flex items-center gap-2">
+                <span className="text-xs font-medium text-black/70">3D</span>
+                <Switch checked={is3D} onCheckedChange={setIs3D} aria-label="3D görünüm" />
+              </div>
+
+              {is3D ? (
+                <Compass3D
+                  headingDeg={headingDeg ?? 0}
+                  pitchDeg={pitchDeg ?? 0}
+                  rollDeg={rollDeg ?? 0}
+                  className="h-full w-full select-none pointer-events-none drop-shadow-xl"
+                />
+              ) : (
+                <MetalCompassDial
+                  headingDeg={headingDeg ?? 0}
+                  className="h-full w-full select-none pointer-events-none drop-shadow-xl"
+                />
+              )}
             </div>
           </Link>
         </div>
