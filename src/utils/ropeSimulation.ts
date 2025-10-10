@@ -117,11 +117,21 @@ export class RopeSimulation {
   }
 
   public step(dt: number) {
-    // Clamp dt for stability
+    // Clamp dt for stability and adaptively substep to avoid jitter
     const clampedDt = Math.min(1 / 30, Math.max(1 / 240, dt));
+    let remaining = clampedDt;
+    const subDt = Math.min(1 / 180, Math.max(1 / 600, clampedDt / 2));
+    while (remaining > 1e-6) {
+      const h = Math.min(subDt, remaining);
+      this.integrate(h);
+      this.solveConstraints();
+      remaining -= h;
+    }
+  }
 
-    // Verlet integration
-    const accel = this.gravity.clone().multiplyScalar(clampedDt * clampedDt);
+  private integrate(dt: number) {
+    // Verlet integration step
+    const accel = this.gravity.clone().multiplyScalar(dt * dt);
     for (let i = 0; i < this.segmentCount; i++) {
       if (this.pinnedIndices.has(i)) continue;
       const p = this.positions[i];
@@ -134,14 +144,15 @@ export class RopeSimulation {
       p.y += vy + accel.y;
       p.z += vz + accel.z;
     }
+  }
 
+  private solveConstraints() {
     // Hard set head to follow target (simulates pulling the working end)
     if (this.headTarget) {
       const headIndex = this.segmentCount - 1;
       const head = this.positions[headIndex];
       head.lerp(this.headTarget, this.headFollowStrength);
     }
-
     // Constraint iterations: segment lengths, bending smoothing, and colliders
     for (let iter = 0; iter < this.constraintIterations; iter++) {
       this.enforceSegmentLengths();

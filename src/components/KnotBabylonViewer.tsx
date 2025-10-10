@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Engine, Scene, ArcRotateCamera, HemisphericLight, Vector3, MeshBuilder, Color4, StandardMaterial, Curve3, Mesh, LinesMesh } from '@babylonjs/core';
+import { Engine, Scene, ArcRotateCamera, HemisphericLight, Vector3, MeshBuilder, Color4, StandardMaterial, Curve3, Mesh, LinesMesh, GlowLayer, PBRMaterial, ScenePerformancePriority } from '@babylonjs/core';
 
 // Minimal Babylon.js viewer that mirrors Knot3DViewer API
 interface KnotBabylonViewerProps {
@@ -18,9 +18,13 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
   const ropeMeshRef = useRef<Mesh | null>(null);
   const postMeshRef = useRef<Mesh | null>(null);
   const progressRef = useRef(0);
+  const glowRef = useRef<GlowLayer | null>(null);
+  const ropeMatRef = useRef<PBRMaterial | StandardMaterial | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState(defaultSpeed);
   const [key, setKey] = useState(0);
+  const [bloom, setBloom] = useState(true);
+  const [quality, setQuality] = useState<'auto' | 'low' | 'high'>('auto');
 
   const ropeRadius = 0.22;
 
@@ -136,6 +140,7 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
     const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, antialias: true });
     engineRef.current = engine;
     const scene = new Scene(engine);
+    scene.performancePriority = ScenePerformancePriority.Aggressive;
     sceneRef.current = scene;
     scene.clearColor = new Color4(0.043, 0.071, 0.125, 1); // #0b1220
 
@@ -158,14 +163,28 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
       postMeshRef.current = post;
     }
 
-    const ropeMat = new StandardMaterial('ropeMat', scene);
-    ropeMat.diffuseColor.set(0.722, 0.451, 0.2);
+    const ropeMat = new PBRMaterial('ropePbr', scene);
+    ropeMat.albedoColor.set(0.722, 0.451, 0.2);
+    ropeMat.metallic = 0.0;
+    ropeMat.roughness = 0.85;
+    ropeMat.sheen.isEnabled = true;
+    ropeMat.sheen.intensity = 0.5;
+    ropeMat.sheen.roughness = 0.7;
+    ropeMat.subSurface.isRefractionEnabled = false;
+    ropeMat.environmentIntensity = 0.35;
+    ropeMatRef.current = ropeMat;
 
     // Seed with a tiny line; we will rebuild as the curve grows
     const curve = Curve3.CreateCatmullRomSpline([new Vector3(-6, 0, 0), new Vector3(-6.01, 0, 0)], 64);
-    const tube = MeshBuilder.CreateTube('rope', { path: curve.getPoints(), radius: ropeRadius, tesselation: 20, cap: Mesh.CAP_FLAT }, scene);
+    const tube = MeshBuilder.CreateTube('rope', { path: curve.getPoints(), radius: ropeRadius, tesselation: 22, cap: Mesh.CAP_FLAT }, scene);
     tube.material = ropeMat;
     ropeMeshRef.current = tube;
+
+    // Glow/bloom layer
+    const glow = new GlowLayer('glow', scene, { blurKernelSize: 32 });
+    glow.intensity = 0.35;
+    glow.enabled = bloom;
+    glowRef.current = glow;
 
     const handleResize = () => {
       engine.resize();
@@ -184,6 +203,10 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
       if (container && canvas) container.removeChild(canvas);
       ropeMeshRef.current = null;
       postMeshRef.current = null;
+      if (glowRef.current) {
+        glowRef.current.dispose();
+        glowRef.current = null;
+      }
     };
   }, [key, knot]);
 
@@ -209,7 +232,8 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
       if (scene && rope && allPoints.length > 2) {
         const drawCount = Math.max(3, Math.floor(allPoints.length * progressRef.current));
         const partial = allPoints.slice(0, drawCount);
-        const curve = Curve3.CreateCatmullRomSpline(partial, Math.max(64, drawCount * 3));
+        const scale = quality === 'high' ? 3.0 : quality === 'low' ? 1.5 : 2.2;
+        const curve = Curve3.CreateCatmullRomSpline(partial, Math.max(48, Math.floor(drawCount * scale)));
         const path = curve.getPoints();
         // Rebuild tube path by disposing and recreating geometry via Update
         try {
@@ -217,7 +241,8 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
           const sceneRefLocal = sceneRef.current!;
           const mat = rope.material;
           rope.dispose(false, true);
-          const tube = MeshBuilder.CreateTube('rope', { path, radius: ropeRadius, tesselation: 20, cap: Mesh.CAP_FLAT }, sceneRefLocal);
+          const radial = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
+          const tube = MeshBuilder.CreateTube('rope', { path, radius: ropeRadius, tesselation: radial, cap: Mesh.CAP_FLAT }, sceneRefLocal);
           tube.material = mat ?? undefined;
           ropeMeshRef.current = tube;
         } catch {
@@ -256,6 +281,17 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
           <label className="ml-2 text-sm">Hız</label>
           <input type="range" min={0.25} max={2} step={0.25} value={speed} onChange={(e) => setSpeed(parseFloat(e.target.value))} className="w-32" aria-label="Hız" />
           <span className="w-10 text-right text-sm">{speed.toFixed(2)}x</span>
+          <label className="ml-2 text-sm">Bloom</label>
+          <input type="checkbox" checked={bloom} onChange={(e) => {
+            setBloom(e.target.checked);
+            if (glowRef.current) glowRef.current.enabled = e.target.checked;
+          }} aria-label="Bloom/glow" />
+          <label className="ml-2 text-sm">Kalite</label>
+          <select value={quality} onChange={(e) => setQuality(e.target.value as any)} className="px-2 py-1 rounded border bg-black/20 text-sm" aria-label="Görüntü kalitesi">
+            <option value="auto">Otomatik</option>
+            <option value="low">Düşük</option>
+            <option value="high">Yüksek</option>
+          </select>
         </div>
       </div>
       <div ref={containerRef} className="w-full h-[360px] rounded-lg overflow-hidden bg-background" />

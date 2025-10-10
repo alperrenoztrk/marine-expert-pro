@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { RopeSimulation, pointOnPolylineAt } from '@/utils/ropeSimulation';
 import gsap from 'gsap';
 
@@ -18,15 +22,30 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
   const controlsRef = useRef<OrbitControls | null>(null);
   const ropeMeshRef = useRef<THREE.Mesh | null>(null);
   const postMeshRef = useRef<THREE.Mesh | null>(null);
+  const ropeMaterialRef = useRef<THREE.MeshPhysicalMaterial | THREE.MeshStandardMaterial | null>(null);
   const animationRef = useRef<number | null>(null);
   const curvePointsRef = useRef<THREE.Vector3[]>([]);
   const progressRef = useRef(0);
   const simRef = useRef<RopeSimulation | null>(null);
   const accumulatorRef = useRef(0);
+  const composerRef = useRef<EffectComposer | null>(null);
+  const bloomPassRef = useRef<UnrealBloomPass | null>(null);
+  const envRTRef = useRef<THREE.WebGLRenderTarget | null>(null);
+  const guidelineRef = useRef<THREE.Line | null>(null);
+  const milestonesRef = useRef<number[]>([0.15, 0.5, 0.85]);
+  const milestonesFiredRef = useRef<boolean[]>([false, false, false]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState(defaultSpeed);
   const [key, setKey] = useState(0); // restart trigger
   const [realistic, setRealistic] = useState(true);
+  const [showGuide, setShowGuide] = useState(true);
+  const [bloomEnabled, setBloomEnabled] = useState(true);
+  const [quality, setQuality] = useState<'auto' | 'low' | 'high'>('auto');
+
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === 'undefined' || !('matchMedia' in window)) return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
 
   const ropeRadius = 0.22;
 
@@ -162,6 +181,8 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -174,9 +195,16 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
     // Lights
     const hemi = new THREE.HemisphereLight(0xffffff, 0x222233, 0.9);
     scene.add(hemi);
-    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.9);
     dir.position.set(5, 10, 7);
     scene.add(dir);
+
+    // Environment for better PBR lighting
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    scene.environment = envRT.texture;
+    envRTRef.current = envRT;
+    pmrem.dispose();
 
     // Ground grid (subtle)
     const grid = new THREE.GridHelper(40, 40, 0x335577, 0x224466);
@@ -194,23 +222,53 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
       postMeshRef.current = post;
     }
 
-    // Rope material
-    const ropeMaterial = new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: 0.7, metalness: 0.05 });
+    // Rope material (cloth-like with sheen)
+    const ropeMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xb87333,
+      roughness: 0.9,
+      metalness: 0.0,
+      clearcoat: 0.05,
+      sheen: 1.0,
+      sheenRoughness: 0.7,
+      sheenColor: new THREE.Color(0xffe0c0),
+      envMapIntensity: 0.35,
+      emissive: new THREE.Color(0x331a00),
+      emissiveIntensity: 0.0,
+    });
+    ropeMaterialRef.current = ropeMaterial;
 
     // Initial rope geometry (tiny)
     const baseCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(-6, 0, 0), new THREE.Vector3(-6.01, 0, 0)]);
-    const baseGeom = new THREE.TubeGeometry(baseCurve, 64, ropeRadius, 16, false);
+    const baseGeom = new THREE.TubeGeometry(baseCurve, 64, ropeRadius, 20, false);
     const ropeMesh = new THREE.Mesh(baseGeom, ropeMaterial);
     ropeMesh.castShadow = false;
     ropeMesh.receiveShadow = false;
     scene.add(ropeMesh);
     ropeMeshRef.current = ropeMesh;
 
+    // Post-processing composer
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(container.clientWidth, container.clientHeight),
+      0.35, // strength
+      0.6,  // radius
+      0.95  // threshold
+    );
+    bloomPass.enabled = bloomEnabled;
+    composer.addPass(bloomPass);
+    composerRef.current = composer;
+    bloomPassRef.current = bloomPass;
+
     const onResize = () => {
       if (!container || !cameraRef.current || !rendererRef.current) return;
       cameraRef.current.aspect = container.clientWidth / container.clientHeight;
       cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(container.clientWidth, container.clientHeight);
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      rendererRef.current.setSize(w, h);
+      if (composerRef.current) composerRef.current.setSize(w, h);
     };
     window.addEventListener('resize', onResize);
 
@@ -223,6 +281,14 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
       scene.clear();
       ropeMesh.geometry.dispose();
       (ropeMaterial as THREE.Material).dispose();
+      if (composerRef.current) {
+        composerRef.current.passes.length = 0;
+        composerRef.current = null;
+      }
+      if (envRTRef.current) {
+        envRTRef.current.dispose();
+        envRTRef.current = null;
+      }
       if (postMeshRef.current) {
         postMeshRef.current.geometry.dispose();
         (postMeshRef.current.material as THREE.Material).dispose();
@@ -238,6 +304,7 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
     curvePointsRef.current = points;
     progressRef.current = 0;
     accumulatorRef.current = 0;
+    milestonesFiredRef.current = milestonesRef.current.map(() => false);
 
     if (realistic) {
       const segmentCount = Math.max(80, Math.min(220, Math.floor(points.length * 1.6)));
@@ -270,6 +337,36 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
     }
   }, [getCurvePoints, knot, key, realistic]);
 
+  // Build or remove guideline based on toggle/points
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const points = curvePointsRef.current;
+    if (!scene) return;
+
+    // Clean existing
+    if (guidelineRef.current) {
+      scene.remove(guidelineRef.current);
+      (guidelineRef.current.geometry as THREE.BufferGeometry).dispose();
+      (guidelineRef.current.material as THREE.Material).dispose();
+      guidelineRef.current = null;
+    }
+
+    if (showGuide && points.length > 1) {
+      const guideGeom = new THREE.BufferGeometry().setFromPoints(points);
+      const guideMat = new THREE.LineDashedMaterial({
+        color: 0x66aaff,
+        dashSize: 0.6,
+        gapSize: 0.3,
+        transparent: true,
+        opacity: 0.35,
+      });
+      const line = new THREE.Line(guideGeom, guideMat);
+      line.computeLineDistances();
+      scene.add(line);
+      guidelineRef.current = line;
+    }
+  }, [showGuide, knot, getCurvePoints, key]);
+
   useEffect(() => {
     let lastTime = performance.now();
     // Lower on mobile/low FPS to save CPU
@@ -283,6 +380,7 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
       const scene = sceneRef.current;
       const camera = cameraRef.current;
       const renderer = rendererRef.current;
+      const composer = composerRef.current;
       const controls = controlsRef.current;
       const ropeMesh = ropeMeshRef.current;
       const allPoints = curvePointsRef.current;
@@ -290,16 +388,21 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
 
       if (isPlaying) {
         const incrementPerSecond = realistic ? 0.22 : 0.25;
-        const targetProgress = Math.min(1, progressRef.current + incrementPerSecond * speed * dt);
+        const speedFactor = prefersReducedMotion ? 0.6 : 1.0;
+        const targetProgress = Math.min(1, progressRef.current + incrementPerSecond * speed * speedFactor * dt);
         // GSAP smooth interpolation for fluid animation
-        progressRef.current = gsap.utils.interpolate(progressRef.current, targetProgress, 0.25);
+        const lerpAlpha = prefersReducedMotion ? 0.18 : 0.25;
+        progressRef.current = gsap.utils.interpolate(progressRef.current, targetProgress, lerpAlpha);
       }
 
       if (scene && camera && renderer && controls && ropeMesh && allPoints.length > 2) {
+        // Camera gently follows the rope head
+        const headTarget = pointOnPolylineAt(allPoints, progressRef.current);
+        controls.target.lerp(headTarget, 0.08);
+
         if (realistic && sim) {
           // Guide the working end along the tying path
-          const target = pointOnPolylineAt(allPoints, progressRef.current);
-          sim.setHeadTarget(target);
+          sim.setHeadTarget(headTarget);
 
           // Accumulate time and step physics at fixed dt
           accumulatorRef.current += dt;
@@ -313,8 +416,10 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
 
           const positions = sim.getPositions();
           const curve = new THREE.CatmullRomCurve3(positions as THREE.Vector3[], false, 'catmullrom', 0.1);
-          const tubularSegments = Math.max(isMobile ? 60 : 80, positions.length * (isMobile ? 1.5 : 2));
-          const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, 20, false);
+          const qualityScale = quality === 'high' ? 2.5 : quality === 'low' ? 1.2 : (isMobile ? 1.5 : 2.0);
+          const tubularSegments = Math.max(isMobile ? 60 : 80, Math.floor(positions.length * qualityScale));
+          const radialSegments = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
+          const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
           ropeMesh.geometry.dispose();
           ropeMesh.geometry = newGeom;
         } else {
@@ -322,14 +427,33 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
           const drawCount = Math.max(3, Math.floor(allPoints.length * progressRef.current));
           const partialPoints = allPoints.slice(0, drawCount);
           const curve = new THREE.CatmullRomCurve3(partialPoints, false, 'catmullrom', 0.1);
-          const tubularSegments = Math.max(64, drawCount * 3);
-          const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, 24, false);
+          const qualityScale = quality === 'high' ? 3.0 : quality === 'low' ? 1.5 : 2.2;
+          const tubularSegments = Math.max(48, Math.floor(drawCount * qualityScale));
+          const radialSegments = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
+          const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
           ropeMesh.geometry.dispose();
           ropeMesh.geometry = newGeom;
         }
 
+        // Pulse highlights at key tying moments
+        const mat = ropeMaterialRef.current as THREE.MeshPhysicalMaterial | null;
+        if (mat) {
+          for (let i = 0; i < milestonesRef.current.length; i++) {
+            const m = milestonesRef.current[i];
+            if (!milestonesFiredRef.current[i] && progressRef.current >= m) {
+              milestonesFiredRef.current[i] = true;
+              gsap.to(mat, { emissiveIntensity: prefersReducedMotion ? 0.25 : 0.5, duration: 0.18, yoyo: true, repeat: 1, ease: 'sine.out' });
+            }
+          }
+        }
+
         controls.update();
-        renderer.render(scene, camera);
+        if (composer && bloomPassRef.current) {
+          bloomPassRef.current.enabled = bloomEnabled;
+          composer.render();
+        } else {
+          renderer.render(scene, camera);
+        }
       }
 
       animationRef.current = requestAnimationFrame(tick);
@@ -381,6 +505,20 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
             onChange={(e) => setRealistic(e.target.checked)}
             aria-label="Gerçekçi fizik"
           />
+          <label className="ml-2 text-sm">Kılavuz</label>
+          <input
+            type="checkbox"
+            checked={showGuide}
+            onChange={(e) => setShowGuide(e.target.checked)}
+            aria-label="Kılavuz çizgisi"
+          />
+          <label className="ml-2 text-sm">Bloom</label>
+          <input
+            type="checkbox"
+            checked={bloomEnabled}
+            onChange={(e) => setBloomEnabled(e.target.checked)}
+            aria-label="Bloom efekti"
+          />
           <label className="ml-2 text-sm">Hız</label>
           <input
             type="range"
@@ -393,11 +531,23 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
             aria-label="Hız"
           />
           <span className="w-10 text-right text-sm">{speed.toFixed(2)}x</span>
+          <label className="ml-2 text-sm">Kalite</label>
+          <select
+            value={quality}
+            onChange={(e) => setQuality(e.target.value as any)}
+            className="px-2 py-1 rounded border bg-black/20 text-sm"
+            aria-label="Görüntü kalitesi"
+          >
+            <option value="auto">Otomatik</option>
+            <option value="low">Düşük</option>
+            <option value="high">Yüksek</option>
+          </select>
         </div>
       </div>
       <div ref={containerRef} className="w-full h-[360px] rounded-lg overflow-hidden bg-background" />
       <p className="text-xs text-muted-foreground mt-2">
         Dokun/Mouse: döndür, kaydır, yakınlaştır. Hız ve baştan oynatma ile adımları yakalayın.
+        {prefersReducedMotion && ' (Sistem düşük hareket tercih ediyor; animasyonlar yumuşatıldı.)'}
       </p>
     </div>
   );
