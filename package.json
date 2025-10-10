@@ -23,6 +23,7 @@
     "lovable:deploy": "node scripts/lovable-deploy.cjs"
   },
   "dependencies": {
+    "@babylonjs/core": "8.31.0",
     "@capacitor-community/admob": "^6.0.1",
     "@capacitor-firebase/app": "^6.1.0",
     "@capacitor-firebase/authentication": "^6.1.0",
