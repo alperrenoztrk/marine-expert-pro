@@ -423,16 +423,33 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
           ropeMesh.geometry.dispose();
           ropeMesh.geometry = newGeom;
         } else {
-          // Legacy reveal along predefined points
+          // Enhanced reveal with subtle rope wobble for more realism
           const drawCount = Math.max(3, Math.floor(allPoints.length * progressRef.current));
           const partialPoints = allPoints.slice(0, drawCount);
-          const curve = new THREE.CatmullRomCurve3(partialPoints, false, 'catmullrom', 0.1);
+          
+          // Add subtle wobble physics effect with GSAP timing
+          const wobbleIntensity = 0.01 * (1 - progressRef.current); // Decreases as rope settles
+          const time = now * 0.001;
+          const wobbledPoints = partialPoints.map((pt, i) => {
+            const wobbleX = Math.sin(time * 2 + i * 0.25) * wobbleIntensity;
+            const wobbleY = Math.cos(time * 1.6 + i * 0.18) * wobbleIntensity;
+            const wobbleZ = Math.sin(time * 1.9 + i * 0.35) * wobbleIntensity * 0.6;
+            return new THREE.Vector3(pt.x + wobbleX, pt.y + wobbleY, pt.z + wobbleZ);
+          });
+          
+          const curve = new THREE.CatmullRomCurve3(wobbledPoints, false, 'catmullrom', 0.1);
           const qualityScale = quality === 'high' ? 3.0 : quality === 'low' ? 1.5 : 2.2;
           const tubularSegments = Math.max(48, Math.floor(drawCount * qualityScale));
           const radialSegments = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
           const newGeom = new THREE.TubeGeometry(curve, tubularSegments, ropeRadius, radialSegments, false);
           ropeMesh.geometry.dispose();
           ropeMesh.geometry = newGeom;
+        }
+        
+        // Smooth camera orbit animation following the knot formation
+        if (progressRef.current < 0.98 && !prefersReducedMotion) {
+          const targetRotation = camera.rotation.y + 0.002 * speed;
+          camera.rotation.y = gsap.utils.interpolate(camera.rotation.y, targetRotation, 0.02);
         }
 
         // Pulse highlights at key tying moments
@@ -466,16 +483,24 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
   }, [isPlaying, speed, key, realistic]);
 
   const handleRestart = () => {
-    // Smooth restart animation with GSAP
+    // GSAP elastic restart with smooth camera reset
+    const camera = cameraRef.current;
+    
     gsap.to(progressRef, {
       current: 0,
-      duration: 0.4,
-      ease: "power2.out",
+      duration: 0.6,
+      ease: 'back.in(1.4)',
+      onUpdate: () => {
+        // Smoothly reset camera during restart
+        if (camera) {
+          camera.rotation.y = gsap.utils.interpolate(camera.rotation.y, 0, 0.05);
+        }
+      },
       onComplete: () => {
         progressRef.current = 0;
         setIsPlaying(true);
         setKey((v) => v + 1);
-      }
+      },
     });
   };
 

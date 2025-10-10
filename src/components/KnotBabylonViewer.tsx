@@ -176,14 +176,14 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
 
     // Seed with a tiny line; we will rebuild as the curve grows
     const curve = Curve3.CreateCatmullRomSpline([new Vector3(-6, 0, 0), new Vector3(-6.01, 0, 0)], 64);
-    const tube = MeshBuilder.CreateTube('rope', { path: curve.getPoints(), radius: ropeRadius, tesselation: 22, cap: Mesh.CAP_FLAT }, scene);
+    const tube = MeshBuilder.CreateTube('rope', { path: curve.getPoints(), radius: ropeRadius, tessellation: 22, cap: 3 }, scene);
     tube.material = ropeMat;
     ropeMeshRef.current = tube;
 
     // Glow/bloom layer
     const glow = new GlowLayer('glow', scene, { blurKernelSize: 32 });
     glow.intensity = 0.35;
-    glow.enabled = bloom;
+    glow.isEnabled = bloom;
     glowRef.current = glow;
 
     const handleResize = () => {
@@ -211,7 +211,7 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
   }, [key, knot]);
 
   useEffect(() => {
-    // Update geometry each frame based on progress
+    // GSAP-enhanced geometry animation with rope physics
     let raf: number | null = null;
     let lastTime = performance.now();
 
@@ -221,8 +221,9 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
       lastTime = now;
 
       if (isPlaying) {
-        const target = Math.min(1, progressRef.current + 0.25 * speed * dt);
-        progressRef.current = gsap.utils.interpolate(progressRef.current, target, 0.25);
+        const target = Math.min(1, progressRef.current + 0.22 * speed * dt);
+        // Elastic interpolation for realistic rope behavior
+        progressRef.current = gsap.utils.interpolate(progressRef.current, target, 0.18);
       }
 
       const scene = sceneRef.current;
@@ -234,20 +235,37 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
         const partial = allPoints.slice(0, drawCount);
         const scale = quality === 'high' ? 3.0 : quality === 'low' ? 1.5 : 2.2;
         const curve = Curve3.CreateCatmullRomSpline(partial, Math.max(48, Math.floor(drawCount * scale)));
-        const path = curve.getPoints();
-        // Rebuild tube path by disposing and recreating geometry via Update
+        let path = curve.getPoints();
+        
+        // Add rope physics: subtle wobble and tension effects
+        const wobbleIntensity = 0.012 * (1 - progressRef.current);
+        const time = now * 0.001;
+        path = path.map((pt, i) => {
+          const wobbleX = Math.sin(time * 2 + i * 0.25) * wobbleIntensity;
+          const wobbleY = Math.cos(time * 1.6 + i * 0.18) * wobbleIntensity;
+          const wobbleZ = Math.sin(time * 1.9 + i * 0.35) * wobbleIntensity * 0.6;
+          return new Vector3(pt.x + wobbleX, pt.y + wobbleY, pt.z + wobbleZ);
+        });
+
+        // Rebuild tube with enhanced physics
         try {
-          // Babylon does not expose direct path update for TubeBuilder; recreate mesh
           const sceneRefLocal = sceneRef.current!;
           const mat = rope.material;
           rope.dispose(false, true);
           const radial = quality === 'high' ? 28 : quality === 'low' ? 14 : 22;
-          const tube = MeshBuilder.CreateTube('rope', { path, radius: ropeRadius, tesselation: radial, cap: Mesh.CAP_FLAT }, sceneRefLocal);
+          const tube = MeshBuilder.CreateTube('rope', { path, radius: ropeRadius, tessellation: radial, cap: 3 }, sceneRefLocal);
           tube.material = mat ?? undefined;
           ropeMeshRef.current = tube;
         } catch {
           // no-op
         }
+      }
+
+      // Smooth camera rotation following the knot formation
+      const camera = cameraRef.current;
+      if (camera && progressRef.current < 0.98) {
+        const targetAlpha = Math.PI * 0.9 + progressRef.current * Math.PI * 0.25;
+        camera.alpha = camera.alpha + (targetAlpha - camera.alpha) * 0.015;
       }
 
       raf = requestAnimationFrame(tick);
@@ -258,11 +276,24 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
   }, [isPlaying, speed, knot]);
 
   const handleRestart = () => {
-    gsap.to(progressRef, { current: 0, duration: 0.4, ease: 'power2.out', onComplete: () => {
-      progressRef.current = 0;
-      setIsPlaying(true);
-      setKey((v) => v + 1);
-    } });
+    // GSAP elastic restart with camera reset
+    gsap.to(progressRef, { 
+      current: 0, 
+      duration: 0.5, 
+      ease: 'back.in(1.3)',
+      onUpdate: () => {
+        // Reset camera smoothly
+        if (cameraRef.current) {
+          cameraRef.current.alpha = Math.PI * 0.9;
+          cameraRef.current.beta = Math.PI * 0.45;
+        }
+      },
+      onComplete: () => {
+        progressRef.current = 0;
+        setIsPlaying(true);
+        setKey((v) => v + 1);
+      } 
+    });
   };
 
   return (
@@ -284,7 +315,7 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
           <label className="ml-2 text-sm">Bloom</label>
           <input type="checkbox" checked={bloom} onChange={(e) => {
             setBloom(e.target.checked);
-            if (glowRef.current) glowRef.current.enabled = e.target.checked;
+            if (glowRef.current) glowRef.current.isEnabled = e.target.checked;
           }} aria-label="Bloom/glow" />
           <label className="ml-2 text-sm">Kalite</label>
           <select value={quality} onChange={(e) => setQuality(e.target.value as any)} className="px-2 py-1 rounded border bg-black/20 text-sm" aria-label="Görüntü kalitesi">
