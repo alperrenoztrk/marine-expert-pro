@@ -87,12 +87,9 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           </linearGradient>
         </defs>
 
-        {/* Outer ring with depth */}
+        {/* Outer ring with black face */}
         <g>
-          <circle cx="100" cy="100" r="98" fill="url(#metalRadial)" />
-          <circle cx="100" cy="100" r="98" fill="url(#edgeShadow)" />
-          {/* Brushed effect overlay */}
-          <circle cx="100" cy="100" r="96" fill="#ffffff" filter="url(#brushed)" opacity="0.45" />
+          <circle cx="100" cy="100" r="98" fill="#000000" />
           {/* Rim */}
           <circle cx="100" cy="100" r="98" fill="none" stroke="#9aa0a6" strokeWidth="1.5" />
           <circle cx="100" cy="100" r="95" fill="none" stroke="#c7c7c7" strokeWidth="1" />
@@ -117,8 +114,8 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           })}
         </g>
 
-        {/* Numeric labels every 30° */}
-        <g fill="#1f2937" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="9" fontWeight={600}>
+        {/* Numeric labels every 30° - dark green */}
+        <g fill="#064e3b" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="9" fontWeight={600}>
           {Array.from({ length: 12 }, (_, i) => i * 30).map((angle) => {
             const label = angle === 0 ? '0' : String(angle);
             const radius = 62;
@@ -133,9 +130,20 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           })}
         </g>
 
-
-        {/* Gloss highlight */}
-        <circle cx="100" cy="90" r="80" fill="url(#gloss)" opacity="0.7" />
+        {/* Cardinal labels (K, D, G, B) - dark green */}
+        <g fill="#064e3b" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="13" fontWeight={700}>
+          {cardinalLabels.map(({ text, angle }) => {
+            const radius = 74;
+            const rad = (Math.PI / 180) * angle;
+            const x = 100 + radius * Math.sin(rad);
+            const y = 100 - radius * Math.cos(rad);
+            return (
+              <text key={`card-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
+                {text}
+              </text>
+            );
+          })}
+        </g>
 
         {/* Needle */}
         <g transform={`rotate(${clampedHeading} 100 100)`}>
