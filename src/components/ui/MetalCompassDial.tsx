@@ -42,6 +42,23 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         textRendering="geometricPrecision"
       >
         <defs>
+          {/* Theming-friendly CSS variables with graceful fallbacks */}
+          {/* Bezel/edge styling */}
+          <linearGradient id="bezelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="var(--compass-bezel-light, #e6e8ea)" />
+            <stop offset="28%" stopColor="var(--compass-bezel-base, #c7ccd1)" />
+            <stop offset="62%" stopColor="var(--compass-bezel-dark, #7b8086)" />
+            <stop offset="100%" stopColor="var(--compass-bezel-mid, #a9aeb3)" />
+          </linearGradient>
+
+          {/* Outer edge micro-shine */}
+          <linearGradient id="bezelEdgeGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.85)" />
+            <stop offset="15%" stopColor="rgba(255,255,255,0.25)" />
+            <stop offset="85%" stopColor="rgba(255,255,255,0.08)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.25)" />
+          </linearGradient>
+
           {/* Soft radial metal gradient */}
           <radialGradient id="metalRadial" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#f7f7f7" />
@@ -104,7 +121,58 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
             <stop offset="95%" stopColor="rgba(255,255,255,0.25)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
+
+          {/* Screw head gradient */}
+          <radialGradient id="screwHead" cx="50%" cy="45%" r="65%">
+            <stop offset="0%" stopColor="#f2f2f2" />
+            <stop offset="55%" stopColor="#b9bdc2" />
+            <stop offset="100%" stopColor="#7b8086" />
+          </radialGradient>
         </defs>
+
+        {/* Decorative bezel around the outer edge (outside the glass) */}
+        <g aria-hidden="true">
+          {/* Base bezel ring: outer radius ~99, inner ~91 via stroke */}
+          <circle cx="100" cy="100" r="95" fill="none" stroke="url(#bezelGradient)" strokeWidth="8" />
+
+          {/* Knurling marks: short alternating radial ticks on the bezel */}
+          <g strokeLinecap="round">
+            {Array.from({ length: 120 }, (_, i) => i * 3).map((angle) => {
+              const isEven = (angle / 3) % 2 === 0;
+              const stroke = isEven ? 'rgba(255,255,255,0.55)' : 'rgba(60,65,72,0.55)';
+              const strokeWidth = isEven ? 0.9 : 1.1;
+              return (
+                <line
+                  key={`knurl-${angle}`}
+                  x1={100}
+                  y1={100 - 98.2}
+                  x2={100}
+                  y2={100 - 99.4}
+                  stroke={stroke}
+                  strokeWidth={strokeWidth}
+                  transform={`rotate(${angle} 100 100)`}
+                />
+              );
+            })}
+          </g>
+
+          {/* Inner micro-bevel and outer micro-shine */}
+          <circle cx="100" cy="100" r="98.3" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="0.6" />
+          <circle cx="100" cy="100" r="99" fill="none" stroke="url(#bezelEdgeGlow)" strokeWidth="0.8" />
+
+          {/* Subtle screws on the bezel at 45°,135°,225°,315° */}
+          {([45, 135, 225, 315] as const).map((deg) => {
+            const rad = (Math.PI / 180) * deg;
+            const x = 100 + 99 * Math.sin(rad);
+            const y = 100 - 99 * Math.cos(rad);
+            return (
+              <g key={`screw-${deg}`}>
+                <circle cx={x} cy={y} r={2.2} fill="url(#screwHead)" stroke="#60656b" strokeWidth={0.5} />
+                <line x1={x - 1.2} y1={y} x2={x + 1.2} y2={y} stroke="#44474c" strokeWidth={0.6} strokeLinecap="round" />
+              </g>
+            );
+          })}
+        </g>
 
         {/* Outer ring with black face */}
         <g>

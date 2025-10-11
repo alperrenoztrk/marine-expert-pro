@@ -255,7 +255,19 @@ const Index = () => {
         <div className="flex flex-col gap-4 w-full max-w-md">
           {/* Compass Menu Button with real heading (2D) */}
           <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
-            <div className="relative h-44 w-44 md:h-52 md:w-52 transition-transform duration-200 hover:scale-105">
+            <div
+              className="relative h-44 w-44 md:h-52 md:w-52 transition-transform duration-200 hover:scale-105"
+              style={{
+                // Example theme variables; apps can override globally
+                // Darken bezel slightly on white background for contrast
+                // Consumers may set these on :root or a theme container
+                // @ts-ignore CSS variables
+                ['--compass-bezel-light' as any]: '#e8ebee',
+                ['--compass-bezel-base' as any]: '#c9cdd2',
+                ['--compass-bezel-dark' as any]: '#7a7f86',
+                ['--compass-bezel-mid' as any]: '#a9aeb3',
+              }}
+            >
               <MetalCompassDial
                 headingDeg={headingDeg ?? 0}
                 className="h-full w-full select-none pointer-events-none drop-shadow-xl"
