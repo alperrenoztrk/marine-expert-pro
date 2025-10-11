@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,17 @@ import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor, Droplets, Info, Plus, Trash2, Layers } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { toast } from "sonner";
+import {
+  computeBendingStressMPa,
+  computeReactions,
+  computeShearStressMPa,
+  computeStillWaterBMEstimate,
+  computeUniformDistributedLoadFromGeometry,
+  computeWaveInducedBM,
+  findCriticals,
+  sampleSFBM,
+  type PointLoad,
+} from "@/utils/shearingBendingCalculations";
 
 interface StabilityData {
   // 🎯 Temel Stabilite Formülleri
@@ -310,6 +321,57 @@ export const StabilityCalculations = () => {
     }
   }, [activeTab]);
   
+  // === Shear & Bending (SF/BM) calculator state ===
+  const [sb_length, setSbLength] = useState<string>("120");
+  const [sbUseGeometryForW, setSbUseGeometryForW] = useState<boolean>(true);
+  const [sbBreadth, setSbBreadth] = useState<string>("20");
+  const [sbDraft, setSbDraft] = useState<string>("9.5");
+  const [sbCb, setSbCb] = useState<string>("0.72");
+  const [sbUniformW, setSbUniformW] = useState<string>("0"); // kN/m if direct
+
+  const [sbLoads, setSbLoads] = useState<PointLoad[]>([
+    { id: "p1", positionMeters: 30, magnitudeKN: 1500, label: "Cargo 1" },
+    { id: "p2", positionMeters: 85, magnitudeKN: 1800, label: "Cargo 2" },
+  ]);
+
+  const [sbHogSag, setSbHogSag] = useState<"hog" | "sag">("hog");
+  const [sbUseMidshipBM, setSbUseMidshipBM] = useState<boolean>(true);
+  const [sbWaveCoeff, setSbWaveCoeff] = useState<string>("0.10"); // kN/m^3 (empirical)
+
+  const [sbSectionModulus, setSbSectionModulus] = useState<string>("5000"); // m^3
+  const [sbShearArea, setSbShearArea] = useState<string>("12"); // m^2 (web area approximation)
+
+  const SB_L = parseFloat(sb_length);
+  const SB_B = parseFloat(sbBreadth);
+  const SB_T = parseFloat(sbDraft);
+  const SB_Cb = parseFloat(sbCb);
+  const SB_wFromGeom = computeUniformDistributedLoadFromGeometry(SB_B, SB_T, SB_Cb); // kN/m
+  const SB_w = sbUseGeometryForW ? SB_wFromGeom : parseFloat(sbUniformW) || 0;
+
+  const { data: sbData, reactions: sbReactions } = useMemo(() => {
+    const safeLoads = sbLoads
+      .filter((p) => isFinite(p.positionMeters) && isFinite(p.magnitudeKN))
+      .map((p) => ({ ...p, positionMeters: Math.max(0, Math.min(p.positionMeters, isFinite(SB_L) ? SB_L : p.positionMeters)) }));
+    return sampleSFBM(isFinite(SB_L) ? SB_L : 0, isFinite(SB_w) ? SB_w : 0, safeLoads, 241);
+  }, [SB_L, SB_w, sbLoads]);
+
+  const sbCrit = useMemo(() => findCriticals(sbData), [sbData]);
+  const sbSwbm = useMemo(() => computeStillWaterBMEstimate(sbData, sbUseMidshipBM), [sbData, sbUseMidshipBM]);
+  const sbWibm = useMemo(() => computeWaveInducedBM(isFinite(SB_L) ? SB_L : 0, isFinite(SB_B) ? SB_B : 0, isFinite(SB_Cb) ? SB_Cb : 0, parseFloat(sbWaveCoeff) || 0), [SB_L, SB_B, SB_Cb, sbWaveCoeff]);
+  const sbTotalBM = useMemo(() => (sbHogSag === "hog" ? sbSwbm + sbWibm : sbSwbm - sbWibm), [sbSwbm, sbWibm, sbHogSag]);
+
+  const sbBendingStressMPa = useMemo(() => computeBendingStressMPa(Math.abs(sbTotalBM), parseFloat(sbSectionModulus) || 0), [sbTotalBM, sbSectionModulus]);
+  const sbShearStressMPa = useMemo(() => computeShearStressMPa(Math.abs(sbCrit.maxAbsShear.value), parseFloat(sbShearArea) || 0), [sbCrit.maxAbsShear.value, sbShearArea]);
+
+  const sbAddLoad = () => {
+    const nextIndex = sbLoads.length + 1;
+    setSbLoads((prev) => [...prev, { id: `p${nextIndex}`, positionMeters: Math.max(0, Math.min(isFinite(SB_L) ? SB_L / 2 : 0, isFinite(SB_L) ? SB_L : 0)), magnitudeKN: 1000, label: `Load ${nextIndex}` }]);
+  };
+  const sbRemoveLoad = (id: string) => setSbLoads((prev) => prev.filter((p) => p.id !== id));
+  const sbUpdateLoad = (id: string, field: keyof PointLoad, value: string) => {
+    setSbLoads((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: field === "positionMeters" || field === "magnitudeKN" ? parseFloat(value) || 0 : (value as unknown as any) } : p)));
+  };
+
 
   // 🎯 Temel Stabilite Formülleri
   const calculateGM = () => {
@@ -993,7 +1055,7 @@ export const StabilityCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="basic">🎯 Temel</TabsTrigger>
               <TabsTrigger value="gz">🌊 GZ</TabsTrigger>
               <TabsTrigger value="fsc">🔄 FSC</TabsTrigger>
@@ -1001,6 +1063,7 @@ export const StabilityCalculations = () => {
               <TabsTrigger value="imo">📊 IMO</TabsTrigger>
               <TabsTrigger value="damage">🛡️ Hasar</TabsTrigger>
               <TabsTrigger value="grainAccount">🌾 Tahıl Hesabı</TabsTrigger>
+              <TabsTrigger value="shearBending">🪚 Shear Force & Bending Moment</TabsTrigger>
             </TabsList>
 
             {/* 🎯 Temel Stabilite Formülleri */}
@@ -1912,6 +1975,186 @@ export const StabilityCalculations = () => {
                     )}
                   </CardContent>
                 </Card>
+              </div>
+            </TabsContent>
+
+            {/* 🪚 Shear Force & Bending Moment */}
+            <TabsContent value="shearBending" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label htmlFor="sb-length">Length L (m)</Label>
+                  <Input id="sb-length" type="number" step="0.1" value={sb_length} onChange={(e) => setSbLength(e.target.value)} />
+                </div>
+                <div className="md:col-span-3 flex items-end gap-2">
+                  <Button type="button" variant={sbUseGeometryForW ? "default" : "outline"} onClick={() => setSbUseGeometryForW(true)}>
+                    w from geometry (kN/m)
+                  </Button>
+                  <Button type="button" variant={!sbUseGeometryForW ? "default" : "outline"} onClick={() => setSbUseGeometryForW(false)}>
+                    direct w (kN/m)
+                  </Button>
+                  {!sbUseGeometryForW && (
+                    <div className="flex-1">
+                      <Label htmlFor="sb-w">w (kN/m)</Label>
+                      <Input id="sb-w" type="number" step="1" value={sbUniformW} onChange={(e) => setSbUniformW(e.target.value)} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {sbUseGeometryForW && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <Label htmlFor="sb-breadth">Breadth B (m)</Label>
+                    <Input id="sb-breadth" type="number" step="0.1" value={sbBreadth} onChange={(e) => setSbBreadth(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="sb-draft">Draft T (m)</Label>
+                    <Input id="sb-draft" type="number" step="0.1" value={sbDraft} onChange={(e) => setSbDraft(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label htmlFor="sb-cb">Cb</Label>
+                    <Input id="sb-cb" type="number" step="0.01" value={sbCb} onChange={(e) => setSbCb(e.target.value)} />
+                  </div>
+                  <div className="flex items-end">
+                    <div className="w-full bg-primary/10 border border-primary/20 rounded p-2 text-sm">
+                      w ≈ {SB_wFromGeom.toFixed(1)} kN/m
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <Separator />
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold flex items-center gap-2"><Layers className="h-4 w-4" /> Point Loads</h4>
+                  <Button type="button" size="sm" className="gap-2" onClick={sbAddLoad}><Plus className="h-4 w-4" /> Add</Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 text-sm">
+                  {sbLoads.map((p) => (
+                    <div key={p.id} className="md:col-span-12 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                      <div className="md:col-span-4">
+                        <Label>Label</Label>
+                        <Input value={p.label ?? ""} onChange={(e) => sbUpdateLoad(p.id, "label", e.target.value)} />
+                      </div>
+                      <div className="md:col-span-4">
+                        <Label>Position x (m)</Label>
+                        <Input type="number" step="0.1" value={isFinite(p.positionMeters) ? p.positionMeters : 0}
+                               onChange={(e) => sbUpdateLoad(p.id, "positionMeters", e.target.value)} />
+                      </div>
+                      <div className="md:col-span-3">
+                        <Label>Magnitude (kN)</Label>
+                        <Input type="number" step="1" value={isFinite(p.magnitudeKN) ? p.magnitudeKN : 0}
+                               onChange={(e) => sbUpdateLoad(p.id, "magnitudeKN", e.target.value)} />
+                      </div>
+                      <div className="md:col-span-1">
+                        <Button variant="ghost" size="icon" onClick={() => sbRemoveLoad(p.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Shear Force Diagram V(x)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={sbData} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                        <XAxis dataKey="x" label={{ value: "x (m)", position: "insideBottom", offset: -5 }} />
+                        <YAxis label={{ value: "V (kN)", angle: -90, position: "insideLeft" }} />
+                        <Tooltip />
+                        <Legend />
+                        <ReferenceLine y={0} stroke="#999" strokeDasharray="3 3" />
+                        {sbLoads.map((p) => (
+                          <ReferenceLine key={`lv-${p.id}`} x={p.positionMeters} stroke="#bbb" strokeDasharray="2 2" />
+                        ))}
+                        {sbCrit.zeroShearAtX !== null && (
+                          <ReferenceLine x={sbCrit.zeroShearAtX} stroke="#ef4444" strokeDasharray="4 2" label={{ value: "V=0", position: "top" }} />
+                        )}
+                        <Line type="monotone" dataKey="shearKN" name="V (kN)" stroke="#ef4444" dot={false} strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                      <div>RA = {sbReactions.reactionA_KN.toFixed(1)} kN</div>
+                      <div>RB = {sbReactions.reactionB_KN.toFixed(1)} kN</div>
+                      <div>Vmax = {sbCrit.maxAbsShear.value.toFixed(1)} kN @ x≈{sbCrit.maxAbsShear.x.toFixed(1)} m</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Bending Moment Diagram M(x)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={sbData} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                        <XAxis dataKey="x" label={{ value: "x (m)", position: "insideBottom", offset: -5 }} />
+                        <YAxis label={{ value: "M (kN·m)", angle: -90, position: "insideLeft" }} />
+                        <Tooltip />
+                        <Legend />
+                        <ReferenceLine y={0} stroke="#999" strokeDasharray="3 3" />
+                        {sbLoads.map((p) => (
+                          <ReferenceLine key={`lm-${p.id}`} x={p.positionMeters} stroke="#bbb" strokeDasharray="2 2" />
+                        ))}
+                        <Line type="monotone" dataKey="momentKNm" name="M (kN·m)" stroke="#3b82f6" dot={false} strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                      <div>Mmax = {Math.max(Math.abs(sbCrit.maxMoment.value), Math.abs(sbCrit.minMoment.value)).toFixed(1)} kN·m</div>
+                      <div>Midship M ≈ {sbSwbm.toFixed(1)} kN·m</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Separator />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="sb-wave-coeff">Wave coefficient C (kN/m³)</Label>
+                  <Input id="sb-wave-coeff" type="number" step="0.01" value={sbWaveCoeff} onChange={(e) => setSbWaveCoeff(e.target.value)} />
+                </div>
+                <div className="flex items-end gap-2">
+                  <Button type="button" variant={sbHogSag === "hog" ? "default" : "outline"} onClick={() => setSbHogSag("hog")}>Hogging (+)</Button>
+                  <Button type="button" variant={sbHogSag === "sag" ? "default" : "outline"} onClick={() => setSbHogSag("sag")}>Sagging (−)</Button>
+                </div>
+                <div className="flex items-end gap-2">
+                  <Button type="button" variant={sbUseMidshipBM ? "default" : "outline"} onClick={() => setSbUseMidshipBM(true)}>Midship BM</Button>
+                  <Button type="button" variant={!sbUseMidshipBM ? "default" : "outline"} onClick={() => setSbUseMidshipBM(false)}>|M| Maximum</Button>
+                </div>
+              </div>
+              <div className="bg-muted/30 rounded p-3 grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-sm">
+                <div>SWBM ≈ {sbSwbm.toFixed(1)} kN·m</div>
+                <div>WIBM ≈ {sbWibm.toFixed(1)} kN·m</div>
+                <div>Total BM ≈ {sbTotalBM.toFixed(1)} kN·m</div>
+                <div>V=0 @ x≈{sbCrit.zeroShearAtX !== null ? sbCrit.zeroShearAtX.toFixed(1) : "—"} m</div>
+              </div>
+
+              <Separator />
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label htmlFor="sb-z">Section Modulus Z (m³)</Label>
+                  <Input id="sb-z" type="number" step="1" value={sbSectionModulus} onChange={(e) => setSbSectionModulus(e.target.value)} />
+                </div>
+                <div>
+                  <Label htmlFor="sb-area">Shear Area A (m²)</Label>
+                  <Input id="sb-area" type="number" step="0.1" value={sbShearArea} onChange={(e) => setSbShearArea(e.target.value)} />
+                </div>
+                <div className="md:col-span-2 grid grid-cols-2 gap-3 bg-primary/10 border border-primary/20 rounded p-3 text-sm">
+                  <div>σ_bend ≈ {sbBendingStressMPa.toFixed(3)} MPa</div>
+                  <div>τ_shear ≈ {sbShearStressMPa.toFixed(3)} MPa</div>
+                </div>
               </div>
             </TabsContent>
 

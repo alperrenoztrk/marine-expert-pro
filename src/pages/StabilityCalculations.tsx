@@ -2,6 +2,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { StabilityCalculations } from "@/components/calculations/StabilityCalculations";
 
 export default function StabilityCalculationsPage() {
   return (
@@ -16,11 +17,7 @@ export default function StabilityCalculationsPage() {
           </Link>
         </div>
 
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <p className="text-muted-foreground text-lg">
-            Bu sayfa hazırlanıyor...
-          </p>
-        </div>
+        <StabilityCalculations />
       </div>
     </MobileLayout>
   );

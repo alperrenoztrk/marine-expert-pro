@@ -80,26 +80,26 @@ export default function StabilityShearingBendingPage() {
     <MobileLayout>
       <div className="space-y-4" data-no-translate>
         <div className="flex items-center justify-between">
-          <Link to="/stability">
+          <Link to="/stability/calculations#shearBending">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="h-4 w-4" /> Stabilite
             </Button>
           </Link>
           <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <Activity className="h-4 w-4" /> Kesme Kuvveti & Eğilme Momenti
+            <Activity className="h-4 w-4" /> Shear Force & Bending Moment
           </div>
         </div>
 
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Waves className="h-5 w-5" /> Konu Özeti — SF ve BM
+              <Waves className="h-5 w-5" /> Overview — SF and BM
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Kesme Kuvveti V(x)</strong>: Boyuna x konumunda kiriş kesitini kaydıran net dikey kuvvet.</li>
-              <li><strong>Eğilme Momenti M(x)</strong>: Kesitte eğilmeye neden olan moment; V(x) türev, M(x) integral ilişkisindedir.</li>
+              <li><strong>Shear Force V(x)</strong>: Net vertical force across a section at distance x.</li>
+              <li><strong>Bending Moment M(x)</strong>: Moment causing bending; V(x)=dM/dx, M(x)=∫V(x)dx.</li>
               <li><strong>Hogging/Sagging</strong>: Orta kesitte yukarı (+) veya aşağı (−) eğilme. V=0 noktası genelde |M| maksimumudur.</li>
               <li><strong>Basit Model</strong>: UDL (w) + konsantre yükler ve uç mesnet reaksiyonları ile SF/BM diyagramı.</li>
             </ul>
@@ -109,7 +109,7 @@ export default function StabilityShearingBendingPage() {
         <Card className="shadow">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <LineChart className="h-5 w-5" /> Hesaplama — Kiriş Modeli
+              <LineChart className="h-5 w-5" /> Calculation — Beam Model
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -120,10 +120,10 @@ export default function StabilityShearingBendingPage() {
               </div>
               <div className="md:col-span-3 flex items-end gap-2">
                 <Button type="button" variant={useGeometryForW ? "default" : "outline"} onClick={() => setUseGeometryForW(true)}>
-                  Geometri ile w (kN/m)
+                  w from geometry (kN/m)
                 </Button>
                 <Button type="button" variant={!useGeometryForW ? "default" : "outline"} onClick={() => setUseGeometryForW(false)}>
-                  Doğrudan w (kN/m)
+                  direct w (kN/m)
                 </Button>
                 {!useGeometryForW && (
                   <div className="flex-1">
@@ -137,7 +137,7 @@ export default function StabilityShearingBendingPage() {
             {useGeometryForW && (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label htmlFor="breadth">Genişlik B (m)</Label>
+                  <Label htmlFor="breadth">Breadth B (m)</Label>
                   <Input id="breadth" type="number" step="0.1" value={breadth} onChange={(e) => setBreadth(e.target.value)} />
                 </div>
                 <div>
@@ -160,23 +160,23 @@ export default function StabilityShearingBendingPage() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="font-semibold flex items-center gap-2"><Ruler className="h-4 w-4" /> Konsantre Yükler</h4>
-                <Button type="button" size="sm" className="gap-2" onClick={addLoad}><Plus className="h-4 w-4" /> Ekle</Button>
+                <h4 className="font-semibold flex items-center gap-2"><Ruler className="h-4 w-4" /> Point Loads</h4>
+                <Button type="button" size="sm" className="gap-2" onClick={addLoad}><Plus className="h-4 w-4" /> Add</Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-12 gap-3 text-sm">
                 {loads.map((p) => (
                   <div key={p.id} className="md:col-span-12 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
                     <div className="md:col-span-4">
-                      <Label>Etiket</Label>
+                      <Label>Label</Label>
                       <Input value={p.label ?? ""} onChange={(e) => updateLoad(p.id, "label", e.target.value)} />
                     </div>
                     <div className="md:col-span-4">
-                      <Label>Konum x (m)</Label>
+                      <Label>Position x (m)</Label>
                       <Input type="number" step="0.1" value={isFinite(p.positionMeters) ? p.positionMeters : 0}
                              onChange={(e) => updateLoad(p.id, "positionMeters", e.target.value)} />
                     </div>
                     <div className="md:col-span-3">
-                      <Label>Büyüklük (kN)</Label>
+                      <Label>Magnitude (kN)</Label>
                       <Input type="number" step="1" value={isFinite(p.magnitudeKN) ? p.magnitudeKN : 0}
                              onChange={(e) => updateLoad(p.id, "magnitudeKN", e.target.value)} />
                     </div>
@@ -195,7 +195,7 @@ export default function StabilityShearingBendingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Kesme Kuvveti Diyagramı V(x)</CardTitle>
+                  <CardTitle className="text-base">Shear Force Diagram V(x)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={280}>
@@ -215,7 +215,7 @@ export default function StabilityShearingBendingPage() {
                       <Line type="monotone" dataKey="shearKN" name="V (kN)" stroke="#ef4444" dot={false} strokeWidth={2} />
                     </RLineChart>
                   </ResponsiveContainer>
-                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                     <div>RA = {reactions.reactionA_KN.toFixed(1)} kN</div>
                     <div>RB = {reactions.reactionB_KN.toFixed(1)} kN</div>
                     <div>Vmax = {crit.maxAbsShear.value.toFixed(1)} kN @ x≈{crit.maxAbsShear.x.toFixed(1)} m</div>
@@ -225,7 +225,7 @@ export default function StabilityShearingBendingPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Eğilme Momenti Diyagramı M(x)</CardTitle>
+                  <CardTitle className="text-base">Bending Moment Diagram M(x)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={280}>
@@ -254,7 +254,7 @@ export default function StabilityShearingBendingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="wave-coeff">Dalga Katsayısı C (kN/m³)</Label>
+                <Label htmlFor="wave-coeff">Wave coefficient C (kN/m³)</Label>
                 <Input id="wave-coeff" type="number" step="0.01" value={waveCoeff} onChange={(e) => setWaveCoeff(e.target.value)} />
               </div>
               <div className="flex items-end gap-2">
@@ -263,13 +263,13 @@ export default function StabilityShearingBendingPage() {
               </div>
               <div className="flex items-end gap-2">
                 <Button type="button" variant={useMidshipBM ? "default" : "outline"} onClick={() => setUseMidshipBM(true)}>Midship BM</Button>
-                <Button type="button" variant={!useMidshipBM ? "default" : "outline"} onClick={() => setUseMidshipBM(false)}>|M| Maksimum</Button>
+                <Button type="button" variant={!useMidshipBM ? "default" : "outline"} onClick={() => setUseMidshipBM(false)}>|M| Maximum</Button>
               </div>
             </div>
             <div className="bg-muted/30 rounded p-3 grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-sm">
               <div>SWBM ≈ {swbm.toFixed(1)} kN·m</div>
               <div>WIBM ≈ {wibm.toFixed(1)} kN·m</div>
-              <div>Toplam BM ≈ {totalBM.toFixed(1)} kN·m</div>
+              <div>Total BM ≈ {totalBM.toFixed(1)} kN·m</div>
               <div>V=0 @ x≈{crit.zeroShearAtX !== null ? crit.zeroShearAtX.toFixed(1) : "—"} m</div>
             </div>
 
@@ -277,14 +277,14 @@ export default function StabilityShearingBendingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <Label htmlFor="z">Kesit Modülü Z (m³)</Label>
+                <Label htmlFor="z">Section Modulus Z (m³)</Label>
                 <Input id="z" type="number" step="1" value={sectionModulus} onChange={(e) => setSectionModulus(e.target.value)} />
               </div>
               <div>
-                <Label htmlFor="area">Kesme Alanı A (m²)</Label>
+                <Label htmlFor="area">Shear Area A (m²)</Label>
                 <Input id="area" type="number" step="0.1" value={shearArea} onChange={(e) => setShearArea(e.target.value)} />
               </div>
-              <div className="md:col-span-2 grid grid-cols-2 gap-3 bg-primary/10 border border-primary/20 rounded p-3 text-sm">
+                <div className="md:col-span-2 grid grid-cols-2 gap-3 bg-primary/10 border border-primary/20 rounded p-3 text-sm">
                 <div>σ_bend ≈ {bendingStressMPa.toFixed(3)} MPa</div>
                 <div>τ_shear ≈ {shearStressMPa.toFixed(3)} MPa</div>
               </div>
