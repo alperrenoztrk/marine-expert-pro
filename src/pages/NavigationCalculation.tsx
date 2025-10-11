@@ -111,6 +111,8 @@ export default function NavigationCalculationPage() {
   const [distanceResults, setDistanceResults] = useState<any>(null);
 
   const [tideInputs, setTideInputs] = useState({ hour: "", range: "" });
+  const [tideTableInputs, setTideTableInputs] = useState({ lowTide: "", highTide: "", lowTideTime: "06:00" });
+  const [tideTable, setTideTable] = useState<Array<{ time: string; height: number; change: number; status: string }>>([]);
   const [tideResults, setTideResults] = useState<any>(null);
 
   const [turningInputs, setTurningInputs] = useState({ length: "", courseChange: "", speed: "" });
@@ -297,6 +299,47 @@ export default function NavigationCalculationPage() {
       }
     } catch (error) {
       console.error("Calculation error:", error);
+    }
+  };
+
+  const generateTideTable = () => {
+    try {
+      const lowTide = parseFloat(tideTableInputs.lowTide);
+      const highTide = parseFloat(tideTableInputs.highTide);
+      if (!isFinite(lowTide) || !isFinite(highTide)) return;
+      const tidalRange = highTide - lowTide;
+
+      const [hh, mm] = tideTableInputs.lowTideTime.split(":").map((v) => parseInt(v, 10));
+      const base = new Date();
+      base.setHours(isFinite(hh) ? hh : 0, isFinite(mm) ? mm : 0, 0, 0);
+
+      const fractions = [0, 1 / 12, 3 / 12, 6 / 12, 9 / 12, 11 / 12, 12 / 12];
+
+      const rows: Array<{ time: string; height: number; change: number; status: string }> = [];
+      for (let i = 0; i < 12; i++) {
+        const time = new Date(base.getTime() + i * 60 * 60 * 1000);
+        const timeStr = time.toTimeString().slice(0, 5);
+
+        const cycleHour = i % 6; // 0..5
+        const isRising = Math.floor(i / 6) % 2 === 0; // first 6 hours rising, next 6 falling
+
+        let height: number;
+        let status: string;
+        if (isRising) {
+          height = lowTide + tidalRange * fractions[cycleHour];
+          status = cycleHour === 0 ? "Alçak Su" : cycleHour === 5 ? "Yüksek Su" : "Yükseliyor";
+        } else {
+          height = highTide - tidalRange * fractions[cycleHour];
+          status = cycleHour === 0 ? "Yüksek Su" : cycleHour === 5 ? "Alçak Su" : "Alçalıyor";
+        }
+
+        const prevHeight = i > 0 ? rows[i - 1].height : height;
+        rows.push({ time: timeStr, height, change: height - prevHeight, status });
+      }
+
+      setTideTable(rows);
+    } catch (e) {
+      // noop
     }
   };
 
@@ -520,15 +563,66 @@ export default function NavigationCalculationPage() {
         );
       case "tides":
         return (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="tide-hour">Saat (1-6)</Label>
-              <Input id="tide-hour" type="number" min={1} max={6} placeholder="3" value={tideInputs.hour} onChange={(e) => setTideInputs({ ...tideInputs, hour: e.target.value })} />
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="tide-hour">Saat (1-6)</Label>
+                <Input id="tide-hour" type="number" min={1} max={6} placeholder="3" value={tideInputs.hour} onChange={(e) => setTideInputs({ ...tideInputs, hour: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="tide-range">Gelgit Aralığı (m)</Label>
+                <Input id="tide-range" type="number" placeholder="4.2" value={tideInputs.range} onChange={(e) => setTideInputs({ ...tideInputs, range: e.target.value })} />
+              </div>
             </div>
-            <div>
-              <Label htmlFor="tide-range">Gelgit Aralığı (m)</Label>
-              <Input id="tide-range" type="number" placeholder="4.2" value={tideInputs.range} onChange={(e) => setTideInputs({ ...tideInputs, range: e.target.value })} />
+
+            <div className="rounded border p-3 bg-muted/30">
+              <h4 className="font-semibold mb-3">Gelgit Tablosu</h4>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="tt-low">Alçak Su (m)</Label>
+                  <Input id="tt-low" type="number" placeholder="1.2" value={tideTableInputs.lowTide} onChange={(e) => setTideTableInputs({ ...tideTableInputs, lowTide: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="tt-high">Yüksek Su (m)</Label>
+                  <Input id="tt-high" type="number" placeholder="5.4" value={tideTableInputs.highTide} onChange={(e) => setTideTableInputs({ ...tideTableInputs, highTide: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="tt-time">Alçak Su Zamanı</Label>
+                  <Input id="tt-time" type="time" value={tideTableInputs.lowTideTime} onChange={(e) => setTideTableInputs({ ...tideTableInputs, lowTideTime: e.target.value })} />
+                </div>
+              </div>
+              <div className="mt-3">
+                <Button variant="secondary" className="w-full" type="button" onClick={generateTideTable}>Gelgit Tablosu Oluştur</Button>
+              </div>
             </div>
+
+            {tideTable.length > 0 && (
+              <div className="rounded border p-3 bg-muted/30">
+                <h4 className="font-semibold mb-3">12 Saatlik Gelgit Tablosu</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">Saat</th>
+                        <th className="text-left p-2">Yükseklik (m)</th>
+                        <th className="text-left p-2">Değişim</th>
+                        <th className="text-left p-2">Durumu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tideTable.map((row, i) => (
+                        <tr key={i} className={`border-b ${row.status === 'Yüksek Su' || row.status === 'Alçak Su' ? 'bg-primary/10' : ''}`}>
+                          <td className="p-2 font-mono">{row.time}</td>
+                          <td className="p-2 font-mono">{row.height.toFixed(2)}</td>
+                          <td className="p-2 font-mono">{row.change > 0 ? '+' : ''}{row.change.toFixed(2)}</td>
+                          <td className={`p-2 ${row.status === 'Yükseliyor' ? 'text-green-600' : row.status === 'Alçalıyor' ? 'text-red-600' : 'text-blue-600'}`}>{row.status}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         );
       case "turning":

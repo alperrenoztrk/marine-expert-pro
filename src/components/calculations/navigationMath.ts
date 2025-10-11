@@ -69,12 +69,14 @@ export type BearingCalculationResult = {
 };
 
 export type TideInput = {
-  hour: number;       // Hour from HW (1-6)
+  hour: number;        // Hour from LW/HW boundary (1..6)
   tidalRangeM: number; // Tidal range in meters
+  phase?: 'rising' | 'falling'; // Optional: default rising
 };
 
 export type TideResult = {
-  heightM: number;    // Tidal height for that hour
+  heightM: number;        // Tidal height change from the boundary (m)
+  fractionOfRange: number; // Fraction of total range completed (0..1)
 };
 
 export type DistanceCalculationInput = {
@@ -388,12 +390,16 @@ export function calculateDistance(input: DistanceCalculationInput): DistanceCalc
 
 // Tide calculations - Rule of Twelfths
 export function calculateTide(input: TideInput): TideResult {
-  const { hour, tidalRangeM } = input;
-  
-  const fractions = [0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12];
-  const heightM = fractions[Math.min(hour, 6)] * tidalRangeM;
-  
-  return { heightM };
+  const { hour, tidalRangeM, phase = 'rising' } = input;
+  if (!isFinite(hour) || !isFinite(tidalRangeM) || hour < 0) {
+    return { heightM: 0, fractionOfRange: 0 };
+  }
+  const h = Math.min(Math.max(Math.round(hour), 0), 6);
+  const twelfths = [0, 1, 3, 6, 9, 11, 12];
+  const tw = twelfths[h] / 12;
+  const fractionOfRange = phase === 'rising' ? tw : 1 - tw;
+  const heightM = fractionOfRange * tidalRangeM;
+  return { heightM, fractionOfRange };
 }
 
 // Turning calculations
