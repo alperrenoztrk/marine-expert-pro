@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BackButton from "@/components/BackButton";
-import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, Zap, Volume2, VolumeX, CreditCard } from "lucide-react";
+import { Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, CreditCard } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/hooks/useTheme";
 // Density settings removed from Settings page; provider remains app-wide
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,25 +17,16 @@ import { GoogleAuth } from "@/components/auth/GoogleAuth";
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, changeLanguage, supportedLanguages, getLanguageName } = useLanguage();
-  const [neonSoundEnabled, setNeonSoundEnabled] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  useEffect(() => {
-    const savedSoundSetting = localStorage.getItem('neonSoundEnabled');
-    if (savedSoundSetting !== null) {
-      setNeonSoundEnabled(JSON.parse(savedSoundSetting));
-    }
-  }, []);
+  // Neon and Nature themes are no longer available in Settings
 
   const handleThemeChange = (newTheme: string) => {
-    setTheme(newTheme as "light" | "dark" | "neon");
-    
+    setTheme(newTheme as "light" | "dark");
     const themeNames = {
       light: "Açık Tema",
-      dark: "Koyu Tema", 
-      neon: "Neon Tema",
-    };
-    
+      dark: "Koyu Tema",
+    } as const;
     toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
   };
 
@@ -46,11 +35,7 @@ const Settings = () => {
     toast.success(`Dil değiştirildi: ${getLanguageName(value)}`);
   };
 
-  const handleNeonSoundToggle = (enabled: boolean) => {
-    setNeonSoundEnabled(enabled);
-    localStorage.setItem('neonSoundEnabled', JSON.stringify(enabled));
-    toast.success(enabled ? 'Neon ses efektleri aktif' : 'Neon ses efektleri devre dışı');
-  };
+  // Neon ses ayarları kaldırıldı
 
   const handleStartCheckout = async () => {
     try {
@@ -140,18 +125,6 @@ const Settings = () => {
                             <span>Koyu Tema</span>
                           </div>
                         </SelectItem>
-                        <SelectItem value="neon">
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-green-400 animate-pulse shadow-lg shadow-blue-500/50"></div>
-                            <span>Neon Tema</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="nature">
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse shadow-lg shadow-green-500/50"></div>
-                            <span>Doğa Teması</span>
-                          </div>
-                        </SelectItem>
 
                       </SelectContent>
                     </Select>
@@ -165,49 +138,7 @@ const Settings = () => {
 
             {/* Density Settings removed as requested */}
 
-            {/* Neon Sound Settings - Only visible in neon theme */}
-            {theme === 'neon' && (
-              <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 neon:bg-slate-800 neon:border-cyan-500">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-cyan-400" />
-                    <span>Neon Ses Efektleri</span>
-                  </CardTitle>
-                  <CardDescription>
-                    <span>Neon tema için elektronik ses efektlerini yönetin</span>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <Label htmlFor="neon-sound-toggle">
-                          <span>Ses Efektleri</span>
-                        </Label>
-                        <p className="text-sm text-muted-foreground">
-                          <span>Buton tıklama ve hover ses efektleri</span>
-                        </p>
-                      </div>
-                      <Switch
-                        id="neon-sound-toggle"
-                        checked={neonSoundEnabled}
-                        onCheckedChange={handleNeonSoundToggle}
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      {neonSoundEnabled ? (
-                        <Volume2 className="w-4 h-4 text-cyan-400" />
-                      ) : (
-                        <VolumeX className="w-4 h-4 text-gray-400" />
-                      )}
-                      <span>
-                        {neonSoundEnabled ? 'Ses efektleri aktif' : 'Ses efektleri devre dışı'}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* Neon ses ayarları kaldırıldı */}
 
             {/* Language Settings */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">

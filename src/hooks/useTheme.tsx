@@ -28,7 +28,7 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem(storageKey) as string | null;
-    if (stored === "cyberpunk") {
+    if (stored === "cyberpunk" || stored === "neon" || stored === "nature") {
       localStorage.setItem(storageKey, "dark");
       return "dark";
     }
@@ -39,7 +39,7 @@ export function ThemeProvider({
     const root = window.document.documentElement;
 
     // Always remove legacy class names as well
-    root.classList.remove("light", "dark", "neon", "cyberpunk");
+    root.classList.remove("light", "dark", "cyberpunk", "neon", "nature");
 
     root.classList.add(theme);
   }, [theme]);
