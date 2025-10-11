@@ -3,13 +3,13 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import BackButton from "@/components/BackButton";
-import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, Zap, Volume2, VolumeX, CreditCard, Minimize2 } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, Zap, Volume2, VolumeX, CreditCard } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "@/hooks/useTheme";
-import { useDensity } from "@/contexts/DensityContext";
+// Density settings removed from Settings page; provider remains app-wide
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLanguageFlag } from "@/utils/languages";
 import { toast } from "sonner";
@@ -17,7 +17,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
-  const { density, setDensity, toggleDensity } = useDensity();
   const { currentLanguage, changeLanguage, supportedLanguages, getLanguageName } = useLanguage();
   const [neonSoundEnabled, setNeonSoundEnabled] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -161,33 +160,7 @@ const Settings = () => {
               </CardContent>
             </Card>
 
-            {/* Density Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Minimize2 className="w-5 h-5" />
-                  <span data-translatable>Yoğunluk (Sıkı/Komforlu)</span>
-                </CardTitle>
-                <CardDescription>
-                  <span data-translatable>Arayüz öğelerinin dikey boşluklarını ayarlayın</span>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label htmlFor="density-toggle">
-                      <span data-translatable>Arayüz Yoğunluğu</span>
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      {density === 'compact' ? 'Kompakt mod aktif' : 'Konforlu mod aktif'}
-                    </p>
-                  </div>
-                  <Button id="density-toggle" variant="outline" onClick={toggleDensity}>
-                    {density === 'compact' ? 'Konforlu' : 'Kompakt'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Density Settings removed as requested */}
 
             {/* Neon Sound Settings - Only visible in neon theme */}
             {theme === 'neon' && (
