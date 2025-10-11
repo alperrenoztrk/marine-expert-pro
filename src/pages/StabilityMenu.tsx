@@ -8,7 +8,6 @@ export default function StabilityMenu() {
     {
       title: 'Stabilite',
       items: [
-        { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
         { to: "/stability/shearing-bending", icon: <Activity className="h-4 w-4" />, label: "Kesme Kuvveti & Eğilme Momenti" },
         { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
         { to: "/stability/topic-explanation", icon: <GraduationCap className="h-4 w-4" />, label: "Konu Anlatımı" },
