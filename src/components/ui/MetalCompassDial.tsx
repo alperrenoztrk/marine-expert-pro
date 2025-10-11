@@ -86,6 +86,28 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
             <stop offset="0%" stopColor="#ffffff" />
             <stop offset="100%" stopColor="#d9d9d9" />
           </linearGradient>
+
+          {/* Glass dome effect */}
+          <radialGradient id="glassDome" cx="50%" cy="40%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
+            <stop offset="35%" stopColor="rgba(255,255,255,0.15)" />
+            <stop offset="70%" stopColor="rgba(255,255,255,0.05)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </radialGradient>
+
+          {/* Glass highlight */}
+          <radialGradient id="glassHighlight" cx="35%" cy="25%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.6)" />
+            <stop offset="25%" stopColor="rgba(255,255,255,0.2)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </radialGradient>
+
+          {/* Glass edge shine */}
+          <radialGradient id="glassEdge" cx="50%" cy="50%">
+            <stop offset="85%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="95%" stopColor="rgba(255,255,255,0.25)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </radialGradient>
         </defs>
 
         {/* Outer ring with black face */}
@@ -172,6 +194,19 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           <circle cx="100" cy="100" r="6.5" fill="#9ca3af" />
           {/* Center cap */}
           <circle cx="100" cy="100" r="5" fill="#fdfdfd" stroke="#a3a3a3" strokeWidth="0.8" />
+        </g>
+
+        {/* Glass dome overlay */}
+        <g>
+          {/* Main glass dome */}
+          <circle cx="100" cy="100" r="98" fill="url(#glassDome)" />
+          {/* Glass highlight spot */}
+          <ellipse cx="75" cy="65" rx="35" ry="28" fill="url(#glassHighlight)" opacity="0.8" />
+          {/* Glass edge shine */}
+          <circle cx="100" cy="100" r="98" fill="url(#glassEdge)" />
+          {/* Subtle reflection lines */}
+          <ellipse cx="65" cy="50" rx="18" ry="8" fill="rgba(255,255,255,0.3)" transform="rotate(-25 65 50)" />
+          <ellipse cx="75" cy="70" rx="12" ry="5" fill="rgba(255,255,255,0.2)" transform="rotate(-30 75 70)" />
         </g>
       </svg>
     </div>
