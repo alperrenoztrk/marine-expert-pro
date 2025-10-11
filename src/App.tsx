@@ -14,6 +14,7 @@ import NavigationMenu from "./pages/NavigationMenu";
 import EconomicsMenu from "./pages/EconomicsMenu";
 import SeamanshipMenu from "./pages/SeamanshipMenu";
 import SeamanshipTopicsPage from "./pages/SeamanshipTopics";
+import SeamanshipTopicButtons from "./pages/SeamanshipTopicButtons";
 import TankMenu from "./pages/TankMenu";
 import SOLASMenu from "./pages/SOLASMenu";
 import Navigation from "./pages/Navigation";
@@ -95,6 +96,7 @@ const App = () => {
                     <Route path="/navigation-menu" element={<NavigationMenu />} />
                     <Route path="/economics-menu" element={<EconomicsMenu />} />
                     <Route path="/seamanship-menu" element={<SeamanshipMenu />} />
+                    <Route path="/seamanship/topics-menu" element={<SeamanshipTopicButtons />} />
                     <Route path="/seamanship/topics" element={<SeamanshipTopicsPage />} />
                     <Route path="/seamanship/knots" element={<SailorKnotsPage />} />
                     <Route path="/tank-menu" element={<TankMenu />} />
