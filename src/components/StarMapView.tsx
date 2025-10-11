@@ -270,15 +270,72 @@ export const StarMapView: React.FC<StarMapViewProps> = ({
       }
     });
     
-    // Draw compass
+    // Draw compass with chrome bezel
     const compassX = canvasWidth - 60;
     const compassY = 60;
     const compassRadius = 40;
-    
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.lineWidth = 2;
+    const bezelWidth = 12; // thickness of chrome ring
+    const outerRadius = compassRadius + bezelWidth / 2;
+    const innerRadius = compassRadius - bezelWidth / 2;
+
+    // Main chrome gradient across the bezel
+    const bezelGradient = ctx.createLinearGradient(
+      compassX - outerRadius,
+      compassY - outerRadius,
+      compassX + outerRadius,
+      compassY + outerRadius
+    );
+    bezelGradient.addColorStop(0.0, '#f6f8fa');
+    bezelGradient.addColorStop(0.12, '#d7dde2');
+    bezelGradient.addColorStop(0.28, '#9aa5ac');
+    bezelGradient.addColorStop(0.50, '#e6ebef');
+    bezelGradient.addColorStop(0.72, '#87929a');
+    bezelGradient.addColorStop(0.88, '#cfd6db');
+    bezelGradient.addColorStop(1.0, '#f6f8fa');
+
+    // Draw bezel as a donut shape
     ctx.beginPath();
-    ctx.arc(compassX, compassY, compassRadius, 0, 2 * Math.PI);
+    ctx.arc(compassX, compassY, outerRadius, 0, 2 * Math.PI);
+    ctx.arc(compassX, compassY, innerRadius, 0, 2 * Math.PI, true);
+    ctx.closePath();
+    ctx.fillStyle = bezelGradient;
+    ctx.fill();
+
+    // Outer rim highlight
+    ctx.beginPath();
+    ctx.arc(compassX, compassY, outerRadius + 0.75, 0, 2 * Math.PI);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Inner rim subtle shadow to separate bezel from dial
+    const innerShadow = ctx.createRadialGradient(
+      compassX,
+      compassY,
+      innerRadius - 2,
+      compassX,
+      compassY,
+      innerRadius + 2
+    );
+    innerShadow.addColorStop(0, 'rgba(0,0,0,0.35)');
+    innerShadow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(compassX, compassY, innerRadius + 3, 0, 2 * Math.PI);
+    ctx.arc(compassX, compassY, innerRadius - 3, 0, 2 * Math.PI, true);
+    ctx.closePath();
+    ctx.fillStyle = innerShadow;
+    ctx.fill();
+
+    // Specular highlight arc for chrome feel (top-left)
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+    ctx.lineWidth = 2;
+    ctx.arc(compassX - 6, compassY - 8, outerRadius - 2, Math.PI * 1.05, Math.PI * 1.45);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 1.25;
+    ctx.arc(compassX + 8, compassY + 10, outerRadius - 4, Math.PI * 0.1, Math.PI * 0.4);
     ctx.stroke();
     
     // North arrow
