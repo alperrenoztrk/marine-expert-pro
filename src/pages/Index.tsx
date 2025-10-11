@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
 import { Settings } from "lucide-react";
-import { GoogleAuth } from "@/components/auth/GoogleAuth";
 // WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
 
 const Index = () => {
@@ -187,10 +186,7 @@ const Index = () => {
         }}
       >
       {/* Top right controls */}
-      <div className="fixed right-6 top-6 z-20 flex items-center gap-3">
-        {/* Google Auth */}
-        <GoogleAuth />
-        
+      <div className="fixed right-6 top-6 z-20 flex items-center">
         {/* Settings gear icon */}
         <Link to="/settings">
           <Button

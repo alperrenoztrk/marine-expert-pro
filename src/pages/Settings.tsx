@@ -14,6 +14,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { getLanguageFlag } from "@/utils/languages";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { GoogleAuth } from "@/components/auth/GoogleAuth";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
@@ -100,8 +101,10 @@ const Settings = () => {
             </p>
           </div>
 
-          {/* Settings Cards */}
+          {/* Settings Cards: Google ile giriş bu sayfaya taşındı */}
           <div className="grid gap-6">
+            {/* Account / Authentication */}
+            <GoogleAuth />
             
             {/* Theme Settings */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 nature:bg-green-50 nature:border-green-200">
