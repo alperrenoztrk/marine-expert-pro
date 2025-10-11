@@ -43,6 +43,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         role="img"
         aria-label="Metal compass dial"
         style={{ display: 'block', width: '100%', height: '100%' }}
+        textRendering="geometricPrecision"
       >
         <defs>
           {/* Soft radial metal gradient */}
@@ -114,8 +115,16 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           })}
         </g>
 
-        {/* Numeric labels every 30° - dark green */}
-        <g fill="#064e3b" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="9" fontWeight={600}>
+        {/* Numeric labels every 30° - brighter green */}
+        <g
+          fill="#34d399"
+          stroke="#064e3b"
+          strokeWidth="0.4"
+          paintOrder="stroke"
+          fontFamily="ui-sans-serif, system-ui, -apple-system"
+          fontSize="11"
+          fontWeight={800}
+        >
           {Array.from({ length: 12 }, (_, i) => i * 30).map((angle) => {
             const label = angle === 0 ? '0' : String(angle);
             const radius = 62;
@@ -123,17 +132,25 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
             const x = 100 + radius * Math.sin(rad);
             const y = 100 - radius * Math.cos(rad);
             return (
-              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central" opacity={0.85}>
+              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central" opacity={1}>
                 {label}
               </text>
             );
           })}
         </g>
 
-        {/* Cardinal labels (K, D, G, B) - dark green */}
-        <g fill="#064e3b" fontFamily="ui-sans-serif, system-ui, -apple-system" fontSize="13" fontWeight={700}>
+        {/* Cardinal labels (K, D, G, B) - brighter green */}
+        <g
+          fill="#22c55e"
+          stroke="#064e3b"
+          strokeWidth="0.6"
+          paintOrder="stroke"
+          fontFamily="ui-sans-serif, system-ui, -apple-system"
+          fontSize="16"
+          fontWeight={900}
+        >
           {cardinalLabels.map(({ text, angle }) => {
-            const radius = 74;
+            const radius = 76;
             const rad = (Math.PI / 180) * angle;
             const x = 100 + radius * Math.sin(rad);
             const y = 100 - radius * Math.cos(rad);
