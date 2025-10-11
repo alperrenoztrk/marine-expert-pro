@@ -8,8 +8,9 @@ interface MetalCompassDialProps {
 }
 
 /**
- * MetalCompassDial renders a brushed-metal style compass dial with cardinal labels
- * and a rotatable needle. It scales to its container; set size via parent classes.
+ * MetalCompassDial renders a brushed-metal style compass dial
+ * with tick marks, numeric degree labels and a rotatable needle.
+ * It scales to its container; set size via parent classes.
  */
 const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, className = '' }) => {
   const clampedHeading = Number.isFinite(headingDeg as number)
@@ -29,12 +30,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
     return { innerRadius, outerRadius, strokeWidth, opacity };
   };
 
-  const cardinalLabels = [
-    { text: 'K', angle: 0 },   // Kuzey (North)
-    { text: 'D', angle: 90 },  // Doğu (East)
-    { text: 'G', angle: 180 }, // Güney (South)
-    { text: 'B', angle: 270 }  // Batı (West)
-  ];
+  // Cardinal text labels (K, D, G, B) intentionally removed per design request.
 
   return (
     <div className={className} style={{ position: 'relative' }}>
@@ -161,28 +157,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           })}
         </g>
 
-        {/* Cardinal labels (K, D, G, B) - brighter green */}
-        <g
-          fill="#22c55e"
-          stroke="#064e3b"
-          strokeWidth="0.6"
-          paintOrder="stroke"
-          fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="16"
-          fontWeight={900}
-        >
-          {cardinalLabels.map(({ text, angle }) => {
-            const radius = 76;
-            const rad = (Math.PI / 180) * angle;
-            const x = 100 + radius * Math.sin(rad);
-            const y = 100 - radius * Math.cos(rad);
-            return (
-              <text key={`card-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
-                {text}
-              </text>
-            );
-          })}
-        </g>
+        {/* Cardinal text labels removed */}
 
         {/* Needle */}
         <g transform={`rotate(${clampedHeading} 100 100)`}>
