@@ -1,16 +1,30 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Compass, Calculator, Sigma, FileText } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import BackButton from "@/components/BackButton";
 
-import { NavigationCalculations } from "@/components/calculations/NavigationCalculations";
+type CalcItem = { id: string; title: string; subtitle?: string };
+
+const calcItems: CalcItem[] = [
+  { id: "gc", title: "Büyük Daire (Great Circle)", subtitle: "En kısa rota ve ilk kerteriz" },
+  { id: "rhumb", title: "Rhumb Line (Mercator)", subtitle: "Sabit kerterizli rota" },
+  { id: "plane", title: "Plane Sailing", subtitle: "dLat, Dep, mesafe ve kurs" },
+  { id: "eta", title: "Zaman ve ETA", subtitle: "Süre ve varış zamanı" },
+  { id: "current", title: "Akıntı Üçgeni (CTS)", subtitle: "Steer course ve SOG" },
+  { id: "compass", title: "Pusula Dönüşümleri", subtitle: "Var, Dev, toplam hata" },
+  { id: "cpa", title: "CPA / TCPA", subtitle: "En yakın yaklaşma analizi" },
+  { id: "sight", title: "Sight Reduction", subtitle: "Hc ve azimut" },
+  { id: "bearings", title: "Kerteriz Hesaplamaları", subtitle: "Doubling/Four/Seven point" },
+  { id: "distance", title: "Mesafe Hesaplamaları", subtitle: "Ufuk, radar, ışık" },
+  { id: "tides", title: "Gelgit Hesaplamaları", subtitle: "Twelfths kuralı yükseklik" },
+  { id: "turning", title: "Dönüş Hesaplamaları", subtitle: "Advance, transfer, ROT" },
+  { id: "weather", title: "Hava Durumu", subtitle: "Rüzgar, dalga, leeway" },
+  { id: "celestial", title: "Göksel Navigasyon", subtitle: "Meridian, amplitude, sunrise" },
+  { id: "emergency", title: "Acil Durum", subtitle: "Square/Sector search" },
+];
 
 const Navigation = () => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const initialTab = searchParams.get("tab") || undefined;
   return (
           <div className="min-h-screen bg-white dark:bg-white p-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -47,16 +61,27 @@ const Navigation = () => {
           </div>
         </div>
 
-        {/* Navigation Calculations */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-3">
-            <NavigationCalculations initialTab={initialTab} />
-          </div>
+        {/* Per-calculation links */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {calcItems.map((it) => (
+            <Link key={it.id} to={`/navigation/calc/${it.id}`} className="group">
+              <Card className="transition hover:shadow-md">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Calculator className="h-4 w-4 text-blue-600" /> {it.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground">
+                  {it.subtitle}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
 
         {/* Info */}
         <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-          Great Circle, Rhumb Line, Compass, CPA/TCPA, Sight Reduction ve daha fazlası
+          Her hesaplama artık ayrı bir sayfada açılır
         </div>
       </div>
     </div>

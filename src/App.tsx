@@ -17,6 +17,7 @@ import SeamanshipTopicsPage from "./pages/SeamanshipTopics";
 import TankMenu from "./pages/TankMenu";
 import SOLASMenu from "./pages/SOLASMenu";
 import Navigation from "./pages/Navigation";
+import NavigationCalculationPage from "./pages/NavigationCalculation";
 // import NavigationCalculationsPage from "./pages/NavigationCalculationsPage";
 import Economics from "./pages/Economics";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
@@ -99,6 +100,7 @@ const App = () => {
                     <Route path="/tank-menu" element={<TankMenu />} />
                     <Route path="/solas" element={<SOLASMenu />} />
                     <Route path="/navigation" element={<Navigation />} />
+                    <Route path="/navigation/calc/:id" element={<NavigationCalculationPage />} />
                     <Route path="/navigation/formulas" element={<NavigationFormulasPage />} />
                     <Route path="/navigation/topics" element={<NavigationTopicsPage />} />
                     <Route path="/navigation/detailed-meteorology" element={<DetailedMeteorology />} />
