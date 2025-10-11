@@ -296,17 +296,24 @@ export const StabilityCalculations = () => {
     phi: 15, // Default heel angle [°]
   });
   const [results, setResults] = useState<Partial<StabilityResults>>({});
-  const [activeTab, setActiveTab] = useState("basic");
+  const [activeTab, setActiveTab] = useState("grainAccount");
+  const allowedTabs = new Set(["grainAccount", "shearBending"]);
 
-  // Initialize active tab from URL hash (e.g., #grainAccount) and keep hash in sync
+  // Initialize active tab from URL hash (only allow grainAccount/shearBending) and keep hash in sync
   useEffect(() => {
     const initialHash = (typeof window !== 'undefined' && window.location.hash ? window.location.hash.substring(1) : "");
-    if (initialHash) {
+    if (initialHash && allowedTabs.has(initialHash)) {
       setActiveTab(initialHash);
+    } else {
+      setActiveTab('grainAccount');
     }
     const onHashChange = () => {
       const hash = window.location.hash.substring(1);
-      if (hash) setActiveTab(hash);
+      if (allowedTabs.has(hash)) {
+        setActiveTab(hash);
+      } else {
+        setActiveTab('grainAccount');
+      }
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -1055,13 +1062,7 @@ export const StabilityCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="basic">🎯 Temel</TabsTrigger>
-              <TabsTrigger value="gz">🌊 GZ</TabsTrigger>
-              <TabsTrigger value="fsc">🔄 FSC</TabsTrigger>
-              <TabsTrigger value="wind">🌪️ Rüzgar</TabsTrigger>
-              <TabsTrigger value="imo">📊 IMO</TabsTrigger>
-              <TabsTrigger value="damage">🛡️ Hasar</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="grainAccount">🌾 Tahıl Hesabı</TabsTrigger>
               <TabsTrigger value="shearBending">🪚 Shear Force & Bending Moment</TabsTrigger>
             </TabsList>
