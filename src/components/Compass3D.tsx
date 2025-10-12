@@ -76,6 +76,29 @@ const Compass3D: React.FC<Compass3DProps> = ({ headingDeg = 0, pitchDeg = 0, rol
     rootGroupRef.current = rootGroup;
     scene.add(rootGroup);
 
+    // Chrome outer frame - decorative bezel
+    const chromeFrame = new THREE.Mesh(
+      new THREE.TorusGeometry(2.35, 0.18, 32, 128),
+      new THREE.MeshStandardMaterial({
+        color: 0xe8e8e8,
+        metalness: 0.95,
+        roughness: 0.05,
+        envMapIntensity: 1.5
+      })
+    );
+    rootGroup.add(chromeFrame);
+
+    // Inner chrome ring with darker accent
+    const innerChromeRing = new THREE.Mesh(
+      new THREE.TorusGeometry(2.12, 0.08, 24, 96),
+      new THREE.MeshStandardMaterial({
+        color: 0xc0c0c0,
+        metalness: 0.9,
+        roughness: 0.15
+      })
+    );
+    rootGroup.add(innerChromeRing);
+
     // Base: torus ring + black face disk
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(2.0, 0.12, 32, 128),
