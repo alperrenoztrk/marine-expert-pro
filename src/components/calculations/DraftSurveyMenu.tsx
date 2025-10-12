@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Ship, 
@@ -6,7 +5,6 @@ import {
   Calculator, 
   Scale, 
   Anchor, 
-  ArrowLeft,
   BarChart3,
   FileText,
   Gauge
@@ -71,15 +69,6 @@ const DraftSurveyMenu = () => {
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Draft Survey Hesaplamaları</h1>
           <p className="text-muted-foreground">Gemi draft ölçümü ve kargo hesaplama araçları</p>

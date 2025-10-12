@@ -3,13 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Ship, Calculator, Scale, FileText } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Ship, Calculator, Scale, FileText } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function DraftSurveyStandard() {
-  const navigate = useNavigate();
   const { toast } = useToast();
   
   const [inputs, setInputs] = useState({
@@ -74,10 +72,6 @@ export default function DraftSurveyStandard() {
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Geri Dön
-        </Button>
         <div>
           <h1 className="text-2xl font-bold">Standart Draft Survey</h1>
           <p className="text-muted-foreground">Genel kargo draft hesaplaması</p>

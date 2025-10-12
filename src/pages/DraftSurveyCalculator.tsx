@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Calculator } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Calculator } from "lucide-react";
 
 const DraftSurveyCalculator = () => {
-  const navigate = useNavigate();
   
   // Draft değişimi hesaplama
   const [initialDraft, setInitialDraft] = useState("");
@@ -64,15 +62,6 @@ const DraftSurveyCalculator = () => {
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Hesap Makinesi</h1>
           <p className="text-muted-foreground">Hızlı draft hesaplamaları</p>

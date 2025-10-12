@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Thermometer, Wind, CloudRain, Compass, ChevronDown, ChevronUp, Clock } from "lucide-react";
+import { Thermometer, Wind, CloudRain, Compass, ChevronDown, ChevronUp, Clock } from "lucide-react";
 import { useWeatherForecast } from "@/hooks/useWeatherForecast";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 import { useHourlyWeather } from "@/hooks/useHourlyWeather";
@@ -83,7 +82,6 @@ function degreesToCompass(degrees: number): string {
 }
 
 export default function WeatherForecast() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { locationLabel } = useCurrentWeather();
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
@@ -126,15 +124,6 @@ export default function WeatherForecast() {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => navigate(-1)}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Geri
-          </Button>
           <h1 className="text-2xl font-bold text-foreground">5 Günlük Hava Tahmini</h1>
           <div></div>
         </div>

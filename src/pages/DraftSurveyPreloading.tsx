@@ -2,13 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, CheckCircle, Calculator, Anchor } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CheckCircle, Calculator, Anchor } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function DraftSurveyPreloading() {
-  const navigate = useNavigate();
   const { toast } = useToast();
   
   const [inputs, setInputs] = useState({
@@ -89,10 +87,6 @@ export default function DraftSurveyPreloading() {
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Geri Dön
-        </Button>
         <div>
           <h1 className="text-2xl font-bold">Yükleme Öncesi Kontrol</h1>
           <p className="text-muted-foreground">Kargo yüklemeden önce gemi durumu analizi</p>

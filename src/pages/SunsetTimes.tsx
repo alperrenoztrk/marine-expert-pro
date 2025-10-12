@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Sunset as SunsetIcon, MapPin } from "lucide-react";
+import { Sunset as SunsetIcon, MapPin } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 
 type SunsetDay = {
@@ -34,7 +33,6 @@ function hhmmFromIso(isoLike?: string | null): string {
 }
 
 export default function SunsetTimes() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { data: current, locationLabel } = useCurrentWeather({ watchPosition: false, reverseGeocode: true });
 
@@ -120,10 +118,6 @@ export default function SunsetTimes() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-card p-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <Button variant="outline" size="sm" onClick={() => navigate(-1)} className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Geri
-          </Button>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <SunsetIcon className="h-6 w-6 text-indigo-500" />
             30 Günlük Günbatımı Saatleri

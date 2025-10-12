@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, DollarSign, TrendingUp, Calculator, Ship, PieChart } from "lucide-react";
+import { Link } from "react-router-dom";
+import { DollarSign, TrendingUp, Calculator, Ship, PieChart } from "lucide-react";
 
 export default function EconomicsMenu() {
-  const navigate = useNavigate();
   const items = [
     { to: "/economics", icon: <TrendingUp className="h-4 w-4" />, label: "TCE Hesabı" },
     { to: "/economics", icon: <Calculator className="h-4 w-4" />, label: "Demurrage/Despatch" },
@@ -15,11 +14,6 @@ export default function EconomicsMenu() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-4 w-4" /> Geri Dön
-        </Button>
-      </div>
       <Card>
         <CardHeader>
           <CardTitle>Mali Hesaplamalar</CardTitle>

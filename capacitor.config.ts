@@ -18,7 +18,7 @@ const config: CapacitorConfig = {
       style: 'DARK'
     },
     App: {
-      skipBackButton: false
+      skipBackButton: true
     },
     Haptics: {},
     // Firebase & Google Services Configuration
