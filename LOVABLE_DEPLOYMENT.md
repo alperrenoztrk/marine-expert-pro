@@ -1,6 +1,10 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
+- **Tarih:** 2025-10-12
+- **Sürüm:** v2.5.65
+- **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
+
 - **Tarih:** 2025-10-01
 - **Sürüm:** v2.5.64
 - **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)

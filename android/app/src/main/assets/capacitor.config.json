@@ -16,7 +16,7 @@
 			"style": "DARK"
 		},
 		"App": {
-			"skipBackButton": false
+			"skipBackButton": true
 		},
 		"Haptics": {},
 		"GoogleAuth": {
