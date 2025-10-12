@@ -16,7 +16,7 @@ const Index = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [targetRoute, setTargetRoute] = useState<string | null>(null);
-  const totalPages = 2; // Ana sayfa ve sol sayfa (Pusula/Weather)
+  const totalPages = 3; // Sol (moon), merkez (ana), sağ (weather)
 
   // Compass state (2D only)
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
@@ -68,13 +68,12 @@ const Index = () => {
 
     if (navigateLeft) {
       setIsAnimating(true);
-      setTargetRoute('/moon-phases');
+      setTargetRoute('/empty-page');
       setTranslateX(-width);
     } else if (navigateRight) {
-      // Sağ sayfa kaldırıldı, merkeze geri dön
       setIsAnimating(true);
-      setTargetRoute(null);
-      setTranslateX(0);
+      setTargetRoute('/moon-phases');
+      setTranslateX(width);
     } else {
       // Snap back to center
       setIsAnimating(true);
@@ -163,9 +162,11 @@ const Index = () => {
 
   const handleDotClick = (pageIndex: number) => {
     if (pageIndex === 0) {
-      navigate('/');
-    } else if (pageIndex === 1) {
       navigate('/moon-phases');
+    } else if (pageIndex === 1) {
+      navigate('/');
+    } else if (pageIndex === 2) {
+      navigate('/empty-page');
     }
   };
 
@@ -206,7 +207,7 @@ const Index = () => {
             key={index}
             onClick={() => handleDotClick(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
-              index === 0 // Ana sayfa
+              index === 1 // Ana sayfa (merkez)
                 ? 'bg-white w-6 shadow-lg'
                 : 'bg-white/50 w-2 hover:bg-white/70'
             }`}
