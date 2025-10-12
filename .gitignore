@@ -31,3 +31,4 @@ android/local.properties
 
 # Capacitor
 capacitor.config.json
+.env
