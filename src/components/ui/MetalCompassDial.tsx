@@ -45,10 +45,11 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           {/* Theming-friendly CSS variables with graceful fallbacks */}
           {/* Bezel/edge styling */}
           <linearGradient id="bezelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="var(--compass-bezel-light, #e6e8ea)" />
-            <stop offset="28%" stopColor="var(--compass-bezel-base, #c7ccd1)" />
-            <stop offset="62%" stopColor="var(--compass-bezel-dark, #7b8086)" />
-            <stop offset="100%" stopColor="var(--compass-bezel-mid, #a9aeb3)" />
+            <stop offset="0%" stopColor="var(--compass-bezel-light, #f7f9fb)" />
+            <stop offset="18%" stopColor="var(--compass-bezel-base, #d9dde2)" />
+            <stop offset="44%" stopColor="var(--compass-bezel-dark, #7c838c)" />
+            <stop offset="68%" stopColor="var(--compass-bezel-reflection, #eef1f5)" />
+            <stop offset="100%" stopColor="var(--compass-bezel-shadow, #4d535b)" />
           </linearGradient>
 
           {/* Outer edge micro-shine */}
@@ -57,6 +58,14 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
             <stop offset="15%" stopColor="rgba(255,255,255,0.25)" />
             <stop offset="85%" stopColor="rgba(255,255,255,0.08)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0.25)" />
+          </linearGradient>
+
+          <linearGradient id="bezelSheen" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.55)" />
+            <stop offset="30%" stopColor="rgba(255,255,255,0.08)" />
+            <stop offset="52%" stopColor="rgba(255,255,255,0.38)" />
+            <stop offset="82%" stopColor="rgba(255,255,255,0.1)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.35)" />
           </linearGradient>
 
           {/* Soft radial metal gradient */}
@@ -134,6 +143,17 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         <g aria-hidden="true">
           {/* Base bezel ring: outer radius ~99, inner ~91 via stroke */}
           <circle cx="100" cy="100" r="95" fill="none" stroke="url(#bezelGradient)" strokeWidth="8" />
+
+          {/* Chrome sheen wrapping around the bezel for a mirror-like finish */}
+          <circle
+            cx="100"
+            cy="100"
+            r="96"
+            fill="none"
+            stroke="url(#bezelSheen)"
+            strokeWidth="3"
+            opacity="0.85"
+          />
 
           {/* Knurling marks: short alternating radial ticks on the bezel */}
           <g strokeLinecap="round">

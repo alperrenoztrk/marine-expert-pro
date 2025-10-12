@@ -263,10 +263,12 @@ const Index = () => {
                 // Darken bezel slightly on white background for contrast
                 // Consumers may set these on :root or a theme container
                 // @ts-ignore CSS variables
-                ['--compass-bezel-light' as any]: '#e8ebee',
-                ['--compass-bezel-base' as any]: '#c9cdd2',
-                ['--compass-bezel-dark' as any]: '#7a7f86',
-                ['--compass-bezel-mid' as any]: '#a9aeb3',
+                ['--compass-bezel-light' as any]: '#f9fbff',
+                ['--compass-bezel-base' as any]: '#dee3e9',
+                ['--compass-bezel-dark' as any]: '#6b737d',
+                ['--compass-bezel-mid' as any]: '#c5cacf',
+                ['--compass-bezel-reflection' as any]: '#f0f2f5',
+                ['--compass-bezel-shadow' as any]: '#3f444b',
               }}
             >
               <MetalCompassDial
