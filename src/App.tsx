@@ -35,6 +35,7 @@ import SailorKnotsPage from "./pages/SailorKnots";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
 import StableTalesPage from "./pages/StableTales";
 import EmptyPage from "./pages/EmptyPage";
+import MoonPhases from "./pages/MoonPhases";
 import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
@@ -111,6 +112,7 @@ const App = () => {
                     <Route path="/navigation/quiz" element={<NavigationQuizPage />} />
                     <Route path="/economics" element={<Economics />} />
                     <Route path="/empty-page" element={<EmptyPage />} />
+                    <Route path="/moon-phases" element={<MoonPhases />} />
                     <Route path="/settings" element={<Settings />} />
                      <Route path="/formulas" element={<Formulas />} />
                      <Route path="/regulations" element={<Regulations />} />

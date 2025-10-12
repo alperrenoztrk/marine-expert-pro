@@ -68,7 +68,7 @@ const Index = () => {
 
     if (navigateLeft) {
       setIsAnimating(true);
-      setTargetRoute('/empty-page');
+      setTargetRoute('/moon-phases');
       setTranslateX(-width);
     } else if (navigateRight) {
       // Sağ sayfa kaldırıldı, merkeze geri dön
@@ -165,7 +165,7 @@ const Index = () => {
     if (pageIndex === 0) {
       navigate('/');
     } else if (pageIndex === 1) {
-      navigate('/empty-page');
+      navigate('/moon-phases');
     }
   };
 
