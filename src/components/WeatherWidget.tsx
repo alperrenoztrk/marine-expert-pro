@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 // @ts-ignore - linter type resolution quirk in isolated file checks
 import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin, Sunrise, Sunset } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
+import MoonPhaseWidget from "@/components/MoonPhaseWidget";
 // Removed analog clock in favor of digital time tiles
 
 type WeatherResponse = {
@@ -441,6 +442,9 @@ export default function WeatherWidget() {
                 </div>
               </div>
             </div>
+
+            {/* Moon Phases */}
+            <MoonPhaseWidget />
             <div 
               className="col-span-2 group relative rounded-xl bg-gradient-to-r from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
               onClick={() => navigate('/location-selector')}
