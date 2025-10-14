@@ -1,6 +1,6 @@
 import math
 from dataclasses import dataclass
-from typing import Tuple, Literal
+from typing import Tuple, Literal, List
 
 # -------------- Angle helpers (degrees) --------------
 
@@ -166,3 +166,98 @@ def parse_hms_to_hours(text: str) -> float:
     seconds = float(sec)
     sign = -1.0 if hours < 0 else 1.0
     return sign * (abs(hours) + minutes / 60.0 + seconds / 3600.0)
+
+
+# -------------- Fix computation (least squares) --------------
+
+@dataclass
+class Sight:
+    lat_assumed_deg: float
+    lon_assumed_deg: float  # East positive
+    gha_deg: float
+    dec_deg: float
+    Ho_deg: float
+
+
+@dataclass
+class FixResult:
+    lat_deg: float
+    lon_deg: float
+    rms_minutes: float
+    num_sights: int
+
+
+def _lop_line(lat0: float, lon0: float, gha: float, dec: float, Ho: float) -> Tuple[float, float, float]:
+    """
+    Compute linearized LOP near (lat0, lon0): a*dlat + b*dlon = c, where dlon in degrees east, dlat in degrees.
+    Using partial derivatives of Hc with respect to φ and LHA, and dLHA = - dλ (east positive).
+    Returns (a, b, c) in minutes units: a*dlat + b*dlon = c.
+    """
+    lha = lha_from_gha_longitude(gha, lon0)
+    hc, zn = compute_hc_zn(lat0, dec, lha)
+    dh_minutes = (Ho - hc) * 60.0
+    # partial derivatives dHc/dφ and dHc/dLHA in degrees per degree
+    # Hc(φ,δ,LHA) = asin(sinφ sinδ + cosφ cosδ cosLHA)
+    # dHc = (1/cos Hc) * (cosφ sinδ * dφ + (-sinφ cosδ cosLHA) * dφ + (-cosφ cosδ sinLHA) * dLHA)
+    # Simplify numerically via small deltas for robustness
+    d = 1e-5
+    hc_dphi, _ = compute_hc_zn(lat0 + d, dec, lha)
+    dH_dphi = (hc_dphi - hc) / d
+    hc_dlha, _ = compute_hc_zn(lat0, dec, (lha + d) % 360.0)
+    dH_dlha = (hc_dlha - hc) / d
+    # Relationship between longitude change and LHA: dLHA = - dλ (east positive)
+    dH_dlon = -dH_dlha
+    # Convert coefficients to minutes per degree (multiply both sides by 60)
+    a = 60.0 * dH_dphi
+    b = 60.0 * dH_dlon
+    c = dh_minutes
+    return a, b, c
+
+
+def solve_fix_least_squares(sights: List[Sight]) -> FixResult:
+    if len(sights) < 2:
+        raise ValueError("At least two sights are required for a fix")
+
+    # Start from average of assumed positions
+    lat = sum(s.lat_assumed_deg for s in sights) / len(sights)
+    lon = sum(s.lon_assumed_deg for s in sights) / len(sights)
+
+    # Iterate Gauss-Newton for small corrections
+    for _ in range(6):
+        A_rows: List[Tuple[float, float]] = []
+        b_vec: List[float] = []
+        for s in sights:
+            a, b, c = _lop_line(lat, lon, s.gha_deg, s.dec_deg, s.Ho_deg)
+            A_rows.append((a, b))
+            b_vec.append(c)
+        # Normal equations: (A^T A) x = A^T b
+        A11 = sum(a * a for a, _ in A_rows)
+        A12 = sum(a * b for a, b in A_rows)
+        A22 = sum(b * b for _, b in A_rows)
+        B1 = sum(a * c for (a, _), c in zip(A_rows, b_vec))
+        B2 = sum(b * c for (_, b), c in zip(A_rows, b_vec))
+        det = A11 * A22 - A12 * A12
+        if abs(det) < 1e-9:
+            break
+        dlat = ( A22 * B1 - A12 * B2) / det  # in degrees
+        dlon = (-A12 * B1 + A11 * B2) / det  # in degrees (east +)
+        lat += dlat
+        lon += dlon
+        # Keep latitude within valid bounds to avoid singularities
+        if lat > 89.9999:
+            lat = 89.9999
+        elif lat < -89.9999:
+            lat = -89.9999
+    # Compute RMS in minutes
+    residuals = []
+    for s in sights:
+        lha = lha_from_gha_longitude(s.gha_deg, lon)
+        hc, _ = compute_hc_zn(lat, s.dec_deg, lha)
+        residuals.append(((s.Ho_deg - hc) * 60.0))
+    if residuals:
+        rms = math.sqrt(sum(r * r for r in residuals) / len(residuals))
+    else:
+        rms = 0.0
+    # Normalize longitude to [-180, 180) for presentation
+    lon_norm = ((lon + 180.0) % 360.0) - 180.0
+    return FixResult(lat_deg=lat, lon_deg=lon_norm, rms_minutes=rms, num_sights=len(sights))

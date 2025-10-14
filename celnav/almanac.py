@@ -2,6 +2,9 @@ import math
 from dataclasses import dataclass
 from typing import Tuple
 
+# Note: For stars, GHA_star = (GHA_aries + SHA_star) mod 360.
+# Declination is taken from a catalog; here only the combination function is provided.
+
 # Basic astronomical constants
 DEG2RAD = math.pi / 180.0
 RAD2DEG = 180.0 / math.pi
@@ -156,3 +159,8 @@ def compute_aries_gha_from_iso(iso_utc: str) -> AlmanacAries:
     T = _julian_centuries(JD)
     gha = gha_aries_deg(JD, T)
     return AlmanacAries(gha_deg=gha)
+
+
+def gha_star_from_aries_sha(gha_aries_deg_val: float, sha_star_deg: float) -> float:
+    """Compute a star's GHA given Aries GHA and star SHA."""
+    return (gha_aries_deg_val + sha_star_deg) % 360.0

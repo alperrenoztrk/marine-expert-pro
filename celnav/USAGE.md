@@ -45,6 +45,39 @@ Latitude: 37.02691°  (37° 01.61′)
 Longitude (East +): 20.50000°  (20° 30.00′)
 ```
 
+## Fix from Multiple Sights (Sun/Stars)
+
+Prepare a JSON array of sights with corrected altitude `Ho` (degrees). Longitude is East positive.
+
+Example file `sights.json`:
+
+```json
+[
+  { "body": "sun",  "lat": 36.0, "lon": 25.0, "GHA": 150.3333, "dec": 10.25, "Ho": 45.2467 },
+  { "body": "star", "lat": 36.0, "lon": 25.0, "GHA_aries": 200.1000, "star": "Sirius", "Ho": 20.1333 }
+]
+```
+
+Run:
+
+```bash
+python3 -m celnav fix --file sights.json
+```
+
+Or inline JSON:
+
+```bash
+python3 -m celnav fix --json '[{"body":"sun","lat":36,"lon":25,"GHA":150.3333,"dec":10.25,"Ho":45.2467},{"body":"star","lat":36,"lon":25,"GHA_aries":200.1,"star":"Sirius","Ho":20.1333}]'
+```
+
+Expected-like output:
+
+```
+Fix Latitude: 36.01234°  (36° 00.74′)
+Fix Longitude (East +): 24.98765°  (24° 59.26′)
+RMS residual: 2.10′ over 2 sights
+```
+
 ## Star Sight
 
 ```bash

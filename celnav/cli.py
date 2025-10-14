@@ -1,5 +1,5 @@
 import argparse
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 from .core import (
     lha_from_gha_longitude,
@@ -14,8 +14,12 @@ from .core import (
     lmt_to_utc_hours,
     parse_hms_to_hours,
     deg_to_dms_str,
+    Sight,
+    solve_fix_least_squares,
 )
-from .almanac import compute_sun_gha_dec_from_iso, compute_aries_gha_from_iso
+from .almanac import compute_sun_gha_dec_from_iso, compute_aries_gha_from_iso, gha_star_from_aries_sha
+from .stars import get_star, list_stars
+import json
 
 
 def format_deg_and_dms(x: float) -> str:
@@ -196,6 +200,63 @@ def cmd_srt(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_fix(args: argparse.Namespace) -> int:
+    """Compute position fix from multiple sights supplied as JSON file or inline JSON string."""
+    if args.file:
+        with open(args.file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    else:
+        data = json.loads(args.json)
+
+    sights: List[Sight] = []
+    for i, s in enumerate(data):
+        body = s.get("body", "sun").lower()
+        lat_assumed = float(s["lat"])
+        lon_assumed = float(s["lon"])  # East positive
+        Ho = float(s["Ho"])  # already corrected altitude in deg
+        dec: float
+        gha: float
+        if body == "sun":
+            gha = float(s["GHA"]) if "GHA" in s else float(s["gha"]) if "gha" in s else None
+            dec = float(s["dec"]) if "dec" in s else float(s["Decl" ]) if "Decl" in s else None
+            if gha is None or dec is None:
+                raise SystemExit("Sun sight requires 'GHA' and 'dec' fields")
+        elif body == "star":
+            # Requires Aries GHA and star name or SHA
+            gha_aries = float(s.get("GHA_aries", s.get("gha_aries")))
+            if "SHA" in s or "sha" in s:
+                sha = float(s.get("SHA", s.get("sha")))
+                dec = float(s["dec"]) if "dec" in s else float(s["Decl"]) if "Decl" in s else None
+                if dec is None:
+                    raise SystemExit("Star sight with SHA requires 'dec' declination")
+            else:
+                star_name = s.get("star") or s.get("name")
+                if not star_name:
+                    raise SystemExit("Star sight requires 'star' name or 'SHA'")
+                entry = get_star(str(star_name))
+                if not entry:
+                    raise SystemExit(f"Unknown star: {star_name}")
+                sha = entry.sha_deg
+                dec = entry.dec_deg
+            gha = gha_star_from_aries_sha(gha_aries, sha)
+        else:
+            raise SystemExit(f"Unsupported body type: {body}")
+
+        sights.append(Sight(
+            lat_assumed_deg=lat_assumed,
+            lon_assumed_deg=lon_assumed,
+            gha_deg=float(gha),
+            dec_deg=float(dec),
+            Ho_deg=float(Ho),
+        ))
+
+    fix = solve_fix_least_squares(sights)
+    print("Fix Latitude:", format_deg_and_dms(fix.lat_deg))
+    print("Fix Longitude (East +):", format_deg_and_dms(fix.lon_deg))
+    print(f"RMS residual: {fix.rms_minutes:.2f}′ over {fix.num_sights} sights")
+    return 0
+
+
 # -------------------- Interactive Commands --------------------
 
 def cmd_almanac_interactive(_: argparse.Namespace) -> int:
@@ -355,6 +416,13 @@ def build_parser() -> argparse.ArgumentParser:
     psrt.add_argument("--lha-stop", type=float, required=True, help="Stop LHA or GHA (deg)")
     psrt.add_argument("--lha-step", type=float, default=5.0, help="Step (deg)")
     psrt.set_defaults(func=cmd_srt)
+
+    # Fix (multiple sights)
+    pfix = sub.add_parser("fix", help="Compute position fix from multiple sights (JSON)")
+    g = pfix.add_mutually_exclusive_group(required=True)
+    g.add_argument("--file", help="Path to JSON file containing an array of sight dicts")
+    g.add_argument("--json", help="Inline JSON array of sight dicts")
+    pfix.set_defaults(func=cmd_fix)
 
     # Interactive Almanac
     pas_i = sub.add_parser("almanac-i", help="Interactive Almanac: prompt inputs, print narrative output")
