@@ -258,18 +258,6 @@ const Index = () => {
           <Link to="/calculations" className="relative w-fit mx-auto group" aria-label="Pusula ve Menü">
             <div
               className="relative h-44 w-44 md:h-52 md:w-52 transition-transform duration-200 hover:scale-105"
-              style={{
-                // Example theme variables; apps can override globally
-                // Darken bezel slightly on white background for contrast
-                // Consumers may set these on :root or a theme container
-                // @ts-ignore CSS variables
-                ['--compass-bezel-light' as any]: '#f9fbff',
-                ['--compass-bezel-base' as any]: '#dee3e9',
-                ['--compass-bezel-dark' as any]: '#6b737d',
-                ['--compass-bezel-mid' as any]: '#c5cacf',
-                ['--compass-bezel-reflection' as any]: '#f0f2f5',
-                ['--compass-bezel-shadow' as any]: '#3f444b',
-              }}
             >
               <MetalCompassDial
                 headingDeg={headingDeg ?? 0}
