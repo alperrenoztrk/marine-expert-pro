@@ -11,7 +11,7 @@ export default function SeamanshipTopicButtons() {
     { to: "/seamanship/topics#lifesaving", icon: <LifeBuoy className="h-4 w-4" />, label: "Can Kurtarma (MOB)" },
     { to: "/seamanship/topics#deck-maintenance", icon: <Ruler className="h-4 w-4" />, label: "Güverte İşleri" },
     { to: "/seamanship/topics#watchkeeping", icon: <Wrench className="h-4 w-4" />, label: "Günlük Operasyonlar" },
-    { to: "/seamanship/topics#boat-ops", icon: <Ship className="h-4 w-4" />, label: "Pilot Çarmıhı" },
+    { to: "/seamanship/topics#pilot-ladder", icon: <Ship className="h-4 w-4" />, label: "Pilot Çarmıhı" },
   ];
 
   return (

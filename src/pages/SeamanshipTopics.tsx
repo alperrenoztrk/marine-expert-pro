@@ -42,6 +42,7 @@ export default function SeamanshipTopicsPage() {
     { id: "stability", title: "Stabilite ve Yükleme", icon: Ruler },
     { id: "cargo", title: "Yük Operasyonları", icon: Anchor },
     { id: "deck-maintenance", title: "Güverte Bakımı", icon: Wrench },
+    { id: "pilot-ladder", title: "Pilot Çarmıhı", icon: LifeBuoy },
     { id: "boat-ops", title: "Küçük Tekne Operasyonları", icon: Waves },
     { id: "sar", title: "Arama ve Kurtarma (SAR)", icon: LifeBuoy },
     { id: "human-factors", title: "İnsan Faktörleri ve İSG", icon: BookOpen },
@@ -1343,6 +1344,183 @@ export default function SeamanshipTopicsPage() {
               <li><strong>PMS (Planned Maintenance):</strong> Running hours, calendar-based, critical equipment</li>
               <li><strong>Spare Parts:</strong> Critical spares inventory, ROB management, ordering procedures</li>
             </ul>
+          </CardContent>
+          )}
+        </Card>
+
+        {/* Pilot Çarmıhı */}
+        <Card className="shadow">
+          <CardHeader onClick={() => toggle('pilot-ladder')} className="cursor-pointer" aria-expanded={isOpen('pilot-ladder')}>
+            <CardTitle id="pilot-ladder" className="scroll-mt-24 flex items-center justify-between">
+              Pilot Çarmıhı (SOLAS, IMO A.1045(27), ISO 799-1)
+              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('pilot-ladder') ? "rotate-180" : "")} />
+            </CardTitle>
+          </CardHeader>
+          {isOpen('pilot-ladder') && (
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">⚓ Gemilerde Pilot Çarmıhı</h4>
+              <p className="text-muted-foreground">(SOLAS kuralları, bakım, kontrol ve gemi uygulamaları)</p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Yapısal Gereklilikler</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Basamaklar</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Malzeme:</strong> Sert ağaç veya eşdeğer dayanıklı, kaymaz malzeme.</li>
+                    <li><strong>Boyutlar:</strong> Uzunluk 400 mm, genişlik 115 mm, kalınlık 25 mm.</li>
+                    <li><strong>Aralık:</strong> 310 ± 5 mm.</li>
+                    <li><strong>Spread step:</strong> Her 8’inci basamak spread step olmalı; halatların dönmesini önler.</li>
+                    <li><strong>Alt basamak:</strong> Güçlendirilmiş ve sert olmalıdır (bottom step).</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Halatlar</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Malzeme:</strong> Doğal lifli halat (manila, sisal).</li>
+                    <li><strong>Çap:</strong> En az 18 mm.</li>
+                    <li><strong>Not:</strong> Sentetik halat yasaktır (kayganlık ve ısı hassasiyeti).</li>
+                    <li><strong>Uç bitişleri:</strong> Eye splice ile sabit; metal thimble kullanılmalıdır.</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Kaynak: IMO Resolution A.1045(27) Madde 3–5; ISO 799-1:2019 Bölüm 4.</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Kombinasyon Düzenekleri</h4>
+              <p>Yüksek serbest bordalı gemilerde pilot çarmıhı, konaklama iskelesiyle (accommodation ladder) birlikte kullanılır.</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>İki düzenek arası dikey mesafe: 1,5 – 2,0 metre.</li>
+                <li>Platform yüksekliği deniz seviyesinden en fazla 9 metre.</li>
+                <li>Handhold direkleri (stanchions) sağlam ve 70–80 cm yüksekliğinde olmalıdır.</li>
+                <li>Çarmıh platformun <strong>altına değil</strong>, <strong>yanına</strong> yerleştirilmelidir.</li>
+              </ul>
+              <div className="text-xs text-muted-foreground">Kaynak: SOLAS V/23-3.3; IMO A.1045(27) Madde 10–12.</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Gemide Kim Ne Yapar? (Sorumluluk Paylaşımı)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Personel</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Kaptan (Master):</strong> SOLAS’a uygunluk, güvenli kurulum ve operasyonun genel gözetimi.</li>
+                    <li><strong>3. Zabit (Third Officer):</strong> Her kullanım öncesi görsel kontrol, kayıtların tutulması, pilotla iletişim.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Uygulama</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>Bosun (Usta Gemici):</strong> Kurulum, strong point’lerin sağlamlığı, halat ve basamak kontrolü.</li>
+                    <li><strong>AB (Gemici):</strong> Çarmıhın bota indirilmesi, safety net kurulumu ve gözetim.</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Kaynak: ISM Code Bölüm 5.1 (Yetki ve Sorumluluklar).</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Kullanım Öncesi Kontroller</h4>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>Halatlar aşınmış, lifleri çözülmüş mü?</li>
+                <li>Basamaklarda çatlak, kırık veya kayganlık var mı?</li>
+                <li>Spread step’ler yerinde mi, sabit mi?</li>
+                <li>Halat bağlantıları (eye splice) sağlam mı?</li>
+                <li>Alt uç, su seviyesinin en az 1,5 m altına ulaşıyor mu?</li>
+                <li>Çarmıh strong point’e doğru şekilde bağlanmış mı?</li>
+                <li>Güvenlik ağı (safety net) kurulmuş mu?</li>
+                <li>Işıklı can simidi ve telsiz hazır mı?</li>
+              </ol>
+              <div className="text-xs text-muted-foreground">Kaynak: IMO MSC.1/Circ.1428 Bölüm 7.</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Bakım ve Kayıt Tutma</h4>
+              <p>Pilot çarmıhları her kullanımda kontrol edilmeli; 12 ayda bir resmi test ve muayeneden geçmelidir.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-medium mb-2">Pilot Ladder Record Book</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Kullanım tarihi ve yeri</li>
+                    <li>Kontrol eden kişi (imza + rütbe)</li>
+                    <li>Gözlemler (hasar, değişen parça, bakım notu)</li>
+                    <li>Gerekirse fotoğraf kaydı</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Bakım Notları</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Onarım sadece sertifikalı üretici parçalarıyla yapılabilir.</li>
+                    <li>Sentetik halat veya doğaçlama malzeme kullanılmaz.</li>
+                    <li>Basamaklara gemi boyası/yağ sürülmez (kayganlık yaratır).</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Kaynak: SOLAS V/23-4.4; ISM Code Bölüm 10.3; IMO A.1045(27) Madde 9.</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Operasyonel Aşama — Pilot Transfer Prosedürü</h4>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li><strong>Köprüüstü – Güverte Koordinasyonu:</strong> Pilot botu VHF Ch 12/14’ten çağrılır; “Stand by pilot ladder port side”.</li>
+                <li><strong>Gemi Hızı:</strong> Maksimum 6 knot.</li>
+                <li><strong>Taraf Seçimi:</strong> Lee side (rüzgâraltı) seçilir.</li>
+                <li><strong>Pilot Çıkışı:</strong> Pilot bot yaklaşırken personel hazır bekler.</li>
+                <li><strong>Emniyet:</strong> Işıklı life buoy, safety net, el feneri hazır bulundurulur.</li>
+              </ol>
+              <div className="text-xs text-muted-foreground">Kaynak: ICS Pilot Transfer Guidelines (2020), Annex 2.</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">PSC ve Klas Denetimlerinde Dikkat Edilen Noktalar</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>SOLAS V/23 ve IMO A.1045(27) ile tam uyum.</li>
+                <li>Basamak aralıkları ve ölçülerin doğruluğu.</li>
+                <li>Sentetik halat kullanımının olmaması.</li>
+                <li>Kombinasyon iskelede yanlış açı/gevşek bağlantı kontrolü.</li>
+                <li>Pilot Ladder Record Book güncelliği.</li>
+                <li>Güvenlik ağı (safety net) kurulumu.</li>
+              </ul>
+              <div className="text-xs text-muted-foreground">Kaynak: Paris MoU Inspection Guidelines (2024).</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Kazalar ve Dersler</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 dark:bg-gray-900/20 p-3 rounded-lg">
+                  <h5 className="font-medium">2021 – Southampton Kazası</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Pilot, gevşek bağlanan çarmıhtan düşerek ağır yaralandı.</li>
+                    <li><strong>Neden:</strong> Eye splice’lar yanlış yapılmıştı.</li>
+                    <li><strong>Ders:</strong> Her onarımdan sonra load test uygulanmalı.</li>
+                  </ul>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-900/20 p-3 rounded-lg">
+                  <h5 className="font-medium">2023 – Antwerp Near-Miss</h5>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Halat yaşlı ve lifleri yıpranmıştı; pilot düşmeden hemen önce fark edildi.</li>
+                    <li><strong>Ders:</strong> Yaşlı çarmıhlar 30 ayı geçmeden değiştirilmelidir.</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Kaynak: MAIB Safety Bulletin 2/2021; IMPA Safety Campaign Reports (2018–2024).</div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-base">Kaynakça</h4>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>SOLAS (Consolidated Edition 2024) – Chapter V, Regulation 23</li>
+                <li>IMO Resolution A.1045(27) – Pilot Transfer Arrangements</li>
+                <li>IMO MSC.1/Circ.1428 – Maintenance and Inspection Guidance</li>
+                <li>ISO 799-1:2019 – Ships and Marine Technology — Pilot Ladders</li>
+                <li>IMPA Safety Campaign Reports (2018–2024)</li>
+                <li>Paris MoU Inspection Guidelines (2024)</li>
+                <li>ICS Pilot Transfer Guidelines (2020)</li>
+              </ol>
+            </div>
           </CardContent>
           )}
         </Card>
