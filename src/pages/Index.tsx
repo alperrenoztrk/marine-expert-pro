@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
 import { Settings } from "lucide-react";
@@ -71,8 +71,45 @@ const Index = () => {
     };
   }, []);
 
+  // --- Horizontal swipe navigation ---
+  const navigate = useNavigate();
+  const touchStartXRef = useRef<number | null>(null);
+  const touchLastXRef = useRef<number | null>(null);
+  const swipeThresholdPx = 60;
+
+  const handleTouchStart: React.TouchEventHandler<HTMLDivElement> = (e) => {
+    touchStartXRef.current = e.targetTouches[0]?.clientX ?? null;
+    touchLastXRef.current = touchStartXRef.current;
+  };
+
+  const handleTouchMove: React.TouchEventHandler<HTMLDivElement> = (e) => {
+    touchLastXRef.current = e.targetTouches[0]?.clientX ?? touchLastXRef.current;
+  };
+
+  const handleTouchEnd: React.TouchEventHandler<HTMLDivElement> = () => {
+    const startX = touchStartXRef.current;
+    const lastX = touchLastXRef.current;
+    touchStartXRef.current = null;
+    touchLastXRef.current = null;
+    if (startX == null || lastX == null) return;
+
+    const deltaX = lastX - startX;
+    if (deltaX <= -swipeThresholdPx) {
+      // Left swipe -> go to calculations
+      navigate("/calculations");
+    } else if (deltaX >= swipeThresholdPx) {
+      // Right swipe -> go to settings
+      navigate("/settings");
+    }
+  };
+
   return (
-    <div className="relative min-h-screen overflow-x-auto touch-pan-x bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400">
+    <div
+      className="relative min-h-screen overflow-x-auto touch-pan-x bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Top right settings button */}
       <div className="fixed right-6 top-6 z-20 flex items-center">
         <Link to="/settings">
