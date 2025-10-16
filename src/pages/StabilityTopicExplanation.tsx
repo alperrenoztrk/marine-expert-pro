@@ -43,10 +43,10 @@ export default function StabilityTopicExplanationPage() {
             <section>
               <h4 className="text-base font-semibold text-foreground mb-2">Temel Büyüklükler ve İlişkiler</h4>
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`∇ = L · B · T · C_B
-Δ = ∇ · ρ_deniz
-I_T ≈ (L · B³ · C_W)/12
-BM = I_T / ∇
+                <pre className="font-mono text-sm leading-6">{`∇ = L · B · T · CB
+Δ = ∇ · ρdeniz
+IT ≈ (L · B³ · CW)/12
+BM = IT / ∇
 KM = KB + BM
 GM = KM − KG
 Küçük açılar: GZ(φ) ≈ GM · sin(φ)
@@ -95,9 +95,9 @@ RM = Δ · GZ`}</pre>
                 tankları mümkünse <em>tam</em> ya da <em>boş</em> tutmak güvenlidir.
               </p>
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`GM_düz = GM − ΣFSC
-FSC ≈ (ρ_tank / ρ_deniz) · (I_f / ∇)
-I_f (dikdörtgen) = l · b³ / 12`}</pre>
+                <pre className="font-mono text-sm leading-6">{`GM düz = GM − ΣFSC
+FSC ≈ (ρtank / ρdeniz) · (If / ∇)
+If (dikdörtgen) = l · b³ / 12`}</pre>
               </div>
             </section>
 
@@ -119,10 +119,10 @@ I_f (dikdörtgen) = l · b³ / 12`}</pre>
             <section>
               <h4 className="text-base font-semibold text-foreground mb-2">Rüzgâr Altında Davranış ve Weather Criterion</h4>
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`Rüzgâr basıncı: q = 0.5 · ρ_hava · V²
+                <pre className="font-mono text-sm leading-6">{`Rüzgâr basıncı: q = 0.5 · ρhava · V²
 Kuvvet:        F = q · A
-Devirme mom.:  M_h = F · z
-Heeling kolu:  a_h = M_h / (Δ · g)`}</pre>
+Devirme mom.:  Mh = F · z
+Heeling kolu:  ah = Mh / (Δ · g)`}</pre>
               </div>
               <p>
                 <em>Weather Criterion</em>: Rüzgârın oluşturduğu alan, GZ eğrisi altında kalan sağlama alanını aşmamalıdır;
@@ -138,14 +138,14 @@ Heeling kolu:  a_h = M_h / (Δ · g)`}</pre>
                 düşürülerek <strong>GM</strong> pozitife çevrilmelidir.
               </p>
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`Yaklaşım: tan φ_loll ≈ √(−2 · GM / BMT),  GM < 0`}</pre>
+                <pre className="font-mono text-sm leading-6">{`Yaklaşım: tan φloll ≈ √(−2 · GM / BMT),  GM < 0`}</pre>
               </div>
             </section>
 
             <section>
               <h4 className="text-base font-semibold text-foreground mb-2">Yalpa Periyodu (Hızlı Tahmin)</h4>
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`T ≈ 2π · k / √(g · GM_düz)`}</pre>
+                <pre className="font-mono text-sm leading-6">{`T ≈ 2π · k / √(g · GM düz)`}</pre>
               </div>
               <p>
                 Burada <em>k</em> deneyimsel bir katsayıdır; pratikte kabaca <em>k ≈ 0.35 · B</em> alınabilir.
@@ -184,7 +184,7 @@ Heeling kolu:  a_h = M_h / (Δ · g)`}</pre>
               <h4 className="text-base font-semibold text-foreground mb-2">Operasyonel Yol Haritası</h4>
               <ol className="list-decimal pl-5 space-y-1">
                 <li>Doğru <strong>lightship</strong> ve güncel yük/tank verileriyle <strong>KG</strong> hesapla.</li>
-                <li><strong>GM</strong> ve <strong>GM_düz</strong> (FSE ile) kontrol et.</li>
+                <li><strong>GM</strong> ve <strong>GM düz</strong> (FSE ile) kontrol et.</li>
                 <li>Hidrostatik tablolardan <strong>KN</strong> eğrilerini al, <strong>GZ</strong> eğrisini oluştur.</li>
                 <li>IMO kriterlerini (alanlar, maksimum GZ, başlangıç GM) değerlendir.</li>
                 <li>Rüzgâr/yalpa, özel yük (Grain, timber, DG) kurallarını uygula.</li>

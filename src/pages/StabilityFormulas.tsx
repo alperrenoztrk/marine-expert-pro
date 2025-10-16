@@ -52,12 +52,12 @@ export default function StabilityFormulasPage() {
                   <tr className="border-t">
                     <td className="p-2">Draft (Ortalama)</td>
                     <td className="p-2">T</td>
-                    <td className="p-2 font-mono">T = (T_f + T_a)/2</td>
+                    <td className="p-2 font-mono">T = (Tf + Ta)/2</td>
                   </tr>
                   <tr className="border-t">
                     <td className="p-2">Trim</td>
                     <td className="p-2">—</td>
-                    <td className="p-2 font-mono">Trim = T_a − T_f</td>
+                    <td className="p-2 font-mono">Trim = Ta − Tf</td>
                   </tr>
                   <tr className="border-t">
                     <td className="p-2">MCT 1 cm</td>
@@ -81,11 +81,11 @@ export default function StabilityFormulasPage() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`KB ≈ T · (0.53 + 0.085·C_B)   (yaklaşım, aksi halde tablodan)
-BM_T = I_T / ∇
-KM_T = KB + BM_T
-GM_T = KM_T − KG
-Küçük açılar:   GZ(φ) ≈ GM_T · sin φ
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`KB ≈ T · (0.53 + 0.085·CB)   (yaklaşım, aksi halde tablodan)
+BMT = IT / ∇
+KMT = KB + BMT
+GMT = KMT − KG
+Küçük açılar:   GZ(φ) ≈ GMT · sin φ
 Genel:          GZ(φ) = KN(φ) − KG · sin φ`}</pre>
             </div>
             <p>I<sub>T</sub>: su hattı alanının enine atalet momenti; KN(φ): hidrostatik tablodan.</p>
@@ -98,11 +98,11 @@ Genel:          GZ(φ) = KN(φ) − KG · sin φ`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Yeni KG (ağırlık eklendi):   KG' = (Δ·KG + w·KG_w)/(Δ + w)
-Yeni KG (ağırlık kaldırıldı): KG' = (Δ·KG − w·KG_w)/(Δ − w)
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Yeni KG (ağırlık eklendi):   KG' = (Δ·KG + w·KGw)/(Δ + w)
+Yeni KG (ağırlık kaldırıldı): KG' = (Δ·KG − w·KGw)/(Δ − w)
 Dikey taşınma:                ΔKG = (w · h)/Δ   (yukarı +)
-Yatay taşınma (heel):         tan φ ≈ (w · y)/(Δ · GM_T)
-Boyuna taşınma (trim):        Trim(cm) = (w · l)/MCT_1cm`}</pre>
+Yatay taşınma (heel):         tan φ ≈ (w · y)/(Δ · GMT)
+Boyuna taşınma (trim):        Trim(cm) = (w · l)/MCT 1 cm`}</pre>
             </div>
           </CardContent>
         </Card>
@@ -113,11 +113,11 @@ Boyuna taşınma (trim):        Trim(cm) = (w · l)/MCT_1cm`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Trim değişimi (cm):       Trim = M_t / MCT_1cm
-Trim momenti:             M_t = Δ·(LCG − LCB)  (veya w·l)
-Baş draft değişimi:       ΔT_f = −Trim · (LCF→FP)/L
-Kıç draft değişimi:       ΔT_a =  Trim · (LCF→AP)/L
-Ortalama draft değişimi:  ΔT_mean(cm) = w / TPC`}</pre>
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Trim değişimi (cm):       Trim = Mt / MCT 1 cm
+Trim momenti:             Mt = Δ·(LCG − LCB)  (veya w·l)
+Baş draft değişimi:       ΔTf = −Trim · (LCF→FP)/L
+Kıç draft değişimi:       ΔTa =  Trim · (LCF→AP)/L
+Ortalama draft değişimi:  ΔTmean(cm) = w / TPC`}</pre>
             </div>
             <p>İşaretler LCF referansına göredir; mesafeler boyuna eksen üzerindeki izdüşümlerdir.</p>
           </CardContent>
@@ -129,10 +129,10 @@ Ortalama draft değişimi:  ΔT_mean(cm) = w / TPC`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`FSM = ρ_tank · I_f
-FSC = FSM / Δ = (ρ_tank/ρ_deniz) · (I_f/∇)
-GM_düz = GM − ΣFSC
-I_f (dikdörtgen) = l · b³ / 12`}</pre>
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`FSM = ρtank · If
+FSC = FSM / Δ = (ρtank/ρdeniz) · (If/∇)
+GM düz = GM − ΣFSC
+If (dikdörtgen) = l · b³ / 12`}</pre>
             </div>
             <p>Birden fazla yarı dolu tank varsa düzeltmeler toplanır.</p>
           </CardContent>
@@ -145,8 +145,8 @@ I_f (dikdörtgen) = l · b³ / 12`}</pre>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
               <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Doğrultucu Moment: RM(φ) = Δ · GZ(φ)
-Heeling moment (ör.): M_h = w·y  veya  M_h = F·z
-Eşitlik (statik):    RM(φ_eq) = M_h(φ_eq)  ⇔  GZ(φ_eq) = a_h(φ_eq)
+Heeling moment (ör.): Mh = w·y  veya  Mh = F·z
+Eşitlik (statik):    RM(φeq) = Mh(φeq)  ⇔  GZ(φeq) = ah(φeq)
 GZ (büyük açılar):   GZ(φ) = KN(φ) − KG · sin φ  (KN: tablodan)`}</pre>
             </div>
           </CardContent>
@@ -158,10 +158,10 @@ GZ (büyük açılar):   GZ(φ) = KN(φ) − KG · sin φ  (KN: tablodan)`}</pre
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`GZ eğrisi altı alan: A(θ) = ∫_0^θ GZ(φ) dφ   [m·rad]
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`GZ eğrisi altı alan: A(θ) = ∫[0, θ] GZ(φ) dφ   [m·rad]
 Dinamik stabilite:    Δ · A(θ)                   [ton·m·rad]
-Maksimum GZ açısı:    θ_max (genelde 30°–40°)
-AVS:                  φ_AVS s.t. GZ(φ_AVS) = 0`}</pre>
+Maksimum GZ açısı:    θmax (genelde 30°–40°)
+AVS:                  φAVS s.t. GZ(φAVS) = 0`}</pre>
             </div>
           </CardContent>
         </Card>
@@ -172,8 +172,8 @@ AVS:                  φ_AVS s.t. GZ(φ_AVS) = 0`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Trim düzeltmesi (LCG≠LCB): Trim(cm) = Δ·(LCG − LCB)/MCT_1cm
-LCF ile draft dağılımı:     ΔT_f = −Trim · (LCF→FP)/L;  ΔT_a = Trim · (LCF→AP)/L
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Trim düzeltmesi (LCG≠LCB): Trim(cm) = Δ·(LCG − LCB)/MCT 1 cm
+LCF ile draft dağılımı:     ΔTf = −Trim · (LCF→FP)/L;  ΔTa = Trim · (LCF→AP)/L
 KG düzeltmesi (transfer):   KG' = KG ± (w·h)/Δ   →   GM' = KM − KG'`}</pre>
             </div>
             <p>LCF, LCB ve MCT değerleri onaylı hidrostatik/stabilite kitapçığından alınmalıdır.</p>
@@ -186,9 +186,9 @@ KG düzeltmesi (transfer):   KG' = KG ± (w·h)/Δ   →   GM' = KM − KG'`}</p
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Grain Heeling Moment: M_g = GSM  (Grain Code'dan)
-Minimum GM (özet):    SOLAS/Grain Code şartlarına göre GM_düz ≥ GM_min
-Heeling düzeltmesi:   GZ(φ) = a_h,grain(φ) eşitliğinden denge açısı bulunur`}</pre>
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Grain Heeling Moment: Mg = GSM  (Grain Code'dan)
+Minimum GM (özet):    SOLAS/Grain Code şartlarına göre GM düz ≥ GMmin
+Heeling düzeltmesi:   GZ(φ) = ah,grain(φ) eşitliğinden denge açısı bulunur`}</pre>
             </div>
             <p>Tahıl için kayma momentleri (GSM) ve kriterler <em>International Grain Code</em> kapsamında verilir.</p>
           </CardContent>
@@ -200,9 +200,9 @@ Heeling düzeltmesi:   GZ(φ) = a_h,grain(φ) eşitliğinden denge açısı bulu
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Ortalama draft:     T_mean = (T_f + T_a)/2
-Deplasman değişimi:  Δ_final = Δ_initial ± Σw
-Son deplasman:       Δ_final (yoğunluğa göre ∇ = Δ/ρ)
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Ortalama draft:     Tmean = (Tf + Ta)/2
+Deplasman değişimi:  Δfinal = Δinitial ± Σw
+Son deplasman:       Δfinal (yoğunluğa göre ∇ = Δ/ρ)
 Ton-mile moment:     TM = w · mesafe (deniz mili)`}</pre>
             </div>
           </CardContent>
@@ -214,7 +214,7 @@ Ton-mile moment:     TM = w · mesafe (deniz mili)`}</pre>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
-              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Statik denge:   RM(φ) = M_h(φ)  ve  GM > 0 (küçük açılar)
+              <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Statik denge:   RM(φ) = Mh(φ)  ve  GM > 0 (küçük açılar)
 Nötr denge:     GM = 0  ve  GZ ≈ 0 (küçük açılar)
 Kararsız denge: GM < 0  ve  GZ < 0 (küçük açılar)`}</pre>
             </div>
@@ -228,8 +228,8 @@ Kararsız denge: GM < 0  ve  GZ < 0 (küçük açılar)`}</pre>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 overflow-x-auto">
               <pre className="font-mono text-sm leading-6 whitespace-pre-wrap break-words">{`Dikdörtgen yüzey atalet mom.: I = l · b³ / 12
-Su hattı alanı (yaklaşım):    A_w = L_WL · B_WL · C_W
-Blok katsayısı:               C_B = ∇/(L · B · T)
+Su hattı alanı (yaklaşım):    Aw = LWL · BWL · CW
+Blok katsayısı:               CB = ∇/(L · B · T)
 Deplasman hacmi:              ∇ = Δ/ρ`}</pre>
             </div>
           </CardContent>

@@ -289,7 +289,7 @@ export default function StabilityLongitudinal() {
       title: "🚢 Kritik Trim Durumu",
       situation: "250m konteyner gemisi, aşırı kıç trim = 4.8m. Kargo operasyonu devam ediyor, hava kötüleşiyor.",
       question: "Güvenli trim limitine (max 3.0m) ulaşmak için hangi ballast stratejisini uygularsın?",
-      hint: "Trim değişimi = (Transfer_momenti) / (GML × Δ/100)",
+      hint: "Trim değişimi = (Transfer momenti) / (GML × Δ/100)",
       answer: "Fore peak ballast + center tank stratejisi. ~1200 ton fore'a transfer. Hesap: ΔTrim = (1200×80m) / (450×48000/100) ≈ 1.8m azalış"
     },
     {
@@ -303,7 +303,7 @@ export default function StabilityLongitudinal() {
       title: "📦 Hold Flooding Analizi",
       situation: "Hold 2'ye 800 ton deniz suyu girdi (LCG=65m). Original LCG=82m, deplasman=42000 ton.",
       question: "Su girişi sonrası yeni LCG'yi ve trim değişimini hesapla.",
-      hint: "Yeni_LCG = (W1×LCG1 + W2×LCG2) / (W1+W2)",
+      hint: "Yeni LCG = (W1×LCG1 + W2×LCG2) / (W1+W2)",
       answer: "Yeni LCG = (42000×82 + 800×65) / 42800 ≈ 81.7m. LCG azalışı → trim by head artışı, yaklaşık 0.5m trim değişimi"
     },
     {
@@ -331,7 +331,7 @@ export default function StabilityLongitudinal() {
       title: "📏 MCT Calculation Emergency",
       situation: "Port'ta rapid trim correction gerekli. MCT=120 ton.m/cm. Target: 2.5m trim azaltma.",
       question: "Gerekli moment transferini ve ballast miktarını hesapla.",
-      hint: "Required moment = MCT × trim_change(cm)",
+      hint: "Required moment = MCT × trim change (cm)",
       answer: "Gerekli moment = 120 × 250cm = 30000 ton.m. 80m arm ile transfer: 30000/80 = 375 ton ballast transfer"
     },
     {
@@ -411,7 +411,7 @@ export default function StabilityLongitudinal() {
           question: "DWA hesabı: Dock density=1015 kg/m³, Displacement=15000t, TPC=25 t/cm. Dock water allowance?",
           options: ["6.0cm", "7.2cm", "8.4cm"],
           correct: 0,
-          explanation: "ÇÖZÜM: DWA = (1025 - dock_density) × Displacement / (100 × TPC) = (1025-1015) × 15000 / (100×25) = 10×15000/2500 = 6.0cm. DWA, farklı yoğunluktaki dok suyunda draft correction'dır."
+          explanation: "ÇÖZÜM: DWA = (1025 - dock density) × Displacement / (100 × TPC) = (1025-1015) × 15000 / (100×25) = 10×15000/2500 = 6.0cm. DWA, farklı yoğunluktaki dok suyunda draft correction'dır."
         }
       ]
     },
@@ -788,7 +788,7 @@ export default function StabilityLongitudinal() {
               <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
                 <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Trim Kontrolü</h4>
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  Baş-kıç dengesi. Trim = (T_kıç - T_baş) / LBP
+                  Baş-kıç dengesi. Trim = (T kıç - T baş) / LBP
                 </p>
               </div>
               <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
@@ -1003,13 +1003,13 @@ export default function StabilityLongitudinal() {
               <Ruler className="h-5 w-5" /> Boyuna Stabilite Hesaplayıcı (GML, MCT, Trim)
             </CardTitle>
             <CardDescription>
-              GML ve MCT_{`1 cm`} ile toplam trim ve yeni draftları hesaplar. Ne/Neden açıklamaları içerir.
+              GML ve MCT 1 cm ile toplam trim ve yeni draftları hesaplar. Ne/Neden açıklamaları içerir.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label>CF Konumu x_CF (kıçtan, m)</Label>
+                <Label>CF Konumu xCF (kıçtan, m)</Label>
                 <Input type="number" step="0.1" value={xcfFromAft} onChange={(e) => setXcfFromAft(parseFloat(e.target.value) || 0)} />
                 <p className="text-xs text-muted-foreground mt-1">Neden: Trim dağıtımı CF etrafında yapılır.</p>
               </div>
@@ -1304,7 +1304,7 @@ export default function StabilityLongitudinal() {
                 </div>
                 <div className="p-3 bg-orange-50 dark:bg-orange-950 border-l-4 border-orange-500">
                   <h4 className="font-semibold">Trim Tanımı</h4>
-                  <p className="text-sm font-mono">Trim = (T_kıç - T_baş) / LBP</p>
+                  <p className="text-sm font-mono">Trim = (T kıç - T baş) / LBP</p>
                 </div>
               </div>
             </CardContent>
