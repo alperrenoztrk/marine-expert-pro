@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
-import { computeHeadingFromEvent, smoothAngle } from "@/utils/heading";
 import { Settings } from "lucide-react";
 import WeatherWidget from "@/components/WeatherWidget";
 
@@ -12,26 +11,34 @@ const Index = () => {
 
   // --- Compass logic ---
   const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
-    const heading = computeHeadingFromEvent(event);
+    // iOS Safari provides webkitCompassHeading (0..360, CW from North).
+    const anyEvent: any = event as any;
+    let heading: number | null = null;
+
+    if (typeof anyEvent?.webkitCompassHeading === "number") {
+      const h = anyEvent.webkitCompassHeading;
+      if (Number.isFinite(h)) heading = h;
+    } else if (typeof event.alpha === "number") {
+      // Convert alpha (0..360, CCW from device z-axis) to compass heading
+      // Many devices use alpha=0 at North when absolute; 360-alpha gives CW from North
+      heading = 360 - (event.alpha ?? 0);
+    }
+
     if (heading != null && Number.isFinite(heading)) {
-      setHeadingDeg((prev) => Math.round(smoothAngle(prev, heading, 0.25)));
+      const normalized = ((heading % 360) + 360) % 360;
+      setHeadingDeg(normalized);
     }
   };
 
   const startCompass = () => {
     try {
-      // Prefer passive listeners; listen to both events for broader compatibility
-      window.addEventListener("deviceorientation", handleDeviceOrientation as EventListener, { capture: true, passive: true } as any);
-      // Some Android browsers emit deviceorientationabsolute for calibrated absolute headings
-      // Casting as any to avoid TS DOM lib variance across environments
-      window.addEventListener("deviceorientationabsolute" as any, handleDeviceOrientation as any, { capture: true, passive: true } as any);
+      window.addEventListener("deviceorientation", handleDeviceOrientation, true);
     } catch {}
   };
 
   const stopCompass = () => {
     try {
-      window.removeEventListener("deviceorientation", handleDeviceOrientation as EventListener, true);
-      window.removeEventListener("deviceorientationabsolute" as any, handleDeviceOrientation as any, true as any);
+      window.removeEventListener("deviceorientation", handleDeviceOrientation, true);
     } catch {}
   };
 
