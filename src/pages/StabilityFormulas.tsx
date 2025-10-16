@@ -2,7 +2,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Calculator } from "lucide-react";
+import { ArrowLeft, BookOpen, Calculator, Sigma } from "lucide-react";
 
 export default function StabilityFormulasPage() {
 
@@ -22,7 +22,89 @@ export default function StabilityFormulasPage() {
           </div>
         </div>
 
-        {/** İçindekiler bölümü kaldırıldı */}
+        {/* İçindekiler – başlık başına ayrı sayfa butonları */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sigma className="h-5 w-5" /> Stabilite Formülleri – İçindekiler
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* 1. Giriş */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">1. Giriş</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/giris"><Button variant="outline" size="sm">Giriş</Button></Link>
+                </div>
+              </div>
+
+              {/* 2. Enine Denge Hesapları */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">2. Enine Denge Hesapları</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/moment-kg"><Button variant="outline" size="sm">2.1 Moment ve KG</Button></Link>
+                  <Link to="/stability/formulas/gm-shifting"><Button variant="outline" size="sm">2.2 Shifting ile GM</Button></Link>
+                  <Link to="/stability/formulas/meyil-acisi"><Button variant="outline" size="sm">2.3 Meyil Açısı</Button></Link>
+                  <Link to="/stability/formulas/kreyn-gm"><Button variant="outline" size="sm">2.4 Bumba/Kreyn ile GM</Button></Link>
+                  <Link to="/stability/formulas/havuzlama-gm"><Button variant="outline" size="sm">2.5 Havuzlamada Kritik GM</Button></Link>
+                </div>
+              </div>
+
+              {/* 3. Boyuna Denge Hesapları */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">3. Boyuna Denge Hesapları</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/trim-degisimi"><Button variant="outline" size="sm">3.1 Trim Değişimi</Button></Link>
+                  <Link to="/stability/formulas/paralel-batma"><Button variant="outline" size="sm">3.2 Paralel Batma/Çıkma</Button></Link>
+                  <Link to="/stability/formulas/draft-duzeltme"><Button variant="outline" size="sm">3.3 Draft Düzeltmeleri</Button></Link>
+                </div>
+              </div>
+
+              {/* 4. Draft Survey */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">4. Draft Survey</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/mmm-draft"><Button variant="outline" size="sm">4.1 MMM Draft</Button></Link>
+                  <Link to="/stability/formulas/trim-duzeltmeleri"><Button variant="outline" size="sm">4.2 Trim Düzeltmeleri</Button></Link>
+                  <Link to="/stability/formulas/yogunluk-duzeltmesi"><Button variant="outline" size="sm">4.3 Yoğunluk Düzeltmesi</Button></Link>
+                </div>
+              </div>
+
+              {/* 5. Diğer Hesaplar */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">5. Diğer Hesaplar</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/duba-tank-hacim"><Button variant="outline" size="sm">5.1 Duba/Tank Hacmi</Button></Link>
+                  <Link to="/stability/formulas/blok-katsayisi"><Button variant="outline" size="sm">5.2 Blok Katsayısı</Button></Link>
+                  <Link to="/stability/formulas/fwa-yogunluk"><Button variant="outline" size="sm">5.3 Yoğunluk Farkı ve FWA</Button></Link>
+                </div>
+              </div>
+
+              {/* 6. SOLAS Stabilite Kriterleri */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">6. SOLAS Stabilite Kriterleri</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/kumelenme-acisi"><Button variant="outline" size="sm">6.1 Kümelenme Açısı</Button></Link>
+                  <Link to="/stability/formulas/gz-kn"><Button variant="outline" size="sm">6.2 GZ Kolu (KN)</Button></Link>
+                  <Link to="/stability/formulas/simpson-alan"><Button variant="outline" size="sm">6.3 Simpson Alan</Button></Link>
+                  <Link to="/stability/formulas/fsm"><Button variant="outline" size="sm">6.4 FSM</Button></Link>
+                  <Link to="/stability/formulas/yalpa-periyodu"><Button variant="outline" size="sm">6.5 Yalpa Periyodu</Button></Link>
+                  <Link to="/stability/formulas/yarali-stabilite"><Button variant="outline" size="sm">6.6 Yaralı Stabilite</Button></Link>
+                </div>
+              </div>
+
+              {/* 7. Yük Hesapları */}
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-primary px-1">7. Yük Hesapları</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/stability/formulas/musade-yuk"><Button variant="outline" size="sm">7.1 Müsaade Edilen Yük</Button></Link>
+                  <Link to="/stability/formulas/sicaklik-yogunluk"><Button variant="outline" size="sm">7.2 Sıcaklıkla Yoğunluk</Button></Link>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="shadow">
           <CardHeader>

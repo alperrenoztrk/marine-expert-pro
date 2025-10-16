@@ -40,6 +40,7 @@ import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
+import StabilityFormulaDetailPage from "./pages/StabilityFormulaDetail";
 import StabilityTopicExplanationPage from "./pages/StabilityTopicExplanation";
 import NavigationFormulasPage from "./pages/NavigationFormulas";
 import NavigationTopicsPage from "./pages/NavigationTopics";
@@ -89,6 +90,7 @@ const App = () => {
                     <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
                     <Route path="/stability/stable-tales" element={<StableTalesPage />} />
                      <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
+                    <Route path="/stability/formulas/:id" element={<StabilityFormulaDetailPage />} />
                      <Route path="/stability/topic-explanation" element={<StabilityTopicExplanationPage />} />
                      <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
                     <Route path="/stability/quiz" element={<StabilityQuizPage />} />
