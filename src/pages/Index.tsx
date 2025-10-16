@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
 import { Settings } from "lucide-react";
-// WeatherWidget anasayfadan kaldırıldı ve boş sayfaya taşındı
+import WeatherWidget from "@/components/WeatherWidget";
 
 const Index = () => {
   // Compass state (2D only)
@@ -123,6 +123,11 @@ const Index = () => {
           </Button>
         </Link>
       </div>
+
+      {/* Left side widget */}
+      <aside className="fixed left-4 top-1/2 -translate-y-1/2 z-20 hidden md:block w-[min(380px,40vw)]">
+        <WeatherWidget />
+      </aside>
 
       {/* Decorative ocean waves background */}
       <img
