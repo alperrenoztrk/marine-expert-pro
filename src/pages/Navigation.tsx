@@ -26,7 +26,7 @@ const calcItems: CalcItem[] = [
 
 const Navigation = () => {
   return (
-          <div className="min-h-screen bg-white dark:bg-white p-4">
+          <div className="min-h-screen bg-background text-foreground p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Back Button */}
@@ -42,7 +42,7 @@ const Navigation = () => {
               <span data-translatable>Seyir Hesaplamaları</span>
             </h1>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-lg text-muted-foreground">
             Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
           </p>
           <div className="flex items-center justify-center gap-2">
@@ -80,7 +80,7 @@ const Navigation = () => {
         </div>
 
         {/* Info */}
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-center text-sm text-muted-foreground">
           Her hesaplama artık ayrı bir sayfada açılır
         </div>
       </div>

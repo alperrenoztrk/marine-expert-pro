@@ -65,7 +65,7 @@ const Settings = () => {
 
   return (
     <MobileLayout>
-      <div className="min-h-screen bg-white p-4">
+      <div className="min-h-screen bg-background text-foreground p-4">
         <div className="max-w-4xl mx-auto space-y-6">
           
           {/* Back Button */}
@@ -81,7 +81,7 @@ const Settings = () => {
                 <span data-translatable>Ayarlar</span>
               </h1>
             </div>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
+            <p className="text-lg text-muted-foreground">
               <span data-translatable>Uygulama tercihlerinizi özelleştirin</span>
             </p>
           </div>
