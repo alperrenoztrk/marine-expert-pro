@@ -40,39 +40,6 @@ export default function SeamanshipTopicsPage() {
     }
   }, [location.hash]);
 
-  const toc = [
-    { id: "terminology", title: "Temel Kavramlar ve Terminoloji", icon: BookOpen },
-    { id: "ship-types", title: "Gemi Tipleri ve Yapısı", icon: Anchor },
-    { id: "rope-work", title: "Halat İşleri ve Düğümler", icon: Waves },
-    { id: "anchoring", title: "Demirleme ve Şamandıra", icon: Anchor },
-    { id: "mooring", title: "Yanaşma-Ayrılma Manevraları", icon: Waves },
-    { id: "steering", title: "Dümen ve Manevra", icon: Wrench },
-    { id: "heavy-weather", title: "Ağır Hava Gemiciliği", icon: Wind },
-    { id: "navigation", title: "Seyir Temelleri", icon: BookOpen },
-    { id: "compass", title: "Pusulalar ve Sapmalar", icon: Ruler },
-    { id: "tides", title: "Akıntılar ve Gelgitler", icon: Waves },
-    { id: "iala", title: "IALA Seyir Yardımcıları", icon: LifeBuoy },
-    { id: "colreg", title: "COLREG Kuralları", icon: BookOpen },
-    { id: "communication", title: "Haberleşme Sistemleri", icon: Waves },
-    { id: "radar", title: "Radar, ARPA ve ECDIS", icon: Ruler },
-    { id: "watchkeeping", title: "Vardiya Usulleri ve BRM", icon: Wrench },
-    { id: "safety", title: "Emniyet Yönetimi", icon: LifeBuoy },
-    { id: "lifesaving", title: "Can Kurtarma", icon: LifeBuoy },
-    { id: "firefighting", title: "Yangınla Mücadele", icon: Wind },
-    { id: "pollution", title: "Kirliliği Önleme", icon: Waves },
-    { id: "stability", title: "Stabilite ve Yükleme", icon: Ruler },
-    { id: "cargo", title: "Yük Operasyonları", icon: Anchor },
-    { id: "deck-maintenance", title: "Güverte Bakımı", icon: Wrench },
-    { id: "pilot-ladder", title: "Pilot Çarmıhı", icon: LifeBuoy },
-    { id: "boat-ops", title: "Küçük Tekne Operasyonları", icon: Waves },
-    { id: "sar", title: "Arama ve Kurtarma (SAR)", icon: LifeBuoy },
-    { id: "human-factors", title: "İnsan Faktörleri ve İSG", icon: BookOpen },
-    { id: "documentation", title: "Dokümantasyon ve Kayıtlar", icon: BookOpen },
-    { id: "port-ops", title: "Liman Kuralları", icon: Anchor },
-    { id: "special-nav", title: "Özel Seyrüsefer", icon: Wind },
-    { id: "surveys", title: "Sörvey ve Muayeneler", icon: Ruler },
-    { id: "efficiency", title: "Enerji Verimliliği", icon: Wrench },
-  ];
 
   return (
     <MobileLayout>
@@ -100,24 +67,6 @@ export default function SeamanshipTopicsPage() {
           </p>
         </div>
 
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" /> İçindekiler
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {toc.map(item => (
-                <a key={item.id} href={`#${item.id}`}>
-                  <Button variant="outline" size="sm" onClick={() => open(item.id)}>
-                    {item.title}
-                  </Button>
-                </a>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
         {/* 1. Temel Kavramlar ve Terminoloji */}
         <Card className="shadow">
