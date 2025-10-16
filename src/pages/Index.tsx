@@ -72,7 +72,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400">
+    <div className="relative min-h-screen overflow-x-auto touch-pan-x bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400">
       {/* Top right settings button */}
       <div className="fixed right-6 top-6 z-20 flex items-center">
         <Link to="/settings">
