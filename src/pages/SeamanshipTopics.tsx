@@ -2,7 +2,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Anchor, Waves, Wind, LifeBuoy, Ruler, Wrench, BookOpen, ChevronDown } from "lucide-react";
 
@@ -11,13 +11,34 @@ export default function SeamanshipTopicsPage() {
   const isOpen = (id: string) => !!openSections[id];
   const toggle = (id: string) => setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
   const open = (id: string) => setOpenSections(prev => (prev[id] ? prev : { ...prev, [id]: true }));
+  const location = useLocation();
 
+  // When a hash is present (e.g., #anchoring), open that section and
+  // hide all other topic cards so only the selected topic is visible.
   useEffect(() => {
-    if (typeof window !== "undefined" && window.location.hash) {
-      const id = window.location.hash.slice(1);
-      if (id) open(id);
+    if (typeof window === "undefined") return;
+
+    const hash = (location.hash || "").slice(1);
+
+    // Reset visibility of all cards first
+    const allCards = Array.from(document.querySelectorAll<HTMLElement>(".shadow"));
+    allCards.forEach(card => {
+      card.style.display = "";
+    });
+
+    if (hash) {
+      open(hash);
+      // After ensuring the section is open, hide non-matching cards
+      const target = document.getElementById(hash);
+      if (target) {
+        allCards.forEach(card => {
+          if (!card.contains(target)) {
+            card.style.display = "none";
+          }
+        });
+      }
     }
-  }, []);
+  }, [location.hash]);
 
   const toc = [
     { id: "terminology", title: "Temel Kavramlar ve Terminoloji", icon: BookOpen },
