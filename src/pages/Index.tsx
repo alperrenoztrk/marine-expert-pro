@@ -96,8 +96,8 @@ const Index = () => {
 
     const deltaX = lastX - startX;
     if (deltaX <= -swipeThresholdPx) {
-      // Left swipe -> go to calculations
-      navigate("/calculations");
+      // Left swipe -> go to empty page to the right
+      navigate("/empty-page");
     } else if (deltaX >= swipeThresholdPx) {
       // Right swipe -> go to settings
       navigate("/settings");

@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import WeatherWidget from "@/components/WeatherWidget";
 
 const EmptyPage = () => {
   const navigate = useNavigate();
@@ -32,12 +31,12 @@ const EmptyPage = () => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center px-6 relative"
+      className="min-h-screen bg-background text-foreground px-6 touch-pan-x"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <WeatherWidget />
+      {/* Intentional boş sayfa */}
     </div>
   );
 };
