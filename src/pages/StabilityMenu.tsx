@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Brain, BookOpen, Calculator, Sigma, ListChecks } from "lucide-react";
+import { ArrowLeft, Brain, BookOpen, Calculator, Sigma, ListChecks, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function StabilityMenu() {
@@ -8,6 +8,7 @@ export default function StabilityMenu() {
     {
       title: 'Stabilite',
       items: [
+        { to: "/stability/topics", icon: <FileText className="h-4 w-4" />, label: "Konu Anlatımı" },
         { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
         { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
         { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
