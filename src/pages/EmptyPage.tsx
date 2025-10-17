@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import WeatherWidget from "@/components/WeatherWidget";
 
 const EmptyPage = () => {
   const navigate = useNavigate();
@@ -36,7 +37,14 @@ const EmptyPage = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Intentional boş sayfa */}
+      <div className="relative w-full h-full">
+        {/* Sağ sayfa içeriği: Hava Durumu Widgeti */}
+        <div className="container mx-auto py-8">
+          <div className="max-w-[900px] mx-auto">
+            <WeatherWidget />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
