@@ -216,7 +216,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="length"
                   type="number"
                   value={inputs.length}
-                  onChange={(e) => updateInput('length', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('length', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
               <div>
@@ -225,7 +225,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="breadth"
                   type="number"
                   value={inputs.breadth}
-                  onChange={(e) => updateInput('breadth', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('breadth', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
               <div>
@@ -234,7 +234,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="draft"
                   type="number"
                   value={inputs.draft}
-                  onChange={(e) => updateInput('draft', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('draft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
               <div>
@@ -243,7 +243,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="displacement"
                   type="number"
                   value={inputs.displacement}
-                  onChange={(e) => updateInput('displacement', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('displacement', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
               <div>
@@ -255,7 +255,7 @@ export const LongitudinalStabilityCalculations = () => {
                         id="il"
                         type="number"
                         value={inputs.il}
-                        onChange={(e) => updateInput('il', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateInput('il', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -270,7 +270,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="kg"
                   type="number"
                   value={inputs.kg}
-                  onChange={(e) => updateInput('kg', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('kg', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
               <div>
@@ -282,7 +282,7 @@ export const LongitudinalStabilityCalculations = () => {
                         id="lcf"
                         type="number"
                         value={inputs.lcf}
-                        onChange={(e) => updateInput('lcf', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateInput('lcf', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -308,7 +308,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="initialDraftForward"
                   type="number"
                   value={inputs.initialDraftForward}
-                  onChange={(e) => updateInput('initialDraftForward', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('initialDraftForward', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
               <div>
@@ -317,7 +317,7 @@ export const LongitudinalStabilityCalculations = () => {
                   id="initialDraftAft"
                   type="number"
                   value={inputs.initialDraftAft}
-                  onChange={(e) => updateInput('initialDraftAft', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => updateInput('initialDraftAft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                 />
               </div>
             </div>
@@ -351,7 +351,7 @@ export const LongitudinalStabilityCalculations = () => {
                       type="number"
                       placeholder="Ağırlık (ton)"
                       value={moment.weight}
-                      onChange={(e) => updateMoment(index, 'weight', parseFloat(e.target.value) || 0)}
+                      onChange={(e) => updateMoment(index, 'weight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                     />
                   </div>
                   <div className="w-24">
@@ -359,7 +359,7 @@ export const LongitudinalStabilityCalculations = () => {
                       type="number"
                       placeholder="Mesafe (m)"
                       value={moment.distance}
-                      onChange={(e) => updateMoment(index, 'distance', parseFloat(e.target.value) || 0)}
+                      onChange={(e) => updateMoment(index, 'distance', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                     />
                   </div>
                   <div className="w-20 text-sm text-muted-foreground">

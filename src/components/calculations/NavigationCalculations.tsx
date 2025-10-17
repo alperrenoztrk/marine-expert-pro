@@ -1337,7 +1337,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lat1}
-                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="41.0082"
                           />
                         </div>
@@ -1348,7 +1348,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lon1}
-                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="28.9784"
                           />
                         </div>
@@ -1364,7 +1364,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lat2}
-                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="36.8969"
                           />
                         </div>
@@ -1375,7 +1375,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lon2}
-                            onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="30.7133"
                           />
                         </div>
@@ -1426,7 +1426,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lat1}
-                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="41.0082"
                           />
                         </div>
@@ -1437,7 +1437,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lon1}
-                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="28.9784"
                           />
                         </div>
@@ -1453,7 +1453,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lat2}
-                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="36.8969"
                           />
                         </div>
@@ -1464,7 +1464,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lon2}
-                            onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="30.7133"
                           />
                         </div>
@@ -1516,8 +1516,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           id="etaDistance"
                           type="number"
                           step="0.1"
-                          value={result?.gcDistance || result?.rhumbDistance || 0}
-                          onChange={(e) => setResult(prev => prev ? {...prev, gcDistance: parseFloat(e.target.value) || 0} : null)}
+                          value={Number.isFinite(result?.gcDistance ?? NaN) ? result?.gcDistance : (Number.isFinite(result?.rhumbDistance ?? NaN) ? result?.rhumbDistance : '')}
+                          onChange={(e) => setResult(prev => prev ? {...prev, gcDistance: e.target.value === '' ? Number.NaN : parseFloat(e.target.value)} : null)}
                           placeholder="150"
                         />
                       </div>
@@ -1528,7 +1528,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.speed}
-                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="12"
                         />
                       </div>
@@ -1619,7 +1619,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lat1}
-                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="41.0082"
                           />
                         </div>
@@ -1630,7 +1630,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lon1}
-                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="28.9784"
                           />
                         </div>
@@ -1654,7 +1654,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.course}
-                            onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('course', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="090"
                           />
                         </div>
@@ -1665,7 +1665,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.speed}
-                            onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="12"
                           />
                         </div>
@@ -1766,7 +1766,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     </div>
                     <div className="space-y-2">
                       <Label>Gemi Hızı (kn)</Label>
-                      <Input type="number" step="0.1" value={data.speed} onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)} />
+                      <Input type="number" step="0.1" value={data.speed} onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
                     </div>
                   </div>
                   <div className="mt-4">
@@ -1857,7 +1857,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                          type="number"
                          step="0.1"
                          value={data.speed}
-                         onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                         onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                          placeholder="12"
                        />
                      </div>
@@ -1868,7 +1868,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                          type="number"
                          step="0.1"
                          value={data.course}
-                         onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                         onChange={(e) => updateData('course', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                          placeholder="090"
                        />
                      </div>
@@ -1898,7 +1898,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.001"
                           value={data.lat1}
-                          onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('lat1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="41.0082"
                         />
                       </div>
@@ -1909,7 +1909,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.001"
                           value={data.lon1}
-                          onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('lon1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="28.9784"
                         />
                       </div>
@@ -1922,7 +1922,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.001"
                           value={data.lat2}
-                          onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('lat2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="41.1000"
                         />
                       </div>
@@ -1933,7 +1933,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.001"
                           value={data.lon2}
-                          onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('lon2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="29.0000"
                         />
                       </div>
@@ -1985,7 +1985,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               step="0.1"
                               value={leg.course}
                               onChange={(e) => {
-                                const v = parseFloat(e.target.value) || 0;
+                                const v = e.target.value === '' ? Number.NaN : parseFloat(e.target.value);
                                 setData(prev => {
                                   const legs = [...prev.traverseLegs];
                                   legs[idx] = { ...legs[idx], course: v };
@@ -2002,7 +2002,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               step="0.1"
                               value={leg.distance}
                               onChange={(e) => {
-                                const v = parseFloat(e.target.value) || 0;
+                                const v = e.target.value === '' ? Number.NaN : parseFloat(e.target.value);
                                 setData(prev => {
                                   const legs = [...prev.traverseLegs];
                                   legs[idx] = { ...legs[idx], distance: v };
@@ -2019,7 +2019,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               step="0.1"
                               value={leg.speed ?? ''}
                               onChange={(e) => {
-                                const v = e.target.value === '' ? undefined : (parseFloat(e.target.value) || 0);
+                                const v = e.target.value === '' ? undefined : parseFloat(e.target.value);
                                 setData(prev => {
                                   const legs = [...prev.traverseLegs];
                                   legs[idx] = { ...legs[idx], speed: v };
@@ -2126,7 +2126,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.speed}
-                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="12"
                         />
                       </div>
@@ -2206,14 +2206,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.0001"
                             value={data.lat1}
-                            onChange={(e) => updateData('lat1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="Enlem"
                           />
                           <Input
                             type="number"
                             step="0.0001"
                             value={data.lon1}
-                            onChange={(e) => updateData('lon1', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon1', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="Boylam"
                           />
                         </div>
@@ -2225,7 +2225,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.speed}
-                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="12.5"
                         />
                       </div>
@@ -2238,7 +2238,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.course}
-                          onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('course', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="090"
                         />
                       </div>
@@ -2259,14 +2259,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="1"
                             value={data.currentSet}
-                            onChange={(e) => updateData('currentSet', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('currentSet', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="Set (°)"
                           />
                           <Input
                             type="number"
                             step="0.1"
                             value={data.currentDrift}
-                            onChange={(e) => updateData('currentDrift', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('currentDrift', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="Drift (kn)"
                           />
                         </div>
@@ -2280,14 +2280,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.001"
                             value={data.lat2}
-                            onChange={(e) => updateData('lat2', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lat2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="Enlem"
                           />
                           <Input
                             type="number"
                             step="0.001"
                             value={data.lon2}
-                            onChange={(e) => updateData('lon2', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('lon2', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="Boylam"
                           />
                         </div>
@@ -2344,7 +2344,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="1"
                             value={data.currentSet}
-                            onChange={(e) => updateData('currentSet', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('currentSet', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="090"
                           />
                         </div>
@@ -2355,7 +2355,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.currentDrift}
-                            onChange={(e) => updateData('currentDrift', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('currentDrift', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="2.5"
                           />
                         </div>
@@ -2380,7 +2380,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="1"
                             value={data.windDirection}
-                            onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('windDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="270"
                           />
                         </div>
@@ -2391,7 +2391,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="1"
                             value={data.windSpeed}
-                            onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('windSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="15"
                           />
                         </div>
@@ -2402,7 +2402,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.leewayAngle}
-                            onChange={(e) => updateData('leewayAngle', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('leewayAngle', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="3.0"
                           />
                         </div>
@@ -2416,7 +2416,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.speed}
-                          onChange={(e) => updateData('speed', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('speed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="12.0"
                         />
                       </div>
@@ -2427,7 +2427,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.course}
-                          onChange={(e) => updateData('course', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('course', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="090"
                         />
                       </div>
@@ -2458,7 +2458,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="1"
                     value={data.currentSet}
-                    onChange={(e) => updateData('currentSet', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('currentSet', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2468,7 +2468,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.currentDrift}
-                    onChange={(e) => updateData('currentDrift', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('currentDrift', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2478,7 +2478,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="1"
                     value={data.windDirection}
-                    onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('windDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2488,7 +2488,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="1"
                     value={data.windSpeed}
-                    onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('windSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2498,7 +2498,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.leewayAngle}
-                    onChange={(e) => updateData('leewayAngle', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('leewayAngle', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -2552,7 +2552,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.gyroError}
-                          onChange={(e) => updateData('gyroError', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('gyroError', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="0.5"
                           className="text-right"
                         />
@@ -2575,7 +2575,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.targetBearing}
-                    onChange={(e) => updateData('targetBearing', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('targetBearing', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2585,7 +2585,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.targetDistance}
-                    onChange={(e) => updateData('targetDistance', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('targetDistance', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2595,7 +2595,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.targetSpeed}
-                    onChange={(e) => updateData('targetSpeed', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('targetSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2605,7 +2605,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.targetCourse}
-                    onChange={(e) => updateData('targetCourse', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('targetCourse', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -2675,7 +2675,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.highWaterHeight}
-                    onChange={(e) => updateData('highWaterHeight', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('highWaterHeight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2685,7 +2685,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.lowWaterHeight}
-                    onChange={(e) => updateData('lowWaterHeight', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('lowWaterHeight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2704,7 +2704,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.springTideRange}
-                    onChange={(e) => updateData('springTideRange', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('springTideRange', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -2714,7 +2714,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="number"
                     step="0.1"
                     value={data.neapTideRange}
-                    onChange={(e) => updateData('neapTideRange', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('neapTideRange', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -2740,7 +2740,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         type="number"
                         step="0.1"
                         value={data.waveHeight}
-                        onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('waveHeight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                         placeholder="1.5"
                       />
                     </div>
@@ -2751,7 +2751,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         type="number"
                         step="0.1"
                         value={data.wavePeriod}
-                        onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('wavePeriod', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                         placeholder="6"
                       />
                     </div>
@@ -2762,7 +2762,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         type="number"
                         step="1"
                         value={data.waveDirection}
-                        onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('waveDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                         placeholder="270"
                       />
                     </div>
@@ -2773,7 +2773,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         type="number"
                         step="0.1"
                         value={data.visibility}
-                        onChange={(e) => updateData('visibility', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('visibility', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                         placeholder="10"
                       />
                     </div>
@@ -2784,7 +2784,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         type="number"
                         step="0.1"
                         value={data.barometricPressure}
-                        onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('barometricPressure', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                         placeholder="1013"
                       />
                     </div>
@@ -2843,7 +2843,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.portApproachSpeed}
-                          onChange={(e) => updateData('portApproachSpeed', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('portApproachSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="8"
                           className="text-right"
                         />
@@ -2855,7 +2855,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.requiredUKC}
-                          onChange={(e) => updateData('requiredUKC', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('requiredUKC', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="2.0"
                           className="text-right"
                         />
@@ -2867,7 +2867,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.1"
                           value={data.shipDraft}
-                          onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('shipDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="8.5"
                           className="text-right"
                         />
@@ -3012,7 +3012,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.shipDraft}
-                            onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('shipDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="8.5"
                           />
                         </div>
@@ -3093,7 +3093,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.requiredUKC}
-                            onChange={(e) => updateData('requiredUKC', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('requiredUKC', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             placeholder="2.0"
                           />
                         </div>
@@ -3317,7 +3317,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           type="number"
                           step="0.5"
                           value={data.timeZone}
-                          onChange={(e) => updateData('timeZone', parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateData('timeZone', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                           placeholder="3 (Türkiye)"
                           className="text-right"
                         />
@@ -3528,7 +3528,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.altitude}
-                            onChange={(e) => updateData('altitude', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('altitude', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             className="text-right"
                           />
                         </div>
@@ -3539,7 +3539,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.azimuth}
-                            onChange={(e) => updateData('azimuth', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('azimuth', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             className="text-right"
                           />
                         </div>
@@ -3588,7 +3588,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.gha}
-                            onChange={(e) => updateData('gha', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('gha', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             className="text-right"
                           />
                         </div>
@@ -3599,7 +3599,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             type="number"
                             step="0.1"
                             value={data.declination}
-                            onChange={(e) => updateData('declination', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateData('declination', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                             className="text-right"
                           />
                         </div>
@@ -3640,7 +3640,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               id="windDir"
                               type="number"
                               value={data.windDirection}
-                              onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('windDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="270"
                             />
                           </div>
@@ -3650,7 +3650,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               id="windSpd"
                               type="number"
                               value={data.windSpeed}
-                              onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('windSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="15"
                             />
                           </div>
@@ -3660,7 +3660,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               id="barPressure"
                               type="number"
                               value={data.barometricPressure}
-                              onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('barometricPressure', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="1013"
                             />
                           </div>
@@ -3685,7 +3685,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               type="number"
                               step="0.1"
                               value={data.waveHeight}
-                              onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('waveHeight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="2.5"
                             />
                           </div>
@@ -3695,7 +3695,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               id="wavePer"
                               type="number"
                               value={data.wavePeriod}
-                              onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('wavePeriod', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="6"
                             />
                           </div>
@@ -3705,7 +3705,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               id="waveDir"
                               type="number"
                               value={data.waveDirection}
-                              onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('waveDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="270"
                             />
                           </div>
@@ -3826,7 +3826,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               type="number"
                               step="0.001"
                               value={data.observerLatitude}
-                              onChange={(e) => updateData('observerLatitude', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('observerLatitude', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="41.0082"
                             />
                           </div>
@@ -3837,7 +3837,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               type="number"
                               step="0.001"
                               value={data.observerLongitude}
-                              onChange={(e) => updateData('observerLongitude', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('observerLongitude', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="28.9784"
                             />
                           </div>
@@ -3856,7 +3856,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               id="timeZone"
                               type="number"
                               value={data.timeZone}
-                              onChange={(e) => updateData('timeZone', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateData('timeZone', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                               placeholder="3"
                             />
                           </div>

@@ -58,7 +58,7 @@ export const DirectionInput = ({
           type="number"
           step="0.1"
           value={absoluteValue}
-          onChange={(e) => handleValueChange(parseFloat(e.target.value) || 0)}
+          onChange={(e) => handleValueChange(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
           placeholder={placeholder}
           className="flex-1 text-right"
           min="0"

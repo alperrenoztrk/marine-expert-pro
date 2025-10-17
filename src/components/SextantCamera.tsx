@@ -258,7 +258,7 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
               min="0"
               max="6"
               value={minimumMagnitude}
-              onChange={(e) => setMinimumMagnitude(parseFloat(e.target.value) || 3.0)}
+              onChange={(e) => setMinimumMagnitude(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
               disabled={!showAROverlay}
               className="text-xs"
             />
@@ -272,7 +272,7 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
               max="200"
               step="4"
               value={identifyThresholdPx}
-              onChange={(e) => setIdentifyThresholdPx(parseFloat(e.target.value) || 48)}
+              onChange={(e) => setIdentifyThresholdPx(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
               disabled={!showAROverlay || !autoIdentify}
               className="text-xs"
             />
@@ -400,12 +400,12 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
         <div className="space-y-2">
           <Label htmlFor="indexError">İndeks Hatası (Dakika)</Label>
           <Input id="indexError" type="number" step="0.1" value={indexErrorMinutes}
-                 onChange={(e) => setIndexErrorMinutes(parseFloat(e.target.value) || 0)} />
+                 onChange={(e) => setIndexErrorMinutes(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="heightEye">Göz Yüksekliği (m)</Label>
           <Input id="heightEye" type="number" step="0.1" value={heightOfEyeMeters}
-                 onChange={(e) => setHeightOfEyeMeters(parseFloat(e.target.value) || 0)} />
+                 onChange={(e) => setHeightOfEyeMeters(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
         </div>
       </div>
 

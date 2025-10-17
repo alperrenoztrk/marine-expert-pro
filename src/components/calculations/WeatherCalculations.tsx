@@ -424,7 +424,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="windSpeed"
                         type="number"
                         value={data.windSpeed}
-                        onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('windSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -435,7 +435,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         min="0"
                         max="360"
                         value={data.windDirection}
-                        onChange={(e) => updateData('windDirection', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('windDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -446,7 +446,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         min="0"
                         max="360"
                         value={data.shipHeading}
-                        onChange={(e) => updateData('shipHeading', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipHeading', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -455,7 +455,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="shipSpeed"
                         type="number"
                         value={data.shipSpeed}
-                        onChange={(e) => updateData('shipSpeed', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                   </div>
@@ -470,7 +470,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.waveHeight}
-                        onChange={(e) => updateData('waveHeight', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('waveHeight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -479,7 +479,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="wavePeriod"
                         type="number"
                         value={data.wavePeriod}
-                        onChange={(e) => updateData('wavePeriod', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('wavePeriod', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -490,7 +490,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         min="0"
                         max="360"
                         value={data.waveDirection}
-                        onChange={(e) => updateData('waveDirection', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('waveDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                   </div>
@@ -505,7 +505,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.currentSpeed}
-                        onChange={(e) => updateData('currentSpeed', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('currentSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -516,7 +516,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         min="0"
                         max="360"
                         value={data.currentDirection}
-                        onChange={(e) => updateData('currentDirection', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('currentDirection', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -525,7 +525,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="currentDepth"
                         type="number"
                         value={data.currentDepth}
-                        onChange={(e) => updateData('currentDepth', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('currentDepth', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                   </div>
@@ -539,7 +539,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="shipLength"
                         type="number"
                         value={data.shipLength}
-                        onChange={(e) => updateData('shipLength', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipLength', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -548,7 +548,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="shipBeam"
                         type="number"
                         value={data.shipBeam}
-                        onChange={(e) => updateData('shipBeam', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipBeam', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -558,7 +558,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.shipDraft}
-                        onChange={(e) => updateData('shipDraft', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -568,7 +568,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.shipFreeboard}
-                        onChange={(e) => updateData('shipFreeboard', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipFreeboard', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -577,7 +577,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="shipDisplacement"
                         type="number"
                         value={data.shipDisplacement}
-                        onChange={(e) => updateData('shipDisplacement', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('shipDisplacement', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                   </div>
@@ -592,7 +592,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.airDensity}
-                        onChange={(e) => updateData('airDensity', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('airDensity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -602,7 +602,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.waterDensity}
-                        onChange={(e) => updateData('waterDensity', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('waterDensity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -611,7 +611,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="temperature"
                         type="number"
                         value={data.temperature}
-                        onChange={(e) => updateData('temperature', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('temperature', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -620,7 +620,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="barometricPressure"
                         type="number"
                         value={data.barometricPressure}
-                        onChange={(e) => updateData('barometricPressure', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('barometricPressure', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -630,7 +630,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         type="number"
                         step="0.1"
                         value={data.leewayAngle}
-                        onChange={(e) => updateData('leewayAngle', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('leewayAngle', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                     <div className="space-y-2">
@@ -639,7 +639,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
                         id="rudderAngle"
                         type="number"
                         value={data.rudderAngle}
-                        onChange={(e) => updateData('rudderAngle', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => updateData('rudderAngle', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                       />
                     </div>
                   </div>

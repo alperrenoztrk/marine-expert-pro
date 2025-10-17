@@ -395,7 +395,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="deadweight"
                     type="number"
                     value={data.deadweight}
-                    onChange={(e) => updateData('deadweight', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('deadweight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -404,7 +404,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="grossTonnage"
                     type="number"
                     value={data.grossTonnage}
-                    onChange={(e) => updateData('grossTonnage', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('grossTonnage', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -413,7 +413,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="buildYear"
                     type="number"
                     value={data.buildYear}
-                    onChange={(e) => updateData('buildYear', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('buildYear', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -422,7 +422,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="mainEngineRating"
                     type="number"
                     value={data.mainEngineRating}
-                    onChange={(e) => updateData('mainEngineRating', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('mainEngineRating', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -436,7 +436,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="annualFuelConsumption"
                     type="number"
                     value={data.annualFuelConsumption}
-                    onChange={(e) => updateData('annualFuelConsumption', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('annualFuelConsumption', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -446,7 +446,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     type="number"
                     step="0.1"
                     value={data.sulfurContent}
-                    onChange={(e) => updateData('sulfurContent', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('sulfurContent', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -455,7 +455,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="ecaOperatingTime"
                     type="number"
                     value={data.ecaOperatingTime}
-                    onChange={(e) => updateData('ecaOperatingTime', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('ecaOperatingTime', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -464,7 +464,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="lowSulfurFuelUsage"
                     type="number"
                     value={data.lowSulfurFuelUsage}
-                    onChange={(e) => updateData('lowSulfurFuelUsage', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('lowSulfurFuelUsage', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -478,7 +478,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="annualDistanceTraveled"
                     type="number"
                     value={data.annualDistanceTraveled}
-                    onChange={(e) => updateData('annualDistanceTraveled', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('annualDistanceTraveled', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -487,7 +487,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="transportWork"
                     type="number"
                     value={data.transportWork}
-                    onChange={(e) => updateData('transportWork', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('transportWork', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -496,7 +496,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     id="operatingHours"
                     type="number"
                     value={data.operatingHours}
-                    onChange={(e) => updateData('operatingHours', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('operatingHours', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -506,7 +506,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     type="number"
                     step="0.1"
                     value={data.currentCII}
-                    onChange={(e) => updateData('currentCII', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('currentCII', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -521,7 +521,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     type="number"
                     step="0.1"
                     value={data.hullCoatingReduction}
-                    onChange={(e) => updateData('hullCoatingReduction', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('hullCoatingReduction', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -531,7 +531,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     type="number"
                     step="0.1"
                     value={data.propellerOptimization}
-                    onChange={(e) => updateData('propellerOptimization', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('propellerOptimization', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -541,7 +541,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     type="number"
                     step="0.1"
                     value={data.engineTuning}
-                    onChange={(e) => updateData('engineTuning', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('engineTuning', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -551,7 +551,7 @@ export const EmissionCalculations = ({ initialTab }: { initialTab?: string } = {
                     type="number"
                     step="0.1"
                     value={data.weatherRouting}
-                    onChange={(e) => updateData('weatherRouting', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('weatherRouting', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>

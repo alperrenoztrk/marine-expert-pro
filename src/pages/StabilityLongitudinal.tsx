@@ -1010,17 +1010,17 @@ export default function StabilityLongitudinal() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>CF Konumu xCF (kıçtan, m)</Label>
-                <Input type="number" step="0.1" value={xcfFromAft} onChange={(e) => setXcfFromAft(parseFloat(e.target.value) || 0)} />
+                <Input type="number" step="0.1" value={xcfFromAft} onChange={(e) => setXcfFromAft(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
                 <p className="text-xs text-muted-foreground mt-1">Neden: Trim dağıtımı CF etrafında yapılır.</p>
               </div>
               <div>
                 <Label>Baş Draftı Tfwd (m)</Label>
-                <Input type="number" step="0.01" value={initialDraftFwd} onChange={(e) => setInitialDraftFwd(parseFloat(e.target.value) || 0)} />
+                <Input type="number" step="0.01" value={initialDraftFwd} onChange={(e) => setInitialDraftFwd(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
                 <p className="text-xs text-muted-foreground mt-1">Ne: Baştaki mevcut draft.</p>
               </div>
               <div>
                 <Label>Kıç Draftı Taft (m)</Label>
-                <Input type="number" step="0.01" value={initialDraftAft} onChange={(e) => setInitialDraftAft(parseFloat(e.target.value) || 0)} />
+                <Input type="number" step="0.01" value={initialDraftAft} onChange={(e) => setInitialDraftAft(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
                 <p className="text-xs text-muted-foreground mt-1">Ne: Kıçtaki mevcut draft.</p>
               </div>
             </div>

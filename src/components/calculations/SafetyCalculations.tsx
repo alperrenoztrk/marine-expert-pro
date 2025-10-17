@@ -514,7 +514,7 @@ export const SafetyCalculations = () => {
                     id="windSpeed"
                     type="number"
                     value={data.windSpeed}
-                    onChange={(e) => updateData('windSpeed', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('windSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -524,7 +524,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.currentSpeed}
-                    onChange={(e) => updateData('currentSpeed', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('currentSpeed', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -533,7 +533,7 @@ export const SafetyCalculations = () => {
                     id="waterDepth"
                     type="number"
                     value={data.waterDepth}
-                    onChange={(e) => updateData('waterDepth', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('waterDepth', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -544,7 +544,7 @@ export const SafetyCalculations = () => {
                     min="0"
                     max="9"
                     value={data.seaState}
-                    onChange={(e) => updateData('seaState', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('seaState', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -553,7 +553,7 @@ export const SafetyCalculations = () => {
                     id="anchorWeight"
                     type="number"
                     value={data.anchorWeight}
-                    onChange={(e) => updateData('anchorWeight', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('anchorWeight', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -562,7 +562,7 @@ export const SafetyCalculations = () => {
                     id="chainDiameter"
                     type="number"
                     value={data.chainDiameter}
-                    onChange={(e) => updateData('chainDiameter', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('chainDiameter', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -576,7 +576,7 @@ export const SafetyCalculations = () => {
                     id="firePumpCapacity"
                     type="number"
                     value={data.firePumpCapacity}
-                    onChange={(e) => updateData('firePumpCapacity', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('firePumpCapacity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -586,7 +586,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.firePumpPressure}
-                    onChange={(e) => updateData('firePumpPressure', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('firePumpPressure', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -595,7 +595,7 @@ export const SafetyCalculations = () => {
                     id="fireMainDiameter"
                     type="number"
                     value={data.fireMainDiameter}
-                    onChange={(e) => updateData('fireMainDiameter', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('fireMainDiameter', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -604,7 +604,7 @@ export const SafetyCalculations = () => {
                     id="fireHoseLength"
                     type="number"
                     value={data.fireHoseLength}
-                    onChange={(e) => updateData('fireHoseLength', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('fireHoseLength', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -613,7 +613,7 @@ export const SafetyCalculations = () => {
                     id="fireExtinguisherCount"
                     type="number"
                     value={data.fireExtinguisherCount}
-                    onChange={(e) => updateData('fireExtinguisherCount', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('fireExtinguisherCount', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -627,7 +627,7 @@ export const SafetyCalculations = () => {
                     id="lifeBoatCapacity"
                     type="number"
                     value={data.lifeBoatCapacity}
-                    onChange={(e) => updateData('lifeBoatCapacity', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('lifeBoatCapacity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -636,7 +636,7 @@ export const SafetyCalculations = () => {
                     id="lifeBoatCount"
                     type="number"
                     value={data.lifeBoatCount}
-                    onChange={(e) => updateData('lifeBoatCount', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('lifeBoatCount', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -645,7 +645,7 @@ export const SafetyCalculations = () => {
                     id="lifeRaftCapacity"
                     type="number"
                     value={data.lifeRaftCapacity}
-                    onChange={(e) => updateData('lifeRaftCapacity', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('lifeRaftCapacity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -654,7 +654,7 @@ export const SafetyCalculations = () => {
                     id="lifeRaftCount"
                     type="number"
                     value={data.lifeRaftCount}
-                    onChange={(e) => updateData('lifeRaftCount', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('lifeRaftCount', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -663,7 +663,7 @@ export const SafetyCalculations = () => {
                     id="totalPersonsOnBoard"
                     type="number"
                     value={data.totalPersonsOnBoard}
-                    onChange={(e) => updateData('totalPersonsOnBoard', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('totalPersonsOnBoard', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -678,7 +678,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.summerDraft}
-                    onChange={(e) => updateData('summerDraft', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('summerDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -688,7 +688,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.winterDraft}
-                    onChange={(e) => updateData('winterDraft', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('winterDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -698,7 +698,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.tropicalDraft}
-                    onChange={(e) => updateData('tropicalDraft', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('tropicalDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -708,7 +708,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.freshWaterDraft}
-                    onChange={(e) => updateData('freshWaterDraft', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('freshWaterDraft', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>
@@ -722,7 +722,7 @@ export const SafetyCalculations = () => {
                     id="emergencyGeneratorCapacity"
                     type="number"
                     value={data.emergencyGeneratorCapacity}
-                    onChange={(e) => updateData('emergencyGeneratorCapacity', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('emergencyGeneratorCapacity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -731,7 +731,7 @@ export const SafetyCalculations = () => {
                     id="batteryCapacity"
                     type="number"
                     value={data.batteryCapacity}
-                    onChange={(e) => updateData('batteryCapacity', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('batteryCapacity', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -741,7 +741,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.davitSWL}
-                    onChange={(e) => updateData('davitSWL', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('davitSWL', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -751,7 +751,7 @@ export const SafetyCalculations = () => {
                     type="number"
                     step="0.1"
                     value={data.craneSWL}
-                    onChange={(e) => updateData('craneSWL', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => updateData('craneSWL', e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
                   />
                 </div>
               </div>

@@ -353,7 +353,7 @@ export const StabilityCalculations = () => {
   const SB_T = parseFloat(sbDraft);
   const SB_Cb = parseFloat(sbCb);
   const SB_wFromGeom = computeUniformDistributedLoadFromGeometry(SB_B, SB_T, SB_Cb); // kN/m
-  const SB_w = sbUseGeometryForW ? SB_wFromGeom : parseFloat(sbUniformW) || 0;
+  const SB_w = sbUseGeometryForW ? SB_wFromGeom : (() => { const v = parseFloat(sbUniformW); return Number.isFinite(v) ? v : Number.NaN; })();
 
   const { data: sbData, reactions: sbReactions } = useMemo(() => {
     const safeLoads = sbLoads
@@ -364,11 +364,11 @@ export const StabilityCalculations = () => {
 
   const sbCrit = useMemo(() => findCriticals(sbData), [sbData]);
   const sbSwbm = useMemo(() => computeStillWaterBMEstimate(sbData, sbUseMidshipBM), [sbData, sbUseMidshipBM]);
-  const sbWibm = useMemo(() => computeWaveInducedBM(isFinite(SB_L) ? SB_L : 0, isFinite(SB_B) ? SB_B : 0, isFinite(SB_Cb) ? SB_Cb : 0, parseFloat(sbWaveCoeff) || 0), [SB_L, SB_B, SB_Cb, sbWaveCoeff]);
+  const sbWibm = useMemo(() => computeWaveInducedBM(isFinite(SB_L) ? SB_L : 0, isFinite(SB_B) ? SB_B : 0, isFinite(SB_Cb) ? SB_Cb : 0, (() => { const v = parseFloat(sbWaveCoeff); return Number.isFinite(v) ? v : 0; })()), [SB_L, SB_B, SB_Cb, sbWaveCoeff]);
   const sbTotalBM = useMemo(() => (sbHogSag === "hog" ? sbSwbm + sbWibm : sbSwbm - sbWibm), [sbSwbm, sbWibm, sbHogSag]);
 
-  const sbBendingStressMPa = useMemo(() => computeBendingStressMPa(Math.abs(sbTotalBM), parseFloat(sbSectionModulus) || 0), [sbTotalBM, sbSectionModulus]);
-  const sbShearStressMPa = useMemo(() => computeShearStressMPa(Math.abs(sbCrit.maxAbsShear.value), parseFloat(sbShearArea) || 0), [sbCrit.maxAbsShear.value, sbShearArea]);
+  const sbBendingStressMPa = useMemo(() => computeBendingStressMPa(Math.abs(sbTotalBM), (() => { const v = parseFloat(sbSectionModulus); return Number.isFinite(v) ? v : 0; })()), [sbTotalBM, sbSectionModulus]);
+  const sbShearStressMPa = useMemo(() => computeShearStressMPa(Math.abs(sbCrit.maxAbsShear.value), (() => { const v = parseFloat(sbShearArea); return Number.isFinite(v) ? v : 0; })()), [sbCrit.maxAbsShear.value, sbShearArea]);
 
   const sbAddLoad = () => {
     const nextIndex = sbLoads.length + 1;
@@ -376,7 +376,7 @@ export const StabilityCalculations = () => {
   };
   const sbRemoveLoad = (id: string) => setSbLoads((prev) => prev.filter((p) => p.id !== id));
   const sbUpdateLoad = (id: string, field: keyof PointLoad, value: string) => {
-    setSbLoads((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: field === "positionMeters" || field === "magnitudeKN" ? parseFloat(value) || 0 : (value as unknown as any) } : p)));
+    setSbLoads((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: field === "positionMeters" || field === "magnitudeKN" ? (value === '' ? Number.NaN : parseFloat(value)) : (value as unknown as any) } : p)));
   };
 
 
@@ -388,7 +388,7 @@ export const StabilityCalculations = () => {
     }
     
     const GM = data.KM - data.KG;
-    const GM_corrected = GM - (results.FSC_total || 0);
+    const GM_corrected = GM - (Number.isFinite(results.FSC_total) ? (results.FSC_total as number) : 0);
     
     // Determine stability status
     let stabilityStatus: StabilityResults['stability_status'] = 'excellent';
@@ -739,7 +739,7 @@ export const StabilityCalculations = () => {
       area_0to30: results.area_0to30 >= 0.055,
       area_0to40: results.area_0to40 >= 0.09,
       area_30to40: results.area_30to40 >= 0.03,
-      gz_max: (results.gz_max_calculated >= 0.20) && ((results.phi_max_gz_calculated || 0) >= 30),
+      gz_max: (results.gz_max_calculated >= 0.20) && ((Number.isFinite(results.phi_max_gz_calculated) ? (results.phi_max_gz_calculated as number) : 0) >= 30),
       initial_gm: results.GM_corrected >= 0.15,
       weather_criterion: results.weather_criterion || false
     };
@@ -1861,7 +1861,7 @@ export const StabilityCalculations = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lcf_from_mid">LCF (orta referans, +kıç) [m]</Label>
-                        <Input id="lcf_from_mid" type="number" step="0.1" value={data.lcf_from_mid || 0} onChange={(e) => setData({ ...data, lcf_from_mid: parseFloat(e.target.value) })} />
+                        <Input id="lcf_from_mid" type="number" step="0.1" value={data.lcf_from_mid} onChange={(e) => setData({ ...data, lcf_from_mid: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) })} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="draft_aft_p">Kıç Draft P [m]</Label>
@@ -1904,23 +1904,23 @@ export const StabilityCalculations = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="fuel_oil">Fuel Oil [t]</Label>
-                        <Input id="fuel_oil" type="number" step="0.1" value={data.fuel_oil || 0} onChange={(e) => setData({ ...data, fuel_oil: parseFloat(e.target.value) })} />
+                        <Input id="fuel_oil" type="number" step="0.1" value={data.fuel_oil} onChange={(e) => setData({ ...data, fuel_oil: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) })} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="diesel_oil">Diesel Oil [t]</Label>
-                        <Input id="diesel_oil" type="number" step="0.1" value={data.diesel_oil || 0} onChange={(e) => setData({ ...data, diesel_oil: parseFloat(e.target.value) })} />
+                        <Input id="diesel_oil" type="number" step="0.1" value={data.diesel_oil} onChange={(e) => setData({ ...data, diesel_oil: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) })} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="ballast_water">Ballast Water [t]</Label>
-                        <Input id="ballast_water" type="number" step="0.1" value={data.ballast_water || 0} onChange={(e) => setData({ ...data, ballast_water: parseFloat(e.target.value) })} />
+                        <Input id="ballast_water" type="number" step="0.1" value={data.ballast_water} onChange={(e) => setData({ ...data, ballast_water: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) })} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="fresh_water">Fresh Water [t]</Label>
-                        <Input id="fresh_water" type="number" step="0.1" value={data.fresh_water || 0} onChange={(e) => setData({ ...data, fresh_water: parseFloat(e.target.value) })} />
+                        <Input id="fresh_water" type="number" step="0.1" value={data.fresh_water} onChange={(e) => setData({ ...data, fresh_water: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) })} />
                       </div>
                       <div className="space-y-2 md:col-span-2">
                         <Label htmlFor="constant_weight">Constant (stores, vb.) [t]</Label>
-                        <Input id="constant_weight" type="number" step="0.1" value={data.constant_weight || 0} onChange={(e) => setData({ ...data, constant_weight: parseFloat(e.target.value) })} />
+                        <Input id="constant_weight" type="number" step="0.1" value={data.constant_weight} onChange={(e) => setData({ ...data, constant_weight: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) })} />
                       </div>
                     </div>
 
