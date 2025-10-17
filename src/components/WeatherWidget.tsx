@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Thermometer, Droplets, Wind, Gauge, Compass, AlertTriangle, MapPin, Sunrise, Sunset } from "lucide-react";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 import MoonPhaseWidget from "@/components/MoonPhaseWidget";
-import AnalogClock from "@/components/ui/AnalogClock";
-// Removed analog clock in favor of digital time tiles
+// Digital time tiles are rendered instead of analog clock
 
 type WeatherResponse = {
   latitude: number;
@@ -356,41 +355,28 @@ export default function WeatherWidget() {
           </div>
         ) : data ? (
           <div className="grid grid-cols-2 gap-4">
-            {/* Analog saatler: TRT, GMT, LMT, ZT */}
+            {/* Dijital saatler: TRT, GMT, LMT, ZT */}
             <div className="col-span-2">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <AnalogClock
-                  size={96}
-                  hours={analogTimes.trt.h}
-                  minutes={analogTimes.trt.m}
-                  seconds={analogTimes.trt.s}
-                  label="TRT"
-                  className="mx-auto"
-                />
-                <AnalogClock
-                  size={96}
-                  hours={analogTimes.gmt.h}
-                  minutes={analogTimes.gmt.m}
-                  seconds={analogTimes.gmt.s}
-                  label="GMT"
-                  className="mx-auto"
-                />
-                <AnalogClock
-                  size={96}
-                  hours={analogTimes.lmt.h}
-                  minutes={analogTimes.lmt.m}
-                  seconds={analogTimes.lmt.s}
-                  label="LMT"
-                  className="mx-auto"
-                />
-                <AnalogClock
-                  size={96}
-                  hours={analogTimes.zt.h}
-                  minutes={analogTimes.zt.m}
-                  seconds={analogTimes.zt.s}
-                  label="ZT"
-                  className="mx-auto"
-                />
+                {[
+                  { label: "TRT", parts: analogTimes.trt },
+                  { label: "GMT", parts: analogTimes.gmt },
+                  { label: "LMT", parts: analogTimes.lmt },
+                  { label: "ZT", parts: analogTimes.zt },
+                ].map((t) => (
+                  <div
+                    key={t.label}
+                    className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
+                  >
+                    <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-primary/5 to-accent/5" />
+                    <div className="relative">
+                      <div className="text-xs font-medium text-muted-foreground mb-1">{t.label}</div>
+                      <div className="font-mono text-2xl sm:text-3xl font-bold tracking-widest text-foreground">
+                        {String(t.parts.h).padStart(2, '0')}:{String(t.parts.m).padStart(2, '0')}:{String(t.parts.s).padStart(2, '0')}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
             {/* Sunrise / Sunset */}

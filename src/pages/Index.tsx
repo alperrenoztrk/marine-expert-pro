@@ -106,7 +106,7 @@ const Index = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-x-auto touch-pan-x bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400"
+      className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -125,14 +125,18 @@ const Index = () => {
         </Link>
       </div>
 
-      {/* Left side widget */}
-      <aside className="fixed left-4 top-1/2 -translate-y-1/2 z-20 hidden md:block w-[min(380px,40vw)]">
-        <WeatherWidget />
+      {/* Left side widget (scrollable) */}
+      <aside className="fixed left-4 top-4 bottom-4 z-20 hidden md:block w-[min(380px,40vw)] overflow-y-auto overscroll-contain">
+        <div className="pr-2">
+          <WeatherWidget />
+        </div>
       </aside>
 
-      {/* Right side widget */}
-      <aside className="fixed right-4 top-1/2 -translate-y-1/2 z-20 hidden md:block w-[min(380px,40vw)]">
-        <MoonPhaseWidget />
+      {/* Right side widget (scrollable) */}
+      <aside className="fixed right-4 top-4 bottom-4 z-20 hidden md:block w-[min(380px,40vw)] overflow-y-auto overscroll-contain">
+        <div className="pl-2">
+          <MoonPhaseWidget />
+        </div>
       </aside>
 
       {/* Decorative ocean waves background */}
