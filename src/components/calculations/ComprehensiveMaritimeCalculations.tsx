@@ -124,6 +124,79 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
   });
   const [temperatureDensityResult, setTemperatureDensityResult] = useState<number | null>(null);
 
+  // 1. Giriş – Ortalama Draft
+  const [meanDraftInputs, setMeanDraftInputs] = useState({ draftForward: "", draftAft: "" });
+  const [meanDraftResult, setMeanDraftResult] = useState<number | null>(null);
+
+  // 2. Enine – Temel bağıntılar ve ek formüller
+  const [kmFromKgGmInputs, setKmFromKgGmInputs] = useState({ kg: "", gm: "" });
+  const [kmFromKgGmResult, setKmFromKgGmResult] = useState<number | null>(null);
+
+  const [kmFromKbBmInputs, setKmFromKbBmInputs] = useState({ kb: "", bm: "" });
+  const [kmFromKbBmResult, setKmFromKbBmResult] = useState<number | null>(null);
+
+  const [gmFromKmKgInputs, setGmFromKmKgInputs] = useState({ km: "", kg: "" });
+  const [gmFromKmKgResult, setGmFromKmKgResult] = useState<number | null>(null);
+
+  const [momentInputs, setMomentInputs] = useState({ weight: "", kgDistance: "" });
+  const [momentResult, setMomentResult] = useState<number | null>(null);
+
+  const [deltaGMShiftInputs, setDeltaGMShiftInputs] = useState({ weight: "", distance: "", displacement: "" });
+  const [deltaGMShiftResult, setDeltaGMShiftResult] = useState<number | null>(null);
+
+  const [heelWyInputs, setHeelWyInputs] = useState({ weight: "", lever: "", displacement: "", gm: "" });
+  const [heelWyResults, setHeelWyResults] = useState<{ gz: number; angle: number } | null>(null);
+
+  // 3. Boyuna – ek formüller
+  const [lcgSimpleInputs, setLcgSimpleInputs] = useState({ totalMoment: "", totalWeight: "" });
+  const [lcgSimpleResult, setLcgSimpleResult] = useState<number | null>(null);
+
+  const [trimBgInputs, setTrimBgInputs] = useState({ displacement: "", bg: "", mct: "" });
+  const [trimBgResult, setTrimBgResult] = useState<number | null>(null);
+
+  const [draftHalfTrimInputs, setDraftHalfTrimInputs] = useState({ deltaTrim: "" });
+  const [draftHalfTrimResults, setDraftHalfTrimResults] = useState<{ dF: number; dA: number } | null>(null);
+
+  // 5. Diğer – duba/tank ve yoğunluk kaynaklı draft
+  const [volumeMassInputs, setVolumeMassInputs] = useState({ length: "", breadth: "", height: "", rho: "" });
+  const [volumeMassResults, setVolumeMassResults] = useState<{ V: number; m: number } | null>(null);
+
+  const [densityDraftInputs, setDensityDraftInputs] = useState({ fwa: "", rho: "" });
+  const [densityDraftResult, setDensityDraftResult] = useState<number | null>(null);
+
+  // 6. SOLAS – ek formüller
+  const [ghmInputs, setGhmInputs] = useState({ vhm: "", sf: "" });
+  const [ghmResult, setGhmResult] = useState<number | null>(null);
+
+  const [simpson13Inputs, setSimpson13Inputs] = useState({ h: "", y0: "", y1: "", y2: "", y3: "", y4: "" });
+  const [simpson13Result, setSimpson13Result] = useState<number | null>(null);
+
+  const [simpson38Inputs, setSimpson38Inputs] = useState({ h: "", y0: "", y1: "", y2: "", y3: "" });
+  const [simpson38Result, setSimpson38Result] = useState<number | null>(null);
+
+  const [fsmGroupInputs, setFsmGroupInputs] = useState({ length: "", breadth: "", volume: "", rhoFluid: "", rhoSea: "1.025", n: "1" });
+  const [fsmGroupResult, setFsmGroupResult] = useState<number | null>(null);
+
+  const [damagedDraftInputs, setDamagedDraftInputs] = useState({ weight: "", length: "", breadth: "", damagedLength: "" });
+  const [damagedDraftResult, setDamagedDraftResult] = useState<number | null>(null);
+
+  // 7. Yük – maksimum yük miktarı
+  const [maxCargoInputs, setMaxCargoInputs] = useState({ holdVolume: "", stowageFactor: "" });
+  const [maxCargoResult, setMaxCargoResult] = useState<number | null>(null);
+
+  // 8. Pratik – draft okuma ve ortalama draftlar
+  const [metricDraftInputs, setMetricDraftInputs] = useState({ baseMeters: "", position: "alt" as "alt" | "orta" | "üst" });
+  const [metricDraftResult, setMetricDraftResult] = useState<number | null>(null);
+
+  const [imperialDraftInputs, setImperialDraftInputs] = useState({ baseFeet: "", position: "alt" as "alt" | "orta" | "üst" });
+  const [imperialDraftResult, setImperialDraftResult] = useState<{ feet: number; inches: number } | null>(null);
+
+  const [avgDraftsInputs, setAvgDraftsInputs] = useState({
+    portForward: "", portMidship: "", portAft: "",
+    starboardForward: "", starboardMidship: "", starboardAft: ""
+  });
+  const [avgDraftsResults, setAvgDraftsResults] = useState<{ dF: number; dM: number; dA: number } | null>(null);
+
   // 2a. Enine Ek: GG1, Sarkaç, Dikey Kaldırma, Havuz Tepkisi P, FSM (dikdörtgen), Duba Draft Değişimi
   const [gg1Inputs, setGg1Inputs] = useState({ weight: "", distance: "", displacement: "" });
   const [gg1Result, setGg1Result] = useState<number | null>(null);
@@ -584,10 +657,237 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
     toast({ title: "Hesaplama Tamamlandı", description: `Δd = ${deltaDraft.toFixed(3)} m` });
   };
 
+  // 1. Ortalama Draft
+  const calculateMeanDraft = () => {
+    const dF = parseFloat(meanDraftInputs.draftForward);
+    const dA = parseFloat(meanDraftInputs.draftAft);
+    if (isNaN(dF) || isNaN(dA)) {
+      toast({ title: "Hata", description: "Geçerli dF ve dA girin", variant: "destructive" });
+      return;
+    }
+    const dM = (dF + dA) / 2;
+    setMeanDraftResult(dM);
+    toast({ title: "Hesaplama Tamamlandı", description: `dM = ${dM.toFixed(3)} m` });
+  };
+
+  // 2. Temel bağıntılar ve ekler
+  const calculateKmFromKgGm = () => {
+    const kg = parseFloat(kmFromKgGmInputs.kg);
+    const gm = parseFloat(kmFromKgGmInputs.gm);
+    if (isNaN(kg) || isNaN(gm)) { toast({ title: "Hata", description: "Geçerli KG ve GM girin", variant: "destructive" }); return; }
+    const km = kg + gm;
+    setKmFromKgGmResult(km);
+    toast({ title: "KM Hesaplandı", description: `KM = ${km.toFixed(3)} m` });
+  };
+
+  const calculateKmFromKbBm = () => {
+    const kb = parseFloat(kmFromKbBmInputs.kb);
+    const bm = parseFloat(kmFromKbBmInputs.bm);
+    if (isNaN(kb) || isNaN(bm)) { toast({ title: "Hata", description: "Geçerli KB ve BM girin", variant: "destructive" }); return; }
+    const km = kb + bm;
+    setKmFromKbBmResult(km);
+    toast({ title: "KM Hesaplandı", description: `KM = ${km.toFixed(3)} m` });
+  };
+
+  const calculateGmFromKmKg = () => {
+    const km = parseFloat(gmFromKmKgInputs.km);
+    const kg = parseFloat(gmFromKmKgInputs.kg);
+    if (isNaN(km) || isNaN(kg)) { toast({ title: "Hata", description: "Geçerli KM ve KG girin", variant: "destructive" }); return; }
+    const gm = km - kg;
+    setGmFromKmKgResult(gm);
+    toast({ title: "GM Hesaplandı", description: `GM = ${gm.toFixed(3)} m` });
+  };
+
+  const calculateMoment = () => {
+    const weight = parseFloat(momentInputs.weight);
+    const kgDistance = parseFloat(momentInputs.kgDistance);
+    if (isNaN(weight) || isNaN(kgDistance)) { toast({ title: "Hata", description: "Geçerli ağırlık ve KG mesafesi girin", variant: "destructive" }); return; }
+    const moment = weight * kgDistance;
+    setMomentResult(moment);
+    toast({ title: "Moment Hesaplandı", description: `Moment = ${moment.toFixed(2)} t·m` });
+  };
+
+  const calculateDeltaGMShift = () => {
+    const w = parseFloat(deltaGMShiftInputs.weight);
+    const d = parseFloat(deltaGMShiftInputs.distance);
+    const Delta = parseFloat(deltaGMShiftInputs.displacement);
+    if ([w, d, Delta].some(isNaN) || Delta === 0) { toast({ title: "Hata", description: "Geçerli w, d, Δ girin", variant: "destructive" }); return; }
+    const deltaGM = (w * d) / Delta;
+    setDeltaGMShiftResult(deltaGM);
+    toast({ title: "ΔGM Hesaplandı", description: `ΔGM = ${deltaGM.toFixed(4)} m` });
+  };
+
+  const calculateHeelFromWY = () => {
+    const w = parseFloat(heelWyInputs.weight);
+    const y = parseFloat(heelWyInputs.lever);
+    const Delta = parseFloat(heelWyInputs.displacement);
+    const gm = parseFloat(heelWyInputs.gm);
+    if ([w, y, Delta, gm].some(isNaN) || Delta === 0 || gm === 0) { toast({ title: "Hata", description: "Geçerli w, y, Δ, GM girin", variant: "destructive" }); return; }
+    const gz = (w * y) / Delta;
+    const angle = Math.atan(gz / gm) * (180 / Math.PI);
+    setHeelWyResults({ gz, angle });
+    toast({ title: "Hesaplama Tamamlandı", description: `GZ = ${gz.toFixed(4)} m, θ = ${angle.toFixed(2)}°` });
+  };
+
+  // 3. Boyuna ekleri
+  const calculateLcgSimple = () => {
+    const totalMoment = parseFloat(lcgSimpleInputs.totalMoment);
+    const totalWeight = parseFloat(lcgSimpleInputs.totalWeight);
+    if (isNaN(totalMoment) || isNaN(totalWeight) || totalWeight === 0) { toast({ title: "Hata", description: "Geçerli moment ve toplam ağırlık girin", variant: "destructive" }); return; }
+    const lcg = totalMoment / totalWeight;
+    setLcgSimpleResult(lcg);
+    toast({ title: "LCG Hesaplandı", description: `LCG = ${lcg.toFixed(2)} m` });
+  };
+
+  const calculateTrimFromBg = () => {
+    const Delta = parseFloat(trimBgInputs.displacement);
+    const bg = parseFloat(trimBgInputs.bg);
+    const mct = parseFloat(trimBgInputs.mct);
+    if ([Delta, bg, mct].some(isNaN) || mct === 0) { toast({ title: "Hata", description: "Geçerli Δ, BG, MCT girin", variant: "destructive" }); return; }
+    const trimCm = (Delta * bg) / mct;
+    setTrimBgResult(trimCm);
+    toast({ title: "Trim Hesaplandı", description: `Trim = ${trimCm.toFixed(2)} cm` });
+  };
+
+  const calculateHalfTrimDrafts = () => {
+    const deltaTrim = parseFloat(draftHalfTrimInputs.deltaTrim);
+    if (isNaN(deltaTrim)) { toast({ title: "Hata", description: "Geçerli trim (cm) girin", variant: "destructive" }); return; }
+    const dF = -deltaTrim / 2;
+    const dA = +deltaTrim / 2;
+    setDraftHalfTrimResults({ dF, dA });
+    toast({ title: "Dağılım", description: `ΔdF = ${dF.toFixed(1)} cm, ΔdA = ${dA.toFixed(1)} cm` });
+  };
+
+  // 5. Diğer
+  const calculateVolumeMass = () => {
+    const L = parseFloat(volumeMassInputs.length);
+    const B = parseFloat(volumeMassInputs.breadth);
+    const H = parseFloat(volumeMassInputs.height);
+    const rho = parseFloat(volumeMassInputs.rho);
+    if ([L, B, H, rho].some(isNaN)) { toast({ title: "Hata", description: "Geçerli L, B, H, ρ girin", variant: "destructive" }); return; }
+    const V = L * B * H;
+    const m = V * rho;
+    setVolumeMassResults({ V, m });
+    toast({ title: "Hesaplama Tamamlandı", description: `V = ${V.toFixed(3)} m³, m = ${m.toFixed(2)} t` });
+  };
+
+  const calculateDensityDraftChange = () => {
+    const fwa = parseFloat(densityDraftInputs.fwa);
+    const rho = parseFloat(densityDraftInputs.rho);
+    if (isNaN(fwa) || isNaN(rho)) { toast({ title: "Hata", description: "Geçerli FWA ve ρ girin", variant: "destructive" }); return; }
+    const deltaT = (fwa * (1025 - rho * 1000)) / 25;
+    setDensityDraftResult(deltaT);
+    toast({ title: "Draft Değişimi", description: `ΔT ≈ ${deltaT.toFixed(1)} mm` });
+  };
+
+  // 6. SOLAS
+  const calculateGHM = () => {
+    const vhm = parseFloat(ghmInputs.vhm);
+    const sf = parseFloat(ghmInputs.sf);
+    if (isNaN(vhm) || isNaN(sf) || sf === 0) { toast({ title: "Hata", description: "Geçerli VHM ve SF girin", variant: "destructive" }); return; }
+    const ghm = vhm / sf;
+    setGhmResult(ghm);
+    toast({ title: "GHM Hesaplandı", description: `GHM = ${ghm.toFixed(2)} t·m` });
+  };
+
+  const calculateSimpson13 = () => {
+    const { h, y0, y1, y2, y3, y4 } = simpson13Inputs;
+    const hh = parseFloat(h); const Y0 = parseFloat(y0); const Y1 = parseFloat(y1); const Y2 = parseFloat(y2); const Y3 = parseFloat(y3); const Y4 = parseFloat(y4);
+    if ([hh, Y0, Y1, Y2, Y3, Y4].some(isNaN)) { toast({ title: "Hata", description: "Geçerli h ve y değerleri girin", variant: "destructive" }); return; }
+    const A = (hh / 3) * (Y0 + 4 * Y1 + 2 * Y2 + 4 * Y3 + Y4);
+    setSimpson13Result(A);
+    toast({ title: "Simpson 1/3", description: `A = ${A.toFixed(4)}` });
+  };
+
+  const calculateSimpson38 = () => {
+    const { h, y0, y1, y2, y3 } = simpson38Inputs;
+    const hh = parseFloat(h); const Y0 = parseFloat(y0); const Y1 = parseFloat(y1); const Y2 = parseFloat(y2); const Y3 = parseFloat(y3);
+    if ([hh, Y0, Y1, Y2, Y3].some(isNaN)) { toast({ title: "Hata", description: "Geçerli h ve y değerleri girin", variant: "destructive" }); return; }
+    const A = (3 * hh / 8) * (Y0 + 3 * Y1 + 3 * Y2 + Y3);
+    setSimpson38Result(A);
+    toast({ title: "Simpson 3/8", description: `A = ${A.toFixed(4)}` });
+  };
+
+  const calculateFSMGroup = () => {
+    const L = parseFloat(fsmGroupInputs.length);
+    const B = parseFloat(fsmGroupInputs.breadth);
+    const V = parseFloat(fsmGroupInputs.volume);
+    const rhoFluid = parseFloat(fsmGroupInputs.rhoFluid);
+    const rhoSea = parseFloat(fsmGroupInputs.rhoSea);
+    const n = parseFloat(fsmGroupInputs.n);
+    if ([L, B, V, rhoFluid, rhoSea, n].some(isNaN) || V === 0 || rhoSea === 0 || n === 0) {
+      toast({ title: "Hata", description: "Geçerli L, B, V, ρ_sıvı, ρ_deniz, n girin", variant: "destructive" }); return; }
+    const deltaKG = ((L * Math.pow(B, 3)) / (12 * V)) * (rhoFluid / rhoSea) * (1 / (n * n));
+    setFsmGroupResult(deltaKG);
+    toast({ title: "Serbest Yüzey", description: `ΔKG = ${deltaKG.toFixed(4)} m` });
+  };
+
+  const calculateDamagedDraft = () => {
+    const w = parseFloat(damagedDraftInputs.weight);
+    const L = parseFloat(damagedDraftInputs.length);
+    const B = parseFloat(damagedDraftInputs.breadth);
+    const Ld = parseFloat(damagedDraftInputs.damagedLength);
+    if ([w, L, B, Ld].some(isNaN)) { toast({ title: "Hata", description: "Geçerli w, L, B, L_yaralı girin", variant: "destructive" }); return; }
+    const effectiveArea = (L * B) - (Ld * B);
+    if (effectiveArea <= 0) { toast({ title: "Hata", description: "Etkin alan > 0 olmalı", variant: "destructive" }); return; }
+    const deltaT = w / effectiveArea; // m (assuming ρ≈1 t/m³)
+    setDamagedDraftResult(deltaT);
+    toast({ title: "Yaralı Stabilite", description: `ΔT = ${deltaT.toFixed(3)} m` });
+  };
+
+  // 7. Yük – maksimum yük miktarı
+  const calculateMaxCargo = () => {
+    const Vh = parseFloat(maxCargoInputs.holdVolume);
+    const SF = parseFloat(maxCargoInputs.stowageFactor);
+    if (isNaN(Vh) || isNaN(SF) || SF === 0) { toast({ title: "Hata", description: "Geçerli V_ambar ve SF girin", variant: "destructive" }); return; }
+    const wmax = Vh / SF;
+    setMaxCargoResult(wmax);
+    toast({ title: "Maksimum Yük", description: `w_max = ${wmax.toFixed(2)} ton` });
+  };
+
+  // 8. Pratik
+  const calculateMetricDraftReading = () => {
+    const base = parseFloat(metricDraftInputs.baseMeters);
+    if (isNaN(base)) { toast({ title: "Hata", description: "Geçerli taban draft (m) girin", variant: "destructive" }); return; }
+    let value = base;
+    if (metricDraftInputs.position === "orta") value = base + 0.05;
+    if (metricDraftInputs.position === "üst") value = base + 0.10;
+    setMetricDraftResult(value);
+    toast({ title: "Draft Okuma (Metre)", description: `${value.toFixed(2)} m` });
+  };
+
+  const calculateImperialDraftReading = () => {
+    const baseFt = parseFloat(imperialDraftInputs.baseFeet);
+    if (isNaN(baseFt)) { toast({ title: "Hata", description: "Geçerli taban draft (ft) girin", variant: "destructive" }); return; }
+    let inches = 0;
+    if (imperialDraftInputs.position === "orta") inches = 3;
+    if (imperialDraftInputs.position === "üst") inches = 6;
+    const totalInches = baseFt * 12 + inches;
+    const feet = Math.floor(totalInches / 12);
+    const remInches = totalInches - feet * 12;
+    setImperialDraftResult({ feet, inches: remInches });
+    toast({ title: "Draft Okuma (Kraliyet)", description: `${feet} ft ${remInches.toFixed(0)} in` });
+  };
+
+  const calculateAverageDrafts = () => {
+    const pf = parseFloat(avgDraftsInputs.portForward);
+    const pm = parseFloat(avgDraftsInputs.portMidship);
+    const pa = parseFloat(avgDraftsInputs.portAft);
+    const sf = parseFloat(avgDraftsInputs.starboardForward);
+    const sm = parseFloat(avgDraftsInputs.starboardMidship);
+    const sa = parseFloat(avgDraftsInputs.starboardAft);
+    if ([pf, pm, pa, sf, sm, sa].some(isNaN)) { toast({ title: "Hata", description: "Geçerli tüm draftları girin", variant: "destructive" }); return; }
+    const dF = (pf + sf) / 2;
+    const dM = (pm + sm) / 2;
+    const dA = (pa + sa) / 2;
+    setAvgDraftsResults({ dF, dM, dA });
+    toast({ title: "Ortalama Draftlar", description: `dF=${dF.toFixed(3)}, dM=${dM.toFixed(3)}, dA=${dA.toFixed(3)} m` });
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="hogging" className="w-full">
-        <TabsList className={`grid w-full ${showLongitudinal && showDraftSurvey ? 'grid-cols-7' : showLongitudinal || showDraftSurvey ? 'grid-cols-6' : 'grid-cols-5'}`}>
+        <TabsList className={`grid w-full ${showLongitudinal && showDraftSurvey ? 'grid-cols-8' : showLongitudinal || showDraftSurvey ? 'grid-cols-7' : 'grid-cols-6'}`}>
           <TabsTrigger value="hogging">1. Giriş</TabsTrigger>
           <TabsTrigger value="transverse">2. Enine Denge Hesapları</TabsTrigger>
           {showLongitudinal && (
@@ -599,6 +899,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
           <TabsTrigger value="density">5. Duba ve Yoğunluk Hesapları</TabsTrigger>
           <TabsTrigger value="solas">6. SOLAS Stabilite Kriterleri</TabsTrigger>
           <TabsTrigger value="load">7. Yük Hesapları</TabsTrigger>
+          <TabsTrigger value="practical">8. Pratik Hesaplar</TabsTrigger>
         </TabsList>
 
         {/* 1. Giriş - Hogging ve Sagging Tespiti */}
@@ -653,6 +954,29 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                       {hoggingSaggingResult.type === "Hogging" ? "Geminin ortası yukarı eğilimli" : "Geminin ortası aşağı eğilimli"}
                     </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Ortalama Draft (dM) = (dF + dA) / 2</h4>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div>
+                    <Label>Baş Draft (dF) - m</Label>
+                    <Input type="number" value={meanDraftInputs.draftForward} onChange={(e)=> setMeanDraftInputs(p=>({...p, draftForward: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Kıç Draft (dA) - m</Label>
+                    <Input type="number" value={meanDraftInputs.draftAft} onChange={(e)=> setMeanDraftInputs(p=>({...p, draftAft: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateMeanDraft} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />
+                    Hesapla
+                  </Button>
+                </div>
+                {meanDraftResult !== null && (
+                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
+                    <p className="font-mono text-lg">dM = {meanDraftResult.toFixed(3)} m</p>
                   </div>
                 )}
               </div>
@@ -923,6 +1247,110 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                 )}
               </div>
 
+              {/* Temel Bağıntılar ve Ek Formüller */}
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Temel Bağıntılar</h4>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div>
+                    <Label>KG (m)</Label>
+                    <Input type="number" value={kmFromKgGmInputs.kg} onChange={(e)=> setKmFromKgGmInputs(p=>({...p, kg: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>GM (m)</Label>
+                    <Input type="number" value={kmFromKgGmInputs.gm} onChange={(e)=> setKmFromKgGmInputs(p=>({...p, gm: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateKmFromKgGm} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />KM = KG + GM
+                  </Button>
+                </div>
+                {kmFromKgGmResult !== null && (<div className="mt-2 text-sm">KM = <span className="font-mono">{kmFromKgGmResult.toFixed(3)} m</span></div>)}
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-4">
+                  <div>
+                    <Label>KB (m)</Label>
+                    <Input type="number" value={kmFromKbBmInputs.kb} onChange={(e)=> setKmFromKbBmInputs(p=>({...p, kb: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>BM (m)</Label>
+                    <Input type="number" value={kmFromKbBmInputs.bm} onChange={(e)=> setKmFromKbBmInputs(p=>({...p, bm: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateKmFromKbBm} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />KM = KB + BM
+                  </Button>
+                </div>
+                {kmFromKbBmResult !== null && (<div className="mt-2 text-sm">KM = <span className="font-mono">{kmFromKbBmResult.toFixed(3)} m</span></div>)}
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-4">
+                  <div>
+                    <Label>KM (m)</Label>
+                    <Input type="number" value={gmFromKmKgInputs.km} onChange={(e)=> setGmFromKmKgInputs(p=>({...p, km: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>KG (m)</Label>
+                    <Input type="number" value={gmFromKmKgInputs.kg} onChange={(e)=> setGmFromKmKgInputs(p=>({...p, kg: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateGmFromKmKg} className="w-full">
+                    <Calculator className="w-4 h-4 mr-2" />GM = KM − KG
+                  </Button>
+                </div>
+                {gmFromKmKgResult !== null && (<div className="mt-2 text-sm">GM = <span className="font-mono">{gmFromKmKgResult.toFixed(3)} m</span></div>)}
+              </div>
+
+              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Moment ve ΔGM</h4>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div>
+                    <Label>Ağırlık (t)</Label>
+                    <Input type="number" value={momentInputs.weight} onChange={(e)=> setMomentInputs(p=>({...p, weight: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>KG Mesafesi (m)</Label>
+                    <Input type="number" value={momentInputs.kgDistance} onChange={(e)=> setMomentInputs(p=>({...p, kgDistance: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateMoment} className="w-full"><Calculator className="w-4 h-4 mr-2" />Moment = w×KG</Button>
+                </div>
+                {momentResult !== null && (<div className="mt-2 text-sm">Moment = <span className="font-mono">{momentResult.toFixed(2)} t·m</span></div>)}
+
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mt-4">
+                  <div>
+                    <Label>w (t)</Label>
+                    <Input type="number" value={deltaGMShiftInputs.weight} onChange={(e)=> setDeltaGMShiftInputs(p=>({...p, weight: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>d (m)</Label>
+                    <Input type="number" value={deltaGMShiftInputs.distance} onChange={(e)=> setDeltaGMShiftInputs(p=>({...p, distance: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Δ (t)</Label>
+                    <Input type="number" value={deltaGMShiftInputs.displacement} onChange={(e)=> setDeltaGMShiftInputs(p=>({...p, displacement: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateDeltaGMShift} className="w-full"><Calculator className="w-4 h-4 mr-2" />ΔGM = w×d/Δ</Button>
+                </div>
+                {deltaGMShiftResult !== null && (<div className="mt-2 text-sm">ΔGM = <span className="font-mono">{deltaGMShiftResult.toFixed(4)} m</span></div>)}
+
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mt-4">
+                  <div>
+                    <Label>w (t)</Label>
+                    <Input type="number" value={heelWyInputs.weight} onChange={(e)=> setHeelWyInputs(p=>({...p, weight: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>y (m)</Label>
+                    <Input type="number" value={heelWyInputs.lever} onChange={(e)=> setHeelWyInputs(p=>({...p, lever: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>Δ (t)</Label>
+                    <Input type="number" value={heelWyInputs.displacement} onChange={(e)=> setHeelWyInputs(p=>({...p, displacement: e.target.value}))} />
+                  </div>
+                  <div>
+                    <Label>GM (m)</Label>
+                    <Input type="number" value={heelWyInputs.gm} onChange={(e)=> setHeelWyInputs(p=>({...p, gm: e.target.value}))} />
+                  </div>
+                  <Button onClick={calculateHeelFromWY} className="w-full"><Calculator className="w-4 h-4 mr-2" />GZ ve θ</Button>
+                </div>
+                {heelWyResults && (
+                  <div className="mt-2 text-sm">GZ = <span className="font-mono">{heelWyResults.gz.toFixed(4)} m</span>; θ = <span className="font-mono">{heelWyResults.angle.toFixed(2)}°</span></div>
+                )}
+              </div>
               
             </CardContent>
           </Card>
@@ -1546,6 +1974,76 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                 {temperatureDensityResult !== null && (
                   <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-indigo-500">
                     <p className="font-mono text-lg">Yeni Yoğunluk = {temperatureDensityResult.toFixed(4)} ton/m³</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* 8. Pratik Hesaplar */}
+        <TabsContent value="practical" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                8. Pratik Hesaplar
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-slate-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Draft Okuma (Metrik)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                  <div>
+                    <Label>Taban Değer (m)</Label>
+                    <Input type="number" value={metricDraftInputs.baseMeters} onChange={(e)=> setMetricDraftInputs(p=>({...p, baseMeters: e.target.value}))} />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Pozisyon</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button variant={metricDraftInputs.position==='alt'? 'default':'outline'} onClick={()=> setMetricDraftInputs(p=>({...p, position:'alt'}))}>Alt</Button>
+                      <Button variant={metricDraftInputs.position==='orta'? 'default':'outline'} onClick={()=> setMetricDraftInputs(p=>({...p, position:'orta'}))}>Orta (+5cm)</Button>
+                      <Button variant={metricDraftInputs.position==='üst'? 'default':'outline'} onClick={()=> setMetricDraftInputs(p=>({...p, position:'üst'}))}>Üst (+10cm)</Button>
+                    </div>
+                  </div>
+                  <Button onClick={calculateMetricDraftReading} className="w-full md:col-span-2"><Calculator className="w-4 h-4 mr-2" />Hesapla</Button>
+                </div>
+                {metricDraftResult !== null && (<div className="mt-2 text-sm">Okuma = <span className="font-mono">{metricDraftResult.toFixed(2)} m</span></div>)}
+              </div>
+
+              <div className="bg-slate-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Draft Okuma (Kraliyet)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                  <div>
+                    <Label>Taban Değer (ft)</Label>
+                    <Input type="number" value={imperialDraftInputs.baseFeet} onChange={(e)=> setImperialDraftInputs(p=>({...p, baseFeet: e.target.value}))} />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Pozisyon</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button variant={imperialDraftInputs.position==='alt'? 'default':'outline'} onClick={()=> setImperialDraftInputs(p=>({...p, position:'alt'}))}>Alt</Button>
+                      <Button variant={imperialDraftInputs.position==='orta'? 'default':'outline'} onClick={()=> setImperialDraftInputs(p=>({...p, position:'orta'}))}>Orta (+3in)</Button>
+                      <Button variant={imperialDraftInputs.position==='üst'? 'default':'outline'} onClick={()=> setImperialDraftInputs(p=>({...p, position:'üst'}))}>Üst (+6in)</Button>
+                    </div>
+                  </div>
+                  <Button onClick={calculateImperialDraftReading} className="w-full md:col-span-2"><Calculator className="w-4 h-4 mr-2" />Hesapla</Button>
+                </div>
+                {imperialDraftResult && (<div className="mt-2 text-sm">Okuma = <span className="font-mono">{imperialDraftResult.feet} ft {imperialDraftResult.inches.toFixed(0)} in</span></div>)}
+              </div>
+
+              <div className="bg-slate-50 dark:bg-gray-700 p-4 rounded-lg">
+                <h4 className="font-semibold mb-3">Ortalama Draftlar</h4>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+                  <div><Label>Baş Port</Label><Input type="number" value={avgDraftsInputs.portForward} onChange={(e)=> setAvgDraftsInputs(p=>({...p, portForward: e.target.value}))} /></div>
+                  <div><Label>Vasat Port</Label><Input type="number" value={avgDraftsInputs.portMidship} onChange={(e)=> setAvgDraftsInputs(p=>({...p, portMidship: e.target.value}))} /></div>
+                  <div><Label>Kıç Port</Label><Input type="number" value={avgDraftsInputs.portAft} onChange={(e)=> setAvgDraftsInputs(p=>({...p, portAft: e.target.value}))} /></div>
+                  <div><Label>Baş Starboard</Label><Input type="number" value={avgDraftsInputs.starboardForward} onChange={(e)=> setAvgDraftsInputs(p=>({...p, starboardForward: e.target.value}))} /></div>
+                  <div><Label>Vasat Starboard</Label><Input type="number" value={avgDraftsInputs.starboardMidship} onChange={(e)=> setAvgDraftsInputs(p=>({...p, starboardMidship: e.target.value}))} /></div>
+                  <div><Label>Kıç Starboard</Label><Input type="number" value={avgDraftsInputs.starboardAft} onChange={(e)=> setAvgDraftsInputs(p=>({...p, starboardAft: e.target.value}))} /></div>
+                </div>
+                <div className="flex justify-end mt-3"><Button onClick={calculateAverageDrafts}><Calculator className="w-4 h-4 mr-2" />Hesapla</Button></div>
+                {avgDraftsResults && (
+                  <div className="mt-2 text-sm">
+                    dF = <span className="font-mono">{avgDraftsResults.dF.toFixed(3)} m</span>; dM = <span className="font-mono">{avgDraftsResults.dM.toFixed(3)} m</span>; dA = <span className="font-mono">{avgDraftsResults.dA.toFixed(3)} m</span>
                   </div>
                 )}
               </div>
