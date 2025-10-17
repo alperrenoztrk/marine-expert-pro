@@ -1245,4 +1245,317 @@ export class HydrostaticCalculations {
     // Simplified acceptance: positive area and phiEq < vanishing
     return { ok: area > 0 && phiEq < stabilityData.vanishingAngle, phiEq };
   }
+
+  /**
+   * =====================
+   * Practical formula pack (from request)
+   * =====================
+   */
+
+  // 1) GİRİŞ – Hogging/Sagging ve ortalama draft
+  static meanDraftFromEnds(dF: number, dA: number): number {
+    return (dF + dA) / 2;
+  }
+
+  static detectHoggingSagging(dF: number, measuredDM: number, dA: number): 'Hogging' | 'Sagging' | 'Düz' {
+    const meanEnds = (dF + dA) / 2;
+    if (meanEnds > measuredDM) return 'Hogging';
+    if (meanEnds < measuredDM) return 'Sagging';
+    return 'Düz';
+  }
+
+  // 2) ENİNE – Temel bağıntılar ve yardımcılar
+  static gmFromKmKg(km: number, kg: number): number { return km - kg; }
+  static bmFromKmKb(km: number, kb: number): number { return km - kb; }
+  static momentFromWeightAndKG(weightT: number, kgMeters: number): number { return weightT * kgMeters; }
+  static kgFromTotals(totalMomentT_M: number, totalWeightT: number): number { return totalWeightT > 0 ? totalMomentT_M / totalWeightT : 0; }
+  static deltaGMFromShift(weightT: number, distanceM: number, displacementT: number): number { return displacementT > 0 ? (weightT * distanceM) / displacementT : 0; }
+  static gzFromShift(weightT: number, transverseM: number, displacementT: number): number { return displacementT > 0 ? (weightT * transverseM) / displacementT : 0; }
+  static craneDeltaKG(weightT: number, hookHeightM: number, loadHeightM: number, displacementT: number): number {
+    return this.calculateCraneDeltaKG(weightT, hookHeightM, loadHeightM, displacementT);
+  }
+  static dockReactionP(mct1cm_t_m_per_cm: number, trimCm: number, distanceM: number): number {
+    return this.calculateDockReactionP(mct1cm_t_m_per_cm, trimCm, distanceM);
+  }
+  static criticalGMDock(reactionT: number, kmM: number, displacementT: number): number {
+    return this.calculateCriticalGMDock(reactionT, kmM, displacementT);
+  }
+
+  // 3) BOYUNA – Trim ve draft ilişkileri
+  static deltaTrim(totalMomentT_M: number, mct: number): number { return mct !== 0 ? totalMomentT_M / mct : 0; }
+  static parallelSinkageCm(weightT: number, tpcTonPerCm: number): number { return tpcTonPerCm !== 0 ? weightT / tpcTonPerCm : 0; }
+  static lcgFromMoment(totalMomentT_M: number, totalDisplacementT: number): number { return totalDisplacementT > 0 ? totalMomentT_M / totalDisplacementT : 0; }
+  static trimFromBG(displacementT: number, bgM: number, mct: number): number { return mct !== 0 ? (displacementT * bgM) / mct : 0; }
+  static draftChangesAtLCF(deltaTrimVal: number): { deltaFwd: number; deltaAft: number } { return { deltaFwd: -deltaTrimVal / 2, deltaAft: +deltaTrimVal / 2 }; }
+  static draftCorrection(distanceM: number, trimM: number, lbdM: number): number { return lbdM !== 0 ? (distanceM * trimM) / lbdM : 0; }
+
+  // 4) DRAFT SURVEY – MMM ve düzeltmeler
+  static mmmDraft(dF: number, dM: number, dA: number): number { return (dF + dA + 6 * dM) / 8; }
+  static draftSurveyTrimCorrection1(trimM: number, lcfM: number, tpcTonPerCm: number, lbpM: number): number {
+    return lbpM !== 0 ? (trimM * lcfM * tpcTonPerCm * 100) / lbpM : 0;
+  }
+  static draftSurveyTrimCorrection2(trimM: number, deltaMCT_t_m_per_cm: number, lbpM: number): number {
+    return lbpM !== 0 ? ((trimM ** 2) * deltaMCT_t_m_per_cm * 50) / lbpM : 0;
+  }
+  static densityCorrection(rho_t_per_m3: number, displacementT: number, rhoSea = 1.025): number {
+    return ((rho_t_per_m3 / rhoSea) - 1) * displacementT;
+  }
+
+  // 5) DİĞER HESAPLAR – hacim, kütle, Cb, FWA, yoğunluk
+  static rectangularVolume(L: number, B: number, H: number): number { return L * B * H; }
+  static massFromVolume(volumeM3: number, rhoTPerM3: number): number { return volumeM3 * rhoTPerM3; }
+  static blockCoefficient(nablaM3: number, L: number, B: number, T: number): number { return (L * B * T) !== 0 ? nablaM3 / (L * B * T) : 0; }
+  static freeWaterAllowanceCm(displacementT: number, tpcTonPerCm: number): number { return tpcTonPerCm !== 0 ? displacementT / (4 * tpcTonPerCm) : 0; }
+  static draftChangeFromDensityCm(fwaCm: number, rhoKgPerM3: number, rhoSeaKgPerM3 = 1025): number { return fwaCm * (rhoSeaKgPerM3 - rhoKgPerM3) / 25; }
+  static displacementFromDensity(delta1T: number, rho1: number, rho2: number): number { return rho1 !== 0 ? delta1T * (rho2 / rho1) : 0; }
+
+  // 6) SOLAS – kümelenme, GHM, Simpson, FSM, yalpa periyodu, yaralı
+  static clusteringAngleDeg(ghmT_M: number, displacementT: number, gmM: number): number {
+    return (displacementT * gmM) !== 0 ? 57.2957795131 * (ghmT_M / (displacementT * gmM)) : 0;
+  }
+  static ghmFromVhm(vhm: number, sf: number): number { return sf !== 0 ? vhm / sf : 0; }
+  static simpsonOneThird(h: number, y: number[]): number {
+    const n = y.length - 1;
+    if (n < 2 || n % 2 === 1) throw new Error('1/3 kuralı için çift bölme (tek nokta sayısı) gerekir');
+    let sum = y[0] + y[y.length - 1];
+    for (let i = 1; i < y.length - 1; i++) sum += (i % 2 === 1 ? 4 : 2) * y[i];
+    return (h / 3) * sum;
+  }
+  static simpsonThreeEighths(h: number, y0: number, y1: number, y2: number, y3: number): number {
+    return (3 * h / 8) * (y0 + 3 * y1 + 3 * y2 + y3);
+  }
+  static gg1FreeSurface(L: number, B: number, V: number, rhoFluid = 1.025, rhoSea = 1.025, n = 1): number {
+    if (V <= 0 || n <= 0 || rhoSea === 0) return 0;
+    return ((L * Math.pow(B, 3)) / (12 * V)) * (rhoFluid / rhoSea) * (1 / (n * n));
+  }
+  static rollPeriodFromCb(cb: number, breadthM: number, gmM: number): number { return gmM > 0 ? cb * breadthM / Math.sqrt(gmM) : 0; }
+  static woundedStabilityDraftChange(wT: number, L: number, B: number, L_wounded: number): number {
+    const area = (L * B) - (L_wounded * B);
+    return area <= 0 ? Number.POSITIVE_INFINITY : wT / area;
+  }
+
+  // 7) YÜK HESAPLARI – miktar, yükseklik, sıcaklıkla yoğunluk
+  static maxCargoWeight(volumeHoldM3: number, stowageFactorM3PerT: number): number { return stowageFactorM3PerT !== 0 ? volumeHoldM3 / stowageFactorM3PerT : 0; }
+  static maxCargoHeight(stowageFactor: number, permissibleLoad: number): number { return stowageFactor * permissibleLoad; }
+  static densityByTemperature(rho1: number, T1: number, T2: number, k: number): number { return rho1 - ((T2 - T1) * k); }
+
+  // 8) PRATİK – draft okumaları ve ortalamalar
+  static readDraftMetric(baseMarkMeters: number, position: 'alt' | 'orta' | 'ustu'): number {
+    switch (position) {
+      case 'alt': return baseMarkMeters;
+      case 'orta': return baseMarkMeters + 0.05;
+      case 'ustu': return baseMarkMeters + 0.10;
+      default: return baseMarkMeters;
+    }
+  }
+  static readDraftImperial(baseMarkInches: number, position: 'alt' | 'orta' | 'ustu'): number {
+    switch (position) {
+      case 'alt': return baseMarkInches;
+      case 'orta': return baseMarkInches + 3;
+      case 'ustu': return baseMarkInches + 6;
+      default: return baseMarkInches;
+    }
+  }
+  static meanDraftsFromSides(
+    dF_starboard: number, dF_port: number,
+    dM_starboard: number, dM_port: number,
+    dA_starboard: number, dA_port: number
+  ): { dF: number; dM: number; dA: number } {
+    return {
+      dF: (dF_starboard + dF_port) / 2,
+      dM: (dM_starboard + dM_port) / 2,
+      dA: (dA_starboard + dA_port) / 2
+    };
+  }
+
+  /**
+   * 1) Hogging/Sagging detection and mean draft helpers
+   */
+  static meanDraftFromEnds(dF_m: number, dA_m: number): number {
+    return (dF_m + dA_m) / 2;
+  }
+
+  static detectHoggingSagging(dF_m: number, dM_measured_m: number, dA_m: number): 'Hogging' | 'Sagging' | 'Düz' {
+    const meanEnds = (dF_m + dA_m) / 2;
+    if (meanEnds > dM_measured_m) return 'Hogging';
+    if (meanEnds < dM_measured_m) return 'Sagging';
+    return 'Düz';
+  }
+
+  /**
+   * 3) Longitudinal balance helpers
+   */
+  static deltaTrim(totalMoment_t_m: number, MCT_t_m_per_unit: number): number {
+    if (MCT_t_m_per_unit === 0) return 0;
+    return totalMoment_t_m / MCT_t_m_per_unit;
+  }
+
+  static parallelSinkageCm(weight_t: number, TPC_t_per_cm: number): number {
+    if (TPC_t_per_cm === 0) return 0;
+    return weight_t / TPC_t_per_cm;
+  }
+
+  static computeLCG(totalMoment_t_m: number, totalDisplacement_t: number): number {
+    if (totalDisplacement_t === 0) return 0;
+    return totalMoment_t_m / totalDisplacement_t;
+  }
+
+  static computeTrimFromBG(displacement_t: number, BG_m: number, MCT_t_m_per_unit: number): number {
+    if (MCT_t_m_per_unit === 0) return 0;
+    return (displacement_t * BG_m) / MCT_t_m_per_unit;
+  }
+
+  static draftChangesAtLCF(deltaTrim: number): { deltaFwd: number; deltaAft: number } {
+    return { deltaFwd: -deltaTrim / 2, deltaAft: +deltaTrim / 2 };
+  }
+
+  static draftCorrection(distance_m: number, trim_m: number, LBP_m: number): number {
+    if (LBP_m === 0) return 0;
+    return (distance_m * trim_m) / LBP_m;
+  }
+
+  /**
+   * 4) Draft survey helpers
+   */
+  static MMMDraft(dF_m: number, dM_m: number, dA_m: number): number {
+    return (dF_m + dA_m + 6 * dM_m) / 8;
+  }
+
+  static draftSurveyTrimCorrection1(trim_m: number, LCF_m: number, TPC_t_per_cm: number, LBP_m: number): number {
+    if (LBP_m === 0) return 0;
+    return (trim_m * LCF_m * TPC_t_per_cm * 100) / LBP_m;
+  }
+
+  static draftSurveyTrimCorrection2(trim_m: number, deltaMCT_t_m_per_cm: number, LBP_m: number): number {
+    if (LBP_m === 0) return 0;
+    return (trim_m * trim_m * deltaMCT_t_m_per_cm * 50) / LBP_m;
+  }
+
+  static densityCorrection(rho_t_per_m3: number, displacement_t: number, rhoSea_t_per_m3: number = this.WATER_DENSITY): number {
+    return ((rho_t_per_m3 / rhoSea_t_per_m3) - 1) * displacement_t;
+  }
+
+  /**
+   * 5) Other calculations
+   */
+  static rectangularVolume(L_m: number, B_m: number, H_m: number): number {
+    return L_m * B_m * H_m;
+  }
+
+  static massFromVolume(volume_m3: number, rho_t_per_m3: number): number {
+    return volume_m3 * rho_t_per_m3;
+  }
+
+  static blockCoefficientFromVolume(nabla_m3: number, L_m: number, B_m: number, T_m: number): number {
+    const denom = L_m * B_m * T_m;
+    if (denom === 0) return 0;
+    return nabla_m3 / denom;
+  }
+
+  static FWAcm(displacement_t: number, TPC_t_per_cm: number): number {
+    if (TPC_t_per_cm === 0) return 0;
+    return displacement_t / (4 * TPC_t_per_cm);
+  }
+
+  static draftChangeDueToDensity(FWA_cm: number, rho_kg_per_m3: number, rhoSea_kg_per_m3: number = 1025): number {
+    return FWA_cm * (rhoSea_kg_per_m3 - rho_kg_per_m3) / 25;
+  }
+
+  static displacementForDensityChange(Delta1_t: number, rho1: number, rho2: number): number {
+    if (rho1 === 0) return 0;
+    return Delta1_t * (rho2 / rho1);
+  }
+
+  /**
+   * 6) SOLAS/criteria helpers
+   */
+  static clusterAngleDeg(GHM_t_m: number, displacement_t: number, GM_m: number): number {
+    if (displacement_t * GM_m === 0) return 0;
+    return 57.2957795131 * (GHM_t_m / (displacement_t * GM_m));
+  }
+
+  static GHMfromVHM(VHM_t_m: number, SF: number): number {
+    if (SF === 0) return 0;
+    return VHM_t_m / SF;
+  }
+
+  static simpsonOneThird(h: number, y: number[]): number {
+    const n = y.length - 1;
+    if (n < 2 || n % 2 === 1) {
+      throw new Error('1/3 kuralı için çift sayıda bölme (tek sayıda nokta) gerekir');
+    }
+    let sum = y[0] + y[y.length - 1];
+    for (let i = 1; i < y.length - 1; i++) {
+      sum += (i % 2 === 1 ? 4 : 2) * y[i];
+    }
+    return (h / 3) * sum;
+  }
+
+  static simpsonThreeEighths(h: number, y0: number, y1: number, y2: number, y3: number): number {
+    return (3 * h / 8) * (y0 + 3 * y1 + 3 * y2 + y3);
+  }
+
+  static GG1FreeSurface(L_m: number, B_m: number, V_m3: number, rhoFluid_t_per_m3: number = this.WATER_DENSITY, rhoSea_t_per_m3: number = this.WATER_DENSITY, n: number = 1): number {
+    if (V_m3 <= 0 || n <= 0 || rhoSea_t_per_m3 === 0) return 0;
+    return ((L_m * Math.pow(B_m, 3)) / (12 * V_m3)) * (rhoFluid_t_per_m3 / rhoSea_t_per_m3) * (1 / (n * n));
+  }
+
+  static rollPeriodCb(cb: number, B_m: number, GM_m: number): number {
+    if (GM_m <= 0) return Infinity;
+    return cb * B_m / Math.sqrt(GM_m);
+  }
+
+  static damagedStabilityDeltaT(w_t: number, L_m: number, B_m: number, L_injured_m: number): number {
+    const area = (L_m * B_m) - (L_injured_m * B_m);
+    if (area <= 0) return Infinity;
+    return w_t / area;
+  }
+
+  /**
+   * 7) Cargo/hold calculations
+   */
+  static maxCargoWeight(holdVolume_m3: number, stowageFactor_m3_per_t: number): number {
+    if (stowageFactor_m3_per_t === 0) return 0;
+    return holdVolume_m3 / stowageFactor_m3_per_t;
+  }
+
+  static maxCargoHeight(stowageFactor: number, permissibleLoad: number): number {
+    return stowageFactor * permissibleLoad;
+  }
+
+  static densityWithTemperature(rho1: number, T1: number, T2: number, k: number): number {
+    return rho1 - ((T2 - T1) * k);
+  }
+
+  /**
+   * 8) Practical readings and averages
+   */
+  static draftReadingMetric(base_m: number, position: 'alt' | 'orta' | 'ustu'): number {
+    switch (position) {
+      case 'alt': return base_m;
+      case 'orta': return base_m + 0.05;
+      case 'ustu': return base_m + 0.10;
+      default: return base_m;
+    }
+  }
+
+  static draftReadingImperial(base_in: number, position: 'alt' | 'orta' | 'ustu'): number {
+    switch (position) {
+      case 'alt': return base_in;
+      case 'orta': return base_in + 3;
+      case 'ustu': return base_in + 6;
+      default: return base_in;
+    }
+  }
+
+  static averageDrafts(
+    dF_starboard_m: number, dF_port_m: number,
+    dM_starboard_m: number, dM_port_m: number,
+    dA_starboard_m: number, dA_port_m: number
+  ): { dF: number; dM: number; dA: number } {
+    const dF = (dF_starboard_m + dF_port_m) / 2;
+    const dM = (dM_starboard_m + dM_port_m) / 2;
+    const dA = (dA_starboard_m + dA_port_m) / 2;
+    return { dF, dM, dA };
+  }
 }

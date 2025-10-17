@@ -394,3 +394,256 @@ def meyil_momenti_hesapla(w: float, d: float) -> float:
         Meyil momenti (ton.m)
     """
     return w * d
+
+
+# 1) GİRİŞ – Trim/Hogging/Sagging ve ortalama draft
+def ortalama_draft_sonlar(d_f: float, d_a: float) -> float:
+    """Sonlardan ortalama draft dM = (dF + dA)/2 (metre)."""
+    return (d_f + d_a) / 2.0
+
+
+def hogging_sagging_tespit(d_f: float, d_m: float, d_a: float) -> str:
+    """(dF + dA)/2 ile ölçülen dM karşılaştırması ile Hogging/Sagging tespiti.
+
+    Returns: "Hogging" | "Sagging" | "Düz"
+    """
+    ort = (d_f + d_a) / 2.0
+    if ort > d_m:
+        return "Hogging"
+    if ort < d_m:
+        return "Sagging"
+    return "Düz"
+
+
+# 2) ENİNE – Temel bağıntılar zaten sınıf içinde mevcut (GM=KM-KG, KM=KB+BM)
+# Ek yardımcılar
+def gm_from_km_kg(km: float, kg: float) -> float:
+    return km - kg
+
+
+def bm_from_km_kb(km: float, kb: float) -> float:
+    return km - kb
+
+
+def moment_from_weight_and_kg(weight_t: float, kg_m: float) -> float:
+    """Moment = Ağırlık × KG mesafesi (t·m)."""
+    return weight_t * kg_m
+
+
+def delta_gm_shift(w: float, d: float, deplasman: float) -> float:
+    """ΔGM = w × d / Δ (metre)."""
+    if deplasman == 0:
+        return 0.0
+    return (w * d) / deplasman
+
+
+def gz_from_shift(w: float, y: float, deplasman: float) -> float:
+    """GZ = w × y / Δ (metre)."""
+    if deplasman == 0:
+        return 0.0
+    return (w * y) / deplasman
+
+
+# 3) BOYUNA DENGE HESAPLARI
+def delta_trim(total_moment_t_m: float, mct: float) -> float:
+    """ΔTrim = Toplam Moment / MCT. Birimler MCT ile tutarlı döner."""
+    if mct == 0:
+        return 0.0
+    return total_moment_t_m / mct
+
+
+def paralel_batma_cm(w_ton: float, tpc_ton_per_cm: float) -> float:
+    """Paralel batma/çıkma (cm) = w / TPC."""
+    if tpc_ton_per_cm == 0:
+        return 0.0
+    return w_ton / tpc_ton_per_cm
+
+
+def lcg_from_moment(total_moment_t_m: float, total_displacement_t: float) -> float:
+    """LCG = Toplam Moment / Toplam Deplasman (metre)."""
+    if total_displacement_t == 0:
+        return 0.0
+    return total_moment_t_m / total_displacement_t
+
+
+def trim_from_bg(displacement_t: float, bg_m: float, mct: float) -> float:
+    """Trim = Δ × BG / MCT. Birimler MCT ile tutarlı döner."""
+    if mct == 0:
+        return 0.0
+    return (displacement_t * bg_m) / mct
+
+
+def draft_degisimleri_lcf(delta_trim_val: float) -> Tuple[float, float]:
+    """LCF mastoride varsayımıyla ΔdF = -ΔTrim/2, ΔdA = +ΔTrim/2 döner."""
+    return (-delta_trim_val / 2.0, +delta_trim_val / 2.0)
+
+
+def draft_duzeltmesi(mesafe_m: float, trim_m: float, lbd_m: float) -> float:
+    """Düzeltme = (Mesafe × Trim) / LBD (metre)."""
+    if lbd_m == 0:
+        return 0.0
+    return (mesafe_m * trim_m) / lbd_m
+
+
+# 4) DRAFT SURVEY
+def mmm_draft(d_f: float, d_m: float, d_a: float) -> float:
+    """MMM = (dF + dA + 6·dM)/8 (metre)."""
+    return (d_f + d_a + 6.0 * d_m) / 8.0
+
+
+def draft_survey_trim_duzeltmesi1(trim_m: float, lcf_m: float, tpc_ton_per_cm: float, lbp_m: float) -> float:
+    """Δ₁ = Trim × LCF × TPC × 100 / LBP (ton)."""
+    if lbp_m == 0:
+        return 0.0
+    return (trim_m * lcf_m * tpc_ton_per_cm * 100.0) / lbp_m
+
+
+def draft_survey_trim_duzeltmesi2(trim_m: float, delta_mct_t_m_per_cm: float, lbp_m: float) -> float:
+    """Δ₂ = Trim² × ΔMCT × 50 / LBP (ton)."""
+    if lbp_m == 0:
+        return 0.0
+    return ((trim_m ** 2) * delta_mct_t_m_per_cm * 50.0) / lbp_m
+
+
+def yogunluk_duzeltmesi(rho_t_per_m3: float, displacement_t: float, rho_deniz: float = 1.025) -> float:
+    """Δρ = ((ρ/ρ_deniz) − 1) × Δ (ton)."""
+    return ((rho_t_per_m3 / rho_deniz) - 1.0) * displacement_t
+
+
+# 5) DİĞER HESAPLAR
+def dikdortgen_hacim(l_m: float, b_m: float, h_m: float) -> float:
+    return l_m * b_m * h_m
+
+
+def kuttleden_kutle(hacim_m3: float, rho_t_per_m3: float) -> float:
+    return hacim_m3 * rho_t_per_m3
+
+
+def blok_katsayisi(nabla_m3: float, l_m: float, b_m: float, t_m: float) -> float:
+    if l_m * b_m * t_m == 0:
+        return 0.0
+    return nabla_m3 / (l_m * b_m * t_m)
+
+
+def fwa_cm(displacement_t: float, tpc_ton_per_cm: float) -> float:
+    """FWA = Δ / (4 × TPC) (cm)."""
+    if tpc_ton_per_cm == 0:
+        return 0.0
+    return displacement_t / (4.0 * tpc_ton_per_cm)
+
+
+def draft_degisim_yogunluk(fwa_cm_val: float, rho_kg_per_m3: float, rho_deniz_kg_per_m3: float = 1025.0) -> float:
+    """ΔT (cm) = FWA × (1025 − ρ) / 25."""
+    return fwa_cm_val * (rho_deniz_kg_per_m3 - rho_kg_per_m3) / 25.0
+
+
+def deplasman_yogunluk_farki(delta1_t: float, rho1: float, rho2: float) -> float:
+    """Δ₂ = Δ₁ × (ρ₂/ρ₁)."""
+    if rho1 == 0:
+        return 0.0
+    return delta1_t * (rho2 / rho1)
+
+
+# 6) SOLAS STABİLİTE KRİTERLERİ
+def kumelenme_acisi_derece(ghm_t_m: float, displacement_t: float, gm_m: float) -> float:
+    """θ(°) = 57.2958 × GHM / (Δ × GM)."""
+    if displacement_t * gm_m == 0:
+        return 0.0
+    return 57.2957795131 * (ghm_t_m / (displacement_t * gm_m))
+
+
+def ghm_hesapla(vhm_t_m: float, sf: float) -> float:
+    if sf == 0:
+        return 0.0
+    return vhm_t_m / sf
+
+
+def simpson_bir_uc_kural(h: float, y: List[float]) -> float:
+    """Bileşik Simpson 1/3: y uzunluğu tek ve ≥3 olmalı."""
+    n = len(y) - 1
+    if n < 2 or n % 2 == 1:
+        raise ValueError("1/3 kuralı için çift sayıda bölme (tek sayıda nokta) gerekir")
+    toplam = y[0] + y[-1]
+    for i in range(1, len(y) - 1):
+        toplam += (4 if i % 2 == 1 else 2) * y[i]
+    return (h / 3.0) * toplam
+
+
+def simpson_uc_sekiz_kural(h: float, y0: float, y1: float, y2: float, y3: float) -> float:
+    """Simpson 3/8: A = 3h/8 (y0 + 3y1 + 3y2 + y3)."""
+    return (3.0 * h / 8.0) * (y0 + 3.0 * y1 + 3.0 * y2 + y3)
+
+
+def gg1_serbest_yuzey(L: float, B: float, V: float, rho_sivi: float = 1.025, rho_deniz: float = 1.025, n: int = 1) -> float:
+    """GG1 = (L·B^3)/(12·V) · (ρ_sıvı/ρ_deniz) · (1/n^2)."""
+    if V <= 0 or n <= 0 or rho_deniz == 0:
+        return 0.0
+    return ((L * (B ** 3)) / (12.0 * V)) * (rho_sivi / rho_deniz) * (1.0 / (n ** 2))
+
+
+def yalpa_periyodu_cb(cb: float, B: float, GM: float) -> float:
+    if GM <= 0:
+        return float('inf')
+    return cb * B / math.sqrt(GM)
+
+
+def yarali_stabilite_delta_T(w_ton: float, L: float, B: float, L_yarali: float) -> float:
+    alan = (L * B) - (L_yarali * B)
+    if alan <= 0:
+        return float('inf')
+    return w_ton / alan
+
+
+# 7) YÜK HESAPLARI
+def max_yuk_miktari(V_ambar_m3: float, SF_m3_per_t: float) -> float:
+    """w_max = V_ambar / SF (ton)."""
+    if SF_m3_per_t == 0:
+        return 0.0
+    return V_ambar_m3 / SF_m3_per_t
+
+
+def max_yuk_yuksekligi(SF: float, PL: float) -> float:
+    """h_max = SF × PL (birimler girdiğe bağlı)."""
+    return SF * PL
+
+
+def sicaklikla_yogunluk(rho1: float, T1: float, T2: float, k: float) -> float:
+    """ρ₂ = ρ₁ − [(T₂ − T₁) × k]."""
+    return rho1 - ((T2 - T1) * k)
+
+
+# 8) PRATİK HESAPLAR
+def draft_okuma_metrik(rakam_m: float, konum: str) -> float:
+    """'alt', 'orta', 'ustu' için metrik draft değeri (m)."""
+    konum_lc = konum.lower()
+    if konum_lc == 'alt':
+        return rakam_m
+    if konum_lc == 'orta':
+        return rakam_m + 0.05
+    if konum_lc == 'ustu':
+        return rakam_m + 0.10
+    return rakam_m
+
+
+def draft_okuma_kraliyet(rakam_inch: float, konum: str) -> float:
+    """'alt', 'orta', 'ustu' için Kraliyet sistemi artışı (inç)."""
+    konum_lc = konum.lower()
+    if konum_lc == 'alt':
+        return rakam_inch
+    if konum_lc == 'orta':
+        return rakam_inch + 3.0
+    if konum_lc == 'ustu':
+        return rakam_inch + 6.0
+    return rakam_inch
+
+
+def ortalama_draftlar(
+    dF_sancak: float, dF_iskele: float,
+    dM_sancak: float, dM_iskele: float,
+    dA_sancak: float, dA_iskele: float,
+) -> Tuple[float, float, float]:
+    """İki yandaki okumaların ortalamasıyla dF, dM, dA (metre)."""
+    dF = (dF_sancak + dF_iskele) / 2.0
+    dM = (dM_sancak + dM_iskele) / 2.0
+    dA = (dA_sancak + dA_iskele) / 2.0
+    return dF, dM, dA
