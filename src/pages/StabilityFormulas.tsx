@@ -2,7 +2,7 @@ import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Calculator, Sigma, FileText } from "lucide-react";
+import { ArrowLeft, BookOpen, Calculator, Sigma } from "lucide-react";
 
 export default function StabilityFormulasPage() {
 
@@ -16,17 +16,9 @@ export default function StabilityFormulasPage() {
               Stabilite
             </Button>
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="text-sm text-muted-foreground hidden sm:flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              Formüller Rehberi
-            </div>
-            <Link to="/stability/stable-tales">
-              <Button variant="secondary" size="sm" className="gap-2">
-                <FileText className="h-4 w-4" />
-                Konu Anlatımı
-              </Button>
-            </Link>
+          <div className="text-sm text-muted-foreground flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            Formüller Rehberi
           </div>
         </div>
 
