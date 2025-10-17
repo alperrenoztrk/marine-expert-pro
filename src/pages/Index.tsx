@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
 import { Settings } from "lucide-react";
 import WeatherWidget from "@/components/WeatherWidget";
-import DirectionWidget from "@/components/DirectionWidget";
+import MoonPhaseWidget from "@/components/MoonPhaseWidget";
 
 const Index = () => {
   // Compass state (2D only)
@@ -132,7 +132,7 @@ const Index = () => {
 
       {/* Right side widget */}
       <aside className="fixed right-4 top-1/2 -translate-y-1/2 z-20 hidden md:block w-[min(380px,40vw)]">
-        <DirectionWidget />
+        <MoonPhaseWidget />
       </aside>
 
       {/* Decorative ocean waves background */}
