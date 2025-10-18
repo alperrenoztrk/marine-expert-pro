@@ -24,10 +24,11 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 
-type StabilitySection = 'hydrostatic' | 'stability' | 'trimlist' | 'analysis' | 'bonjean' | 'draft' | 'damage';
+type StabilitySection = 'hydrostatic' | 'stability' | 'trimlist' | 'analysis' | 'bonjean' | 'draft' | 'damage' | 'practical';
 type StabilityCalc = 'displacement' | 'draft' | 'tpc' | 'gm' | 'gz' | 'trim' | 'list' | 'loll';
+type PracticalCalc = 'tank' | 'fwa' | 'ghm';
 
-export const HydrostaticsStabilityCalculations = ({ singleMode = false, section, calc }: { singleMode?: boolean; section?: StabilitySection; calc?: StabilityCalc }) => {
+export const HydrostaticsStabilityCalculations = ({ singleMode = false, section, calc, practicalCalc }: { singleMode?: boolean; section?: StabilitySection; calc?: StabilityCalc; practicalCalc?: PracticalCalc }) => {
   const { toast } = useToast();
   
   // Comprehensive hydrostatic calculation states
@@ -1411,6 +1412,8 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       )}
 
       {/* Pratik Hesaplar */}
+      {(!singleMode || section === 'practical') && (
+      <>
       <Separator />
       <Card className="shadow-lg">
         <CardHeader>
@@ -1420,6 +1423,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {(!singleMode || !practicalCalc || practicalCalc === 'tank') && (
           <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
               <Anchor className="h-6 w-6 text-blue-700" />
@@ -1453,7 +1457,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </div>
             )}
           </div>
+          )}
 
+          {(!singleMode || !practicalCalc || practicalCalc === 'fwa') && (
           <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
               <Waves className="h-6 w-6 text-blue-700" />
@@ -1504,7 +1510,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </div>
             )}
           </div>
+          )}
 
+          {(!singleMode || !practicalCalc || practicalCalc === 'ghm') && (
           <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
               <BarChart3 className="h-6 w-6 text-blue-700" />
@@ -1529,8 +1537,11 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </div>
             )}
           </div>
+          )}
         </CardContent>
       </Card>
+      </>
+      )}
       {(!singleMode || section === 'trimlist') && (
       <>
       <Separator />
