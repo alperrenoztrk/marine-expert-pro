@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor, Droplets, Info, Plus, Trash2, Layers } from "lucide-react";
@@ -1062,10 +1062,22 @@ export const StabilityCalculations = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="grainAccount">🌾 Tahıl Hesabı</TabsTrigger>
-              <TabsTrigger value="shearBending">🪚 Shear Force & Bending Moment</TabsTrigger>
-            </TabsList>
+            <div className="grid w-full grid-cols-2 gap-2 mb-4">
+              <Button
+                className="w-full"
+                variant={activeTab === 'grainAccount' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('grainAccount')}
+              >
+                🌾 Tahıl Hesabı
+              </Button>
+              <Button
+                className="w-full"
+                variant={activeTab === 'shearBending' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('shearBending')}
+              >
+                🪚 Shear Force & Bending Moment
+              </Button>
+            </div>
 
             {/* 🎯 Temel Stabilite Formülleri */}
             <TabsContent value="basic" className="space-y-6">
