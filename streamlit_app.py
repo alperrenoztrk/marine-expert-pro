@@ -8,8 +8,13 @@ import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
 from stability_calculator import (
-    EnineStabiliteHesaplama, YukBilgisi, TankBilgisi, 
-    StabiliteRapor, meyil_momenti_hesapla
+    EnineStabiliteHesaplama, YukBilgisi, TankBilgisi,
+    StabiliteRapor, meyil_momenti_hesapla,
+    ortalama_draft_sonlar, hogging_sagging_tespit,
+    mmm_draft, draft_survey_trim_duzeltmesi1,
+    draft_survey_trim_duzeltmesi2, yogunluk_duzeltmesi,
+    paralel_batma_cm, delta_trim, draft_degisimleri_lcf,
+    draft_duzeltmesi, ortalama_draftlar
 )
 
 
@@ -40,9 +45,10 @@ kg = st.sidebar.number_input("Ağırlık Merkezi Yüksekliği (KG) [m]",
 hesaplama = EnineStabiliteHesaplama(deplasman, km, kg)
 
 # Ana sekmeler
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab_basics, tab_draft_trim, tab_load, tab_crane, tab_fsm, tab_heeling, tab_gz, tab_report = st.tabs([
     "📈 Temel Hesaplamalar",
-    "📦 Yük Operasyonları", 
+    "⚓ Draft & Trim",
+    "📦 Yük Operasyonları",
     "🏗️ Kren/Bumba İşlemleri",
     "💧 Serbest Yüzey Etkisi",
     "📐 Meyil Hesaplamaları",
@@ -51,7 +57,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
 ])
 
 # Tab 1: Temel Hesaplamalar
-with tab1:
+with tab_basics:
     st.header("Temel Stabilite Parametreleri")
     
     col1, col2, col3 = st.columns(3)
@@ -87,8 +93,99 @@ with tab1:
         else:
             st.warning("⚠️ Dökme tahıl gemileri için minimum GM kriteri sağlanmıyor (GM < 0.30 m)")
 
-# Tab 2: Yük Operasyonları
-with tab2:
+# Tab 2: Draft & Trim hesaplamaları
+with tab_draft_trim:
+    st.header("Draft ve Trim Hesaplamaları")
+
+    st.subheader("Hogging/Sagging Analizi")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        draft_forward = st.number_input("Baş Draftı dF [m]", min_value=0.0, value=8.20)
+    with col2:
+        draft_aft = st.number_input("Kıç Draftı dA [m]", min_value=0.0, value=8.60)
+    with col3:
+        draft_midship = st.number_input("Vasat Draftı dM [m]", min_value=0.0, value=8.40)
+
+    mean_ends = ortalama_draft_sonlar(draft_forward, draft_aft)
+    diff_vs_mid = mean_ends - draft_midship
+    st.metric("(dF + dA) / 2", f"{mean_ends:.3f} m")
+    st.metric("Fark (Ortalama − dM)", f"{diff_vs_mid:+.3f} m")
+
+    hog_sag_status = hogging_sagging_tespit(draft_forward, draft_midship, draft_aft)
+    if hog_sag_status == "Hogging":
+        st.warning("Geminin ortası yukarı doğru (Hogging) bükülüyor.")
+    elif hog_sag_status == "Sagging":
+        st.warning("Geminin ortası aşağı doğru (Sagging) bükülüyor.")
+    else:
+        st.success("Draftlar dengeli: Hogging/Sagging tespit edilmedi.")
+
+    st.caption("(dF + dA)/2 değeri dM'den büyükse Hogging, küçükse Sagging olarak değerlendirilir.")
+
+    with st.expander("İskele/Sancak Draftlarından Ortalama Hesapla"):
+        col_port, col_star = st.columns(2)
+        with col_port:
+            df_port = st.number_input("Baş İskele [m]", min_value=0.0, value=draft_forward, key="df_port")
+            dm_port = st.number_input("Vasat İskele [m]", min_value=0.0, value=draft_midship, key="dm_port")
+            da_port = st.number_input("Kıç İskele [m]", min_value=0.0, value=draft_aft, key="da_port")
+        with col_star:
+            df_star = st.number_input("Baş Sancak [m]", min_value=0.0, value=draft_forward, key="df_star")
+            dm_star = st.number_input("Vasat Sancak [m]", min_value=0.0, value=draft_midship, key="dm_star")
+            da_star = st.number_input("Kıç Sancak [m]", min_value=0.0, value=draft_aft, key="da_star")
+
+        avg_df, avg_dm, avg_da = ortalama_draftlar(df_star, df_port, dm_star, dm_port, da_star, da_port)
+        st.write(f"Ortalama Baş Draftı: {avg_df:.3f} m")
+        st.write(f"Ortalama Vasat Draftı: {avg_dm:.3f} m")
+        st.write(f"Ortalama Kıç Draftı: {avg_da:.3f} m")
+
+    st.subheader("Draft Survey Yardımcıları")
+    mmm = mmm_draft(draft_forward, draft_midship, draft_aft)
+    st.metric("MMM Draftı", f"{mmm:.3f} m")
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        trim_value = st.number_input("Trim (dA − dF) [m]", value=draft_aft - draft_forward, format="%.3f")
+        lcf_distance = st.number_input("LCF Mesafesi [m]", value=0.0, step=0.5)
+    with col2:
+        tpc_value = st.number_input("TPC [ton/cm]", min_value=0.0, value=25.0, step=0.5)
+        lbp = st.number_input("LBP [m]", min_value=0.0, value=100.0, step=1.0)
+    with col3:
+        delta_mct = st.number_input("ΔMCT [ton·m/cm]", min_value=0.0, value=50.0, step=1.0)
+
+    delta1 = draft_survey_trim_duzeltmesi1(trim_value, lcf_distance, tpc_value, lbp)
+    delta2 = draft_survey_trim_duzeltmesi2(trim_value, delta_mct, lbp)
+    st.write(f"Trim Düzeltmesi Δ₁: {delta1:.2f} ton")
+    st.write(f"Trim Düzeltmesi Δ₂: {delta2:.2f} ton")
+
+    density_measured = st.number_input("Ölçülen Su Yoğunluğu [t/m³]", min_value=0.9, max_value=1.3, value=1.025, step=0.001)
+    density_corr = yogunluk_duzeltmesi(density_measured, deplasman)
+    st.write(f"Yoğunluk Düzeltmesi: {density_corr:.2f} ton")
+
+    st.subheader("Trim ve Draft Düzeltmeleri")
+    col1, col2 = st.columns(2)
+    with col1:
+        toplam_moment = st.number_input("Toplam Boyuna Moment [ton·m]", value=0.0, step=10.0)
+        mct_value = st.number_input("MCT (1 cm) [ton·m/cm]", min_value=0.0, value=1000.0, step=10.0)
+        delta_trim_cm = delta_trim(toplam_moment, mct_value)
+        st.metric("ΔTrim", f"{delta_trim_cm:.3f} cm")
+    with col2:
+        dF_change, dA_change = draft_degisimleri_lcf(delta_trim_cm)
+        st.metric("ΔdF", f"{dF_change:.3f} cm")
+        st.metric("ΔdA", f"{dA_change:.3f} cm")
+        mesafe = st.number_input("Trim uygulama mesafesi [m]", value=0.0, step=0.5)
+        lbd = st.number_input("LBD [m]", min_value=0.0, value=200.0, step=1.0)
+        duzeltme = draft_duzeltmesi(mesafe, delta_trim_cm / 100, lbd)
+        st.write(f"Draft Düzeltmesi: {duzeltme:.3f} m")
+
+    st.subheader("Paralel Batma/Çıkma")
+    w_weight = st.number_input("Alınan/Çıkarılan Ağırlık [ton]", value=0.0, step=10.0)
+    if tpc_value > 0:
+        parallel_sink = paralel_batma_cm(w_weight, tpc_value)
+        st.metric("Paralel Batma (±cm)", f"{parallel_sink:.2f} cm")
+    else:
+        st.info("TPC değeri 0 olduğunda paralel batma hesaplanamaz.")
+
+# Tab 3: Yük Operasyonları
+with tab_load:
     st.header("Yük Operasyonları")
     
     st.subheader("Yük Ekleme/Çıkarma")
@@ -140,8 +237,8 @@ with tab2:
         else:
             st.error(f"✗ GM {abs(gm_degisimi):.3f} m azalmıştır")
 
-# Tab 3: Kren/Bumba İşlemleri
-with tab3:
+# Tab 4: Kren/Bumba İşlemleri
+with tab_crane:
     st.header("Kren/Bumba Operasyonları")
     
     col1, col2 = st.columns(2)
@@ -166,8 +263,8 @@ with tab3:
             else:
                 st.error("✗ DİKKAT! Kren operasyonu geminin stabilitesini tehlikeye atabilir!")
 
-# Tab 4: Serbest Yüzey Etkisi
-with tab4:
+# Tab 5: Serbest Yüzey Etkisi
+with tab_fsm:
     st.header("Serbest Yüzey Etkisi (FSM)")
     
     st.subheader("Tank Bilgileri")
@@ -222,8 +319,8 @@ with tab4:
             st.subheader("Tank Detayları")
             st.dataframe(pd.DataFrame(tank_data))
 
-# Tab 5: Meyil Hesaplamaları
-with tab5:
+# Tab 6: Meyil Hesaplamaları
+with tab_heeling:
     st.header("Meyil Açısı Hesaplamaları")
     
     col1, col2 = st.columns(2)
@@ -277,8 +374,8 @@ with tab5:
         else:
             st.success("✓ Normal yalpa periyodu")
 
-# Tab 6: GZ Eğrisi ve SOLAS
-with tab6:
+# Tab 7: GZ Eğrisi ve SOLAS
+with tab_gz:
     st.header("GZ Eğrisi ve SOLAS Kriterleri")
     
     # GZ eğrisi oluşturma
@@ -366,8 +463,8 @@ with tab6:
         alan = hesaplama.dinamik_stabilite_alani_simpson(gz_degerleri[:5], aci_adimi)
         st.metric("GZ eğrisi altındaki alan (Simpson)", f"{alan:.3f} m.rad")
 
-# Tab 7: Rapor
-with tab7:
+# Tab 8: Rapor
+with tab_report:
     st.header("Stabilite Raporu")
     
     # Ek bilgiler topla
