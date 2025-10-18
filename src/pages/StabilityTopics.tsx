@@ -43,6 +43,7 @@ export default function StabilityTopicsPage() {
               </ul>
               <div className="bg-white/5 rounded p-3 overflow-x-auto">
                 <pre className="font-mono text-xs whitespace-pre-wrap">{`Hogging: (dF + dA)/2 > dM   |   Sagging: (dF + dA)/2 < dM
+Ortalama draft: dM = (dF + dA)/2
 Metrik draft okumada rakam alt/orta/üst: +0/+5/+10 cm`}</pre>
               </div>
             </CardContent>
@@ -57,8 +58,9 @@ Metrik draft okumada rakam alt/orta/üst: +0/+5/+10 cm`}</pre>
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-7">
               <div className="bg-white/5 rounded p-3 overflow-x-auto">
-                <pre className="font-mono text-xs whitespace-pre-wrap">{`KM = KB + BM
-GM = KM − KG
+                <pre className="font-mono text-xs whitespace-pre-wrap">{`Temel bağıntılar:
+KM = KB + BM
+GM = KM − KG  ⇔  KG + GM = KM
 Küçük açılar:  GZ(φ) ≈ GM · sin φ`}</pre>
               </div>
               <ul className="list-disc pl-5 space-y-1">
@@ -66,6 +68,7 @@ Küçük açılar:  GZ(φ) ≈ GM · sin φ`}</pre>
                 <li><strong>Dikey shifting</strong>: ΔGM = (w·d)/Δ (yukarı + ⇒ GM ↓)</li>
                 <li><strong>Yatay shifting</strong>: GZ = (w·y)/Δ; θ = arctan(GZ/GM)</li>
                 <li><strong>Bumba/Kreyn</strong>: GG₁ = w(h<sub>cunda</sub>−h<sub>yük</sub>)/Δ; GM' = GM − GG₁</li>
+                <li><strong>Havuzlamada kritik GM</strong>: P = (MCT · Trim(cm))/l; ΔGM = (P · KM)/Δ</li>
               </ul>
             </CardContent>
           </Card>
@@ -84,6 +87,8 @@ Paralel batma (cm) = w / TPC
 LCF mastoride: ΔdF = −ΔTrim/2,  ΔdA = +ΔTrim/2`}</pre>
               </div>
               <ul className="list-disc pl-5 space-y-1">
+                <li><strong>LCG Hesabı</strong>: LCG = Toplam Moment / Toplam Deplasman</li>
+                <li><strong>Trim bağıntısı</strong>: Trim = (Δ · BG) / MCT</li>
                 <li>LCF mastoride değilse: ΔdF = −(L<sub>F</sub>/LBP)·ΔTrim; ΔdA = +(L<sub>A</sub>/LBP)·ΔTrim</li>
                 <li>Draft düzeltmesi: gözlemlenen trim ve LBD ile düzelt.</li>
               </ul>
@@ -108,11 +113,29 @@ LCF mastoride: ΔdF = −ΔTrim/2,  ΔdA = +ΔTrim/2`}</pre>
             </CardContent>
           </Card>
 
-          {/* 5. SOLAS ve GZ */}
+          {/* 5. Diğer Hesaplar */}
           <Card className="shadow-lg border-white/30 bg-white/10 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ListChecks className="h-5 w-5 text-blue-700" /> 5) SOLAS Kriterleri ve GZ
+                <Calculator className="h-5 w-5 text-blue-700" /> 5) Diğer Hesaplar
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm leading-7">
+              <div className="bg-white/5 rounded p-3 overflow-x-auto">
+                <pre className="font-mono text-xs whitespace-pre-wrap">{`Dikdörtgen duba/tank: V = L·B·H;  m = V·ρ
+Blok katsayısı:       Cb = ∇/(L·B·T)
+FWA:                  FWA = Δ/(4·TPC)
+Yoğunluk düzeltmesi:  ΔT = FWA·(1025 − ρ)/25
+Yoğunluk-deplasman:   Δ₁/ρ₁ = Δ₂/ρ₂`}</pre>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 6. SOLAS ve GZ */}
+          <Card className="shadow-lg border-white/30 bg-white/10 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ListChecks className="h-5 w-5 text-blue-700" /> 6) SOLAS Kriterleri ve GZ
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-7">
@@ -125,36 +148,19 @@ LCF mastoride: ΔdF = −ΔTrim/2,  ΔdA = +ΔTrim/2`}</pre>
             </CardContent>
           </Card>
 
-          {/* 6. Yük ve Diğer Hesaplar */}
+          {/* 7. Yük Hesapları */}
           <Card className="shadow-lg border-white/30 bg-white/10 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-blue-700" /> 6) Yük ve Diğer Hesaplar
+                <Calculator className="h-5 w-5 text-blue-700" /> 7) Yük Hesapları
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-7">
               <div className="bg-white/5 rounded p-3 overflow-x-auto">
-                <pre className="font-mono text-xs whitespace-pre-wrap">{`Dikdörtgen tank: V = L·B·H;  m = V·ρ
-Blok katsayısı:  Cb = ∇/(L·B·T)
-FWA = Δ/(4·TPC);  ΔT(mm) = FWA·(1025 − ρ)/25
-Yakıt ρ(T): ρ₂ = ρ₁ − (T₂ − T₁)·k`}</pre>
+                <pre className="font-mono text-xs whitespace-pre-wrap">{`Maksimum yük miktarı:   w_max = V_ambar / SF
+Maksimum yük yüksekliği: h_max = SF · PL
+Sıcaklıkla yoğunluk:    ρ₂ = ρ₁ − (T₂ − T₁) · k`}</pre>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* 7. Pratik Akışlar */}
-          <Card className="shadow-lg border-white/30 bg-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-blue-700" /> 7) Pratik Çözüm Akışları
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm leading-7">
-              <ol className="list-decimal pl-5 space-y-1">
-                <li>KG/GM: Moment₀ = Δ·KG → moment ekle/çıkar → KG' → GM = KM − KG'.</li>
-                <li>Trim/Draft: Mt = Σ(w·LCG) → ΔTrim = Mt/MCT → paralel batma = w/TPC → LCF ile dağıt.</li>
-                <li>Yatay shifting: GZ = (w·y)/Δ; θ = arctan(GZ/GM).</li>
-              </ol>
             </CardContent>
           </Card>
         </div>
