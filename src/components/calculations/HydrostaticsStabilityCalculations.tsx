@@ -223,6 +223,88 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   const [draftInputs, setDraftInputs] = useState({ volume: "", waterplaneArea: "" });
   const [draftResult, setDraftResult] = useState<number | null>(null);
 
+  // === New calculators (requested) ===
+  // Transverse: GM change due to transverse shift (ΔGM = w*d/Δ)
+  const [gmShiftInputs, setGmShiftInputs] = useState({ weight: "", distance: "", displacement: "" });
+  const [gmShiftResult, setGmShiftResult] = useState<number | null>(null);
+
+  // Transverse: Heel angle via GZ = w*y/Δ and tanθ = GZ/GM
+  const [heelAngle2Inputs, setHeelAngle2Inputs] = useState({ weight: "", lever: "", displacement: "", gm: "" });
+  const [heelAngle2Result, setHeelAngle2Result] = useState<{ gz: number; angleDeg: number } | null>(null);
+
+  // Crane (Bumba) lifting: GG1 = w*(h_hook - h_load)/Δ
+  const [craneGG1Inputs, setCraneGG1Inputs] = useState({ weight: "", hookHeight: "", loadHeight: "", displacement: "" });
+  const [craneGG1Result, setCraneGG1Result] = useState<number | null>(null);
+
+  // Drydock critical GM approximation: P = (MCT * Trim_cm) / LBP; ΔGM = (P * KM) / Δ
+  const [dockGMInputs, setDockGMInputs] = useState({ mct1cm: "", trim: "", lbp: "", km: "", displacement: "" });
+  const [dockGMResult, setDockGMResult] = useState<{ P: number; dGM: number } | null>(null);
+
+  // Longitudinal quick calcs
+  const [trimMomentInputs, setTrimMomentInputs] = useState({ totalMoment: "", mct1cm: "" });
+  const [trimMomentResult, setTrimMomentResult] = useState<number | null>(null); // cm (+ by stern)
+
+  const [parallelSinkageInputs, setParallelSinkageInputs] = useState({ weight: "", tpc: "" });
+  const [parallelSinkageResult, setParallelSinkageResult] = useState<number | null>(null); // cm
+
+  const [draftChangeLCFInputs, setDraftChangeLCFInputs] = useState({ dTrimCm: "" });
+  const [draftChangeLCFResult, setDraftChangeLCFResult] = useState<{ dFcm: number; dAcm: number } | null>(null);
+
+  const [draftCorrectionInputs, setDraftCorrectionInputs] = useState({ distance: "", trim: "", lbp: "" });
+  const [draftCorrectionResult, setDraftCorrectionResult] = useState<number | null>(null);
+
+  // Draft survey quick tools
+  const [mmmDraftQuickInputs, setMmmDraftQuickInputs] = useState({ dF: "", dM: "", dA: "" });
+  const [mmmDraftQuickResult, setMmmDraftQuickResult] = useState<number | null>(null);
+
+  const [trimCorrection1Inputs2, setTrimCorrection1Inputs2] = useState({ trim: "", lcf: "", tpc: "", lbp: "" });
+  const [trimCorrection1Result2, setTrimCorrection1Result2] = useState<number | null>(null);
+
+  const [trimCorrection2Inputs2, setTrimCorrection2Inputs2] = useState({ trim: "", deltaMct1cm: "", lbp: "" });
+  const [trimCorrection2Result2, setTrimCorrection2Result2] = useState<number | null>(null);
+
+  const [densityDraftChangeInputs, setDensityDraftChangeInputs] = useState({ fwa: "", rho: "1.025" });
+  const [densityDraftChangeResult, setDensityDraftChangeResult] = useState<number | null>(null); // cm
+
+  const [densityDisplacementInputs, setDensityDisplacementInputs] = useState({ delta1: "", rho1: "1.025", rho2: "" });
+  const [densityDisplacementResult, setDensityDisplacementResult] = useState<number | null>(null);
+
+  // SOLAS/Simpson/Free surface
+  const [ghmInputs, setGhmInputs] = useState({ ghm: "", displacement: "", gm: "" });
+  const [ghmResult, setGhmResult] = useState<number | null>(null); // deg
+
+  const [simpson13Inputs, setSimpson13Inputs] = useState({ h: "", ordinates: "" });
+  const [simpson13Result, setSimpson13Result] = useState<number | null>(null);
+
+  const [simpson38Inputs, setSimpson38Inputs] = useState({ h: "", ordinates: "" });
+  const [simpson38Result, setSimpson38Result] = useState<number | null>(null);
+
+  const [fsmGeneralInputs, setFsmGeneralInputs] = useState({ length: "", breadth: "", displacement: "", rhoFluid: "", rhoSea: "1.025", n: "1" });
+  const [fsmGeneralResult, setFsmGeneralResult] = useState<number | null>(null);
+
+  const [rollSimpleInputs, setRollSimpleInputs] = useState({ cb: "", breadth: "", gm: "" });
+  const [rollSimpleResult, setRollSimpleResult] = useState<number | null>(null);
+
+  const [damagedStabInputs, setDamagedStabInputs] = useState({ w: "", L: "", B: "", Ldam: "" });
+  const [damagedStabResult, setDamagedStabResult] = useState<number | null>(null);
+
+  // Cargo
+  const [cargoInputs, setCargoInputs] = useState({ holdVolume: "", stowageFactor: "", pressureLimit: "" });
+  const [cargoResults, setCargoResults] = useState<{ wmax: number; hmax: number } | null>(null);
+
+  // Other calcs: Tank volume/mass, FWA, temperature-density, GHM from VHM/SF
+  const [tankInputs, setTankInputs] = useState({ length: "", breadth: "", height: "", rho: "1.025" });
+  const [tankResults, setTankResults] = useState<{ V: number; m: number } | null>(null);
+
+  const [fwaCalcInputs, setFwaCalcInputs] = useState({ displacement: "", tpc: "" });
+  const [fwaCalcResult, setFwaCalcResult] = useState<number | null>(null);
+
+  const [tempDensityInputs, setTempDensityInputs] = useState({ rho1: "", T1: "", T2: "", k: "0.0007" });
+  const [tempDensityResult, setTempDensityResult] = useState<number | null>(null);
+
+  const [ghmInputs2, setGhmInputs2] = useState({ vhm: "", sf: "" });
+  const [ghmResult2, setGhmResult2] = useState<number | null>(null);
+
   // Perform comprehensive analysis when inputs change
   useEffect(() => {
     if (geometry && kg && weightDistribution && tanks) {
@@ -643,6 +725,308 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
     toast({ title: "Hesaplama Tamamlandı", description: `Draft: ${draft.toFixed(3)} m` });
   };
 
+  // === New calculator implementations ===
+  const calculateGMShift = () => {
+    const w = parseFloat(gmShiftInputs.weight);
+    const d = parseFloat(gmShiftInputs.distance);
+    const Delta = parseFloat(gmShiftInputs.displacement);
+    if ([w, d, Delta].some(isNaN) || Delta === 0) {
+      toast({ title: 'Hata', description: 'Geçerli w, d, Δ girin', variant: 'destructive' });
+      return;
+    }
+    const dGM = (w * d) / Delta;
+    setGmShiftResult(dGM);
+    toast({ title: 'ΔGM Hesaplandı', description: `ΔGM = ${dGM.toFixed(4)} m` });
+  };
+
+  const calculateHeelAngle2 = () => {
+    const w = parseFloat(heelAngle2Inputs.weight);
+    const y = parseFloat(heelAngle2Inputs.lever);
+    const Delta = parseFloat(heelAngle2Inputs.displacement);
+    const GM = parseFloat(heelAngle2Inputs.gm);
+    if ([w, y, Delta, GM].some(isNaN) || Delta === 0 || GM === 0) {
+      toast({ title: 'Hata', description: 'Geçerli w, y, Δ, GM girin', variant: 'destructive' });
+      return;
+    }
+    const gz = (w * y) / Delta;
+    const angle = Math.atan(gz / GM) * (180 / Math.PI);
+    setHeelAngle2Result({ gz, angleDeg: angle });
+    toast({ title: 'Meyil Açısı', description: `θ = ${angle.toFixed(3)}°` });
+  };
+
+  const calculateCraneGG1 = () => {
+    const w = parseFloat(craneGG1Inputs.weight);
+    const hh = parseFloat(craneGG1Inputs.hookHeight);
+    const hl = parseFloat(craneGG1Inputs.loadHeight);
+    const Delta = parseFloat(craneGG1Inputs.displacement);
+    if ([w, hh, hl, Delta].some(isNaN) || Delta === 0) {
+      toast({ title: 'Hata', description: 'Geçerli w, h_kanca, h_yük, Δ girin', variant: 'destructive' });
+      return;
+    }
+    const gg1 = (w * (hh - hl)) / Delta;
+    setCraneGG1Result(gg1);
+    toast({ title: 'GG₁ (Bumba) Hesaplandı', description: `GG₁ = ${gg1.toFixed(4)} m` });
+  };
+
+  const calculateDockCriticalGM = () => {
+    const mct1cm = parseFloat(dockGMInputs.mct1cm);
+    const trim = parseFloat(dockGMInputs.trim); // cm
+    const lbp = parseFloat(dockGMInputs.lbp);
+    const km = parseFloat(dockGMInputs.km);
+    const Delta = parseFloat(dockGMInputs.displacement);
+    if ([mct1cm, trim, lbp, km, Delta].some(isNaN) || lbp === 0 || Delta === 0) {
+      toast({ title: 'Hata', description: 'Geçerli MCT1cm, Trim(cm), LBP, KM, Δ girin', variant: 'destructive' });
+      return;
+    }
+    const P = (mct1cm * trim) / lbp; // t
+    const dGM = (P * km) / Delta; // m
+    setDockGMResult({ P, dGM });
+    toast({ title: 'Havuzlama ΔGM', description: `ΔGM ≈ ${dGM.toFixed(4)} m` });
+  };
+
+  const calculateTrimChangeFromMoments = () => {
+    const M = parseFloat(trimMomentInputs.totalMoment);
+    const mct1cm = parseFloat(trimMomentInputs.mct1cm);
+    if ([M, mct1cm].some(isNaN) || mct1cm === 0) {
+      toast({ title: 'Hata', description: 'Geçerli moment ve MCT1cm girin', variant: 'destructive' });
+      return;
+    }
+    const dTrimCm = M / mct1cm;
+    setTrimMomentResult(dTrimCm);
+    toast({ title: 'Trim Değişimi', description: `ΔTrim = ${dTrimCm.toFixed(2)} cm` });
+  };
+
+  const calculateParallelSinkage = () => {
+    const w = parseFloat(parallelSinkageInputs.weight);
+    const tpc = parseFloat(parallelSinkageInputs.tpc);
+    if ([w, tpc].some(isNaN) || tpc === 0) {
+      toast({ title: 'Hata', description: 'Geçerli w ve TPC girin', variant: 'destructive' });
+      return;
+    }
+    const sinkageCm = w / tpc;
+    setParallelSinkageResult(sinkageCm);
+    toast({ title: 'Paralel Batma/Çıkma', description: `${sinkageCm.toFixed(2)} cm` });
+  };
+
+  const calculateDraftChangeLCF = () => {
+    const dTrimCm = parseFloat(draftChangeLCFInputs.dTrimCm);
+    if (isNaN(dTrimCm)) {
+      toast({ title: 'Hata', description: 'Geçerli ΔTrim (cm) girin', variant: 'destructive' });
+      return;
+    }
+    setDraftChangeLCFResult({ dFcm: -dTrimCm / 2, dAcm: dTrimCm / 2 });
+  };
+
+  const calculateDraftCorrection = () => {
+    const distance = parseFloat(draftCorrectionInputs.distance); // m
+    const trim = parseFloat(draftCorrectionInputs.trim); // cm total
+    const lbp = parseFloat(draftCorrectionInputs.lbp); // m
+    if ([distance, trim, lbp].some(isNaN) || lbp === 0) {
+      toast({ title: 'Hata', description: 'Geçerli mesafe, trim(cm), LBP girin', variant: 'destructive' });
+      return;
+    }
+    const correction = (distance / lbp) * trim; // cm
+    setDraftCorrectionResult(correction);
+  };
+
+  const calculateMMMQuick = () => {
+    const dF = parseFloat(mmmDraftQuickInputs.dF);
+    const dM = parseFloat(mmmDraftQuickInputs.dM);
+    const dA = parseFloat(mmmDraftQuickInputs.dA);
+    if ([dF, dM, dA].some(isNaN)) {
+      toast({ title: 'Hata', description: 'Geçerli dF, dM, dA girin', variant: 'destructive' });
+      return;
+    }
+    const mmm = (dF + dA + 6 * dM) / 8;
+    setMmmDraftQuickResult(mmm);
+  };
+
+  const calculateTrimCorrection1Alt = () => {
+    const trimM = parseFloat(trimCorrection1Inputs2.trim); // m
+    const lcf = parseFloat(trimCorrection1Inputs2.lcf); // m
+    const tpc = parseFloat(trimCorrection1Inputs2.tpc); // t/cm
+    const lbp = parseFloat(trimCorrection1Inputs2.lbp); // m
+    if ([trimM, lcf, tpc, lbp].some(isNaN) || lbp === 0) {
+      toast({ title: 'Hata', description: 'Geçerli Trim(m), LCF, TPC, LBP girin', variant: 'destructive' });
+      return;
+    }
+    const delta1 = trimM * lcf * tpc * 100 / lbp; // tons
+    setTrimCorrection1Result2(delta1);
+  };
+
+  const calculateTrimCorrection2Alt = () => {
+    const trimM = parseFloat(trimCorrection2Inputs2.trim); // m
+    const dMCT = parseFloat(trimCorrection2Inputs2.deltaMct1cm); // t·m/cm per cm change
+    const lbp = parseFloat(trimCorrection2Inputs2.lbp); // m
+    if ([trimM, dMCT, lbp].some(isNaN) || lbp === 0) {
+      toast({ title: 'Hata', description: 'Geçerli Trim(m), ΔMCT(1cm), LBP girin', variant: 'destructive' });
+      return;
+    }
+    const trimCm = trimM * 100;
+    const delta2 = (trimCm * trimCm) * dMCT * 50 / lbp; // tons (per given spec)
+    setTrimCorrection2Result2(delta2);
+  };
+
+  const calculateDensityDraftChange = () => {
+    const fwa = parseFloat(densityDraftChangeInputs.fwa); // cm
+    const rho = parseFloat(densityDraftChangeInputs.rho);
+    if ([fwa, rho].some(isNaN)) {
+      toast({ title: 'Hata', description: 'Geçerli FWA(cm) ve ρ girin', variant: 'destructive' });
+      return;
+    }
+    const dT = fwa * (1025 - 1000 * rho) / 25; // assuming rho in t/m³; convert to kg/m³ comparison
+    setDensityDraftChangeResult(dT);
+  };
+
+  const calculateDensityDisplacement = () => {
+    const d1 = parseFloat(densityDisplacementInputs.delta1);
+    const r1 = parseFloat(densityDisplacementInputs.rho1);
+    const r2 = parseFloat(densityDisplacementInputs.rho2);
+    if ([d1, r1, r2].some(isNaN) || r1 === 0) {
+      toast({ title: 'Hata', description: 'Geçerli Δ1, ρ1, ρ2 girin', variant: 'destructive' });
+      return;
+    }
+    const d2 = d1 * (r2 / r1);
+    setDensityDisplacementResult(d2);
+  };
+
+  const calculateGHMAngle = () => {
+    const ghm = parseFloat(ghmInputs.ghm);
+    const Delta = parseFloat(ghmInputs.displacement);
+    const GM = parseFloat(ghmInputs.gm);
+    if ([ghm, Delta, GM].some(isNaN) || Delta === 0 || GM === 0) {
+      toast({ title: 'Hata', description: 'Geçerli GHM, Δ, GM girin', variant: 'destructive' });
+      return;
+    }
+    const thetaDeg = 57.3 * (ghm / (Delta * GM));
+    setGhmResult(thetaDeg);
+  };
+
+  const parseOrdinates = (text: string): number[] =>
+    text.split(',').map(s => parseFloat(s.trim())).filter(v => !Number.isNaN(v));
+
+  const calculateSimpson13 = () => {
+    const h = parseFloat(simpson13Inputs.h);
+    const y = parseOrdinates(simpson13Inputs.ordinates);
+    if (Number.isNaN(h) || y.length < 3 || (y.length - 1) % 2 !== 0) {
+      toast({ title: 'Hata', description: '1/3 kuralı için h ve tek sayıda segmente uygun ordinatlar girin (n gen = çift)', variant: 'destructive' });
+      return;
+    }
+    let sumOdd = 0, sumEven = 0;
+    for (let i = 1; i < y.length - 1; i++) {
+      if (i % 2 === 1) sumOdd += y[i]; else sumEven += y[i];
+    }
+    const A = (h / 3) * (y[0] + y[y.length - 1] + 4 * sumOdd + 2 * sumEven);
+    setSimpson13Result(A);
+  };
+
+  const calculateSimpson38 = () => {
+    const h = parseFloat(simpson38Inputs.h);
+    const y = parseOrdinates(simpson38Inputs.ordinates);
+    if (Number.isNaN(h) || y.length < 4 || (y.length - 1) % 3 !== 0) {
+      toast({ title: 'Hata', description: '3/8 kuralı için h ve 3\'ün katı sayıda segment girin', variant: 'destructive' });
+      return;
+    }
+    let sum3 = 0, sum2 = 0;
+    for (let i = 1; i < y.length - 1; i++) {
+      if (i % 3 === 0) sum2 += y[i]; else sum3 += y[i];
+    }
+    const A = (3 * h / 8) * (y[0] + y[y.length - 1] + 3 * sum3 + 2 * sum2);
+    setSimpson38Result(A);
+  };
+
+  const calculateFSMGeneral = () => {
+    const L = parseFloat(fsmGeneralInputs.length);
+    const B = parseFloat(fsmGeneralInputs.breadth);
+    const Delta = parseFloat(fsmGeneralInputs.displacement);
+    const rhoFluid = parseFloat(fsmGeneralInputs.rhoFluid);
+    const rhoSea = parseFloat(fsmGeneralInputs.rhoSea);
+    const n = parseFloat(fsmGeneralInputs.n) || 1;
+    if ([L, B, Delta, rhoFluid, rhoSea].some(isNaN) || Delta === 0) {
+      toast({ title: 'Hata', description: 'Geçerli L, B, Δ, ρ_sıvı, ρ_deniz girin', variant: 'destructive' });
+      return;
+    }
+    const I = (L * Math.pow(B, 3)) / 12;
+    const gg1 = (rhoFluid / rhoSea) * (I / Delta) / (n * n);
+    setFsmGeneralResult(gg1);
+  };
+
+  const calculateRollSimple = () => {
+    const Cb = parseFloat(rollSimpleInputs.cb);
+    const B = parseFloat(rollSimpleInputs.breadth);
+    const GM = parseFloat(rollSimpleInputs.gm);
+    if ([Cb, B, GM].some(isNaN) || GM <= 0) {
+      toast({ title: 'Hata', description: 'Geçerli Cb, B, GM girin (GM>0)', variant: 'destructive' });
+      return;
+    }
+    const T = Cb * B / Math.sqrt(GM);
+    setRollSimpleResult(T);
+  };
+
+  const calculateDamagedStability = () => {
+    const w = parseFloat(damagedStabInputs.w);
+    const L = parseFloat(damagedStabInputs.L);
+    const B = parseFloat(damagedStabInputs.B);
+    const Ld = parseFloat(damagedStabInputs.Ldam);
+    if ([w, L, B, Ld].some(isNaN) || (L * B - Ld * B) === 0) {
+      toast({ title: 'Hata', description: 'Geçerli w, L, B, L_yaralı girin', variant: 'destructive' });
+      return;
+    }
+    const dT = w / (L * B - Ld * B);
+    setDamagedStabResult(dT);
+  };
+
+  const calculateCargo = () => {
+    const V = parseFloat(cargoInputs.holdVolume); // m³
+    const SF = parseFloat(cargoInputs.stowageFactor); // m³/t
+    const PL = parseFloat(cargoInputs.pressureLimit); // t/m²
+    if ([V, SF, PL].some(isNaN) || SF === 0) {
+      toast({ title: 'Hata', description: 'Geçerli V, SF, PL girin', variant: 'destructive' });
+      return;
+    }
+    const wmax = V / SF; // t
+    // density ≈ 1/SF (t/m³) => h_max = PL / density = PL * SF
+    const hmax = PL * SF; // m (if PL in t/m²)
+    setCargoResults({ wmax, hmax });
+  };
+
+  const calculateTankVolumeMass = () => {
+    const L = parseFloat(tankInputs.length);
+    const B = parseFloat(tankInputs.breadth);
+    const H = parseFloat(tankInputs.height);
+    const rho = parseFloat(tankInputs.rho);
+    if ([L, B, H, rho].some(isNaN)) { toast({ title:'Hata', description:'Geçerli L, B, H, ρ girin', variant:'destructive' }); return; }
+    const V = L * B * H; // m³
+    const m = V * rho; // t
+    setTankResults({ V, m });
+  };
+
+  const calculateFWA = () => {
+    const Delta = parseFloat(fwaCalcInputs.displacement);
+    const TPC = parseFloat(fwaCalcInputs.tpc);
+    if ([Delta, TPC].some(isNaN) || Delta === 0) { toast({ title:'Hata', description:'Geçerli Δ ve TPC girin', variant:'destructive' }); return; }
+    const FWA = (Delta / 4) / TPC; // cm
+    setFwaCalcResult(FWA);
+  };
+
+  const calculateTempDensity = () => {
+    const rho1 = parseFloat(tempDensityInputs.rho1);
+    const T1 = parseFloat(tempDensityInputs.T1);
+    const T2 = parseFloat(tempDensityInputs.T2);
+    const k = parseFloat(tempDensityInputs.k);
+    if ([rho1, T1, T2, k].some(isNaN)) { toast({ title:'Hata', description:'Geçerli ρ1, T1, T2, k girin', variant:'destructive' }); return; }
+    const rho2 = rho1 - ((T2 - T1) * k);
+    setTempDensityResult(rho2);
+  };
+
+  const calculateGHMfromVHM = () => {
+    const vhm = parseFloat(ghmInputs2.vhm);
+    const sf = parseFloat(ghmInputs2.sf);
+    if ([vhm, sf].some(isNaN) || sf === 0) { toast({ title:'Hata', description:'Geçerli VHM ve SF girin', variant:'destructive' }); return; }
+    const ghm = vhm / sf;
+    setGhmResult2(ghm);
+  };
+
   return (
     <div className="space-y-6">
       {/* Kapsamlı Denizcilik Hesaplamaları */}
@@ -894,11 +1278,249 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
             )}
           </div>
           )}
+
+          {/* ΔGM (w*d/Δ) */}
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">Şift ile ΔGM (ΔGM = w × d / Δ)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+              <div>
+                <Label>Ağırlık w (t)</Label>
+                <Input value={gmShiftInputs.weight} onChange={(e)=> setGmShiftInputs(p=>({...p, weight: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Mesafe d (m)</Label>
+                <Input value={gmShiftInputs.distance} onChange={(e)=> setGmShiftInputs(p=>({...p, distance: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Deplasman Δ (t)</Label>
+                <Input value={gmShiftInputs.displacement} onChange={(e)=> setGmShiftInputs(p=>({...p, displacement: e.target.value}))} />
+              </div>
+              <Button onClick={calculateGMShift} className="w-full md:col-span-2">
+                <Calculator className="w-4 h-4 mr-2" /> Hesapla
+              </Button>
+            </div>
+            {gmShiftResult!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm">
+                ΔGM = <span className="font-mono">{gmShiftResult.toFixed(4)} m</span>
+              </div>
+            )}
+          </div>
+
+          {/* Heeling angle from w,y */}
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">Meyil Açısı (GZ = w·y/Δ, tanθ = GZ/GM)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+              <div>
+                <Label>w (t)</Label>
+                <Input value={heelAngle2Inputs.weight} onChange={(e)=> setHeelAngle2Inputs(p=>({...p, weight: e.target.value}))} />
+              </div>
+              <div>
+                <Label>y (m)</Label>
+                <Input value={heelAngle2Inputs.lever} onChange={(e)=> setHeelAngle2Inputs(p=>({...p, lever: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Δ (t)</Label>
+                <Input value={heelAngle2Inputs.displacement} onChange={(e)=> setHeelAngle2Inputs(p=>({...p, displacement: e.target.value}))} />
+              </div>
+              <div>
+                <Label>GM (m)</Label>
+                <Input value={heelAngle2Inputs.gm} onChange={(e)=> setHeelAngle2Inputs(p=>({...p, gm: e.target.value}))} />
+              </div>
+              <Button onClick={calculateHeelAngle2} className="w-full">
+                <Calculator className="w-4 h-4 mr-2" /> Hesapla
+              </Button>
+            </div>
+            {heelAngle2Result && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm grid grid-cols-2 gap-3">
+                <div>GZ: <span className="font-mono">{heelAngle2Result.gz.toFixed(4)} m</span></div>
+                <div>θ: <span className="font-mono">{heelAngle2Result.angleDeg.toFixed(3)}°</span></div>
+              </div>
+            )}
+          </div>
+
+          {/* Crane (Bumba) GG1 */}
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">Bumba ile GG₁ (GG₁ = w·(h_kanca − h_yük)/Δ)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+              <div>
+                <Label>w (t)</Label>
+                <Input value={craneGG1Inputs.weight} onChange={(e)=> setCraneGG1Inputs(p=>({...p, weight: e.target.value}))} />
+              </div>
+              <div>
+                <Label>h_kanca (m)</Label>
+                <Input value={craneGG1Inputs.hookHeight} onChange={(e)=> setCraneGG1Inputs(p=>({...p, hookHeight: e.target.value}))} />
+              </div>
+              <div>
+                <Label>h_yük (m)</Label>
+                <Input value={craneGG1Inputs.loadHeight} onChange={(e)=> setCraneGG1Inputs(p=>({...p, loadHeight: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Δ (t)</Label>
+                <Input value={craneGG1Inputs.displacement} onChange={(e)=> setCraneGG1Inputs(p=>({...p, displacement: e.target.value}))} />
+              </div>
+              <Button onClick={calculateCraneGG1} className="w-full">
+                <Calculator className="w-4 h-4 mr-2" /> Hesapla
+              </Button>
+            </div>
+            {craneGG1Result!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm">
+                GG₁ = <span className="font-mono">{craneGG1Result.toFixed(4)} m</span>
+              </div>
+            )}
+          </div>
+
+          {/* Drydock critical GM */}
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">Havuzlamada Kritik GM</h4>
+            <p className="text-xs opacity-70 mb-2">P = MCT(1cm) × Trim(cm) / LBP; ΔGM = (P × KM)/Δ</p>
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+              <div>
+                <Label>MCT 1cm (t·m/cm)</Label>
+                <Input value={dockGMInputs.mct1cm} onChange={(e)=> setDockGMInputs(p=>({...p, mct1cm: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Trim (cm)</Label>
+                <Input value={dockGMInputs.trim} onChange={(e)=> setDockGMInputs(p=>({...p, trim: e.target.value}))} />
+              </div>
+              <div>
+                <Label>LBP (m)</Label>
+                <Input value={dockGMInputs.lbp} onChange={(e)=> setDockGMInputs(p=>({...p, lbp: e.target.value}))} />
+              </div>
+              <div>
+                <Label>KM (m)</Label>
+                <Input value={dockGMInputs.km} onChange={(e)=> setDockGMInputs(p=>({...p, km: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Δ (t)</Label>
+                <Input value={dockGMInputs.displacement} onChange={(e)=> setDockGMInputs(p=>({...p, displacement: e.target.value}))} />
+              </div>
+              <Button onClick={calculateDockCriticalGM} className="w-full">
+                <Calculator className="w-4 h-4 mr-2" /> Hesapla
+              </Button>
+            </div>
+            {dockGMResult && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm grid grid-cols-2 gap-3">
+                <div>P: <span className="font-mono">{dockGMResult.P.toFixed(2)} t</span></div>
+                <div>ΔGM: <span className="font-mono">{dockGMResult.dGM.toFixed(4)} m</span></div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
       </>
       )}
 
+      {/* Pratik Hesaplar */}
+      <Separator />
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+            Pratik Hesaplar
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">Duba/Tank Hacmi ve Kütle</h4>
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+              <div>
+                <Label>L (m)</Label>
+                <Input value={tankInputs.length} onChange={(e)=> setTankInputs(p=>({...p, length: e.target.value}))} />
+              </div>
+              <div>
+                <Label>B (m)</Label>
+                <Input value={tankInputs.breadth} onChange={(e)=> setTankInputs(p=>({...p, breadth: e.target.value}))} />
+              </div>
+              <div>
+                <Label>H (m)</Label>
+                <Input value={tankInputs.height} onChange={(e)=> setTankInputs(p=>({...p, height: e.target.value}))} />
+              </div>
+              <div>
+                <Label>ρ (t/m³)</Label>
+                <Input value={tankInputs.rho} onChange={(e)=> setTankInputs(p=>({...p, rho: e.target.value}))} />
+              </div>
+              <Button onClick={calculateTankVolumeMass} className="w-full md:col-span-2">
+                <Calculator className="w-4 h-4 mr-2" /> Hesapla
+              </Button>
+            </div>
+            {tankResults && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm grid grid-cols-2 gap-3">
+                <div>V = <span className="font-mono">{tankResults.V.toFixed(2)} m³</span></div>
+                <div>m = <span className="font-mono">{tankResults.m.toFixed(2)} t</span></div>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">FWA ve Yoğunluk</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+              <div>
+                <Label>Δ (t)</Label>
+                <Input value={fwaCalcInputs.displacement} onChange={(e)=> setFwaCalcInputs(p=>({...p, displacement: e.target.value}))} />
+              </div>
+              <div>
+                <Label>TPC (t/cm)</Label>
+                <Input value={fwaCalcInputs.tpc} onChange={(e)=> setFwaCalcInputs(p=>({...p, tpc: e.target.value}))} />
+              </div>
+              <Button onClick={calculateFWA} className="w-full md:col-span-3">
+                <Calculator className="w-4 h-4 mr-2" /> FWA (cm)
+              </Button>
+            </div>
+            {fwaCalcResult!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm">
+                FWA = <span className="font-mono">{fwaCalcResult.toFixed(2)} cm</span>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end mt-4">
+              <div>
+                <Label>ρ₁</Label>
+                <Input value={tempDensityInputs.rho1} onChange={(e)=> setTempDensityInputs(p=>({...p, rho1: e.target.value}))} />
+              </div>
+              <div>
+                <Label>T₁ (°C)</Label>
+                <Input value={tempDensityInputs.T1} onChange={(e)=> setTempDensityInputs(p=>({...p, T1: e.target.value}))} />
+              </div>
+              <div>
+                <Label>T₂ (°C)</Label>
+                <Input value={tempDensityInputs.T2} onChange={(e)=> setTempDensityInputs(p=>({...p, T2: e.target.value}))} />
+              </div>
+              <div>
+                <Label>k</Label>
+                <Input value={tempDensityInputs.k} onChange={(e)=> setTempDensityInputs(p=>({...p, k: e.target.value}))} />
+              </div>
+              <Button onClick={calculateTempDensity} className="w-full md:col-span-2">
+                <Calculator className="w-4 h-4 mr-2" /> ρ₂
+              </Button>
+            </div>
+            {tempDensityResult!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm">
+                ρ₂ = <span className="font-mono">{tempDensityResult.toFixed(4)} t/m³</span>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">GHM Hesaplama (VHM / SF)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+              <div>
+                <Label>VHM</Label>
+                <Input value={ghmInputs2.vhm} onChange={(e)=> setGhmInputs2(p=>({...p, vhm: e.target.value}))} />
+              </div>
+              <div>
+                <Label>SF</Label>
+                <Input value={ghmInputs2.sf} onChange={(e)=> setGhmInputs2(p=>({...p, sf: e.target.value}))} />
+              </div>
+              <Button onClick={calculateGHMfromVHM} className="w-full md:col-span-2">
+                <Calculator className="w-4 h-4 mr-2" /> GHM
+              </Button>
+            </div>
+            {ghmResult2!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm">
+                GHM = <span className="font-mono">{ghmResult2.toFixed(3)}</span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
       {(!singleMode || section === 'trimlist') && (
       <>
       <Separator />
@@ -1542,6 +2164,83 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           </div>
           )}
 
+          {/* Longitudinal quick calcs */}
+          <div className="bg-orange-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="font-semibold mb-3">Boyuna Hızlı Hesaplar</h4>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+              <div>
+                <Label>Toplam Moment (t·m)</Label>
+                <Input value={trimMomentInputs.totalMoment} onChange={(e)=> setTrimMomentInputs(p=>({...p, totalMoment: e.target.value}))} />
+              </div>
+              <div>
+                <Label>MCT 1cm (t·m/cm)</Label>
+                <Input value={trimMomentInputs.mct1cm} onChange={(e)=> setTrimMomentInputs(p=>({...p, mct1cm: e.target.value}))} />
+              </div>
+              <Button onClick={calculateTrimChangeFromMoments} className="w-full md:col-span-3">
+                <Calculator className="w-4 h-4 mr-2" /> ΔTrim (cm)
+              </Button>
+            </div>
+            {trimMomentResult!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500 text-sm">
+                ΔTrim = <span className="font-mono">{trimMomentResult.toFixed(1)} cm</span>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end mt-4">
+              <div>
+                <Label>Ağırlık w (t)</Label>
+                <Input value={parallelSinkageInputs.weight} onChange={(e)=> setParallelSinkageInputs(p=>({...p, weight: e.target.value}))} />
+              </div>
+              <div>
+                <Label>TPC (t/cm)</Label>
+                <Input value={parallelSinkageInputs.tpc} onChange={(e)=> setParallelSinkageInputs(p=>({...p, tpc: e.target.value}))} />
+              </div>
+              <Button onClick={calculateParallelSinkage} className="w-full md:col-span-3">
+                <Calculator className="w-4 h-4 mr-2" /> Paralel Batma (cm)
+              </Button>
+            </div>
+            {parallelSinkageResult!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500 text-sm">
+                Batma/Çıkma = <span className="font-mono">{parallelSinkageResult.toFixed(1)} cm</span>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end mt-4">
+              <div>
+                <Label>ΔTrim (cm)</Label>
+                <Input value={draftChangeLCFInputs.dTrimCm} onChange={(e)=> setDraftChangeLCFInputs(p=>({...p, dTrimCm: e.target.value}))} />
+              </div>
+              <Button onClick={calculateDraftChangeLCF} className="w-full md:col-span-4">
+                <Calculator className="w-4 h-4 mr-2" /> LCF Mastoride ΔdF/ΔdA
+              </Button>
+            </div>
+            {draftChangeLCFResult && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500 text-sm grid grid-cols-2 gap-3">
+                <div>ΔdF = <span className="font-mono">{draftChangeLCFResult.dFcm.toFixed(1)} cm</span></div>
+                <div>ΔdA = <span className="font-mono">{draftChangeLCFResult.dAcm.toFixed(1)} cm</span></div>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end mt-4">
+              <div>
+                <Label>Mesafe (m)</Label>
+                <Input value={draftCorrectionInputs.distance} onChange={(e)=> setDraftCorrectionInputs(p=>({...p, distance: e.target.value}))} />
+              </div>
+              <div>
+                <Label>Trim (cm)</Label>
+                <Input value={draftCorrectionInputs.trim} onChange={(e)=> setDraftCorrectionInputs(p=>({...p, trim: e.target.value}))} />
+              </div>
+              <div>
+                <Label>LBP (m)</Label>
+                <Input value={draftCorrectionInputs.lbp} onChange={(e)=> setDraftCorrectionInputs(p=>({...p, lbp: e.target.value}))} />
+              </div>
+              <Button onClick={calculateDraftCorrection} className="w-full md:col-span-3">
+                <Calculator className="w-4 h-4 mr-2" /> Draft Düzeltmesi (cm)
+              </Button>
+            </div>
+            {draftCorrectionResult!==null && (
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-orange-500 text-sm">
+                Düzeltme = <span className="font-mono">{draftCorrectionResult.toFixed(2)} cm</span>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
       </>
