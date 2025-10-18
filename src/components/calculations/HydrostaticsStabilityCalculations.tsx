@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor, Brain } from "lucide-react";
+import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor, Brain, Wrench } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Separator } from "@/components/ui/separator";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
@@ -1414,13 +1414,17 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       <Separator />
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+          <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Wrench className="h-5 w-5" />
             Pratik Hesaplar
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold mb-3">Duba/Tank Hacmi ve Kütle</h4>
+            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
+              <Anchor className="h-6 w-6 text-blue-700" />
+              Duba/Tank Hacmi ve Kütle
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
               <div>
                 <Label>L (m)</Label>
@@ -1451,7 +1455,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           </div>
 
           <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold mb-3">FWA ve Yoğunluk</h4>
+            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
+              <Waves className="h-6 w-6 text-blue-700" />
+              FWA ve Yoğunluk
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
               <div>
                 <Label>Δ (t)</Label>
@@ -1499,7 +1506,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           </div>
 
           <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-semibold mb-3">GHM Hesaplama (VHM / SF)</h4>
+            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
+              <BarChart3 className="h-6 w-6 text-blue-700" />
+              GHM Hesaplama (VHM / SF)
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
               <div>
                 <Label>VHM</Label>
