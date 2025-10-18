@@ -53,6 +53,7 @@ import NavigationQuizPage from "./pages/NavigationQuiz";
 import NavigationAssistantPage from "./pages/NavigationAssistant";
 import ClockPage from "./pages/Clock";
 import AuthCallback from "./pages/AuthCallback";
+import StabilityPracticalPage from "./pages/StabilityPractical";
 
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
@@ -92,6 +93,7 @@ const App = () => {
                      <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
                     <Route path="/stability/formulas/:id" element={<StabilityFormulaDetailPage />} />
                      <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
+                    <Route path="/stability/practical" element={<StabilityPracticalPage />} />
                     <Route path="/stability/topics" element={<StabilityTopicsPage />} />
                     <Route path="/stability/quiz" element={<StabilityQuizPage />} />
                     <Route path="/stability/shearing-bending" element={<StabilityShearingBendingPage />} />
