@@ -14,7 +14,14 @@ from stability_calculator import (
     mmm_draft, draft_survey_trim_duzeltmesi1,
     draft_survey_trim_duzeltmesi2, yogunluk_duzeltmesi,
     paralel_batma_cm, delta_trim, draft_degisimleri_lcf,
-    draft_duzeltmesi, ortalama_draftlar
+    draft_duzeltmesi, ortalama_draftlar, moment_from_weight_and_kg,
+    delta_gm_shift, gz_from_shift, trim_from_bg, lcg_from_moment,
+    fwa_cm, draft_degisim_yogunluk, deplasman_yogunluk_farki,
+    dikdortgen_hacim, kuttleden_kutle, blok_katsayisi,
+    gg1_serbest_yuzey, kumelenme_acisi_derece, ghm_hesapla,
+    simpson_bir_uc_kural, simpson_uc_sekiz_kural,
+    yarali_stabilite_delta_T, max_yuk_miktari, max_yuk_yuksekligi,
+    sicaklikla_yogunluk, draft_okuma_metrik, draft_okuma_kraliyet
 )
 
 
@@ -45,7 +52,7 @@ kg = st.sidebar.number_input("Ağırlık Merkezi Yüksekliği (KG) [m]",
 hesaplama = EnineStabiliteHesaplama(deplasman, km, kg)
 
 # Ana sekmeler
-tab_basics, tab_draft_trim, tab_load, tab_crane, tab_fsm, tab_heeling, tab_gz, tab_report = st.tabs([
+tab_basics, tab_draft_trim, tab_load, tab_crane, tab_fsm, tab_heeling, tab_gz, tab_extra, tab_report = st.tabs([
     "📈 Temel Hesaplamalar",
     "⚓ Draft & Trim",
     "📦 Yük Operasyonları",
@@ -53,6 +60,7 @@ tab_basics, tab_draft_trim, tab_load, tab_crane, tab_fsm, tab_heeling, tab_gz, t
     "💧 Serbest Yüzey Etkisi",
     "📐 Meyil Hesaplamaları",
     "📊 GZ Eğrisi ve SOLAS",
+    "🔧 Ek Hesaplamalar",
     "📋 Rapor"
 ])
 
@@ -463,7 +471,213 @@ with tab_gz:
         alan = hesaplama.dinamik_stabilite_alani_simpson(gz_degerleri[:5], aci_adimi)
         st.metric("GZ eğrisi altındaki alan (Simpson)", f"{alan:.3f} m.rad")
 
-# Tab 8: Rapor
+# Tab 8: Ek Hesaplamalar
+with tab_extra:
+    st.header("Ek Stabilite Hesaplamaları")
+
+    st.subheader("Enine Denge Yardımcıları")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        moment_weight = st.number_input("Ağırlık [ton]", min_value=0.0, value=50.0, key="moment_weight")
+        moment_kg = st.number_input("KG mesafesi [m]", min_value=0.0, value=5.0, key="moment_kg")
+        moment_value = moment_from_weight_and_kg(moment_weight, moment_kg)
+        st.metric("Moment", f"{moment_value:.2f} ton·m")
+
+    with col2:
+        shift_weight = st.number_input("Shifting ağırlığı [ton]", min_value=0.0, value=20.0, key="shift_weight")
+        shift_distance = st.number_input("Shifting mesafesi [m]", min_value=0.0, value=5.0, key="shift_distance")
+        delta_gm_value = delta_gm_shift(shift_weight, shift_distance, deplasman)
+        st.metric("ΔGM", f"{delta_gm_value:.4f} m")
+        if deplasman > 0:
+            st.caption(f"Tahmini yeni GM ≈ {hesaplama.gm - delta_gm_value:.3f} m")
+
+    with col3:
+        heel_weight = st.number_input("Meyil ağırlığı [ton]", min_value=0.0, value=50.0, key="heel_weight")
+        heel_arm = st.number_input("Yatay kol [m]", min_value=0.0, value=4.0, key="heel_arm")
+        gz_value = gz_from_shift(heel_weight, heel_arm, deplasman)
+        st.metric("GZ (w×y/Δ)", f"{gz_value:.4f} m")
+        if hesaplama.gm > 0:
+            st.caption(f"tanθ = GZ / GM = {gz_value/hesaplama.gm:.4f}")
+
+    st.subheader("Havuzda Kritik GM")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        mct_1cm = st.number_input("MCT (1 cm) [ton·m]", min_value=0.0, value=800.0, key="mct_1cm")
+    with col2:
+        trim_cm = st.number_input("Trim [cm]", min_value=0.0, value=30.0, key="trim_cm")
+    with col3:
+        topuk_mesafe = st.number_input("Kıç topuk - F mesafesi [m]", min_value=0.1, value=60.0, key="topuk_mesafe")
+
+    kritik_gm = hesaplama.havuzda_kritik_gm(mct_1cm, trim_cm, topuk_mesafe)
+    st.metric("Kritik GM", f"{kritik_gm:.4f} m")
+
+    st.subheader("Boyuna Denge Yardımcıları")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        toplam_moment = st.number_input("Toplam boyuna moment [ton·m]", value=0.0, step=10.0, key="lcg_moment")
+        toplam_deplasman = st.number_input("Toplam deplasman [ton]", min_value=0.0, value=deplasman, key="lcg_deplasman")
+        lcg = lcg_from_moment(toplam_moment, toplam_deplasman)
+        st.metric("LCG", f"{lcg:.3f} m")
+
+    with col2:
+        bg_mesafe = st.number_input("BG mesafesi [m]", value=0.0, step=0.1, key="bg_mesafe")
+        mct_bg = st.number_input("MCT [ton·m]", min_value=0.0, value=1000.0, step=10.0, key="mct_bg")
+        trim_bg = trim_from_bg(deplasman, bg_mesafe, mct_bg)
+        st.metric("Trim (Δ × BG / MCT)", f"{trim_bg:.3f}")
+        st.caption("MCT birimlerine bağlı olarak sonuç metre veya santimetre olabilir.")
+
+    st.subheader("Duba/Tank Hacmi ve Kütle")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        hacim_L = st.number_input("Boy [m]", min_value=0.0, value=10.0, key="hacim_L")
+    with col2:
+        hacim_B = st.number_input("En [m]", min_value=0.0, value=6.0, key="hacim_B")
+    with col3:
+        hacim_H = st.number_input("Yükseklik [m]", min_value=0.0, value=4.0, key="hacim_H")
+    with col4:
+        sivi_rho = st.number_input("Yoğunluk [t/m³]", min_value=0.0, value=1.025, key="hacim_rho")
+
+    hacim = dikdortgen_hacim(hacim_L, hacim_B, hacim_H)
+    st.metric("Hacim", f"{hacim:.2f} m³")
+    st.metric("Kütle", f"{kuttleden_kutle(hacim, sivi_rho):.2f} ton")
+
+    st.subheader("Blok Katsayısı ve Serbest Yüzey")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        nabla = st.number_input("∇ (su altı hacmi) [m³]", min_value=0.0, value=max(hacim, 0.0), key="nabla")
+        gemi_boyu = st.number_input("L [m]", min_value=0.0, value=120.0, key="block_L")
+        gemi_eni = st.number_input("B [m]", min_value=0.0, value=20.0, key="block_B")
+        gemi_draft = st.number_input("T [m]", min_value=0.0, value=8.0, key="block_T")
+        cb = blok_katsayisi(nabla, gemi_boyu, gemi_eni, gemi_draft)
+        st.metric("Blok Katsayısı Cb", f"{cb:.3f}")
+
+    with col2:
+        tank_L = st.number_input("Tank boyu [m]", min_value=0.0, value=20.0, key="fsm_L")
+        tank_B = st.number_input("Tank eni [m]", min_value=0.0, value=8.0, key="fsm_B")
+        tank_V = st.number_input("Tank hacmi V [m³]", min_value=0.1, value=500.0, key="fsm_V")
+        tank_rho = st.number_input("Sıvı yoğunluğu [t/m³]", min_value=0.0, value=1.025, key="fsm_rho")
+        tank_bolme = st.number_input("Bölme sayısı n", min_value=1, value=1, step=1, key="fsm_n")
+        fsm_degeri = (tank_L * (tank_B ** 3) * tank_rho) / 12 if tank_V > 0 else 0.0
+        gg1_degeri = gg1_serbest_yuzey(tank_L, tank_B, tank_V, tank_rho, 1.025, tank_bolme)
+        st.metric("FSM", f"{fsm_degeri:.2f} ton·m")
+        st.metric("GG₁", f"{gg1_degeri:.4f} m")
+
+    with col3:
+        st.subheader("FWA ve Yoğunluk")
+        fwa_disp = st.number_input("Δ (FWA) [ton]", min_value=0.0, value=deplasman, key="fwa_disp")
+        fwa_tpc = st.number_input("TPC [ton/cm]", min_value=0.0, value=25.0, key="fwa_tpc")
+        fwa_value = fwa_cm(fwa_disp, fwa_tpc)
+        st.metric("FWA", f"{fwa_value:.2f} cm")
+
+        rho_guncel = st.number_input("Yoğunluk ρ [kg/m³]", min_value=900.0, max_value=1100.0, value=1020.0, key="rho_guncel")
+        draft_delta = draft_degisim_yogunluk(fwa_value, rho_guncel)
+        st.metric("Draft Değişimi ΔT", f"{draft_delta:.2f} cm")
+
+        delta1 = st.number_input("Referans Δ₁ [ton]", min_value=0.0, value=deplasman, key="delta1")
+        rho1 = st.number_input("ρ₁ [t/m³]", min_value=0.5, value=1.025, key="rho1_delta")
+        rho2 = st.number_input("ρ₂ [t/m³]", min_value=0.5, value=1.000, key="rho2_delta")
+        delta2 = deplasman_yogunluk_farki(delta1, rho1, rho2)
+        st.metric("Δ₂", f"{delta2:.2f} ton")
+
+    st.subheader("SOLAS Yardımcı Hesaplar")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        vhm = st.number_input("VHM [ton·m]", min_value=0.0, value=0.0, key="vhm")
+        sf = st.number_input("Stabilite faktörü (SF)", min_value=0.1, value=1.0, key="sf")
+        ghm = ghm_hesapla(vhm, sf)
+        st.metric("GHM", f"{ghm:.3f} m")
+
+    with col2:
+        delta_solas = st.number_input("Δ [ton]", min_value=0.0, value=deplasman, key="delta_solas")
+        gm_solas = st.number_input("GM [m]", min_value=0.0, value=max(hesaplama.gm, 0.0), key="gm_solas")
+        kumelenme = kumelenme_acisi_derece(ghm, delta_solas, gm_solas)
+        st.metric("Kümelenme Açısı θ", f"{kumelenme:.2f}°")
+
+    st.subheader("Simpson Alan Hesapları")
+    simpson_h = st.number_input("Aralık h", min_value=0.0, value=0.1, key="simpson_h")
+    y_values_text = st.text_input("1/3 kuralı için y değerleri (virgülle ayrılmış)", value="0,1,2,1,0")
+    if st.button("1/3 Kuralını Hesapla"):
+        try:
+            y_values = [float(val.strip()) for val in y_values_text.split(",") if val.strip() != ""]
+            alan_13 = simpson_bir_uc_kural(simpson_h, y_values)
+        except ValueError as exc:
+            st.error(f"Hata: {exc}")
+        except Exception as exc:  # pragma: no cover - Streamlit hata gösterimi
+            st.error(f"Hata: {exc}")
+        else:
+            st.success(f"Alan (1/3 kuralı): {alan_13:.4f} birim²")
+
+    h_38 = st.number_input("3/8 kuralı h", min_value=0.0, value=0.1, key="simpson_h_38")
+    y_38_text = st.text_input("3/8 kuralı için 4 adet y değeri", value="0,1,1,0")
+    if st.button("3/8 Kuralını Hesapla"):
+        try:
+            y_38 = [float(val.strip()) for val in y_38_text.split(",") if val.strip() != ""]
+            if len(y_38) != 4:
+                raise ValueError("3/8 kuralı için tam 4 değer girilmelidir")
+            alan_38 = simpson_uc_sekiz_kural(h_38, y_38[0], y_38[1], y_38[2], y_38[3])
+        except ValueError as exc:
+            st.error(f"Hata: {exc}")
+        except Exception as exc:  # pragma: no cover - Streamlit hata gösterimi
+            st.error(f"Hata: {exc}")
+        else:
+            st.success(f"Alan (3/8 kuralı): {alan_38:.4f} birim²")
+
+    st.subheader("Yaralı Stabilite")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        yarali_w = st.number_input("Su ağırlığı w [ton]", min_value=0.0, value=0.0, key="yarali_w")
+    with col2:
+        yarali_L = st.number_input("Toplam L [m]", min_value=0.0, value=120.0, key="yarali_L")
+    with col3:
+        yarali_B = st.number_input("Toplam B [m]", min_value=0.0, value=20.0, key="yarali_B")
+    with col4:
+        yarali_L_damage = st.number_input("Yaralı uzunluk [m]", min_value=0.0, value=10.0, key="yarali_L_damage")
+
+    if st.button("Yaralı Draft Değişimini Hesapla"):
+        yarali_delta_T = yarali_stabilite_delta_T(yarali_w, yarali_L, yarali_B, yarali_L_damage)
+        st.metric("ΔT (yaralı)", f"{yarali_delta_T:.3f} m")
+
+    st.subheader("Yük Hesapları")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        ambar_hacmi = st.number_input("Ambar hacmi [m³]", min_value=0.0, value=5000.0, key="ambar_hacmi")
+        stowage_factor = st.number_input("Stowage factor [m³/ton]", min_value=0.1, value=1.5, key="stowage_factor")
+        max_w = max_yuk_miktari(ambar_hacmi, stowage_factor)
+        st.metric("Maksimum yük miktarı", f"{max_w:.2f} ton")
+
+    with col2:
+        sf_degeri = st.number_input("Yüzey yük katsayısı SF", value=5.0, key="sf_degeri")
+        pl_degeri = st.number_input("PL değeri", value=2.0, key="pl_degeri")
+        h_max = max_yuk_yuksekligi(sf_degeri, pl_degeri)
+        st.metric("Maksimum yük yüksekliği", f"{h_max:.2f}")
+
+    with col3:
+        rho_ilk = st.number_input("ρ₁ [t/m³]", min_value=0.5, value=1.025, key="rho_ilk")
+        temp_ilk = st.number_input("T₁ [°C]", value=15.0, key="temp_ilk")
+        temp_son = st.number_input("T₂ [°C]", value=30.0, key="temp_son")
+        k_coeff = st.number_input("k katsayısı", min_value=0.0, value=0.00064, format="%.6f", key="k_coeff")
+        rho_son = sicaklikla_yogunluk(rho_ilk, temp_ilk, temp_son, k_coeff)
+        st.metric("Yeni yoğunluk ρ₂", f"{rho_son:.5f} t/m³")
+
+    st.subheader("Pratik Draft Okumaları")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        draft_rakam_m = st.number_input("Draft işareti (metre)", min_value=0.0, value=8.0, key="draft_rakam_m")
+        draft_konum_m = st.selectbox("Konum (metrik)", ["alt", "orta", "ustu"], key="draft_konum_m")
+        st.metric("Okunan draft (m)", f"{draft_okuma_metrik(draft_rakam_m, draft_konum_m):.2f} m")
+
+    with col2:
+        draft_rakam_in = st.number_input("Draft işareti (inç)", min_value=0.0, value=320.0, key="draft_rakam_in")
+        draft_konum_in = st.selectbox("Konum (Kraliyet)", ["alt", "orta", "ustu"], key="draft_konum_in")
+        st.metric("Okunan draft (inç)", f"{draft_okuma_kraliyet(draft_rakam_in, draft_konum_in):.1f} inç")
+
+# Tab 9: Rapor
 with tab_report:
     st.header("Stabilite Raporu")
     
