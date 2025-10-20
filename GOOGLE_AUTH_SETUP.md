@@ -26,12 +26,12 @@ Application Type: Web Application
 Name: Maritime Calculator Web App
 
 Authorized JavaScript Origins:
-- http://localhost:5173 (development)
+- http://localhost:8080 (development)
 - https://your-domain.com (production)
 - https://your-supabase-url.supabase.co
 
 Authorized Redirect URIs:
-- http://localhost:5173/auth/callback
+- http://localhost:8080/auth/callback
 - https://your-domain.com/auth/callback  
 - https://your-supabase-project-ref.supabase.co/auth/v1/callback
 ```
@@ -68,7 +68,7 @@ Client Secret: GOCSPX-xxxxxxxxxxxxxxxxx
 ```
 Site URL: https://your-domain.com
 Additional Redirect URLs:
-- http://localhost:5173/**
+- http://localhost:8080/**
 - https://your-domain.com/**
 ```
 
