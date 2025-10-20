@@ -32,7 +32,7 @@ const EmptyPage = () => {
 
   return (
     <div 
-      className="min-h-screen bg-background text-foreground px-6 touch-pan-x"
+      className="min-h-screen bg-background text-foreground px-6 touch-auto"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
