@@ -20,29 +20,54 @@ export type Database = {
           created_at: string
           id: string
           input_data: Json
+          calculation_duration_ms: number | null
           is_favorite: boolean
+          is_shared: boolean
+          notes: string
           result_data: Json
+          title: string
+          updated_at: string
           user_id: string
+          view_count: number
         }
         Insert: {
           calculation_type: string
           created_at?: string
           id?: string
-          input_data: Json
+          input_data?: Json
+          calculation_duration_ms?: number | null
           is_favorite?: boolean
-          result_data: Json
+          is_shared?: boolean
+          notes?: string
+          result_data?: Json
+          title?: string
+          updated_at?: string
           user_id: string
+          view_count?: number
         }
         Update: {
+          calculation_duration_ms?: number | null
           calculation_type?: string
           created_at?: string
           id?: string
           input_data?: Json
           is_favorite?: boolean
+          is_shared?: boolean
+          notes?: string
           result_data?: Json
+          title?: string
+          updated_at?: string
           user_id?: string
+          view_count?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "calculation_history_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -51,6 +76,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          is_pro: boolean | null
+          pro_expires_at: string | null
           updated_at: string | null
         }
         Insert: {
@@ -59,6 +86,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          is_pro?: boolean | null
+          pro_expires_at?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -67,9 +96,60 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_pro?: boolean | null
+          pro_expires_at?: string | null
           updated_at?: string | null
         }
         Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          ad_frequency: number
+          ads_enabled: boolean
+          calculation_notifications: boolean
+          created_at: string
+          favorite_calculations: string[] | null
+          language: string
+          marketing_emails: boolean
+          theme: string
+          updated_at: string
+          user_id: string
+          email_notifications: boolean
+        }
+        Insert: {
+          ad_frequency?: number
+          ads_enabled?: boolean
+          calculation_notifications?: boolean
+          created_at?: string
+          favorite_calculations?: string[] | null
+          language?: string
+          marketing_emails?: boolean
+          theme?: string
+          updated_at?: string
+          user_id: string
+          email_notifications?: boolean
+        }
+        Update: {
+          ad_frequency?: number
+          ads_enabled?: boolean
+          calculation_notifications?: boolean
+          created_at?: string
+          favorite_calculations?: string[] | null
+          language?: string
+          marketing_emails?: boolean
+          theme?: string
+          updated_at?: string
+          user_id?: string
+          email_notifications?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_preferences_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_stats: {
         Row: {
@@ -102,7 +182,14 @@ export type Database = {
           user_id?: string
           user_level?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_stats_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
