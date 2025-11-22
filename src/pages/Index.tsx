@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
-import { Settings } from "lucide-react";
+import { Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import WeatherWidget from "@/components/WeatherWidget";
 import MoonPhaseWidget from "@/components/MoonPhaseWidget";
 
@@ -127,6 +127,29 @@ const Index = () => {
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
+      {/* Swipe indicators */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+        <div className="flex flex-col items-center gap-2 animate-pulse">
+          <ChevronLeft className="w-8 h-8 text-white/60 drop-shadow-lg" />
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-white/60"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white/40"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+        <div className="flex flex-col items-center gap-2 animate-pulse">
+          <ChevronRight className="w-8 h-8 text-white/60 drop-shadow-lg" />
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white/40"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white/60"></div>
+          </div>
+        </div>
+      </div>
+
       {/* Top right settings button */}
       <div className="fixed right-6 top-6 z-20 flex items-center">
         <Link to="/settings">
