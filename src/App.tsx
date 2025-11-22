@@ -1,11 +1,13 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { HelmetProvider } from "react-helmet-async";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DensityProvider } from "@/contexts/DensityContext";
+import { AnimatePresence } from "framer-motion";
+import { PageTransition } from "@/components/PageTransition";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
@@ -65,6 +67,73 @@ import LocationSelector from "./pages/LocationSelector";
 
 const queryClient = new QueryClient();
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
+        <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />
+        {/* Stability sub-routes */}
+        <Route path="/stability/assistant" element={<PageTransition><StabilityAssistantPage /></PageTransition>} />
+        <Route path="/stability/rules" element={<PageTransition><StabilityRules /></PageTransition>} />
+        <Route path="/stability/gz-imo" element={<PageTransition><StabilityGZIMO /></PageTransition>} />
+        <Route path="/stability/advanced" element={<PageTransition><StabilityAdvancedPage /></PageTransition>} />
+        <Route path="/stability/damage" element={<PageTransition><StabilityDamagePage /></PageTransition>} />
+        <Route path="/stability/grain" element={<PageTransition><StabilityGrainPage /></PageTransition>} />
+        <Route path="/stability/gm" element={<PageTransition><StabilityGMPage /></PageTransition>} />
+        <Route path="/stability/weight-shift" element={<PageTransition><StabilityWeightShiftPage /></PageTransition>} />
+        <Route path="/stability/free-surface" element={<PageTransition><StabilityFreeSurfacePage /></PageTransition>} />
+        <Route path="/stability/gz" element={<PageTransition><StabilityGZPage /></PageTransition>} />
+        <Route path="/stability/analysis" element={<PageTransition><StabilityAnalysisPage /></PageTransition>} />
+        <Route path="/stability/stable-tales" element={<PageTransition><StableTalesPage /></PageTransition>} />
+        <Route path="/stability/formulas" element={<PageTransition><StabilityFormulasPage /></PageTransition>} />
+        <Route path="/stability/formulas/:id" element={<PageTransition><StabilityFormulaDetailPage /></PageTransition>} />
+        <Route path="/stability/calculations" element={<PageTransition><StabilityCalculationsPage /></PageTransition>} />
+        <Route path="/stability/practical" element={<PageTransition><StabilityPracticalPage /></PageTransition>} />
+        <Route path="/stability/practical/tank" element={<PageTransition><StabilityPracticalTankPage /></PageTransition>} />
+        <Route path="/stability/practical/fwa" element={<PageTransition><StabilityPracticalFWAPage /></PageTransition>} />
+        <Route path="/stability/practical/ghm" element={<PageTransition><StabilityPracticalGHMPage /></PageTransition>} />
+        <Route path="/stability/topics" element={<PageTransition><StabilityTopicsPage /></PageTransition>} />
+        <Route path="/stability/quiz" element={<PageTransition><StabilityQuizPage /></PageTransition>} />
+        <Route path="/stability/shearing-bending" element={<PageTransition><StabilityShearingBendingPage /></PageTransition>} />
+        <Route path="/safety-menu" element={<PageTransition><SafetyMenu /></PageTransition>} />
+        <Route path="/navigation-menu" element={<PageTransition><NavigationMenu /></PageTransition>} />
+        <Route path="/economics-menu" element={<PageTransition><EconomicsMenu /></PageTransition>} />
+        <Route path="/seamanship-menu" element={<PageTransition><SeamanshipMenu /></PageTransition>} />
+        <Route path="/seamanship/topics-menu" element={<PageTransition><SeamanshipTopicButtons /></PageTransition>} />
+        <Route path="/seamanship/topics" element={<PageTransition><SeamanshipTopicsPage /></PageTransition>} />
+        <Route path="/seamanship/knots" element={<PageTransition><SailorKnotsPage /></PageTransition>} />
+        <Route path="/tank-menu" element={<PageTransition><TankMenu /></PageTransition>} />
+        <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
+        <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
+        <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
+        <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
+        <Route path="/navigation/topics" element={<PageTransition><NavigationTopicsPage /></PageTransition>} />
+        <Route path="/navigation/detailed-meteorology" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
+        <Route path="/navigation/colreg-presentation" element={<PageTransition><COLREGPresentation /></PageTransition>} />
+        <Route path="/navigation/assistant" element={<PageTransition><NavigationAssistantPage /></PageTransition>} />
+        <Route path="/navigation/quiz" element={<PageTransition><NavigationQuizPage /></PageTransition>} />
+        <Route path="/economics" element={<PageTransition><Economics /></PageTransition>} />
+        <Route path="/empty-page" element={<PageTransition><EmptyPage /></PageTransition>} />
+        <Route path="/moon-phases" element={<PageTransition><MoonPhases /></PageTransition>} />
+        <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+        <Route path="/formulas" element={<PageTransition><Formulas /></PageTransition>} />
+        <Route path="/regulations" element={<PageTransition><Regulations /></PageTransition>} />
+        <Route path="/clock" element={<PageTransition><ClockPage /></PageTransition>} />
+        <Route path="/auth/callback" element={<PageTransition><AuthCallback /></PageTransition>} />
+        <Route path="/weather-forecast" element={<PageTransition><WeatherForecast /></PageTransition>} />
+        <Route path="/sunset-times" element={<PageTransition><SunsetTimes /></PageTransition>} />
+        <Route path="/sunrise-times" element={<PageTransition><SunriseTimes /></PageTransition>} />
+        <Route path="/location-selector" element={<PageTransition><LocationSelector /></PageTransition>} />
+        <Route path="*" element={<PageTransition><Index /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -76,65 +145,7 @@ const App = () => {
                 <Toaster />
                 <div className="min-h-screen bg-background text-foreground">
                   <BrowserRouter>
-                    <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/calculations" element={<CalculationsMenu />} />
-                     <Route path="/stability" element={<StabilityMenu />} />
-                     {/* Stability sub-routes */}
-                     <Route path="/stability/assistant" element={<StabilityAssistantPage />} />
-                     <Route path="/stability/rules" element={<StabilityRules />} />
-                    <Route path="/stability/gz-imo" element={<StabilityGZIMO />} />
-                    <Route path="/stability/advanced" element={<StabilityAdvancedPage />} />
-                    <Route path="/stability/damage" element={<StabilityDamagePage />} />
-                    <Route path="/stability/grain" element={<StabilityGrainPage />} />
-                    <Route path="/stability/gm" element={<StabilityGMPage />} />
-                    <Route path="/stability/weight-shift" element={<StabilityWeightShiftPage />} />
-                    <Route path="/stability/free-surface" element={<StabilityFreeSurfacePage />} />
-                    <Route path="/stability/gz" element={<StabilityGZPage />} />
-                    <Route path="/stability/analysis" element={<StabilityAnalysisPage />} />
-                    <Route path="/stability/stable-tales" element={<StableTalesPage />} />
-                     <Route path="/stability/formulas" element={<StabilityFormulasPage />} />
-                    <Route path="/stability/formulas/:id" element={<StabilityFormulaDetailPage />} />
-                     <Route path="/stability/calculations" element={<StabilityCalculationsPage />} />
-                    <Route path="/stability/practical" element={<StabilityPracticalPage />} />
-                    <Route path="/stability/practical/tank" element={<StabilityPracticalTankPage />} />
-                    <Route path="/stability/practical/fwa" element={<StabilityPracticalFWAPage />} />
-                    <Route path="/stability/practical/ghm" element={<StabilityPracticalGHMPage />} />
-                    <Route path="/stability/topics" element={<StabilityTopicsPage />} />
-                    <Route path="/stability/quiz" element={<StabilityQuizPage />} />
-                    <Route path="/stability/shearing-bending" element={<StabilityShearingBendingPage />} />
-                    <Route path="/safety-menu" element={<SafetyMenu />} />
-                    <Route path="/navigation-menu" element={<NavigationMenu />} />
-                    <Route path="/economics-menu" element={<EconomicsMenu />} />
-                    <Route path="/seamanship-menu" element={<SeamanshipMenu />} />
-                    <Route path="/seamanship/topics-menu" element={<SeamanshipTopicButtons />} />
-                    <Route path="/seamanship/topics" element={<SeamanshipTopicsPage />} />
-                    <Route path="/seamanship/knots" element={<SailorKnotsPage />} />
-                    <Route path="/tank-menu" element={<TankMenu />} />
-                    <Route path="/solas" element={<SOLASMenu />} />
-                    <Route path="/navigation" element={<Navigation />} />
-                    <Route path="/navigation/calc/:id" element={<NavigationCalculationPage />} />
-                    <Route path="/navigation/formulas" element={<NavigationFormulasPage />} />
-                    <Route path="/navigation/topics" element={<NavigationTopicsPage />} />
-                    <Route path="/navigation/detailed-meteorology" element={<DetailedMeteorology />} />
-                    <Route path="/navigation/colreg-presentation" element={<COLREGPresentation />} />
-                    <Route path="/navigation/assistant" element={<NavigationAssistantPage />} />
-                    <Route path="/navigation/quiz" element={<NavigationQuizPage />} />
-                    <Route path="/economics" element={<Economics />} />
-                    <Route path="/empty-page" element={<EmptyPage />} />
-                    <Route path="/moon-phases" element={<MoonPhases />} />
-                    <Route path="/settings" element={<Settings />} />
-                     <Route path="/formulas" element={<Formulas />} />
-                     <Route path="/regulations" element={<Regulations />} />
-                     <Route path="/clock" element={<ClockPage />} />
-                     <Route path="/auth/callback" element={<AuthCallback />} />
-                     
-          <Route path="/weather-forecast" element={<WeatherForecast />} />
-          <Route path="/sunset-times" element={<SunsetTimes />} />
-          <Route path="/sunrise-times" element={<SunriseTimes />} />
-          <Route path="/location-selector" element={<LocationSelector />} />
-                     <Route path="*" element={<Index />} />
-                    </Routes>
+                    <AnimatedRoutes />
                   </BrowserRouter>
                 </div>
               </DensityProvider>
