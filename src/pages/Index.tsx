@@ -104,12 +104,28 @@ const Index = () => {
     }
   };
 
+  // --- Click navigation for left and right zones ---
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    const clickX = e.clientX;
+    const screenWidth = window.innerWidth;
+    
+    // Left 35% zone
+    if (clickX < screenWidth * 0.35) {
+      navigate("/settings");
+    }
+    // Right 35% zone
+    else if (clickX > screenWidth * 0.65) {
+      navigate("/empty-page");
+    }
+  };
+
   return (
     <div
-      className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400"
+      className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400 cursor-pointer"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onClick={handleClick}
     >
       {/* Top right settings button */}
       <div className="fixed right-6 top-6 z-20 flex items-center">
