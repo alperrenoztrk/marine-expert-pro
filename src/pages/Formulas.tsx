@@ -7,7 +7,7 @@ import BackButton from "@/components/BackButton";
 import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb, Trash2, Printer, Copy, Share2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/publicClient";
 import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
 
 const Formulas = () => {

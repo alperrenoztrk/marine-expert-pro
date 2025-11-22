@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/publicClient';
 
 interface CalculationHistory {
   id: string;
@@ -67,7 +67,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('calculation_history')
         .select('*')
         .eq('user_id', userId)
@@ -89,7 +89,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('user_preferences')
         .select('*')
         .eq('user_id', userId)
@@ -122,7 +122,7 @@ export const useUserData = (userId?: string) => {
 
     try {
       // İstatistikleri hesapla
-      const { data: historyData, error } = await supabase
+      const { data: historyData, error } = await (supabase as any)
         .from('calculation_history')
         .select('calculation_type, created_at, is_favorite')
         .eq('user_id', userId);
@@ -156,7 +156,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('calculation_history')
         .insert({
           user_id: userId,
@@ -188,7 +188,7 @@ export const useUserData = (userId?: string) => {
       const calculation = calculationHistory.find(c => c.id === calculationId);
       if (!calculation) return;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('calculation_history')
         .update({ is_favorite: !calculation.is_favorite })
         .eq('id', calculationId);
@@ -214,7 +214,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('user_preferences')
         .upsert({
           user_id: userId,
