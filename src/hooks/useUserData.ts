@@ -99,13 +99,13 @@ export const useUserData = (userId?: string) => {
         throw error;
       }
       
-      const preferences = data || {
-        language: 'tr',
-        ad_frequency: 3,
-        theme: 'system',
-        email_notifications: true,
-        calculation_notifications: true,
-        favorite_calculations: []
+      const preferences: UserPreferences = {
+        language: data?.language || 'tr',
+        ad_frequency: data?.ad_frequency || 3,
+        theme: (data?.theme === 'light' || data?.theme === 'dark' || data?.theme === 'system') ? data.theme : 'system',
+        email_notifications: data?.email_notifications ?? true,
+        calculation_notifications: data?.calculation_notifications ?? true,
+        favorite_calculations: data?.favorite_calculations || []
       };
       
       setUserPreferences(preferences);
@@ -226,8 +226,17 @@ export const useUserData = (userId?: string) => {
 
       if (error) throw error;
 
-      setUserPreferences(data);
-      return data;
+      const validatedData: UserPreferences = {
+        language: data?.language || 'tr',
+        ad_frequency: data?.ad_frequency || 3,
+        theme: (data?.theme === 'light' || data?.theme === 'dark' || data?.theme === 'system') ? data.theme : 'system',
+        email_notifications: data?.email_notifications ?? true,
+        calculation_notifications: data?.calculation_notifications ?? true,
+        favorite_calculations: data?.favorite_calculations || []
+      };
+      
+      setUserPreferences(validatedData);
+      return validatedData;
     } catch (error) {
       console.error('Error updating preferences:', error);
       throw error;
