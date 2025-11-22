@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import type { Tables } from '@/integrations/supabase/types';
+import { supabase } from '@/integrations/supabase/publicClient';
 
 export interface ProStatus {
   loading: boolean;
   isPro: boolean;
   expiresAt?: Date | null;
-  profile?: Tables<'profiles'> | null;
+  profile?: any | null;
 }
+
 
 export function usePro(): ProStatus {
   const [state, setState] = useState<ProStatus>({ loading: true, isPro: false });
@@ -25,14 +25,14 @@ export function usePro(): ProStatus {
           return;
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from('profiles')
           .select('*')
           .eq('id', userId)
           .maybeSingle();
         if (error) throw error;
 
-        const profile = (data ?? null) as Tables<'profiles'> | null;
+        const profile = (data ?? null) as any | null;
         const expiresAt = profile?.pro_expires_at ? new Date(profile.pro_expires_at) : null;
         const isProActive = Boolean(profile?.is_pro) && (!expiresAt || expiresAt.getTime() > Date.now());
 
