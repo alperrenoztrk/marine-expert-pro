@@ -164,19 +164,6 @@ const Index = () => {
         </Link>
       </div>
 
-      {/* Left side widget (scrollable) */}
-      <aside className="fixed left-4 top-4 bottom-4 z-20 hidden md:block w-[min(380px,40vw)] overflow-y-auto overscroll-contain touch-pan-y">
-        <div className="pr-2">
-          <WeatherWidget />
-        </div>
-      </aside>
-
-      {/* Right side widget (scrollable) */}
-      <aside className="fixed right-4 top-4 bottom-4 z-20 hidden md:block w-[min(380px,40vw)] overflow-y-auto overscroll-contain touch-pan-y">
-        <div className="pl-2">
-          <MoonPhaseWidget />
-        </div>
-      </aside>
 
       {/* Decorative ocean waves background */}
       <img
