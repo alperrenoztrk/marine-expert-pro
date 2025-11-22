@@ -10,100 +10,11 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
-      calculation_history: {
-        Row: {
-          calculation_type: string
-          created_at: string
-          id: string
-          input_data: Json
-          is_favorite: boolean
-          result_data: Json
-          user_id: string
-        }
-        Insert: {
-          calculation_type: string
-          created_at?: string
-          id?: string
-          input_data: Json
-          is_favorite?: boolean
-          result_data: Json
-          user_id: string
-        }
-        Update: {
-          calculation_type?: string
-          created_at?: string
-          id?: string
-          input_data?: Json
-          is_favorite?: boolean
-          result_data?: Json
-          user_id?: string
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          email: string | null
-          full_name: string | null
-          id: string
-          updated_at: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id: string
-          updated_at?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      user_stats: {
-        Row: {
-          created_at: string
-          favorite_count: number
-          id: string
-          last_calculation_date: string | null
-          total_calculations: number
-          updated_at: string
-          user_id: string
-          user_level: string
-        }
-        Insert: {
-          created_at?: string
-          favorite_count?: number
-          id?: string
-          last_calculation_date?: string | null
-          total_calculations?: number
-          updated_at?: string
-          user_id: string
-          user_level?: string
-        }
-        Update: {
-          created_at?: string
-          favorite_count?: number
-          id?: string
-          last_calculation_date?: string | null
-          total_calculations?: number
-          updated_at?: string
-          user_id?: string
-          user_level?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never

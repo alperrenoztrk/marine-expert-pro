@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Tables } from '@/integrations/supabase/types';
 
 export interface ProStatus {
   loading: boolean;
   isPro: boolean;
   expiresAt?: Date | null;
-  profile?: Tables<'profiles'> | null;
+  profile?: any | null;
 }
 
 export function usePro(): ProStatus {
@@ -25,14 +24,19 @@ export function usePro(): ProStatus {
           return;
         }
 
+        // Check if profiles table exists by attempting to query it
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', userId)
           .maybeSingle();
-        if (error) throw error;
+        
+        if (error && error.code !== 'PGRST116') {
+          // PGRST116 is "table not found", which is acceptable
+          throw error;
+        }
 
-        const profile = data as Tables<'profiles'> | null;
+        const profile = data || null;
         // Pro status fields are not currently in the database schema
         // Defaulting to non-pro status
         const active = false;

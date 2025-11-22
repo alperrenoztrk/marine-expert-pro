@@ -13,6 +13,7 @@ import { getLanguageFlag } from "@/utils/languages";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
+import { SupabaseStatusIndicator } from "@/components/SupabaseStatusIndicator";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
@@ -88,6 +89,9 @@ const Settings = () => {
 
           {/* Settings Cards: Google ile giriş bu sayfaya taşındı */}
           <div className="grid gap-6">
+            {/* Backend Status */}
+            <SupabaseStatusIndicator />
+            
             {/* Account / Authentication */}
             <GoogleAuth />
             
