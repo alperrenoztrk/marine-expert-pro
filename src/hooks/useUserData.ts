@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/publicClient';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CalculationHistory {
   id: string;
@@ -67,7 +67,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('calculation_history')
         .select('*')
         .eq('user_id', userId)
@@ -89,7 +89,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('user_preferences')
         .select('*')
         .eq('user_id', userId)
@@ -99,13 +99,13 @@ export const useUserData = (userId?: string) => {
         throw error;
       }
       
-      const preferences: UserPreferences = {
-        language: data?.language || 'tr',
-        ad_frequency: data?.ad_frequency || 3,
-        theme: (data?.theme === 'light' || data?.theme === 'dark' || data?.theme === 'system') ? data.theme : 'system',
-        email_notifications: data?.email_notifications ?? true,
-        calculation_notifications: data?.calculation_notifications ?? true,
-        favorite_calculations: data?.favorite_calculations || []
+      const preferences = data || {
+        language: 'tr',
+        ad_frequency: 3,
+        theme: 'system',
+        email_notifications: true,
+        calculation_notifications: true,
+        favorite_calculations: []
       };
       
       setUserPreferences(preferences);
@@ -122,7 +122,7 @@ export const useUserData = (userId?: string) => {
 
     try {
       // İstatistikleri hesapla
-      const { data: historyData, error } = await (supabase as any)
+      const { data: historyData, error } = await supabase
         .from('calculation_history')
         .select('calculation_type, created_at, is_favorite')
         .eq('user_id', userId);
@@ -156,7 +156,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('calculation_history')
         .insert({
           user_id: userId,
@@ -188,7 +188,7 @@ export const useUserData = (userId?: string) => {
       const calculation = calculationHistory.find(c => c.id === calculationId);
       if (!calculation) return;
 
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('calculation_history')
         .update({ is_favorite: !calculation.is_favorite })
         .eq('id', calculationId);
@@ -214,7 +214,7 @@ export const useUserData = (userId?: string) => {
     if (!userId) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('user_preferences')
         .upsert({
           user_id: userId,
@@ -226,17 +226,8 @@ export const useUserData = (userId?: string) => {
 
       if (error) throw error;
 
-      const validatedData: UserPreferences = {
-        language: data?.language || 'tr',
-        ad_frequency: data?.ad_frequency || 3,
-        theme: (data?.theme === 'light' || data?.theme === 'dark' || data?.theme === 'system') ? data.theme : 'system',
-        email_notifications: data?.email_notifications ?? true,
-        calculation_notifications: data?.calculation_notifications ?? true,
-        favorite_calculations: data?.favorite_calculations || []
-      };
-      
-      setUserPreferences(validatedData);
-      return validatedData;
+      setUserPreferences(data);
+      return data;
     } catch (error) {
       console.error('Error updating preferences:', error);
       throw error;

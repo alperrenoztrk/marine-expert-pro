@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Ship, Loader2, MessageCircle, Calculator, Send, BarChart3, Compass } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/publicClient";
+import { supabase } from "@/integrations/supabase/client";
 
 export const UnifiedMaritimeAssistant = () => {
   const [question, setQuestion] = useState("");

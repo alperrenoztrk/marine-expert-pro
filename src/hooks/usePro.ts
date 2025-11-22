@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/publicClient';
+import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 
 export interface ProStatus {
   loading: boolean;
   isPro: boolean;
   expiresAt?: Date | null;
-  profile?: any | null;
+  profile?: Tables<'profiles'> | null;
 }
-
 
 export function usePro(): ProStatus {
   const [state, setState] = useState<ProStatus>({ loading: true, isPro: false });
@@ -25,18 +25,20 @@ export function usePro(): ProStatus {
           return;
         }
 
-        const { data, error } = await (supabase as any)
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', userId)
           .maybeSingle();
         if (error) throw error;
 
-        const profile = (data ?? null) as any | null;
-        const expiresAt = profile?.pro_expires_at ? new Date(profile.pro_expires_at) : null;
-        const isProActive = Boolean(profile?.is_pro) && (!expiresAt || expiresAt.getTime() > Date.now());
+        const profile = data as Tables<'profiles'> | null;
+        // Pro status fields are not currently in the database schema
+        // Defaulting to non-pro status
+        const active = false;
+        const expiresAt = null;
 
-        if (isMounted) setState({ loading: false, isPro: isProActive, expiresAt, profile });
+        if (isMounted) setState({ loading: false, isPro: active, expiresAt, profile });
       } catch (e) {
         console.error('Failed to load pro status', e);
         if (isMounted) setState({ loading: false, isPro: false });

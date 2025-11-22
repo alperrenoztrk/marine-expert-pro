@@ -4,7 +4,7 @@ export interface AIMessage {
   images?: string[]; // Base64 encoded images
 }
 
-import { supabase } from '@/integrations/supabase/publicClient';
+import { supabase } from '@/integrations/supabase/client';
 
 const MARITIME_REGULATIONS_SYSTEM_PROMPT = `You are Mark, a maritime regulations and information guidance expert specialized in helping seafarers find the correct maritime publications, regulations, and references.
 
