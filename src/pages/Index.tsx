@@ -165,6 +165,20 @@ const Index = () => {
       </div>
 
 
+      {/* Footer with weather and moon phase widgets (desktop only) */}
+      <footer className="hidden lg:block fixed bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-sky-300/80 to-transparent backdrop-blur-sm border-t border-white/20">
+        <div className="container mx-auto px-6 py-4">
+          <div className="grid grid-cols-2 gap-6 max-w-6xl mx-auto">
+            <div className="animate-fade-in">
+              <WeatherWidget />
+            </div>
+            <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <MoonPhaseWidget />
+            </div>
+          </div>
+        </div>
+      </footer>
+
       {/* Decorative ocean waves background */}
       <img
         src="/maritime-home-background.svg"
@@ -173,7 +187,7 @@ const Index = () => {
       />
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center pb-80 lg:pb-96">
         {/* Title */}
         <div className="mb-10">
           <h1 className="maritime-title font-bold mb-3 leading-tight">
@@ -205,7 +219,7 @@ const Index = () => {
         </div>
 
         {/* CTA Button */}
-        <Link to="/calculations" className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20" aria-label="Keşfetmeye Başla">
+        <Link to="/calculations" className="absolute bottom-16 lg:bottom-80 left-1/2 -translate-x-1/2 z-20" aria-label="Keşfetmeye Başla">
           <Button className="rounded-full px-8 md:px-12 py-6 text-xl md:text-2xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xl">
             Keşfetmeye Başla
           </Button>
