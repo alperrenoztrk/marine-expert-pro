@@ -212,7 +212,7 @@ const EmptyPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400 flex items-center justify-center">
         <div className="text-foreground">Yükleniyor...</div>
       </div>
     );
@@ -220,7 +220,7 @@ const EmptyPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400 flex items-center justify-center p-6">
         <div className="text-red-600 text-center">Hata: {error}</div>
       </div>
     );
@@ -228,7 +228,7 @@ const EmptyPage = () => {
 
   return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 px-6 py-8 touch-auto cursor-pointer relative"
+      className="min-h-screen bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400 px-6 py-8 touch-auto cursor-pointer relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
