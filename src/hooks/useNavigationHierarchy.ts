@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { App as CapacitorApp } from '@capacitor/app';
 
 // Sayfa hiyerarşisi mapping'i - her sayfa için parent menü tanımı
 const navigationHierarchy: Record<string, string> = {
@@ -172,29 +173,43 @@ export const useNavigationHierarchy = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleBackButton = (event: PopStateEvent) => {
-      event.preventDefault();
-      
+    const navigateToParent = () => {
       const currentPath = location.pathname;
       const parentPath = navigationHierarchy[currentPath];
       
       if (parentPath) {
-        // Navigate to parent menu
         navigate(parentPath, { replace: true });
       } else {
-        // If no parent defined, go to home
         navigate('/', { replace: true });
       }
     };
 
-    // Listen to browser back button
-    window.addEventListener('popstate', handleBackButton);
+    // Handle browser back button
+    const handlePopState = (event: PopStateEvent) => {
+      event.preventDefault();
+      // Push forward again to prevent actual back navigation
+      window.history.pushState(null, '', window.location.href);
+      // Navigate to logical parent
+      navigateToParent();
+    };
 
-    // Push a dummy state to enable back button handling
+    // Handle mobile back button (Capacitor)
+    let backButtonListener: any;
+    CapacitorApp.addListener('backButton', () => {
+      navigateToParent();
+    }).then(listener => {
+      backButtonListener = listener;
+    });
+
+    // Push initial state
     window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handlePopState);
 
     return () => {
-      window.removeEventListener('popstate', handleBackButton);
+      window.removeEventListener('popstate', handlePopState);
+      if (backButtonListener) {
+        backButtonListener.remove();
+      }
     };
   }, [location.pathname, navigate]);
 };
