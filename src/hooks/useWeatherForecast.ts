@@ -10,6 +10,15 @@ export type ForecastDay = {
   windDirection: number;
 };
 
+export type HourlyData = {
+  time: string;
+  temperature: number;
+  humidity: number;
+  precipitation: number;
+  windSpeed: number;
+  weatherCode: number;
+};
+
 export type WeatherForecast = {
   latitude: number;
   longitude: number;
@@ -82,4 +91,68 @@ export function useWeatherForecast(lat?: number, lon?: number) {
   }, [lat, lon, fetchForecast]);
 
   return { loading, error, data, refetch: () => lat && lon && fetchForecast(lat, lon) };
+}
+
+// Saatlik hava durumu tahmini için yeni hook
+export function useHourlyForecast(lat?: number, lon?: number, targetDate?: string) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<HourlyData[] | null>(null);
+
+  const fetchHourlyForecast = useCallback(async (latitude: number, longitude: number, date: string) => {
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || !date) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const forecastUrl = new URL("https://api.open-meteo.com/v1/forecast");
+      forecastUrl.searchParams.set("latitude", String(latitude));
+      forecastUrl.searchParams.set("longitude", String(longitude));
+      forecastUrl.searchParams.set(
+        "hourly",
+        [
+          "temperature_2m",
+          "relative_humidity_2m",
+          "precipitation",
+          "wind_speed_10m",
+          "weather_code",
+        ].join(",")
+      );
+      forecastUrl.searchParams.set("wind_speed_unit", "kn");
+      forecastUrl.searchParams.set("timezone", "auto");
+      forecastUrl.searchParams.set("start_date", date);
+      forecastUrl.searchParams.set("end_date", date);
+
+      const res = await fetch(forecastUrl.toString());
+      if (!res.ok) throw new Error(`Saatlik hava tahmini alınamadı (${res.status})`);
+      
+      const json = await res.json();
+      const hourly = json.hourly || {};
+      
+      const hourlyData: HourlyData[] = (hourly.time || []).map((time: string, index: number) => ({
+        time,
+        temperature: hourly.temperature_2m?.[index] ?? NaN,
+        humidity: hourly.relative_humidity_2m?.[index] ?? NaN,
+        precipitation: hourly.precipitation?.[index] ?? 0,
+        windSpeed: hourly.wind_speed_10m?.[index] ?? NaN,
+        weatherCode: hourly.weather_code?.[index] ?? -1,
+      }));
+      
+      setData(hourlyData);
+    } catch (e: any) {
+      const message = e?.message || "Bilinmeyen hata";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (lat && lon && targetDate) {
+      fetchHourlyForecast(lat, lon, targetDate);
+    }
+  }, [lat, lon, targetDate, fetchHourlyForecast]);
+
+  return { loading, error, data, refetch: () => lat && lon && targetDate && fetchHourlyForecast(lat, lon, targetDate) };
 }

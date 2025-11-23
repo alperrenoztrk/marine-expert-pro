@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Thermometer, Droplets, Gauge, Wind } from "lucide-react";
-import { useWeatherForecast } from "@/hooks/useWeatherForecast";
+import { useWeatherForecast, useHourlyForecast } from "@/hooks/useWeatherForecast";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 interface WeatherInfoWidgetsProps {
   temperature?: number;
@@ -35,11 +36,24 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
 }) => {
   const [windFlipped, setWindFlipped] = useState(false);
   const [forecastOpen, setForecastOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [hourlyDialogOpen, setHourlyDialogOpen] = useState(false);
   
   const { data: forecast, loading: forecastLoading } = useWeatherForecast(
     latitude || 0,
     longitude || 0
   );
+
+  const { data: hourlyData, loading: hourlyLoading } = useHourlyForecast(
+    latitude || 0,
+    longitude || 0,
+    selectedDate || undefined
+  );
+
+  const handleDayClick = (date: string) => {
+    setSelectedDate(date);
+    setHourlyDialogOpen(true);
+  };
 
   const wmoToEmoji = (code?: number): string => {
     if (!code) return "🌡️";
@@ -165,7 +179,11 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
           ) : forecast && forecast.daily ? (
             <div className="space-y-3">
               {forecast.daily.map((day, index) => (
-                <Card key={index} className="p-4">
+                <Card 
+                  key={index} 
+                  className="p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+                  onClick={() => handleDayClick(day.date)}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="text-3xl">{wmoToEmoji(day.weatherCode)}</div>
@@ -204,6 +222,175 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
           ) : (
             <div className="text-center py-8 text-muted-foreground">
               Hava durumu tahmini yüklenemedi
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Hourly Forecast Dialog */}
+      <Dialog open={hourlyDialogOpen} onOpenChange={setHourlyDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedDate && `${new Date(selectedDate).toLocaleDateString('tr-TR', { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long',
+                year: 'numeric' 
+              })} - Saatlik Hava Durumu`}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {hourlyLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-muted-foreground">Yükleniyor...</div>
+            </div>
+          ) : hourlyData && hourlyData.length > 0 ? (
+            <div className="space-y-6">
+              {/* Sıcaklık Grafiği */}
+              <div>
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Thermometer className="w-4 h-4" />
+                  Sıcaklık (°C)
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={hourlyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="time" 
+                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
+                      formatter={(value: number) => [`${value.toFixed(1)}°C`, 'Sıcaklık']}
+                    />
+                    <Line type="monotone" dataKey="temperature" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Nem Grafiği */}
+              <div>
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Droplets className="w-4 h-4" />
+                  Nem (%)
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={hourlyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="time" 
+                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
+                      formatter={(value: number) => [`${value.toFixed(0)}%`, 'Nem']}
+                    />
+                    <Line type="monotone" dataKey="humidity" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Rüzgar Hızı Grafiği */}
+              <div>
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Wind className="w-4 h-4" />
+                  Rüzgar Hızı (kt)
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={hourlyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="time" 
+                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
+                      formatter={(value: number) => [`${value.toFixed(1)} kt`, 'Rüzgar']}
+                    />
+                    <Line type="monotone" dataKey="windSpeed" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Yağış Grafiği */}
+              <div>
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Droplets className="w-4 h-4" />
+                  Yağış (mm)
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={hourlyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="time" 
+                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
+                      formatter={(value: number) => [`${value.toFixed(1)} mm`, 'Yağış']}
+                    />
+                    <Line type="monotone" dataKey="precipitation" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Saatlik Detay Tablosu */}
+              <div className="pt-4 border-t">
+                <h3 className="text-sm font-semibold mb-3">Saatlik Detaylar</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-64 overflow-y-auto">
+                  {hourlyData.map((hour, index) => (
+                    <Card key={index} className="p-3">
+                      <div className="text-xs font-semibold text-center mb-2">
+                        {new Date(hour.time).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                      <div className="text-center text-2xl mb-1">
+                        {wmoToEmoji(hour.weatherCode)}
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Sıc:</span>
+                          <span className="font-semibold">{hour.temperature.toFixed(1)}°</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Nem:</span>
+                          <span className="font-semibold">{hour.humidity.toFixed(0)}%</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Rüz:</span>
+                          <span className="font-semibold">{hour.windSpeed.toFixed(0)} kt</span>
+                        </div>
+                        {hour.precipitation > 0 && (
+                          <div className="flex items-center justify-between text-blue-500">
+                            <span>Yağış:</span>
+                            <span className="font-semibold">{hour.precipitation.toFixed(1)} mm</span>
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              Saatlik hava durumu verisi yüklenemedi
             </div>
           )}
         </DialogContent>
