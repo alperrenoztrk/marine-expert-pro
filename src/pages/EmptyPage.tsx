@@ -42,18 +42,20 @@ const EmptyPage = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
     
     const distance = touchEndX.current - touchStartX.current;
-    const isRightSwipe = distance > 100;
-    const isLeftSwipe = distance < -100;
+    const isRightSwipe = distance > 100; // Sağa kaydırma
+    const isLeftSwipe = distance < -100; // Sola kaydırma
     
-    if (isRightSwipe && activeTab === "time") {
-      navigate('/');
-    } else if (isRightSwipe) {
-      const currentIndex = tabs.indexOf(activeTab);
-      if (currentIndex > 0) {
+    const currentIndex = tabs.indexOf(activeTab);
+    
+    if (isRightSwipe) {
+      // Sağa kaydırma: Önceki sekmeye git veya ana sayfaya dön
+      if (currentIndex === 0) {
+        navigate('/');
+      } else {
         setActiveTab(tabs[currentIndex - 1]);
       }
     } else if (isLeftSwipe) {
-      const currentIndex = tabs.indexOf(activeTab);
+      // Sola kaydırma: Sonraki sekmeye git
       if (currentIndex < tabs.length - 1) {
         setActiveTab(tabs[currentIndex + 1]);
       }
@@ -205,37 +207,54 @@ const EmptyPage = () => {
     >
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="relative">
-            <TabsList className="w-full grid grid-cols-4 mb-6 bg-gradient-to-r from-card/80 to-background/60 border border-border/30">
-              <TabsTrigger value="time" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-                ⏰ Zaman
-              </TabsTrigger>
-              <TabsTrigger value="weather" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-                🌤️ Hava
-              </TabsTrigger>
-              <TabsTrigger value="location" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-                🌍 Konum
-              </TabsTrigger>
-              <TabsTrigger value="navigation" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-                🧭 Pusula
-              </TabsTrigger>
-            </TabsList>
-            
-            {/* Swipe indicators */}
-            <div className="absolute top-2 left-2 text-muted-foreground/40 text-xs flex items-center gap-1">
-              {tabs.indexOf(activeTab) > 0 && (
-                <>
+          <TabsList className="w-full grid grid-cols-4 mb-6 bg-gradient-to-r from-card/80 to-background/60 border border-border/30">
+            <TabsTrigger value="time" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+              ⏰ Zaman
+            </TabsTrigger>
+            <TabsTrigger value="weather" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+              🌤️ Hava
+            </TabsTrigger>
+            <TabsTrigger value="location" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+              🌍 Konum
+            </TabsTrigger>
+            <TabsTrigger value="navigation" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+              🧭 Pusula
+            </TabsTrigger>
+          </TabsList>
+          
+          {/* Swipe indicators - Sayfa altında göster */}
+          <div className="fixed bottom-4 left-0 right-0 flex justify-center gap-2 pointer-events-none">
+            <div className="bg-background/80 backdrop-blur-sm rounded-full px-4 py-2 border border-border/30 shadow-lg flex items-center gap-3">
+              {tabs.indexOf(activeTab) === 0 ? (
+                <div className="flex items-center gap-1 text-muted-foreground/60 text-xs">
                   <ChevronLeft className="w-3 h-3" />
-                  <span>Kaydır</span>
-                </>
+                  <span>Ana Sayfa</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-primary/80 text-xs animate-pulse">
+                  <ChevronLeft className="w-3 h-3" />
+                  <span>Önceki</span>
+                </div>
               )}
-            </div>
-            <div className="absolute top-2 right-2 text-muted-foreground/40 text-xs flex items-center gap-1">
+              
+              <div className="flex gap-1.5">
+                {tabs.map((tab, idx) => (
+                  <div
+                    key={tab}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      tabs.indexOf(activeTab) === idx
+                        ? 'w-6 bg-primary'
+                        : 'w-1.5 bg-muted-foreground/30'
+                    }`}
+                  />
+                ))}
+              </div>
+              
               {tabs.indexOf(activeTab) < tabs.length - 1 && (
-                <>
-                  <span>Kaydır</span>
+                <div className="flex items-center gap-1 text-primary/80 text-xs animate-pulse">
+                  <span>Sonraki</span>
                   <ChevronRight className="w-3 h-3" />
-                </>
+                </div>
               )}
             </div>
           </div>
