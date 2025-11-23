@@ -40,6 +40,7 @@ import { CloudCard } from "@/components/ui/cloud-card";
 import { cloudTypesByLevel } from "@/components/calculations/cloud-types";
 import { SatelliteImageryViewer } from "@/components/SatelliteImageryViewer";
 import { NAVTEXWarnings } from "@/components/NAVTEXWarnings";
+import { WeatherMapDrawing } from "@/components/WeatherMapDrawing";
 
 interface WeatherSystem {
   id: string;
@@ -474,13 +475,14 @@ const DetailedMeteorology = () => {
         </Alert>
 
         <Tabs defaultValue="systems" className="w-full">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="systems">Hava Sistemleri</TabsTrigger>
             <TabsTrigger value="clouds">Bulutlar</TabsTrigger>
             <TabsTrigger value="pressure">Basınç Sistemleri</TabsTrigger>
             <TabsTrigger value="storms">Fırtına Türleri</TabsTrigger>
             <TabsTrigger value="satellite">Uydu Görüntüleri</TabsTrigger>
             <TabsTrigger value="navtex">NAVTEX Uyarıları</TabsTrigger>
+            <TabsTrigger value="drawing">Hava Haritası</TabsTrigger>
             <TabsTrigger value="forecasting">Tahmin Yöntemleri</TabsTrigger>
             <TabsTrigger value="safety">Güvenlik Rehberi</TabsTrigger>
           </TabsList>
@@ -493,6 +495,11 @@ const DetailedMeteorology = () => {
           {/* NAVTEX Tab */}
           <TabsContent value="navtex" className="space-y-6">
             <NAVTEXWarnings />
+          </TabsContent>
+
+          {/* Weather Map Drawing Tab */}
+          <TabsContent value="drawing" className="space-y-6">
+            <WeatherMapDrawing />
           </TabsContent>
 
           {/* Clouds Tab */}
