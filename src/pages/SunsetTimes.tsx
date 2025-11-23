@@ -52,19 +52,8 @@ export default function SunsetTimes() {
     try {
       const start = new Date();
       const end = new Date(start);
-      end.setDate(start.getDate() + 29); // 30 gün (bugün dahil)
+      end.setDate(start.getDate() + 15); // API limiti: maksimum 16 gün
       const fmtLocal = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
-      const buildAstronomyUrl = () => {
-        const url = new URL("https://api.open-meteo.com/v1/astronomy");
-        url.searchParams.set("latitude", String(lat));
-        url.searchParams.set("longitude", String(lon));
-        url.searchParams.set("daily", "sunset");
-        url.searchParams.set("timezone", "auto");
-        url.searchParams.set("start_date", fmtLocal(start));
-        url.searchParams.set("end_date", fmtLocal(end));
-        return url;
-      };
 
       const buildForecastUrl = () => {
         const url = new URL("https://api.open-meteo.com/v1/forecast");
@@ -72,31 +61,25 @@ export default function SunsetTimes() {
         url.searchParams.set("longitude", String(lon));
         url.searchParams.set("daily", "sunset");
         url.searchParams.set("timezone", "auto");
-        url.searchParams.set("start_date", fmtLocal(start));
-        url.searchParams.set("end_date", fmtLocal(end));
+        url.searchParams.set("forecast_days", "16");
         return url;
       };
 
-      const tryFetch = async (url: URL): Promise<SunsetDay[]> => {
-        const res = await fetch(url.toString());
-        if (!res.ok) return [];
-        const json = await res.json();
-        const daily = json?.daily ?? {};
-        const times: string[] = daily.time ?? [];
-        const sunsets: Array<string | null> = daily.sunset ?? [];
-        if (!times.length || !sunsets.length) return [];
-        return times.map((date, i) => ({ date, sunset: sunsets[i] ?? null }));
-      };
-
-      let list = await tryFetch(buildAstronomyUrl());
-      if (list.length === 0) {
-        list = await tryFetch(buildForecastUrl());
+      const res = await fetch(buildForecastUrl().toString());
+      if (!res.ok) {
+        throw new Error("API'den veri alınamadı");
       }
-
-      if (list.length === 0) {
+      
+      const json = await res.json();
+      const daily = json?.daily ?? {};
+      const times: string[] = daily.time ?? [];
+      const sunsets: Array<string | null> = daily.sunset ?? [];
+      
+      if (!times.length || !sunsets.length) {
         throw new Error("Günbatımı verisi bulunamadı");
       }
-
+      
+      const list = times.map((date, i) => ({ date, sunset: sunsets[i] ?? null }));
       setDays(list);
     } catch (e: any) {
       setError(e?.message || "Bilinmeyen hata");
@@ -106,7 +89,7 @@ export default function SunsetTimes() {
   }, []);
 
   useEffect(() => {
-    if (typeof latitude === "number" && typeof longitude === "number") {
+    if (typeof latitude === "number" && typeof longitude === "number" && latitude !== 0 && longitude !== 0) {
       fetchSunsets(latitude, longitude);
     }
   }, [latitude, longitude, fetchSunsets]);
@@ -120,7 +103,7 @@ export default function SunsetTimes() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <SunsetIcon className="h-6 w-6 text-indigo-500" />
-            30 Günlük Günbatımı Saatleri
+            16 Günlük Günbatımı Saatleri
           </h1>
           <div></div>
         </div>
@@ -160,7 +143,7 @@ export default function SunsetTimes() {
         ) : days.length > 0 ? (
           <Card className="border-border/20 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-lg">Önümüzdeki 30 Gün</CardTitle>
+              <CardTitle className="text-lg">Önümüzdeki 16 Gün</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
