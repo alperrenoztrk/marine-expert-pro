@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Ship, TrendingUp, Target, Waves, AlertTriangle, CheckCircle, Anchor, Droplets, Info, Plus, Trash2, Layers } from "lucide-react";
@@ -296,6 +296,7 @@ export const StabilityCalculations = () => {
     phi: 15, // Default heel angle [°]
   });
   const [results, setResults] = useState<Partial<StabilityResults>>({});
+  const [activeCalculation, setActiveCalculation] = useState("grainAccount");
   
   // === Shear & Bending (SF/BM) calculator state ===
   const [sb_length, setSbLength] = useState<string>("120");
@@ -1017,6 +1018,17 @@ export const StabilityCalculations = () => {
     toast.success(`Doğrultucu Moment: ${righting_moment.toFixed(1)} kN.m - GM: ${GM.toFixed(3)}m - Draft: ${draft.toFixed(3)}m`);
   };
 
+  const calculationMenuItems = [
+    { value: "grainAccount", label: "🌾 Tahıl Hesabı", icon: AlertTriangle },
+    { value: "shearBending", label: "🪚 Shear Force & Bending Moment", icon: Layers },
+    { value: "basic", label: "🎯 Temel Stabilite Formülleri", icon: TrendingUp },
+    { value: "gz", label: "🌊 GZ Eğrisi", icon: Waves },
+    { value: "fsc", label: "🔄 Free Surface Effect", icon: Droplets },
+    { value: "wind", label: "🌪️ Wind & Weather", icon: AlertTriangle },
+    { value: "imo", label: "📊 IMO Kriterleri", icon: CheckCircle },
+    { value: "damage", label: "🛡️ Damage Stability", icon: AlertTriangle },
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
@@ -1030,14 +1042,31 @@ export const StabilityCalculations = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Accordion type="single" collapsible className="w-full">
+          <Tabs value={activeCalculation} onValueChange={setActiveCalculation} className="w-full">
+            {/* Kart stilinde menü */}
+            <div className="w-full space-y-4 mb-6">
+              {calculationMenuItems.map((item) => {
+                const isActive = activeCalculation === item.value;
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setActiveCalculation(item.value)}
+                    className={
+                      "w-full text-left block rounded-2xl border p-5 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow-md " +
+                      (isActive ? "ring-2 ring-blue-500" : "border-gray-200 dark:border-gray-700")
+                    }
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="text-2xl">{item.label}</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
             
-            {/* 🌾 Tahıl Hesabı (Draft Survey) */}
-            <AccordionItem value="grainAccount">
-              <AccordionTrigger className="text-lg font-semibold">
-                🌾 Tahıl Hesabı (Draft Survey)
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            {/* 🎯 Temel Stabilite Formülleri */}
+            <TabsContent value="basic" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -1381,15 +1410,10 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </TabsContent>
 
             {/* 🌊 GZ Eğrisi ve Stabilite Kolu */}
-            <AccordionItem value="gz">
-              <AccordionTrigger className="text-lg font-semibold">
-                🌊 GZ Eğrisi ve Stabilite Kolu
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            <TabsContent value="gz" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -1447,15 +1471,10 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </TabsContent>
 
             {/* 🔄 Free Surface Effect */}
-            <AccordionItem value="fsc">
-              <AccordionTrigger className="text-lg font-semibold">
-                🔄 Free Surface Effect
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            <TabsContent value="fsc" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -1572,15 +1591,10 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </TabsContent>
 
             {/* 🌪️ Wind and Weather Stability */}
-            <AccordionItem value="wind">
-              <AccordionTrigger className="text-lg font-semibold">
-                🌪️ Wind and Weather Stability
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            <TabsContent value="wind" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -1686,15 +1700,10 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </TabsContent>
 
             {/* 📊 IMO Stability Criteria */}
-            <AccordionItem value="imo">
-              <AccordionTrigger className="text-lg font-semibold">
-                📊 IMO Stability Criteria
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            <TabsContent value="imo" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -1812,23 +1821,10 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </TabsContent>
 
-            {/* Grain stability tab removed */}
-
-            {/* 🌾 Tahıl Hesabı (Draft Survey) - Now moved to top */}
-
-            {/* 🪚 Shear Force & Bending Moment - Already converted above */}
-
-            {/* Advanced tab removed */}
-
-            {/* 🛡️ Damage Stability */}
-            <AccordionItem value="damage">
-              <AccordionTrigger className="text-lg font-semibold">
-                🛡️ Damage Stability
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            {/* 🌾 Tahıl Hesabı (Draft Survey) */}
+            <TabsContent value="grainAccount" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -1977,15 +1973,10 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </TabsContent>
 
             {/* 🪚 Shear Force & Bending Moment */}
-            <AccordionItem value="shearBending">
-              <AccordionTrigger className="text-lg font-semibold">
-                🪚 Shear Force & Bending Moment
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            <TabsContent value="shearBending" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <Label htmlFor="sb-length">Length L (m)</Label>
@@ -2162,17 +2153,10 @@ export const StabilityCalculations = () => {
                   <div>τ_shear ≈ {sbShearStressMPa.toFixed(3)} MPa</div>
                 </div>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-
-            {/* Advanced tab removed */}
+            </TabsContent>
 
             {/* 🛡️ Damage Stability */}
-            <AccordionItem value="damage">
-              <AccordionTrigger className="text-lg font-semibold">
-                🛡️ Damage Stability
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6 pt-4">
+            <TabsContent value="damage" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -2389,9 +2373,8 @@ export const StabilityCalculations = () => {
                   </CardContent>
                 </Card>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-          </Accordion>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
