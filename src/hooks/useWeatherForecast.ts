@@ -53,7 +53,7 @@ export function useWeatherForecast(lat?: number, lon?: number) {
       );
       forecastUrl.searchParams.set("wind_speed_unit", "kn");
       forecastUrl.searchParams.set("timezone", "auto");
-      forecastUrl.searchParams.set("forecast_days", "5");
+      forecastUrl.searchParams.set("forecast_days", "7");
 
       const res = await fetch(forecastUrl.toString());
       if (!res.ok) throw new Error(`Hava tahmini alınamadı (${res.status})`);
