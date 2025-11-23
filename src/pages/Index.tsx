@@ -107,7 +107,12 @@ const Index = () => {
   // --- Click navigation for left and right zones ---
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     const clickX = e.clientX;
+    const clickY = e.clientY;
     const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    // Only navigate if click is above 70% of screen height (above the red line)
+    if (clickY > screenHeight * 0.70) return;
     
     // Left 35% zone
     if (clickX < screenWidth * 0.35) {
