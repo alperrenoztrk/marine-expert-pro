@@ -1,3 +1,4 @@
+import React from 'react';
 import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -16,39 +17,40 @@ export default function SeamanshipTopicButtons() {
 
   return (
     <MobileLayout>
-      <div className="space-y-6 max-w-3xl mx-auto" data-no-translate>
-        <div className="flex items-center justify-between">
-          <Link to="/seamanship-menu">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Gemicilik
-            </Button>
-          </Link>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Konu Anlatımı
-          </div>
-        </div>
-
-        <div className="text-center space-y-3">
-          <div className="flex items-center justify-center gap-3">
-            <Anchor className="h-10 w-10 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-3xl font-bold">Gemicilik Konu Anlatımı</h1>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Ana başlıkları seçerek ilgili konuya geçin.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {topics.map((it) => (
-            <Link key={it.label} to={it.to}>
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2">
-                {it.icon}
-                {it.label}
+      <div className="min-h-screen bg-white">
+        <div className="space-y-6 max-w-5xl mx-auto px-6 py-10" data-no-translate>
+          <div className="flex items-center justify-between mb-8">
+            <Link to="/seamanship-menu">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Gemicilik
               </Button>
             </Link>
-          ))}
+          </div>
+
+          <div className="text-center space-y-3 mb-6">
+            <h1 className="text-5xl font-bold text-blue-600">Gemicilik Konu Anlatımı</h1>
+            <p className="text-sm text-gray-600">
+              Ana başlıkları seçerek ilgili konuya geçin.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {topics.map((it) => (
+              <Link key={it.label} to={it.to}>
+                <div className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg">
+                  <div className="flex items-center gap-6">
+                    <div className="flex-shrink-0">
+                      {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-600", strokeWidth: 1.5 })}
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-2xl font-bold text-blue-600">{it.label}</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </MobileLayout>

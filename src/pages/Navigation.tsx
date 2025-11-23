@@ -26,7 +26,7 @@ const calcItems: CalcItem[] = [
 
 const Navigation = () => {
   return (
-          <div className="min-h-screen bg-background text-foreground p-4">
+    <div className="min-h-screen bg-white p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Back Button */}
@@ -36,13 +36,10 @@ const Navigation = () => {
 
         {/* Header */}
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <Compass className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
-              <span data-translatable>Seyir Hesaplamaları</span>
-            </h1>
-          </div>
-          <p className="text-lg text-muted-foreground">
+          <h1 className="text-5xl font-bold text-blue-600">
+            <span data-translatable>Seyir Hesaplamaları</span>
+          </h1>
+          <p className="text-lg text-gray-600">
             Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
           </p>
           <div className="flex items-center justify-center gap-2">
@@ -62,25 +59,28 @@ const Navigation = () => {
         </div>
 
         {/* Per-calculation links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="space-y-6">
           {calcItems.map((it) => (
-            <Link key={it.id} to={`/navigation/calc/${it.id}`} className="group">
-              <Card className="transition hover:shadow-md">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Calculator className="h-4 w-4 text-blue-600" /> {it.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  {it.subtitle}
-                </CardContent>
-              </Card>
+            <Link key={it.id} to={`/navigation/calc/${it.id}`}>
+              <div className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg">
+                <div className="flex items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <Calculator className="w-12 h-12 text-blue-600" strokeWidth={1.5} />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-2xl font-bold text-blue-600">{it.title}</span>
+                    {it.subtitle && (
+                      <p className="text-sm text-gray-600 mt-1">{it.subtitle}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
 
         {/* Info */}
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-sm text-gray-600">
           Her hesaplama artık ayrı bir sayfada açılır
         </div>
       </div>
