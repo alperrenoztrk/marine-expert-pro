@@ -59,6 +59,10 @@ import StabilityPracticalPage from "./pages/StabilityPractical";
 import StabilityPracticalTankPage from "./pages/StabilityPracticalTank";
 import StabilityPracticalFWAPage from "./pages/StabilityPracticalFWA";
 import StabilityPracticalGHMPage from "./pages/StabilityPracticalGHM";
+import StabilityGrainCalculationPage from "./pages/StabilityGrainCalculation";
+import StabilityGZCurvePage from "./pages/StabilityGZCurve";
+import StabilityWindWeatherPage from "./pages/StabilityWindWeather";
+import StabilityIMOCriteriaPage from "./pages/StabilityIMOCriteria";
 
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
@@ -99,6 +103,10 @@ const AnimatedRoutes = () => {
         <Route path="/stability/topics" element={<PageTransition><StabilityTopicsPage /></PageTransition>} />
         <Route path="/stability/quiz" element={<PageTransition><StabilityQuizPage /></PageTransition>} />
         <Route path="/stability/shearing-bending" element={<PageTransition><StabilityShearingBendingPage /></PageTransition>} />
+        <Route path="/stability/grain-calculation" element={<PageTransition><StabilityGrainCalculationPage /></PageTransition>} />
+        <Route path="/stability/gz-curve" element={<PageTransition><StabilityGZCurvePage /></PageTransition>} />
+        <Route path="/stability/wind-weather" element={<PageTransition><StabilityWindWeatherPage /></PageTransition>} />
+        <Route path="/stability/imo-criteria" element={<PageTransition><StabilityIMOCriteriaPage /></PageTransition>} />
         <Route path="/safety-menu" element={<PageTransition><SafetyMenu /></PageTransition>} />
         <Route path="/navigation-menu" element={<PageTransition><NavigationMenu /></PageTransition>} />
         <Route path="/economics-menu" element={<PageTransition><EconomicsMenu /></PageTransition>} />
