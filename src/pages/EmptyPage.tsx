@@ -3,58 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 import TimeWidgets from "@/components/widgets/TimeWidgets";
 import WeatherInfoWidgets from "@/components/widgets/WeatherInfoWidgets";
 import LocationCelestialWidgets from "@/components/widgets/LocationCelestialWidgets";
 import NavigationWidgets from "@/components/widgets/NavigationWidgets";
-import { ChevronLeft, ChevronRight, Palette } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type WidgetTheme = "default" | "night" | "ocean" | "minimal";
-
-interface ThemeConfig {
-  name: string;
-  background: string;
-  cardBg: string;
-  textColor: string;
-  accentColor: string;
-  indicatorColor: string;
-}
-
-const themes: Record<WidgetTheme, ThemeConfig> = {
-  default: {
-    name: "🌤️ Varsayılan",
-    background: "bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400",
-    cardBg: "bg-white/80",
-    textColor: "text-gray-900",
-    accentColor: "text-blue-600",
-    indicatorColor: "bg-blue-600"
-  },
-  night: {
-    name: "🌙 Gece Modu",
-    background: "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-950",
-    cardBg: "bg-slate-800/80",
-    textColor: "text-gray-100",
-    accentColor: "text-cyan-400",
-    indicatorColor: "bg-cyan-500"
-  },
-  ocean: {
-    name: "🌊 Deniz Teması",
-    background: "bg-gradient-to-b from-teal-300 via-cyan-400 to-blue-500",
-    cardBg: "bg-teal-900/40",
-    textColor: "text-white",
-    accentColor: "text-teal-100",
-    indicatorColor: "bg-teal-200"
-  },
-  minimal: {
-    name: "⚪ Minimal",
-    background: "bg-gradient-to-b from-gray-100 via-gray-200 to-gray-300",
-    cardBg: "bg-white/90",
-    textColor: "text-gray-900",
-    accentColor: "text-gray-700",
-    indicatorColor: "bg-gray-800"
-  }
+// Ocean theme - sabit tema
+const oceanTheme = {
+  background: "bg-gradient-to-b from-teal-300 via-cyan-400 to-blue-500",
+  cardBg: "bg-teal-900/40",
+  textColor: "text-white",
+  accentColor: "text-teal-100",
+  indicatorColor: "bg-teal-200"
 };
 
 const EmptyPage = () => {
@@ -63,7 +25,6 @@ const EmptyPage = () => {
   const touchEndX = useRef<number | null>(null);
   const [activeTab, setActiveTab] = useState("time");
   const [showTutorial, setShowTutorial] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState<WidgetTheme>("default");
   const tabs = ["time", "weather", "location", "navigation"];
 
   const { loading, error, data, locationLabel } = useCurrentWeather({
@@ -87,25 +48,12 @@ const EmptyPage = () => {
     if (!hasSeenTutorial) {
       setShowTutorial(true);
     }
-    
-    // Kaydedilmiş temayı yükle
-    const savedTheme = localStorage.getItem("widgetPageTheme") as WidgetTheme;
-    if (savedTheme && themes[savedTheme]) {
-      setCurrentTheme(savedTheme);
-    }
   }, []);
 
   const handleCloseTutorial = () => {
     localStorage.setItem("widgetPageTutorialSeen", "true");
     setShowTutorial(false);
   };
-
-  const handleThemeChange = (theme: WidgetTheme) => {
-    setCurrentTheme(theme);
-    localStorage.setItem("widgetPageTheme", theme);
-  };
-
-  const theme = themes[currentTheme];
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -289,15 +237,15 @@ const EmptyPage = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen ${theme.background} flex items-center justify-center`}>
-        <div className={theme.textColor}>Yükleniyor...</div>
+      <div className={`min-h-screen ${oceanTheme.background} flex items-center justify-center`}>
+        <div className={oceanTheme.textColor}>Yükleniyor...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`min-h-screen ${theme.background} flex items-center justify-center p-6`}>
+      <div className={`min-h-screen ${oceanTheme.background} flex items-center justify-center p-6`}>
         <div className="text-red-600 text-center">Hata: {error}</div>
       </div>
     );
@@ -305,37 +253,20 @@ const EmptyPage = () => {
 
   return (
     <div 
-      className={`min-h-screen ${theme.background} px-6 py-8 touch-auto cursor-pointer relative transition-colors duration-500`}
+      className={`min-h-screen ${oceanTheme.background} px-6 py-8 touch-auto cursor-pointer relative transition-colors duration-500`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
-      {/* Tema Seçici */}
-      <div className="fixed top-4 right-4 z-30 pointer-events-auto">
-        <Select value={currentTheme} onValueChange={(value) => handleThemeChange(value as WidgetTheme)}>
-          <SelectTrigger className={`w-[200px] ${theme.cardBg} ${theme.textColor} border-white/30 backdrop-blur-sm`}>
-            <Palette className="w-4 h-4 mr-2" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className={`${theme.cardBg} ${theme.textColor} border-white/30 backdrop-blur-sm`}>
-            {Object.entries(themes).map(([key, value]) => (
-              <SelectItem key={key} value={key} className="hover:bg-white/20">
-                {value.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Sol ok göstergesi - Her zaman göster */}
       <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
         <div className="flex flex-col items-center gap-2 animate-pulse">
-          <ChevronLeft className={`w-8 h-8 ${theme.textColor} opacity-40 drop-shadow-lg`} />
+          <ChevronLeft className={`w-8 h-8 ${oceanTheme.textColor} opacity-40 drop-shadow-lg`} />
           <div className="flex gap-1">
-            <div className={`w-1.5 h-1.5 rounded-full ${theme.textColor} opacity-40`}></div>
-            <div className={`w-1.5 h-1.5 rounded-full ${theme.textColor} opacity-30`}></div>
-            <div className={`w-1.5 h-1.5 rounded-full ${theme.textColor} opacity-20`}></div>
+            <div className={`w-1.5 h-1.5 rounded-full ${oceanTheme.textColor} opacity-40`}></div>
+            <div className={`w-1.5 h-1.5 rounded-full ${oceanTheme.textColor} opacity-30`}></div>
+            <div className={`w-1.5 h-1.5 rounded-full ${oceanTheme.textColor} opacity-20`}></div>
           </div>
         </div>
       </div>
@@ -344,11 +275,11 @@ const EmptyPage = () => {
       {tabs.indexOf(activeTab) < tabs.length - 1 && (
         <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
           <div className="flex flex-col items-center gap-2 animate-pulse">
-            <ChevronRight className={`w-8 h-8 ${theme.textColor} opacity-40 drop-shadow-lg`} />
+            <ChevronRight className={`w-8 h-8 ${oceanTheme.textColor} opacity-40 drop-shadow-lg`} />
             <div className="flex gap-1">
-              <div className={`w-1.5 h-1.5 rounded-full ${theme.textColor} opacity-20`}></div>
-              <div className={`w-1.5 h-1.5 rounded-full ${theme.textColor} opacity-30`}></div>
-              <div className={`w-1.5 h-1.5 rounded-full ${theme.textColor} opacity-40`}></div>
+              <div className={`w-1.5 h-1.5 rounded-full ${oceanTheme.textColor} opacity-20`}></div>
+              <div className={`w-1.5 h-1.5 rounded-full ${oceanTheme.textColor} opacity-30`}></div>
+              <div className={`w-1.5 h-1.5 rounded-full ${oceanTheme.textColor} opacity-40`}></div>
             </div>
           </div>
         </div>
@@ -385,7 +316,7 @@ const EmptyPage = () => {
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsContent value="time" className="space-y-4 animate-fade-in mt-0">
-            <h2 className={`text-xl font-semibold ${theme.textColor} mb-4`}>⏰ Zaman Bilgileri</h2>
+            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>⏰ Zaman Bilgileri</h2>
             <TimeWidgets
               trtTime={trtTime}
               gmtTime={gmtTime}
@@ -397,7 +328,7 @@ const EmptyPage = () => {
           </TabsContent>
 
           <TabsContent value="weather" className="space-y-4 animate-fade-in mt-0">
-            <h2 className={`text-xl font-semibold ${theme.textColor} mb-4`}>🌤️ Hava Durumu</h2>
+            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🌤️ Hava Durumu</h2>
             <WeatherInfoWidgets
               temperature={data?.temperatureC}
               humidity={data?.humidityPct}
@@ -413,7 +344,7 @@ const EmptyPage = () => {
           </TabsContent>
 
           <TabsContent value="location" className="space-y-4 animate-fade-in mt-0">
-            <h2 className={`text-xl font-semibold ${theme.textColor} mb-4`}>🌍 Konum & Göksel Cisimler</h2>
+            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🌍 Konum & Göksel Cisimler</h2>
             <LocationCelestialWidgets
               locationLabel={locationLabel}
               latitude={data?.latitude}
@@ -424,21 +355,21 @@ const EmptyPage = () => {
           </TabsContent>
 
           <TabsContent value="navigation" className="space-y-4 animate-fade-in mt-0">
-            <h2 className={`text-xl font-semibold ${theme.textColor} mb-4`}>🧭 Navigasyon Araçları</h2>
+            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🧭 Navigasyon Araçları</h2>
             <NavigationWidgets />
           </TabsContent>
         </Tabs>
         
         {/* Sayfa göstergeleri - Sadece noktalar */}
         <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none z-20">
-          <div className={`${theme.cardBg} backdrop-blur-sm rounded-full px-4 py-2 border border-white/30 shadow-lg flex items-center gap-1.5`}>
+          <div className={`${oceanTheme.cardBg} backdrop-blur-sm rounded-full px-4 py-2 border border-white/30 shadow-lg flex items-center gap-1.5`}>
             {tabs.map((tab, idx) => (
               <div
                 key={tab}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   tabs.indexOf(activeTab) === idx
-                    ? `w-6 ${theme.indicatorColor}`
-                    : `w-1.5 ${theme.textColor} opacity-30`
+                    ? `w-6 ${oceanTheme.indicatorColor}`
+                    : `w-1.5 ${oceanTheme.textColor} opacity-30`
                 }`}
               />
             ))}
