@@ -1,6 +1,8 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 import TimeWidgets from "@/components/widgets/TimeWidgets";
 import WeatherInfoWidgets from "@/components/widgets/WeatherInfoWidgets";
@@ -13,6 +15,7 @@ const EmptyPage = () => {
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const [activeTab, setActiveTab] = useState("time");
+  const [showTutorial, setShowTutorial] = useState(false);
   const tabs = ["time", "weather", "location", "navigation"];
 
   const { loading, error, data, locationLabel } = useCurrentWeather({
@@ -29,6 +32,19 @@ const EmptyPage = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    // İlk açılışta öğreticiyi göster
+    const hasSeenTutorial = localStorage.getItem("widgetPageTutorialSeen");
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem("widgetPageTutorialSeen", "true");
+    setShowTutorial(false);
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -259,6 +275,34 @@ const EmptyPage = () => {
           </div>
         </div>
       )}
+
+      {/* Tutorial Dialog */}
+      <Dialog open={showTutorial} onOpenChange={setShowTutorial}>
+        <DialogContent className="sm:max-w-md bg-gradient-to-br from-blue-50 to-sky-100 border-blue-200">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-blue-900">🎯 Hoş Geldiniz!</DialogTitle>
+            <DialogDescription className="text-base text-blue-800 space-y-3 pt-2">
+              <p className="font-medium">Widget sayfasında 4 farklı kategori bulunmaktadır:</p>
+              <ul className="space-y-2 list-none">
+                <li>⏰ <strong>Zaman Bilgileri</strong></li>
+                <li>🌤️ <strong>Hava Durumu</strong></li>
+                <li>🌍 <strong>Konum & Göksel Cisimler</strong></li>
+                <li>🧭 <strong>Navigasyon Araçları</strong></li>
+              </ul>
+              <div className="pt-3 space-y-2 border-t border-blue-300">
+                <p className="font-semibold text-blue-900">📱 Gezinme Yöntemleri:</p>
+                <p>👆 <strong>Kaydırma:</strong> Sayfayı sağa/sola kaydırarak kategoriler arası geçiş yapın</p>
+                <p>👉 <strong>Tıklama:</strong> Ekranın sağ %35&apos;ine tıklayarak ileri, sol %35&apos;ine tıklayarak geri gidin</p>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button onClick={handleCloseTutorial} className="bg-blue-600 hover:bg-blue-700 text-white">
+              Anladım, Başlayalım! 🚀
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
