@@ -65,6 +65,34 @@ const EmptyPage = () => {
     touchEndX.current = null;
   };
 
+  // Click navigation for left and right zones
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    // Only navigate if click is above 70% of screen height
+    if (clickY > screenHeight * 0.70) return;
+    
+    const currentIndex = tabs.indexOf(activeTab);
+    
+    // Left 35% zone
+    if (clickX < screenWidth * 0.35) {
+      if (currentIndex === 0) {
+        navigate('/');
+      } else {
+        setActiveTab(tabs[currentIndex - 1]);
+      }
+    }
+    // Right 35% zone
+    else if (clickX > screenWidth * 0.65) {
+      if (currentIndex < tabs.length - 1) {
+        setActiveTab(tabs[currentIndex + 1]);
+      }
+    }
+  };
+
   // Utility functions
   const degreesToCompass = (degrees: number): string => {
     const directions = ["K", "KKD", "KD", "DKD", "D", "DGD", "GD", "GGD", "G", "GGB", "GB", "BGB", "B", "BKB", "KB", "KKB"];
@@ -200,11 +228,38 @@ const EmptyPage = () => {
 
   return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 px-6 py-8 touch-auto"
+      className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 px-6 py-8 touch-auto cursor-pointer relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onClick={handleClick}
     >
+      {/* Sol ok göstergesi - Her zaman göster */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+        <div className="flex flex-col items-center gap-2 animate-pulse">
+          <ChevronLeft className="w-8 h-8 text-foreground/40 drop-shadow-lg" />
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-foreground/40"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-foreground/30"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-foreground/20"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sağ ok göstergesi */}
+      {tabs.indexOf(activeTab) < tabs.length - 1 && (
+        <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+          <div className="flex flex-col items-center gap-2 animate-pulse">
+            <ChevronRight className="w-8 h-8 text-foreground/40 drop-shadow-lg" />
+            <div className="flex gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-foreground/20"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-foreground/30"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-foreground/40"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full grid grid-cols-4 mb-6 bg-gradient-to-r from-card/80 to-background/60 border border-border/30">
@@ -222,40 +277,19 @@ const EmptyPage = () => {
             </TabsTrigger>
           </TabsList>
           
-          {/* Swipe indicators - Sayfa altında göster */}
-          <div className="fixed bottom-4 left-0 right-0 flex justify-center gap-2 pointer-events-none">
-            <div className="bg-background/80 backdrop-blur-sm rounded-full px-4 py-2 border border-border/30 shadow-lg flex items-center gap-3">
-              {tabs.indexOf(activeTab) === 0 ? (
-                <div className="flex items-center gap-1 text-muted-foreground/60 text-xs">
-                  <ChevronLeft className="w-3 h-3" />
-                  <span>Ana Sayfa</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1 text-primary/80 text-xs animate-pulse">
-                  <ChevronLeft className="w-3 h-3" />
-                  <span>Önceki</span>
-                </div>
-              )}
-              
-              <div className="flex gap-1.5">
-                {tabs.map((tab, idx) => (
-                  <div
-                    key={tab}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      tabs.indexOf(activeTab) === idx
-                        ? 'w-6 bg-primary'
-                        : 'w-1.5 bg-muted-foreground/30'
-                    }`}
-                  />
-                ))}
-              </div>
-              
-              {tabs.indexOf(activeTab) < tabs.length - 1 && (
-                <div className="flex items-center gap-1 text-primary/80 text-xs animate-pulse">
-                  <span>Sonraki</span>
-                  <ChevronRight className="w-3 h-3" />
-                </div>
-              )}
+          {/* Sayfa göstergeleri - Sadece noktalar */}
+          <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none">
+            <div className="bg-background/80 backdrop-blur-sm rounded-full px-4 py-2 border border-border/30 shadow-lg flex items-center gap-1.5">
+              {tabs.map((tab, idx) => (
+                <div
+                  key={tab}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    tabs.indexOf(activeTab) === idx
+                      ? 'w-6 bg-primary'
+                      : 'w-1.5 bg-muted-foreground/30'
+                  }`}
+                />
+              ))}
             </div>
           </div>
 
