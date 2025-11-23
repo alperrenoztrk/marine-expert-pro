@@ -1,6 +1,5 @@
 import React from 'react';
 import { Droplets } from 'lucide-react';
-import BackButton from '@/components/BackButton';
 import { Button } from '@/components/ui/button';
 import { BallastCalculations } from '@/components/calculations/BallastCalculations';
 
@@ -10,10 +9,6 @@ const Ballast = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center gap-4 mb-8">
-          <BackButton />
-        </div>
-
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">

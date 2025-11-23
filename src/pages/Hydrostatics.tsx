@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Droplets, Calculator } from 'lucide-react';
-import BackButton from '@/components/BackButton';
 
 interface HydrostaticsData {
   // Draft Survey Parameters
@@ -117,7 +116,6 @@ export const HydrostaticsCalculations = () => {
             <p className="text-muted-foreground">Draft Survey ve Bonjean Curves hesaplamaları</p>
           </div>
         </div>
-        <BackButton className="text-sm" />
       </div>
 
       <Card>

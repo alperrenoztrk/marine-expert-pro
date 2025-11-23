@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Calculator } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import BackButton from "@/components/BackButton";
 import { EmissionCalculations } from "@/components/calculations/EmissionCalculations";
 import { DiagramViewer } from "@/components/ui/diagram-viewer";
 
@@ -11,11 +10,6 @@ const EmissionCalculationsPage = () => {
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         
-        {/* Back Button */}
-        <div className="flex items-center gap-3">
-          <BackButton />
-        </div>
-
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">

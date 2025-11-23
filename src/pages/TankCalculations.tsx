@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Droplets, Calculator } from 'lucide-react';
-import BackButton from '@/components/BackButton';
 
 interface TankData {
   // Sounding Table Parameters
@@ -70,7 +69,6 @@ export const TankCalculations = ({ initialTab }: { initialTab?: string } = {}) =
             <p className="text-muted-foreground">Sounding Table hesaplamaları</p>
           </div>
         </div>
-        <BackButton className="text-sm" />
       </div>
 
       <Card>

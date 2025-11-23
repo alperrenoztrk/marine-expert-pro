@@ -33,7 +33,6 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react";
-import BackButton from "@/components/BackButton";
 import { CloudCard } from "@/components/ui/cloud-card";
 import { cloudTypesByLevel } from "@/components/calculations/cloud-types";
 
@@ -413,10 +412,6 @@ const DetailedMeteorology = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex items-center gap-3">
-          <BackButton />
-        </div>
-
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Cloud className="h-12 w-12 text-blue-600 dark:text-blue-400" />

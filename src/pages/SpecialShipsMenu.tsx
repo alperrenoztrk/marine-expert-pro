@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Ship, Anchor, Shield } from "lucide-react";
-import BackButton from "@/components/BackButton";
 
 export default function SpecialShipsMenu(){
   const items = [
@@ -12,9 +11,6 @@ export default function SpecialShipsMenu(){
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <BackButton />
-      </div>
       <Card>
         <CardHeader><CardTitle>Özel Gemiler Hesaplamaları</CardTitle></CardHeader>
         <CardContent>

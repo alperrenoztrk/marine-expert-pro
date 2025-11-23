@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Waves } from "lucide-react";
-import BackButton from "@/components/BackButton";
 import { CalculationHero } from "@/components/ui/calculation-hero";
 import oceanWaves from "@/assets/maritime/ocean-waves.jpg";
 import { HydrodynamicsCalculations } from "@/components/calculations/HydrodynamicsCalculations";
@@ -11,11 +10,6 @@ const Hydrodynamics = () => {
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Back Button */}
-        <div className="flex items-center gap-3">
-          <BackButton />
-        </div>
-
         {/* Hero Section */}
         <CalculationHero
           title="Hidrodinamik Hesaplamalar"
