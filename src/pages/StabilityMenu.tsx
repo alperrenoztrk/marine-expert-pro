@@ -39,7 +39,7 @@ export default function StabilityMenu() {
 
         {/* Page title without icon */}
         <div className="mb-6 text-center">
-          <h1 className="text-5xl font-extrabold text-blue-600 dark:text-blue-400 drop-shadow-sm">Stabilite</h1>
+          <h1 className="text-5xl font-extrabold text-white drop-shadow-sm">Stabilite</h1>
         </div>
 
         {/* Menu items styled like the main menu */}
@@ -52,10 +52,10 @@ export default function StabilityMenu() {
             >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-700 drop-shadow-lg", strokeWidth: 1.5 })}
+                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-white drop-shadow-lg", strokeWidth: 1.5 })}
                 </div>
                 <div className="flex-1">
-                  <span className="text-2xl font-bold text-blue-700 drop-shadow-sm">{it.label}</span>
+                  <span className="text-2xl font-bold text-white drop-shadow-sm">{it.label}</span>
                 </div>
               </div>
             </Link>
