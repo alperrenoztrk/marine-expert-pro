@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { DollarSign, TrendingUp, Calculator, Ship, PieChart } from "lucide-react";
+import { ArrowLeft, DollarSign, TrendingUp, Calculator, Ship, PieChart } from "lucide-react";
 
 export default function EconomicsMenu() {
   const items = [
@@ -13,24 +13,43 @@ export default function EconomicsMenu() {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Mali Hesaplamalar</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {items.map((item) => (
-              <Link key={item.label} to={item.to}>
-                <Button variant="outline" className="w-full justify-start gap-2">
-                  {item.icon}
-                  {item.label}
-                </Button>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+    <div className="relative min-h-screen overflow-hidden bg-white">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
+        {/* Back button */}
+        <div className="mb-8">
+          <Link to="/calculations">
+            <Button variant="ghost" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Geri
+            </Button>
+          </Link>
+        </div>
+
+        {/* Page title */}
+        <div className="mb-6">
+          <h1 className="text-5xl font-bold text-blue-600 text-center">Mali Hesaplamalar</h1>
+        </div>
+
+        {/* Menu items */}
+        <div className="space-y-6">
+          {items.map((it) => (
+            <Link
+              key={it.label}
+              to={it.to}
+              className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg"
+            >
+              <div className="flex items-center gap-6">
+                <div className="flex-shrink-0">
+                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-600", strokeWidth: 1.5 })}
+                </div>
+                <div className="flex-1">
+                  <span className="text-2xl font-bold text-blue-600">{it.label}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

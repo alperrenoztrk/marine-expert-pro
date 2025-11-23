@@ -15,9 +15,7 @@ export default function SeamanshipMenu() {
   ];
 
   return (
-    <div key="seamanship-menu-v2" className="relative min-h-screen overflow-hidden" data-no-translate>
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-dark via-primary to-primary-light" />
-
+    <div key="seamanship-menu-v2" className="relative min-h-screen overflow-hidden bg-white" data-no-translate>
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
         <div className="mb-8">
           <Link to="/calculations">
@@ -29,20 +27,20 @@ export default function SeamanshipMenu() {
         </div>
 
         <div className="mb-6">
-          <h1 className="text-5xl font-bold text-blue-700 dark:text-blue-400 drop-shadow-sm text-center">Gemicilik</h1>
+          <h1 className="text-5xl font-bold text-blue-600 text-center">Gemicilik</h1>
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-white/30 p-6 bg-white/10 transition-all duration-300 shadow-lg backdrop-blur-sm">
+          <div className="rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg">
             <Link to="/seamanship/topics-menu" className="block">
               <div className="w-full flex items-center justify-between">
                 <div className="flex items-center gap-6">
                   <div className="flex-shrink-0">
-                    <BookOpen className="w-12 h-12 text-blue-700 drop-shadow-lg" strokeWidth={1.5} />
+                    <BookOpen className="w-12 h-12 text-blue-600" strokeWidth={1.5} />
                   </div>
                   <div className="flex-1 text-left">
-                    <span className="text-2xl font-bold text-blue-700 drop-shadow-sm">Konu Anlatımı</span>
-                    <div className="text-xs text-white/80">Gemicilik konularının tamamı bu bölümde</div>
+                    <span className="text-2xl font-bold text-blue-600">Konu Anlatımı</span>
+                    <div className="text-xs text-gray-500">Gemicilik konularının tamamı bu bölümde</div>
                   </div>
                 </div>
               </div>

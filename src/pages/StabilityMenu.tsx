@@ -21,10 +21,7 @@ export default function StabilityMenu() {
   const items = groups.flatMap((g)=> g.items);
 
   return (
-    <div key="stability-menu-v4" className="relative min-h-screen overflow-hidden" data-no-translate>
-      {/* Background to match the blue main menu */}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-primary-dark via-primary to-primary-light" />
-
+    <div key="stability-menu-v4" className="relative min-h-screen overflow-hidden bg-white" data-no-translate>
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
         {/* Back button */}
         <div className="mb-8">
@@ -38,7 +35,7 @@ export default function StabilityMenu() {
 
         {/* Page title without icon */}
         <div className="mb-6 text-center">
-          <h1 className="text-5xl font-extrabold text-white drop-shadow-sm">Stabilite</h1>
+          <h1 className="text-5xl font-extrabold text-blue-600">Stabilite</h1>
         </div>
 
         {/* Menu items styled like the main menu */}
@@ -47,14 +44,14 @@ export default function StabilityMenu() {
             <Link
               key={it.to}
               to={it.to}
-              className="block rounded-2xl border border-white/30 p-6 bg-white/10 hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
+              className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg"
             >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-white drop-shadow-lg", strokeWidth: 1.5 })}
+                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-600", strokeWidth: 1.5 })}
                 </div>
                 <div className="flex-1">
-                  <span className="text-2xl font-bold text-white drop-shadow-sm">{it.label}</span>
+                  <span className="text-2xl font-bold text-blue-600">{it.label}</span>
                 </div>
               </div>
             </Link>
