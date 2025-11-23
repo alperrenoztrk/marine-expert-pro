@@ -32,7 +32,7 @@ export default function NavigationMenu() {
 
         {/* Page title without icon */}
         <div className="mb-6">
-          <h1 className="text-5xl font-bold text-blue-700 dark:text-blue-400 drop-shadow-sm text-center">Seyir</h1>
+          <h1 className="text-5xl font-bold text-white drop-shadow-sm text-center">Seyir</h1>
         </div>
 
         {/* Menu items in card style */}
@@ -45,10 +45,10 @@ export default function NavigationMenu() {
             >
               <div className="flex items-center gap-6">
                 <div className="flex-shrink-0">
-                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-blue-700 drop-shadow-lg", strokeWidth: 1.5 })}
+                  {React.cloneElement(it.icon as React.ReactElement, { className: "w-12 h-12 text-white drop-shadow-lg", strokeWidth: 1.5 })}
                 </div>
                 <div className="flex-1">
-                  <span className="text-2xl font-bold text-blue-700 drop-shadow-sm">{it.label}</span>
+                  <span className="text-2xl font-bold text-white drop-shadow-sm">{it.label}</span>
                 </div>
               </div>
             </Link>
