@@ -262,38 +262,7 @@ const EmptyPage = () => {
 
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-6 bg-gradient-to-r from-card/80 to-background/60 border border-border/30">
-            <TabsTrigger value="time" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-              ⏰ Zaman
-            </TabsTrigger>
-            <TabsTrigger value="weather" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-              🌤️ Hava
-            </TabsTrigger>
-            <TabsTrigger value="location" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-              🌍 Konum
-            </TabsTrigger>
-            <TabsTrigger value="navigation" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
-              🧭 Pusula
-            </TabsTrigger>
-          </TabsList>
-          
-          {/* Sayfa göstergeleri - Sadece noktalar */}
-          <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none">
-            <div className="bg-background/80 backdrop-blur-sm rounded-full px-4 py-2 border border-border/30 shadow-lg flex items-center gap-1.5">
-              {tabs.map((tab, idx) => (
-                <div
-                  key={tab}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    tabs.indexOf(activeTab) === idx
-                      ? 'w-6 bg-primary'
-                      : 'w-1.5 bg-muted-foreground/30'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <TabsContent value="time" className="space-y-4 animate-fade-in">
+          <TabsContent value="time" className="space-y-4 animate-fade-in mt-0">
             <h2 className="text-xl font-semibold text-foreground mb-4">⏰ Zaman Bilgileri</h2>
             <TimeWidgets
               trtTime={trtTime}
@@ -305,7 +274,7 @@ const EmptyPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="weather" className="space-y-4 animate-fade-in">
+          <TabsContent value="weather" className="space-y-4 animate-fade-in mt-0">
             <h2 className="text-xl font-semibold text-foreground mb-4">🌤️ Hava Durumu</h2>
             <WeatherInfoWidgets
               temperature={data?.temperatureC}
@@ -321,7 +290,7 @@ const EmptyPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="location" className="space-y-4 animate-fade-in">
+          <TabsContent value="location" className="space-y-4 animate-fade-in mt-0">
             <h2 className="text-xl font-semibold text-foreground mb-4">🌍 Konum & Göksel Cisimler</h2>
             <LocationCelestialWidgets
               locationLabel={locationLabel}
@@ -332,11 +301,27 @@ const EmptyPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="navigation" className="space-y-4 animate-fade-in">
+          <TabsContent value="navigation" className="space-y-4 animate-fade-in mt-0">
             <h2 className="text-xl font-semibold text-foreground mb-4">🧭 Navigasyon Araçları</h2>
             <NavigationWidgets />
           </TabsContent>
         </Tabs>
+        
+        {/* Sayfa göstergeleri - Sadece noktalar */}
+        <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none z-20">
+          <div className="bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-white/50 shadow-lg flex items-center gap-1.5">
+            {tabs.map((tab, idx) => (
+              <div
+                key={tab}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  tabs.indexOf(activeTab) === idx
+                    ? 'w-6 bg-blue-600'
+                    : 'w-1.5 bg-gray-400'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
