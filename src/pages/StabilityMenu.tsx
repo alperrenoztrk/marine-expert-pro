@@ -10,7 +10,6 @@ export default function StabilityMenu() {
       items: [
         { to: "/stability/topics", icon: <FileText className="h-4 w-4" />, label: "Konu Anlatımı" },
         { to: "/stability/calculations", icon: <Calculator className="h-4 w-4" />, label: "Hesaplamalar" },
-        { to: "/stability/practical", icon: <Wrench className="h-4 w-4" />, label: "Pratik Hesaplamalar" },
         { to: "/stability/formulas", icon: <Sigma className="h-4 w-4" />, label: "Formüller" },
         { to: "/stability/rules", icon: <BookOpen className="h-4 w-4" />, label: "Kurallar" },
         { to: "/stability/assistant", icon: <Brain className="h-4 w-4" />, label: "Asistan" },
