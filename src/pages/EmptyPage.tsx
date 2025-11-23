@@ -6,11 +6,14 @@ import TimeWidgets from "@/components/widgets/TimeWidgets";
 import WeatherInfoWidgets from "@/components/widgets/WeatherInfoWidgets";
 import LocationCelestialWidgets from "@/components/widgets/LocationCelestialWidgets";
 import NavigationWidgets from "@/components/widgets/NavigationWidgets";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const EmptyPage = () => {
   const navigate = useNavigate();
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+  const [activeTab, setActiveTab] = useState("time");
+  const tabs = ["time", "weather", "location", "navigation"];
 
   const { loading, error, data, locationLabel } = useCurrentWeather({
     watchPosition: false,
@@ -40,9 +43,20 @@ const EmptyPage = () => {
     
     const distance = touchEndX.current - touchStartX.current;
     const isRightSwipe = distance > 100;
+    const isLeftSwipe = distance < -100;
     
-    if (isRightSwipe) {
+    if (isRightSwipe && activeTab === "time") {
       navigate('/');
+    } else if (isRightSwipe) {
+      const currentIndex = tabs.indexOf(activeTab);
+      if (currentIndex > 0) {
+        setActiveTab(tabs[currentIndex - 1]);
+      }
+    } else if (isLeftSwipe) {
+      const currentIndex = tabs.indexOf(activeTab);
+      if (currentIndex < tabs.length - 1) {
+        setActiveTab(tabs[currentIndex + 1]);
+      }
     }
     
     touchStartX.current = null;
@@ -168,15 +182,15 @@ const EmptyPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-blue-600">Yükleniyor...</div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center">
+        <div className="text-foreground">Yükleniyor...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center p-6">
         <div className="text-red-600 text-center">Hata: {error}</div>
       </div>
     );
@@ -184,30 +198,50 @@ const EmptyPage = () => {
 
   return (
     <div 
-      className="min-h-screen bg-white text-blue-600 px-6 py-8 touch-auto"
+      className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 px-6 py-8 touch-auto"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div className="container mx-auto max-w-[900px]">
-        <Tabs defaultValue="time" className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-6 bg-blue-50">
-            <TabsTrigger value="time" className="text-xs sm:text-sm">
-              ⏰ Zaman
-            </TabsTrigger>
-            <TabsTrigger value="weather" className="text-xs sm:text-sm">
-              🌤️ Hava
-            </TabsTrigger>
-            <TabsTrigger value="location" className="text-xs sm:text-sm">
-              🌍 Konum
-            </TabsTrigger>
-            <TabsTrigger value="navigation" className="text-xs sm:text-sm">
-              🧭 Pusula
-            </TabsTrigger>
-          </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="relative">
+            <TabsList className="w-full grid grid-cols-4 mb-6 bg-gradient-to-r from-card/80 to-background/60 border border-border/30">
+              <TabsTrigger value="time" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+                ⏰ Zaman
+              </TabsTrigger>
+              <TabsTrigger value="weather" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+                🌤️ Hava
+              </TabsTrigger>
+              <TabsTrigger value="location" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+                🌍 Konum
+              </TabsTrigger>
+              <TabsTrigger value="navigation" className="text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary/20 data-[state=active]:to-accent/20">
+                🧭 Pusula
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Swipe indicators */}
+            <div className="absolute top-2 left-2 text-muted-foreground/40 text-xs flex items-center gap-1">
+              {tabs.indexOf(activeTab) > 0 && (
+                <>
+                  <ChevronLeft className="w-3 h-3" />
+                  <span>Kaydır</span>
+                </>
+              )}
+            </div>
+            <div className="absolute top-2 right-2 text-muted-foreground/40 text-xs flex items-center gap-1">
+              {tabs.indexOf(activeTab) < tabs.length - 1 && (
+                <>
+                  <span>Kaydır</span>
+                  <ChevronRight className="w-3 h-3" />
+                </>
+              )}
+            </div>
+          </div>
 
-          <TabsContent value="time" className="space-y-4">
-            <h2 className="text-xl font-semibold text-blue-600 mb-4">⏰ Zaman Bilgileri</h2>
+          <TabsContent value="time" className="space-y-4 animate-fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-4">⏰ Zaman Bilgileri</h2>
             <TimeWidgets
               trtTime={trtTime}
               gmtTime={gmtTime}
@@ -218,8 +252,8 @@ const EmptyPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="weather" className="space-y-4">
-            <h2 className="text-xl font-semibold text-blue-600 mb-4">🌤️ Hava Durumu</h2>
+          <TabsContent value="weather" className="space-y-4 animate-fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-4">🌤️ Hava Durumu</h2>
             <WeatherInfoWidgets
               temperature={data?.temperatureC}
               humidity={data?.humidityPct}
@@ -234,8 +268,8 @@ const EmptyPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="location" className="space-y-4">
-            <h2 className="text-xl font-semibold text-blue-600 mb-4">🌍 Konum & Göksel Cisimler</h2>
+          <TabsContent value="location" className="space-y-4 animate-fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-4">🌍 Konum & Göksel Cisimler</h2>
             <LocationCelestialWidgets
               locationLabel={locationLabel}
               latitude={data?.latitude}
@@ -245,8 +279,8 @@ const EmptyPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="navigation" className="space-y-4">
-            <h2 className="text-xl font-semibold text-blue-600 mb-4">🧭 Navigasyon Araçları</h2>
+          <TabsContent value="navigation" className="space-y-4 animate-fade-in">
+            <h2 className="text-xl font-semibold text-foreground mb-4">🧭 Navigasyon Araçları</h2>
             <NavigationWidgets />
           </TabsContent>
         </Tabs>
