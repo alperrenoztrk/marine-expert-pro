@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Thermometer, Droplets, Gauge, Wind } from "lucide-react";
+import { useWeatherForecast } from "@/hooks/useWeatherForecast";
 
 interface WeatherInfoWidgetsProps {
   temperature?: number;
@@ -13,6 +15,8 @@ interface WeatherInfoWidgetsProps {
   weatherCode?: number;
   weatherEmoji: string;
   weatherDescription: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
@@ -26,8 +30,40 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
   weatherCode,
   weatherEmoji,
   weatherDescription,
+  latitude,
+  longitude,
 }) => {
   const [windFlipped, setWindFlipped] = useState(false);
+  const [forecastOpen, setForecastOpen] = useState(false);
+  
+  const { data: forecast, loading: forecastLoading } = useWeatherForecast(
+    latitude || 0,
+    longitude || 0
+  );
+
+  const wmoToEmoji = (code?: number): string => {
+    if (!code) return "🌡️";
+    if (code === 0) return "☀️";
+    if (code <= 3) return "⛅";
+    if (code <= 48) return "🌫️";
+    if (code <= 67) return "🌧️";
+    if (code <= 77) return "🌨️";
+    if (code <= 82) return "🌦️";
+    if (code <= 86) return "⛈️";
+    return "🌡️";
+  };
+
+  const wmoToTr = (code?: number): string => {
+    if (!code) return "Veri Yok";
+    if (code === 0) return "Açık";
+    if (code <= 3) return "Az Bulutlu";
+    if (code <= 48) return "Sisli";
+    if (code <= 67) return "Yağmurlu";
+    if (code <= 77) return "Karlı";
+    if (code <= 82) return "Sağanak Yağışlı";
+    if (code <= 86) return "Gök Gürültülü";
+    return "Veri Yok";
+  };
 
   useEffect(() => {
     const flipInterval = setInterval(() => {
@@ -37,17 +73,24 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
   }, []);
 
   return (
-    <div className="space-y-4">
-      {/* Weather Condition Card */}
-      <Card className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-primary/5 to-accent/5" />
-        <div className="relative text-center">
-          <div className="text-6xl mb-2">{weatherEmoji}</div>
-          <div className="text-lg font-semibold text-foreground">
-            {weatherDescription}
+    <>
+      <div className="space-y-4">
+        {/* Weather Condition Card - Clickable */}
+        <Card 
+          className="weather-widget-clickable group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+          onClick={() => setForecastOpen(true)}
+        >
+          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-primary/5 to-accent/5" />
+          <div className="relative text-center">
+            <div className="text-6xl mb-2">{weatherEmoji}</div>
+            <div className="text-lg font-semibold text-foreground">
+              {weatherDescription}
+            </div>
+            <div className="text-xs text-muted-foreground mt-2">
+              7 günlük tahmin için tıklayın
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
 
       {/* Weather Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
@@ -106,7 +149,66 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
           </div>
         </Card>
       </div>
-    </div>
+      </div>
+
+      {/* 7-Day Forecast Dialog */}
+      <Dialog open={forecastOpen} onOpenChange={setForecastOpen}>
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>7 Günlük Hava Durumu Tahmini</DialogTitle>
+          </DialogHeader>
+          
+          {forecastLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-muted-foreground">Yükleniyor...</div>
+            </div>
+          ) : forecast && forecast.daily ? (
+            <div className="space-y-3">
+              {forecast.daily.map((day, index) => (
+                <Card key={index} className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">{wmoToEmoji(day.weatherCode)}</div>
+                      <div>
+                        <div className="font-semibold">
+                          {new Date(day.date).toLocaleDateString('tr-TR', { 
+                            weekday: 'short', 
+                            day: 'numeric', 
+                            month: 'short' 
+                          })}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {wmoToTr(day.weatherCode)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold">
+                        {day.temperatureMax.toFixed(0)}° / {day.temperatureMin.toFixed(0)}°
+                      </div>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Wind className="w-3 h-3" />
+                        {day.windSpeedMax.toFixed(0)} kt
+                      </div>
+                      {day.precipitationSum > 0 && (
+                        <div className="text-xs text-blue-500 flex items-center gap-1">
+                          <Droplets className="w-3 h-3" />
+                          {day.precipitationSum.toFixed(0)} mm
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              Hava durumu tahmini yüklenemedi
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

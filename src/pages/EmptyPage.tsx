@@ -92,6 +92,17 @@ const EmptyPage = () => {
 
   // Click navigation for left and right zones
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    // Don't navigate if clicking on interactive elements
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') ||
+      target.closest('a') ||
+      target.closest('[role="button"]') ||
+      target.closest('.weather-widget-clickable')
+    ) {
+      return;
+    }
+
     const clickX = e.clientX;
     const clickY = e.clientY;
     const screenWidth = window.innerWidth;
@@ -340,6 +351,8 @@ const EmptyPage = () => {
               weatherCode={data?.weatherCode}
               weatherEmoji={weatherEmoji}
               weatherDescription={weatherDescription}
+              latitude={data?.latitude}
+              longitude={data?.longitude}
             />
           </TabsContent>
 
