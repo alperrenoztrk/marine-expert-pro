@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Anchor, Waves, Wind, Shield, AlertTriangle, Activity, Ship, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 export const StabilityCalculations = () => {
   const navigate = useNavigate();
@@ -18,25 +19,25 @@ export const StabilityCalculations = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {calculationMenuItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Button
-              key={item.id}
-              variant="outline"
-              className="h-auto py-6 px-6 justify-between gap-3 group hover:bg-primary hover:text-primary-foreground transition-all"
-              onClick={() => navigate(item.path)}
-            >
-              <div className="flex items-center gap-3">
-                <Icon className="h-6 w-6 shrink-0" />
-                <span className="text-sm font-medium text-left">{item.label}</span>
+      {calculationMenuItems.map((item) => {
+        const Icon = item.icon;
+        return (
+          <div
+            key={item.id}
+            onClick={() => navigate(item.path)}
+            className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg cursor-pointer"
+          >
+            <div className="flex items-center gap-6">
+              <div className="flex-shrink-0">
+                <Icon className="w-12 h-12 text-blue-600" strokeWidth={1.5} />
               </div>
-              <ArrowRight className="h-5 w-5 shrink-0 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-            </Button>
-          );
-        })}
-      </div>
+              <div className="flex-1">
+                <span className="text-2xl font-bold text-blue-600">{item.label}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
