@@ -124,7 +124,7 @@ const AnimatedRoutes = () => {
         <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
         <Route path="/navigation/topics" element={<PageTransition><NavigationTopicsPage /></PageTransition>} />
-        <Route path="/navigation/detailed-meteorology" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
+        <Route path="/navigation/meteorology" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
         <Route path="/navigation/colreg-presentation" element={<PageTransition><COLREGPresentation /></PageTransition>} />
         <Route path="/navigation/assistant" element={<PageTransition><NavigationAssistantPage /></PageTransition>} />
         <Route path="/navigation/quiz" element={<PageTransition><NavigationQuizPage /></PageTransition>} />
