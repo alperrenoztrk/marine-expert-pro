@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import { CloudCard } from "@/components/ui/cloud-card";
 import { cloudTypesByLevel } from "@/components/calculations/cloud-types";
+import { SatelliteImageryViewer } from "@/components/SatelliteImageryViewer";
 
 interface WeatherSystem {
   id: string;
@@ -472,14 +473,20 @@ const DetailedMeteorology = () => {
         </Alert>
 
         <Tabs defaultValue="systems" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="systems">Hava Sistemleri</TabsTrigger>
             <TabsTrigger value="clouds">Bulutlar</TabsTrigger>
             <TabsTrigger value="pressure">Basınç Sistemleri</TabsTrigger>
             <TabsTrigger value="storms">Fırtına Türleri</TabsTrigger>
+            <TabsTrigger value="satellite">Uydu Görüntüleri</TabsTrigger>
             <TabsTrigger value="forecasting">Tahmin Yöntemleri</TabsTrigger>
             <TabsTrigger value="safety">Güvenlik Rehberi</TabsTrigger>
           </TabsList>
+
+          {/* Satellite Tab */}
+          <TabsContent value="satellite" className="space-y-6">
+            <SatelliteImageryViewer />
+          </TabsContent>
 
           {/* Clouds Tab */}
           <TabsContent value="clouds" className="space-y-6">
