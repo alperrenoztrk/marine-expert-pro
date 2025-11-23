@@ -2,7 +2,6 @@ import { useState } from "react";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import BackButton from "@/components/BackButton";
 import { Moon, Sun, Globe, Settings2 as SettingsIcon, Palette, CreditCard } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -70,11 +69,6 @@ const Settings = () => {
       <div className="min-h-screen bg-background text-foreground p-4">
         <div className="max-w-4xl mx-auto space-y-6">
           
-          {/* Back Button */}
-          <div className="flex items-center gap-3">
-            <BackButton />
-          </div>
-
           {/* Header */}
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3">

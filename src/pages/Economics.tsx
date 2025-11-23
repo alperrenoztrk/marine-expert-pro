@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { EconomicCalculations } from "@/components/calculations/EconomicCalculations";
@@ -11,8 +10,7 @@ const Economics = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 cyberpunk:from-black cyberpunk:via-gray-900 cyberpunk:to-black">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <BackButton />
+        <div className="mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
               Ekonomik Hesaplamalar

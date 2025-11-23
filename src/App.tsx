@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DensityProvider } from "@/contexts/DensityContext";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/PageTransition";
+import { useNavigationHierarchy } from "@/hooks/useNavigationHierarchy";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
@@ -73,6 +74,9 @@ const queryClient = new QueryClient();
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  
+  // Apply hierarchical navigation
+  useNavigationHierarchy();
   
   return (
     <AnimatePresence mode="wait">

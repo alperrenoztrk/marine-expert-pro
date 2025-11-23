@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Waves, Gauge, Activity, Ship } from "lucide-react";
-import BackButton from "@/components/BackButton";
 
 export default function HydrodynamicsMenu(){
   const items = [
@@ -13,9 +12,6 @@ export default function HydrodynamicsMenu(){
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <BackButton />
-      </div>
       <Card>
         <CardHeader><CardTitle>Hidrodinamik Hesaplamaları</CardTitle></CardHeader>
         <CardContent>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Shield } from 'lucide-react';
-import BackButton from '@/components/BackButton';
 
 const categories = [
   { title: 'Stabilite', icon: Ship, link: '/stability' },
@@ -17,11 +16,6 @@ export default function CalculationsMenu() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-white">
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
-
-        {/* Back button */}
-        <div className="mb-8">
-          <BackButton to="/" replace />
-        </div>
 
         {/* Categories */}
         <div className="space-y-6">

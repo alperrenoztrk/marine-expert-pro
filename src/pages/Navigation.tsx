@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Compass, Calculator, Sigma, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
-import BackButton from "@/components/BackButton";
 
 type CalcItem = { id: string; title: string; subtitle?: string };
 
@@ -29,11 +28,6 @@ const Navigation = () => {
     <div className="min-h-screen bg-white p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Back Button */}
-        <div className="flex items-center gap-3">
-          <BackButton />
-        </div>
-
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-5xl font-bold text-blue-600">

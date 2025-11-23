@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import BackButton from "@/components/BackButton";
 import { Brain, ArrowLeft, MessageCircle, Send, Loader2, CheckCircle, AlertTriangle, Lightbulb, Trash2, Printer, Copy, Share2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -127,11 +126,6 @@ const Formulas = () => {
 
   return (
     <MobileLayout>
-      {/* Language Selector ve Geri Dönüş */}
-      <div className="flex justify-between items-center mb-4 px-1">
-        <BackButton className="text-sm" />
-      </div>
-
       {/* Header Section - Mobil optimize */}
       <div className="text-center mb-6 px-2">
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">

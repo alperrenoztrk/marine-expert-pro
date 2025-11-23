@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Cog, Fuel, Gauge, Thermometer, Droplets } from "lucide-react";
-import BackButton from "@/components/BackButton";
 
 export default function EngineMenu(){
   const items = [
@@ -13,9 +12,6 @@ export default function EngineMenu(){
   ];
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <BackButton />
-      </div>
       <Card>
         <CardHeader><CardTitle>Makine Hesaplamaları</CardTitle></CardHeader>
         <CardContent>
