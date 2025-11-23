@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Thermometer, Droplets, Gauge, Wind } from "lucide-react";
 import { useWeatherForecast, useHourlyForecast } from "@/hooks/useWeatherForecast";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 interface WeatherInfoWidgetsProps {
   temperature?: number;
@@ -268,12 +268,13 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
                       labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
                       formatter={(value: number) => [`${value.toFixed(1)}°C`, 'Sıcaklık']}
                     />
-                    <Line type="monotone" dataKey="temperature" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }} />
-                    <Brush 
-                      dataKey="time" 
-                      height={30} 
-                      stroke="hsl(var(--primary))"
-                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit' })}
+                    <Line 
+                      type="monotone" 
+                      dataKey="temperature" 
+                      stroke="#ef4444" 
+                      strokeWidth={2} 
+                      dot={{ r: 3 }} 
+                      isAnimationActive={false}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -300,12 +301,13 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
                       labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
                       formatter={(value: number) => [`${value.toFixed(0)}%`, 'Nem']}
                     />
-                    <Line type="monotone" dataKey="humidity" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} />
-                    <Brush 
-                      dataKey="time" 
-                      height={30} 
-                      stroke="hsl(var(--primary))"
-                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit' })}
+                    <Line 
+                      type="monotone" 
+                      dataKey="humidity" 
+                      stroke="#3b82f6" 
+                      strokeWidth={2} 
+                      dot={{ r: 3 }} 
+                      isAnimationActive={false}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -332,12 +334,13 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
                       labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
                       formatter={(value: number) => [`${value.toFixed(1)} kt`, 'Rüzgar']}
                     />
-                    <Line type="monotone" dataKey="windSpeed" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
-                    <Brush 
-                      dataKey="time" 
-                      height={30} 
-                      stroke="hsl(var(--primary))"
-                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit' })}
+                    <Line 
+                      type="monotone" 
+                      dataKey="windSpeed" 
+                      stroke="#10b981" 
+                      strokeWidth={2} 
+                      dot={{ r: 3 }} 
+                      isAnimationActive={false}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -364,12 +367,13 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
                       labelFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR')}
                       formatter={(value: number) => [`${value.toFixed(1)} mm`, 'Yağış']}
                     />
-                    <Line type="monotone" dataKey="precipitation" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />
-                    <Brush 
-                      dataKey="time" 
-                      height={30} 
-                      stroke="hsl(var(--primary))"
-                      tickFormatter={(time) => new Date(time).toLocaleTimeString('tr-TR', { hour: '2-digit' })}
+                    <Line 
+                      type="monotone" 
+                      dataKey="precipitation" 
+                      stroke="#8b5cf6" 
+                      strokeWidth={2} 
+                      dot={{ r: 3 }} 
+                      isAnimationActive={false}
                     />
                   </LineChart>
                 </ResponsiveContainer>
