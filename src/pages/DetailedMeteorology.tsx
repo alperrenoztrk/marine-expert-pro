@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import { MobileLayout } from "@/components/MobileLayout";
 import { 
   Cloud, 
   Wind, 
@@ -31,7 +33,8 @@ import {
   Shield,
   BookOpen,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  ArrowLeft
 } from "lucide-react";
 import { CloudCard } from "@/components/ui/cloud-card";
 import { cloudTypesByLevel } from "@/components/calculations/cloud-types";
@@ -408,21 +411,46 @@ const DetailedMeteorology = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <Cloud className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-              Meteoroloji Konu Anlatımı
-            </h1>
+    <MobileLayout>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
+        <div className="max-w-7xl mx-auto space-y-6">
+          
+          {/* Back Button */}
+          <div className="flex items-center gap-3">
+            <Link to="/navigation/topics">
+              <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-100 dark:hover:bg-blue-900">
+                <ArrowLeft className="h-4 w-4" />
+                Seyir Konu Anlatımı
+              </Button>
+            </Link>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            USCG ve SeaVision kaynaklarından derlenen kapsamlı meteoroloji rehberi
-          </p>
-        </div>
+
+          {/* Header */}
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-3">
+              <Cloud className="h-12 w-12 text-blue-600 dark:text-blue-400 animate-pulse" />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                Meteoroloji Konu Anlatımı
+              </h1>
+            </div>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              USCG ve SeaVision kaynaklarından derlenen kapsamlı meteoroloji rehberi
+            </p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <Badge className="bg-blue-600 text-white">
+                <BookOpen className="h-3 w-3 mr-1" />
+                Kapsamlı Rehber
+              </Badge>
+              <Badge variant="outline" className="border-blue-600 text-blue-600">
+                <Clock className="h-3 w-3 mr-1" />
+                ~45 dakika
+              </Badge>
+              <Badge variant="secondary">
+                <Shield className="h-3 w-3 mr-1" />
+                Güvenlik Odaklı
+              </Badge>
+            </div>
+          </div>
 
         {/* Data Sources Alert */}
         <Alert className="border-2 border-blue-300 dark:border-blue-600 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20">
@@ -1161,6 +1189,7 @@ const DetailedMeteorology = () => {
         </div>
       </div>
     </div>
+    </MobileLayout>
   );
 };
 
