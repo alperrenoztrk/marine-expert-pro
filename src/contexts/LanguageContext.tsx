@@ -82,7 +82,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     languageRef.current = currentLanguage;
   }, [currentLanguage]);
 
-  // Helper: translate text using Google Cloud Translation API
+  // Helper: translate text using Lovable AI translate edge function
   const translateText = async (text: string, targetLang: string): Promise<string> => {
     if (!text || text.trim() === '') return text;
     if (targetLang === 'tr') return text; // Already in Turkish
@@ -93,19 +93,26 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('translate', {
-        body: { 
-          text, 
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/translate`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          text,
           targetLanguage: targetLang,
-          sourceLanguage: 'tr'
-        }
+          sourceLanguage: 'tr',
+        }),
       });
 
-      if (error) {
-        console.error('Translation error:', error);
+      if (!response.ok) {
+        console.error('Translation HTTP error:', response.status, await response.text());
         return text;
       }
 
+      const data = await response.json();
       const translated = data?.translatedText || text;
       translationCache.set(cacheKey, translated);
       return translated;
