@@ -21,34 +21,85 @@ serve(async (req) => {
       );
     }
 
-    const apiKey = Deno.env.get('GOOGLE_CLOUD_TRANSLATION_KEY');
+    const apiKey = Deno.env.get('LOVABLE_API_KEY');
     if (!apiKey) {
-      console.error('GOOGLE_CLOUD_TRANSLATION_KEY is not set');
+      console.error('LOVABLE_API_KEY is not set');
       return new Response(
         JSON.stringify({ error: 'Translation service not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Google Cloud Translation API endpoint
-    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-    
-    const response = await fetch(url, {
+    // Language names for better translation
+    const languageNames: Record<string, string> = {
+      'en': 'English',
+      'tr': 'Turkish',
+      'es': 'Spanish',
+      'de': 'German',
+      'fr': 'French',
+      'it': 'Italian',
+      'pt': 'Portuguese',
+      'ru': 'Russian',
+      'ja': 'Japanese',
+      'ko': 'Korean',
+      'zh-CN': 'Chinese (Simplified)',
+      'ar': 'Arabic',
+      'hi': 'Hindi',
+      'nl': 'Dutch',
+      'sv': 'Swedish',
+      'no': 'Norwegian',
+      'da': 'Danish',
+      'fi': 'Finnish',
+      'pl': 'Polish',
+      'cs': 'Czech',
+      'hu': 'Hungarian',
+      'ro': 'Romanian',
+      'el': 'Greek',
+      'bg': 'Bulgarian',
+      'uk': 'Ukrainian'
+    };
+
+    const sourceLangName = languageNames[sourceLanguage] || sourceLanguage;
+    const targetLangName = languageNames[targetLanguage] || targetLanguage;
+
+    // Use Lovable AI Gateway for translation
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        q: text,
-        source: sourceLanguage,
-        target: targetLanguage,
-        format: 'text'
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { 
+            role: 'system', 
+            content: `You are a professional translator. Translate the given text from ${sourceLangName} to ${targetLangName}. Only return the translated text, nothing else. Preserve formatting, punctuation, and special characters. For maritime and technical terms, use appropriate professional terminology.` 
+          },
+          { role: 'user', content: text }
+        ],
+        temperature: 0.3, // Lower temperature for more consistent translations
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Google Translation API error:', response.status, errorText);
+      console.error('Lovable AI error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       return new Response(
         JSON.stringify({ error: 'Translation failed', details: errorText }),
         { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -56,7 +107,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const translatedText = data.data.translations[0].translatedText;
+    const translatedText = data.choices?.[0]?.message?.content?.trim() || text;
 
     console.log(`Translated: "${text}" -> "${translatedText}" (${sourceLanguage} -> ${targetLanguage})`);
 
