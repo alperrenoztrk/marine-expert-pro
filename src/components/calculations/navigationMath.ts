@@ -268,26 +268,64 @@ export function computeArpaCpaTcpa(input: ARPAInput): ARPAResult {
   return { cpaNm, tcpaMin, relativeSpeedKn, relativeBearingDeg };
 }
 
-// Great Circle calculations (matching formula exactly)
+// Great Circle calculations (comprehensive version with arrival bearing and vertex)
 export function calculateGreatCircle(lat1Deg: number, lon1Deg: number, lat2Deg: number, lon2Deg: number) {
-  const R = 3440.065; // nautical miles
+  // Input validation
+  if (!isFinite(lat1Deg) || !isFinite(lon1Deg) || !isFinite(lat2Deg) || !isFinite(lon2Deg)) {
+    throw new Error("Geçersiz koordinatlar");
+  }
+  if (Math.abs(lat1Deg) > 90 || Math.abs(lat2Deg) > 90) {
+    throw new Error("Enlem -90° ile +90° arasında olmalıdır");
+  }
+  if (Math.abs(lon1Deg) > 180 || Math.abs(lon2Deg) > 180) {
+    throw new Error("Boylam -180° ile +180° arasında olmalıdır");
+  }
+
+  const R = 3440.065; // nautical miles (Earth radius)
   const lat1Rad = toRadians(lat1Deg);
   const lat2Rad = toRadians(lat2Deg);
   const deltaLatRad = toRadians(lat2Deg - lat1Deg);
   const deltaLonRad = toRadians(lon2Deg - lon1Deg);
 
+  // Haversine formula for distance
   const a = Math.sin(deltaLatRad/2) * Math.sin(deltaLatRad/2) + 
             Math.cos(lat1Rad) * Math.cos(lat2Rad) * 
             Math.sin(deltaLonRad/2) * Math.sin(deltaLonRad/2);
   const c = 2 * Math.asin(Math.sqrt(a));
   const distance = R * c;
 
+  // Initial bearing (forward azimuth)
   const y = Math.sin(deltaLonRad) * Math.cos(lat2Rad);
   const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - 
             Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(deltaLonRad);
   const initialCourse = normalizeAngle(toDegrees(Math.atan2(y, x)));
 
-  return { distance, initialCourse };
+  // Final bearing (arrival/back azimuth)
+  const y2 = Math.sin(-deltaLonRad) * Math.cos(lat1Rad);
+  const x2 = Math.cos(lat2Rad) * Math.sin(lat1Rad) - 
+             Math.sin(lat2Rad) * Math.cos(lat1Rad) * Math.cos(-deltaLonRad);
+  const finalCourse = normalizeAngle(toDegrees(Math.atan2(y2, x2)));
+
+  // Vertex (maximum latitude point on great circle)
+  let vertexLat = 0;
+  let hasVertex = false;
+  
+  // Vertex only exists if initial course is not due N/S (between 0-180°)
+  if (initialCourse > 0 && initialCourse < 180) {
+    const sinVertexLat = Math.cos(lat1Rad) * Math.sin(toRadians(initialCourse));
+    if (Math.abs(sinVertexLat) <= 1) {
+      vertexLat = toDegrees(Math.asin(sinVertexLat));
+      hasVertex = true;
+    }
+  }
+
+  return { 
+    distance, 
+    initialCourse, 
+    finalCourse,
+    vertexLat: hasVertex ? vertexLat : null,
+    distanceDeg: toDegrees(c) // Distance in degrees for reference
+  };
 }
 
 // Rhumb Line calculations (matching formula exactly)
