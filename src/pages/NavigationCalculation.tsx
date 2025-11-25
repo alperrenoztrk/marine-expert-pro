@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,6 +151,134 @@ export default function NavigationCalculationPage() {
 
   const [emergencyInputs, setEmergencyInputs] = useState({ type: "square" as "square" | "sector", trackSpacing: "", radius: "", distance: "", rescueSpeed: "", driftSpeed: "" });
   const [emergencyResults, setEmergencyResults] = useState<any>(null);
+
+  // Load saved values from localStorage on mount
+  useEffect(() => {
+    const loadSavedInputs = () => {
+      try {
+        const saved = localStorage.getItem(`nav-calc-${id}`);
+        if (saved) {
+          const data = JSON.parse(saved);
+          
+          // Restore inputs based on calculation type
+          switch (id) {
+            case "gc":
+              if (data.gcInputs) setGcInputs(data.gcInputs);
+              break;
+            case "rhumb":
+              if (data.rhumbInputs) setRhumbInputs(data.rhumbInputs);
+              break;
+            case "plane":
+              if (data.planeInputs) setPlaneInputs(data.planeInputs);
+              break;
+            case "eta":
+              if (data.etaInputs) setEtaInputs(data.etaInputs);
+              break;
+            case "current":
+              if (data.currentInputs) setCurrentInputs(data.currentInputs);
+              break;
+            case "compass":
+              if (data.compassInputs) setCompassInputs(data.compassInputs);
+              break;
+            case "cpa":
+              if (data.cpaInputs) setCpaInputs(data.cpaInputs);
+              break;
+            case "sight":
+              if (data.sightInputs) setSightInputs(data.sightInputs);
+              break;
+            case "bearings":
+              if (data.bearingInputs) setBearingInputs(data.bearingInputs);
+              break;
+            case "distance":
+              if (data.distanceInputs) setDistanceInputs(data.distanceInputs);
+              break;
+            case "tides":
+              if (data.tideInputs) setTideInputs(data.tideInputs);
+              if (data.tideTableInputs) setTideTableInputs(data.tideTableInputs);
+              break;
+            case "turning":
+              if (data.turningInputs) setTurningInputs(data.turningInputs);
+              break;
+            case "weather":
+              if (data.weatherInputs) setWeatherInputs(data.weatherInputs);
+              break;
+            case "celestial":
+              if (data.celestialInputs) setCelestialInputs(data.celestialInputs);
+              break;
+            case "emergency":
+              if (data.emergencyInputs) setEmergencyInputs(data.emergencyInputs);
+              break;
+          }
+        }
+      } catch (error) {
+        console.error("Error loading saved inputs:", error);
+      }
+    };
+    
+    loadSavedInputs();
+  }, [id]);
+
+  // Save inputs to localStorage whenever they change
+  useEffect(() => {
+    try {
+      const dataToSave: any = {};
+      
+      switch (id) {
+        case "gc":
+          dataToSave.gcInputs = gcInputs;
+          break;
+        case "rhumb":
+          dataToSave.rhumbInputs = rhumbInputs;
+          break;
+        case "plane":
+          dataToSave.planeInputs = planeInputs;
+          break;
+        case "eta":
+          dataToSave.etaInputs = etaInputs;
+          break;
+        case "current":
+          dataToSave.currentInputs = currentInputs;
+          break;
+        case "compass":
+          dataToSave.compassInputs = compassInputs;
+          break;
+        case "cpa":
+          dataToSave.cpaInputs = cpaInputs;
+          break;
+        case "sight":
+          dataToSave.sightInputs = sightInputs;
+          break;
+        case "bearings":
+          dataToSave.bearingInputs = bearingInputs;
+          break;
+        case "distance":
+          dataToSave.distanceInputs = distanceInputs;
+          break;
+        case "tides":
+          dataToSave.tideInputs = tideInputs;
+          dataToSave.tideTableInputs = tideTableInputs;
+          break;
+        case "turning":
+          dataToSave.turningInputs = turningInputs;
+          break;
+        case "weather":
+          dataToSave.weatherInputs = weatherInputs;
+          break;
+        case "celestial":
+          dataToSave.celestialInputs = celestialInputs;
+          break;
+        case "emergency":
+          dataToSave.emergencyInputs = emergencyInputs;
+          break;
+      }
+      
+      localStorage.setItem(`nav-calc-${id}`, JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error("Error saving inputs:", error);
+    }
+  }, [id, gcInputs, rhumbInputs, planeInputs, etaInputs, currentInputs, compassInputs, 
+      cpaInputs, sightInputs, bearingInputs, distanceInputs, tideInputs, tideTableInputs,
+      turningInputs, weatherInputs, celestialInputs, emergencyInputs]);
 
   const onCalculate = () => {
     try {

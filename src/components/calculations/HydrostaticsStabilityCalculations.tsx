@@ -148,6 +148,70 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   const [densityCorrectionInputs, setDensityCorrectionInputs] = useState({
     displacement: "", actualDensity: "1.025"
   });
+
+  // Load saved values from localStorage
+  useEffect(() => {
+    try {
+      const savedGeometry = localStorage.getItem('stability-geometry');
+      const savedKg = localStorage.getItem('stability-kg');
+      const savedGMInputs = localStorage.getItem('stability-gm-inputs');
+      const savedHeelInputs = localStorage.getItem('stability-heel-inputs');
+      const savedTrimInputs = localStorage.getItem('stability-trim-inputs');
+      
+      if (savedGeometry) setGeometry(JSON.parse(savedGeometry));
+      if (savedKg) setKg(JSON.parse(savedKg));
+      if (savedGMInputs) setGmInputs(JSON.parse(savedGMInputs));
+      if (savedHeelInputs) setHeelAngleInputs(JSON.parse(savedHeelInputs));
+      if (savedTrimInputs) setTrimCorrection1Inputs(JSON.parse(savedTrimInputs));
+    } catch (error) {
+      console.error("Error loading saved stability inputs:", error);
+    }
+  }, []);
+
+  // Save geometry to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('stability-geometry', JSON.stringify(geometry));
+    } catch (error) {
+      console.error("Error saving geometry:", error);
+    }
+  }, [geometry]);
+
+  // Save KG to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('stability-kg', JSON.stringify(kg));
+    } catch (error) {
+      console.error("Error saving kg:", error);
+    }
+  }, [kg]);
+
+  // Save GM inputs to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('stability-gm-inputs', JSON.stringify(gmInputs));
+    } catch (error) {
+      console.error("Error saving GM inputs:", error);
+    }
+  }, [gmInputs]);
+
+  // Save heel angle inputs to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('stability-heel-inputs', JSON.stringify(heelAngleInputs));
+    } catch (error) {
+      console.error("Error saving heel inputs:", error);
+    }
+  }, [heelAngleInputs]);
+
+  // Save trim correction inputs to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('stability-trim-inputs', JSON.stringify(trimCorrection1Inputs));
+    } catch (error) {
+      console.error("Error saving trim inputs:", error);
+    }
+  }, [trimCorrection1Inputs]);
   const [densityCorrectionResult, setDensityCorrectionResult] = useState<number | null>(null);
 
   // 5. Duba ve Yoğunluk Hesapları
