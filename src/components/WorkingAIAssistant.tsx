@@ -306,11 +306,11 @@ Hangi konuda yardım istiyorsunuz?`
       // Save to conversation history
       setConversationHistory(prev => [...prev, { question, answer: enhancedResponse }]);
       
-      toast.success("Maritime AI asistanı yanıt verdi! 🚢");
+      toast.success("Yanıt hazırlandı");
       
     } catch (error) {
-      console.error('AI Error:', error);
-      toast.error("AI asistan hatası oluştu");
+      console.error('Response Error:', error);
+      toast.error("Yanıt alınamadı");
     } finally {
       setIsLoading(false);
     }
@@ -337,10 +337,10 @@ Hangi konuda yardım istiyorsunuz?`
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-green-800">
             <Brain className="w-5 h-5" />
-            Maritime AI Asistanı - Aktif! ✅
+            Maritime Uzman Sistem
           </CardTitle>
           <CardDescription className="text-green-700">
-            Denizcilik mühendisliği konularında uzman AI asistanı (Local Knowledge Base)
+            Denizcilik mühendisliği konularında kapsamlı uzman destek
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -365,17 +365,17 @@ Hangi konuda yardım istiyorsunuz?`
               disabled={isLoading || !question.trim()}
               className="w-full gap-2 bg-green-600 hover:bg-green-700"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  AI Asistanı Düşünüyor...
-                </>
-              ) : (
-                <>
-                  <Brain className="w-4 h-4" />
-                  Maritime AI'ya Sor
-                </>
-              )}
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Hesaplanıyor...
+              </>
+            ) : (
+              <>
+                <Brain className="w-4 h-4" />
+                Danış
+              </>
+            )}
             </Button>
           </div>
 
@@ -384,7 +384,7 @@ Hangi konuda yardım istiyorsunuz?`
               <CardContent className="pt-4">
                 <h4 className="font-semibold text-info-muted-foreground mb-3 flex items-center gap-2">
                   <MessageCircle className="w-4 h-4" />
-                  Maritime AI Asistanı Yanıtı:
+                  Uzman Yanıtı:
                 </h4>
                 <div className="text-sm text-info-muted-foreground whitespace-pre-wrap leading-relaxed">
                   {aiResponse}
@@ -434,8 +434,8 @@ Hangi konuda yardım istiyorsunuz?`
           )}
 
           <div className="text-xs text-green-700 bg-green-100 border border-green-200 rounded p-3">
-            <strong>✅ Maritime AI Asistanı Aktif:</strong> Bu sistem yerel knowledge base kullanarak çalışır ve anında yanıt verir. 
-            Tüm denizcilik mühendisliği konularında uzman bilgi sağlar.
+            <strong>✅ Uzman Sistem Hazır:</strong> Kapsamlı bilgi bankası ile çalışır ve anında yanıt verir. 
+            Tüm denizcilik mühendisliği konularında profesyonel destek sağlar.
           </div>
         </CardContent>
       </Card>

@@ -89,11 +89,11 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
       }
 
       setResponse(answer);
-      toast.success("Test yanıtı oluşturuldu!");
+      toast.success("Yanıt hazırlandı");
       
     } catch (error) {
-      console.error('Test error:', error);
-      toast.error("Test sırasında hata oluştu");
+      console.error('Response error:', error);
+      toast.error("Yanıt alınamadı");
     } finally {
       setIsLoading(false);
     }
@@ -104,10 +104,10 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="w-5 h-5" />
-          Gemini AI Test Modu
+          Denizcilik Uzman Sistemi
         </CardTitle>
         <CardDescription>
-          Maritime AI asistanını test edin (simülasyon modu)
+          Maritime mühendisliği hesaplama ve danışmanlık hizmeti
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -133,12 +133,12 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                AI Düşünüyor...
+                Hesaplanıyor...
               </>
             ) : (
               <>
                 <Brain className="w-4 h-4" />
-                Test AI Yanıtı
+                Danış
               </>
             )}
           </Button>
@@ -149,7 +149,7 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
             <CardContent className="pt-4">
               <h4 className="font-semibold text-info-muted-foreground mb-2 flex items-center gap-2">
                 <Brain className="w-4 h-4" />
-                AI Test Yanıtı:
+                Uzman Yanıtı:
               </h4>
               <div className="text-sm text-info-muted-foreground whitespace-pre-wrap leading-relaxed">
                 {response}
@@ -158,15 +158,6 @@ Denizcilik hesaplamaları hakkında soru sorabilirsiniz:
           </Card>
         )}
 
-        <div className="text-xs text-muted-foreground bg-yellow-50 border border-yellow-200 rounded p-3">
-          <strong>⚠️ Test Modu:</strong> Bu simülasyon modudur. Gerçek Gemini API için:
-          <br />
-          1. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-info underline">Google AI Studio</a>'dan API anahtarı alın
-          <br />
-          2. Lovable Environment Variables'a GEMINI_API_KEY ekleyin
-          <br />
-          3. Supabase Edge Function deploy edin
-        </div>
       </CardContent>
     </Card>
   );

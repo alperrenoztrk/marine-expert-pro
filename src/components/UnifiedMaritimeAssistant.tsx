@@ -384,7 +384,7 @@ Detaylı bir soru sorun, size hesaplama ve açıklamalar sunayım!`;
           <div className="p-4 bg-card border border-primary/20 rounded-lg shadow-sm">
             <h4 className="font-semibold text-card-foreground mb-3 flex items-center gap-2">
               <Calculator className="w-5 h-5" />
-              Yanıt:
+              Uzman Değerlendirme:
             </h4>
             <div className="text-sm text-card-foreground whitespace-pre-wrap leading-relaxed space-y-2">
               {response.split('\n').map((line, index) => {
