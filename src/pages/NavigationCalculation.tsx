@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CoordinateInput } from "@/components/ui/coordinate-input";
 import { ArrowLeft, Calculator } from "lucide-react";
 import {
   calculateGreatCircle,
@@ -36,6 +37,7 @@ import {
   type CelestialInput,
   type EmergencyInput,
 } from "@/components/calculations/navigationMath";
+import { emptyDMS, dmsToDecimal, formatDecimalAsDMS, type DMSCoordinate } from "@/utils/coordinateUtils";
 
 type CalcId =
   | "gc"
@@ -80,13 +82,28 @@ export default function NavigationCalculationPage() {
   const title = useMemo(() => CALC_TITLES[id] ?? "Hesaplama", [id]);
 
   // Shared state buckets (each section maintains its own minimal state)
-  const [gcInputs, setGcInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
+  const [gcInputs, setGcInputs] = useState({ 
+    lat1: emptyDMS(true), 
+    lon1: emptyDMS(false), 
+    lat2: emptyDMS(true), 
+    lon2: emptyDMS(false) 
+  });
   const [gcResults, setGcResults] = useState<any>(null);
 
-  const [rhumbInputs, setRhumbInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
+  const [rhumbInputs, setRhumbInputs] = useState({ 
+    lat1: emptyDMS(true), 
+    lon1: emptyDMS(false), 
+    lat2: emptyDMS(true), 
+    lon2: emptyDMS(false) 
+  });
   const [rhumbResults, setRhumbResults] = useState<any>(null);
 
-  const [planeInputs, setPlaneInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
+  const [planeInputs, setPlaneInputs] = useState({ 
+    lat1: emptyDMS(true), 
+    lon1: emptyDMS(false), 
+    lat2: emptyDMS(true), 
+    lon2: emptyDMS(false) 
+  });
   const [planeResults, setPlaneResults] = useState<any>(null);
 
   const [etaInputs, setEtaInputs] = useState({ distance: "", speed: "" });
@@ -101,7 +118,11 @@ export default function NavigationCalculationPage() {
   const [cpaInputs, setCpaInputs] = useState({ bearing: "", distance: "", targetCourse: "", targetSpeed: "", ownCourse: "", ownSpeed: "" });
   const [cpaResults, setCpaResults] = useState<any>(null);
 
-  const [sightInputs, setSightInputs] = useState({ lat: "", dec: "", lha: "" });
+  const [sightInputs, setSightInputs] = useState({ 
+    lat: emptyDMS(true), 
+    dec: emptyDMS(true), 
+    lha: "" 
+  });
   const [sightResults, setSightResults] = useState<any>(null);
 
   const [bearingInputs, setBearingInputs] = useState({ angle: "", run: "", type: "doubling" as "doubling" | "four" | "seven" });
@@ -121,7 +142,11 @@ export default function NavigationCalculationPage() {
   const [weatherInputs, setWeatherInputs] = useState({ beaufort: "", windSpeed: "", windArea: "", shipSpeed: "" });
   const [weatherResults, setWeatherResults] = useState<any>(null);
 
-  const [celestialInputs, setCelestialInputs] = useState({ lat: "", dec: "", type: "meridian" as "meridian" | "amplitude" | "sunrise" });
+  const [celestialInputs, setCelestialInputs] = useState({ 
+    lat: emptyDMS(true), 
+    dec: emptyDMS(true), 
+    type: "meridian" as "meridian" | "amplitude" | "sunrise" 
+  });
   const [celestialResults, setCelestialResults] = useState<any>(null);
 
   const [emergencyInputs, setEmergencyInputs] = useState({ type: "square" as "square" | "sector", trackSpacing: "", radius: "", distance: "", rescueSpeed: "", driftSpeed: "" });
@@ -132,30 +157,30 @@ export default function NavigationCalculationPage() {
       switch (id) {
         case "gc": {
           const result = calculateGreatCircle(
-            parseFloat(gcInputs.lat1),
-            parseFloat(gcInputs.lon1),
-            parseFloat(gcInputs.lat2),
-            parseFloat(gcInputs.lon2)
+            dmsToDecimal(gcInputs.lat1),
+            dmsToDecimal(gcInputs.lon1),
+            dmsToDecimal(gcInputs.lat2),
+            dmsToDecimal(gcInputs.lon2)
           );
           setGcResults(result);
           break;
         }
         case "rhumb": {
           const result = calculateRhumbLine(
-            parseFloat(rhumbInputs.lat1),
-            parseFloat(rhumbInputs.lon1),
-            parseFloat(rhumbInputs.lat2),
-            parseFloat(rhumbInputs.lon2)
+            dmsToDecimal(rhumbInputs.lat1),
+            dmsToDecimal(rhumbInputs.lon1),
+            dmsToDecimal(rhumbInputs.lat2),
+            dmsToDecimal(rhumbInputs.lon2)
           );
           setRhumbResults(result);
           break;
         }
         case "plane": {
           const input: PlaneSailingInput = {
-            lat1Deg: parseFloat(planeInputs.lat1),
-            lon1Deg: parseFloat(planeInputs.lon1),
-            lat2Deg: parseFloat(planeInputs.lat2),
-            lon2Deg: parseFloat(planeInputs.lon2),
+            lat1Deg: dmsToDecimal(planeInputs.lat1),
+            lon1Deg: dmsToDecimal(planeInputs.lon1),
+            lat2Deg: dmsToDecimal(planeInputs.lat2),
+            lon2Deg: dmsToDecimal(planeInputs.lon2),
           };
           const result = calculatePlaneSailing(input);
           setPlaneResults(result);
@@ -205,8 +230,8 @@ export default function NavigationCalculationPage() {
         }
         case "sight": {
           const input: SightReductionInput = {
-            latDeg: parseFloat(sightInputs.lat),
-            decDeg: parseFloat(sightInputs.dec),
+            latDeg: dmsToDecimal(sightInputs.lat),
+            decDeg: dmsToDecimal(sightInputs.dec),
             lhaDeg: parseFloat(sightInputs.lha),
           };
           const result = calculateSightReduction(input);
@@ -275,8 +300,8 @@ export default function NavigationCalculationPage() {
         }
         case "celestial": {
           const input: CelestialInput = {
-            latDeg: parseFloat(celestialInputs.lat),
-            decDeg: parseFloat(celestialInputs.dec),
+            latDeg: dmsToDecimal(celestialInputs.lat),
+            decDeg: dmsToDecimal(celestialInputs.dec),
             type: celestialInputs.type,
           };
           const result = calculateCelestial(input);
@@ -347,65 +372,101 @@ export default function NavigationCalculationPage() {
     switch (id) {
       case "gc":
         return (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="gc-lat1">Başlangıç Enlemi (φ₁)</Label>
-              <Input id="gc-lat1" type="number" placeholder="40.7589" value={gcInputs.lat1} onChange={(e) => setGcInputs({ ...gcInputs, lat1: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="gc-lon1">Başlangıç Boylamı (λ₁)</Label>
-              <Input id="gc-lon1" type="number" placeholder="29.9511" value={gcInputs.lon1} onChange={(e) => setGcInputs({ ...gcInputs, lon1: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="gc-lat2">Hedef Enlemi (φ₂)</Label>
-              <Input id="gc-lat2" type="number" placeholder="41.0082" value={gcInputs.lat2} onChange={(e) => setGcInputs({ ...gcInputs, lat2: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="gc-lon2">Hedef Boylamı (λ₂)</Label>
-              <Input id="gc-lon2" type="number" placeholder="28.9784" value={gcInputs.lon2} onChange={(e) => setGcInputs({ ...gcInputs, lon2: e.target.value })} />
-            </div>
+          <div className="space-y-4">
+            <CoordinateInput
+              id="gc-lat1"
+              label="Başlangıç Enlemi (φ₁)"
+              value={gcInputs.lat1}
+              onChange={(val) => setGcInputs({ ...gcInputs, lat1: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="gc-lon1"
+              label="Başlangıç Boylamı (λ₁)"
+              value={gcInputs.lon1}
+              onChange={(val) => setGcInputs({ ...gcInputs, lon1: val })}
+              isLatitude={false}
+            />
+            <CoordinateInput
+              id="gc-lat2"
+              label="Hedef Enlemi (φ₂)"
+              value={gcInputs.lat2}
+              onChange={(val) => setGcInputs({ ...gcInputs, lat2: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="gc-lon2"
+              label="Hedef Boylamı (λ₂)"
+              value={gcInputs.lon2}
+              onChange={(val) => setGcInputs({ ...gcInputs, lon2: val })}
+              isLatitude={false}
+            />
           </div>
         );
       case "rhumb":
         return (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="rl-lat1">Başlangıç Enlemi</Label>
-              <Input id="rl-lat1" type="number" placeholder="40.7589" value={rhumbInputs.lat1} onChange={(e) => setRhumbInputs({ ...rhumbInputs, lat1: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="rl-lon1">Başlangıç Boylamı</Label>
-              <Input id="rl-lon1" type="number" placeholder="29.9511" value={rhumbInputs.lon1} onChange={(e) => setRhumbInputs({ ...rhumbInputs, lon1: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="rl-lat2">Hedef Enlemi</Label>
-              <Input id="rl-lat2" type="number" placeholder="41.0082" value={rhumbInputs.lat2} onChange={(e) => setRhumbInputs({ ...rhumbInputs, lat2: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="rl-lon2">Hedef Boylamı</Label>
-              <Input id="rl-lon2" type="number" placeholder="28.9784" value={rhumbInputs.lon2} onChange={(e) => setRhumbInputs({ ...rhumbInputs, lon2: e.target.value })} />
-            </div>
+          <div className="space-y-4">
+            <CoordinateInput
+              id="rl-lat1"
+              label="Başlangıç Enlemi"
+              value={rhumbInputs.lat1}
+              onChange={(val) => setRhumbInputs({ ...rhumbInputs, lat1: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="rl-lon1"
+              label="Başlangıç Boylamı"
+              value={rhumbInputs.lon1}
+              onChange={(val) => setRhumbInputs({ ...rhumbInputs, lon1: val })}
+              isLatitude={false}
+            />
+            <CoordinateInput
+              id="rl-lat2"
+              label="Hedef Enlemi"
+              value={rhumbInputs.lat2}
+              onChange={(val) => setRhumbInputs({ ...rhumbInputs, lat2: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="rl-lon2"
+              label="Hedef Boylamı"
+              value={rhumbInputs.lon2}
+              onChange={(val) => setRhumbInputs({ ...rhumbInputs, lon2: val })}
+              isLatitude={false}
+            />
           </div>
         );
       case "plane":
         return (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="ps-lat1">Başlangıç Enlemi</Label>
-              <Input id="ps-lat1" type="number" placeholder="40.7589" value={planeInputs.lat1} onChange={(e) => setPlaneInputs({ ...planeInputs, lat1: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="ps-lon1">Başlangıç Boylamı</Label>
-              <Input id="ps-lon1" type="number" placeholder="29.9511" value={planeInputs.lon1} onChange={(e) => setPlaneInputs({ ...planeInputs, lon1: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="ps-lat2">Hedef Enlemi</Label>
-              <Input id="ps-lat2" type="number" placeholder="41.0082" value={planeInputs.lat2} onChange={(e) => setPlaneInputs({ ...planeInputs, lat2: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="ps-lon2">Hedef Boylamı</Label>
-              <Input id="ps-lon2" type="number" placeholder="28.9784" value={planeInputs.lon2} onChange={(e) => setPlaneInputs({ ...planeInputs, lon2: e.target.value })} />
-            </div>
+          <div className="space-y-4">
+            <CoordinateInput
+              id="ps-lat1"
+              label="Başlangıç Enlemi"
+              value={planeInputs.lat1}
+              onChange={(val) => setPlaneInputs({ ...planeInputs, lat1: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="ps-lon1"
+              label="Başlangıç Boylamı"
+              value={planeInputs.lon1}
+              onChange={(val) => setPlaneInputs({ ...planeInputs, lon1: val })}
+              isLatitude={false}
+            />
+            <CoordinateInput
+              id="ps-lat2"
+              label="Hedef Enlemi"
+              value={planeInputs.lat2}
+              onChange={(val) => setPlaneInputs({ ...planeInputs, lat2: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="ps-lon2"
+              label="Hedef Boylamı"
+              value={planeInputs.lon2}
+              onChange={(val) => setPlaneInputs({ ...planeInputs, lon2: val })}
+              isLatitude={false}
+            />
           </div>
         );
       case "eta":
@@ -490,17 +551,23 @@ export default function NavigationCalculationPage() {
         );
       case "sight":
         return (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-4">
+            <CoordinateInput
+              id="sight-lat"
+              label="Tahmini Enlem"
+              value={sightInputs.lat}
+              onChange={(val) => setSightInputs({ ...sightInputs, lat: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="sight-dec"
+              label="Deklinasyon"
+              value={sightInputs.dec}
+              onChange={(val) => setSightInputs({ ...sightInputs, dec: val })}
+              isLatitude={true}
+            />
             <div>
-              <Label htmlFor="sight-lat">Tahmini Enlem (°)</Label>
-              <Input id="sight-lat" type="number" placeholder="41.0" value={sightInputs.lat} onChange={(e) => setSightInputs({ ...sightInputs, lat: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="sight-dec">Deklinasyon (°)</Label>
-              <Input id="sight-dec" type="number" placeholder="23.5" value={sightInputs.dec} onChange={(e) => setSightInputs({ ...sightInputs, dec: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="sight-lha">LHA (°)</Label>
+              <Label htmlFor="sight-lha" data-translatable>LHA (°)</Label>
               <Input id="sight-lha" type="number" placeholder="45" value={sightInputs.lha} onChange={(e) => setSightInputs({ ...sightInputs, lha: e.target.value })} />
             </div>
           </div>
@@ -665,9 +732,9 @@ export default function NavigationCalculationPage() {
         );
       case "celestial":
         return (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-4">
             <div>
-              <Label htmlFor="celestial-type">Hesaplama Türü</Label>
+              <Label htmlFor="celestial-type" data-translatable>Hesaplama Türü</Label>
               <Select value={celestialInputs.type} onValueChange={(value) => setCelestialInputs({ ...celestialInputs, type: value as any })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seçiniz" />
@@ -679,14 +746,20 @@ export default function NavigationCalculationPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="celestial-lat">Enlem (°)</Label>
-              <Input id="celestial-lat" type="number" placeholder="41.0" value={celestialInputs.lat} onChange={(e) => setCelestialInputs({ ...celestialInputs, lat: e.target.value })} />
-            </div>
-            <div>
-              <Label htmlFor="celestial-dec">Deklinasyon (°)</Label>
-              <Input id="celestial-dec" type="number" placeholder="23.5" value={celestialInputs.dec} onChange={(e) => setCelestialInputs({ ...celestialInputs, dec: e.target.value })} />
-            </div>
+            <CoordinateInput
+              id="celestial-lat"
+              label="Enlem"
+              value={celestialInputs.lat}
+              onChange={(val) => setCelestialInputs({ ...celestialInputs, lat: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="celestial-dec"
+              label="Deklinasyon"
+              value={celestialInputs.dec}
+              onChange={(val) => setCelestialInputs({ ...celestialInputs, dec: val })}
+              isLatitude={true}
+            />
           </div>
         );
       case "emergency":
@@ -757,7 +830,7 @@ export default function NavigationCalculationPage() {
                 {gcResults.vertexLat !== null && (
                   <div>
                     <span className="text-muted-foreground" data-translatable>Vertex Enlemi:</span>
-                    <div className="font-mono font-semibold">{gcResults.vertexLat.toFixed(2)}°</div>
+                    <div className="font-mono font-semibold">{formatDecimalAsDMS(gcResults.vertexLat, true)}</div>
                   </div>
                 )}
               </div>
@@ -839,7 +912,29 @@ export default function NavigationCalculationPage() {
       case "celestial":
         return (
           celestialResults && (
-            <pre className="font-mono text-sm leading-6">{`Sonuç:\n${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.latitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'amplitude' ? `Amplitude: ${celestialResults.amplitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'sunrise' ? `Sunrise Bearing: ${celestialResults.bearingDeg?.toFixed(1)}°` : ''}`}</pre>
+            <div className="space-y-2">
+              <div className="font-semibold text-primary" data-translatable>Göksel Navigasyon Sonuçları:</div>
+              <div className="space-y-1 text-sm">
+                {celestialInputs.type === 'meridian' && celestialResults.latitudeDeg !== undefined && (
+                  <div>
+                    <span className="text-muted-foreground" data-translatable>Meridian Enlem:</span>
+                    <div className="font-mono font-semibold">{formatDecimalAsDMS(celestialResults.latitudeDeg, true)}</div>
+                  </div>
+                )}
+                {celestialInputs.type === 'amplitude' && celestialResults.amplitudeDeg !== undefined && (
+                  <div>
+                    <span className="text-muted-foreground" data-translatable>Amplitude:</span>
+                    <div className="font-mono font-semibold">{celestialResults.amplitudeDeg.toFixed(2)}°</div>
+                  </div>
+                )}
+                {celestialInputs.type === 'sunrise' && celestialResults.bearingDeg !== undefined && (
+                  <div>
+                    <span className="text-muted-foreground" data-translatable>Doğuş Kerterizi:</span>
+                    <div className="font-mono font-semibold">{celestialResults.bearingDeg.toFixed(1)}°</div>
+                  </div>
+                )}
+              </div>
+            </div>
           )
         );
       case "emergency":

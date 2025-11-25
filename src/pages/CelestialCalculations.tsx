@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { CoordinateInput } from '@/components/ui/coordinate-input';
 import { 
   Star, 
   Calculator,
@@ -11,6 +12,12 @@ import {
   Ruler
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { 
+  emptyDMS, 
+  dmsToDecimal, 
+  formatDecimalAsDMS,
+  type DMSCoordinate 
+} from '@/utils/coordinateUtils';
 
 export default function CelestialCalculations() {
   const { toast } = useToast();
@@ -30,9 +37,9 @@ export default function CelestialCalculations() {
   const [navInputs, setNavInputs] = useState({
     gha: '', // Greenwich Hour Angle
     sha: '', // Sidereal Hour Angle
-    declination: '',
-    assumedLatitude: '',
-    assumedLongitude: ''
+    declination: emptyDMS(true),
+    assumedLatitude: emptyDMS(true),
+    assumedLongitude: emptyDMS(false)
   });
   const [navResults, setNavResults] = useState<{
     lha: number;
@@ -69,9 +76,9 @@ export default function CelestialCalculations() {
   const calculateCelestialNavigation = () => {
     const gha = parseFloat(navInputs.gha);
     const sha = parseFloat(navInputs.sha);
-    const dec = parseFloat(navInputs.declination);
-    const lat = parseFloat(navInputs.assumedLatitude);
-    const lon = parseFloat(navInputs.assumedLongitude);
+    const dec = dmsToDecimal(navInputs.declination);
+    const lat = dmsToDecimal(navInputs.assumedLatitude);
+    const lon = dmsToDecimal(navInputs.assumedLongitude);
 
     if (isNaN(gha) || isNaN(dec) || isNaN(lat) || isNaN(lon)) {
       toast({ title: "Hata", description: "Lütfen tüm alanları doldurun", variant: "destructive" });
@@ -314,48 +321,30 @@ export default function CelestialCalculations() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="declination">Declination</Label>
-                      <Input
+                      <CoordinateInput
                         id="declination"
-                        type="number"
-                        step="0.01"
+                        label="Declination"
                         value={navInputs.declination}
-                        onChange={(e) => setNavInputs(prev => ({
-                          ...prev,
-                          declination: e.target.value
-                        }))}
-                        placeholder="Derece cinsinden"
-                        className="bg-black/40 border-white/20"
+                        onChange={(val) => setNavInputs(prev => ({ ...prev, declination: val }))}
+                        isLatitude={true}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="assumed-latitude">Assumed Latitude</Label>
-                      <Input
+                      <CoordinateInput
                         id="assumed-latitude"
-                        type="number"
-                        step="0.01"
+                        label="Assumed Latitude"
                         value={navInputs.assumedLatitude}
-                        onChange={(e) => setNavInputs(prev => ({
-                          ...prev,
-                          assumedLatitude: e.target.value
-                        }))}
-                        placeholder="Derece cinsinden"
-                        className="bg-black/40 border-white/20"
+                        onChange={(val) => setNavInputs(prev => ({ ...prev, assumedLatitude: val }))}
+                        isLatitude={true}
                       />
                     </div>
                     <div className="col-span-2">
-                      <Label htmlFor="assumed-longitude">Assumed Longitude</Label>
-                      <Input
+                      <CoordinateInput
                         id="assumed-longitude"
-                        type="number"
-                        step="0.01"
+                        label="Assumed Longitude"
                         value={navInputs.assumedLongitude}
-                        onChange={(e) => setNavInputs(prev => ({
-                          ...prev,
-                          assumedLongitude: e.target.value
-                        }))}
-                        placeholder="Derece cinsinden"
-                        className="bg-black/40 border-white/20"
+                        onChange={(val) => setNavInputs(prev => ({ ...prev, assumedLongitude: val }))}
+                        isLatitude={false}
                       />
                     </div>
                   </div>
