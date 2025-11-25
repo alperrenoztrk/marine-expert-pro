@@ -164,10 +164,8 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Top right settings button and language selector */}
-      <div className="fixed right-6 top-6 z-20 flex items-center gap-3">
-        <LanguageSelector />
-        
+      {/* Top right settings button */}
+      <div className="fixed right-6 top-6 z-20 flex items-center">
         <Sheet>
           <SheetTrigger asChild>
             <Button
