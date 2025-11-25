@@ -7,6 +7,7 @@ import { ArrowLeft, Search, MapPin, Users, Clock } from 'lucide-react';
 import { useLocationSearch, type LocationResult } from '@/hooks/useLocationSearch';
 import { useWeatherForecast } from '@/hooks/useWeatherForecast';
 import { useCurrentWeather } from '@/hooks/useCurrentWeather';
+import { formatDecimalAsDMS } from '@/utils/coordinateUtils';
 
 function LocationCard({ location, onSelect }: { location: LocationResult; onSelect: (location: LocationResult) => void }) {
   return (
@@ -34,8 +35,8 @@ function LocationCard({ location, onSelect }: { location: LocationResult; onSele
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <span>📍</span>
-                <span className="font-mono">
-                  {location.latitude.toFixed(2)}°, {location.longitude.toFixed(2)}°
+                <span className="font-mono text-[10px]">
+                  {formatDecimalAsDMS(location.latitude, true, true)}, {formatDecimalAsDMS(location.longitude, false, true)}
                 </span>
               </div>
               
