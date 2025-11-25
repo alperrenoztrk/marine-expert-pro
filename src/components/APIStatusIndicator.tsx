@@ -153,12 +153,12 @@ export function APIStatusIndicator() {
                   {getStatusIcon(api.status)}
                 </div>
                 <div>
-                  <div className="font-medium text-sm">{api.name}</div>
-                  <div className="text-xs text-muted-foreground">{api.description}</div>
+                  <div className="font-medium text-sm" data-translatable>{api.name}</div>
+                  <div className="text-xs text-muted-foreground" data-translatable>{api.description}</div>
                 </div>
               </div>
               <Badge variant={getStatusBadge(api.status)}>
-                {getStatusText(api.status)}
+                <span data-translatable>{getStatusText(api.status)}</span>
               </Badge>
             </div>
           ))}
