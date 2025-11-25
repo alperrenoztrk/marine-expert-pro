@@ -29,7 +29,7 @@ export const PermanentAIAssistant = () => {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: "Test maritime connection - respond with 'Maritime AI ready'"
+              text: "Test maritime connection"
             }]
           }],
           generationConfig: {
@@ -41,14 +41,12 @@ export const PermanentAIAssistant = () => {
 
       if (response.ok) {
         setApiStatus('active');
-        toast.success("🚢 Maritime AI bağlantısı başarılı!");
       } else {
-        throw new Error('API connection failed');
+        throw new Error('Connection failed');
       }
     } catch (error) {
-      console.error('Gemini API Test Failed:', error);
+      console.error('Connection Test Failed:', error);
       setApiStatus('error');
-      toast.error("API bağlantısı başarısız, local mode aktif");
     }
   };
 
@@ -210,19 +208,17 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
       let answer = "";
       
       if (apiStatus === 'active') {
-        // Try Gemini API first
         try {
           answer = await askGeminiAI(currentQuestion);
-          toast.success("🧠 Gemini AI yanıtı alındı!");
+          toast.success("Yanıt hazırlandı");
         } catch (error) {
-          console.warn('Gemini API failed, using local knowledge:', error);
+          console.warn('Primary source failed, using backup:', error);
           answer = getLocalMaritimeAnswer(currentQuestion);
-          toast.info("📚 Local AI yanıtı gösteriliyor");
+          toast.info("Yanıt hazırlandı");
         }
       } else {
-        // Use local knowledge
         answer = getLocalMaritimeAnswer(currentQuestion);
-        toast.info("📚 Local AI yanıtı gösteriliyor");
+        toast.info("Yanıt hazırlandı");
       }
 
       setAiResponse(answer);
@@ -236,8 +232,8 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
       setConversationHistory(prev => [newEntry, ...prev.slice(0, 9)]); // Keep last 10
 
     } catch (error) {
-      console.error('AI Error:', error);
-      toast.error("AI yanıtı alınamadı");
+      console.error('Response Error:', error);
+      toast.error("Yanıt alınamadı");
     } finally {
       setIsLoading(false);
     }
@@ -263,9 +259,9 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
           <div className="flex items-center gap-3">
             <Brain className="w-6 h-6 text-info" />
             <div>
-              <CardTitle className="text-xl text-info-muted-foreground">Maritime AI Asistanı</CardTitle>
+              <CardTitle className="text-xl text-info-muted-foreground">Denizcilik Danışmanı</CardTitle>
               <CardDescription className="text-sm">
-                Kalıcı maritime mühendisliği AI asistanı
+                Maritime mühendisliği uzman destek sistemi
               </CardDescription>
             </div>
           </div>
@@ -273,19 +269,19 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
             {apiStatus === 'active' && (
               <div className="flex items-center gap-2 text-green-700 bg-green-50 px-3 py-1 rounded-full">
                 <CheckCircle className="w-4 h-4" />
-                <span className="text-sm font-medium">Gemini Aktif</span>
+                <span className="text-sm font-medium">Çevrimiçi</span>
               </div>
             )}
             {apiStatus === 'error' && (
-              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full cyberpunk:text-yellow-400 cyberpunk:bg-gray-800">
+              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
                 <Zap className="w-4 h-4" />
-                <span className="text-sm font-medium">Local AI</span>
+                <span className="text-sm font-medium">Yerel</span>
               </div>
             )}
             {apiStatus === 'testing' && (
               <div className="flex items-center gap-2 text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm font-medium">Bağlanıyor</span>
+                <span className="text-sm font-medium">Hazırlanıyor</span>
               </div>
             )}
           </div>
@@ -324,7 +320,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
             disabled={isLoading}
           />
           
-          <Button 
+            <Button 
             onClick={handleAskAI}
             disabled={isLoading || !question.trim()}
             className="w-full gap-2"
@@ -332,12 +328,12 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                AI Düşünüyor...
+                Hesaplanıyor...
               </>
             ) : (
               <>
                 <MessageCircle className="w-4 h-4" />
-                AI'ya Sor
+                Danış
               </>
             )}
           </Button>
@@ -348,7 +344,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
           <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-l-yellow-400">
             <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <Brain className="w-5 h-5" />
-              AI Yanıtı:
+              Uzman Yanıtı:
             </h4>
             <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
               {aiResponse}
