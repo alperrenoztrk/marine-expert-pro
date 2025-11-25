@@ -112,19 +112,21 @@ const Settings = () => {
                     </Label>
                     <Select value={theme} onValueChange={handleThemeChange}>
                       <SelectTrigger id="theme-select">
-                        <SelectValue placeholder="Tema seçin" />
+                        <SelectValue>
+                          <span data-translatable>{theme === 'light' ? 'Açık Tema' : 'Koyu Tema'}</span>
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="light">
                           <div className="flex items-center gap-2">
                             <Sun className="w-4 h-4" />
-                            <span>Açık Tema</span>
+                            <span data-translatable>Açık Tema</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="dark">
                           <div className="flex items-center gap-2">
                             <Moon className="w-4 h-4" />
-                            <span>Koyu Tema</span>
+                            <span data-translatable>Koyu Tema</span>
                           </div>
                         </SelectItem>
 
@@ -161,14 +163,19 @@ const Settings = () => {
                     </Label>
                     <Select value={currentLanguage} onValueChange={handleLanguageChange}>
                       <SelectTrigger id="language-select">
-                        <SelectValue placeholder="Dil seçin" />
+                        <SelectValue>
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">{getLanguageFlag(currentLanguage)}</span>
+                            <span data-translatable>{getLanguageName(currentLanguage)}</span>
+                          </div>
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                        {supportedLanguages.map((lang) => (
                          <SelectItem key={lang.language} value={lang.language}>
                            <div className="flex items-center gap-2">
                              <span className="text-lg">{getLanguageFlag(lang.language)}</span>
-                             <span>{lang.displayName || getLanguageName(lang.language)}</span>
+                             <span data-translatable>{lang.displayName || getLanguageName(lang.language)}</span>
                            </div>
                          </SelectItem>
                        ))}
