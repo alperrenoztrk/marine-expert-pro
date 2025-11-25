@@ -474,11 +474,11 @@ export default function NavigationCalculationPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="eta-distance">Mesafe (nm)</Label>
-              <Input id="eta-distance" type="number" placeholder="100" value={etaInputs.distance} onChange={(e) => setEtaInputs({ ...etaInputs, distance: e.target.value })} />
+              <Input id="eta-distance" type="number" placeholder="" value={etaInputs.distance} onChange={(e) => setEtaInputs({ ...etaInputs, distance: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="eta-speed">Hız (knot)</Label>
-              <Input id="eta-speed" type="number" placeholder="12" value={etaInputs.speed} onChange={(e) => setEtaInputs({ ...etaInputs, speed: e.target.value })} />
+              <Input id="eta-speed" type="number" placeholder="" value={etaInputs.speed} onChange={(e) => setEtaInputs({ ...etaInputs, speed: e.target.value })} />
             </div>
           </div>
         );
@@ -491,7 +491,7 @@ export default function NavigationCalculationPage() {
             </div>
             <div>
               <Label htmlFor="ct-speed">Gemi Sürati (kn)</Label>
-              <Input id="ct-speed" type="number" placeholder="12" value={currentInputs.speed} onChange={(e) => setCurrentInputs({ ...currentInputs, speed: e.target.value })} />
+              <Input id="ct-speed" type="number" placeholder="" value={currentInputs.speed} onChange={(e) => setCurrentInputs({ ...currentInputs, speed: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="ct-set">Akıntı İstikameti (°)</Label>
@@ -508,15 +508,15 @@ export default function NavigationCalculationPage() {
           <div className="grid grid-cols-1 gap-4">
             <div>
               <Label htmlFor="comp-compass">Pusula Okuyuşu (°)</Label>
-              <Input id="comp-compass" type="number" placeholder="045" value={compassInputs.compass} onChange={(e) => setCompassInputs({ ...compassInputs, compass: e.target.value })} />
+              <Input id="comp-compass" type="number" placeholder="" value={compassInputs.compass} onChange={(e) => setCompassInputs({ ...compassInputs, compass: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="comp-variation">Varyasyon (° E(+) W(-))</Label>
-              <Input id="comp-variation" type="number" placeholder="2.5" value={compassInputs.variation} onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })} />
+              <Input id="comp-variation" type="number" placeholder="" value={compassInputs.variation} onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="comp-deviation">Deviasyon (° E(+) W(-))</Label>
-              <Input id="comp-deviation" type="number" placeholder="-1.5" value={compassInputs.deviation} onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })} />
+              <Input id="comp-deviation" type="number" placeholder="" value={compassInputs.deviation} onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })} />
             </div>
           </div>
         );
@@ -525,27 +525,27 @@ export default function NavigationCalculationPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="cpa-bearing">Hedef Kerterizi (°)</Label>
-              <Input id="cpa-bearing" type="number" placeholder="045" value={cpaInputs.bearing} onChange={(e) => setCpaInputs({ ...cpaInputs, bearing: e.target.value })} />
+              <Input id="cpa-bearing" type="number" placeholder="" value={cpaInputs.bearing} onChange={(e) => setCpaInputs({ ...cpaInputs, bearing: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="cpa-distance">Hedef Mesafesi (nm)</Label>
-              <Input id="cpa-distance" type="number" placeholder="5" value={cpaInputs.distance} onChange={(e) => setCpaInputs({ ...cpaInputs, distance: e.target.value })} />
+              <Input id="cpa-distance" type="number" placeholder="" value={cpaInputs.distance} onChange={(e) => setCpaInputs({ ...cpaInputs, distance: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="cpa-tcourse">Hedef Rotası (°)</Label>
-              <Input id="cpa-tcourse" type="number" placeholder="270" value={cpaInputs.targetCourse} onChange={(e) => setCpaInputs({ ...cpaInputs, targetCourse: e.target.value })} />
+              <Input id="cpa-tcourse" type="number" placeholder="" value={cpaInputs.targetCourse} onChange={(e) => setCpaInputs({ ...cpaInputs, targetCourse: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="cpa-tspeed">Hedef Sürati (kn)</Label>
-              <Input id="cpa-tspeed" type="number" placeholder="15" value={cpaInputs.targetSpeed} onChange={(e) => setCpaInputs({ ...cpaInputs, targetSpeed: e.target.value })} />
+              <Input id="cpa-tspeed" type="number" placeholder="" value={cpaInputs.targetSpeed} onChange={(e) => setCpaInputs({ ...cpaInputs, targetSpeed: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="cpa-ocourse">Kendi Rotamız (°)</Label>
-              <Input id="cpa-ocourse" type="number" placeholder="000" value={cpaInputs.ownCourse} onChange={(e) => setCpaInputs({ ...cpaInputs, ownCourse: e.target.value })} />
+              <Input id="cpa-ocourse" type="number" placeholder="" value={cpaInputs.ownCourse} onChange={(e) => setCpaInputs({ ...cpaInputs, ownCourse: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="cpa-ospeed">Kendi Süratimiz (kn)</Label>
-              <Input id="cpa-ospeed" type="number" placeholder="12" value={cpaInputs.ownSpeed} onChange={(e) => setCpaInputs({ ...cpaInputs, ownSpeed: e.target.value })} />
+              <Input id="cpa-ospeed" type="number" placeholder="" value={cpaInputs.ownSpeed} onChange={(e) => setCpaInputs({ ...cpaInputs, ownSpeed: e.target.value })} />
             </div>
           </div>
         );
@@ -568,7 +568,7 @@ export default function NavigationCalculationPage() {
             />
             <div>
               <Label htmlFor="sight-lha" data-translatable>LHA (°)</Label>
-              <Input id="sight-lha" type="number" placeholder="45" value={sightInputs.lha} onChange={(e) => setSightInputs({ ...sightInputs, lha: e.target.value })} />
+              <Input id="sight-lha" type="number" placeholder="" value={sightInputs.lha} onChange={(e) => setSightInputs({ ...sightInputs, lha: e.target.value })} />
             </div>
           </div>
         );
@@ -591,12 +591,12 @@ export default function NavigationCalculationPage() {
             {bearingInputs.type === "doubling" && (
               <div>
                 <Label htmlFor="bearing-angle">İlk Açı (°)</Label>
-                <Input id="bearing-angle" type="number" placeholder="30" value={bearingInputs.angle} onChange={(e) => setBearingInputs({ ...bearingInputs, angle: e.target.value })} />
+                <Input id="bearing-angle" type="number" placeholder="" value={bearingInputs.angle} onChange={(e) => setBearingInputs({ ...bearingInputs, angle: e.target.value })} />
               </div>
             )}
             <div>
               <Label htmlFor="bearing-run">Koşulan Mesafe (nm)</Label>
-              <Input id="bearing-run" type="number" placeholder="2" value={bearingInputs.run} onChange={(e) => setBearingInputs({ ...bearingInputs, run: e.target.value })} />
+              <Input id="bearing-run" type="number" placeholder="" value={bearingInputs.run} onChange={(e) => setBearingInputs({ ...bearingInputs, run: e.target.value })} />
             </div>
           </div>
         );
@@ -618,12 +618,12 @@ export default function NavigationCalculationPage() {
             </div>
             <div>
               <Label htmlFor="distance-height">Yükseklik (m)</Label>
-              <Input id="distance-height" type="number" placeholder="15" value={distanceInputs.height} onChange={(e) => setDistanceInputs({ ...distanceInputs, height: e.target.value })} />
+              <Input id="distance-height" type="number" placeholder="" value={distanceInputs.height} onChange={(e) => setDistanceInputs({ ...distanceInputs, height: e.target.value })} />
             </div>
             {distanceInputs.type === "light" && (
               <div>
                 <Label htmlFor="distance-light">Işık Yüksekliği (m)</Label>
-                <Input id="distance-light" type="number" placeholder="50" value={distanceInputs.lightHeight} onChange={(e) => setDistanceInputs({ ...distanceInputs, lightHeight: e.target.value })} />
+                <Input id="distance-light" type="number" placeholder="" value={distanceInputs.lightHeight} onChange={(e) => setDistanceInputs({ ...distanceInputs, lightHeight: e.target.value })} />
               </div>
             )}
           </div>
@@ -634,11 +634,11 @@ export default function NavigationCalculationPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="tide-hour">Saat (1-6)</Label>
-                <Input id="tide-hour" type="number" min={1} max={6} placeholder="3" value={tideInputs.hour} onChange={(e) => setTideInputs({ ...tideInputs, hour: e.target.value })} />
+                <Input id="tide-hour" type="number" min={1} max={6} placeholder="" value={tideInputs.hour} onChange={(e) => setTideInputs({ ...tideInputs, hour: e.target.value })} />
               </div>
               <div>
                 <Label htmlFor="tide-range">Gelgit Aralığı (m)</Label>
-                <Input id="tide-range" type="number" placeholder="4.2" value={tideInputs.range} onChange={(e) => setTideInputs({ ...tideInputs, range: e.target.value })} />
+                <Input id="tide-range" type="number" placeholder="" value={tideInputs.range} onChange={(e) => setTideInputs({ ...tideInputs, range: e.target.value })} />
               </div>
             </div>
 
@@ -647,11 +647,11 @@ export default function NavigationCalculationPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="tt-low">Alçak Su (m)</Label>
-                  <Input id="tt-low" type="number" placeholder="1.2" value={tideTableInputs.lowTide} onChange={(e) => setTideTableInputs({ ...tideTableInputs, lowTide: e.target.value })} />
+                  <Input id="tt-low" type="number" placeholder="" value={tideTableInputs.lowTide} onChange={(e) => setTideTableInputs({ ...tideTableInputs, lowTide: e.target.value })} />
                 </div>
                 <div>
                   <Label htmlFor="tt-high">Yüksek Su (m)</Label>
-                  <Input id="tt-high" type="number" placeholder="5.4" value={tideTableInputs.highTide} onChange={(e) => setTideTableInputs({ ...tideTableInputs, highTide: e.target.value })} />
+                  <Input id="tt-high" type="number" placeholder="" value={tideTableInputs.highTide} onChange={(e) => setTideTableInputs({ ...tideTableInputs, highTide: e.target.value })} />
                 </div>
                 <div>
                   <Label htmlFor="tt-time">Alçak Su Zamanı</Label>
@@ -705,7 +705,7 @@ export default function NavigationCalculationPage() {
             </div>
             <div>
               <Label htmlFor="turn-speed">Sürat (knot)</Label>
-              <Input id="turn-speed" type="number" placeholder="12" value={turningInputs.speed} onChange={(e) => setTurningInputs({ ...turningInputs, speed: e.target.value })} />
+              <Input id="turn-speed" type="number" placeholder="" value={turningInputs.speed} onChange={(e) => setTurningInputs({ ...turningInputs, speed: e.target.value })} />
             </div>
           </div>
         );
@@ -714,19 +714,19 @@ export default function NavigationCalculationPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="weather-beaufort">Beaufort Sayısı</Label>
-              <Input id="weather-beaufort" type="number" min={0} max={12} placeholder="5" value={weatherInputs.beaufort} onChange={(e) => setWeatherInputs({ ...weatherInputs, beaufort: e.target.value })} />
+              <Input id="weather-beaufort" type="number" min={0} max={12} placeholder="" value={weatherInputs.beaufort} onChange={(e) => setWeatherInputs({ ...weatherInputs, beaufort: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="weather-windspeed">Rüzgar Hızı (knot)</Label>
-              <Input id="weather-windspeed" type="number" placeholder="25" value={weatherInputs.windSpeed} onChange={(e) => setWeatherInputs({ ...weatherInputs, windSpeed: e.target.value })} />
+              <Input id="weather-windspeed" type="number" placeholder="" value={weatherInputs.windSpeed} onChange={(e) => setWeatherInputs({ ...weatherInputs, windSpeed: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="weather-area">Rüzgar Alanı (m²)</Label>
-              <Input id="weather-area" type="number" placeholder="1000" value={weatherInputs.windArea} onChange={(e) => setWeatherInputs({ ...weatherInputs, windArea: e.target.value })} />
+              <Input id="weather-area" type="number" placeholder="" value={weatherInputs.windArea} onChange={(e) => setWeatherInputs({ ...weatherInputs, windArea: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="weather-ship">Gemi Sürati (knot)</Label>
-              <Input id="weather-ship" type="number" placeholder="12" value={weatherInputs.shipSpeed} onChange={(e) => setWeatherInputs({ ...weatherInputs, shipSpeed: e.target.value })} />
+              <Input id="weather-ship" type="number" placeholder="" value={weatherInputs.shipSpeed} onChange={(e) => setWeatherInputs({ ...weatherInputs, shipSpeed: e.target.value })} />
             </div>
           </div>
         );
@@ -780,26 +780,26 @@ export default function NavigationCalculationPage() {
             {emergencyInputs.type === "square" && (
               <div>
                 <Label htmlFor="emergency-spacing">Track Spacing (nm)</Label>
-                <Input id="emergency-spacing" type="number" placeholder="1" value={emergencyInputs.trackSpacing} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, trackSpacing: e.target.value })} />
+                <Input id="emergency-spacing" type="number" placeholder="" value={emergencyInputs.trackSpacing} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, trackSpacing: e.target.value })} />
               </div>
             )}
             {emergencyInputs.type === "sector" && (
               <div>
                 <Label htmlFor="emergency-radius">İlk Yarıçap (nm)</Label>
-                <Input id="emergency-radius" type="number" placeholder="2" value={emergencyInputs.radius} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, radius: e.target.value })} />
+                <Input id="emergency-radius" type="number" placeholder="" value={emergencyInputs.radius} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, radius: e.target.value })} />
               </div>
             )}
             <div>
               <Label htmlFor="emergency-distance">Mesafe (nm)</Label>
-              <Input id="emergency-distance" type="number" placeholder="10" value={emergencyInputs.distance} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, distance: e.target.value })} />
+              <Input id="emergency-distance" type="number" placeholder="" value={emergencyInputs.distance} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, distance: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="emergency-rescue">Kurtarma Sürati (knot)</Label>
-              <Input id="emergency-rescue" type="number" placeholder="12" value={emergencyInputs.rescueSpeed} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, rescueSpeed: e.target.value })} />
+              <Input id="emergency-rescue" type="number" placeholder="" value={emergencyInputs.rescueSpeed} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, rescueSpeed: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="emergency-drift">Sürüklenme Sürati (knot)</Label>
-              <Input id="emergency-drift" type="number" placeholder="2" value={emergencyInputs.driftSpeed} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, driftSpeed: e.target.value })} />
+              <Input id="emergency-drift" type="number" placeholder="" value={emergencyInputs.driftSpeed} onChange={(e) => setEmergencyInputs({ ...emergencyInputs, driftSpeed: e.target.value })} />
             </div>
           </div>
         );

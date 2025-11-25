@@ -48,7 +48,7 @@ const DraftSurveyDensity = () => {
                 step="0.001"
                 value={seawaterDensity}
                 onChange={(e) => setSeawaterDensity(e.target.value)}
-                placeholder="1.025"
+                placeholder=""
               />
             </div>
             <div className="space-y-2">
@@ -69,7 +69,7 @@ const DraftSurveyDensity = () => {
                 step="0.1"
                 value={displacement}
                 onChange={(e) => setDisplacement(e.target.value)}
-                placeholder="20000"
+                placeholder=""
               />
             </div>
           </div>
