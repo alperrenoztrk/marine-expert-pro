@@ -738,7 +738,30 @@ export default function NavigationCalculationPage() {
       case "gc":
         return (
           gcResults && (
-            <pre className="font-mono text-sm leading-6">{`Sonuç:\nMesafe: ${gcResults.distance.toFixed(2)} nm\nİlk Kerteriz (θ₀): ${gcResults.initialCourse.toFixed(1)}°`}</pre>
+            <div className="space-y-2">
+              <div className="font-semibold text-primary" data-translatable>Büyük Daire Seyri Sonuçları:</div>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground" data-translatable>Mesafe:</span>
+                  <div className="font-mono font-semibold">{gcResults.distance.toFixed(2)} nm</div>
+                  <div className="text-xs text-muted-foreground">({gcResults.distanceDeg.toFixed(4)}°)</div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground" data-translatable>İlk Kerteriz:</span>
+                  <div className="font-mono font-semibold">{gcResults.initialCourse.toFixed(1)}°</div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground" data-translatable>Varış Kerterizi:</span>
+                  <div className="font-mono font-semibold">{gcResults.finalCourse.toFixed(1)}°</div>
+                </div>
+                {gcResults.vertexLat !== null && (
+                  <div>
+                    <span className="text-muted-foreground" data-translatable>Vertex Enlemi:</span>
+                    <div className="font-mono font-semibold">{gcResults.vertexLat.toFixed(2)}°</div>
+                  </div>
+                )}
+              </div>
+            </div>
           )
         );
       case "rhumb":
