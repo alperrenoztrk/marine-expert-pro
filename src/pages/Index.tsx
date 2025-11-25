@@ -5,6 +5,15 @@ import MetalCompassDial from "@/components/ui/MetalCompassDial";
 import { Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import WeatherWidget from "@/components/WeatherWidget";
 import MoonPhaseWidget from "@/components/MoonPhaseWidget";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const Index = () => {
   // Compass state (2D only)
@@ -155,18 +164,47 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Top right settings button */}
-      <div className="fixed right-6 top-6 z-20 flex items-center">
-        <Link to="/settings">
-          <Button
-            size="icon"
-            className="h-12 w-12 rounded-full bg-blue-600/90 hover:bg-blue-700 text-white shadow-lg border-2 border-white/30"
-            title="Ayarlar"
-            aria-label="Ayarlar"
-          >
-            <Settings className="w-6 h-6" />
-          </Button>
-        </Link>
+      {/* Top right settings button and language selector */}
+      <div className="fixed right-6 top-6 z-20 flex items-center gap-3">
+        <LanguageSelector />
+        
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              className="h-12 w-12 rounded-full bg-blue-600/90 hover:bg-blue-700 text-white shadow-lg border-2 border-white/30"
+              title="Ayarlar"
+              aria-label="Ayarlar"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Settings className="w-6 h-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent onClick={(e) => e.stopPropagation()}>
+            <SheetHeader>
+              <SheetTitle>Ayarlar</SheetTitle>
+              <SheetDescription>
+                Uygulama ayarlarınızı buradan yönetin
+              </SheetDescription>
+            </SheetHeader>
+            <div className="mt-6 space-y-4">
+              <Link to="/settings" className="block">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Tüm Ayarlar
+                </Button>
+              </Link>
+              
+              <div className="pt-4 border-t">
+                <h3 className="font-medium mb-3">Dil Seçimi</h3>
+                <LanguageSelector />
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
 
 
