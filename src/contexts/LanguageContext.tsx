@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SupportedLanguage {
   language: string;
@@ -19,14 +20,37 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Simple language configuration
+// Supported languages - 25 languages
 const SUPPORTED_LANGUAGES: SupportedLanguage[] = [
-  { language: 'en', name: 'English', displayName: 'English' },
   { language: 'tr', name: 'Turkish', displayName: 'Türkçe' },
+  { language: 'en', name: 'English', displayName: 'English' },
   { language: 'es', name: 'Spanish', displayName: 'Español' },
+  { language: 'de', name: 'German', displayName: 'Deutsch' },
   { language: 'fr', name: 'French', displayName: 'Français' },
-  { language: 'de', name: 'German', displayName: 'Deutsch' }
+  { language: 'it', name: 'Italian', displayName: 'Italiano' },
+  { language: 'pt', name: 'Portuguese', displayName: 'Português' },
+  { language: 'ru', name: 'Russian', displayName: 'Русский' },
+  { language: 'ja', name: 'Japanese', displayName: '日本語' },
+  { language: 'ko', name: 'Korean', displayName: '한국어' },
+  { language: 'zh-CN', name: 'Chinese (Simplified)', displayName: '中文 (简体)' },
+  { language: 'ar', name: 'Arabic', displayName: 'العربية' },
+  { language: 'hi', name: 'Hindi', displayName: 'हिन्दी' },
+  { language: 'nl', name: 'Dutch', displayName: 'Nederlands' },
+  { language: 'sv', name: 'Swedish', displayName: 'Svenska' },
+  { language: 'no', name: 'Norwegian', displayName: 'Norsk' },
+  { language: 'da', name: 'Danish', displayName: 'Dansk' },
+  { language: 'fi', name: 'Finnish', displayName: 'Suomi' },
+  { language: 'pl', name: 'Polish', displayName: 'Polski' },
+  { language: 'cs', name: 'Czech', displayName: 'Čeština' },
+  { language: 'hu', name: 'Hungarian', displayName: 'Magyar' },
+  { language: 'ro', name: 'Romanian', displayName: 'Română' },
+  { language: 'el', name: 'Greek', displayName: 'Ελληνικά' },
+  { language: 'bg', name: 'Bulgarian', displayName: 'Български' },
+  { language: 'uk', name: 'Ukrainian', displayName: 'Українська' }
 ];
+
+// Translation cache to avoid repeated API calls
+const translationCache = new Map<string, string>();
 
 interface LanguageProviderProps {
   children: ReactNode;
@@ -58,52 +82,85 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     languageRef.current = currentLanguage;
   }, [currentLanguage]);
 
+  // Helper: translate text using Google Cloud Translation API
+  const translateText = async (text: string, targetLang: string): Promise<string> => {
+    if (!text || text.trim() === '') return text;
+    if (targetLang === 'tr') return text; // Already in Turkish
+    
+    const cacheKey = `${text}:${targetLang}`;
+    if (translationCache.has(cacheKey)) {
+      return translationCache.get(cacheKey)!;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('translate', {
+        body: { 
+          text, 
+          targetLanguage: targetLang,
+          sourceLanguage: 'tr'
+        }
+      });
+
+      if (error) {
+        console.error('Translation error:', error);
+        return text;
+      }
+
+      const translated = data?.translatedText || text;
+      translationCache.set(cacheKey, translated);
+      return translated;
+    } catch (error) {
+      console.error('Translation request failed:', error);
+      return text;
+    }
+  };
+
   // Helper: translate a single element marked with data-translatable
-  const translateElementText = (el: Element, languageCode: string) => {
+  const translateElementText = async (el: Element, languageCode: string) => {
     const element = el as HTMLElement;
     const originalTextAttr = element.getAttribute('data-original-text');
     const originalText = originalTextAttr != null ? originalTextAttr : (element.textContent || '').trim();
     if (originalTextAttr == null) {
       element.setAttribute('data-original-text', originalText);
     }
-    const translated = getTranslation('', originalText, languageCode);
+    const translated = await translateText(originalText, languageCode);
     if (translated && element.textContent !== translated) {
       element.textContent = translated;
     }
   };
 
   // Helper: translate placeholder for inputs/textarea marked with data-translatable-placeholder
-  const translateElementPlaceholder = (el: Element, languageCode: string) => {
+  const translateElementPlaceholder = async (el: Element, languageCode: string) => {
     const element = el as HTMLInputElement | HTMLTextAreaElement;
     const originalPlaceholderAttr = element.getAttribute('data-original-placeholder');
     const originalPlaceholder = originalPlaceholderAttr != null ? originalPlaceholderAttr : (element.placeholder || '').trim();
     if (originalPlaceholderAttr == null) {
       element.setAttribute('data-original-placeholder', originalPlaceholder);
     }
-    const translated = getTranslation('', originalPlaceholder, languageCode);
+    const translated = await translateText(originalPlaceholder, languageCode);
     if (translated && element.placeholder !== translated) {
       element.placeholder = translated;
     }
   };
 
   // Translate an element and its descendants
-  const translateNode = (node: Element, languageCode: string) => {
+  const translateNode = async (node: Element, languageCode: string) => {
     if ((node as Element).hasAttribute && (node as Element).hasAttribute('data-translatable')) {
-      translateElementText(node, languageCode);
+      await translateElementText(node, languageCode);
     }
     if ((node as Element).hasAttribute && (node as Element).hasAttribute('data-translatable-placeholder')) {
-      translateElementPlaceholder(node, languageCode);
+      await translateElementPlaceholder(node, languageCode);
     }
     const textNodes = node.querySelectorAll('[data-translatable]');
-    textNodes.forEach(el => translateElementText(el, languageCode));
+    await Promise.all(Array.from(textNodes).map(el => translateElementText(el, languageCode)));
     const placeholderNodes = node.querySelectorAll('[data-translatable-placeholder]');
-    placeholderNodes.forEach(el => translateElementPlaceholder(el, languageCode));
+    await Promise.all(Array.from(placeholderNodes).map(el => translateElementPlaceholder(el, languageCode)));
   };
 
   // Translate the whole document
-  const translateDocument = (languageCode: string) => {
+  const translateDocument = async (languageCode: string) => {
     if (typeof document === 'undefined') return;
-    translateNode(document.body, languageCode);
+    await translateNode(document.body, languageCode);
   };
 
   const changeLanguage = (languageCode: string) => {
@@ -136,7 +193,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       for (const mutation of mutations) {
         mutation.addedNodes.forEach(node => {
           if (node.nodeType === Node.ELEMENT_NODE) {
-            translateNode(node as Element, languageRef.current);
+            translateNode(node as Element, languageRef.current).catch(console.error);
           }
         });
       }
@@ -185,33 +242,7 @@ export const useLanguage = (): LanguageContextType => {
 };
 
 // Simple translation utility (no hooks, no re-renders)
+// This is kept for backwards compatibility but doesn't use the API
 export const getTranslation = (key: string, defaultText: string = '', language: string = 'tr') => {
-  const translations: { [key: string]: { [key: string]: string } } = {
-    'tr': {
-      'Maritime Calculator': 'Denizcilik Hesaplayıcısı',
-      'Ask Assistant': 'Asistana Sor',
-      'Stability': 'Stabilite',
-      'Navigation': 'Seyir',
-      'Safety': 'Güvenlik',
-      'Calculations': 'Hesaplamalar',
-      'Settings': 'Ayarlar',
-      'Home': 'Ana Sayfa'
-    },
-    'en': {
-      'Denizcilik Hesaplayıcısı': 'Maritime Calculator',
-      'Asistana Sor': 'Ask Assistant',
-      'Stabilite': 'Stability',
-      'Seyir': 'Navigation',
-      'Güvenlik': 'Safety',
-      'Hesaplamalar': 'Calculations',
-      'Ayarlar': 'Settings',
-      'Ana Sayfa': 'Home'
-    }
-  };
-
-  const langTranslations = translations[language];
-  if (langTranslations && langTranslations[defaultText]) {
-    return langTranslations[defaultText];
-  }
   return defaultText;
 };
