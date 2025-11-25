@@ -16,22 +16,37 @@ export function CoordinateInput({ label, value, onChange, isLatitude, id }: Coor
   const maxDegrees = isLatitude ? 90 : 180;
 
   const handleDegreesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const deg = parseInt(e.target.value) || 0;
-    if (deg >= 0 && deg <= maxDegrees) {
+    const val = e.target.value.replace(',', '.');
+    if (val === '') {
+      onChange({ ...value, degrees: 0 });
+      return;
+    }
+    const deg = parseInt(val);
+    if (!isNaN(deg) && deg >= 0 && deg <= maxDegrees) {
       onChange({ ...value, degrees: deg });
     }
   };
 
   const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const min = parseInt(e.target.value) || 0;
-    if (min >= 0 && min < 60) {
+    const val = e.target.value.replace(',', '.');
+    if (val === '') {
+      onChange({ ...value, minutes: 0 });
+      return;
+    }
+    const min = parseInt(val);
+    if (!isNaN(min) && min >= 0 && min < 60) {
       onChange({ ...value, minutes: min });
     }
   };
 
   const handleSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sec = parseFloat(e.target.value) || 0;
-    if (sec >= 0 && sec < 60) {
+    const val = e.target.value.replace(',', '.');
+    if (val === '') {
+      onChange({ ...value, seconds: 0 });
+      return;
+    }
+    const sec = parseFloat(val);
+    if (!isNaN(sec) && sec >= 0 && sec < 60) {
       onChange({ ...value, seconds: Math.round(sec * 10) / 10 });
     }
   };
@@ -47,10 +62,10 @@ export function CoordinateInput({ label, value, onChange, isLatitude, id }: Coor
         <div className="relative">
           <Input
             id={id}
-            type="number"
-            min="0"
-            max={maxDegrees}
-            value={value.degrees}
+            type="text"
+            inputMode="numeric"
+            placeholder=""
+            value={value.degrees || ''}
             onChange={handleDegreesChange}
             className="pr-6"
           />
@@ -58,10 +73,10 @@ export function CoordinateInput({ label, value, onChange, isLatitude, id }: Coor
         </div>
         <div className="relative">
           <Input
-            type="number"
-            min="0"
-            max="59"
-            value={value.minutes}
+            type="text"
+            inputMode="numeric"
+            placeholder=""
+            value={value.minutes || ''}
             onChange={handleMinutesChange}
             className="pr-6"
           />
@@ -69,11 +84,10 @@ export function CoordinateInput({ label, value, onChange, isLatitude, id }: Coor
         </div>
         <div className="relative">
           <Input
-            type="number"
-            min="0"
-            max="59.9"
-            step="0.1"
-            value={value.seconds}
+            type="text"
+            inputMode="numeric"
+            placeholder=""
+            value={value.seconds || ''}
             onChange={handleSecondsChange}
             className="pr-6"
           />

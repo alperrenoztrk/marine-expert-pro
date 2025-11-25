@@ -3,10 +3,26 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, value, ...props }, ref) => {
+  ({ className, type, value, onChange, ...props }, ref) => {
     // Sanitize NaN numeric values to empty string so cleared inputs stay blank
     const sanitizedValue =
       typeof value === "number" && !Number.isFinite(value) ? "" : value;
+
+    // Handle comma to period conversion for numeric inputs
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if ((type === "number" || props.inputMode === "numeric" || props.inputMode === "decimal") && e.target.value.includes(',')) {
+        const newEvent = {
+          ...e,
+          target: {
+            ...e.target,
+            value: e.target.value.replace(',', '.')
+          }
+        } as React.ChangeEvent<HTMLInputElement>;
+        onChange?.(newEvent);
+      } else {
+        onChange?.(e);
+      }
+    };
 
     return (
       <input
@@ -17,6 +33,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
         )}
         ref={ref}
         value={sanitizedValue as any}
+        onChange={handleChange}
         {...props}
       />
     )
