@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,31 @@ const DraftSurveyDensity = () => {
   const [standardDensity, setStandardDensity] = useState("1.025");
   const [displacement, setDisplacement] = useState("");
   const [correction, setCorrection] = useState<number | null>(null);
+
+  // Load saved values from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('draft-survey-density');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.seawaterDensity) setSeawaterDensity(data.seawaterDensity);
+        if (data.standardDensity) setStandardDensity(data.standardDensity);
+        if (data.displacement) setDisplacement(data.displacement);
+      }
+    } catch (error) {
+      console.error("Error loading saved density inputs:", error);
+    }
+  }, []);
+
+  // Save inputs to localStorage
+  useEffect(() => {
+    try {
+      const data = { seawaterDensity, standardDensity, displacement };
+      localStorage.setItem('draft-survey-density', JSON.stringify(data));
+    } catch (error) {
+      console.error("Error saving density inputs:", error);
+    }
+  }, [seawaterDensity, standardDensity, displacement]);
 
   const calculateDensityCorrection = () => {
     const density = parseFloat(seawaterDensity);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -47,6 +47,41 @@ export default function CelestialCalculations() {
     calculatedAzimuth: number;
     intercept: number;
   } | null>(null);
+
+  // Load saved values from localStorage
+  useEffect(() => {
+    try {
+      const savedSextant = localStorage.getItem('celestial-sextant');
+      const savedNav = localStorage.getItem('celestial-nav');
+      
+      if (savedSextant) {
+        setSextantReadings(JSON.parse(savedSextant));
+      }
+      if (savedNav) {
+        setNavInputs(JSON.parse(savedNav));
+      }
+    } catch (error) {
+      console.error("Error loading saved celestial inputs:", error);
+    }
+  }, []);
+
+  // Save sextant readings to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('celestial-sextant', JSON.stringify(sextantReadings));
+    } catch (error) {
+      console.error("Error saving sextant readings:", error);
+    }
+  }, [sextantReadings]);
+
+  // Save navigation inputs to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('celestial-nav', JSON.stringify(navInputs));
+    } catch (error) {
+      console.error("Error saving navigation inputs:", error);
+    }
+  }, [navInputs]);
 
   // Sextant calculations
   const calculateTrueAltitude = () => {
