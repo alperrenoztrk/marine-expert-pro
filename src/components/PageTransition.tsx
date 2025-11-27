@@ -29,8 +29,10 @@ export const PageTransition = ({ children, direction = "none" }: PageTransitionP
       exit="exit"
       variants={variants}
       transition={{
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1], // ease-out cubic-bezier
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        mass: 0.8,
       }}
       className="w-full"
     >
