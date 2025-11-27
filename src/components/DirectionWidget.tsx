@@ -60,10 +60,12 @@ const DirectionWidget = () => {
   const startListening = () => {
     const handleOrientation = (event: DeviceOrientationEvent) => {
       const h = computeHeadingFromEvent(event);
-      if (h !== null) {
-        setHeading((prev) => Math.round(smoothAngle(prev, h, 0.25)));
+      if (h !== null && isFinite(h)) {
+        // Use adaptive smoothing: 0.3 for good balance between stability and responsiveness
+        setHeading((prev) => Math.round(smoothAngle(prev, h, 0.3)));
         setError(null);
       } else {
+        // Only show error if we consistently can't get heading
         setError('Pusula verisi alınamıyor');
       }
     };
