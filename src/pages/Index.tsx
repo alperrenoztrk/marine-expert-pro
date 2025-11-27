@@ -135,110 +135,31 @@ const Index = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-200 via-sky-200 to-sky-400 cursor-pointer"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-300 via-sky-300 to-sky-400"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
-      {/* Swipe indicators */}
-      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-        <div className="flex flex-col items-center gap-2 animate-pulse">
-          <ChevronLeft className="w-8 h-8 text-white/60 drop-shadow-lg" />
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-white/60"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white/40"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-        <div className="flex flex-col items-center gap-2 animate-pulse">
-          <ChevronRight className="w-8 h-8 text-white/60 drop-shadow-lg" />
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white/40"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white/60"></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Top right settings button */}
-      <div className="fixed right-6 top-6 z-20 flex items-center">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              size="icon"
-              className="h-12 w-12 rounded-full bg-blue-600/90 hover:bg-blue-700 text-white shadow-lg border-2 border-white/30"
-              title="Ayarlar"
-              aria-label="Ayarlar"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Settings className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent onClick={(e) => e.stopPropagation()}>
-            <SheetHeader>
-              <SheetTitle>Ayarlar</SheetTitle>
-              <SheetDescription>
-                Uygulama ayarlarınızı buradan yönetin
-              </SheetDescription>
-            </SheetHeader>
-            <div className="mt-6 space-y-4">
-              <Link to="/settings" className="block">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Tüm Ayarlar
-                </Button>
-              </Link>
-              
-              <div className="pt-4 border-t">
-                <h3 className="font-medium mb-3">Dil Seçimi</h3>
-                <LanguageSelector />
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-
-
-      {/* Decorative ocean waves background */}
-      <img
-        src="/maritime-home-background.svg"
-        alt=""
-        className="pointer-events-none select-none absolute inset-x-0 bottom-0 w-full"
-      />
-
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
         {/* Title */}
-        <div className="mb-10">
-          <h1 className="maritime-title font-bold mb-3 leading-tight">
-            <span
-              className="block text-6xl md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-b from-blue-700 to-blue-500 drop-shadow-[0_6px_16px_rgba(0,0,0,0.25)]"
-            >
+        <div className="mb-12 mt-20">
+          <h1 className="maritime-title font-extrabold leading-none mb-4">
+            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900">
               Marine
             </span>
-            <span
-              className="block text-6xl md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-b from-blue-700 to-blue-500 drop-shadow-[0_6px_16px_rgba(0,0,0,0.25)]"
-            >
+            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900">
               Expert
             </span>
           </h1>
-          <p
-            className="maritime-subtitle text-lg md:text-xl text-slate-800/90 font-medium mt-4"
-            data-translatable
-          >
+          <p className="text-xl md:text-2xl text-slate-900 font-medium">
             Tüm denizcilerin ortak uygulaması
           </p>
         </div>
 
         {/* Compass */}
-        <div className="relative w-56 h-56 md:w-64 md:h-64 drop-shadow-2xl">
+        <div className="relative w-72 h-72 md:w-80 md:h-80 mb-16 drop-shadow-2xl">
           <MetalCompassDial
             headingDeg={headingDeg ?? 0}
             className="h-full w-full select-none pointer-events-none"
@@ -246,8 +167,8 @@ const Index = () => {
         </div>
 
         {/* CTA Button */}
-        <Link to="/calculations" className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20" aria-label="Keşfetmeye Başla">
-          <Button className="rounded-full px-8 md:px-12 py-6 text-xl md:text-2xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xl">
+        <Link to="/calculations" className="z-20" aria-label="Keşfetmeye Başla">
+          <Button className="rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 text-white shadow-2xl border-4 border-white/20">
             Keşfetmeye Başla
           </Button>
         </Link>

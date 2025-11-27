@@ -30,8 +30,6 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
     return { innerRadius, outerRadius, strokeWidth, opacity };
   };
 
-  // Cardinal text labels (K, D, G, B) intentionally removed per design request.
-
   return (
     <div className={className} style={{ position: 'relative' }}>
       <svg
@@ -42,39 +40,6 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         textRendering="geometricPrecision"
       >
         <defs>
-          {/* Theming-friendly CSS variables with graceful fallbacks */}
-
-          {/* Soft radial metal gradient */}
-          <radialGradient id="metalRadial" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#f7f7f7" />
-            <stop offset="45%" stopColor="#ededed" />
-            <stop offset="75%" stopColor="#dcdcdc" />
-            <stop offset="100%" stopColor="#bfbfbf" />
-          </radialGradient>
-
-          {/* Edge shadow for depth */}
-          <radialGradient id="edgeShadow" cx="50%" cy="50%" r="50%">
-            <stop offset="70%" stopColor="rgba(0,0,0,0)" />
-            <stop offset="100%" stopColor="rgba(0,0,0,0.35)" />
-          </radialGradient>
-
-          {/* Subtle brushed overlay using noise */}
-          <filter id="brushed" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="1" seed="3" />
-            <feColorMatrix type="saturate" values="0" />
-            <feComponentTransfer>
-              <feFuncA type="table" tableValues="0 0.08" />
-            </feComponentTransfer>
-            <feGaussianBlur stdDeviation="0.4" />
-          </filter>
-
-          {/* Gloss arc */}
-          <linearGradient id="gloss" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.65)" />
-            <stop offset="25%" stopColor="rgba(255,255,255,0.25)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </linearGradient>
-
           {/* Needle gradients */}
           <linearGradient id="needleRed" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ff6b6b" />
@@ -93,33 +58,24 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
 
-          {/* Glass highlight */}
-          <radialGradient id="glassHighlight" cx="35%" cy="25%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.6)" />
-            <stop offset="25%" stopColor="rgba(255,255,255,0.2)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </radialGradient>
-
           {/* Glass edge shine */}
           <radialGradient id="glassEdge" cx="50%" cy="50%">
             <stop offset="85%" stopColor="rgba(255,255,255,0)" />
             <stop offset="95%" stopColor="rgba(255,255,255,0.25)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
-
         </defs>
-
 
         {/* Outer ring with black face */}
         <g>
-          <circle cx="100" cy="100" r="98" fill="#000000" />
+          <circle cx="100" cy="100" r="98" fill="#1a1a1a" />
           {/* Rim */}
-          <circle cx="100" cy="100" r="98" fill="none" stroke="#9aa0a6" strokeWidth="1.5" />
-          <circle cx="100" cy="100" r="95" fill="none" stroke="#c7c7c7" strokeWidth="1" />
+          <circle cx="100" cy="100" r="98" fill="none" stroke="#4a4a4a" strokeWidth="2" />
+          <circle cx="100" cy="100" r="95" fill="none" stroke="#6a6a6a" strokeWidth="1" />
         </g>
 
         {/* Tick marks */}
-        <g stroke="#2b2b2b" strokeLinecap="round">
+        <g stroke="white" strokeLinecap="round">
           {ticks.map((angle) => {
             const { innerRadius, outerRadius, strokeWidth, opacity } = getTickProps(angle);
             return (
@@ -137,31 +93,76 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           })}
         </g>
 
-        {/* Numeric labels every 30° - brighter green */}
+        {/* Cardinal direction labels (N, E, S, W) - large and prominent */}
         <g
-          fill="#34d399"
-          stroke="#064e3b"
-          strokeWidth="0.4"
-          paintOrder="stroke"
+          fill="white"
+          fontFamily="ui-sans-serif, system-ui, -apple-system"
+          fontSize="20"
+          fontWeight={900}
+        >
+          {/* N - North at 0° */}
+          <text x={100} y={28} textAnchor="middle" dominantBaseline="central">N</text>
+          {/* E - East at 90° */}
+          <text x={172} y={103} textAnchor="middle" dominantBaseline="central">E</text>
+          {/* S - South at 180° */}
+          <text x={100} y={172} textAnchor="middle" dominantBaseline="central">S</text>
+          {/* W - West at 270° */}
+          <text x={28} y={103} textAnchor="middle" dominantBaseline="central">W</text>
+        </g>
+
+        {/* Degree numbers at 90, 180 */}
+        <g
+          fill="white"
+          fontFamily="ui-sans-serif, system-ui, -apple-system"
+          fontSize="12"
+          fontWeight={700}
+        >
+          {/* 90 next to E */}
+          <text x={145} y={88} textAnchor="middle" dominantBaseline="central">90</text>
+          {/* 180 */}
+          <text x={100} y={148} textAnchor="middle" dominantBaseline="central">180</text>
+        </g>
+
+        {/* Intermediate degree numbers (30, 60, 120, 150, 210, 240, 270, 300, 330) */}
+        <g
+          fill="white"
           fontFamily="ui-sans-serif, system-ui, -apple-system"
           fontSize="11"
-          fontWeight={800}
+          fontWeight={600}
         >
-          {Array.from({ length: 12 }, (_, i) => i * 30).map((angle) => {
-            const label = angle === 0 ? '0' : String(angle);
-            const radius = 62;
+          {[30, 60, 120, 150, 210, 240, 270, 300, 330].map((angle) => {
+            const radius = angle === 270 ? 55 : 62;
             const rad = (Math.PI / 180) * angle;
             const x = 100 + radius * Math.sin(rad);
             const y = 100 - radius * Math.cos(rad);
             return (
-              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central" opacity={1}>
-                {label}
+              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
+                {angle}
               </text>
             );
           })}
         </g>
 
-        {/* Cardinal text labels removed */}
+        {/* Small degree markers at 10, 20, 170 */}
+        <g
+          fill="white"
+          fontFamily="ui-sans-serif, system-ui, -apple-system"
+          fontSize="9"
+          fontWeight={500}
+          opacity={0.8}
+        >
+          {[10, 20, 170].map((angle) => {
+            const radius = 62;
+            const rad = (Math.PI / 180) * angle;
+            const x = 100 + radius * Math.sin(rad);
+            const y = 100 - radius * Math.cos(rad);
+            return (
+              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
+                {angle}
+              </text>
+            );
+          })}
+        </g>
 
         {/* Needle */}
         <g transform={`rotate(${clampedHeading} 100 100)`}>
@@ -175,7 +176,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           <circle cx="100" cy="100" r="5" fill="#fdfdfd" stroke="#a3a3a3" strokeWidth="0.8" />
         </g>
 
-        {/* Glass dome overlay (highlight bubbles removed) */}
+        {/* Glass dome overlay */}
         <g>
           {/* Main glass dome */}
           <circle cx="100" cy="100" r="98" fill="url(#glassDome)" />
@@ -188,4 +189,3 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
 };
 
 export default MetalCompassDial;
-
