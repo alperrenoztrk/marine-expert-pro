@@ -78,6 +78,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         <g stroke="white" strokeLinecap="round">
           {ticks.map((angle) => {
             const { innerRadius, outerRadius, strokeWidth, opacity } = getTickProps(angle);
+            const isCardinal = angle % 90 === 0;
             return (
               <line
                 key={`tick-${angle}`}
@@ -87,6 +88,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
                 y2={100 - innerRadius}
                 strokeWidth={strokeWidth}
                 opacity={opacity}
+                stroke={isCardinal ? "#fbbf24" : "white"}
                 transform={`rotate(${angle} 100 100)`}
               />
             );
@@ -97,13 +99,13 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         <g
           fill="white"
           fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="22"
+          fontSize="24"
           fontWeight={900}
         >
-          <text x={100} y={24} textAnchor="middle" dominantBaseline="central">N</text>
-          <text x={176} y={100} textAnchor="middle" dominantBaseline="central">E</text>
-          <text x={100} y={176} textAnchor="middle" dominantBaseline="central">S</text>
-          <text x={24} y={100} textAnchor="middle" dominantBaseline="central">W</text>
+          <text x={100} y={20} textAnchor="middle" dominantBaseline="central">N</text>
+          <text x={180} y={100} textAnchor="middle" dominantBaseline="central">E</text>
+          <text x={100} y={180} textAnchor="middle" dominantBaseline="central">S</text>
+          <text x={20} y={100} textAnchor="middle" dominantBaseline="central">W</text>
         </g>
 
         {/* Main degree numbers (30° intervals) */}
