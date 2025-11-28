@@ -159,7 +159,7 @@ const Index = () => {
         </div>
 
         {/* Compass */}
-        <div className="relative w-72 h-72 md:w-80 md:h-80 mb-16 drop-shadow-2xl">
+        <div className="relative w-56 h-56 md:w-64 md:h-64 mb-16 drop-shadow-2xl">
           <MetalCompassDial
             headingDeg={headingDeg ?? 0}
             className="h-full w-full select-none pointer-events-none"
