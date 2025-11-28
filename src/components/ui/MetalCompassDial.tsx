@@ -97,62 +97,24 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         <g
           fill="white"
           fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="20"
+          fontSize="22"
           fontWeight={900}
         >
-          {/* N - North at 0° */}
-          <text x={100} y={28} textAnchor="middle" dominantBaseline="central">N</text>
-          {/* E - East at 90° */}
-          <text x={172} y={103} textAnchor="middle" dominantBaseline="central">E</text>
-          {/* S - South at 180° */}
-          <text x={100} y={172} textAnchor="middle" dominantBaseline="central">S</text>
-          {/* W - West at 270° */}
-          <text x={28} y={103} textAnchor="middle" dominantBaseline="central">W</text>
+          <text x={100} y={24} textAnchor="middle" dominantBaseline="central">N</text>
+          <text x={176} y={100} textAnchor="middle" dominantBaseline="central">E</text>
+          <text x={100} y={176} textAnchor="middle" dominantBaseline="central">S</text>
+          <text x={24} y={100} textAnchor="middle" dominantBaseline="central">W</text>
         </g>
 
-        {/* Degree numbers at 90, 180 */}
+        {/* Main degree numbers (30° intervals) */}
         <g
           fill="white"
           fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="12"
+          fontSize="13"
           fontWeight={700}
         >
-          {/* 90 next to E */}
-          <text x={145} y={88} textAnchor="middle" dominantBaseline="central">90</text>
-          {/* 180 */}
-          <text x={100} y={148} textAnchor="middle" dominantBaseline="central">180</text>
-        </g>
-
-        {/* Intermediate degree numbers (30, 60, 120, 150, 210, 240, 270, 300, 330) */}
-        <g
-          fill="white"
-          fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="11"
-          fontWeight={600}
-        >
-          {[30, 60, 120, 150, 210, 240, 270, 300, 330].map((angle) => {
-            const radius = angle === 270 ? 55 : 62;
-            const rad = (Math.PI / 180) * angle;
-            const x = 100 + radius * Math.sin(rad);
-            const y = 100 - radius * Math.cos(rad);
-            return (
-              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
-                {angle}
-              </text>
-            );
-          })}
-        </g>
-
-        {/* Small degree markers at 10, 20, 170 */}
-        <g
-          fill="white"
-          fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="9"
-          fontWeight={500}
-          opacity={0.8}
-        >
-          {[10, 20, 170].map((angle) => {
-            const radius = 62;
+          {[30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle) => {
+            const radius = 58;
             const rad = (Math.PI / 180) * angle;
             const x = 100 + radius * Math.sin(rad);
             const y = 100 - radius * Math.cos(rad);
