@@ -113,7 +113,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           fontSize="13"
           fontWeight={700}
         >
-          {[30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle) => {
+          {[30, 60, 120, 150, 210, 240, 300, 330].map((angle) => {
             const radius = 58;
             const rad = (Math.PI / 180) * angle;
             const x = 100 + radius * Math.sin(rad);
