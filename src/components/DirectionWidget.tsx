@@ -18,6 +18,7 @@ import { computeHeadingFromEvent, smoothAngle } from '@/utils/heading';
 
 const DirectionWidget = () => {
   const [heading, setHeading] = useState<number | null>(null);
+  const [speed, setSpeed] = useState<number | null>(null); // Speed in knots
   const [error, setError] = useState<string | null>(null);
   const [isSupported, setIsSupported] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -54,6 +55,37 @@ const DirectionWidget = () => {
     };
 
     checkSupport();
+    
+    // Start GPS speed tracking
+    let watchId: number | null = null;
+    if ('geolocation' in navigator) {
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          if (position.coords.speed !== null && position.coords.speed >= 0) {
+            // Convert m/s to knots (1 m/s = 1.94384 knots)
+            const speedKnots = position.coords.speed * 1.94384;
+            setSpeed(speedKnots);
+          } else {
+            setSpeed(0);
+          }
+        },
+        (err) => {
+          console.warn('GPS hız verisi alınamadı:', err);
+          setSpeed(null);
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 1000,
+          timeout: 5000
+        }
+      );
+    }
+
+    return () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -141,7 +173,7 @@ const DirectionWidget = () => {
     }
 
     return (
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-3">
         <div className="text-3xl font-bold tabular-nums">
           {heading !== null ? `${heading}°` : '--°'}
         </div>
@@ -150,6 +182,13 @@ const DirectionWidget = () => {
             {getCardinalDirection(heading)}
           </div>
         )}
+        {/* Speed indicator */}
+        <div className="pt-2 border-t border-border/50">
+          <div className="text-lg font-semibold tabular-nums text-foreground">
+            {speed !== null ? `${speed.toFixed(1)} kn` : '-- kn'}
+          </div>
+          <div className="text-xs text-muted-foreground mt-0.5">Hız</div>
+        </div>
         {heading === null && hasPermission === true && (
           <p className="text-xs text-muted-foreground">Pusula verisi bekleniyor...</p>
         )}
