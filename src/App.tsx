@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import StabilityMenu from "./pages/StabilityMenu";
 import SafetyMenu from "./pages/SafetyMenu";
+import WeatherMenu from "./pages/WeatherMenu";
 import NavigationMenu from "./pages/NavigationMenu";
 import EconomicsMenu from "./pages/EconomicsMenu";
 import SeamanshipMenu from "./pages/SeamanshipMenu";
@@ -112,6 +113,7 @@ const AnimatedRoutes = () => {
         <Route path="/stability/wind-weather" element={<PageTransition><StabilityWindWeatherPage /></PageTransition>} />
         <Route path="/stability/imo-criteria" element={<PageTransition><StabilityIMOCriteriaPage /></PageTransition>} />
         <Route path="/safety-menu" element={<PageTransition><SafetyMenu /></PageTransition>} />
+        <Route path="/weather-menu" element={<PageTransition><WeatherMenu /></PageTransition>} />
         <Route path="/navigation-menu" element={<PageTransition><NavigationMenu /></PageTransition>} />
         <Route path="/economics-menu" element={<PageTransition><EconomicsMenu /></PageTransition>} />
         <Route path="/seamanship-menu" element={<PageTransition><SeamanshipMenu /></PageTransition>} />

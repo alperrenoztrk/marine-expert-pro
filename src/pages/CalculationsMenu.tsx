@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Shield } from 'lucide-react';
+import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Shield, Cloud } from 'lucide-react';
 
 const categories = [
   { title: 'Stabilite', icon: Ship, link: '/stability' },
@@ -8,6 +8,7 @@ const categories = [
   { title: 'Gemicilik', icon: Anchor, link: '/seamanship-menu' },
   { title: 'Mali', icon: DollarSign, link: '/economics-menu' },
   { title: 'Emniyet', icon: LifeBuoy, link: '/safety-menu' },
+  { title: 'Meteoroloji', icon: Cloud, link: '/weather-menu' },
   { title: 'Operasyonel', icon: Database, link: '/tank-menu' },
   { title: 'SOLAS', icon: Shield, link: '/solas' },
 ];
