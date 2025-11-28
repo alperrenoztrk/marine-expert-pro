@@ -196,7 +196,7 @@ export default function StabilityGZIMO() {
           )}
 
           <div className="flex flex-wrap gap-2">
-            <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
+            <Button variant="primary" onClick={handleCalculate}>Hesapla</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportPng}><Download className="h-4 w-4" /> PNG</Button>
             <Button variant="outline" className="gap-2" onClick={handleExportCsv}><Download className="h-4 w-4" /> CSV</Button>
             <Button variant="ghost" onClick={() => { setData(null); setImo(null); setErrors([]); }}>Temizle</Button>

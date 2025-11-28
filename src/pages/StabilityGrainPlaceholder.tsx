@@ -158,7 +158,7 @@ export default function StabilityGrainPlaceholder() {
           )}
 
           <div className="flex gap-2">
-            <Button variant="calculator" onClick={handleCalculate}>Hesapla</Button>
+            <Button variant="primary" onClick={handleCalculate}>Hesapla</Button>
             <Button variant="ghost" onClick={() => setResult(null)}>Temizle</Button>
           </div>
 
