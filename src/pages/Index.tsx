@@ -6,6 +6,7 @@ import { Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import WeatherWidget from "@/components/WeatherWidget";
 import MoonPhaseWidget from "@/components/MoonPhaseWidget";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { computeHeadingFromEvent, smoothAngle } from "@/utils/heading";
 import {
   Sheet,
   SheetContent,
@@ -21,22 +22,10 @@ const Index = () => {
 
   // --- Compass logic ---
   const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
-    // iOS Safari provides webkitCompassHeading (0..360, CW from North).
-    const anyEvent: any = event as any;
-    let heading: number | null = null;
-
-    if (typeof anyEvent?.webkitCompassHeading === "number") {
-      const h = anyEvent.webkitCompassHeading;
-      if (Number.isFinite(h)) heading = h;
-    } else if (typeof event.alpha === "number") {
-      // Convert alpha (0..360, CCW from device z-axis) to compass heading
-      // Many devices use alpha=0 at North when absolute; 360-alpha gives CW from North
-      heading = 360 - (event.alpha ?? 0);
-    }
-
-    if (heading != null && Number.isFinite(heading)) {
-      const normalized = ((heading % 360) + 360) % 360;
-      setHeadingDeg(normalized);
+    const h = computeHeadingFromEvent(event);
+    if (h !== null && isFinite(h)) {
+      // Use same smoothing as DirectionWidget for consistency
+      setHeadingDeg((prev) => Math.round(smoothAngle(prev, h, 0.3)));
     }
   };
 
