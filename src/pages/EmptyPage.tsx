@@ -92,13 +92,14 @@ const EmptyPage = () => {
 
   // Click navigation for left and right zones
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    // Don't navigate if clicking on interactive elements
+    // Don't navigate if clicking on interactive elements or within widgets
     const target = e.target as HTMLElement;
     if (
       target.closest('button') ||
       target.closest('a') ||
       target.closest('[role="button"]') ||
-      target.closest('.weather-widget-clickable')
+      target.closest('.weather-widget-clickable') ||
+      target.closest('[data-widget-container]') // Widget container'ları engelle
     ) {
       return;
     }
@@ -328,48 +329,56 @@ const EmptyPage = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsContent value="time" className="space-y-4 animate-fade-in mt-0">
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>⏰ Zaman Bilgileri</h2>
-            <TimeWidgets
-              trtTime={trtTime}
-              gmtTime={gmtTime}
-              lmtTime={lmtTime}
-              ztTime={ztTime}
-              sunriseTime={sunriseTime}
-              sunsetTime={sunsetTime}
-            />
+            <div data-widget-container>
+              <TimeWidgets
+                trtTime={trtTime}
+                gmtTime={gmtTime}
+                lmtTime={lmtTime}
+                ztTime={ztTime}
+                sunriseTime={sunriseTime}
+                sunsetTime={sunsetTime}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="weather" className="space-y-4 animate-fade-in mt-0">
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🌤️ Hava Durumu</h2>
-            <WeatherInfoWidgets
-              temperature={data?.temperatureC}
-              humidity={data?.humidityPct}
-              pressure={data?.pressureHpa}
-              windSpeed={data?.windSpeedKt}
-              windDirection={data?.windDirectionDeg}
-              windCompass={windCompass}
-              windNameTr={windNameTr}
-              weatherCode={data?.weatherCode}
-              weatherEmoji={weatherEmoji}
-              weatherDescription={weatherDescription}
-              latitude={data?.latitude}
-              longitude={data?.longitude}
-            />
+            <div data-widget-container>
+              <WeatherInfoWidgets
+                temperature={data?.temperatureC}
+                humidity={data?.humidityPct}
+                pressure={data?.pressureHpa}
+                windSpeed={data?.windSpeedKt}
+                windDirection={data?.windDirectionDeg}
+                windCompass={windCompass}
+                windNameTr={windNameTr}
+                weatherCode={data?.weatherCode}
+                weatherEmoji={weatherEmoji}
+                weatherDescription={weatherDescription}
+                latitude={data?.latitude}
+                longitude={data?.longitude}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="location" className="space-y-4 animate-fade-in mt-0">
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🌍 Konum & Göksel Cisimler</h2>
-            <LocationCelestialWidgets
-              locationLabel={locationLabel}
-              latitude={data?.latitude}
-              longitude={data?.longitude}
-              latitudeDMS={latitudeDMS}
-              longitudeDMS={longitudeDMS}
-            />
+            <div data-widget-container>
+              <LocationCelestialWidgets
+                locationLabel={locationLabel}
+                latitude={data?.latitude}
+                longitude={data?.longitude}
+                latitudeDMS={latitudeDMS}
+                longitudeDMS={longitudeDMS}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="navigation" className="space-y-4 animate-fade-in mt-0">
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🧭 Navigasyon Araçları</h2>
-            <NavigationWidgets />
+            <div data-widget-container>
+              <NavigationWidgets />
+            </div>
           </TabsContent>
         </Tabs>
         
