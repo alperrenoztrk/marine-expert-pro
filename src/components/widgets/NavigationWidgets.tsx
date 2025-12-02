@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Navigation, Gauge } from "lucide-react";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
-import { computeHeadingFromEvent, smoothAngle } from "@/utils/heading";
+import { createCompassListener, requestCompassPermission } from "@/utils/heading";
 import { Button } from "@/components/ui/button";
 
 const NavigationWidgets: React.FC = () => {
@@ -13,7 +13,11 @@ const NavigationWidgets: React.FC = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const checkSupport = async () => {
+    let compassCleanup: (() => void) | null = null;
+    let gpsWatchId: number | null = null;
+
+    const initCompass = async () => {
+      // Check basic support
       if (!('DeviceOrientationEvent' in window)) {
         setError('Cihaz yönlendirme desteklenmiyor');
         setIsSupported(false);
@@ -21,34 +25,27 @@ const NavigationWidgets: React.FC = () => {
       }
       setIsSupported(true);
 
-      // iOS 13+ permission
-      const Doe: any = window.DeviceOrientationEvent as unknown;
-      if (Doe && typeof Doe.requestPermission === 'function') {
-        try {
-          const permission = await Doe.requestPermission();
-          if (permission === 'granted') {
-            setHasPermission(true);
-            startListening();
-          } else {
-            setHasPermission(false);
-            setError('Yönlendirme izni reddedildi');
-          }
-        } catch {
-          setHasPermission(false);
-          setError('İzin alınamadı - HTTPS gerekli olabilir');
-        }
-      } else {
-        setHasPermission(true);
-        startListening();
+      // Request permission (iOS 13+)
+      const granted = await requestCompassPermission();
+      setHasPermission(granted);
+
+      if (!granted) {
+        setError('Yönlendirme izni reddedildi');
+        return;
       }
+
+      // Start unified compass listener
+      compassCleanup = createCompassListener((h) => {
+        setHeading(Math.round(h));
+        setError(null);
+      }, 0.3);
     };
 
-    checkSupport();
+    initCompass();
     
     // Start GPS speed tracking
-    let watchId: number | null = null;
     if ('geolocation' in navigator) {
-      watchId = navigator.geolocation.watchPosition(
+      gpsWatchId = navigator.geolocation.watchPosition(
         (position) => {
           if (position.coords.speed !== null && position.coords.speed >= 0) {
             const speedKnots = position.coords.speed * 1.94384;
@@ -70,48 +67,28 @@ const NavigationWidgets: React.FC = () => {
     }
 
     return () => {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
+      if (compassCleanup) {
+        compassCleanup();
+      }
+      if (gpsWatchId !== null) {
+        navigator.geolocation.clearWatch(gpsWatchId);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startListening = () => {
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      const h = computeHeadingFromEvent(event);
-      if (h !== null && isFinite(h)) {
-        setHeading((prev) => Math.round(smoothAngle(prev, h, 0.3)));
-        setError(null);
-      } else {
-        setError('Pusula verisi alınamıyor');
-      }
-    };
-
-    window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-
-    return () => {
-      window.removeEventListener('deviceorientation', handleOrientation);
-    };
-  };
-
   const requestPermissionManually = async () => {
-    const Doe: any = window.DeviceOrientationEvent as unknown;
-    if (Doe && typeof Doe.requestPermission === 'function') {
-      try {
-        const permission = await Doe.requestPermission();
-        if (permission === 'granted') {
-          setHasPermission(true);
-          setError(null);
-          startListening();
-        } else {
-          setHasPermission(false);
-          setError('Yönlendirme izni reddedildi');
-        }
-      } catch {
-        setHasPermission(false);
-        setError('İzin alınamadı - HTTPS gerekli');
-      }
+    const granted = await requestCompassPermission();
+    if (granted) {
+      setHasPermission(true);
+      setError(null);
+      // Start compass listener
+      createCompassListener((h) => {
+        setHeading(Math.round(h));
+        setError(null);
+      }, 0.3);
+    } else {
+      setHasPermission(false);
+      setError('Yönlendirme izni reddedildi');
     }
   };
 

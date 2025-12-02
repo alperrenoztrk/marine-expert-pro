@@ -185,7 +185,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         </g>
 
         {/* Needle with enhanced 3D effect */}
-        <g transform={`rotate(${clampedHeading} 100 100)`} filter="url(#dropShadow)">
+        <g transform={`rotate(${-clampedHeading} 100 100)`} filter="url(#dropShadow)">
           {/* North (red) pointer - longer and more prominent */}
           <path 
             d="M100 12 L94 86 L100 82 L106 86 Z" 

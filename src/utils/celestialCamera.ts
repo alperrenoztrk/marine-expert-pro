@@ -1,6 +1,6 @@
 // Centralized camera and device-orientation utilities for sextant/celestial features
 // Note: Keep browser-only APIs isolated here for reuse across components
-import { computeHeadingFromEvent, smoothAngle } from './heading';
+import { createCompassListener, smoothAngle, normalizeAngle } from './heading';
 
 export type DeviceOrientationAngles = { alpha: number; beta: number; gamma: number };
 
@@ -60,19 +60,36 @@ export const requestDeviceOrientationPermission = async (): Promise<boolean> => 
 export const addDeviceOrientationListener = (
   handler: (angles: DeviceOrientationAngles, ev: DeviceOrientationEvent) => void
 ) => {
-  let lastHeading: number | null = null;
-  const listener = (ev: DeviceOrientationEvent) => {
-    const heading = computeHeadingFromEvent(ev);
+  let lastAlpha: number | null = null;
+  let lastBeta: number | null = null;
+  let lastGamma: number | null = null;
+  
+  // Use the unified compass listener for alpha (heading)
+  const compassCleanup = createCompassListener((heading) => {
+    lastAlpha = heading;
+  }, 0.25);
+  
+  // Also listen for beta/gamma from regular deviceorientation
+  const orientationHandler = (ev: DeviceOrientationEvent) => {
     const beta = typeof ev.beta === 'number' ? ev.beta : 0;
     const gamma = typeof ev.gamma === 'number' ? ev.gamma : 0;
-    const alpha = heading !== null ? smoothAngle(lastHeading, heading, 0.25) : (typeof ev.alpha === 'number' ? ev.alpha : 0);
-    if (heading !== null) {
-      lastHeading = alpha;
-    }
-    handler({ alpha, beta, gamma }, ev);
+    
+    // Smooth beta and gamma as well for stable rendering
+    lastBeta = lastBeta !== null ? smoothAngle(lastBeta, beta, 0.25) : beta;
+    lastGamma = lastGamma !== null ? smoothAngle(lastGamma, gamma, 0.25) : gamma;
+    
+    // Use the heading from compass listener, fallback to event alpha
+    const alpha = lastAlpha !== null ? lastAlpha : (typeof ev.alpha === 'number' ? normalizeAngle(ev.alpha) : 0);
+    
+    handler({ alpha, beta: lastBeta, gamma: lastGamma }, ev);
   };
-  window.addEventListener('deviceorientation', listener, { passive: true });
-  return () => window.removeEventListener('deviceorientation', listener);
+  
+  window.addEventListener('deviceorientation', orientationHandler, { passive: true });
+  
+  return () => {
+    compassCleanup();
+    window.removeEventListener('deviceorientation', orientationHandler);
+  };
 };
 
 // Sextant dip correction (degrees) from eye height in meters
@@ -81,4 +98,3 @@ export const computeDipCorrectionDeg = (heightOfEyeMeters: number): number => {
   const dipMinutes = 1.76 * Math.sqrt(heightOfEyeMeters);
   return dipMinutes / 60;
 };
-
