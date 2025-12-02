@@ -7,6 +7,7 @@ import WeatherWidget from "@/components/WeatherWidget";
 import MoonPhaseWidget from "@/components/MoonPhaseWidget";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { computeHeadingFromEvent, smoothAngle } from "@/utils/heading";
+import { motion } from "framer-motion";
 import {
   Sheet,
   SheetContent,
@@ -157,9 +158,25 @@ const Index = () => {
 
         {/* CTA Button */}
         <Link to="/calculations" className="z-20" aria-label="Keşfetmeye Başla">
-          <Button className="animate-fade-in hover-scale rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 text-white shadow-2xl border-4 border-white/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(30,64,175,0.5)]">
-            Keşfetmeye Başla
-          </Button>
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              boxShadow: [
+                "0 0 20px rgba(30,64,175,0.3)",
+                "0 0 40px rgba(30,64,175,0.6)",
+                "0 0 20px rgba(30,64,175,0.3)"
+              ]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <Button className="animate-fade-in hover-scale rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 text-white shadow-2xl border-4 border-white/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(30,64,175,0.5)]">
+              Keşfetmeye Başla
+            </Button>
+          </motion.div>
         </Link>
       </div>
     </div>
