@@ -23,108 +23,90 @@ const TimeWidgets: React.FC<TimeWidgetsProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6" data-widget-container>
-      {/* Main Digital Clock - TRT */}
-      <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-2xl p-8 shadow-2xl">
+    <div className="grid grid-cols-2 gap-4" data-widget-container>
+      {/* TRT Card */}
+      <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg aspect-square flex flex-col items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="relative text-center space-y-3">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Clock className="h-5 w-5 text-primary animate-pulse" />
-            <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              Türkiye Saati
-            </div>
-          </div>
-          <div className="font-mono text-6xl md:text-7xl font-bold tracking-widest text-foreground animate-neon-glow">
+        <div className="relative text-center space-y-2 w-full">
+          <Clock className="h-6 w-6 text-primary mx-auto animate-pulse" />
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">TRT</div>
+          <div className="font-mono text-3xl font-bold tracking-tight text-foreground animate-neon-glow">
             {trtTime}
           </div>
-          <div className="h-1 w-32 mx-auto rounded-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-60" />
         </div>
       </Card>
 
-      {/* Other Time Zones - Compact Grid */}
-      <div className="grid grid-cols-3 gap-3">
-        <Card className="glass-widget glass-widget-hover rounded-xl p-3 shadow-lg">
-          <div className="text-center space-y-1">
-            <div className="text-xs font-medium text-muted-foreground uppercase">GMT</div>
-            <div className="font-mono text-xl font-bold text-foreground tracking-wide">
-              {gmtTime}
-            </div>
+      {/* GMT Card */}
+      <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg aspect-square flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative text-center space-y-2 w-full">
+          <Clock className="h-6 w-6 text-primary mx-auto" />
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">GMT</div>
+          <div className="font-mono text-3xl font-bold tracking-tight text-foreground">
+            {gmtTime}
           </div>
-        </Card>
-        
-        <Card className="glass-widget glass-widget-hover rounded-xl p-3 shadow-lg">
-          <div className="text-center space-y-1">
-            <div className="text-xs font-medium text-muted-foreground uppercase">LMT</div>
-            <div className="font-mono text-xl font-bold text-foreground tracking-wide">
-              {lmtTime}
-            </div>
-          </div>
-        </Card>
-        
-        <Card className="glass-widget glass-widget-hover rounded-xl p-3 shadow-lg">
-          <div className="text-center space-y-1">
-            <div className="text-xs font-medium text-muted-foreground uppercase">ZT</div>
-            <div className="font-mono text-xl font-bold text-foreground tracking-wide">
-              {ztTime}
-            </div>
-          </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
 
-      {/* Sunrise & Sunset Cards */}
-      <div className="grid grid-cols-2 gap-4">
-        <Card
-          className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-5 shadow-lg cursor-pointer group"
-          onClick={() => navigate("/sunrise-times")}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative space-y-3">
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <Sunrise className="h-12 w-12 text-orange-500 animate-float" />
-                <div className="absolute inset-0 blur-xl opacity-40">
-                  <Sunrise className="h-12 w-12 text-orange-500" />
-                </div>
-              </div>
-            </div>
-            <div className="text-center space-y-1">
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Gündoğumu
-              </div>
-              <div className="font-mono text-2xl font-bold text-foreground">
-                {sunriseTime}
-              </div>
-            </div>
-            <div className="h-0.5 w-16 mx-auto rounded-full bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-60" />
+      {/* LMT Card */}
+      <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg aspect-square flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative text-center space-y-2 w-full">
+          <Clock className="h-6 w-6 text-primary mx-auto" />
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">LMT</div>
+          <div className="font-mono text-3xl font-bold tracking-tight text-foreground">
+            {lmtTime}
           </div>
-        </Card>
+        </div>
+      </Card>
 
-        <Card
-          className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-5 shadow-lg cursor-pointer group"
-          onClick={() => navigate("/sunset-times")}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative space-y-3">
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <Sunset className="h-12 w-12 text-indigo-500 animate-float" style={{ animationDelay: '1s' }} />
-                <div className="absolute inset-0 blur-xl opacity-40">
-                  <Sunset className="h-12 w-12 text-indigo-500" />
-                </div>
-              </div>
-            </div>
-            <div className="text-center space-y-1">
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Günbatımı
-              </div>
-              <div className="font-mono text-2xl font-bold text-foreground">
-                {sunsetTime}
-              </div>
-            </div>
-            <div className="h-0.5 w-16 mx-auto rounded-full bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-60" />
+      {/* ZT Card */}
+      <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg aspect-square flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative text-center space-y-2 w-full">
+          <Clock className="h-6 w-6 text-primary mx-auto" />
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">ZT</div>
+          <div className="font-mono text-3xl font-bold tracking-tight text-foreground">
+            {ztTime}
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
+
+      {/* Sunrise Card */}
+      <Card
+        className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg aspect-square flex flex-col items-center justify-center cursor-pointer group"
+        onClick={() => navigate("/sunrise-times")}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative text-center space-y-2 w-full">
+          <div className="relative mx-auto w-fit">
+            <Sunrise className="h-8 w-8 text-orange-500 animate-float" />
+            <div className="absolute inset-0 blur-lg opacity-40">
+              <Sunrise className="h-8 w-8 text-orange-500" />
+            </div>
+          </div>
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Gündoğumu</div>
+          <div className="font-mono text-2xl font-bold text-foreground">{sunriseTime}</div>
+        </div>
+      </Card>
+
+      {/* Sunset Card */}
+      <Card
+        className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg aspect-square flex flex-col items-center justify-center cursor-pointer group"
+        onClick={() => navigate("/sunset-times")}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative text-center space-y-2 w-full">
+          <div className="relative mx-auto w-fit">
+            <Sunset className="h-8 w-8 text-indigo-500 animate-float" style={{ animationDelay: '1s' }} />
+            <div className="absolute inset-0 blur-lg opacity-40">
+              <Sunset className="h-8 w-8 text-indigo-500" />
+            </div>
+          </div>
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Günbatımı</div>
+          <div className="font-mono text-2xl font-bold text-foreground">{sunsetTime}</div>
+        </div>
+      </Card>
     </div>
   );
 };
