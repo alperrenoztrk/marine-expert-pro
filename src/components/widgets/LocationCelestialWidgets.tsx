@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
+import { useLocation } from "@/contexts/LocationContext";
+import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 
 interface LocationCelestialWidgetsProps {
   locationLabel: string;
@@ -12,13 +14,42 @@ interface LocationCelestialWidgetsProps {
 }
 
 const LocationCelestialWidgets: React.FC<LocationCelestialWidgetsProps> = ({
-  locationLabel,
-  latitude,
-  longitude,
-  latitudeDMS,
-  longitudeDMS,
+  locationLabel: propLocationLabel,
+  latitude: propLatitude,
+  longitude: propLongitude,
+  latitudeDMS: propLatitudeDMS,
+  longitudeDMS: propLongitudeDMS,
 }) => {
   const navigate = useNavigate();
+  const { selectedLocation } = useLocation();
+  const { data: currentWeather, locationLabel: currentLocationLabel } = useCurrentWeather();
+
+  // Context'ten veya prop'lardan konumu al
+  const effectiveLatitude = selectedLocation?.latitude ?? currentWeather?.latitude ?? propLatitude;
+  const effectiveLabel = selectedLocation?.locationLabel ?? currentLocationLabel ?? propLocationLabel;
+
+  // DMS formatını hesapla
+  const decimalToDMS = (decimal: number | undefined, isLatitude: boolean = true): string => {
+    if (decimal === undefined || !Number.isFinite(decimal)) return "-";
+    
+    const abs = Math.abs(decimal);
+    const degrees = Math.floor(abs);
+    const minutesFloat = (abs - degrees) * 60;
+    const minutes = Math.floor(minutesFloat);
+    const seconds = Math.round((minutesFloat - minutes) * 60);
+    
+    let direction: string;
+    if (isLatitude) {
+      direction = decimal >= 0 ? "K" : "G";
+    } else {
+      direction = decimal >= 0 ? "D" : "B";
+    }
+    
+    return `${degrees}°${minutes.toString().padStart(2, '0')}'${seconds.toString().padStart(2, '0')}"${direction}`;
+  };
+
+  const latitudeDMS = decimalToDMS(effectiveLatitude, true);
+  const longitudeDMS = decimalToDMS(selectedLocation?.longitude ?? currentWeather?.longitude ?? propLongitude, false);
 
   return (
     <div className="space-y-4">
@@ -38,7 +69,7 @@ const LocationCelestialWidgets: React.FC<LocationCelestialWidgetsProps> = ({
           <div className="flex-1 min-w-0">
             <div className="text-xs font-medium text-muted-foreground mb-1">Konum</div>
             <div className="text-sm font-semibold text-foreground mb-2 truncate">
-              {locationLabel}
+              {effectiveLabel || "Bilinmiyor"}
             </div>
             <div className="text-xs text-muted-foreground space-y-1">
               <div>Enlem: {latitudeDMS}</div>

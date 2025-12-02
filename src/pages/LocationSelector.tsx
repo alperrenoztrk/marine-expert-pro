@@ -8,6 +8,8 @@ import { useLocationSearch, type LocationResult } from '@/hooks/useLocationSearc
 import { useWeatherForecast } from '@/hooks/useWeatherForecast';
 import { useCurrentWeather } from '@/hooks/useCurrentWeather';
 import { formatDecimalAsDMS } from '@/utils/coordinateUtils';
+import { useLocation } from '@/contexts/LocationContext';
+import { toast } from 'sonner';
 
 function LocationCard({ location, onSelect }: { location: LocationResult; onSelect: (location: LocationResult) => void }) {
   return (
@@ -69,16 +71,26 @@ export default function LocationSelector() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { query, setQuery, results, loading, error } = useLocationSearch();
-  const [selectedLocation, setSelectedLocation] = useState<LocationResult | null>(null);
+  const [selectedLocationState, setSelectedLocationState] = useState<LocationResult | null>(null);
+  const { setSelectedLocation } = useLocation();
   
   const returnTo = searchParams.get('returnTo') || '/';
   const { locationLabel } = useCurrentWeather();
 
   const handleLocationSelect = (location: LocationResult) => {
-    setSelectedLocation(location);
+    setSelectedLocationState(location);
     
-    // Navigate to weather forecast with selected coordinates
-    navigate(`/weather-forecast?lat=${location.latitude}&lon=${location.longitude}&location=${encodeURIComponent(`${location.name}, ${location.country}`)}`);
+    // Global context'e kaydet
+    setSelectedLocation({
+      latitude: location.latitude,
+      longitude: location.longitude,
+      locationLabel: `${location.name}, ${location.country}`,
+    });
+    
+    toast.success(`Konum ayarlandı: ${location.name}`);
+    
+    // Geri dön
+    navigate(-1);
   };
 
   return (
