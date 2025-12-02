@@ -88,11 +88,11 @@ export default function MoonPhaseWidget() {
 
   return (
     <div
-      className="col-span-2 group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+      className="glass-widget glass-widget-hover col-span-2 relative overflow-hidden rounded-xl p-5 shadow-lg cursor-pointer group"
       onClick={() => navigate("/moon-phases")}
       title="Ay Fazları"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <div className="relative flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

@@ -88,19 +88,24 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-4" data-widget-container>
         {/* Weather Condition Card - Clickable */}
         <Card 
-          className="weather-widget-clickable group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+          className="glass-widget glass-widget-hover weather-widget-clickable relative overflow-hidden rounded-2xl p-6 shadow-2xl cursor-pointer group"
           onClick={() => setForecastOpen(true)}
         >
-          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-primary/5 to-accent/5" />
-          <div className="relative text-center">
-            <div className="text-6xl mb-2">{weatherEmoji}</div>
-            <div className="text-lg font-semibold text-foreground">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="relative text-center space-y-2">
+            <div className="relative inline-block">
+              <div className="text-7xl animate-float">{weatherEmoji}</div>
+              <div className="absolute inset-0 blur-2xl opacity-30 animate-float" style={{ animationDelay: '0.5s' }}>
+                {weatherEmoji}
+              </div>
+            </div>
+            <div className="text-xl font-bold text-foreground">
               {weatherDescription}
             </div>
-            <div className="text-xs text-muted-foreground mt-2">
+            <div className="text-xs text-muted-foreground uppercase tracking-wide">
               7 günlük tahmin için tıklayın
             </div>
           </div>
@@ -108,58 +113,105 @@ const WeatherInfoWidgets: React.FC<WeatherInfoWidgetsProps> = ({
 
       {/* Weather Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
-        <Card className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-red-500/10 to-orange-500/10" />
+        <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg group">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative flex items-center justify-between">
-            <div>
-              <div className="text-xs text-muted-foreground mb-1">Sıcaklık</div>
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Sıcaklık</div>
               <div className="text-2xl font-bold text-foreground">
                 {temperature?.toFixed(1)}°C
               </div>
             </div>
-            <Thermometer className="w-8 h-8 text-red-500 drop-shadow-sm" />
+            <div className="relative">
+              <Thermometer className="w-10 h-10 text-red-500 animate-float" />
+              <div className="absolute inset-0 blur-lg opacity-40">
+                <Thermometer className="w-10 h-10 text-red-500" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-red-500 to-orange-500 h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, Math.max(0, ((temperature || 0) + 10) / 50 * 100))}%` }}
+            />
           </div>
         </Card>
 
-        <Card className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-blue-500/10 to-cyan-500/10" />
+        <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg group">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative flex items-center justify-between">
-            <div>
-              <div className="text-xs text-muted-foreground mb-1">Nem</div>
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Nem</div>
               <div className="text-2xl font-bold text-foreground">
                 {humidity}%
               </div>
             </div>
-            <Droplets className="w-8 h-8 text-blue-500 drop-shadow-sm" />
+            <div className="relative">
+              <Droplets className="w-10 h-10 text-blue-500 animate-float" style={{ animationDelay: '0.5s' }} />
+              <div className="absolute inset-0 blur-lg opacity-40">
+                <Droplets className="w-10 h-10 text-blue-500" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full rounded-full transition-all duration-500"
+              style={{ width: `${humidity}%` }}
+            />
           </div>
         </Card>
 
-        <Card className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-purple-500/10 to-pink-500/10" />
+        <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg group">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative flex items-center justify-between">
-            <div>
-              <div className="text-xs text-muted-foreground mb-1">Basınç</div>
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Basınç</div>
               <div className="text-2xl font-bold text-foreground">
                 {pressure} hPa
               </div>
             </div>
-            <Gauge className="w-8 h-8 text-purple-500 drop-shadow-sm" />
+            <div className="relative">
+              <Gauge className="w-10 h-10 text-purple-500 animate-float" style={{ animationDelay: '1s' }} />
+              <div className="absolute inset-0 blur-lg opacity-40">
+                <Gauge className="w-10 h-10 text-purple-500" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, Math.max(0, ((pressure || 1013) - 980) / 50 * 100))}%` }}
+            />
           </div>
         </Card>
 
-        <Card className="group relative rounded-xl bg-gradient-to-br from-card/80 to-background/60 border border-border/30 p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-green-500/10 to-emerald-500/10" />
+        <Card className="glass-widget glass-widget-hover relative overflow-hidden rounded-xl p-4 shadow-lg group">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative flex items-center justify-between">
-            <div>
-              <div className="text-xs text-muted-foreground mb-1">Rüzgar</div>
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Rüzgar</div>
               <div className="text-xl font-bold text-foreground">
                 {windSpeed?.toFixed(1)} kt
               </div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-xs text-muted-foreground">
                 {windFlipped ? windNameTr : `${windDirection}° ${windCompass}`}
               </div>
             </div>
-            <Wind className="w-8 h-8 text-green-500 drop-shadow-sm" />
+            <div className="relative">
+              <Wind 
+                className="w-10 h-10 text-green-500 transition-transform duration-300" 
+                style={{ transform: `rotate(${windDirection}deg)` }}
+              />
+              <div className="absolute inset-0 blur-lg opacity-40">
+                <Wind className="w-10 h-10 text-green-500" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-green-500 to-emerald-500 h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, (windSpeed || 0) / 50 * 100)}%` }}
+            />
           </div>
         </Card>
       </div>
