@@ -3,6 +3,7 @@ import App from './App.tsx'
 import './index.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { weatherPreloader } from './services/weatherPreloader'
+import { LocationProvider } from './contexts/LocationContext'
 
 console.log('[Main] Starting Maritime Calculator App v2...');
 
@@ -14,7 +15,9 @@ if (!container) {
 function Root() {
   return (
     <ErrorBoundary>
-      <App />
+      <LocationProvider>
+        <App />
+      </LocationProvider>
     </ErrorBoundary>
   );
 }

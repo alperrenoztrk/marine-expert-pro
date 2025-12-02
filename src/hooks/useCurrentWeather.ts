@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { weatherPreloader } from "@/services/weatherPreloader";
+import { useLocation } from "@/contexts/LocationContext";
 
 type WeatherResponse = {
   latitude: number;
@@ -72,6 +73,7 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
     movementReverseThresholdM = 1000,
   } = options;
 
+  const { selectedLocation } = useLocation();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<WeatherData | null>(null);
@@ -306,6 +308,33 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
     let intervalId: number | null = null;
     let cancelled = false;
 
+    // Eğer selectedLocation varsa, onu kullan
+    if (selectedLocation) {
+      (async () => {
+        if (cancelled) return;
+        setLoading(true);
+        lastPositionRef.current = { lat: selectedLocation.latitude, lon: selectedLocation.longitude };
+        setLocationLabel(selectedLocation.locationLabel);
+        await fetchWeather(selectedLocation.latitude, selectedLocation.longitude);
+        setLoading(false);
+      })();
+
+      // Periyodik refresh için interval
+      intervalId = window.setInterval(() => {
+        if (selectedLocation) {
+          fetchWeather(selectedLocation.latitude, selectedLocation.longitude);
+        }
+      }, refreshMs);
+
+      return () => {
+        cancelled = true;
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+        }
+      };
+    }
+
+    // selectedLocation yoksa, GPS kullan
     (async () => {
       if (cancelled) return;
       await requestOnce();
@@ -338,7 +367,7 @@ export function useCurrentWeather(options: UseCurrentWeatherOptions = {}) {
         clearInterval(intervalId);
       }
     };
-  }, [fetchWeather, handleWatch, refreshMs, watchPosition, requestOnce]);
+  }, [fetchWeather, handleWatch, refreshMs, watchPosition, requestOnce, selectedLocation]);
 
   const refresh = useCallback(() => {
     const cur = lastPositionRef.current;
