@@ -4,23 +4,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
+import { useTheme } from "@/hooks/useTheme";
 import TimeWidgets from "@/components/widgets/TimeWidgets";
 import WeatherInfoWidgets from "@/components/widgets/WeatherInfoWidgets";
 import LocationCelestialWidgets from "@/components/widgets/LocationCelestialWidgets";
 import NavigationWidgets from "@/components/widgets/NavigationWidgets";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// Ocean theme - sabit tema
-const oceanTheme = {
-  background: "bg-gradient-to-b from-teal-300 via-cyan-400 to-blue-500",
-  cardBg: "bg-teal-900/40",
-  textColor: "text-white",
-  accentColor: "text-teal-100",
-  indicatorColor: "bg-teal-200"
-};
+// Tema bazlı renk şemaları
+const getThemeConfig = (isDark: boolean) => ({
+  background: isDark 
+    ? "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" 
+    : "bg-gradient-to-b from-teal-300 via-cyan-400 to-blue-500",
+  cardBg: isDark ? "bg-slate-800/60" : "bg-teal-900/40",
+  textColor: "text-foreground",
+  accentColor: isDark ? "text-slate-300" : "text-teal-100",
+  indicatorColor: isDark ? "bg-slate-400" : "bg-teal-200"
+});
 
 const EmptyPage = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const [activeTab, setActiveTab] = useState("time");
@@ -32,6 +36,8 @@ const EmptyPage = () => {
     refreshMs: 300000,
     reverseGeocode: true,
   });
+
+  const oceanTheme = useMemo(() => getThemeConfig(theme === 'dark'), [theme]);
 
   const [currentTime, setCurrentTime] = useState(new Date());
 
