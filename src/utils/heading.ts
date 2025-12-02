@@ -116,7 +116,7 @@ export function smoothAngle(previousDeg: number | null, nextDeg: number, smoothi
 
 /**
  * Compute heading from absolute orientation event (Android)
- * Android reports alpha as degrees from north, but inverted
+ * deviceorientationabsolute provides alpha as compass heading directly
  */
 function computeHeadingFromAbsoluteEvent(ev: DeviceOrientationEvent): number | null {
   if (typeof ev.alpha !== 'number' || !isFinite(ev.alpha)) {
@@ -125,10 +125,9 @@ function computeHeadingFromAbsoluteEvent(ev: DeviceOrientationEvent): number | n
   
   const screenAngle = getScreenOrientationAngle();
   
-  // For absolute orientation on Android: heading = (360 - alpha) % 360
-  // This is because alpha represents the rotation of the device, 
-  // and we need the direction the device is pointing
-  let heading = (360 - ev.alpha) % 360;
+  // For deviceorientationabsolute on Android: alpha is already the compass heading
+  // (degrees clockwise from north)
+  let heading = ev.alpha;
   
   // Apply screen orientation correction
   heading = heading - screenAngle;
