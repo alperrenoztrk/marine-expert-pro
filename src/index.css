@@ -118,8 +118,74 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes neonGlow {
+    0%, 100% {
+      filter: drop-shadow(0 0 3px hsl(var(--primary))) drop-shadow(0 0 8px hsl(var(--primary) / 0.5));
+    }
+    50% {
+      filter: drop-shadow(0 0 6px hsl(var(--primary))) drop-shadow(0 0 12px hsl(var(--primary) / 0.7));
+    }
+  }
+
+  @keyframes floatUp {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   .animate-pulse-subtle {
     animation: pulseSubtle 2.5s ease-in-out infinite;
+  }
+
+  .animate-neon-glow {
+    animation: neonGlow 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: floatUp 3s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  /* Glassmorphism Widget Styles */
+  .glass-widget {
+    background: linear-gradient(135deg, 
+      hsl(var(--card) / 0.7) 0%, 
+      hsl(var(--background) / 0.5) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.3);
+    box-shadow: 
+      0 8px 32px -8px hsl(var(--primary) / 0.15),
+      inset 0 1px 0 hsl(var(--foreground) / 0.05);
+  }
+
+  .glass-widget-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-widget-hover:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--card) / 0.8) 0%, 
+      hsl(var(--background) / 0.6) 100%);
+    box-shadow: 
+      0 12px 40px -8px hsl(var(--primary) / 0.25),
+      inset 0 1px 0 hsl(var(--foreground) / 0.08);
+    transform: translateY(-2px) scale(1.02);
   }
 
   /* Global compact density mode */
