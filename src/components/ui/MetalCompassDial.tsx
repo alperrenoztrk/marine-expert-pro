@@ -8,9 +8,7 @@ interface MetalCompassDialProps {
 }
 
 /**
- * MetalCompassDial renders a brushed-metal style compass dial
- * with tick marks, numeric degree labels and a rotatable needle.
- * It scales to its container; set size via parent classes.
+ * Enhanced Maritime Compass with brass/gold styling and decorative elements
  */
 const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, className = '' }) => {
   const clampedHeading = Number.isFinite(headingDeg as number)
@@ -24,9 +22,9 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
     const isMajor = angleDeg % 30 === 0;
     const isMinor = !isCardinal && !isMajor;
     const outerRadius = 94;
-    const innerRadius = isCardinal ? 70 : isMajor ? 78 : 84;
-    const strokeWidth = isCardinal ? 2.4 : isMajor ? 1.6 : 1.1;
-    const opacity = isMinor ? 0.6 : 0.9;
+    const innerRadius = isCardinal ? 68 : isMajor ? 76 : 84;
+    const strokeWidth = isCardinal ? 3 : isMajor ? 2 : 1.2;
+    const opacity = isMinor ? 0.7 : 1;
     return { innerRadius, outerRadius, strokeWidth, opacity };
   };
 
@@ -35,50 +33,98 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
       <svg
         viewBox="0 0 200 200"
         role="img"
-        aria-label="Metal compass dial"
+        aria-label="Maritime compass"
         style={{ display: 'block', width: '100%', height: '100%' }}
         textRendering="geometricPrecision"
       >
         <defs>
+          {/* Brass/Gold gradients for maritime look */}
+          <radialGradient id="brassRim" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#d4af37" />
+            <stop offset="50%" stopColor="#b8960f" />
+            <stop offset="100%" stopColor="#8b7506" />
+          </radialGradient>
+          
+          <radialGradient id="compassFace" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#1e3a5f" />
+            <stop offset="100%" stopColor="#0f1f3a" />
+          </radialGradient>
+
           {/* Needle gradients */}
           <linearGradient id="needleRed" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ff6b6b" />
-            <stop offset="100%" stopColor="#c62828" />
+            <stop offset="0%" stopColor="#ff4444" />
+            <stop offset="50%" stopColor="#dd1111" />
+            <stop offset="100%" stopColor="#aa0000" />
           </linearGradient>
+          
           <linearGradient id="needleWhite" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#d9d9d9" />
+            <stop offset="50%" stopColor="#e8e8e8" />
+            <stop offset="100%" stopColor="#c0c0c0" />
           </linearGradient>
 
           {/* Glass dome effect */}
-          <radialGradient id="glassDome" cx="50%" cy="40%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
-            <stop offset="35%" stopColor="rgba(255,255,255,0.15)" />
-            <stop offset="70%" stopColor="rgba(255,255,255,0.05)" />
+          <radialGradient id="glassDome" cx="40%" cy="30%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
+            <stop offset="30%" stopColor="rgba(255,255,255,0.2)" />
+            <stop offset="60%" stopColor="rgba(255,255,255,0.08)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
 
           {/* Glass edge shine */}
           <radialGradient id="glassEdge" cx="50%" cy="50%">
-            <stop offset="85%" stopColor="rgba(255,255,255,0)" />
-            <stop offset="95%" stopColor="rgba(255,255,255,0.25)" />
+            <stop offset="80%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="92%" stopColor="rgba(255,255,255,0.35)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
+
+          {/* Drop shadow for depth */}
+          <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.3"/>
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
 
-        {/* Outer ring with black face */}
+        {/* Outer brass rim */}
         <g>
-          <circle cx="100" cy="100" r="98" fill="#1a1a1a" />
-          {/* Rim */}
-          <circle cx="100" cy="100" r="98" fill="none" stroke="#4a4a4a" strokeWidth="2" />
-          <circle cx="100" cy="100" r="95" fill="none" stroke="#6a6a6a" strokeWidth="1" />
+          <circle cx="100" cy="100" r="99" fill="url(#brassRim)" />
+          <circle cx="100" cy="100" r="98" fill="none" stroke="#f4e5a4" strokeWidth="1" opacity="0.6" />
+          <circle cx="100" cy="100" r="96" fill="none" stroke="#8b7506" strokeWidth="1.5" />
         </g>
 
-        {/* Tick marks */}
-        <g stroke="white" strokeLinecap="round">
+        {/* Deep blue compass face */}
+        <circle cx="100" cy="100" r="94" fill="url(#compassFace)" />
+
+        {/* Inner decorative circle */}
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#d4af37" strokeWidth="0.5" opacity="0.4" />
+
+        {/* Compass rose - decorative lines radiating from center */}
+        <g stroke="#d4af37" strokeWidth="0.3" opacity="0.2">
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+            <line
+              key={`rose-${angle}`}
+              x1="100"
+              y1="100"
+              x2="100"
+              y2="35"
+              transform={`rotate(${angle} 100 100)`}
+            />
+          ))}
+        </g>
+
+        {/* Tick marks with golden color for cardinals */}
+        <g strokeLinecap="round">
           {ticks.map((angle) => {
             const { innerRadius, outerRadius, strokeWidth, opacity } = getTickProps(angle);
             const isCardinal = angle % 90 === 0;
+            const isMajor = angle % 30 === 0;
             return (
               <line
                 key={`tick-${angle}`}
@@ -88,64 +134,92 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
                 y2={100 - innerRadius}
                 strokeWidth={strokeWidth}
                 opacity={opacity}
-                stroke={isCardinal ? "#fbbf24" : "white"}
+                stroke={isCardinal ? "#fbbf24" : isMajor ? "#e8daa4" : "#ffffff"}
                 transform={`rotate(${angle} 100 100)`}
+                filter={isCardinal ? "url(#dropShadow)" : undefined}
               />
             );
           })}
         </g>
 
-        {/* Cardinal direction labels (N, E, S, W) - large and prominent */}
+        {/* Cardinal direction labels with golden glow */}
         <g
-          fill="white"
-          fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="24"
+          fill="#fbbf24"
+          fontFamily="Georgia, serif"
+          fontSize="28"
           fontWeight={900}
+          filter="url(#dropShadow)"
         >
-          <text x={100} y={20} textAnchor="middle" dominantBaseline="central">N</text>
-          <text x={180} y={100} textAnchor="middle" dominantBaseline="central">E</text>
-          <text x={100} y={180} textAnchor="middle" dominantBaseline="central">S</text>
-          <text x={20} y={100} textAnchor="middle" dominantBaseline="central">W</text>
+          <text x={100} y={18} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">N</text>
+          <text x={182} y={100} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">E</text>
+          <text x={100} y={182} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">S</text>
+          <text x={18} y={100} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">W</text>
         </g>
 
-        {/* Main degree numbers (30° intervals) */}
+        {/* Main degree numbers */}
         <g
-          fill="white"
-          fontFamily="ui-sans-serif, system-ui, -apple-system"
-          fontSize="13"
+          fill="#e8daa4"
+          fontFamily="Georgia, serif"
+          fontSize="14"
           fontWeight={700}
         >
           {[30, 60, 120, 150, 210, 240, 300, 330].map((angle) => {
-            const radius = 58;
+            const radius = 56;
             const rad = (Math.PI / 180) * angle;
             const x = 100 + radius * Math.sin(rad);
             const y = 100 - radius * Math.cos(rad);
             return (
-              <text key={`deg-${angle}`} x={x} y={y} textAnchor="middle" dominantBaseline="central">
+              <text 
+                key={`deg-${angle}`} 
+                x={x} 
+                y={y} 
+                textAnchor="middle" 
+                dominantBaseline="central"
+                stroke="#d4af37" 
+                strokeWidth="0.3"
+              >
                 {angle}
               </text>
             );
           })}
         </g>
 
-        {/* Needle */}
-        <g transform={`rotate(${clampedHeading} 100 100)`}>
-          {/* North (red) pointer */}
-          <path d="M100 20 L95 88 L100 84 L105 88 Z" fill="url(#needleRed)" stroke="#7f1d1d" strokeWidth="0.6" />
+        {/* Needle with enhanced 3D effect */}
+        <g transform={`rotate(${clampedHeading} 100 100)`} filter="url(#dropShadow)">
+          {/* North (red) pointer - longer and more prominent */}
+          <path 
+            d="M100 12 L94 86 L100 82 L106 86 Z" 
+            fill="url(#needleRed)" 
+            stroke="#660000" 
+            strokeWidth="0.8" 
+          />
+          <path 
+            d="M100 12 L97 86 L100 82 Z" 
+            fill="rgba(255,255,255,0.3)" 
+            strokeWidth="0" 
+          />
+          
           {/* South (white) tail */}
-          <path d="M100 180 L95 112 L100 116 L105 112 Z" fill="url(#needleWhite)" stroke="#6b7280" strokeWidth="0.6" />
-          {/* Center cap shadow */}
-          <circle cx="100" cy="100" r="6.5" fill="#9ca3af" />
-          {/* Center cap */}
-          <circle cx="100" cy="100" r="5" fill="#fdfdfd" stroke="#a3a3a3" strokeWidth="0.8" />
+          <path 
+            d="M100 188 L94 114 L100 118 L106 114 Z" 
+            fill="url(#needleWhite)" 
+            stroke="#666666" 
+            strokeWidth="0.8" 
+          />
+          
+          {/* Center cap with 3D effect */}
+          <circle cx="100" cy="100" r="8" fill="#4a4a4a" opacity="0.5" />
+          <circle cx="100" cy="99" r="7" fill="url(#brassRim)" />
+          <circle cx="100" cy="99" r="6" fill="#e8daa4" />
+          <circle cx="99" cy="98" r="2.5" fill="rgba(255,255,255,0.6)" />
         </g>
 
-        {/* Glass dome overlay */}
+        {/* Glass dome overlay with enhanced realism */}
         <g>
-          {/* Main glass dome */}
-          <circle cx="100" cy="100" r="98" fill="url(#glassDome)" />
-          {/* Glass edge shine */}
-          <circle cx="100" cy="100" r="98" fill="url(#glassEdge)" />
+          <circle cx="100" cy="100" r="94" fill="url(#glassDome)" />
+          <circle cx="100" cy="100" r="94" fill="url(#glassEdge)" />
+          {/* Highlight reflection */}
+          <ellipse cx="85" cy="75" rx="25" ry="30" fill="rgba(255,255,255,0.15)" />
         </g>
       </svg>
     </div>
