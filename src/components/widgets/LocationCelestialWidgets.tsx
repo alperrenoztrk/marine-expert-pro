@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 import { useLocation } from "@/contexts/LocationContext";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
-import MoonPhaseWidget from "@/components/MoonPhaseWidget";
 
 interface LocationCelestialWidgetsProps {
   locationLabel: string;
@@ -88,9 +87,6 @@ const LocationCelestialWidgets: React.FC<LocationCelestialWidgetsProps> = ({
           </div>
         </div>
       </Card>
-
-      {/* Moon Phase Widget */}
-      <MoonPhaseWidget />
     </div>
   );
 };

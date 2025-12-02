@@ -8,7 +8,6 @@ import { useTheme } from "@/hooks/useTheme";
 import TimeWidgets from "@/components/widgets/TimeWidgets";
 import WeatherInfoWidgets from "@/components/widgets/WeatherInfoWidgets";
 import LocationCelestialWidgets from "@/components/widgets/LocationCelestialWidgets";
-import NavigationWidgets from "@/components/widgets/NavigationWidgets";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Tema bazlı renk şemaları
@@ -28,8 +27,8 @@ const EmptyPage = () => {
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const [activeTab, setActiveTab] = useState("time");
+  const tabs = ["time", "weather", "location"];
   const [showTutorial, setShowTutorial] = useState(false);
-  const tabs = ["time", "weather", "location", "navigation"];
 
   const { loading, error, data, locationLabel } = useCurrentWeather({
     watchPosition: false,
@@ -309,12 +308,11 @@ const EmptyPage = () => {
           <DialogHeader>
             <DialogTitle className="text-2xl text-blue-900">🎯 Hoş Geldiniz!</DialogTitle>
             <DialogDescription className="text-base text-blue-800 space-y-3 pt-2">
-              <p className="font-medium">Widget sayfasında 4 farklı kategori bulunmaktadır:</p>
+              <p className="font-medium">Widget sayfasında 3 farklı kategori bulunmaktadır:</p>
               <ul className="space-y-2 list-none">
                 <li>⏰ <strong>Zaman Bilgileri</strong></li>
                 <li>🌤️ <strong>Hava Durumu</strong></li>
-                <li>🌍 <strong>Konum & Göksel Cisimler</strong></li>
-                <li>🧭 <strong>Navigasyon Araçları</strong></li>
+                <li>🌍 <strong>Konum</strong></li>
               </ul>
               <div className="pt-3 space-y-2 border-t border-blue-300">
                 <p className="font-semibold text-blue-900">📱 Gezinme Yöntemleri:</p>
@@ -333,6 +331,12 @@ const EmptyPage = () => {
 
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="time">Saat</TabsTrigger>
+            <TabsTrigger value="weather">Hava</TabsTrigger>
+            <TabsTrigger value="location">Konum</TabsTrigger>
+          </TabsList>
+
           <TabsContent value="time" className="space-y-4 animate-fade-in mt-0">
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>⏰ Zaman Bilgileri</h2>
             <div data-widget-container>
@@ -368,7 +372,7 @@ const EmptyPage = () => {
           </TabsContent>
 
           <TabsContent value="location" className="space-y-4 animate-fade-in mt-0">
-            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🌍 Konum & Göksel Cisimler</h2>
+            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🌍 Konum</h2>
             <div data-widget-container>
               <LocationCelestialWidgets
                 locationLabel={locationLabel}
@@ -377,13 +381,6 @@ const EmptyPage = () => {
                 latitudeDMS={latitudeDMS}
                 longitudeDMS={longitudeDMS}
               />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="navigation" className="space-y-4 animate-fade-in mt-0">
-            <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>🧭 Navigasyon Araçları</h2>
-            <div data-widget-container>
-              <NavigationWidgets />
             </div>
           </TabsContent>
         </Tabs>
