@@ -2,71 +2,35 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import MetalCompassDial from "@/components/ui/MetalCompassDial";
-import { Settings, ChevronLeft, ChevronRight } from "lucide-react";
-import WeatherWidget from "@/components/WeatherWidget";
-import MoonPhaseWidget from "@/components/MoonPhaseWidget";
-import { LanguageSelector } from "@/components/LanguageSelector";
-import { computeHeadingFromEvent, smoothAngle } from "@/utils/heading";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { createCompassListener, requestCompassPermission } from "@/utils/heading";
 
 const Index = () => {
-  // Compass state (2D only)
+  // Compass state
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
 
-  // --- Compass logic ---
-  const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
-    const h = computeHeadingFromEvent(event);
-    if (h !== null && isFinite(h)) {
-      // Use same smoothing as DirectionWidget for consistency
-      setHeadingDeg((prev) => Math.round(smoothAngle(prev, h, 0.3)));
-    }
-  };
-
-  const startCompass = () => {
-    try {
-      window.addEventListener("deviceorientation", handleDeviceOrientation, true);
-    } catch {}
-  };
-
-  const stopCompass = () => {
-    try {
-      window.removeEventListener("deviceorientation", handleDeviceOrientation, true);
-    } catch {}
-  };
-
+  // --- Compass logic using unified listener ---
   useEffect(() => {
+    let cleanup: (() => void) | null = null;
+
     const initCompass = async () => {
-      try {
-        const anyDOE = DeviceOrientationEvent as any;
-        if (typeof anyDOE?.requestPermission === "function") {
-          try {
-            const response = await anyDOE.requestPermission();
-            if (response === "granted") {
-              startCompass();
-              return;
-            }
-          } catch {}
-          // Fallback: attempt to start even if permission not explicitly granted
-          startCompass();
-        } else {
-          // Non-iOS
-          startCompass();
-        }
-      } catch {
-        // Last resort, try to start listener
-        startCompass();
+      // Request permission on iOS
+      const granted = await requestCompassPermission();
+      if (!granted) {
+        console.warn('Compass permission not granted');
       }
+      
+      // Start listening regardless (will work on Android without explicit permission)
+      cleanup = createCompassListener((heading) => {
+        setHeadingDeg(Math.round(heading));
+      }, 0.3);
     };
+
     initCompass();
+
     return () => {
-      stopCompass();
+      if (cleanup) {
+        cleanup();
+      }
     };
   }, []);
 

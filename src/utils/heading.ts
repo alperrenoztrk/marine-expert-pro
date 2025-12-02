@@ -114,3 +114,133 @@ export function smoothAngle(previousDeg: number | null, nextDeg: number, smoothi
   return normalizeAngle(smoothed);
 }
 
+/**
+ * Compute heading from absolute orientation event (Android)
+ * Android reports alpha as degrees from north, but inverted
+ */
+function computeHeadingFromAbsoluteEvent(ev: DeviceOrientationEvent): number | null {
+  if (typeof ev.alpha !== 'number' || !isFinite(ev.alpha)) {
+    return null;
+  }
+  
+  const screenAngle = getScreenOrientationAngle();
+  
+  // For absolute orientation on Android: heading = (360 - alpha) % 360
+  // This is because alpha represents the rotation of the device, 
+  // and we need the direction the device is pointing
+  let heading = (360 - ev.alpha) % 360;
+  
+  // Apply screen orientation correction
+  heading = heading - screenAngle;
+  
+  return normalizeAngle(heading);
+}
+
+export type CompassListenerCallback = (heading: number) => void;
+
+/**
+ * Creates a unified compass listener that handles:
+ * - Android: deviceorientationabsolute (most accurate)
+ * - iOS: webkitCompassHeading from deviceorientation
+ * - Fallback: Euler angle calculation
+ * 
+ * Returns a cleanup function to remove listeners
+ */
+export function createCompassListener(
+  onHeading: CompassListenerCallback,
+  smoothingFactor: number = 0.3
+): () => void {
+  let absoluteSupported = false;
+  let lastHeading: number | null = null;
+  let hasReceivedAbsoluteData = false;
+  
+  // Handler for deviceorientationabsolute (Android)
+  const absoluteHandler = (ev: DeviceOrientationEvent) => {
+    // Check if this is a valid absolute orientation event
+    if (!(ev as any).absolute && !hasReceivedAbsoluteData) {
+      return;
+    }
+    
+    if (typeof ev.alpha !== 'number' || !isFinite(ev.alpha)) {
+      return;
+    }
+    
+    // Mark that we've received valid absolute data
+    hasReceivedAbsoluteData = true;
+    absoluteSupported = true;
+    
+    const heading = computeHeadingFromAbsoluteEvent(ev);
+    if (heading !== null) {
+      const smoothed = smoothAngle(lastHeading, heading, smoothingFactor);
+      lastHeading = smoothed;
+      onHeading(smoothed);
+    }
+  };
+  
+  // Handler for deviceorientation (iOS + fallback)
+  const orientationHandler = (ev: DeviceOrientationEvent) => {
+    // If we're receiving good absolute data, skip the regular handler
+    if (absoluteSupported && hasReceivedAbsoluteData) {
+      return;
+    }
+    
+    const wkev = ev as DeviceOrientationEventWithWebkit;
+    
+    // iOS Safari provides webkitCompassHeading - most reliable on iOS
+    if (typeof wkev.webkitCompassHeading === 'number' && isFinite(wkev.webkitCompassHeading)) {
+      const heading = normalizeAngle(wkev.webkitCompassHeading);
+      const smoothed = smoothAngle(lastHeading, heading, smoothingFactor);
+      lastHeading = smoothed;
+      onHeading(smoothed);
+      return;
+    }
+    
+    // Fallback: Use Euler angle calculation
+    if (typeof ev.alpha === 'number' && isFinite(ev.alpha) &&
+        typeof ev.beta === 'number' && isFinite(ev.beta) &&
+        typeof ev.gamma === 'number' && isFinite(ev.gamma)) {
+      const heading = computeHeadingFromEuler(ev.alpha, ev.beta, ev.gamma);
+      const smoothed = smoothAngle(lastHeading, heading, smoothingFactor);
+      lastHeading = smoothed;
+      onHeading(smoothed);
+      return;
+    }
+    
+    // Last resort: alpha only
+    if (typeof ev.alpha === 'number' && isFinite(ev.alpha)) {
+      const screenAngle = getScreenOrientationAngle();
+      const heading = normalizeAngle(ev.alpha - screenAngle);
+      const smoothed = smoothAngle(lastHeading, heading, smoothingFactor);
+      lastHeading = smoothed;
+      onHeading(smoothed);
+    }
+  };
+  
+  // Add listeners
+  // deviceorientationabsolute is preferred on Android for true compass heading
+  window.addEventListener('deviceorientationabsolute', absoluteHandler as EventListener, { passive: true });
+  window.addEventListener('deviceorientation', orientationHandler, { passive: true });
+  
+  // Return cleanup function
+  return () => {
+    window.removeEventListener('deviceorientationabsolute', absoluteHandler as EventListener);
+    window.removeEventListener('deviceorientation', orientationHandler);
+  };
+}
+
+/**
+ * Request device orientation permission (iOS 13+)
+ */
+export async function requestCompassPermission(): Promise<boolean> {
+  try {
+    const DOE = DeviceOrientationEvent as any;
+    if (typeof DOE?.requestPermission === 'function') {
+      const response = await DOE.requestPermission();
+      return response === 'granted';
+    }
+    // Non-iOS: assume granted if API exists
+    return 'DeviceOrientationEvent' in window;
+  } catch {
+    return false;
+  }
+}
