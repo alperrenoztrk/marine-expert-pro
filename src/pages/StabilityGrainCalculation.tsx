@@ -7,45 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-
-const grainSections = [
-  {
-    id: "grain-stowage",
-    step: "Adım 1",
-    title: "Yığma Faktörü",
-    description: "SF ve broken stowage",
-  },
-  {
-    id: "grain-cargo",
-    step: "Adım 2",
-    title: "Yük Kapasitesi",
-    description: "Δ, deadweight ve trim",
-  },
-  {
-    id: "grain-heeling",
-    step: "Adım 3",
-    title: "Yatma Momenti",
-    description: "GHM ve θ hesabı",
-  },
-  {
-    id: "grain-stability",
-    step: "Adım 4",
-    title: "FSM & GM",
-    description: "Düzeltilmiş GM kontrolü",
-  },
-  {
-    id: "grain-criteria",
-    step: "Adım 5",
-    title: "IMO Kriterleri",
-    description: "Sonuç özeti",
-  },
-] as const;
+import { useState } from "react";
 
 export default function StabilityGrainCalculationPage() {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState<string>(grainSections[0].id);
-  
+
   // 1. Stowage Factor Calculations
   const [volume, setVolume] = useState<number>(0);
   const [weight, setWeight] = useState<number>(0);
@@ -81,45 +47,6 @@ export default function StabilityGrainCalculationPage() {
   // 7. FSM for Grain
   const [fsmShiftArea, setFsmShiftArea] = useState<number>(0);
   const [fsmArm, setFsmArm] = useState<number>(0);
-
-  const scrollToSection = (sectionId: string) => {
-    if (typeof window === "undefined") return;
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const yOffset = -80;
-      const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (visibleEntry?.target?.id) {
-          setActiveSection(visibleEntry.target.id);
-        }
-      },
-      {
-        threshold: 0.3,
-        rootMargin: "-10% 0px -60% 0px",
-      }
-    );
-
-    grainSections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   // Calculate Stowage Factor
   const calculateSF = () => {
@@ -286,14 +213,6 @@ export default function StabilityGrainCalculationPage() {
 
   const imoIsCompliant = imoCriteria.gmPass && imoCriteria.anglePass;
 
-  const sectionProgress: Record<(typeof grainSections)[number]["id"], boolean> = {
-    "grain-stowage": Boolean(sfResult || reqVolume || maxWeight || usableVolume),
-    "grain-cargo": Boolean(loadableResult || draftWeight || trimMoment),
-    "grain-heeling": Boolean(ghm || heelingAngle),
-    "grain-stability": Boolean(fsm || correctedGM),
-    "grain-criteria": Boolean(imoCriteria.gmValue || imoCriteria.angleValue),
-  };
-
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex flex-col gap-4">
@@ -381,43 +300,7 @@ export default function StabilityGrainCalculationPage() {
           <CardTitle>Detaylı Hesap Motoru</CardTitle>
           <CardDescription>Tüm hesap modülleri tek ekranda açık; sadece kaydırarak ilerleyin</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-6 lg:flex-row">
-            <div className="rounded-2xl border border-border/70 bg-muted/40 p-4 shadow-sm lg:w-72">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Hızlı Navigasyon</p>
-              <p className="text-xs text-muted-foreground mb-4">Bir adımı tıkladığınızda sayfa ilgili karta kayar.</p>
-              <div className="flex gap-3 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
-                {grainSections.map((section) => (
-                  <button
-                    key={section.id}
-                    type="button"
-                    aria-current={activeSection === section.id}
-                    onClick={() => scrollToSection(section.id)}
-                    className={`min-w-[220px] flex-1 rounded-2xl border px-4 py-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                      activeSection === section.id
-                        ? "border-primary bg-background shadow-sm"
-                        : "border-transparent bg-background/60 hover:border-border/60"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                        {section.step}
-                      </span>
-                      <span
-                        className={`h-2 w-2 rounded-full ${
-                          sectionProgress[section.id] ? "bg-emerald-500" : "bg-muted-foreground/40"
-                        }`}
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <p className="text-sm font-semibold text-foreground">{section.title}</p>
-                    <p className="text-xs text-muted-foreground">{section.description}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-6">
+        <CardContent className="space-y-6">
                 {/* Tab 1: Stowage Factor */}
                 <section id="grain-stowage" className="scroll-mt-28 space-y-6">
                   <Card>
@@ -998,8 +881,6 @@ export default function StabilityGrainCalculationPage() {
                     </CardContent>
                   </Card>
                 </section>
-              </div>
-            </div>
         </CardContent>
       </Card>
     </div>
