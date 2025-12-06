@@ -65,10 +65,6 @@ import StabilityGrainCalculationPage from "./pages/StabilityGrainCalculation";
 import StabilityGZCurvePage from "./pages/StabilityGZCurve";
 import StabilityWindWeatherPage from "./pages/StabilityWindWeather";
 import StabilityIMOCriteriaPage from "./pages/StabilityIMOCriteria";
-import TrimList from "./pages/TrimList";
-import HydrostaticsPage from "./pages/Hydrostatics";
-import StabilityListPage from "./pages/StabilityList";
-import Ballast from "./pages/Ballast";
 
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
@@ -105,9 +101,6 @@ const AnimatedRoutes = () => {
         <Route path="/stability/formulas" element={<PageTransition><StabilityFormulasPage /></PageTransition>} />
         <Route path="/stability/formulas/:id" element={<PageTransition><StabilityFormulaDetailPage /></PageTransition>} />
         <Route path="/stability/calculations" element={<PageTransition><StabilityCalculationsPage /></PageTransition>} />
-        <Route path="/stability/draft-trim" element={<PageTransition><TrimList /></PageTransition>} />
-        <Route path="/stability/hydrostatics" element={<PageTransition><HydrostaticsPage /></PageTransition>} />
-        <Route path="/stability/heel-list" element={<PageTransition><StabilityListPage /></PageTransition>} />
         <Route path="/stability/practical" element={<PageTransition><StabilityPracticalPage /></PageTransition>} />
         <Route path="/stability/practical/tank" element={<PageTransition><StabilityPracticalTankPage /></PageTransition>} />
         <Route path="/stability/practical/fwa" element={<PageTransition><StabilityPracticalFWAPage /></PageTransition>} />
@@ -119,7 +112,6 @@ const AnimatedRoutes = () => {
         <Route path="/stability/gz-curve" element={<PageTransition><StabilityGZCurvePage /></PageTransition>} />
         <Route path="/stability/wind-weather" element={<PageTransition><StabilityWindWeatherPage /></PageTransition>} />
         <Route path="/stability/imo-criteria" element={<PageTransition><StabilityIMOCriteriaPage /></PageTransition>} />
-        <Route path="/operations/ballast" element={<PageTransition><Ballast /></PageTransition>} />
         <Route path="/safety-menu" element={<PageTransition><SafetyMenu /></PageTransition>} />
         <Route path="/weather-menu" element={<PageTransition><WeatherMenu /></PageTransition>} />
         <Route path="/navigation-menu" element={<PageTransition><NavigationMenu /></PageTransition>} />
