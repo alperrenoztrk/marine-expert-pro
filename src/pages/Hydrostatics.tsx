@@ -37,7 +37,7 @@ interface HydrostaticsResults {
   moment: number;
 }
 
-export const HydrostaticsCalculations = () => {
+const HydrostaticsPage = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('draft-survey');
   const [hydrostaticsData, setHydrostaticsData] = useState<HydrostaticsData>({
@@ -438,3 +438,7 @@ export const HydrostaticsCalculations = () => {
     </div>
   );
 };
+
+export default HydrostaticsPage;
+
+export default HydrostaticsPage;
