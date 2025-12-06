@@ -65,7 +65,12 @@ import StabilityGrainCalculationPage from "./pages/StabilityGrainCalculation";
 import StabilityGZCurvePage from "./pages/StabilityGZCurve";
 import StabilityWindWeatherPage from "./pages/StabilityWindWeather";
 import StabilityIMOCriteriaPage from "./pages/StabilityIMOCriteria";
-
+import StabilityDraftTrimPage from "./pages/StabilityDraftTrim";
+import StabilityHydrostaticsPage from "./pages/StabilityHydrostatics";
+import StabilityIntactPage from "./pages/StabilityIntact";
+import StabilityHeelListPage from "./pages/StabilityHeelList";
+import StabilityCargoShiftPage from "./pages/StabilityCargoShift";
+import StabilityContainerGMPage from "./pages/StabilityContainerGM";
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
 import SunriseTimes from "./pages/SunriseTimes";
