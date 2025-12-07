@@ -65,7 +65,19 @@ import StabilityGrainCalculationPage from "./pages/StabilityGrainCalculation";
 import StabilityGZCurvePage from "./pages/StabilityGZCurve";
 import StabilityWindWeatherPage from "./pages/StabilityWindWeather";
 import StabilityIMOCriteriaPage from "./pages/StabilityIMOCriteria";
-
+import SafetyCalculationsPage from "./pages/SafetyCalculations";
+import WeatherCalculationsPage from "./pages/WeatherCalculations";
+import TankCalculationsPage from "./pages/TankCalculations";
+import BallastPage from "./pages/Ballast";
+import EnginePage from "./pages/Engine";
+import HydrodynamicsPage from "./pages/Hydrodynamics";
+import StructuralCalculationsPage from "./pages/StructuralCalculations";
+import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
+import EmissionCalculationsPage from "./pages/EmissionCalculations";
+import SOLASRegulationsPage from "./pages/SOLASRegulations";
+import SOLASCertificatesPage from "./pages/SOLASCertificates";
+import SOLASShipRequirementsPage from "./pages/SOLASShipRequirements";
+import SOLASSafetyEquipmentPage from "./pages/SOLASSafetyEquipment";
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
 import SunriseTimes from "./pages/SunriseTimes";
@@ -112,6 +124,19 @@ const AnimatedRoutes = () => {
         <Route path="/stability/gz-curve" element={<PageTransition><StabilityGZCurvePage /></PageTransition>} />
         <Route path="/stability/wind-weather" element={<PageTransition><StabilityWindWeatherPage /></PageTransition>} />
         <Route path="/stability/imo-criteria" element={<PageTransition><StabilityIMOCriteriaPage /></PageTransition>} />
+        <Route path="/safety" element={<PageTransition><SafetyCalculationsPage /></PageTransition>} />
+        <Route path="/weather" element={<PageTransition><WeatherCalculationsPage /></PageTransition>} />
+        <Route path="/tank" element={<PageTransition><TankCalculationsPage /></PageTransition>} />
+        <Route path="/ballast" element={<PageTransition><BallastPage /></PageTransition>} />
+        <Route path="/engine" element={<PageTransition><EnginePage /></PageTransition>} />
+        <Route path="/hydrodynamics" element={<PageTransition><HydrodynamicsPage /></PageTransition>} />
+        <Route path="/structural" element={<PageTransition><StructuralCalculationsPage /></PageTransition>} />
+        <Route path="/special-ships" element={<PageTransition><SpecialShipCalculationsPage /></PageTransition>} />
+        <Route path="/emissions" element={<PageTransition><EmissionCalculationsPage /></PageTransition>} />
+        <Route path="/solas/regulations" element={<PageTransition><SOLASRegulationsPage /></PageTransition>} />
+        <Route path="/solas/certificates" element={<PageTransition><SOLASCertificatesPage /></PageTransition>} />
+        <Route path="/solas/ship-requirements" element={<PageTransition><SOLASShipRequirementsPage /></PageTransition>} />
+        <Route path="/solas/safety-equipment" element={<PageTransition><SOLASSafetyEquipmentPage /></PageTransition>} />
         <Route path="/safety-menu" element={<PageTransition><SafetyMenu /></PageTransition>} />
         <Route path="/weather-menu" element={<PageTransition><WeatherMenu /></PageTransition>} />
         <Route path="/navigation-menu" element={<PageTransition><NavigationMenu /></PageTransition>} />
