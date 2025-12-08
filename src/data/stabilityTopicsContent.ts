@@ -2,6 +2,7 @@
 // Each topic contains detailed explanations, formulas, examples, and practical applications
 
 export interface StabilitySubTopic {
+  id?: string;
   title: string;
   content: string;
   formulas?: { formula: string; description: string }[];
@@ -2479,6 +2480,7 @@ Geminin lightship KG değerini belirlemek için yapılır:
     id: "loading-conditions",
     title: "11. Yükleme Durumları",
     icon: "📦",
+    iconColor: "text-amber-500",
     description: "Farklı yükleme senaryoları, departure/arrival durumları ve kritik yükleme koşullarının analizi",
     subtopics: [
       {
@@ -2742,6 +2744,7 @@ FSE'yi azaltmak için:
     id: "special-cargoes",
     title: "12. Özel Kargolar",
     icon: "⚠️",
+    iconColor: "text-orange-500",
     description: "Tehlikeli maddeler, bulk kargo, ağır yükler ve özel taşıma gereksinimleri",
     subtopics: [
       {
@@ -3117,6 +3120,7 @@ FSE'yi azaltmak için:
     id: "loading-computers",
     title: "13. Yükleme Bilgisayarları",
     icon: "💻",
+    iconColor: "text-purple-500",
     description: "Modern yükleme yazılımları, onay gereksinimleri ve operasyonel kullanım",
     subtopics: [
       {
@@ -3407,6 +3411,7 @@ FSE'yi azaltmak için:
     id: "numerical-examples",
     title: "14. Sayısal Örnekler",
     icon: "🔢",
+    iconColor: "text-indigo-500",
     description: "Adım adım çözümlü stabilite problemleri ve hesaplama örnekleri",
     subtopics: [
       {
@@ -3768,6 +3773,7 @@ BM(x) = ∫₀ˣ SF dx
     id: "practical-applications",
     title: "15. Pratik Uygulamalar",
     icon: "⚙️",
+    iconColor: "text-teal-500",
     description: "Gerçek dünya senaryoları, operasyonel prosedürler ve karar verme süreçleri",
     subtopics: [
       {
@@ -4107,6 +4113,7 @@ Burada P = blok tepki kuvveti
     id: "summary-checklists",
     title: "16. Özet ve Kontrol Listeleri",
     icon: "✅",
+    iconColor: "text-green-500",
     description: "Kapsamlı özet, hızlı referans kartları ve operasyonel kontrol listeleri",
     subtopics: [
       {
