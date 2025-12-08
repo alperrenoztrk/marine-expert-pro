@@ -34,22 +34,10 @@ export default function CalculationsMenu() {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-12 animate-fade-in space-y-4">
-          <p className="text-sm uppercase tracking-[0.3em] text-blue-500/80 dark:text-blue-400/60">
-            Denizcilik için bütünleşik hesaplama merkezi
-          </p>
+        <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
             Hesaplama Merkezi
           </h1>
-          <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-            Stabilite, seyir, kargo &amp; operasyon, meteoroloji, gemicilik ve emniyet modüllerinin tamamında
-            <span className="font-semibold text-foreground">
-              {" "}
-              Konu Anlatımı · Hesaplamalar · Formüller · Kurallar · Asistan · Quiz
-            </span>
-            {" "}
-            düzenini standartlaştırdık.
-          </p>
         </div>
 
         <div className="space-y-8">
