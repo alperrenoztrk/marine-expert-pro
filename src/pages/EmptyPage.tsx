@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
@@ -331,11 +331,6 @@ const EmptyPage = () => {
 
       <div className="container mx-auto max-w-[900px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="time">Saat</TabsTrigger>
-            <TabsTrigger value="weather">Hava</TabsTrigger>
-            <TabsTrigger value="location">Konum</TabsTrigger>
-          </TabsList>
 
           <TabsContent value="time" className="space-y-4 animate-fade-in mt-0">
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>⏰ Zaman Bilgileri</h2>
