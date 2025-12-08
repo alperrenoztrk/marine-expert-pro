@@ -2472,6 +2472,1970 @@ Geminin lightship KG değerini belirlemek için yapılır:
         ]
       }
     ]
+  },
+
+  // ==================== BÖLÜM 11: YÜKLEME DURUMLARI ====================
+  {
+    id: "loading-conditions",
+    title: "11. Yükleme Durumları",
+    icon: "📦",
+    description: "Farklı yükleme senaryoları, departure/arrival durumları ve kritik yükleme koşullarının analizi",
+    subtopics: [
+      {
+        id: "standard-conditions",
+        title: "Standart Yükleme Durumları",
+        content: `# Standart Yükleme Durumları
+
+**Yükleme durumu (Loading Condition)**, geminin belirli bir anda taşıdığı tüm ağırlıkların dağılımını ifade eder. Stabilite kitapçığında onaylanmış standart durumlar bulunur.
+
+**Temel Yükleme Durumları**
+
+**1. Lightship (Boş Gemi) Durumu**
+Geminin hiçbir kargo, yakıt, su veya sarf malzemesi olmadan sadece yapısal ağırlığıyla durumu:
+- Gemi yapısı (çelik, kaynak vb.)
+- Sabit makine ve ekipmanlar
+- Boya, izolasyon malzemeleri
+- Sabit balast (varsa)
+
+**2. Full Load Departure (Tam Yüklü Kalkış)**
+En kritik durumlardan biri:
+- Maksimum kargo kapasitesi
+- %100 yakıt ve tatlı su
+- Tüm sarf malzemeleri tam
+- En yüksek VCG potansiyeli
+
+**3. Full Load Arrival (Tam Yüklü Varış)**
+Yakıt tüketimi sonrası:
+- Aynı kargo miktarı
+- Minimum yakıt (%10 rezerv)
+- Azalmış su ve sarf malzemeleri
+- Draft değişimi ve trim etkileri
+
+**4. Ballast Departure (Balast Kalkış)**
+Kargo olmadan seyir:
+- Balast tankları dolu
+- %100 yakıt
+- Propeller immersion sağlanmalı
+- Forward draft için yeterli ballast
+
+**5. Ballast Arrival (Balast Varış)**
+Uzun balast seyiri sonrası:
+- Minimum yakıt
+- Balast optimizasyonu gerekebilir
+- En düşük deplasma durumu
+
+**6. Intermediate Conditions (Ara Durumlar)**
+Yolculuk sırasında:
+- %50 yakıt, %50 tüketim
+- Kısmi boşaltma/yükleme
+- Operasyonel senaryolar`,
+        formulas: [
+          {
+            formula: "Δ = Lightship + DWT",
+            description: "Toplam deplasma hesabı"
+          },
+          {
+            formula: "DWT = Kargo + Yakıt + Su + Stores",
+            description: "Deadweight bileşenleri"
+          },
+          {
+            formula: "Draft = f(Δ, Trim, Density)",
+            description: "Draft-deplasma ilişkisi"
+          }
+        ],
+        keyPoints: [
+          "Her yükleme durumu için stabilite kontrol edilmeli",
+          "Departure ve arrival durumları ayrı değerlendirilir",
+          "Yakıt tüketimi stabiliteyi önemli ölçüde etkiler",
+          "Ballast durumları özellikle risklidir"
+        ],
+        practicalTips: [
+          "Yolculuk öncesi tüm durumları hesaplayın",
+          "Ara durumlar için senaryo analizi yapın",
+          "Yakıt tüketim planını stabilite ile birlikte değerlendirin",
+          "En kötü durum senaryolarını belirleyin"
+        ],
+        warnings: [
+          "Sadece departure kontrolü yeterli değildir",
+          "Yakıt tüketimi GM'i düşürebilir",
+          "Ballast arrival en kritik durumlardan biridir"
+        ]
+      },
+      {
+        id: "critical-conditions",
+        title: "Kritik Yükleme Durumları",
+        content: `# Kritik Yükleme Durumları
+
+**Kritik yükleme durumu**, geminin stabilite açısından en zayıf olduğu durumu ifade eder. Bu durumlar özellikle dikkatli analiz gerektirir.
+
+**En Kritik Durumlar**
+
+**1. Minimum GM Durumu**
+GM'in en düşük olduğu yükleme:
+- Yüksek VCG (üst tanklara yükleme)
+- Düşük KM (düşük draft)
+- Serbest yüzey etkileri maksimum
+
+**2. Yüksek Ağırlık Merkezi (High VCG)**
+Üst güverteye yükleme:
+- Konteyner gemilerinde yaygın
+- Ro-Ro gemilerinde araç güvertesi
+- Yolcu gemilerinde üst yapılar
+
+**3. Hogging/Sagging Durumları**
+Boyuna mukavemet kritik:
+- Hogging: Orta kısım yukarı bükülme
+- Sagging: Orta kısım aşağı bükülme
+- Kesme kuvveti ve eğilme momenti kontrol
+
+**4. Kısmi Yükleme (Part Load)**
+Tam dolu olmayan tanklar:
+- Serbest yüzey etkisi maksimum
+- FSC ile GM azalması
+- Tank doluluk optimizasyonu gerekli
+
+**5. Tek Taraflı Yükleme**
+Dengesiz kargo dağılımı:
+- Başlangıç yatması (initial heel)
+- Asimetrik GZ eğrisi
+- Tehlikeli durum
+
+**Kritik Durum Analizi**
+
+**Worst Case Senaryosu:**
+- En düşük GM değeri ne zaman?
+- Hangi tanklar kısmi dolu?
+- Rüzgar ve dalga etkileri?
+
+**Güvenlik Marjı:**
+- IMO kriteri + %10-15 marj önerilir
+- Kriterlere tam sınırda kalmak riskli
+- Operasyonel esneklik için marj bırakın`,
+        formulas: [
+          {
+            formula: "GM_kritik = GM_min + Güvenlik_Marjı",
+            description: "Kritik GM hesabı"
+          },
+          {
+            formula: "VCG_max = KM - GM_gerekli",
+            description: "Maksimum izin verilen VCG"
+          },
+          {
+            formula: "Kargo_max = (VCG_max × Δ - ΣMoment) / VCG_kargo",
+            description: "Maksimum kargo miktarı"
+          }
+        ],
+        keyPoints: [
+          "Kritik durumlar önceden belirlenmeli",
+          "Her durumda tüm kriterler kontrol edilmeli",
+          "Güvenlik marjı bırakılmalı",
+          "Worst case analizi zorunlu"
+        ],
+        practicalTips: [
+          "Kritik durumlar için kontrol listesi hazırlayın",
+          "Yükleme bilgisayarında senaryo analizi yapın",
+          "Operasyonel sınırları belirleyin",
+          "Mürettebatı kritik durumlar hakkında bilgilendirin"
+        ],
+        warnings: [
+          "Kriterlere tam sınırda kalmak tehlikelidir",
+          "Kısmi dolu tankları minimize edin",
+          "Tek taraflı yüklemeden kaçının",
+          "Yüksek VCG durumlarına özellikle dikkat edin"
+        ]
+      },
+      {
+        id: "tank-sequence",
+        title: "Tank Sıralaması ve Optimizasyon",
+        content: `# Tank Sıralaması ve Optimizasyon
+
+**Tank sıralaması**, yükleme ve boşaltma operasyonlarında hangi tankların hangi sırayla kullanılacağını belirler. Doğru sıralama hem stabilite hem de yapısal güvenlik için kritiktir.
+
+**Tank Sıralama Prensipleri**
+
+**1. Stabilite Önceliği**
+GM değerini koruyacak sıralama:
+- Alt tankları önce doldur
+- Üst tankları son doldur
+- Boşaltmada tersi uygula
+
+**2. Yapısal Güvenlik**
+Kesme kuvveti ve eğilme momentini sınırda tutmak:
+- Simetrik yükleme
+- Baş-kıç dengesi
+- Aşırı lokal yüklemeden kaçın
+
+**3. Serbest Yüzey Minimizasyonu**
+FSE'yi azaltmak için:
+- Tankları tam dolu veya tam boş tut
+- Kısmi doluluk sayısını minimize et
+- Büyük tankları öncelikle doldur/boşalt
+
+**Yakıt Tankları İçin Sıralama**
+
+**Tüketim Sırası (Tipik):**
+1. Settling tank (sürekli kullanım)
+2. Service tank (günlük kullanım)
+3. Üst yakıt tankları (yüksek VCG)
+4. Çift dip yakıt tankları (düşük VCG)
+5. Derin tanklar (son kullanım)
+
+**Transfer İşlemleri:**
+- Trim kontrolü için baş/kıç transferi
+- Heel düzeltmesi için B/İ transferi
+- GM artırımı için aşağı transfer
+
+**Ballast Tank Sıralaması**
+
+**Balast Alma:**
+1. Çift dip tankları (stabilite)
+2. Baş pik tankı (trim)
+3. Yan tanklar (fine tuning)
+
+**Balast Boşaltma:**
+1. Üst tanklar (GM artışı)
+2. Yan tanklar (heel kontrolü)
+3. Dip tankları (son)
+
+**Optimizasyon Stratejileri**
+- Minimum sayıda tank kısmen dolu
+- Simetri korunmalı
+- Kritik durumlardan kaçının`,
+        formulas: [
+          {
+            formula: "FSC_toplam = Σ(i × FSM_i) / Δ",
+            description: "Toplam serbest yüzey düzeltmesi"
+          },
+          {
+            formula: "GM_net = GM_solid - FSC",
+            description: "Operasyonel GM hesabı"
+          },
+          {
+            formula: "Tank_sırası = f(VCG, FSM, LCG)",
+            description: "Optimal sıralama fonksiyonu"
+          }
+        ],
+        keyPoints: [
+          "Tank sıralaması stabiliteyi doğrudan etkiler",
+          "Serbest yüzey etkisini minimize edin",
+          "Yapısal sınırları aşmayın",
+          "Operasyonel prosedür oluşturun"
+        ],
+        practicalTips: [
+          "Standart tank sıralama prosedürü hazırlayın",
+          "Her operasyon öncesi plan yapın",
+          "Ara durumları kontrol edin",
+          "Acil durum prosedürleri belirleyin"
+        ],
+        warnings: [
+          "Çok sayıda kısmen dolu tank tehlikelidir",
+          "Asimetrik yüklemeden kaçının",
+          "Yapısal sınırları izleyin",
+          "Ani büyük transferler yapmayın"
+        ]
+      }
+    ]
+  },
+
+  // ==================== BÖLÜM 12: ÖZEL KARGOLAR ====================
+  {
+    id: "special-cargoes",
+    title: "12. Özel Kargolar",
+    icon: "⚠️",
+    description: "Tehlikeli maddeler, bulk kargo, ağır yükler ve özel taşıma gereksinimleri",
+    subtopics: [
+      {
+        id: "bulk-cargo",
+        title: "Dökme (Bulk) Kargolar",
+        content: `# Dökme (Bulk) Kargolar
+
+**Dökme kargo**, ambalajsız olarak geminin ambarlarına doğrudan yüklenen kargoları ifade eder. Bu kargolar özel stabilite riskleri taşır.
+
+**Dökme Kargo Türleri**
+
+**1. Kuru Dökme Kargolar**
+- Tahıl (buğday, mısır, arpa)
+- Maden cevherleri (demir, bakır, boksit)
+- Kömür
+- Çimento
+- Şeker, tuz
+
+**2. Dökme Sıvı Kargolar**
+- Ham petrol
+- Petrol ürünleri
+- Kimyasallar
+- Bitkisel yağlar
+
+**Tahıl Kargosu Özel Gereksinimleri**
+
+**IMO Grain Code:**
+- Tahıl kayması hesabı zorunlu
+- Varsayılan kayma açısı: 15-25°
+- Serbest yüzey hesabı farklı
+- Securing gereksinimleri
+
+**Heeling Moment Hesabı:**
+- Volumetrik kayma momenti (MVS)
+- Kayma açısı kabulü
+- Filled/partly filled ambar farkı
+
+**Grain Stabilitesi Kriterleri:**
+- Düzeltilmiş GM ≥ 0.30 m
+- Tahıl kaymasından yatma ≤ 12°
+- Artık alan ≥ 0.075 m·rad
+
+**Maden Cevheri Kargosu**
+
+**Yoğunluk Problemi:**
+- Çok yüksek stowage factor
+- Alt ambarlarda yoğunlaşma
+- Düşük VCG ancak trim problemi
+
+**Sıvılaşma (Liquefaction) Riski:**
+- Nem içeriği kritik
+- TML (Transportable Moisture Limit)
+- Dinamik yüklerde sıvı davranışı
+
+**Kömür Kargosu**
+
+**Özel Riskler:**
+- Kendiliğinden tutuşma
+- Metan gazı oluşumu
+- Nem absorpsiyonu
+- Kayma potansiyeli`,
+        formulas: [
+          {
+            formula: "λ₀ = 12° (varsayılan tahıl kayma açısı)",
+            description: "IMO Grain Code kayma açısı"
+          },
+          {
+            formula: "MVS = ρ × Vd × (b² / 8h)",
+            description: "Volumetrik kayma momenti"
+          },
+          {
+            formula: "Heeling_arm = MVS / (Δ × SF)",
+            description: "Tahıl kaymasından yatma kolu"
+          }
+        ],
+        keyPoints: [
+          "Tahıl kargosu için IMO Grain Code uygulanır",
+          "Maden cevherlerinde sıvılaşma riski var",
+          "Kömür kendiliğinden tutuşabilir",
+          "Her dökme kargo türü için özel prosedür gerekir"
+        ],
+        practicalTips: [
+          "Kargo özelliklerini yüklemeden önce öğrenin",
+          "Nem içeriğini kontrol edin ve belgeleyin",
+          "Ambar hazırlığını titizlikle yapın",
+          "Seyir sırasında izleme yapın"
+        ],
+        warnings: [
+          "Tahıl kayması çok tehlikelidir",
+          "Sıvılaşma aniden gerçekleşebilir",
+          "Kömür ambarlarında gaz ölçümü yapın",
+          "Aşırı yüklemeden kaçının"
+        ]
+      },
+      {
+        id: "heavy-cargo",
+        title: "Ağır Yükler ve Proje Kargoları",
+        content: `# Ağır Yükler ve Proje Kargoları
+
+**Ağır yük (Heavy Lift)** ve proje kargoları, standart yükleme prosedürlerinin ötesinde özel planlama ve hesaplama gerektiren kargolardır.
+
+**Ağır Yük Tanımı**
+- Tek parça ağırlığı > 100 ton
+- Özel ekipman gerektiren boyutlar
+- Standart ambar kapasitesini aşan
+
+**Ağır Yük Tipleri**
+
+**1. Endüstriyel Ekipmanlar:**
+- Transformatörler
+- Jeneratörler, türbinler
+- Reaktörler, kolonlar
+- Vinçler
+
+**2. Deniz Yapıları:**
+- Offshore platformları
+- Rüzgar türbini parçaları
+- Boru hatları
+
+**3. Araçlar ve Yapılar:**
+- Lokomotifler
+- Büyük inşaat makineleri
+- Prefabrik yapılar
+
+**Stabilite Etkileri**
+
+**Yükleme Sırasında:**
+- Vinç operasyonu momentleri
+- Asılı yük serbest yüzey etkisi
+- Ani ağırlık transferleri
+- Yatma açısı kontrolü
+
+**Seyir Sırasında:**
+- Sabitleme (lashing) güçleri
+- Dinamik yükler
+- Kayma potansiyeli
+
+**Hesaplama Gereksinimleri**
+
+**Vinç Kapasitesi:**
+- SWL (Safe Working Load) kontrolü
+- Boom açısı ve yarıçap
+- Tandem kaldırma
+
+**Sabitleme Hesabı:**
+- Dinamik faktörler (IMO CSS Code)
+- Lashing düzeni
+- Güverte mukavemeti
+
+**Lokal Yapısal Yük:**
+- Güverte yükü (ton/m²)
+- Dunnage kullanımı
+- Yük dağılımı`,
+        formulas: [
+          {
+            formula: "M_vinç = W × R × cos(θ)",
+            description: "Vinç operasyonu yatırdıcı moment"
+          },
+          {
+            formula: "FSE_asılı = W × R²/Δ",
+            description: "Asılı yük serbest yüzey etkisi"
+          },
+          {
+            formula: "F_lashing = m × a × SF",
+            description: "Sabitleme kuvveti hesabı"
+          }
+        ],
+        keyPoints: [
+          "Ağır yükler detaylı planlama gerektirir",
+          "Vinç operasyonu stabiliteyi kritik etkiler",
+          "Sabitleme hesabı zorunludur",
+          "Lokal yapısal yük kontrol edilmeli"
+        ],
+        practicalTips: [
+          "Detaylı yükleme planı hazırlayın",
+          "Vinç operasyonunu adım adım planlayın",
+          "Sabitleme malzemelerini önceden hazırlayın",
+          "Seyir sırasında düzenli kontrol yapın"
+        ],
+        warnings: [
+          "Vinç kapasitesini aşmayın",
+          "Asimetrik kaldırmadan kaçının",
+          "Sabitleme yetersizliği kazaya yol açar",
+          "Hava koşullarını dikkate alın"
+        ]
+      },
+      {
+        id: "dangerous-goods",
+        title: "Tehlikeli Maddeler (IMDG)",
+        content: `# Tehlikeli Maddeler (IMDG)
+
+**IMDG Code (International Maritime Dangerous Goods Code)**, tehlikeli maddelerin deniz yoluyla taşınmasını düzenler ve stabilite açısından özel gereksinimler içerir.
+
+**Tehlikeli Madde Sınıfları**
+
+**Sınıf 1:** Patlayıcılar
+**Sınıf 2:** Gazlar
+**Sınıf 3:** Yanıcı sıvılar
+**Sınıf 4:** Yanıcı katılar
+**Sınıf 5:** Oksitleyici maddeler
+**Sınıf 6:** Zehirli maddeler
+**Sınıf 7:** Radyoaktif maddeler
+**Sınıf 8:** Aşındırıcı maddeler
+**Sınıf 9:** Diğer tehlikeli maddeler
+
+**Stabilite İle İlişkili Riskler**
+
+**Sıvı Tehlikeli Maddeler:**
+- Tank türü gereksinimleri (IMO tip 1, 2, 3)
+- Serbest yüzey etkileri
+- Sıcaklık genleşmesi
+- Reaktivite
+
+**Dökme Tehlikeli Maddeler:**
+- Kayma potansiyeli
+- Nem hassasiyeti
+- Kendiliğinden ısınma
+- Gaz oluşumu
+
+**Stowage Gereksinimleri**
+
+**Ayrıştırma (Segregation):**
+- Uyumsuz maddeler ayrılmalı
+- Stowage kategorileri
+- Uzaklık gereksinimleri
+
+**Sabitleme:**
+- Ekstra securing gerekli
+- Hasar önleme
+- Erişim kolaylığı
+
+**Acil Durum Hazırlığı**
+
+**EmS (Emergency Schedule):**
+- Yangın prosedürü
+- Dökülme prosedürü
+- İlkyardım
+
+**Stabilite Etkisi:**
+- Yangın söndürme suyu
+- Jettison (denize atma) kararı
+- Kargo atma önceliği`,
+        formulas: [
+          {
+            formula: "Genleşme = V₀ × β × ΔT",
+            description: "Sıvı genleşme hesabı"
+          },
+          {
+            formula: "Doluluk = V_sıvı / V_tank ≤ 0.98",
+            description: "Tank doluluk sınırı"
+          },
+          {
+            formula: "Ayrıştırma_mesafesi = f(Sınıf_1, Sınıf_2)",
+            description: "IMDG segregation tablosu"
+          }
+        ],
+        keyPoints: [
+          "Tehlikeli maddeler IMDG Code'a göre taşınır",
+          "Her sınıfın özel gereksinimleri vardır",
+          "Ayrıştırma kuralları zorunludur",
+          "Acil durum planı hazırlanmalı"
+        ],
+        practicalTips: [
+          "IMDG Code'u güncel tutun",
+          "Manifest'i doğru hazırlayın",
+          "Mürettebatı eğitin",
+          "Yangın söndürme ekipmanını hazır tutun"
+        ],
+        warnings: [
+          "IMDG kurallarını ihlal etmeyin",
+          "Uyumsuz maddeleri bir arada taşımayın",
+          "Sızıntı ve hasar durumunda protokole uyun",
+          "Belgeleme eksikliği cezai sorumluluk getirir"
+        ]
+      },
+      {
+        id: "container-cargo",
+        title: "Konteyner Kargoları",
+        content: `# Konteyner Kargoları
+
+**Konteyner gemileri** modern deniz taşımacılığının temelini oluşturur ve özel stabilite gereksinimleri taşır.
+
+**Konteyner Özellikleri**
+
+**Standart Boyutlar:**
+- 20 ft (TEU): 6.1m × 2.4m × 2.6m
+- 40 ft (FEU): 12.2m × 2.4m × 2.6m
+- 45 ft High Cube: 13.7m × 2.4m × 2.9m
+
+**Ağırlık Sınıfları:**
+- Light: < 14 ton
+- Medium: 14-24 ton
+- Heavy: > 24 ton
+- Max: 30.5 ton (20 ft)
+
+**Stabilite Zorlukları**
+
+**Yüksek VCG:**
+- Güverte üstü istifleme
+- 6-10 tier yükseklik
+- VCG kayması riski
+
+**Kötü Beyan:**
+- Gerçek ağırlık bilinmiyor
+- VGM (Verified Gross Mass) önemi
+- Parametric rolling riski
+
+**Lashing Gereksinimleri:**
+- Twist lock, lashing rod
+- Stacking weight limitleri
+- Racking kuvvetleri
+
+**Stabilite Hesaplamaları**
+
+**VCG Hesabı:**
+- Her pozisyon için tier faktörü
+- Bay-Row-Tier sistemi
+- Homogeneous vs actual VCG
+
+**Rüzgar Momenti:**
+- Büyük yan yüzey alanı
+- Windage hesabı kritik
+- Yüksek konteynerler etkisi
+
+**Parametric Rolling:**
+- Kritik dalga boyu/gemi boyu oranı
+- GM variasyonu
+- Frekans uyumu kontrolü
+
+**Bay Plan Optimizasyonu**
+- Ağır konteynerler alta
+- Reefer'lar enerji kaynaklarına yakın
+- DG konteynerler kurallara uygun
+- Discharge port sırasına göre`,
+        formulas: [
+          {
+            formula: "VCG_stack = Σ(W_i × VCG_i) / Σ(W_i)",
+            description: "İstif VCG hesabı"
+          },
+          {
+            formula: "Stack_weight = Σ(tier ağırlıkları)",
+            description: "Toplam istif ağırlığı"
+          },
+          {
+            formula: "GM_limit = f(VCG_max, KM)",
+            description: "İzin verilen minimum GM"
+          }
+        ],
+        keyPoints: [
+          "VGM (Verified Gross Mass) zorunludur",
+          "Yüksek VCG konteyner gemilerinin temel problemi",
+          "Lashing gereksinimleri önemli",
+          "Parametric rolling riski var"
+        ],
+        practicalTips: [
+          "VGM belgelerini kontrol edin",
+          "Bay plan optimizasyonu yapın",
+          "Ağır konteynerleri alta yerleştirin",
+          "Rüzgar momentini hesaplayın"
+        ],
+        warnings: [
+          "Kötü beyan edilen ağırlıklar tehlikelidir",
+          "Aşırı stacking limitlerini aşmayın",
+          "Lashing kontrollerini atlmayın",
+          "Parametric rolling koşullarından kaçının"
+        ]
+      }
+    ]
+  },
+
+  // ==================== BÖLÜM 13: YÜKLEME BİLGİSAYARLARI ====================
+  {
+    id: "loading-computers",
+    title: "13. Yükleme Bilgisayarları",
+    icon: "💻",
+    description: "Modern yükleme yazılımları, onay gereksinimleri ve operasyonel kullanım",
+    subtopics: [
+      {
+        id: "loading-software",
+        title: "Yükleme Yazılımları",
+        content: `# Yükleme Yazılımları
+
+**Yükleme bilgisayarı (Loading Computer)**, geminin stabilite, boyuna mukavemet ve diğer kritik parametrelerini hesaplayan onaylı yazılım sistemidir.
+
+**Zorunluluk**
+
+**SOLAS Gereksinimleri:**
+- Tüm gemiler ≥ 150 GRT (tavsiye)
+- Bulk carrier'lar (zorunlu)
+- Tankerler (zorunlu)
+- Konteyner gemileri (zorunlu)
+
+**Klas Kuruluşu Onayı:**
+- Tip onayı
+- Gemi bazlı onay
+- Periyodik kalibrasyon
+
+**Temel Fonksiyonlar**
+
+**1. Stabilite Hesabı:**
+- Draft, trim, heel
+- KG, GM, GZ eğrisi
+- IMO kriterleri kontrolü
+
+**2. Boyuna Mukavemet:**
+- Shear force diyagramı
+- Bending moment diyagramı
+- Sınır değer kontrolü
+
+**3. Tank Yönetimi:**
+- Tank kapasiteleri
+- Sounding/ullage tabloları
+- Transfer planlaması
+
+**4. Kargo Planlama:**
+- Bay plan (konteyner)
+- Ambar yükleme planı
+- Ağırlık dağılımı
+
+**Popüler Yazılımlar**
+
+**Ticari Yazılımlar:**
+- NAPA Loading Computer
+- CargoMax
+- LoadMaster
+- Autoload
+
+**Klas Kuruluşu Yazılımları:**
+- DNV LoadLine
+- Lloyd's ShipWeight
+- BV HullManager
+
+**Entegre Sistemler:**
+- ECDIS entegrasyonu
+- VDR bağlantısı
+- Uzaktan izleme`,
+        formulas: [
+          {
+            formula: "Hesaplama_hızı = f(İşlemci, Veri_boyutu)",
+            description: "Yazılım performansı"
+          },
+          {
+            formula: "Güncelleme = Onay + Veri + Kalibrasyon",
+            description: "Yazılım bakım gereksinimleri"
+          }
+        ],
+        keyPoints: [
+          "Yükleme bilgisayarı zorunlu veya tavsiye edilir",
+          "Klas kuruluşu onayı gerekir",
+          "Stabilite ve boyuna mukavemet birlikte hesaplanır",
+          "Düzenli güncelleme ve kalibrasyon gerekir"
+        ],
+        practicalTips: [
+          "Yazılımı düzenli güncelleyin",
+          "Sonuçları manuel kontrol edin",
+          "Hata mesajlarını ciddiye alın",
+          "Yedek hesaplama yöntemi hazır tutun"
+        ],
+        warnings: [
+          "Onaysız yazılım kullanmayın",
+          "Sonuçları sorgulamadan kabul etmeyin",
+          "Giriş hatalarına dikkat edin",
+          "Arızalı bilgisayarla seyir etmeyin"
+        ]
+      },
+      {
+        id: "software-usage",
+        title: "Yazılım Kullanımı ve Operasyonlar",
+        content: `# Yazılım Kullanımı ve Operasyonlar
+
+**Yükleme bilgisayarının doğru kullanımı**, güvenli operasyon için kritik öneme sahiptir.
+
+**Veri Girişi**
+
+**Tank Verileri:**
+- Sounding veya ullage değerleri
+- Yoğunluk (API, density)
+- Sıcaklık düzeltmesi
+
+**Kargo Verileri:**
+- Ağırlık (ton)
+- VCG, LCG koordinatları
+- Stowage faktörü
+
+**Sabit Veriler:**
+- Lightship verileri
+- Hidrostatik tablolar (yazılımda yerleşik)
+- Tank kapasiteleri
+
+**Hesaplama Adımları**
+
+**1. Mevcut Durumu Gir:**
+- Tank soundingleri
+- Kargo miktarları
+- Sarf malzemeleri
+
+**2. Sonuçları Kontrol Et:**
+- Draft, trim, heel
+- GM değeri
+- Kriterler tablosu
+
+**3. Planlanan Durumu Gir:**
+- Yükleme/boşaltma planı
+- Tank transferleri
+- Yakıt tüketimi
+
+**4. Karşılaştırma ve Onay:**
+- Her iki durumu karşılaştır
+- Kriterleri doğrula
+- Planı onayla veya düzelt
+
+**Yaygın Hatalar**
+
+**Giriş Hataları:**
+- Yanlış tank numarası
+- Yoğunluk hatası
+- Birim hatası (mt vs lt)
+
+**Yorumlama Hataları:**
+- Uyarıların göz ardı edilmesi
+- GM yerine GMf kontrolü
+- Serbest yüzey unutulması
+
+**Sistem Hataları:**
+- Güncel olmayan veri
+- Kalibrasyon kayması
+- Yazılım bug'ları
+
+**Kalite Kontrol**
+- Sonuçları mantıksal değerlendirin
+- Önceki durumlarla karşılaştırın
+- Kritik durumlarda manuel doğrulama yapın`,
+        formulas: [
+          {
+            formula: "Sounding → Volume → Weight = V × ρ",
+            description: "Tank ağırlık hesap zinciri"
+          },
+          {
+            formula: "Trim = (LCG - LCB) × Δ / MCT",
+            description: "Trim doğrulama hesabı"
+          },
+          {
+            formula: "GM = KM - KG",
+            description: "GM doğrulama hesabı"
+          }
+        ],
+        keyPoints: [
+          "Doğru veri girişi en kritik adım",
+          "Sonuçları sorgulamadan kabul etmeyin",
+          "Ara durumları da kontrol edin",
+          "Yaygın hataları bilin"
+        ],
+        practicalTips: [
+          "Veri girişini çift kontrol edin",
+          "Standart işlem prosedürü oluşturun",
+          "Sonuçları önceki durumlarla karşılaştırın",
+          "Şüpheli durumlarda manuel hesap yapın"
+        ],
+        warnings: [
+          "Yanlış veri tehlikeli sonuçlar verir",
+          "Uyarıları göz ardı etmeyin",
+          "Kriterlere tam sınırda kalmayın",
+          "Arızalı sisteme güvenmeyin"
+        ]
+      },
+      {
+        id: "approval-certification",
+        title: "Onay ve Sertifikasyon",
+        content: `# Onay ve Sertifikasyon
+
+**Yükleme bilgisayarlarının onay süreci**, denizcilik güvenliğinin temel unsurlarından biridir.
+
+**Onay Türleri**
+
+**1. Tip Onayı (Type Approval):**
+- Yazılımın genel onayı
+- Klas kuruluşu tarafından
+- Standartlara uygunluk testi
+- Tüm gemilerde kullanılabilirlik
+
+**2. Gemi Bazlı Onay:**
+- Belirli gemi için özelleştirme
+- Gemi verileri doğrulama
+- Inclining test sonuçları entegrasyonu
+- Nihai onay belgesi
+
+**Onay Standartları**
+
+**IACS Unified Requirements:**
+- UR S1: Boyuna mukavemet
+- UR L5: Yükleme bilgisayarları
+
+**IMO Gereksinimleri:**
+- MSC.1/Circ.1229: Onaylı yükleme yazılımları
+- SOLAS II-1/5-1: Bilgisayar destekli stabilite
+
+**Klas Kuruluşu Kuralları:**
+- DNV GL Rules
+- Lloyd's Register Rules
+- Bureau Veritas Rules
+- ABS Rules
+
+**Sertifikasyon Süreci**
+
+**1. Geliştirme Aşaması:**
+- Yazılım tasarımı
+- Algoritma doğrulama
+- Test senaryoları
+
+**2. Klas Değerlendirmesi:**
+- Kod incelemesi
+- Hesaplama doğrulama
+- Test sonuçları analizi
+
+**3. Gemi Entegrasyonu:**
+- Gemi verilerinin girişi
+- Inclining test sonuçları
+- Kalibrasyon kontrolü
+
+**4. Son Onay:**
+- Onay belgesi
+- Geçerlilik süresi
+- Periyodik doğrulama gereksinimleri
+
+**Periyodik Gereksinimler**
+- Yıllık doğrulama
+- 5 yıllık yeniden onay
+- Modifikasyon sonrası güncelleme`,
+        formulas: [
+          {
+            formula: "Doğrulama_hassasiyeti ≤ ±2%",
+            description: "İzin verilen hesaplama sapması"
+          },
+          {
+            formula: "Test_senaryoları ≥ 10",
+            description: "Minimum doğrulama durumu sayısı"
+          }
+        ],
+        keyPoints: [
+          "Tip onayı ve gemi bazlı onay farklıdır",
+          "Klas kuruluşu onayı zorunludur",
+          "Periyodik doğrulama gerekir",
+          "Modifikasyonlar yeniden onay gerektirir"
+        ],
+        practicalTips: [
+          "Onay belgelerini gemide bulundurun",
+          "Periyodik doğrulama tarihlerini takip edin",
+          "Yazılım güncellemelerini kaydedin",
+          "Klas surveyor ile iletişimde olun"
+        ],
+        warnings: [
+          "Onaysız yazılım kullanmak kurallara aykırıdır",
+          "Süresi geçmiş onay geçersizdir",
+          "İzinsiz modifikasyon onayı iptal eder",
+          "PSC denetimlerinde onay belgeleri istenir"
+        ]
+      }
+    ]
+  },
+
+  // ==================== BÖLÜM 14: SAYISAL ÖRNEKLER ====================
+  {
+    id: "numerical-examples",
+    title: "14. Sayısal Örnekler",
+    icon: "🔢",
+    description: "Adım adım çözümlü stabilite problemleri ve hesaplama örnekleri",
+    subtopics: [
+      {
+        id: "gm-calculations",
+        title: "GM ve KG Hesap Örnekleri",
+        content: `# GM ve KG Hesap Örnekleri
+
+**Örnek 1: Temel GM Hesabı**
+
+**Problem:**
+Bir geminin hidrostatik verilerine göre:
+- Deplasma: 15,000 ton
+- KM: 8.50 m
+- Lightship KG: 7.20 m
+- Kargo (5,000 ton) VCG: 6.50 m
+- Yakıt (2,500 ton) VCG: 3.00 m
+
+GM değerini hesaplayın.
+
+**Çözüm:**
+
+**Adım 1: Toplam ağırlık ve moment hesabı**
+
+| Bileşen | Ağırlık (t) | VCG (m) | Moment (t·m) |
+|---------|-------------|---------|--------------|
+| Lightship | 7,500 | 7.20 | 54,000 |
+| Kargo | 5,000 | 6.50 | 32,500 |
+| Yakıt | 2,500 | 3.00 | 7,500 |
+| **Toplam** | **15,000** | - | **94,000** |
+
+**Adım 2: KG hesabı**
+KG = Toplam Moment / Toplam Ağırlık
+KG = 94,000 / 15,000 = 6.27 m
+
+**Adım 3: GM hesabı**
+GM = KM - KG
+GM = 8.50 - 6.27 = 2.23 m
+
+**Sonuç:** GM = 2.23 m (Yeterli stabilite)
+
+---
+
+**Örnek 2: Serbest Yüzey Düzeltmeli GM**
+
+**Problem:**
+Yukarıdaki gemide ayrıca:
+- Yakıt tankı FSM: 1,200 t·m
+- Ballast tankı FSM: 800 t·m
+
+Net GM değerini hesaplayın.
+
+**Çözüm:**
+
+**Adım 1: Toplam FSM**
+FSM_toplam = 1,200 + 800 = 2,000 t·m
+
+**Adım 2: Serbest yüzey düzeltmesi**
+FSC = FSM / Δ = 2,000 / 15,000 = 0.133 m
+
+**Adım 3: Net GM**
+GM_net = GM_solid - FSC
+GM_net = 2.23 - 0.133 = 2.10 m
+
+**Sonuç:** GM_net = 2.10 m`,
+        formulas: [
+          {
+            formula: "KG = Σ(w × vcg) / Σw",
+            description: "Ağırlık merkezi hesabı"
+          },
+          {
+            formula: "GM = KM - KG",
+            description: "Metasantrik yükseklik"
+          },
+          {
+            formula: "GM_net = GM - FSC",
+            description: "Düzeltilmiş GM"
+          }
+        ],
+        keyPoints: [
+          "Moment hesabı sistematik yapılmalı",
+          "FSE her zaman dahil edilmeli",
+          "Sonuçlar kriterlere karşı kontrol edilmeli"
+        ],
+        practicalTips: [
+          "Tablo formatı kullanın",
+          "Her adımı kontrol edin",
+          "Sonucu mantıksal değerlendirin"
+        ],
+        warnings: [
+          "FSC unutulmamalı",
+          "Birim tutarlılığına dikkat edin"
+        ]
+      },
+      {
+        id: "trim-calculations",
+        title: "Trim Hesap Örnekleri",
+        content: `# Trim Hesap Örnekleri
+
+**Örnek 1: Trim Değişimi Hesabı**
+
+**Problem:**
+Bir geminin mevcut durumu:
+- Baş draft (Tf): 6.50 m
+- Kıç draft (Ta): 7.20 m
+- LCF: 82.5 m (kıçtan)
+- MCT: 320 t·m/cm
+- Deplasma: 18,000 ton
+
+500 ton kargo Frame 120'ye (kıçtan 120 m) yüklenecek. Yeni trimini bulun.
+
+**Çözüm:**
+
+**Adım 1: Mevcut trim**
+Trim = Ta - Tf = 7.20 - 6.50 = 0.70 m (kıç trimli)
+
+**Adım 2: Yükleme pozisyonu ve LCF farkı**
+Mesafe = 120 - 82.5 = 37.5 m (LCF'nin baş tarafı)
+
+**Adım 3: Trimming moment**
+TM = 500 × 37.5 = 18,750 t·m
+
+**Adım 4: Trim değişimi**
+ΔTrim = TM / MCT = 18,750 / 320 = 58.6 cm = 0.586 m
+Baş tarafa yükleme → baş aşağı trim
+
+**Adım 5: Yeni trim**
+Yeni trim = 0.70 - 0.586 = 0.114 m (kıç trimli)
+
+**Sonuç:** Yeni trim ≈ 0.11 m kıç trimli
+
+---
+
+**Örnek 2: İstenen Trim İçin Ballast Hesabı**
+
+**Problem:**
+Gemi 0.50 m baş trimli olmalı. Mevcut durum even keel.
+- MCT: 280 t·m/cm
+- Baş pik tankı LCG: 145 m (kıçtan)
+- LCF: 78 m (kıçtan)
+
+Kaç ton ballast alınmalı?
+
+**Çözüm:**
+
+**Adım 1: Gerekli trim değişimi**
+ΔTrim = 0.50 m = 50 cm (baş aşağı)
+
+**Adım 2: Gerekli trimming moment**
+TM = ΔTrim × MCT = 50 × 280 = 14,000 t·m
+
+**Adım 3: Ballast miktarı**
+Mesafe = 145 - 78 = 67 m (baş taraf)
+Ballast = TM / Mesafe = 14,000 / 67 = 209 ton
+
+**Sonuç:** 209 ton baş pik ballast gerekli`,
+        formulas: [
+          {
+            formula: "Trim = Ta - Tf",
+            description: "Trim hesabı (pozitif = kıç trimli)"
+          },
+          {
+            formula: "ΔTrim = (w × d) / MCT",
+            description: "Trim değişimi"
+          },
+          {
+            formula: "w = (ΔTrim × MCT) / d",
+            description: "Gerekli ağırlık"
+          }
+        ],
+        keyPoints: [
+          "LCF referans noktasıdır",
+          "MCT birimi t·m/cm olmalı",
+          "Trim yönünü doğru belirleyin"
+        ],
+        practicalTips: [
+          "İşaretleri dikkatli kullanın",
+          "Sonucu fiziksel olarak değerlendirin"
+        ],
+        warnings: [
+          "MCT deplasmanla değişir",
+          "Büyük değişimlerde iteratif hesap gerekebilir"
+        ]
+      },
+      {
+        id: "gz-curve-example",
+        title: "GZ Eğrisi ve IMO Kriterleri Örneği",
+        content: `# GZ Eğrisi ve IMO Kriterleri Örneği
+
+**Örnek: GZ Eğrisi Analizi**
+
+**Problem:**
+Bir geminin GZ değerleri:
+
+| Açı (°) | GZ (m) |
+|---------|--------|
+| 0 | 0.000 |
+| 10 | 0.180 |
+| 20 | 0.380 |
+| 30 | 0.520 |
+| 40 | 0.450 |
+| 50 | 0.320 |
+| 60 | 0.150 |
+| 70 | -0.020 |
+
+IMO A.749 kriterlerini kontrol edin.
+
+**Çözüm:**
+
+**Kriter 1: GZ₃₀ ≥ 0.20 m**
+GZ₃₀ = 0.520 m ✓ (Karşılıyor)
+
+**Kriter 2: GZ_max en az 25°'de**
+GZ_max = 0.520 m @ 30° ✓ (Karşılıyor)
+
+**Kriter 3: Alan 0-30° ≥ 0.055 m·rad**
+
+Trapez kuralı ile:
+A₀₋₃₀ = (π/180) × [(0+0.180)/2 × 10 + (0.180+0.380)/2 × 10 + (0.380+0.520)/2 × 10]
+A₀₋₃₀ = 0.0175 × [0.90 + 2.80 + 4.50] = 0.0175 × 8.20 = 0.1435 m·rad
+✓ (0.1435 > 0.055, Karşılıyor)
+
+**Kriter 4: Alan 0-40° ≥ 0.090 m·rad**
+A₃₀₋₄₀ = 0.0175 × [(0.520+0.450)/2 × 10] = 0.0175 × 4.85 = 0.085 m·rad
+A₀₋₄₀ = 0.1435 + 0.085 = 0.228 m·rad
+✓ (0.228 > 0.090, Karşılıyor)
+
+**Kriter 5: Alan 30-40° ≥ 0.030 m·rad**
+A₃₀₋₄₀ = 0.085 m·rad
+✓ (0.085 > 0.030, Karşılıyor)
+
+**Kriter 6: GM₀ ≥ 0.15 m**
+GM₀ ≈ GZ₁₀ / sin(10°) = 0.180 / 0.174 = 1.03 m
+✓ (1.03 > 0.15, Karşılıyor)
+
+**Sonuç:** Tüm IMO A.749 kriterleri karşılanıyor.
+
+**Açıklama:**
+Vanishing angle yaklaşık 68° civarında. Bu makul bir değer ama 60°'nin altına düşmemeli.`,
+        formulas: [
+          {
+            formula: "Alan = Σ [(GZ₁ + GZ₂)/2 × Δθ × π/180]",
+            description: "Trapez kuralı ile alan hesabı"
+          },
+          {
+            formula: "GM₀ ≈ GZ_θ / sin(θ)",
+            description: "Küçük açılarda GM tahmini"
+          }
+        ],
+        keyPoints: [
+          "Tüm IMO kriterleri kontrol edilmeli",
+          "Alan hesabı için sayısal integrasyon gerekir",
+          "Vanishing angle önemli bir göstergedir"
+        ],
+        practicalTips: [
+          "Trapez kuralını sistematik uygulayın",
+          "Sonuçları tabloda özetleyin"
+        ],
+        warnings: [
+          "Tek kriterin karşılanması yeterli değildir",
+          "Tüm yükleme durumları kontrol edilmeli"
+        ]
+      },
+      {
+        id: "longitudinal-strength",
+        title: "Boyuna Mukavemet Hesap Örneği",
+        content: `# Boyuna Mukavemet Hesap Örneği
+
+**Örnek: Kesme Kuvveti ve Eğilme Momenti**
+
+**Problem:**
+Bir kargo gemisi (L = 180 m) için basitleştirilmiş ağırlık ve kaldırma kuvveti dağılımı:
+
+| Kesit (m) | Ağırlık (t/m) | Kaldırma (t/m) | Net Yük (t/m) |
+|-----------|---------------|----------------|---------------|
+| 0-30 | 80 | 60 | +20 |
+| 30-60 | 120 | 100 | +20 |
+| 60-90 | 150 | 160 | -10 |
+| 90-120 | 140 | 160 | -20 |
+| 120-150 | 100 | 100 | 0 |
+| 150-180 | 60 | 40 | +20 |
+
+Kesme kuvveti ve eğilme momenti diyagramlarını çizin.
+
+**Çözüm:**
+
+**Adım 1: Kesme kuvveti hesabı (integrasyon)**
+
+SF(x) = ∫₀ˣ (w - b) dx
+
+| Kesit Sonu | Kesme Kuvveti (ton) |
+|------------|---------------------|
+| x = 0 | 0 |
+| x = 30 | 0 + 20×30 = 600 |
+| x = 60 | 600 + 20×30 = 1,200 |
+| x = 90 | 1,200 + (-10)×30 = 900 |
+| x = 120 | 900 + (-20)×30 = 300 |
+| x = 150 | 300 + 0×30 = 300 |
+| x = 180 | 300 + 20×30 = 900 ≈ 0 (kontrol) |
+
+**Not:** Hesaptaki küçük fark, basitleştirilmiş verilerden kaynaklanır.
+
+**Adım 2: Eğilme momenti hesabı**
+
+BM(x) = ∫₀ˣ SF dx
+
+| Kesit | Eğilme Momenti (t·m) |
+|-------|----------------------|
+| x = 0 | 0 |
+| x = 30 | 0 + (0+600)/2 × 30 = 9,000 |
+| x = 60 | 9,000 + (600+1200)/2 × 30 = 36,000 |
+| x = 90 | 36,000 + (1200+900)/2 × 30 = 67,500 |
+| x = 120 | 67,500 + (900+300)/2 × 30 = 85,500 (max) |
+| x = 150 | 85,500 + (300+300)/2 × 30 = 94,500 |
+| x = 180 | Azalır → 0 |
+
+**Sonuç:**
+- Maksimum kesme kuvveti: ~1,200 ton (x ≈ 60 m)
+- Maksimum eğilme momenti: ~85,500 t·m (x ≈ 120 m)
+- Durum: **Sagging** (orta kısım aşağı bükülme)
+
+**Değerlendirme:**
+İzin verilen değerlerle karşılaştırılmalı:
+- SF_izin = 2,500 ton (varsayım) → OK
+- BM_izin = 150,000 t·m (varsayım) → OK`,
+        formulas: [
+          {
+            formula: "SF(x) = ∫₀ˣ (w - b) dx",
+            description: "Kesme kuvveti integrali"
+          },
+          {
+            formula: "BM(x) = ∫₀ˣ SF dx",
+            description: "Eğilme momenti integrali"
+          },
+          {
+            formula: "Net yük = Ağırlık - Kaldırma",
+            description: "Birim uzunluk başına net yük"
+          }
+        ],
+        keyPoints: [
+          "Kesme kuvveti net yükün integralidir",
+          "Eğilme momenti kesme kuvvetinin integralidir",
+          "Toplam denge kontrolü yapılmalı"
+        ],
+        practicalTips: [
+          "Trapez kuralı yeterli doğruluk sağlar",
+          "Sonuçları grafik olarak gösterin",
+          "İzin verilen değerlerle karşılaştırın"
+        ],
+        warnings: [
+          "Limit değerler aşılmamalı",
+          "Hogging/sagging durumu belirlenli"
+        ]
+      }
+    ]
+  },
+
+  // ==================== BÖLÜM 15: PRATİK UYGULAMALAR ====================
+  {
+    id: "practical-applications",
+    title: "15. Pratik Uygulamalar",
+    icon: "⚙️",
+    description: "Gerçek dünya senaryoları, operasyonel prosedürler ve karar verme süreçleri",
+    subtopics: [
+      {
+        id: "pre-departure-checklist",
+        title: "Kalkış Öncesi Stabilite Kontrolü",
+        content: `# Kalkış Öncesi Stabilite Kontrolü
+
+**Kalkış öncesi stabilite kontrolü**, her yolculuktan önce yapılması gereken zorunlu prosedürdür.
+
+**Kontrol Listesi**
+
+**1. Veri Toplama (2 saat öncesi)**
+
+□ Tüm tank soundingleri al
+□ Kargo miktarlarını doğrula
+□ Yakıt, su, sarf malzemesi miktarları
+□ Yolcu/mürettebat sayısı (varsa)
+
+**2. Yükleme Bilgisayarına Giriş**
+
+□ Tank verilerini gir (sounding/ullage)
+□ Yoğunluk değerlerini doğrula
+□ Kargo ağırlıklarını gir
+□ Depart ve arrival durumlarını hesapla
+
+**3. Sonuç Kontrolü**
+
+□ Draft/trim değerleri makul mü?
+□ GM ≥ 0.15 m (IMO minimum)?
+□ Tüm IMO kriterleri karşılanıyor mu?
+□ Boyuna mukavemet limitleri içinde mi?
+□ Uyarı veya alarm var mı?
+
+**4. Operasyonel Değerlendirme**
+
+□ Beklenen hava koşulları
+□ Yolculuk süresi ve yakıt tüketimi
+□ Arrival durumu da uygun mu?
+□ Özel koşullar (dar su, sığ su)?
+
+**5. Onay ve Belgeleme**
+
+□ Kaptan onayı
+□ Stabilite hesap kağıdı imzalı
+□ Yükleme planı dosyalanmış
+□ Kalkış izni alınmış
+
+**Kritik Sınırlar**
+
+| Parametre | Minimum | Önerilen |
+|-----------|---------|----------|
+| GM₀ | 0.15 m | ≥ 0.50 m |
+| GZ₃₀ | 0.20 m | ≥ 0.25 m |
+| Alan 0-30° | 0.055 m·rad | ≥ 0.070 m·rad |
+| SF/BM | ≤ %100 izin | ≤ %85 izin |
+
+**Önemli Notlar:**
+- Kriterlere tam sınırda kalmayın
+- Hava durumu bozuksa marj artırın
+- Şüpheli durumlarda sormaktan çekinmeyin`,
+        keyPoints: [
+          "Kalkış öncesi kontrol zorunludur",
+          "Tüm veriler doğrulanmalı",
+          "Hem departure hem arrival kontrol edilmeli",
+          "Belgeleme önemli"
+        ],
+        practicalTips: [
+          "Standart kontrol listesi kullanın",
+          "Süreci sistematik yapın",
+          "Sonuçları mantıksal değerlendirin"
+        ],
+        warnings: [
+          "Eksik veri ile hesap yapmayın",
+          "Uyarıları göz ardı etmeyin",
+          "Kriterlere tam sınırda kalmaktan kaçının"
+        ]
+      },
+      {
+        id: "voyage-monitoring",
+        title: "Seyir Sırası İzleme",
+        content: `# Seyir Sırası İzleme
+
+**Seyir sırasında stabilite izleme**, güvenli operasyon için kritik öneme sahiptir.
+
+**Günlük İzleme**
+
+**Her Vardiyada:**
+- Yakıt tüketimi takibi
+- Tank seviye değişimleri
+- Draft/trim gözlemi
+- Periyot kontrolü (rolling karakteristiği)
+
+**Günlük:**
+- Sounding'ler (12 veya 24 saatte bir)
+- Yakıt raporları güncelleme
+- Stabilite hesabı güncelleme
+- Noon report verileri
+
+**Kritik Olaylar**
+
+**Hava Durumu Değişikliği:**
+- Rüzgar kuvveti artışı → GM kontrolü
+- Dalga yüksekliği → Parametric rolling riski
+- Fırtına yaklaşımı → Ballast optimizasyonu
+
+**Kargo Kayması Şüphesi:**
+- Ani heel değişimi
+- Asimetrik rolling
+- Görsel kontrol mümkünse
+
+**Tank Sızıntısı:**
+- Beklenmeyen seviye değişimi
+- Trim/heel anomalisi
+- Pompa alarmları
+
+**Transfer Operasyonları**
+
+**Yakıt Transferi:**
+- Simetri korunmalı
+- GM izlenmeli
+- Kısmi tanklar minimize edilmeli
+
+**Ballast Operasyonları:**
+- Trim optimizasyonu
+- GM düzeltmesi
+- IMO BWM gereksinimleri
+
+**Acil Durum Müdahalesi**
+
+**Stabilite Kaybı Belirtileri:**
+- Uzun rolling periyodu → Düşük GM
+- Yavaş dönüş → Loll durumu şüphesi
+- Ani heel → Kargo kayması veya flooding
+
+**Acil Eylemler:**
+1. Hız azalt
+2. Dalgalara karşı manevra
+3. Düşük tanklara ballast al
+4. Durumu değerlendir ve raporla`,
+        keyPoints: [
+          "Stabilite sürekli izlenmeli",
+          "Yakıt tüketimi stabiliteyi etkiler",
+          "Anormal durumlar hemen araştırılmalı"
+        ],
+        practicalTips: [
+          "Günlük rutin oluşturun",
+          "Anormallikleri kaydedin",
+          "Mürettebatı eğitin"
+        ],
+        warnings: [
+          "Küçük değişiklikleri göz ardı etmeyin",
+          "Uzun rolling periyodu uyarı işaretidir",
+          "Ani heel'e anında müdahale edin"
+        ]
+      },
+      {
+        id: "emergency-response",
+        title: "Acil Durum Müdahalesi",
+        content: `# Acil Durum Müdahalesi
+
+**Stabilite kaybı acil bir durumdur** ve doğru müdahale hayat kurtarabilir.
+
+**Stabilite Kaybı Belirtileri**
+
+**Uyarı İşaretleri:**
+- Rolling periyodunun uzaması
+- Dönüş hareketinin yavaşlaması
+- Tek tarafa yatma eğilimi
+- Dik durumda duramaması (loll)
+
+**Kritik Belirtiler:**
+- Sürekli artan heel
+- Gemi dönmüyor (capsizing başlangıcı)
+- Su alımı
+
+**Acil Müdahale Prosedürü**
+
+**1. Anında (0-5 dakika):**
+- MAY DAY mesajı hazırlığı
+- Hız azalt veya dur
+- Dalgalara karşı pozisyon al
+- Mürettebatı uyar
+
+**2. Değerlendirme (5-15 dakika):**
+- Nedeni belirle (flooding, kargo kayması, vb.)
+- Mevcut stabiliteyi değerlendir
+- Eylem planı oluştur
+
+**3. Düzeltici Eylemler:**
+
+**Flooding durumunda:**
+- Hasarlı bölmeyi izole et
+- Karşı ballast al (dikkatli!)
+- Pompalama başlat
+
+**Kargo kayması durumunda:**
+- Geminin açık denize yönlendir
+- Aşırı manevra yapma
+- Limana dönüşü değerlendir
+
+**Düşük GM durumunda:**
+- Alt tanklara ballast al
+- Üst tankları boşalt
+- Güverte yükünü azalt (jettison?)
+
+**4. Raporlama:**
+- Şirket/DPA bilgilendir
+- Klas/Bayrak bildirimi
+- SAR koordinasyonu (gerekirse)
+
+**Jettison (Denize Atma) Kararı**
+
+**Ne zaman gerekli?**
+- Batma riski yüksek
+- Başka çare yok
+- Kargo stabiliteyi tehdit ediyor
+
+**Prosedür:**
+- Kaptan kararı
+- Belgeleme
+- En düşük değerli/en tehlikeli önce
+- Yük hattı üzerinden
+
+**Önemli:** Jettison son çaredir ve ciddi hukuki/mali sonuçları vardır.`,
+        keyPoints: [
+          "Erken müdahale kritiktir",
+          "Nedeni belirleme önemli",
+          "Panik yapmadan sistematik hareket"
+        ],
+        practicalTips: [
+          "Acil durum prosedürlerini ezberleyin",
+          "Düzenli tatbikat yapın",
+          "Ballast pompalarını çalışır tutun"
+        ],
+        warnings: [
+          "Yanlış müdahale durumu kötüleştirebilir",
+          "Asla panik yapmayın",
+          "Şüphe durumunda yardım isteyin"
+        ]
+      },
+      {
+        id: "port-operations",
+        title: "Liman Operasyonları",
+        content: `# Liman Operasyonları
+
+**Liman operasyonları**, stabilite açısından kritik dönemlerdir çünkü kargo yükleme/boşaltma ve ballast operasyonları yapılır.
+
+**Yükleme Operasyonları**
+
+**Planlama:**
+- Kargo planı inceleme
+- Stabilite hesabı (her aşama)
+- Tank sıralaması belirleme
+- Kritik anlar tanımlama
+
+**Uygulama:**
+- Simetrik yükleme
+- Ağır kargolar alta
+- Serbest yüzeyleri minimize et
+- Ara durum kontrolleri
+
+**Boşaltma Operasyonları**
+
+**Özel Dikkat:**
+- Ballast alma zamanlaması
+- Minimum draft gereksinimleri
+- Propeller immersion
+- Trim kontrolü
+
+**Tehlikeler:**
+- Çok hızlı boşaltma
+- Dengesiz boşaltma
+- Ballast gecikmesi
+
+**Ballast Değişimi (Ballast Exchange)**
+
+**IMO BWM Gereksinimleri:**
+- Açık denizde değişim (>200 nm, >200 m derinlik)
+- Sequential veya flow-through yöntemi
+- %95 hacim değişimi
+
+**Stabilite Etkileri:**
+- Sequential: Kritik ara durumlar
+- Flow-through: Sürekli serbest yüzey
+
+**Planlama:**
+- Güvenli sıralama
+- Minimum GM korunması
+- Boyuna mukavemet limitleri
+
+**Dry Dock (Havuz) Operasyonları**
+
+**Havuza Giriş:**
+- Keel block'lara oturma
+- GM → 0 noktası (critical instant)
+- Dik durma gereksinimleri
+
+**Kritik Hesap:**
+P = (w × GM) / KM
+Burada P = blok tepki kuvveti
+
+**Havuzdan Çıkış:**
+- Yüzdürme anı
+- Hızlı GM değişimi
+- Ballast hazırlığı`,
+        formulas: [
+          {
+            formula: "P = Δ × GM / KM",
+            description: "Keel block kritik kuvveti"
+          },
+          {
+            formula: "Kritik_an: GM = 0",
+            description: "Havuz operasyonu kritik noktası"
+          }
+        ],
+        keyPoints: [
+          "Liman operasyonları yüksek risk dönemleri",
+          "Her aşamada stabilite kontrolü gerekli",
+          "Ballast değişimi özel dikkat gerektirir"
+        ],
+        practicalTips: [
+          "Aşamalı yükleme/boşaltma yapın",
+          "Terminal ile iletişim kurun",
+          "Ara kontrolleri atlmayın"
+        ],
+        warnings: [
+          "Hızlı operasyonlar tehlikelidir",
+          "Kritik anlara dikkat edin",
+          "Ballast gecikmesi riski yüksek"
+        ]
+      }
+    ]
+  },
+
+  // ==================== BÖLÜM 16: ÖZET VE KONTROL LİSTELERİ ====================
+  {
+    id: "summary-checklists",
+    title: "16. Özet ve Kontrol Listeleri",
+    icon: "✅",
+    description: "Kapsamlı özet, hızlı referans kartları ve operasyonel kontrol listeleri",
+    subtopics: [
+      {
+        id: "key-formulas",
+        title: "Temel Formüller Özeti",
+        content: `# Temel Formüller Özeti
+
+**Stabilite Formülleri**
+
+**Temel Kavramlar:**
+- KB = Deplasma merkezi yüksekliği
+- KG = Ağırlık merkezi yüksekliği  
+- KM = Metasantr yüksekliği
+- BM = KB'den metasantra mesafe
+- GM = Metasantrik yükseklik
+
+**Ana Formüller:**
+
+| Formül | Açıklama |
+|--------|----------|
+| GM = KM - KG | Metasantrik yükseklik |
+| BM = I / ∇ | Enine metasantrik yarıçap |
+| BML = IL / ∇ | Boyuna metasantrik yarıçap |
+| GZ = GM × sin(θ) | Doğrultma kolu (küçük açı) |
+| FSC = Σ(i×ρ)/Δ | Serbest yüzey düzeltmesi |
+| GM_net = GM - FSC | Operasyonel GM |
+
+**Trim Formülleri:**
+
+| Formül | Açıklama |
+|--------|----------|
+| Trim = Ta - Tf | Trim hesabı |
+| MCT = Δ × GML / L | Trim değiştirme momenti |
+| ΔTrim = (w × d) / MCT | Trim değişimi |
+| ΔTf = Trim × (L - LCF) / L | Baş draft değişimi |
+| ΔTa = Trim × LCF / L | Kıç draft değişimi |
+
+**Ağırlık ve Moment:**
+
+| Formül | Açıklama |
+|--------|----------|
+| KG = Σ(w × vcg) / Σw | Ağırlık merkezi |
+| LCG = Σ(w × lcg) / Σw | Boyuna ağırlık merkezi |
+| TCG = Σ(w × tcg) / Σw | Enine ağırlık merkezi |
+
+**Hidrostatik:**
+
+| Formül | Açıklama |
+|--------|----------|
+| Δ = ρ × ∇ | Deplasma |
+| TPC = (A × ρ) / 100 | Cm başına batma |
+| FWA = Δ / (4 × TPC) | Tatlı su payı |
+
+**IMO Kriterleri Özeti:**
+
+| Kriter | Limit |
+|--------|-------|
+| GM₀ | ≥ 0.15 m |
+| GZ₃₀ | ≥ 0.20 m |
+| GZ_max | ≥ 25° |
+| Alan 0-30° | ≥ 0.055 m·rad |
+| Alan 0-40° | ≥ 0.090 m·rad |
+| Alan 30-40° | ≥ 0.030 m·rad |`,
+        keyPoints: [
+          "Formülleri ezberleyin",
+          "Birimlerine dikkat edin",
+          "Pratik yaparak pekiştirin"
+        ]
+      },
+      {
+        id: "quick-reference",
+        title: "Hızlı Referans Kartları",
+        content: `# Hızlı Referans Kartları
+
+**Stabilite Uyarı İşaretleri**
+
+| Belirti | Anlam | Aksiyon |
+|---------|-------|---------|
+| Uzun periyot | Düşük GM | Alt tanklara ballast |
+| Ani heel | Kargo kayması | Manevra, değerlendirme |
+| Loll (tek tarafta durma) | GM ≈ 0 veya negatif | ACİL - ballast |
+| Çabuk dönüş (stiff) | Yüksek GM | Normal, dikkat |
+
+**GM Değerlendirme Tablosu**
+
+| GM (m) | Durum | Yorum |
+|--------|-------|-------|
+| < 0 | TEHLİKELİ | Gemi stabil değil! |
+| 0 - 0.15 | KRİTİK | IMO altında, düzelt |
+| 0.15 - 0.50 | DİKKAT | Minimum, iyileştir |
+| 0.50 - 1.50 | İYİ | Normal operasyon |
+| > 1.50 | SERT | Konfor azalır |
+
+**Roll Periyodu ve GM İlişkisi**
+
+| T (saniye) | Tahmin GM | Karakteristik |
+|------------|-----------|---------------|
+| < 8 | Yüksek | Sert (stiff) |
+| 8 - 12 | Orta | Normal |
+| 12 - 16 | Düşük | Yumuşak (tender) |
+| > 16 | Çok düşük | TEHLİKELİ |
+
+**Yaklaşık formül:** GM ≈ (B / (2 × T))²
+
+**Tank Sıralaması - Hızlı Rehber**
+
+**Stabilite iyileştirmek için:**
+1. Alt tankları doldur
+2. Üst tankları boşalt
+3. Merkez tankları kullan
+
+**Trim düzeltmek için:**
+1. Baş aşağı: Baş tanklara al
+2. Kıç aşağı: Baş tanklardan ver
+
+**Serbest yüzeyi azaltmak için:**
+1. Tankları tam dolu veya tam boş tut
+2. Kısmi doluluk sayısını minimize et
+
+**Acil Durum Hızlı Aksiyon**
+
+| Durum | 1. Aksiyon | 2. Aksiyon |
+|-------|------------|------------|
+| Düşük GM | Alt ballast al | Üst boşalt |
+| Kargo kayması | Açık denize yönel | Yavaşla |
+| Flooding | İzole et | Karşı ballast |
+| Loll | SAKİN OL | Dikkatli ballast |`,
+        keyPoints: [
+          "Hızlı referans kartlarını gemide bulundurun",
+          "Kritik değerleri ezberleyin",
+          "Acil durum aksiyonlarını bilin"
+        ]
+      },
+      {
+        id: "operational-checklists",
+        title: "Operasyonel Kontrol Listeleri",
+        content: `# Operasyonel Kontrol Listeleri
+
+## KONTROL LİSTESİ 1: Kalkış Öncesi
+
+**Veri Toplama**
+□ Tüm tank sounding'leri alındı
+□ Kargo miktarları doğrulandı
+□ Yakıt/su/stores miktarları
+□ Yoğunluk değerleri kontrol edildi
+
+**Hesaplama**
+□ Yükleme bilgisayarına veriler girildi
+□ Departure durumu hesaplandı
+□ Arrival durumu hesaplandı
+□ Ara durumlar kontrol edildi
+
+**Değerlendirme**
+□ GM ≥ 0.15 m (tüm durumlar)
+□ IMO kriterleri karşılanıyor
+□ SF/BM limitlerin altında
+□ Draft/trim uygun
+□ Uyarı veya alarm yok
+
+**Onay**
+□ Kaptan onayı alındı
+□ Hesap belgesi imzalandı
+□ Dosyalandı
+
+---
+
+## KONTROL LİSTESİ 2: Seyir Sırası (Günlük)
+
+**İzleme**
+□ Tank sounding'leri alındı
+□ Yakıt tüketimi kaydedildi
+□ Draft/trim gözlemlendi
+□ Rolling karakteristiği normal
+
+**Değerlendirme**
+□ Stabilite hesabı güncellendi
+□ Arrival durumu hala uygun
+□ Anormallik yok
+
+**Kayıt**
+□ Günlük kayıt yapıldı
+□ Noon report verileri hazır
+
+---
+
+## KONTROL LİSTESİ 3: Yükleme/Boşaltma
+
+**Planlama**
+□ Kargo planı incelendi
+□ Tank sıralaması belirlendi
+□ Kritik anlar tanımlandı
+□ Terminal ile koordinasyon
+
+**Operasyon**
+□ Simetrik yükleme/boşaltma
+□ Ara stabilite kontrolleri
+□ Ballast koordinasyonu
+□ Trim yönetimi
+
+**Tamamlama**
+□ Final sounding'ler
+□ Final stabilite hesabı
+□ Kalkış öncesi kontrol
+
+---
+
+## KONTROL LİSTESİ 4: Acil Durum
+
+**İlk Tepki**
+□ Alarm verildi
+□ Hız azaltıldı/durduruldu
+□ Pozisyon alındı
+
+**Değerlendirme**
+□ Neden belirlendi
+□ Hasar boyutu değerlendirildi
+□ Mevcut stabilite kontrol edildi
+
+**Aksiyon**
+□ Düzeltici eylem başlatıldı
+□ Raporlama yapıldı
+□ İzleme devam ediyor`,
+        keyPoints: [
+          "Kontrol listelerini aktif kullanın",
+          "Her maddeyi işaretleyin",
+          "Atlamayın, kısayol yapmayın"
+        ],
+        practicalTips: [
+          "Listeleri lamine edip köprüüstüne asın",
+          "Düzenli güncelleme yapın",
+          "Personeli eğitin"
+        ],
+        warnings: [
+          "Kontrol listesi atlmak kaza sebebidir",
+          "Her gemi için özelleştirin",
+          "Sadece işaretlemek yetmez, anlamak gerekir"
+        ]
+      },
+      {
+        id: "regulations-summary",
+        title: "Kural ve Düzenlemeler Özeti",
+        content: `# Kural ve Düzenlemeler Özeti
+
+**Uluslararası Düzenlemeler**
+
+**IMO (International Maritime Organization)**
+- SOLAS: Denizde Can Güvenliği
+- MARPOL: Deniz Kirliliği Önleme
+- Load Line Convention: Yükleme Hattı
+- ICLL: Uluslararası Yükleme Hattı Sözleşmesi
+
+**Stabilite İle İlgili IMO Düzenlemeleri**
+
+| Düzenleme | İçerik |
+|-----------|--------|
+| A.749(18) | Intact stability kriterleri |
+| MSC.267(85) | 2008 IS Code |
+| SOLAS II-1 | Bölmeleme ve hasar stabilitesi |
+| MSC.216(82) | SOLAS II-1 değişiklikleri |
+| Grain Code | Tahıl taşıma kuralları |
+
+**Temel Gereksinimler**
+
+**Stabilite Kitapçığı (Tüm Gemiler):**
+- Onaylı yükleme durumları
+- Hidrostatik veriler
+- Tank kapasiteleri
+- IMO kriterleri
+
+**Yükleme Bilgisayarı:**
+- Bulk carrier (zorunlu)
+- Tanker (zorunlu)
+- Container (zorunlu)
+- Diğer ≥ 150 GRT (tavsiye)
+
+**Eğim Testi:**
+- Yeni inşa gemiler (zorunlu)
+- Büyük modifikasyon sonrası
+- 5 yılda bir doğrulama (bazı bayraklar)
+
+**Klas Kuruluşu Gereksinimleri**
+
+**Periyodik Sörveyler:**
+- Annual Survey: Yıllık
+- Intermediate Survey: 2.5 yıl
+- Special Survey: 5 yıl
+- Docking Survey: 2.5-5 yıl
+
+**Stabilite Kontrolleri:**
+- Yükleme bilgisayarı kalibrasyonu
+- Stabilite kitapçığı güncelliği
+- Lightship verisi doğrulaması
+
+**PSC (Port State Control) Beklentileri**
+
+**Denetimlerde Kontrol Edilenler:**
+- Stabilite hesapları mevcut mu?
+- Yükleme bilgisayarı çalışıyor mu?
+- Personel eğitimli mi?
+- Kitapçık güncel mi?
+
+**Yaygın Deficiencies:**
+- Güncel olmayan stabilite kitapçığı
+- Arızalı yükleme bilgisayarı
+- Yetersiz kayıtlar
+- Eğitim eksikliği
+
+**Cezai Yaptırımlar**
+- Detention (geminin tutulması)
+- Para cezası
+- Sigorta geçersizliği
+- Cezai sorumluluk`,
+        keyPoints: [
+          "IMO kuralları bağlayıcıdır",
+          "Klas gereksinimleri takip edilmeli",
+          "PSC denetimlerine hazırlıklı olun"
+        ],
+        practicalTips: [
+          "Güncel mevzuatı takip edin",
+          "Bayrak devleti gereksinimlerini bilin",
+          "Belgeleri düzenli tutun"
+        ],
+        warnings: [
+          "Kural ihlali ciddi sonuçlar doğurur",
+          "Sigorta geçersiz olabilir",
+          "Cezai sorumluluk doğabilir"
+        ]
+      }
+    ]
   }
 ];
 
