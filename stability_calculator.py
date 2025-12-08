@@ -110,6 +110,35 @@ class EnineStabiliteHesaplama:
         """
         return (w * d) / self.deplasman
     
+    def gz_kucuk_acilar(self, aci_derece: float, gm: Optional[float] = None) -> float:
+        """
+        Küçük açılar için GZ ≈ GM · sin(φ) bağıntısı
+        
+        Args:
+            aci_derece: Meyil açısı (derece)
+            gm: Opsiyonel GM değeri, verilmezse mevcut hesap kullanılır
+            
+        Returns:
+            GZ değeri (metre)
+        """
+        gm_degeri = gm if gm is not None else self.gm
+        if gm_degeri == 0:
+            return 0.0
+        phi_rad = math.radians(aci_derece)
+        return gm_degeri * math.sin(phi_rad)
+    
+    def dogrultucu_moment(self, gz: float) -> float:
+        """
+        RM = Δ · GZ bağıntısıyla doğrultucu momenti hesaplar
+        
+        Args:
+            gz: Doğrultucu kol (metre)
+            
+        Returns:
+            Doğrultucu moment (ton.m)
+        """
+        return self.deplasman * gz
+    
     def sarkac_ile_meyil_acisi(self, sapma: float, sarkac_boyu: float) -> float:
         """
         Sarkaç ile meyil açısı hesaplar
@@ -293,6 +322,91 @@ class EnineStabiliteHesaplama:
         
         return kriterler
     
+    def gz_egri_olustur(self, acilar: List[float], 
+                        kn_degerleri: Optional[List[float]] = None,
+                        gm: Optional[float] = None) -> List[Tuple[float, float]]:
+        """
+        Verilen açılar için GZ eğrisi oluşturur
+        
+        Args:
+            acilar: Derece cinsinden açı listesi
+            kn_degerleri: Opsiyonel KN değerleri listesi (GM yerine kullanılır)
+            gm: Opsiyonel GM değeri, verilmezse mevcut hesap kullanılır
+            
+        Returns:
+            (açı, GZ) çiftleri listesi
+        """
+        if kn_degerleri is not None and len(acilar) != len(kn_degerleri):
+            raise ValueError("Açı ve KN listeleri aynı uzunlukta olmalıdır")
+        
+        sirali_acilar = sorted(acilar)
+        gz_listesi: List[Tuple[float, float]] = []
+        
+        if kn_degerleri:
+            for aci, kn in sorted(zip(acilar, kn_degerleri), key=lambda x: x[0]):
+                phi_rad = math.radians(aci)
+                gz = kn - self.kg * math.sin(phi_rad)
+                gz_listesi.append((aci, gz))
+            return gz_listesi
+        
+        gm_degeri = gm if gm is not None else self.gm
+        for aci in sirali_acilar:
+            gz_listesi.append((aci, gm_degeri * math.sin(math.radians(aci))))
+        return gz_listesi
+    
+    def gz_egri_analiz(self, gz_egri: List[Tuple[float, float]]) -> dict:
+        """
+        GZ eğrisi için maksimum değer ve alan analizleri üretir
+        """
+        if not gz_egri:
+            return {
+                "max_gz": 0.0,
+                "max_gz_acisi": 0.0,
+                "toplam_alan": 0.0,
+                "alan_0_30": 0.0,
+                "alan_0_40": 0.0,
+                "alan_30_40": 0.0
+            }
+        
+        sirali = sorted(gz_egri, key=lambda x: x[0])
+        max_gz_acisi, max_gz = max(sirali, key=lambda x: x[1])
+        
+        toplam_alan = 0.0
+        for (aci1, gz1), (aci2, gz2) in zip(sirali, sirali[1:]):
+            toplam_alan += 0.5 * (gz1 + gz2) * math.radians(aci2 - aci1)
+        
+        return {
+            "max_gz": max_gz,
+            "max_gz_acisi": max_gz_acisi,
+            "toplam_alan": toplam_alan,
+            "alan_0_30": self._alan_hesapla(sirali, 0, 30),
+            "alan_0_40": self._alan_hesapla(sirali, 0, 40),
+            "alan_30_40": self._alan_hesapla(sirali, 30, 40)
+        }
+    
+    def avs_hesapla(self, gz_egri: List[Tuple[float, float]]) -> Optional[float]:
+        """
+        GZ = 0 olduğu açıyı (Angle of Vanishing Stability) döner
+        """
+        if not gz_egri:
+            return None
+        
+        sirali = sorted(gz_egri, key=lambda x: x[0])
+        onceki_aci, onceki_gz = sirali[0]
+        
+        if onceki_gz == 0:
+            return onceki_aci
+        
+        for aci, gz in sirali[1:]:
+            if gz == 0:
+                return aci
+            if onceki_gz > 0 and gz < 0:
+                oran = onceki_gz / (onceki_gz - gz)
+                return onceki_aci + oran * (aci - onceki_aci)
+            onceki_aci, onceki_gz = aci, gz
+        
+        return None
+    
     def _alan_hesapla(self, gz_egri: List[Tuple[float, float]], 
                       baslangic: float, bitis: float) -> float:
         """
@@ -419,6 +533,18 @@ def hogging_sagging_tespit(d_f: float, d_m: float, d_a: float) -> str:
 # Ek yardımcılar
 def gm_from_km_kg(km: float, kg: float) -> float:
     return km - kg
+
+
+def bm_from_inertia(inertia_m4: float, displaced_volume_m3: float) -> float:
+    """BM = I / ∇ bağıntısı (metre)."""
+    if displaced_volume_m3 == 0:
+        return 0.0
+    return inertia_m4 / displaced_volume_m3
+
+
+def gm_from_inertia(inertia_m4: float, displaced_volume_m3: float, kg_m: float) -> float:
+    """GM = (I / ∇) − KG alternatif bağıntısı (metre)."""
+    return bm_from_inertia(inertia_m4, displaced_volume_m3) - kg_m
 
 
 def bm_from_km_kb(km: float, kb: float) -> float:
