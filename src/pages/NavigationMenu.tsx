@@ -15,7 +15,7 @@ export default function NavigationMenu() {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50" data-no-translate>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950" data-no-translate>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -left-32 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl" />
@@ -25,7 +25,7 @@ export default function NavigationMenu() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
         <div className="mb-8">
           <Link to="/calculations">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/50">
+            <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/50 dark:hover:bg-slate-900/40">
               <ArrowLeft className="h-4 w-4" />
               Geri
             </Button>
@@ -43,7 +43,7 @@ export default function NavigationMenu() {
             <Link
               key={item.to}
               to={item.to}
-              className="group relative overflow-hidden rounded-3xl bg-white/80 backdrop-blur-sm border border-white/60 p-8 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20 hover:bg-white animate-fade-in"
+              className="group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm border border-white/60 dark:border-slate-800/60 p-8 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20 hover:bg-white dark:hover:bg-slate-900 animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-indigo-500/0 to-blue-600/0 group-hover:from-blue-500/5 group-hover:via-indigo-500/5 group-hover:to-blue-600/5 transition-all duration-500" />

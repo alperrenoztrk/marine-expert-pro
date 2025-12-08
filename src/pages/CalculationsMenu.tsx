@@ -15,7 +15,7 @@ const categories = [
 
 export default function CalculationsMenu() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Decorative background shapes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
@@ -38,7 +38,7 @@ export default function CalculationsMenu() {
             <Link
               key={index}
               to={category.link}
-              className="group relative overflow-hidden rounded-3xl bg-white/80 backdrop-blur-sm border border-white/60 p-8 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20 hover:bg-white animate-fade-in"
+              className="group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm border border-white/60 dark:border-slate-800/60 p-8 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20 hover:bg-white dark:hover:bg-slate-900 animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Gradient overlay on hover */}

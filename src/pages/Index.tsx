@@ -88,7 +88,7 @@ const Index = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-300 via-sky-300 to-sky-400"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-300 via-sky-300 to-sky-400 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -98,15 +98,15 @@ const Index = () => {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
         {/* Title */}
         <div className="mb-12 mt-20">
-          <h1 className="maritime-title font-extrabold leading-none mb-4">
-            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900">
+          <h1 className="maritime-title font-extrabold leading-none mb-4 text-blue-900 dark:text-slate-100">
+            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900 dark:text-blue-100">
               Marine
             </span>
-            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900">
+            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900 dark:text-blue-100">
               Expert
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-900 font-medium">
+          <p className="text-xl md:text-2xl text-slate-900 dark:text-slate-200 font-medium">
             Tüm denizcilerin ortak uygulaması
           </p>
         </div>
@@ -121,7 +121,7 @@ const Index = () => {
 
         {/* CTA Button */}
         <Link to="/calculations" className="z-20" aria-label="Keşfetmeye Başla">
-          <Button className="animate-fade-in hover-scale rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 text-white shadow-2xl border-4 border-white/20 transition-all duration-300 hover:shadow-[0_0_30px_rgba(30,64,175,0.5)] animate-pulse-subtle">
+          <Button className="animate-fade-in hover-scale rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-2xl border-4 border-white/20 dark:border-white/10 transition-all duration-300 hover:shadow-[0_0_30px_rgba(30,64,175,0.5)] dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] animate-pulse-subtle">
             Keşfetmeye Başla
           </Button>
         </Link>

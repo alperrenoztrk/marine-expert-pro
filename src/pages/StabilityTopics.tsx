@@ -19,7 +19,7 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function StabilityTopicsPage() {
   return (
     <MobileLayout>
-      <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 p-4">
+      <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
           <div className="absolute top-1/3 -left-32 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl" />
@@ -29,7 +29,7 @@ export default function StabilityTopicsPage() {
         <div className="relative z-10 space-y-6 max-w-4xl mx-auto pb-20">
           <div className="flex items-center justify-between mb-8">
             <Link to="/stability">
-              <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/50">
+              <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/50 dark:hover:bg-slate-900/40">
                 <ArrowLeft className="h-4 w-4" />
                 Stabilite
               </Button>
@@ -50,7 +50,7 @@ export default function StabilityTopicsPage() {
             {stabilityTopicsData.map((topic) => (
               <AccordionItem key={topic.id} value={topic.id} className="border-none">
                 <Card className="overflow-hidden">
-                  <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-blue-50/50">
+                  <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-blue-50/50 dark:hover:bg-slate-900/40">
                     <div className="flex items-center gap-3">
                       <div className={`bg-gradient-to-br ${topic.iconColor} p-2 rounded-lg`}>
                         {iconMap[topic.icon] || <BookOpen className="h-5 w-5 text-white" />}
@@ -65,7 +65,7 @@ export default function StabilityTopicsPage() {
                     <div className="space-y-8">
                       {topic.subtopics.map((subtopic, subIndex) => (
                         <div key={subIndex} className="space-y-4">
-                          <h3 className="font-bold text-blue-700 text-lg border-b border-blue-100 pb-2">
+                          <h3 className="font-bold text-blue-700 dark:text-blue-200 text-lg border-b border-blue-100 dark:border-slate-800 pb-2">
                             {subtopic.title}
                           </h3>
                           

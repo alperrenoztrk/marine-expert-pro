@@ -118,12 +118,12 @@ export function CloudCard({ cloud, className }: CloudCardProps) {
             </>
           ) : null}
           <div 
-            className={`${cloud.imageUrl && !imageError ? 'hidden' : 'flex'} absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 items-center justify-center`}
+            className={`${cloud.imageUrl && !imageError ? 'hidden' : 'flex'} absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 dark:from-slate-900 dark:to-slate-800 items-center justify-center`}
           >
             <div className="text-center">
-              <Cloud className="h-16 w-16 text-sky-600 mb-2" />
-              <div className="text-lg font-bold text-sky-800">{cloud.code}</div>
-              <div className="text-sm text-sky-700">{cloud.nameTr}</div>
+              <Cloud className="h-16 w-16 text-sky-600 dark:text-slate-200 mb-2" />
+              <div className="text-lg font-bold text-sky-800 dark:text-slate-100">{cloud.code}</div>
+              <div className="text-sm text-sky-700 dark:text-slate-300">{cloud.nameTr}</div>
             </div>
           </div>
           
