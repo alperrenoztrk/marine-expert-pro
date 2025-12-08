@@ -11,6 +11,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { useNavigationHierarchy } from "@/hooks/useNavigationHierarchy";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
+import CalculationSectionPage from "./pages/CalculationSectionPage";
 import StabilityMenu from "./pages/StabilityMenu";
 import SafetyMenu from "./pages/SafetyMenu";
 import WeatherMenu from "./pages/WeatherMenu";
@@ -82,6 +83,8 @@ import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
 import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
+import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
+import DraftSurveyStandard from "./pages/DraftSurveyStandard";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +99,7 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
+        <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
         <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />
         {/* Stability sub-routes */}
         <Route path="/stability/assistant" element={<PageTransition><StabilityAssistantPage /></PageTransition>} />
@@ -126,7 +130,10 @@ const AnimatedRoutes = () => {
         <Route path="/stability/imo-criteria" element={<PageTransition><StabilityIMOCriteriaPage /></PageTransition>} />
         <Route path="/safety" element={<PageTransition><SafetyCalculationsPage /></PageTransition>} />
         <Route path="/weather" element={<PageTransition><WeatherCalculationsPage /></PageTransition>} />
+        <Route path="/meteorology/topics" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
         <Route path="/tank" element={<PageTransition><TankCalculationsPage /></PageTransition>} />
+        <Route path="/cargo/calculations" element={<PageTransition><DraftSurveyCalculator /></PageTransition>} />
+        <Route path="/cargo/formulas" element={<PageTransition><DraftSurveyStandard /></PageTransition>} />
         <Route path="/ballast" element={<PageTransition><BallastPage /></PageTransition>} />
         <Route path="/engine" element={<PageTransition><EnginePage /></PageTransition>} />
         <Route path="/hydrodynamics" element={<PageTransition><HydrodynamicsPage /></PageTransition>} />

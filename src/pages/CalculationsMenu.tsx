@@ -1,22 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Anchor, Ship, Waves, Compass, DollarSign, LifeBuoy, Database, Shield, Cloud } from 'lucide-react';
+import type { ComponentType, SVGProps } from "react";
+import { calculationCategories, type SectionId, type SectionStatus } from "@/data/calculationCenterConfig";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { BookOpen, Brain, Calculator, ChevronRight, ListChecks, Scale, Sigma } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const categories = [
-  { title: 'Stabilite', icon: Ship, link: '/stability' },
-  { title: 'Seyir', icon: Compass, link: '/navigation-menu' },
-  { title: 'Gemicilik', icon: Anchor, link: '/seamanship-menu' },
-  { title: 'Mali', icon: DollarSign, link: '/economics-menu' },
-  { title: 'Emniyet', icon: LifeBuoy, link: '/safety-menu' },
-  { title: 'Meteoroloji', icon: Cloud, link: '/weather-menu' },
-  { title: 'Operasyonel', icon: Database, link: '/tank-menu' },
-  { title: 'SOLAS', icon: Shield, link: '/solas' },
-];
+const sectionIconMap: Record<SectionId, ComponentType<SVGProps<SVGSVGElement>>> = {
+  topics: BookOpen,
+  calculations: Calculator,
+  formulas: Sigma,
+  rules: Scale,
+  assistant: Brain,
+  quiz: ListChecks,
+};
+
+const statusConfig: Record<SectionStatus, { label: string; className: string }> = {
+  live: { label: "Hazır", className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200" },
+  info: { label: "Bilgi", className: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-200" },
+  external: { label: "Harici", className: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200" },
+  upcoming: { label: "Yakında", className: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200" },
+};
 
 export default function CalculationsMenu() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      {/* Decorative background shapes */}
+    <div
+      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+      data-no-translate
+    >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -left-32 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl" />
@@ -24,58 +34,73 @@ export default function CalculationsMenu() {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent mb-3">
+        <div className="text-center mb-12 animate-fade-in space-y-4">
+          <p className="text-sm uppercase tracking-[0.3em] text-blue-500/80 dark:text-blue-400/60">
+            Denizcilik için bütünleşik hesaplama merkezi
+          </p>
+          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
             Hesaplama Merkezi
           </h1>
-          <p className="text-muted-foreground text-lg">Profesyonel denizcilik hesaplamaları</p>
+          <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+            Stabilite, seyir, kargo &amp; operasyon, meteoroloji, gemicilik ve emniyet modüllerinin tamamında
+            <span className="font-semibold text-foreground">
+              {" "}
+              Konu Anlatımı · Hesaplamalar · Formüller · Kurallar · Asistan · Quiz
+            </span>
+            {" "}
+            düzenini standartlaştırdık.
+          </p>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {categories.map((category, index) => (
-            <Link
-              key={index}
-              to={category.link}
-              className="group relative overflow-hidden rounded-3xl bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm border border-white/60 dark:border-slate-800/60 p-8 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/20 hover:bg-white dark:hover:bg-slate-900 animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
+        <div className="space-y-8">
+          {calculationCategories.map((category, index) => (
+            <section
+              key={category.id}
+              className="relative overflow-hidden rounded-3xl bg-white/85 dark:bg-slate-900/70 backdrop-blur-sm border border-white/60 dark:border-slate-800/60 p-8 transition-all duration-500 animate-fade-in"
+              style={{ animationDelay: `${index * 120}ms` }}
             >
-              {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-indigo-500/0 to-blue-600/0 group-hover:from-blue-500/5 group-hover:via-indigo-500/5 group-hover:to-blue-600/5 transition-all duration-500" />
-              
-              {/* Icon background glow */}
-              <div className="absolute -top-8 -left-8 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-all duration-500" />
-              
-              <div className="relative flex items-center gap-6">
-                {/* Icon container with animation */}
-                <div className="flex-shrink-0 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-50 transition-all duration-500" />
-                  <div className="relative bg-gradient-to-br from-blue-500 to-indigo-600 p-4 rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                    <category.icon className="w-10 h-10 text-white" strokeWidth={2} />
-                  </div>
-                </div>
-                
-                {/* Text content */}
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-indigo-700 transition-all duration-300" data-no-translate>
-                    {category.title}
-                  </h2>
-                </div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-indigo-500/0 to-blue-600/0 opacity-0 pointer-events-none transition-all duration-500 group-hover:opacity-100" />
 
-                {/* Arrow indicator */}
-                <div className="flex-shrink-0 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
+              <div className="relative flex flex-col gap-4 md:flex-row md:items-center">
+                <div className={cn("rounded-2xl p-4 shadow-lg text-white bg-gradient-to-br", category.accent)}>
+                  <category.icon className="h-10 w-10" strokeWidth={2} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Modül {index + 1}</p>
+                  <h2 className="text-3xl font-bold text-foreground mt-1">{category.title}</h2>
+                  <p className="text-muted-foreground mt-1">{category.subtitle}</p>
                 </div>
               </div>
 
-              {/* Bottom accent line */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-            </Link>
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {category.sections.map((section) => {
+                  const Icon = sectionIconMap[section.id];
+                  const status: SectionStatus = section.status ?? "live";
+                  const statusMeta = statusConfig[status];
+                  const target = section.href ?? `/calculations/${category.id}/${section.id}`;
+
+                  return (
+                    <Link
+                      key={`${category.id}-${section.id}`}
+                      to={target}
+                      className="group/link relative flex items-start gap-4 rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/80 dark:bg-slate-900/60 p-4 hover:border-blue-400/80 dark:hover:border-blue-500/60 transition-all duration-300"
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-slate-800 dark:text-blue-200">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-foreground">{section.label}</p>
+                          <Badge className={cn("text-xs font-semibold", statusMeta.className)}>{statusMeta.label}</Badge>
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">{section.description}</p>
+                      </div>
+                      <ChevronRight className="mt-1 h-5 w-5 text-slate-400 group-hover/link:text-blue-500 transition-colors" />
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
           ))}
         </div>
       </div>
