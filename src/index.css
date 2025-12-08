@@ -1100,6 +1100,15 @@ All colors MUST be HSL.
       scroll-behavior: smooth;
     }
     
+    /* Hide tab scrollbars on mobile but keep swipe */
+    [role="tablist"]::-webkit-scrollbar {
+      display: none;
+    }
+    [role="tablist"] {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
     /* Better text sizing for mobile */
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.25rem; }
