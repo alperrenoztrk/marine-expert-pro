@@ -28,7 +28,9 @@ const Settings = () => {
       light: "Açık Tema",
       dark: "Koyu Tema",
     } as const;
-    toast.success(`${themeNames[newTheme as keyof typeof themeNames]} aktif`);
+    if (newTheme === "light") {
+      toast.success(`${themeNames.light} aktif`);
+    }
   };
 
   const handleLanguageChange = async (value: string) => {
