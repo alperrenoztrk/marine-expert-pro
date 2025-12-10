@@ -1,5 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { calculationCategories, type SectionId } from "@/data/calculationCenterConfig";
+import { moduleSectionContent } from "@/data/moduleSectionContent";
+import { RichSectionContent } from "@/components/calculations/RichSectionContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +31,7 @@ export default function CalculationSectionPage() {
   }
 
   const fallback = section.fallback;
+  const richContent = section.contentId ? moduleSectionContent[section.contentId] : undefined;
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
@@ -45,7 +48,7 @@ export default function CalculationSectionPage() {
               Ana merkeze dön
             </Link>
           </Button>
-          {section.href && !fallback && (
+          {section.href && !fallback && !richContent && (
             <Button asChild>
               <Link to={section.href} className="gap-2">
                 <BookOpenCheck className="h-4 w-4" />
@@ -61,7 +64,9 @@ export default function CalculationSectionPage() {
           <p className="text-muted-foreground text-lg max-w-3xl">{section.description}</p>
         </div>
 
-        {!fallback ? (
+        {richContent ? (
+          <RichSectionContent content={richContent} />
+        ) : !fallback ? (
           <Card className="border-dashed">
             <CardHeader>
               <CardTitle>Bu bölüm hazır</CardTitle>
