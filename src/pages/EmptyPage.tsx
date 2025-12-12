@@ -216,14 +216,10 @@ const EmptyPage = () => {
   const weatherDescription = useMemo(() => wmoToTr(data?.weatherCode), [data?.weatherCode]);
 
   // Time calculations
+  const trtOffset = 3;
   const trtTime = useMemo(() => {
-    return currentTime.toLocaleTimeString("tr-TR", {
-      timeZone: "Europe/Istanbul",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
+    const trt = new Date(currentTime.getTime() + trtOffset * 3600000);
+    return trt.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
   }, [currentTime]);
 
   const gmtTime = useMemo(() => {
