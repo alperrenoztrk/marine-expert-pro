@@ -92,18 +92,15 @@ const Index = () => {
 
   return (
     <div
-      className="relative min-h-[100svh] overflow-hidden bg-gradient-to-b from-[#0a4a6e] via-[#0d6589] to-[#1088a8] touch-auto cursor-pointer"
+      className="relative min-h-[100svh] overflow-hidden bg-[url('/nautical-chart-background.svg')] bg-cover bg-center bg-no-repeat touch-auto cursor-pointer"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
-      {/* Underwater light rays effect */}
-      <div className="pointer-events-none absolute inset-0 opacity-30">
-        <div className="absolute top-0 left-1/4 w-32 h-full bg-gradient-to-b from-white/40 to-transparent blur-2xl transform -skew-x-12"></div>
-        <div className="absolute top-0 left-1/2 w-40 h-full bg-gradient-to-b from-white/30 to-transparent blur-2xl transform skew-x-12"></div>
-        <div className="absolute top-0 left-3/4 w-24 h-full bg-gradient-to-b from-white/20 to-transparent blur-2xl transform -skew-x-6"></div>
-      </div>
+      {/* Contrast overlay for readability on chart background */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-black/70" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.10),rgba(0,0,0,0.55))]" />
 
       {/* Settings button - hidden to match the design */}
       <button
@@ -122,32 +119,6 @@ const Index = () => {
         <div className="flex flex-col items-center gap-2 animate-pulse">
           <ChevronRight className="w-6 h-6 text-white drop-shadow-lg" />
         </div>
-      </div>
-
-      {/* Underwater particles/bubbles effect */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-[20%] left-[15%] w-2 h-2 rounded-full bg-white/30 blur-sm animate-pulse"></div>
-        <div className="absolute top-[40%] left-[70%] w-1.5 h-1.5 rounded-full bg-white/25 blur-sm animate-pulse delay-100"></div>
-        <div className="absolute top-[60%] left-[25%] w-1 h-1 rounded-full bg-white/20 blur-sm animate-pulse delay-200"></div>
-        <div className="absolute top-[75%] left-[80%] w-2 h-2 rounded-full bg-white/20 blur-sm animate-pulse delay-300"></div>
-      </div>
-
-      {/* Coral silhouettes at bottom */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 opacity-20">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="h-[25vh] w-full">
-          <g fill="#003d5c">
-            {/* Left coral cluster */}
-            <ellipse cx="100" cy="290" rx="60" ry="80" opacity="0.6" />
-            <ellipse cx="140" cy="300" rx="45" ry="60" opacity="0.5" />
-            <ellipse cx="80" cy="300" rx="35" ry="55" opacity="0.5" />
-            {/* Center coral */}
-            <ellipse cx="720" cy="280" rx="80" ry="100" opacity="0.4" />
-            <ellipse cx="760" cy="295" rx="55" ry="70" opacity="0.4" />
-            {/* Right coral cluster */}
-            <ellipse cx="1340" cy="285" rx="70" ry="90" opacity="0.5" />
-            <ellipse cx="1300" cy="300" rx="50" ry="65" opacity="0.5" />
-          </g>
-        </svg>
       </div>
 
       {/* Main content */}

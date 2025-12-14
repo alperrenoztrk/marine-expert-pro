@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1600" role="img" aria-label="Nautical chart style background">
+  <defs>
+    <!-- Paper texture -->
+    <filter id="paperNoise" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"/>
+      <feColorMatrix type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 0.12 0"/>
+    </filter>
+
+    <!-- Lat/long grid pattern -->
+    <pattern id="grid" width="160" height="160" patternUnits="userSpaceOnUse">
+      <path d="M 160 0 L 0 0 0 160" fill="none" stroke="#2f4858" stroke-opacity="0.10" stroke-width="2"/>
+      <path d="M 80 0 L 80 160 M 0 80 L 160 80" fill="none" stroke="#2f4858" stroke-opacity="0.07" stroke-width="1"/>
+      <circle cx="80" cy="80" r="3" fill="#2f4858" opacity="0.10"/>
+    </pattern>
+
+    <!-- Water tint gradient -->
+    <linearGradient id="waterTint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dff4f7"/>
+      <stop offset="1" stop-color="#cfeff5"/>
+    </linearGradient>
+
+    <!-- Coastal wash -->
+    <linearGradient id="coastWash" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6aaec2" stop-opacity="0.00"/>
+      <stop offset="0.5" stop-color="#6aaec2" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#6aaec2" stop-opacity="0.00"/>
+    </linearGradient>
+
+    <!-- Simple compass rose -->
+    <g id="compassRose">
+      <circle cx="0" cy="0" r="120" fill="none" stroke="#16313d" stroke-opacity="0.45" stroke-width="4"/>
+      <circle cx="0" cy="0" r="86" fill="none" stroke="#16313d" stroke-opacity="0.25" stroke-width="2"/>
+      <path d="M0-120 L18-38 L0-55 L-18-38 Z" fill="#16313d" fill-opacity="0.55"/>
+      <path d="M0 120 L18 38 L0 55 L-18 38 Z" fill="#16313d" fill-opacity="0.25"/>
+      <path d="M120 0 L38 18 L55 0 L38-18 Z" fill="#16313d" fill-opacity="0.25"/>
+      <path d="M-120 0 L-38 18 L-55 0 L-38-18 Z" fill="#16313d" fill-opacity="0.25"/>
+      <text x="0" y="-150" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="44" font-weight="700" fill="#16313d" fill-opacity="0.55">N</text>
+      <text x="0" y="198" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="32" font-weight="600" fill="#16313d" fill-opacity="0.40">S</text>
+      <text x="178" y="14" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="32" font-weight="600" fill="#16313d" fill-opacity="0.40">E</text>
+      <text x="-178" y="14" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-size="32" font-weight="600" fill="#16313d" fill-opacity="0.40">W</text>
+    </g>
+  </defs>
+
+  <!-- Base paper -->
+  <rect width="2400" height="1600" fill="#f6f1df"/>
+  <rect width="2400" height="1600" filter="url(#paperNoise)"/>
+
+  <!-- Water area -->
+  <rect x="0" y="0" width="2400" height="1600" fill="url(#waterTint)" opacity="0.75"/>
+
+  <!-- Land masses (stylized but chart-like) -->
+  <path d="M0,0 L760,0 C730,120 650,160 560,210 C420,290 380,410 260,520 C150,640 90,780 0,900 Z" fill="#ead9b3" opacity="0.95"/>
+  <path d="M2400,1600 L1700,1600 C1750,1460 1860,1400 1960,1340 C2120,1240 2200,1120 2300,980 C2370,880 2400,780 2400,680 Z" fill="#ead9b3" opacity="0.95"/>
+
+  <!-- Shoreline strokes -->
+  <path d="M0,40 L720,40 C690,150 620,190 520,240 C380,320 340,430 220,540 C120,650 70,780 0,890" fill="none" stroke="#7b5e3b" stroke-opacity="0.55" stroke-width="4"/>
+  <path d="M2400,1560 L1740,1560 C1780,1440 1890,1380 1990,1320 C2150,1220 2230,1100 2330,960 C2380,880 2400,800 2400,720" fill="none" stroke="#7b5e3b" stroke-opacity="0.55" stroke-width="4"/>
+
+  <!-- Grid -->
+  <rect width="2400" height="1600" fill="url(#grid)" opacity="0.85"/>
+
+  <!-- Coastal wash bands -->
+  <rect x="0" y="220" width="2400" height="260" fill="url(#coastWash)" opacity="0.25"/>
+  <rect x="0" y="1060" width="2400" height="260" fill="url(#coastWash)" opacity="0.18"/>
+
+  <!-- Isobaths / depth contours -->
+  <g fill="none" stroke="#1b6f8a" stroke-opacity="0.35" stroke-width="3">
+    <path d="M120,980 C420,860 640,880 860,740 C1120,580 1400,620 1600,500 C1820,370 2040,340 2280,160"/>
+    <path d="M140,1120 C520,980 760,1000 980,860 C1220,710 1480,740 1700,610 C1900,500 2120,460 2360,300"/>
+    <path d="M220,1260 C620,1120 900,1140 1120,1010 C1340,880 1600,900 1820,780 C2020,670 2200,640 2400,520"/>
+  </g>
+
+  <!-- Rhumb lines -->
+  <g stroke="#16313d" stroke-opacity="0.10" stroke-width="2">
+    <path d="M-200,900 L2600,200"/>
+    <path d="M-200,1200 L2600,500"/>
+    <path d="M-200,600 L2600,-100"/>
+    <path d="M-200,300 L2600,-400"/>
+    <path d="M-200,1500 L2600,800"/>
+  </g>
+
+  <!-- Depth soundings (numbers) -->
+  <g font-family="ui-sans-serif,system-ui" font-size="36" fill="#1b6f8a" fill-opacity="0.60">
+    <text x="520" y="760">12</text>
+    <text x="780" y="920">18</text>
+    <text x="1020" y="660">24</text>
+    <text x="1320" y="820">31</text>
+    <text x="1560" y="560">45</text>
+    <text x="1880" y="700">52</text>
+    <text x="2100" y="460">68</text>
+  </g>
+
+  <!-- Chart title / marginalia -->
+  <g font-family="ui-sans-serif,system-ui" fill="#16313d" fill-opacity="0.45">
+    <text x="120" y="140" font-size="46" font-weight="700">NAUTICAL CHART</text>
+    <text x="120" y="190" font-size="28" font-weight="600">Soundings in meters " Datum: WGS 84</text>
+    <text x="120" y="240" font-size="24">(Stylized chart background)</text>
+  </g>
+
+  <!-- Compass rose -->
+  <g transform="translate(1960 360)">
+    <use href="#compassRose"/>
+  </g>
+</svg>
