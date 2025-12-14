@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { HelmetProvider } from "react-helmet-async";
@@ -106,15 +107,34 @@ import SafetyQuizPage from "./pages/SafetyQuiz";
 import WidgetPage from "./pages/WidgetPage";
 const queryClient = new QueryClient();
 
+type PageTransitionSpec = {
+  kind: "slide" | "fade";
+  direction: "left" | "right" | "none";
+};
+
+const getPageTransition = (fromPath: string, toPath: string): PageTransitionSpec => {
+  // Only make the home <-> widgets transition directional.
+  if (fromPath === "/" && toPath === "/widgets") return { kind: "slide", direction: "right" };
+  if (fromPath === "/widgets" && toPath === "/") return { kind: "slide", direction: "left" };
+  return { kind: "fade", direction: "none" };
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
+  const prevPathRef = useRef(location.pathname);
+  const pageTransition = getPageTransition(prevPathRef.current, location.pathname);
   
   // Apply hierarchical navigation
   useNavigationHierarchy();
+
+  useEffect(() => {
+    prevPathRef.current = location.pathname;
+  }, [location.pathname]);
   
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+    <AnimatePresence mode="wait" initial={false} custom={pageTransition}>
+      <PageTransition key={location.pathname} kind={pageTransition.kind} direction={pageTransition.direction}>
+        <Routes location={location}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
         <Route path="/widgets" element={<PageTransition><WidgetPage /></PageTransition>} />
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
@@ -212,7 +232,8 @@ const AnimatedRoutes = () => {
         <Route path="/sunrise-times" element={<PageTransition><SunriseTimes /></PageTransition>} />
         <Route path="/location-selector" element={<PageTransition><LocationSelector /></PageTransition>} />
         <Route path="*" element={<PageTransition><Index /></PageTransition>} />
-      </Routes>
+        </Routes>
+      </PageTransition>
     </AnimatePresence>
   );
 };
