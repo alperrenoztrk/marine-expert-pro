@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import MetalCompassDial from "@/components/ui/MetalCompassDial";
+import SplashCompassDial from "@/components/ui/SplashCompassDial";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
 
 const Index = () => {
@@ -34,97 +34,84 @@ const Index = () => {
     };
   }, []);
 
-  // --- Horizontal swipe navigation ---
-  const navigate = useNavigate();
-  const touchStartXRef = useRef<number | null>(null);
-  const touchLastXRef = useRef<number | null>(null);
-  const swipeThresholdPx = 60;
-
-  const handleTouchStart: React.TouchEventHandler<HTMLDivElement> = (e) => {
-    touchStartXRef.current = e.targetTouches[0]?.clientX ?? null;
-    touchLastXRef.current = touchStartXRef.current;
-  };
-
-  const handleTouchMove: React.TouchEventHandler<HTMLDivElement> = (e) => {
-    touchLastXRef.current = e.targetTouches[0]?.clientX ?? touchLastXRef.current;
-  };
-
-  const handleTouchEnd: React.TouchEventHandler<HTMLDivElement> = () => {
-    const startX = touchStartXRef.current;
-    const lastX = touchLastXRef.current;
-    touchStartXRef.current = null;
-    touchLastXRef.current = null;
-    if (startX == null || lastX == null) return;
-
-    const deltaX = lastX - startX;
-    if (deltaX <= -swipeThresholdPx) {
-      // Left swipe -> go to empty page to the right
-      navigate("/empty-page");
-    } else if (deltaX >= swipeThresholdPx) {
-      // Right swipe -> go to settings
-      navigate("/settings");
-    }
-  };
-
-  // --- Click navigation for left and right zones ---
-  const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const clickX = e.clientX;
-    const clickY = e.clientY;
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    
-    // Only navigate if click is above 70% of screen height (above the red line)
-    if (clickY > screenHeight * 0.70) return;
-    
-    // Left 35% zone
-    if (clickX < screenWidth * 0.35) {
-      navigate("/settings");
-    }
-    // Right 35% zone
-    else if (clickX > screenWidth * 0.65) {
-      navigate("/empty-page");
-    }
-  };
-
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-300 via-sky-300 to-sky-400 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onClick={handleClick}
+      className="relative min-h-[100svh] overflow-hidden bg-gradient-to-br from-[#0b5f98] via-[#0fa3b6] to-[#2fe3d3]"
     >
+      {/* Background texture/pattern (subtle icons/lines) */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
+        <svg viewBox="0 0 1200 800" className="h-full w-full">
+          <g fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2">
+            {/* Simple ship outline */}
+            <path d="M130 205 h190 l-30 40 h-130 z" opacity="0.7" />
+            <path d="M165 205 v-60 h85 v60" opacity="0.55" />
+            <path d="M250 170 h35" opacity="0.55" />
+
+            {/* Radar circles */}
+            <circle cx="880" cy="160" r="40" opacity="0.55" />
+            <circle cx="880" cy="160" r="70" opacity="0.35" />
+            <circle cx="880" cy="160" r="100" opacity="0.25" />
+
+            {/* A couple nautical glyphs */}
+            <path d="M980 260 l30 -30 l30 30 l-30 30 z" opacity="0.35" />
+            <path d="M990 510 q40 -40 80 0 q-40 40 -80 0 z" opacity="0.25" />
+          </g>
+        </svg>
+      </div>
+
+      {/* Soft highlight overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgba(255,255,255,0.22),transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(255,255,255,0.14),transparent_60%)]" />
+
+      {/* Waves */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0">
+        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="h-[42vh] w-full">
+          <path
+            fill="rgba(255,255,255,0.20)"
+            d="M0,160L80,149.3C160,139,320,117,480,112C640,107,800,117,960,138.7C1120,160,1280,192,1360,208L1440,224L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+          />
+          <path
+            fill="rgba(255,255,255,0.10)"
+            d="M0,200L80,181.3C160,163,320,125,480,128C640,131,800,175,960,197.3C1120,219,1280,219,1360,219L1440,219L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+          />
+          <path
+            fill="rgba(0,70,130,0.16)"
+            d="M0,256L80,256C160,256,320,256,480,245.3C640,235,800,213,960,197.3C1120,181,1280,171,1360,165.3L1440,160L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+          />
+        </svg>
+      </div>
+
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
+      <div className="relative z-10 flex min-h-[100svh] flex-col items-center px-6 text-center">
         {/* Title */}
-        <div className="mb-12 mt-20">
-          <h1 className="maritime-title font-extrabold leading-none mb-4 text-blue-900 dark:text-slate-100">
-            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900 dark:text-blue-100">
-              Marine
-            </span>
-            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900 dark:text-blue-100">
-              Expert
-            </span>
+        <div className="pt-20">
+          <h1
+            className="select-none font-extrabold leading-[0.95] tracking-[0.12em] text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)]"
+            style={{ WebkitTextStroke: "2px rgba(0,0,0,0.18)" }}
+          >
+            <span className="block text-[clamp(3.2rem,10vw,6.2rem)]">MARINE</span>
+            <span className="mt-3 block text-[clamp(3.2rem,10vw,6.2rem)]">EXPERT</span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-900 dark:text-slate-200 font-medium">
-            Tüm denizcilerin ortak uygulaması
-          </p>
         </div>
 
         {/* Compass */}
-        <div className="relative w-56 h-56 md:w-64 md:h-64 mb-16 drop-shadow-2xl">
-          <MetalCompassDial
+        <div className="mt-14 grid place-items-center">
+          <div className="relative h-[clamp(16rem,52vw,22rem)] w-[clamp(16rem,52vw,22rem)] drop-shadow-[0_22px_40px_rgba(0,0,0,0.35)]">
+            <SplashCompassDial
             headingDeg={headingDeg ?? 0}
             className="h-full w-full select-none pointer-events-none"
-          />
+            />
+          </div>
         </div>
 
         {/* CTA Button */}
-        <Link to="/calculations" className="z-20" aria-label="Keşfetmeye Başla">
-          <Button className="animate-fade-in hover-scale rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-2xl border-4 border-white/20 dark:border-white/10 transition-all duration-300 hover:shadow-[0_0_30px_rgba(30,64,175,0.5)] dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] animate-pulse-subtle">
-            Keşfetmeye Başla
-          </Button>
-        </Link>
+        <div className="mt-auto w-full pb-[max(2.25rem,env(safe-area-inset-bottom))]">
+          <Link to="/calculations" className="inline-block w-full max-w-[28rem]" aria-label="Keşfetmeye Başla">
+            <Button className="w-full rounded-full py-8 text-[clamp(1.75rem,5vw,2.6rem)] font-extrabold text-white shadow-[0_18px_40px_rgba(0,0,0,0.25)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99] bg-gradient-to-r from-[#19e6e0] via-[#18d8e6] to-[#3be6ff] border border-white/30">
+              Keşfetmeye Başla
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
