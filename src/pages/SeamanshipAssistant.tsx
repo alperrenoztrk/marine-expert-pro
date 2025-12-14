@@ -34,18 +34,7 @@ export default function SeamanshipAssistantPage() {
           </p>
         </div>
 
-        <UnifiedMaritimeAssistant
-          title="Gemicilik Danışmanı"
-          subtitle="Demirleme, palamar, vardiya ve operasyonel sorularınız için"
-          systemPrompt="Sen bir denizcilik operasyonları uzmanısın. Demirleme, palamar işlemleri, vardiya yönetimi, ağır hava prosedürleri, COLREG, ISM ve ISPS kodları konularında detaylı bilgi sahibisin. Kullanıcılara güverte operasyonları, bakım planlaması ve güvenlik prosedürleri konularında yardımcı ol. Yanıtlarını Türkçe ver."
-          placeholderText="Demirleme veya güverte operasyonları hakkında soru sorun..."
-          suggestedQuestions={[
-            "Ağır havada demirleme prosedürü nedir?",
-            "Palamar hatlarının bakımı nasıl yapılır?",
-            "Demir taraması durumunda ne yapılmalı?",
-            "Vardiya devir tesliminde nelere dikkat edilmeli?"
-          ]}
-        />
+        <UnifiedMaritimeAssistant />
       </div>
     </div>
   );

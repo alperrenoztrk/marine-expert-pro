@@ -34,18 +34,7 @@ export default function CargoAssistantPage() {
           </p>
         </div>
 
-        <UnifiedMaritimeAssistant
-          title="Kargo Danışmanı"
-          subtitle="Draft survey, yükleme planı ve operasyonel sorularınız için"
-          systemPrompt="Sen bir kargo operasyonları ve draft survey uzmanısın. IMSBC Kodu, International Grain Code, ISGOTT ve terminal prosedürleri konusunda detaylı bilgi sahibisin. Kullanıcılara draft survey hesaplamaları, yükleme planlaması, trim optimizasyonu ve kargo güvenliği konularında yardımcı ol. Yanıtlarını Türkçe ver."
-          placeholderText="Draft survey veya yükleme planı hakkında soru sorun..."
-          suggestedQuestions={[
-            "Draft survey hesabında trim düzeltmesi nasıl yapılır?",
-            "IMSBC Koduna göre TML nedir ve neden önemlidir?",
-            "Grain Code stabilite kriterleri nelerdir?",
-            "VGM nedir ve nasıl hesaplanır?"
-          ]}
-        />
+        <UnifiedMaritimeAssistant />
       </div>
     </div>
   );

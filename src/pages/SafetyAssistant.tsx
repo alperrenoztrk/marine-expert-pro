@@ -34,18 +34,7 @@ export default function SafetyAssistantPage() {
           </p>
         </div>
 
-        <UnifiedMaritimeAssistant
-          title="Emniyet Danışmanı"
-          subtitle="ISM, ISPS, LSA/FFA ve risk değerlendirme sorularınız için"
-          systemPrompt="Sen bir denizcilik emniyet ve güvenlik uzmanısın. SOLAS, ISM Kodu, ISPS Kodu, LSA Kodu ve FFA sistemleri konularında detaylı bilgi sahibisin. Risk değerlendirmesi, denetim hazırlığı, yangın güvenliği ve can kurtarma prosedürleri konularında yardımcı oluyorsun. Yanıtlarını Türkçe ver."
-          placeholderText="Emniyet veya denetim hazırlığı hakkında soru sorun..."
-          suggestedQuestions={[
-            "PSC denetimine nasıl hazırlanmalıyız?",
-            "Risk değerlendirmesi nasıl yapılır?",
-            "ISM iç denetim prosedürü nedir?",
-            "Yangın tatbikatında nelere dikkat edilmeli?"
-          ]}
-        />
+        <UnifiedMaritimeAssistant />
       </div>
     </div>
   );

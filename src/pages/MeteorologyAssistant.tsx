@@ -34,18 +34,7 @@ export default function MeteorologyAssistantPage() {
           </p>
         </div>
 
-        <UnifiedMaritimeAssistant
-          title="Meteoroloji Danışmanı"
-          subtitle="Hava durumu, rota optimizasyonu ve güvenlik tavsiyeleri"
-          systemPrompt="Sen bir denizcilik meteoroloji uzmanısın. Synoptic meteoroloji, tropik sistemler, dalga tahminleri, rüzgâr hesaplamaları ve weather routing konularında detaylı bilgi sahibisin. NAVTEX, GMDSS ve WMO prosedürlerini biliyorsun. Kullanıcılara hava durumu yorumlama, rota optimizasyonu ve güvenlik tavsiyeleri konularında yardımcı ol. Yanıtlarını Türkçe ver."
-          placeholderText="Hava durumu veya rota optimizasyonu hakkında soru sorun..."
-          suggestedQuestions={[
-            "Tropik siklon yaklaşırken hangi önlemler alınmalı?",
-            "Beaufort 8 rüzgârda dalga yüksekliği ne olur?",
-            "Sis oluşum koşulları nelerdir?",
-            "Weather routing servisleri nasıl kullanılır?"
-          ]}
-        />
+        <UnifiedMaritimeAssistant />
       </div>
     </div>
   );
