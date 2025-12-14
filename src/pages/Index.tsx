@@ -92,117 +92,103 @@ const Index = () => {
 
   return (
     <div
-      className="relative min-h-[100svh] overflow-hidden bg-gradient-to-br from-[#0b5f98] via-[#0fa3b6] to-[#2fe3d3] touch-auto cursor-pointer"
+      className="relative min-h-[100svh] overflow-hidden bg-gradient-to-b from-[#0a4a6e] via-[#0d6589] to-[#1088a8] touch-auto cursor-pointer"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
-      {/* Settings button */}
+      {/* Underwater light rays effect */}
+      <div className="pointer-events-none absolute inset-0 opacity-30">
+        <div className="absolute top-0 left-1/4 w-32 h-full bg-gradient-to-b from-white/40 to-transparent blur-2xl transform -skew-x-12"></div>
+        <div className="absolute top-0 left-1/2 w-40 h-full bg-gradient-to-b from-white/30 to-transparent blur-2xl transform skew-x-12"></div>
+        <div className="absolute top-0 left-3/4 w-24 h-full bg-gradient-to-b from-white/20 to-transparent blur-2xl transform -skew-x-6"></div>
+      </div>
+
+      {/* Settings button - hidden to match the design */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           navigate('/settings');
         }}
-        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
+        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors opacity-50 hover:opacity-100"
         aria-label="Ayarlar"
       >
-        <Settings className="w-6 h-6 text-white" />
+        <Settings className="w-5 h-5 text-white" />
       </button>
 
-      {/* Right arrow indicator */}
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+      {/* Right arrow indicator - subtle */}
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-30">
         <div className="flex flex-col items-center gap-2 animate-pulse">
-          <ChevronRight className="w-8 h-8 text-white opacity-40 drop-shadow-lg" />
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-20"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-30"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
-          </div>
+          <ChevronRight className="w-6 h-6 text-white drop-shadow-lg" />
         </div>
       </div>
 
-      {/* Background texture/pattern (subtle icons/lines) */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
-        <svg viewBox="0 0 1200 800" className="h-full w-full">
-          <g fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2">
-            {/* Simple ship outline */}
-            <path d="M130 205 h190 l-30 40 h-130 z" opacity="0.7" />
-            <path d="M165 205 v-60 h85 v60" opacity="0.55" />
-            <path d="M250 170 h35" opacity="0.55" />
-
-            {/* Radar circles */}
-            <circle cx="880" cy="160" r="40" opacity="0.55" />
-            <circle cx="880" cy="160" r="70" opacity="0.35" />
-            <circle cx="880" cy="160" r="100" opacity="0.25" />
-
-            {/* A couple nautical glyphs */}
-            <path d="M980 260 l30 -30 l30 30 l-30 30 z" opacity="0.35" />
-            <path d="M990 510 q40 -40 80 0 q-40 40 -80 0 z" opacity="0.25" />
-          </g>
-        </svg>
+      {/* Underwater particles/bubbles effect */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-[20%] left-[15%] w-2 h-2 rounded-full bg-white/30 blur-sm animate-pulse"></div>
+        <div className="absolute top-[40%] left-[70%] w-1.5 h-1.5 rounded-full bg-white/25 blur-sm animate-pulse delay-100"></div>
+        <div className="absolute top-[60%] left-[25%] w-1 h-1 rounded-full bg-white/20 blur-sm animate-pulse delay-200"></div>
+        <div className="absolute top-[75%] left-[80%] w-2 h-2 rounded-full bg-white/20 blur-sm animate-pulse delay-300"></div>
       </div>
 
-      {/* Soft highlight overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgba(255,255,255,0.22),transparent_55%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(255,255,255,0.14),transparent_60%)]" />
-
-      {/* Waves */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="h-[42vh] w-full">
-          <path
-            fill="rgba(255,255,255,0.20)"
-            d="M0,160L80,149.3C160,139,320,117,480,112C640,107,800,117,960,138.7C1120,160,1280,192,1360,208L1440,224L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
-          />
-          <path
-            fill="rgba(255,255,255,0.10)"
-            d="M0,200L80,181.3C160,163,320,125,480,128C640,131,800,175,960,197.3C1120,219,1280,219,1360,219L1440,219L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
-          />
-          <path
-            fill="rgba(0,70,130,0.16)"
-            d="M0,256L80,256C160,256,320,256,480,245.3C640,235,800,213,960,197.3C1120,181,1280,171,1360,165.3L1440,160L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
-          />
+      {/* Coral silhouettes at bottom */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 opacity-20">
+        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="h-[25vh] w-full">
+          <g fill="#003d5c">
+            {/* Left coral cluster */}
+            <ellipse cx="100" cy="290" rx="60" ry="80" opacity="0.6" />
+            <ellipse cx="140" cy="300" rx="45" ry="60" opacity="0.5" />
+            <ellipse cx="80" cy="300" rx="35" ry="55" opacity="0.5" />
+            {/* Center coral */}
+            <ellipse cx="720" cy="280" rx="80" ry="100" opacity="0.4" />
+            <ellipse cx="760" cy="295" rx="55" ry="70" opacity="0.4" />
+            {/* Right coral cluster */}
+            <ellipse cx="1340" cy="285" rx="70" ry="90" opacity="0.5" />
+            <ellipse cx="1300" cy="300" rx="50" ry="65" opacity="0.5" />
+          </g>
         </svg>
       </div>
 
       {/* Main content */}
       <div className="relative z-10 flex min-h-[100svh] flex-col items-center px-6 text-center">
         {/* Title */}
-        <div className="pt-20">
+        <div className="pt-16">
           <h1
-            className="select-none font-extrabold leading-[0.95] tracking-[0.12em] text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)]"
-            style={{ WebkitTextStroke: "2px rgba(0,0,0,0.18)" }}
+            className="select-none font-extrabold leading-[0.92] tracking-[0.08em] text-white drop-shadow-[0_8px_24px_rgba(0,0,0,0.6)]"
+            style={{ 
+              WebkitTextStroke: "1.5px rgba(0,0,0,0.15)",
+              textShadow: "0 4px 12px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3)"
+            }}
           >
-            <span className="block text-[clamp(3.2rem,10vw,6.2rem)]">MARINE</span>
-            <span className="mt-3 block text-[clamp(3.2rem,10vw,6.2rem)]">EXPERT</span>
+            <span className="block text-[clamp(3.5rem,11vw,7rem)] font-black">MARINE</span>
+            <span className="mt-2 block text-[clamp(3.5rem,11vw,7rem)] font-black">EXPERT</span>
           </h1>
         </div>
 
-        {/* Compass */}
-        <div className="mt-14 grid place-items-center">
-          <div className="relative h-[clamp(16rem,52vw,22rem)] w-[clamp(16rem,52vw,22rem)] drop-shadow-[0_22px_40px_rgba(0,0,0,0.35)]">
-            <SplashCompassDial
-            headingDeg={headingDeg ?? 0}
-            className="h-full w-full select-none pointer-events-none"
-            />
+        {/* Compass with glow effect */}
+        <div className="mt-12 grid place-items-center flex-1 items-center">
+          <div className="relative h-[clamp(15rem,48vw,20rem)] w-[clamp(15rem,48vw,20rem)]">
+            {/* Glow effect behind compass */}
+            <div className="absolute inset-0 rounded-full bg-white/10 blur-3xl scale-110"></div>
+            <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-2xl scale-105"></div>
+            
+            <div className="relative h-full w-full drop-shadow-[0_20px_35px_rgba(0,0,0,0.5)]">
+              <SplashCompassDial
+                headingDeg={headingDeg ?? 0}
+                className="h-full w-full select-none pointer-events-none"
+              />
+            </div>
           </div>
         </div>
 
         {/* CTA Button */}
-        <div className="mt-auto w-full pb-[max(2.25rem,env(safe-area-inset-bottom))]">
-          <Link to="/calculations" className="inline-block w-full max-w-[28rem]" aria-label="Keşfetmeye Başla">
-            <Button className="w-full rounded-full py-8 text-[clamp(1.75rem,5vw,2.6rem)] font-extrabold text-white shadow-[0_18px_40px_rgba(0,0,0,0.25)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99] bg-gradient-to-r from-[#19e6e0] via-[#18d8e6] to-[#3be6ff] border border-white/30">
+        <div className="w-full pb-[max(3rem,env(safe-area-inset-bottom))] pt-8">
+          <Link to="/calculations" className="inline-block w-full max-w-[26rem]" aria-label="Keşfetmeye Başla">
+            <Button className="w-full rounded-full py-7 text-[clamp(1.6rem,4.5vw,2.2rem)] font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.4)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)] active:scale-[0.98] bg-[#20d5d5] hover:bg-[#25e0e0] border-2 border-white/40">
               Keşfetmeye Başla
             </Button>
           </Link>
-        </div>
-
-        {/* Page indicators */}
-        <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none z-20">
-          <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30 shadow-lg flex items-center gap-1.5">
-            <div className="w-6 h-1.5 rounded-full bg-white"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-30"></div>
-          </div>
         </div>
       </div>
     </div>
