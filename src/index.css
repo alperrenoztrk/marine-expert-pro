@@ -1147,9 +1147,23 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Ensure app root never expands viewport horizontally */
+#root {
+  width: 100%;
+  max-width: 100%;
 }
 
 @layer utilities {
