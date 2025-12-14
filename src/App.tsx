@@ -85,6 +85,24 @@ import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
+import CargoTopicsPage from "./pages/CargoTopics";
+import CargoRulesPage from "./pages/CargoRules";
+import CargoAssistantPage from "./pages/CargoAssistant";
+import CargoQuizPage from "./pages/CargoQuiz";
+import MeteorologyFormulasPage from "./pages/MeteorologyFormulas";
+import MeteorologyRulesPage from "./pages/MeteorologyRules";
+import MeteorologyAssistantPage from "./pages/MeteorologyAssistant";
+import MeteorologyQuizPage from "./pages/MeteorologyQuiz";
+import SeamanshipCalculationsPage from "./pages/SeamanshipCalculations";
+import SeamanshipFormulasPage from "./pages/SeamanshipFormulas";
+import SeamanshipRulesPage from "./pages/SeamanshipRules";
+import SeamanshipAssistantPage from "./pages/SeamanshipAssistant";
+import SeamanshipQuizPage from "./pages/SeamanshipQuiz";
+import SafetyTopicsPage from "./pages/SafetyTopics";
+import SafetyFormulasPage from "./pages/SafetyFormulas";
+import SafetyRulesPage from "./pages/SafetyRules";
+import SafetyAssistantPage from "./pages/SafetyAssistant";
+import SafetyQuizPage from "./pages/SafetyQuiz";
 
 const queryClient = new QueryClient();
 
@@ -134,6 +152,14 @@ const AnimatedRoutes = () => {
         <Route path="/tank" element={<PageTransition><TankCalculationsPage /></PageTransition>} />
         <Route path="/cargo/calculations" element={<PageTransition><DraftSurveyCalculator /></PageTransition>} />
         <Route path="/cargo/formulas" element={<PageTransition><DraftSurveyStandard /></PageTransition>} />
+        <Route path="/cargo/topics" element={<PageTransition><CargoTopicsPage /></PageTransition>} />
+        <Route path="/cargo/rules" element={<PageTransition><CargoRulesPage /></PageTransition>} />
+        <Route path="/cargo/assistant" element={<PageTransition><CargoAssistantPage /></PageTransition>} />
+        <Route path="/cargo/quiz" element={<PageTransition><CargoQuizPage /></PageTransition>} />
+        <Route path="/meteorology/formulas" element={<PageTransition><MeteorologyFormulasPage /></PageTransition>} />
+        <Route path="/meteorology/rules" element={<PageTransition><MeteorologyRulesPage /></PageTransition>} />
+        <Route path="/meteorology/assistant" element={<PageTransition><MeteorologyAssistantPage /></PageTransition>} />
+        <Route path="/meteorology/quiz" element={<PageTransition><MeteorologyQuizPage /></PageTransition>} />
         <Route path="/ballast" element={<PageTransition><BallastPage /></PageTransition>} />
         <Route path="/engine" element={<PageTransition><EnginePage /></PageTransition>} />
         <Route path="/hydrodynamics" element={<PageTransition><HydrodynamicsPage /></PageTransition>} />
@@ -152,6 +178,16 @@ const AnimatedRoutes = () => {
         <Route path="/seamanship/topics-menu" element={<PageTransition><SeamanshipTopicButtons /></PageTransition>} />
         <Route path="/seamanship/topics" element={<PageTransition><SeamanshipTopicsPage /></PageTransition>} />
         <Route path="/seamanship/knots" element={<PageTransition><SailorKnotsPage /></PageTransition>} />
+        <Route path="/seamanship/calculations" element={<PageTransition><SeamanshipCalculationsPage /></PageTransition>} />
+        <Route path="/seamanship/formulas" element={<PageTransition><SeamanshipFormulasPage /></PageTransition>} />
+        <Route path="/seamanship/rules" element={<PageTransition><SeamanshipRulesPage /></PageTransition>} />
+        <Route path="/seamanship/assistant" element={<PageTransition><SeamanshipAssistantPage /></PageTransition>} />
+        <Route path="/seamanship/quiz" element={<PageTransition><SeamanshipQuizPage /></PageTransition>} />
+        <Route path="/safety/topics" element={<PageTransition><SafetyTopicsPage /></PageTransition>} />
+        <Route path="/safety/formulas" element={<PageTransition><SafetyFormulasPage /></PageTransition>} />
+        <Route path="/safety/rules" element={<PageTransition><SafetyRulesPage /></PageTransition>} />
+        <Route path="/safety/assistant" element={<PageTransition><SafetyAssistantPage /></PageTransition>} />
+        <Route path="/safety/quiz" element={<PageTransition><SafetyQuizPage /></PageTransition>} />
         <Route path="/tank-menu" element={<PageTransition><TankMenu /></PageTransition>} />
         <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
