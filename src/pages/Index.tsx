@@ -86,42 +86,58 @@ const Index = () => {
     }
   };
 
+  const waveSvg =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230a75c6' fill-opacity='0.28' d='M0,256L80,240C160,224,320,192,480,186.7C640,181,800,203,960,186.7C1120,171,1280,117,1360,90.7L1440,64L1440,320L0,320Z'%3E%3C/path%3E%3C/svg%3E";
+
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-sky-300 via-sky-300 to-sky-400 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#66cdf8] via-[#29b6f6] to-[#0f7ec7]"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
+      {/* Floating glow accents */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-16 top-10 h-64 w-64 rounded-full bg-white/15 blur-3xl" />
+        <div className="absolute right-0 top-32 h-52 w-52 rounded-full bg-cyan-200/30 blur-3xl" />
+        <div className="absolute left-10 bottom-24 h-56 w-56 rounded-full bg-sky-300/25 blur-[120px]" />
+      </div>
+
+      {/* Wave pattern */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-80"
+        style={{ backgroundImage: `url(${waveSvg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}
+      />
+
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8 text-center">
         {/* Title */}
-        <div className="mb-12 mt-20">
-          <h1 className="maritime-title font-extrabold leading-none mb-4 text-blue-900 dark:text-slate-100">
-            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900 dark:text-blue-100">
-              Marine
-            </span>
-            <span className="block text-7xl md:text-8xl lg:text-9xl text-blue-900 dark:text-blue-100">
-              Expert
-            </span>
+        <div className="mb-12 mt-12 sm:mt-16 md:mt-24">
+          <p className="text-base md:text-lg font-semibold tracking-[0.35em] text-white/80 uppercase">Marine Expert</p>
+          <h1 className="maritime-title font-extrabold leading-tight mb-4 text-white drop-shadow-lg">
+            <span className="block text-6xl md:text-7xl lg:text-8xl">Marine</span>
+            <span className="block text-6xl md:text-7xl lg:text-8xl">Expert</span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-900 dark:text-slate-200 font-medium">
-            Tüm denizcilerin ortak uygulaması
-          </p>
+          <p className="text-lg md:text-xl text-white/90 font-medium">Tüm denizcilerin ortak uygulaması</p>
         </div>
 
         {/* Compass */}
-        <div className="relative w-56 h-56 md:w-64 md:h-64 mb-16 drop-shadow-2xl">
-          <MetalCompassDial
-            headingDeg={headingDeg ?? 0}
-            className="h-full w-full select-none pointer-events-none"
-          />
+        <div className="relative mb-16 flex items-center justify-center">
+          <div className="absolute h-64 w-64 md:h-72 md:w-72 rounded-full bg-white/15 blur-2xl" />
+          <div className="relative h-56 w-56 md:h-64 md:w-64 rounded-full bg-gradient-to-b from-white/70 via-white/40 to-white/10 p-4 shadow-[0_25px_60px_rgba(9,98,164,0.35)] ring-4 ring-white/30 backdrop-blur-md">
+            <div className="flex h-full items-center justify-center rounded-full bg-gradient-to-b from-[#1a365d] via-[#0f2a4a] to-[#061b34] shadow-inner">
+              <MetalCompassDial
+                headingDeg={headingDeg ?? 0}
+                className="h-[92%] w-[92%] select-none pointer-events-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.35)]"
+              />
+            </div>
+          </div>
         </div>
 
         {/* CTA Button */}
         <Link to="/calculations" className="z-20" aria-label="Keşfetmeye Başla">
-          <Button className="animate-fade-in hover-scale rounded-full px-12 md:px-16 py-7 text-2xl md:text-3xl font-bold bg-blue-800 hover:bg-blue-900 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-2xl border-4 border-white/20 dark:border-white/10 transition-all duration-300 hover:shadow-[0_0_30px_rgba(30,64,175,0.5)] dark:hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] animate-pulse-subtle">
+          <Button className="animate-fade-in hover-scale rounded-full px-14 md:px-16 py-6 md:py-7 text-xl md:text-2xl font-bold bg-gradient-to-r from-[#18a0fb] to-[#0f80d6] hover:from-[#0f97f3] hover:to-[#0d75bd] text-white shadow-[0_20px_45px_rgba(10,118,198,0.4)] border border-white/30 transition-all duration-300 hover:shadow-[0_25px_55px_rgba(10,118,198,0.55)] animate-pulse-subtle">
             Keşfetmeye Başla
           </Button>
         </Link>
