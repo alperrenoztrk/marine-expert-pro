@@ -1,11 +1,5 @@
-export interface QuizQuestion {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-  category: string;
-}
+import type { QuizQuestion } from "@/types/quiz";
+import { createSeededRng, pickRandomUnique } from "@/utils/random";
 
 export const navigationQuestions: QuizQuestion[] = [
   {
@@ -731,9 +725,9 @@ export const navigationQuestions: QuizQuestion[] = [
   }
 ];
 
-export const getRandomNavigationQuestions = (count: number): QuizQuestion[] => {
-  const shuffled = [...navigationQuestions].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, Math.min(count, navigationQuestions.length));
+export const getRandomNavigationQuestions = (count: number, seed?: number): QuizQuestion[] => {
+  const rng = seed === undefined ? Math.random : createSeededRng(seed);
+  return pickRandomUnique(navigationQuestions, count, rng);
 };
 
 export const getNavigationCategories = (): string[] => {

@@ -12,9 +12,7 @@ export default function StabilityQuizPage() {
   const [seed, setSeed] = useState<number>(Date.now());
 
   const questions = useMemo(() => {
-    // regenerate when seed or count changes
-    void seed;
-    return getRandomQuestions(count);
+    return getRandomQuestions(count, seed);
   }, [seed, count]);
 
   const handleBack = () => {
@@ -23,6 +21,11 @@ export default function StabilityQuizPage() {
   };
 
   const maxCount = stabilityQuestions.length;
+  const selectableCounts = useMemo(() => {
+    const baseCounts = [10, 25, 50, maxCount];
+    const uniqueCounts = Array.from(new Set(baseCounts.filter((n) => n <= maxCount)));
+    return uniqueCounts.sort((a, b) => a - b);
+  }, [maxCount]);
 
   return (
     <div className="container mx-auto p-6 space-y-4">
@@ -50,7 +53,7 @@ export default function StabilityQuizPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {[10, 25, 50].map((c) => (
+            {selectableCounts.map((c) => (
               <Button
                 key={c}
                 variant={count === c ? "default" : "outline"}

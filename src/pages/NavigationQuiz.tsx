@@ -12,8 +12,7 @@ export default function NavigationQuizPage() {
   const [seed, setSeed] = useState<number>(Date.now());
 
   const questions = useMemo(() => {
-    void seed;
-    return getRandomNavigationQuestions(count);
+    return getRandomNavigationQuestions(count, seed);
   }, [seed, count]);
 
   const handleBack = () => {

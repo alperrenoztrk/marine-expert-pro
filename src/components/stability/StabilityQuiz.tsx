@@ -4,15 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ChevronLeft, ChevronRight, RotateCcw, CheckCircle, XCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface QuizQuestion {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-  category: string;
-}
+import type { QuizQuestion } from '@/types/quiz';
 
 interface QuizProps {
   questions: QuizQuestion[];
