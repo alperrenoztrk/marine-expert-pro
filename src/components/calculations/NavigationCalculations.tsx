@@ -1429,11 +1429,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   {result && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
                       <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Great Circle Mesafe</div>
+                        <div className="text-sm text-muted-foreground">Great Circle Mesafe</div>
                         <div className="font-mono text-xl text-blue-600">{result.gcDistance?.toFixed(2)} nm</div>
                       </div>
                       <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
-                        <div className="text-sm text-gray-500">İlk Pusula</div>
+                        <div className="text-sm text-muted-foreground">İlk Pusula</div>
                         <div className="font-mono text-xl text-green-600">{result.gcInitialBearing?.toFixed(1)}°</div>
                       </div>
                     </div>
@@ -1518,15 +1518,15 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   {result && (
                     <div className="mt-4 grid grid-cols-3 gap-4">
                       <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Rhumb Line Mesafe</div>
+                        <div className="text-sm text-muted-foreground">Rhumb Line Mesafe</div>
                         <div className="font-mono text-xl text-purple-600">{result.rhumbDistance?.toFixed(2)} nm</div>
                       </div>
                       <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Pusula (Sabit)</div>
+                        <div className="text-sm text-muted-foreground">Pusula (Sabit)</div>
                         <div className="font-mono text-xl text-indigo-600">{result.rhumbBearing?.toFixed(1)}°</div>
                       </div>
                       <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Departure</div>
+                        <div className="text-sm text-muted-foreground">Departure</div>
                         <div className="font-mono text-xl text-cyan-600">{result.departure?.toFixed(2)} nm</div>
                       </div>
                     </div>
@@ -1621,11 +1621,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   {result?.eta && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
                       <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Tahmini Varış Zamanı (ETA)</div>
+                        <div className="text-sm text-muted-foreground">Tahmini Varış Zamanı (ETA)</div>
                         <div className="font-mono text-xl text-orange-600">{result.eta}</div>
                       </div>
                       <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Seyir Süresi</div>
+                        <div className="text-sm text-muted-foreground">Seyir Süresi</div>
                         <div className="font-mono text-xl text-yellow-600">{result.timeToGo?.toFixed(1)} saat</div>
                       </div>
                     </div>
@@ -1729,11 +1729,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   {result?.estimatedPosition && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
                       <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded border">
-                        <div className="text-sm text-gray-500">DR Enlemi</div>
+                        <div className="text-sm text-muted-foreground">DR Enlemi</div>
                         <div className="font-mono text-xl text-red-600">{result.estimatedPosition.lat?.toFixed(5)}°</div>
                       </div>
                       <div className="p-3 bg-pink-50 dark:bg-pink-900/20 rounded border">
-                        <div className="text-sm text-gray-500">DR Boylamı</div>
+                        <div className="text-sm text-muted-foreground">DR Boylamı</div>
                         <div className="font-mono text-xl text-pink-600">{result.estimatedPosition.lon?.toFixed(5)}°</div>
                       </div>
                     </div>
@@ -2095,25 +2095,25 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     {traverseResult && (
                       <div className="grid grid-cols-2 gap-4">
                         <div className="p-3 bg-white dark:bg-gray-800 rounded border">
-                          <div className="text-sm text-gray-500">Toplam dLat (nm)</div>
+                          <div className="text-sm text-muted-foreground">Toplam dLat (nm)</div>
                           <div className="font-mono text-lg">{traverseResult.totalDLat.toFixed(2)}</div>
-                          <div className="text-sm text-gray-500 mt-2">Toplam Departure (nm)</div>
+                          <div className="text-sm text-muted-foreground mt-2">Toplam Departure (nm)</div>
                           <div className="font-mono text-lg">{traverseResult.totalDeparture.toFixed(2)}</div>
                         </div>
                         <div className="p-3 bg-white dark:bg-gray-800 rounded border">
-                          <div className="text-sm text-gray-500">Toplam Mesafe (nm)</div>
+                          <div className="text-sm text-muted-foreground">Toplam Mesafe (nm)</div>
                           <div className="font-mono text-lg">{traverseResult.totalDistance.toFixed(2)}</div>
-                          <div className="text-sm text-gray-500 mt-2">Toplam Rota (°)</div>
+                          <div className="text-sm text-muted-foreground mt-2">Toplam Rota (°)</div>
                           <div className="font-mono text-lg">{traverseResult.totalCourse.toFixed(1)}</div>
                         </div>
                         <div className="p-3 bg-white dark:bg-gray-800 rounded border">
-                          <div className="text-sm text-gray-500">Son Enlem (°)</div>
+                          <div className="text-sm text-muted-foreground">Son Enlem (°)</div>
                           <div className="font-mono text-lg">{traverseResult.finalLat.toFixed(5)}</div>
-                          <div className="text-sm text-gray-500 mt-2">Son Boylam (°)</div>
+                          <div className="text-sm text-muted-foreground mt-2">Son Boylam (°)</div>
                           <div className="font-mono text-lg">{traverseResult.finalLon.toFixed(5)}</div>
                         </div>
                         <div className="p-3 bg-white dark:bg-gray-800 rounded border">
-                          <div className="text-sm text-gray-500">Toplam Süre (saat)</div>
+                          <div className="text-sm text-muted-foreground">Toplam Süre (saat)</div>
                           <div className="font-mono text-lg">{traverseResult.totalTime.toFixed(2)}</div>
                         </div>
                       </div>
@@ -2409,7 +2409,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                       <div className="space-y-4">
                         <h4 className="font-semibold flex items-center gap-2">
-                          <Wind className="h-4 w-4 text-gray-500" />
+                          <Wind className="h-4 w-4 text-muted-foreground" />
                           Rüzgar Verileri
                         </h4>
                         <div className="space-y-2">
@@ -2595,7 +2595,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           placeholder="0.5"
                           className="text-right"
                         />
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs text-muted-foreground">
                           Gyro compass hatası (pozitif/negatif)
                         </div>
                       </div>
@@ -2676,11 +2676,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               {result?.cpa !== undefined && (
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
-                    <div className="text-sm text-gray-500">CPA</div>
+                    <div className="text-sm text-muted-foreground">CPA</div>
                     <div className="font-mono text-xl text-blue-600">{result.cpa.toFixed(2)} nm</div>
                   </div>
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
-                    <div className="text-sm text-gray-500">TCPA</div>
+                    <div className="text-sm text-muted-foreground">TCPA</div>
                     <div className="font-mono text-xl text-green-600">{result.tcpa.toFixed(1)} dk</div>
                   </div>
                 </div>
@@ -3010,11 +3010,11 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   {result && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
                       <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Toplam Derinlik</div>
+                        <div className="text-sm text-muted-foreground">Toplam Derinlik</div>
                         <div className="font-mono text-xl text-blue-600">{result.minimumDepth.toFixed(1)} m</div>
                       </div>
                       <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
-                        <div className="text-sm text-gray-500">Tavsiye Zincir Boyu</div>
+                        <div className="text-sm text-muted-foreground">Tavsiye Zincir Boyu</div>
                         <div className="font-mono text-xl text-green-600">{result.safeDraft.toFixed(1)} m</div>
                       </div>
                     </div>
@@ -3258,25 +3258,25 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         {/* Main Results */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                           <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
-                            <div className="text-sm text-gray-500">Efektif Draft</div>
+                            <div className="text-sm text-muted-foreground">Efektif Draft</div>
                             <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-blue-600' : 'text-red-600'}`}>
                               {result.safeDraft.toFixed(2)} m
                             </div>
                           </div>
                           <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-orange-50 dark:bg-orange-900/20'}`}>
-                            <div className="text-sm text-gray-500">Mevcut UKC</div>
+                            <div className="text-sm text-muted-foreground">Mevcut UKC</div>
                             <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-green-600' : 'text-orange-600'}`}>
                               {result.currentTideHeight.toFixed(2)} m
                             </div>
                           </div>
                           <div className={`p-3 rounded border ${result.tidalStream >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
-                            <div className="text-sm text-gray-500">Güvenlik Marjı</div>
+                            <div className="text-sm text-muted-foreground">Güvenlik Marjı</div>
                             <div className={`font-mono text-lg ${result.tidalStream >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                               {result.tidalStream.toFixed(2)} m
                             </div>
                           </div>
                           <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-cyan-50 dark:bg-cyan-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20'}`}>
-                            <div className="text-sm text-gray-500">Min. Gerekli Derinlik</div>
+                            <div className="text-sm text-muted-foreground">Min. Gerekli Derinlik</div>
                             <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-cyan-600' : 'text-yellow-600'}`}>
                               {result.minimumDepth.toFixed(2)} m
                             </div>
@@ -4411,17 +4411,17 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Spheroidal Mesafe</Label>
                   <p className="text-lg font-semibold text-info">{result.spheroidalDistance.toFixed(3)} nm</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">WGS84 elipsoidi</p>
+                  <p className="text-xs text-muted-foreground">WGS84 elipsoidi</p>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Yakıt Maliyeti</Label>
                   <p className="text-lg font-semibold text-green-600">${result.totalFuelCost.toFixed(0)}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Tahmini maliyet</p>
+                  <p className="text-xs text-muted-foreground">Tahmini maliyet</p>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-sm font-medium text-gray-600 dark:text-gray-400">Hava Gecikmesi</Label>
                   <p className="text-lg font-semibold text-orange-600">{result.alternateETA}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Hava koşulları ile</p>
+                  <p className="text-xs text-muted-foreground">Hava koşulları ile</p>
                 </div>
               </div>
             </CardContent>

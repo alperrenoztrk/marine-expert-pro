@@ -8,7 +8,7 @@ export function CalculationCard({ className, ...props }: CalculationCardProps) {
   return (
     <Card
       className={cn(
-        "shadow-lg border-0 bg-white/80 dark:bg-slate-900/50 backdrop-blur-sm",
+        "shadow-lg bg-card/80 backdrop-blur-sm border border-border/40",
         className
       )}
       {...props}

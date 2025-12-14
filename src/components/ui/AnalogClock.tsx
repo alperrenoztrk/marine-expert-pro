@@ -41,7 +41,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 	return (
 		<div className={cn("flex flex-col items-center", className)}>
 			<div
-				className="relative rounded-full bg-white border border-black/10 shadow-md overflow-hidden"
+				className="relative rounded-full bg-card border border-border shadow-md overflow-hidden"
 				style={{ width: faceSize, height: faceSize }}
 			>
 				{/* Subtle radial gradient */}
@@ -49,7 +49,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 					className="absolute inset-0"
 					style={{
 						background:
-							"radial-gradient(circle at 30% 30%, rgba(0,0,0,0.05), transparent 60%)",
+							"radial-gradient(circle at 30% 30%, hsl(var(--foreground) / 0.06), transparent 60%)",
 					}}
 				/>
 
@@ -65,7 +65,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 							style={{
 								width,
 								height: length,
-								backgroundColor: "rgba(0,0,0,0.7)",
+								backgroundColor: "hsl(var(--foreground) / 0.75)",
 								transform: `translate(-50%, -${center - 2}px) rotate(${i * 30}deg)`,
 								borderRadius: width,
 							}}
@@ -79,7 +79,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 					style={{
 						width: Math.max(3, Math.round(faceSize * 0.02)),
 						height: hourHandLength,
-						backgroundColor: "hsl(222 47% 11%)",
+						backgroundColor: "hsl(var(--foreground) / 0.9)",
 						transform: `translate(-50%, -${hourHandLength - 2}px) rotate(${hourAngle}deg)`,
 						borderRadius: 4,
 					}}
@@ -91,7 +91,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 					style={{
 						width: Math.max(2, Math.round(faceSize * 0.015)),
 						height: minuteHandLength,
-						backgroundColor: "hsl(222 63% 30%)",
+						backgroundColor: "hsl(var(--foreground) / 0.7)",
 						transform: `translate(-50%, -${minuteHandLength - 2}px) rotate(${minuteAngle}deg)`,
 						borderRadius: 4,
 					}}
@@ -103,7 +103,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 					style={{
 						width: Math.max(1, Math.round(faceSize * 0.01)),
 						height: secondHandLength,
-						backgroundColor: "hsl(0 84% 60%)",
+						backgroundColor: "hsl(var(--destructive))",
 						transform: `translate(-50%, -${secondHandLength - 2}px) rotate(${secondAngle}deg)`,
 						borderRadius: 4,
 					}}
@@ -111,7 +111,7 @@ export const AnalogClock: React.FC<AnalogClockProps> = ({
 
 				{/* Center cap */}
 				<div
-					className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black"
+					className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground"
 					style={{ width: centerDot, height: centerDot }}
 				/>
 			</div>

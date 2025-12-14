@@ -100,9 +100,9 @@ export const GoogleAuth = ({ onAuthChange }: AuthProps) => {
 
       console.log('Google sign in initiated:', data);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Unexpected auth error:', error);
-      toast.error('Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error(error instanceof Error ? error.message : 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
@@ -123,9 +123,9 @@ export const GoogleAuth = ({ onAuthChange }: AuthProps) => {
       onAuthChange?.(null);
       setIsDropdownOpen(false);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Unexpected sign out error:', error);
-      toast.error('Çıkış yapılırken hata oluştu');
+      toast.error(error instanceof Error ? error.message : 'Çıkış yapılırken hata oluştu');
     } finally {
       setLoading(false);
     }
@@ -161,8 +161,8 @@ export const GoogleAuth = ({ onAuthChange }: AuthProps) => {
           <Button
             onClick={signInWithGoogle}
             disabled={loading}
-            className="w-full gap-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600"
             variant="outline"
+            className="w-full gap-2"
           >
             {loading ? (
               <>

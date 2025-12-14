@@ -330,25 +330,25 @@ const WidgetPage = () => {
 
       {/* Tutorial Dialog */}
       <Dialog open={showTutorial} onOpenChange={setShowTutorial}>
-        <DialogContent className="sm:max-w-md bg-gradient-to-br from-blue-50 to-sky-100 border-blue-200">
+        <DialogContent className="sm:max-w-md bg-gradient-to-br from-card to-background border-border">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-blue-900">🎯 Hoş Geldiniz!</DialogTitle>
-            <DialogDescription className="text-base text-blue-800 space-y-3 pt-2">
+            <DialogTitle className="text-2xl text-foreground">🎯 Hoş Geldiniz!</DialogTitle>
+            <DialogDescription className="text-base space-y-3 pt-2">
               <p className="font-medium">Widget sayfasında 3 farklı kategori bulunmaktadır:</p>
               <ul className="space-y-2 list-none">
                 <li>⏰ <strong>Zaman Bilgileri</strong></li>
                 <li>🌤️ <strong>Hava Durumu</strong></li>
                 <li>🌍 <strong>Konum</strong></li>
               </ul>
-              <div className="pt-3 space-y-2 border-t border-blue-300">
-                <p className="font-semibold text-blue-900">📱 Gezinme Yöntemleri:</p>
+              <div className="pt-3 space-y-2 border-t border-border">
+                <p className="font-semibold text-foreground">📱 Gezinme Yöntemleri:</p>
                 <p>👆 <strong>Kaydırma:</strong> Sayfayı sağa/sola kaydırarak kategoriler arası geçiş yapın</p>
                 <p>👉 <strong>Tıklama:</strong> Ekranın sağ %35&apos;ine tıklayarak ileri, sol %35&apos;ine tıklayarak geri gidin</p>
               </div>
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2 pt-2">
-            <Button onClick={handleCloseTutorial} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={handleCloseTutorial}>
               Anladım, Başlayalım! 🚀
             </Button>
           </div>

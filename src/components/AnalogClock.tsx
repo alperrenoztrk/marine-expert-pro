@@ -48,7 +48,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
 
   return (
     <div
-      className={`relative select-none rounded-full bg-white shadow-xl border border-neutral-300 ${className}`}
+      className={`relative select-none rounded-full bg-card text-card-foreground shadow-xl border border-border ${className}`}
       style={{ width: size, height: size }}
       aria-label="Analog clock"
       role="img"
@@ -56,7 +56,10 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
       {/* Outer bezel */}
       <div
         className="absolute inset-0 rounded-full"
-        style={{ boxShadow: "inset 0 0 0 10px #1112, inset 0 0 0 2px #9999" }}
+        style={{
+          boxShadow:
+            "inset 0 0 0 10px hsl(var(--foreground) / 0.08), inset 0 0 0 2px hsl(var(--border) / 0.9)",
+        }}
       />
 
       {/* Tick marks */}
@@ -72,7 +75,9 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
             style={{
               height: length,
               width,
-              background: isHour ? "#111" : "#777",
+              background: isHour
+                ? "hsl(var(--foreground) / 0.85)"
+                : "hsl(var(--foreground) / 0.45)",
               transform: `translateX(-50%) rotate(${angle}deg)` as React.CSSProperties["transform"],
               top: radius * 0.04,
             }}
@@ -89,7 +94,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
         return (
           <div
             key={`num-${n}`}
-            className="absolute flex items-center justify-center font-semibold text-neutral-900"
+            className="absolute flex items-center justify-center font-semibold text-foreground"
             style={{
               left: x,
               top: y,
@@ -104,7 +109,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
 
       {/* Center pin */}
       <div
-        className="absolute rounded-full bg-neutral-900"
+        className="absolute rounded-full bg-foreground"
         style={{
           width: radius * 0.06,
           height: radius * 0.06,
@@ -122,12 +127,12 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
         style={{
           width: 6,
           height: radius * 0.45,
-          background: "#111",
+          background: "hsl(var(--foreground) / 0.9)",
           transform: "translateX(-50%) translateY(-100%)",
           borderRadius: 6,
           zIndex: 10,
           transition: "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.3)",
+          boxShadow: "0 1px 2px hsl(0 0% 0% / 0.3)",
         }}
       />
 
@@ -138,7 +143,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
         style={{
           width: 4,
           height: radius * 0.62,
-          background: "#222",
+          background: "hsl(var(--foreground) / 0.7)",
           transform: "translateX(-50%) translateY(-100%)",
           borderRadius: 4,
           zIndex: 12,
@@ -154,7 +159,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
           style={{
             width: 2,
             height: radius * 0.7,
-            background: "#d33",
+            background: "hsl(var(--destructive))",
             transform: "translateX(-50%) translateY(-100%)",
             zIndex: 14,
             transition: "transform 0.08s linear",
