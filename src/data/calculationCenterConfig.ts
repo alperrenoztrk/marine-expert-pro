@@ -452,16 +452,8 @@ export const calculationCategories: CategoryConfig[] = [
         id: "quiz",
         label: "Quiz",
         description: "Makine sistemi senaryoları ve hızlı test",
-        status: "upcoming",
-        fallback: {
-          intro: "Makine modülü quiz içeriği yakında eklenecek.",
-          quiz: {
-            question: "SFOC neyi ifade eder?",
-            options: ["Shaft Force Output Coefficient", "Specific Fuel Oil Consumption", "Safe Fuel Operation Code", "System Fuel Overheat Control"],
-            answer: "Specific Fuel Oil Consumption",
-            explanation: "SFOC, üretilen enerji başına tüketilen yakıtı (genellikle g/kWh) ifade eder.",
-          },
-        },
+        status: "live",
+        href: "/machine/quiz",
       },
     ],
   },

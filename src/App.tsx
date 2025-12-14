@@ -103,6 +103,7 @@ import SafetyFormulasPage from "./pages/SafetyFormulas";
 import SafetyRulesPage from "./pages/SafetyRules";
 import SafetyAssistantPage from "./pages/SafetyAssistant";
 import SafetyQuizPage from "./pages/SafetyQuiz";
+import MachineQuizPage from "./pages/MachineQuiz";
 import WidgetPage from "./pages/WidgetPage";
 const queryClient = new QueryClient();
 
@@ -189,6 +190,7 @@ const AnimatedRoutes = () => {
         <Route path="/safety/rules" element={<PageTransition><SafetyRulesPage /></PageTransition>} />
         <Route path="/safety/assistant" element={<PageTransition><SafetyAssistantPage /></PageTransition>} />
         <Route path="/safety/quiz" element={<PageTransition><SafetyQuizPage /></PageTransition>} />
+        <Route path="/machine/quiz" element={<PageTransition><MachineQuizPage /></PageTransition>} />
         <Route path="/tank-menu" element={<PageTransition><TankMenu /></PageTransition>} />
         <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
