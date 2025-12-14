@@ -216,11 +216,25 @@ const WidgetPage = () => {
   const weatherDescription = useMemo(() => wmoToTr(data?.weatherCode), [data?.weatherCode]);
 
   // Time calculations
-  const trtOffset = 3;
-  const trtTime = useMemo(() => {
-    const trt = new Date(currentTime.getTime() + trtOffset * 3600000);
-    return trt.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-  }, [currentTime]);
+  const nationalTime = useMemo(() => {
+    const tz = data?.timezoneId;
+    try {
+      return currentTime.toLocaleTimeString("tr-TR", {
+        timeZone: tz,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+    } catch {
+      return currentTime.toLocaleTimeString("tr-TR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+    }
+  }, [currentTime, data?.timezoneId]);
 
   const gmtTime = useMemo(() => {
     return currentTime.toLocaleTimeString("en-GB", { timeZone: "UTC", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
@@ -348,7 +362,7 @@ const WidgetPage = () => {
             <h2 className={`text-xl font-semibold ${oceanTheme.textColor} mb-4`}>⏰ Zaman Bilgileri</h2>
             <div data-widget-container>
               <TimeWidgets
-                trtTime={trtTime}
+                nationalTime={nationalTime}
                 gmtTime={gmtTime}
                 lmtTime={lmtTime}
                 ztTime={ztTime}

@@ -262,14 +262,16 @@ export default function WeatherWidget() {
     const gmt = asParts(utcMs);
     const zt = asParts(ztMs);
     const lmt = asParts(lmtMs);
-    const trt = (() => {
+    const local = (() => {
+      const tz = data?.timezoneId;
+      if (!tz) return zt;
       try {
         const parts = new Intl.DateTimeFormat("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
           hour12: false,
-          timeZone: "Europe/Istanbul",
+          timeZone: tz,
         }).formatToParts(utcMs);
         const get = (t: string) => parseInt(parts.find(p => p.type === t)?.value ?? "0", 10);
         return { h: get("hour"), m: get("minute"), s: get("second") };
@@ -278,8 +280,8 @@ export default function WeatherWidget() {
       }
     })();
 
-    return { gmt, zt, lmt, trt } as const;
-  }, [nowMs, data?.utcOffsetSeconds, data?.longitude]);
+    return { gmt, zt, lmt, local } as const;
+  }, [nowMs, data?.utcOffsetSeconds, data?.longitude, data?.timezoneId]);
 
   const sunriseSunset = useMemo(() => {
     const formatTimeHHMM = (isoLike?: string) => {
@@ -355,11 +357,11 @@ export default function WeatherWidget() {
           </div>
         ) : data ? (
           <div className="grid grid-cols-2 gap-4">
-            {/* Dijital saatler: TRT, GMT, LMT, ZT */}
+            {/* Dijital saatler: Ulusal, GMT, LMT, ZT */}
             <div className="col-span-2">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: "TRT", parts: analogTimes.trt },
+                  { label: "ULUSAL", parts: analogTimes.local },
                   { label: "GMT", parts: analogTimes.gmt },
                   { label: "LMT", parts: analogTimes.lmt },
                   { label: "ZT", parts: analogTimes.zt },

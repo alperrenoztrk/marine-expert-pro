@@ -29,6 +29,7 @@ interface SextantCameraProps {
     latitude: number;
     longitude: number;
   };
+  timeZoneHours?: number;
 }
 
 // Dip correction moved to utils
@@ -36,7 +37,8 @@ interface SextantCameraProps {
 export const SextantCamera: React.FC<SextantCameraProps> = ({ 
   onHoMeasured, 
   className = "",
-  observerPosition = { latitude: 41.0082, longitude: 28.9784 } // Default to Istanbul
+  observerPosition = { latitude: 41.0082, longitude: 28.9784 }, // Default to Istanbul
+  timeZoneHours,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const cameraSessionRef = useRef<CameraSession | null>(null);
@@ -134,15 +136,17 @@ export const SextantCamera: React.FC<SextantCameraProps> = ({
   const celestialBodies = useMemo(() => {
     if (!hasOrientationPermission) return [];
     
+    const fallbackTzHours = -new Date().getTimezoneOffset() / 60;
+    const tzHours = Number.isFinite(timeZoneHours) ? timeZoneHours : fallbackTzHours;
     const observer: ObserverPosition = {
       latitude: observerPosition.latitude,
       longitude: observerPosition.longitude,
       dateTime: new Date(),
-      timeZone: 3 // Turkey timezone
+      timeZone: tzHours
     };
     
     return getAllVisibleCelestialBodies(observer);
-  }, [observerPosition, hasOrientationPermission]);
+  }, [observerPosition, hasOrientationPermission, timeZoneHours]);
 
   const handleUseHo = useCallback(() => {
     if (onHoMeasured) onHoMeasured(correctedAltitudeDeg);
