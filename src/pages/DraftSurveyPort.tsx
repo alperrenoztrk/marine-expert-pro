@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Anchor } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Anchor } from "lucide-react";
+import { CalculationLayout } from "@/components/layout/CalculationLayout";
+import { CalculationCard } from "@/components/ui/calculation-card";
+import lighthouse from "@/assets/maritime/lighthouse.jpg";
 
 const DraftSurveyPort = () => {
-  const navigate = useNavigate();
   const [portName, setPortName] = useState("");
   const [tideLevel, setTideLevel] = useState("");
   const [waterDensity, setWaterDensity] = useState("");
@@ -31,24 +32,33 @@ const DraftSurveyPort = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Port Hesabı</h1>
-          <p className="text-muted-foreground">Liman özel hesaplamaları</p>
-        </div>
-      </div>
-
-      <Card>
+    <CalculationLayout
+      title="Port Hesabı"
+      description="Liman özel hesaplamaları"
+      icon={Anchor}
+      hero={{
+        title: "Draft Survey",
+        description: "Liman koşullarının draft ve maliyete etkisi",
+        imageSrc: lighthouse,
+        imageAlt: "Lighthouse at dusk",
+      }}
+      back={{ fallbackTo: "/draft-survey" }}
+      maxWidthClassName="max-w-6xl"
+      below={
+        <CalculationCard>
+          <CardHeader>
+            <CardTitle>Liman Hesaplamaları Hakkında</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Her limanın kendine özgü koşulları vardır. Gelgit seviyeleri, su yoğunluğu,
+              liman ücretleri ve yerel düzenlemeler draft survey hesaplamalarını etkiler.
+            </p>
+          </CardContent>
+        </CalculationCard>
+      }
+    >
+      <CalculationCard>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Anchor className="h-5 w-5" />
@@ -112,43 +122,27 @@ const DraftSurveyPort = () => {
           </Button>
 
           {calculation && (
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle className="text-lg">Hesaplama Sonuçları</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-secondary/20 rounded-lg">
-                    <p className="text-sm text-muted-foreground">Gelgit Etkisi</p>
-                    <p className="text-lg font-semibold">{calculation.tideEffect.toFixed(1)} cm</p>
-                  </div>
-                  <div className="text-center p-4 bg-secondary/20 rounded-lg">
-                    <p className="text-sm text-muted-foreground">Yoğunluk Farkı</p>
-                    <p className="text-lg font-semibold">{calculation.densityEffect.toFixed(1)} kg/m³</p>
-                  </div>
-                  <div className="text-center p-4 bg-secondary/20 rounded-lg">
-                    <p className="text-sm text-muted-foreground">Toplam Ücret</p>
-                    <p className="text-lg font-semibold">${calculation.totalCost.toFixed(2)}</p>
-                  </div>
+            <div className="mt-4 rounded-lg border border-sky-200/50 dark:border-sky-500/20 bg-sky-50/70 dark:bg-sky-900/15 p-4">
+              <h3 className="text-lg font-semibold">Hesaplama Sonuçları</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                <div className="text-center p-4 bg-background/50 rounded-lg border border-white/10">
+                  <p className="text-sm text-muted-foreground">Gelgit Etkisi</p>
+                  <p className="text-lg font-semibold">{calculation.tideEffect.toFixed(1)} cm</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="text-center p-4 bg-background/50 rounded-lg border border-white/10">
+                  <p className="text-sm text-muted-foreground">Yoğunluk Farkı</p>
+                  <p className="text-lg font-semibold">{calculation.densityEffect.toFixed(1)} kg/m³</p>
+                </div>
+                <div className="text-center p-4 bg-background/50 rounded-lg border border-white/10">
+                  <p className="text-sm text-muted-foreground">Toplam Ücret</p>
+                  <p className="text-lg font-semibold">${calculation.totalCost.toFixed(2)}</p>
+                </div>
+              </div>
+            </div>
           )}
         </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Liman Hesaplamaları Hakkında</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Her limanın kendine özgü koşulları vardır. Gelgit seviyeleri, su yoğunluğu, 
-            liman ücretleri ve yerel düzenlemeler draft survey hesaplamalarını etkiler.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+      </CalculationCard>
+    </CalculationLayout>
   );
 };
 

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CoordinateInput } from '@/components/ui/coordinate-input';
+import { CalculationLayout } from '@/components/layout/CalculationLayout';
+import { CalculationCard } from '@/components/ui/calculation-card';
 import { 
   Star, 
   Calculator,
@@ -159,22 +161,17 @@ export default function CelestialCalculations() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* Header */}
-      <div className="bg-black/50 backdrop-blur-sm border-b border-white/10 p-3 sticky top-0 z-50">
-        <div className="flex items-center gap-3">
-          <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
-          <div>
-            <h1 className="text-lg font-bold">Göksel Hesaplamalar</h1>
-            <p className="text-xs text-gray-300">Sextant ve göksel navigasyon</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="p-4 pb-20">
+    <CalculationLayout
+      title="Göksel Hesaplamalar"
+      description="Sextant ve göksel navigasyon"
+      icon={Star}
+      stickyHeader
+      maxWidthClassName="max-w-4xl"
+      back={{ fallbackTo: "/navigation" }}
+    >
+      <div className="pb-20">
         <Tabs defaultValue="sextant" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-black/30 border border-white/10">
+          <TabsList className="grid w-full grid-cols-2 bg-white/5 border border-white/10">
             <TabsTrigger value="sextant" className="flex items-center gap-2">
               <Ruler className="h-4 w-4" />
               Sextant Hesaplamaları
@@ -188,13 +185,13 @@ export default function CelestialCalculations() {
           {/* Sextant Calculations */}
           <TabsContent value="sextant" className="mt-4">
             <div className="space-y-4">
-              <Card className="bg-black/20 border-white/10">
+              <CalculationCard className="bg-white/5 border border-white/10 dark:bg-slate-950/40">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Ruler className="h-5 w-5" />
                     Sextant Düzeltmeleri
                   </CardTitle>
-                  <CardDescription className="text-gray-300">
+                  <CardDescription>
                     Gözlenen yüksekliği gerçek yüksekliğe çevirin
                   </CardDescription>
                 </CardHeader>
@@ -212,7 +209,7 @@ export default function CelestialCalculations() {
                           observedAltitude: e.target.value
                         }))}
                         placeholder="Derece cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -227,7 +224,7 @@ export default function CelestialCalculations() {
                           indexError: e.target.value
                         }))}
                         placeholder="Dakika cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -242,7 +239,7 @@ export default function CelestialCalculations() {
                           dip: e.target.value
                         }))}
                         placeholder="Dakika cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -257,7 +254,7 @@ export default function CelestialCalculations() {
                           refraction: e.target.value
                         }))}
                         placeholder="Dakika cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -272,7 +269,7 @@ export default function CelestialCalculations() {
                           semiDiameter: e.target.value
                         }))}
                         placeholder="Dakika cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -287,7 +284,7 @@ export default function CelestialCalculations() {
                           parallax: e.target.value
                         }))}
                         placeholder="Dakika cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                   </div>
@@ -298,28 +295,28 @@ export default function CelestialCalculations() {
                   </Button>
 
                   {trueAltitude !== null && (
-                    <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
-                      <h4 className="font-bold text-green-400">Sonuç</h4>
+                    <div className="bg-emerald-900/15 border border-emerald-500/20 rounded-lg p-4">
+                      <h4 className="font-bold text-emerald-400">Sonuç</h4>
                       <p className="text-lg font-mono">
-                        Gerçek Yükseklik: <span className="text-green-400">{trueAltitude.toFixed(4)}°</span>
+                        Gerçek Yükseklik: <span className="text-emerald-300">{trueAltitude.toFixed(4)}°</span>
                       </p>
                     </div>
                   )}
                 </CardContent>
-              </Card>
+              </CalculationCard>
             </div>
           </TabsContent>
 
           {/* Celestial Navigation */}
           <TabsContent value="navigation" className="mt-4">
             <div className="space-y-4">
-              <Card className="bg-black/20 border-white/10">
+              <CalculationCard className="bg-white/5 border border-white/10 dark:bg-slate-950/40">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Navigation className="h-5 w-5" />
                     Göksel Navigasyon Hesaplamaları
                   </CardTitle>
-                  <CardDescription className="text-gray-300">
+                  <CardDescription>
                     LHA, hesaplanan yükseklik ve azimut hesaplamaları
                   </CardDescription>
                 </CardHeader>
@@ -337,7 +334,7 @@ export default function CelestialCalculations() {
                           gha: e.target.value
                         }))}
                         placeholder="Derece cinsinden"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -352,7 +349,7 @@ export default function CelestialCalculations() {
                           sha: e.target.value
                         }))}
                         placeholder="Derece cinsinden (opsiyonel)"
-                        className="bg-black/40 border-white/20"
+                        className="bg-white/5 border-white/20"
                       />
                     </div>
                     <div>
@@ -390,34 +387,34 @@ export default function CelestialCalculations() {
                   </Button>
 
                   {navResults && (
-                    <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4 space-y-2">
-                      <h4 className="font-bold text-blue-400">Sonuçlar</h4>
+                    <div className="bg-sky-900/15 border border-sky-500/20 rounded-lg p-4 space-y-2">
+                      <h4 className="font-bold text-sky-300">Sonuçlar</h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-gray-300">LHA:</span>
-                          <span className="text-blue-400 font-mono ml-2">{navResults.lha.toFixed(2)}°</span>
+                          <span className="text-muted-foreground">LHA:</span>
+                          <span className="text-sky-300 font-mono ml-2">{navResults.lha.toFixed(2)}°</span>
                         </div>
                         <div>
-                          <span className="text-gray-300">Hesaplanan Yükseklik:</span>
-                          <span className="text-blue-400 font-mono ml-2">{navResults.calculatedAltitude.toFixed(2)}°</span>
+                          <span className="text-muted-foreground">Hesaplanan Yükseklik:</span>
+                          <span className="text-sky-300 font-mono ml-2">{navResults.calculatedAltitude.toFixed(2)}°</span>
                         </div>
                         <div>
-                          <span className="text-gray-300">Azimut:</span>
-                          <span className="text-blue-400 font-mono ml-2">{navResults.calculatedAzimuth.toFixed(1)}°</span>
+                          <span className="text-muted-foreground">Azimut:</span>
+                          <span className="text-sky-300 font-mono ml-2">{navResults.calculatedAzimuth.toFixed(1)}°</span>
                         </div>
                         <div>
-                          <span className="text-gray-300">Intercept:</span>
-                          <span className="text-blue-400 font-mono ml-2">{navResults.intercept.toFixed(1)} mil</span>
+                          <span className="text-muted-foreground">Intercept:</span>
+                          <span className="text-sky-300 font-mono ml-2">{navResults.intercept.toFixed(1)} mil</span>
                         </div>
                       </div>
                     </div>
                   )}
                 </CardContent>
-              </Card>
+              </CalculationCard>
             </div>
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </CalculationLayout>
   );
 }

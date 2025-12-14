@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calculator } from "lucide-react";
+import { CalculationLayout } from "@/components/layout/CalculationLayout";
+import { CalculationCard } from "@/components/ui/calculation-card";
+import { FormulaCard } from "@/components/ui/formula-card";
+import cargoShip from "@/assets/maritime/cargo-ship-ocean.jpg";
 
 const DraftSurveyCalculator = () => {
   
@@ -60,15 +64,42 @@ const DraftSurveyCalculator = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Hesap Makinesi</h1>
-          <p className="text-muted-foreground">Hızlı draft hesaplamaları</p>
-        </div>
-      </div>
-
-      <Card>
+    <CalculationLayout
+      title="Hesap Makinesi"
+      description="Hızlı draft hesaplamaları"
+      icon={Calculator}
+      hero={{
+        title: "Draft Survey",
+        description: "Su çekimi, trim ve deplasman için hızlı araçlar",
+        imageSrc: cargoShip,
+        imageAlt: "Cargo ship at sea",
+      }}
+      back={{ fallbackTo: "/draft-survey" }}
+      maxWidthClassName="max-w-6xl"
+      rightRail={
+        <FormulaCard
+          title="Hızlı Formüller"
+          sections={[
+            {
+              title: "📏 Su Çekimi Değişimi",
+              accent: "blue",
+              lines: [{ formula: "Ağırlık Değişimi = (Son - İlk) × TPC" }],
+            },
+            {
+              title: "⚖️ Trim",
+              accent: "teal",
+              lines: [{ formula: "Trim % = (Kıç - Baş) / LPP × 100" }],
+            },
+            {
+              title: "🌊 Deplasman Düzeltmesi",
+              accent: "purple",
+              lines: [{ formula: "Düzeltilmiş = Deplasman × (Gerçek Yoğunluk / 1.025)" }],
+            },
+          ]}
+        />
+      }
+    >
+      <CalculationCard>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="h-5 w-5" />
@@ -233,21 +264,8 @@ const DraftSurveyCalculator = () => {
             </TabsContent>
           </Tabs>
         </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Hızlı Hesaplama Formülleri</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p><strong>Su Çekimi Değişimi:</strong> Ağırlık Değişimi = (Son Su Çekimi - İlk Su Çekimi) × TPC</p>
-            <p><strong>Trim:</strong> Trim % = (Kıç Su Çekimi - Baş Su Çekimi) / LPP × 100</p>
-            <p><strong>Deplasman Düzeltmesi:</strong> Düzeltilmiş = Deplasman × (Gerçek Yoğunluk / 1.025)</p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      </CalculationCard>
+    </CalculationLayout>
   );
 };
 

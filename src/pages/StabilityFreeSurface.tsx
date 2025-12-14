@@ -1,29 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Waves } from "lucide-react";
 import { HydrostaticsStabilityCalculations } from "@/components/calculations/HydrostaticsStabilityCalculations";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
+import { CalculationLayout } from "@/components/layout/CalculationLayout";
+import yacht from "@/assets/maritime/yacht-clear-water.jpg";
 
 export default function StabilityFreeSurfacePage(){
-  const navigate = useNavigate();
-  const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate('/stability');
-  };
   return (
-    <div className="container mx-auto p-6 space-y-4">
-      <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
-        <ArrowLeft className="h-4 w-4" />
-        Geri Dön
-      </Button>
+    <CalculationLayout
+      title="Serbest Yüzey Etkisi"
+      description="Tanklardaki serbest yüzeyin GM ve stabiliteye etkisi"
+      icon={Waves}
+      hero={{
+        title: "Stabilite",
+        description: "Serbest yüzey hesaplamaları ve açıklamalar",
+        imageSrc: yacht,
+        imageAlt: "Yacht in clear water",
+      }}
+      back={{ fallbackTo: "/stability" }}
+      maxWidthClassName="max-w-6xl"
+      below={
+        <div className="mt-2">
+          <StabilityAssistantPopup />
+        </div>
+      }
+    >
       {/* Free surface calculation lives under stability section, in the extended block */}
       <HydrostaticsStabilityCalculations singleMode section="stability" />
-      
-      {/* Stabilite Asistanı */}
-      <div className="mt-6">
-        <StabilityAssistantPopup />
-      </div>
-    </div>
+    </CalculationLayout>
   );
 }
 
