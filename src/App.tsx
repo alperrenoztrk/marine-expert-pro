@@ -103,7 +103,7 @@ import SafetyFormulasPage from "./pages/SafetyFormulas";
 import SafetyRulesPage from "./pages/SafetyRules";
 import SafetyAssistantPage from "./pages/SafetyAssistant";
 import SafetyQuizPage from "./pages/SafetyQuiz";
-
+import WidgetPage from "./pages/WidgetPage";
 const queryClient = new QueryClient();
 
 const AnimatedRoutes = () => {
@@ -116,6 +116,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/widgets" element={<PageTransition><WidgetPage /></PageTransition>} />
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
         <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
         <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />

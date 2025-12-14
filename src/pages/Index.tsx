@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SplashCompassDial from "@/components/ui/SplashCompassDial";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
+import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   // Compass state
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
+
+  // Swipe state
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   // --- Compass logic using unified listener ---
   useEffect(() => {
@@ -34,10 +41,87 @@ const Index = () => {
     };
   }, []);
 
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    
+    const distance = touchEndX.current - touchStartX.current;
+    const isLeftSwipe = distance < -100; // Sola kaydırma - ileri git
+    
+    if (isLeftSwipe) {
+      navigate('/widgets');
+    }
+    
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  // Click navigation for left and right zones
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    // Don't navigate if clicking on interactive elements
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') ||
+      target.closest('a') ||
+      target.closest('[role="button"]')
+    ) {
+      return;
+    }
+
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    // Only navigate if click is above 70% of screen height (above the button area)
+    if (clickY > screenHeight * 0.70) return;
+    
+    // Right 35% zone - go to widgets
+    if (clickX > screenWidth * 0.65) {
+      navigate('/widgets');
+    }
+  };
+
   return (
     <div
-      className="relative min-h-[100svh] overflow-hidden bg-gradient-to-br from-[#0b5f98] via-[#0fa3b6] to-[#2fe3d3]"
+      className="relative min-h-[100svh] overflow-hidden bg-gradient-to-br from-[#0b5f98] via-[#0fa3b6] to-[#2fe3d3] touch-auto cursor-pointer"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onClick={handleClick}
     >
+      {/* Settings button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate('/settings');
+        }}
+        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
+        aria-label="Ayarlar"
+      >
+        <Settings className="w-6 h-6 text-white" />
+      </button>
+
+      {/* Right arrow indicator */}
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+        <div className="flex flex-col items-center gap-2 animate-pulse">
+          <ChevronRight className="w-8 h-8 text-white opacity-40 drop-shadow-lg" />
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-20"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-30"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
+          </div>
+        </div>
+      </div>
+
       {/* Background texture/pattern (subtle icons/lines) */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.08]">
         <svg viewBox="0 0 1200 800" className="h-full w-full">
@@ -111,6 +195,14 @@ const Index = () => {
               Keşfetmeye Başla
             </Button>
           </Link>
+        </div>
+
+        {/* Page indicators */}
+        <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none z-20">
+          <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30 shadow-lg flex items-center gap-1.5">
+            <div className="w-6 h-1.5 rounded-full bg-white"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-white opacity-30"></div>
+          </div>
         </div>
       </div>
     </div>
