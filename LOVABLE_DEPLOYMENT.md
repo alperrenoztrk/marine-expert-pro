@@ -1,6 +1,10 @@
 # 🚀 Lovable Deployment Status
 
 ## 📋 Son Güncellemeler
+- **Tarih:** 2025-12-14
+- **Sürüm:** v2.5.70
+- **Durum:** ✅ Underwater Homepage Redesign - MARINE EXPERT su altı teması ile yenilendi - **LOVABLE'A DEPLOY EDİLDİ**
+
 - **Tarih:** 2025-12-08
 - **Sürüm:** v2.5.69
 - **Durum:** ✅ Otomatik Lovable güncelleme (squash-merge akışı)
@@ -158,6 +162,18 @@
 - **Durum:** ✅ Aktif — Mark “Regülasyon Rehberi” personası; ALRS/NAVTEX/GMDSS yerel bilgi eşlemeleri, UI etiketi güncellendi
 
 ## 🔧 Son Yapılan Değişiklikler
+
+### 🌊 Underwater Homepage Redesign (2025-12-14)
+- **Arka Plan Teması**: Deniz altı atmosferi gradient renkleri (`from-[#0a4a6e] via-[#0d6589] to-[#1088a8]`)
+- **Işık Efektleri**: Su altından gelen güneş ışığı huzmeleri animasyonu
+- **Deniz Altı Detayları**: Baloncuk parçacıkları ve mercan siluetleri
+- **Pusula Tasarımı**: Etrafında parıltı efekti (glow) ve geliştirilmiş gölgeler
+- **MARINE EXPERT Başlığı**: Font-black kalınlığında, çoklu gölge efektleri
+- **Keşfetmeye Başla Butonu**: Turkuaz renk (#20d5d5), beyaz kenarlık ve geliştirilmiş hover efektleri
+- **Minimal UI**: Ayarlar butonu ve navigasyon ok'ları daha ince ve şeffaf
+- **Immersive UX**: Tam ekran underwater tema, profesyonel maritime atmosfer
+- Responsive tasarım ve mobile-first yaklaşım korundu
+- SplashCompassDial bileşeni ile gerçek pusula entegrasyonu
 
 ### 📐 Enine Stabilite Hesaplamaları (2024-12-19)
 - **Metasentrik Yükseklik (GM)**: `GM = KM - KG` ve alternatif formül `GM = (I/∇) - KG`
