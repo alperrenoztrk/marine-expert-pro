@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera, Plus, Trash2, Brain } from "lucide-react";
 import SextantCamera from "@/components/SextantCamera";
+import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
 import { DirectionInput } from "@/components/DirectionInput";
@@ -205,6 +206,8 @@ interface NavigationResult {
 
 export const NavigationCalculations = ({ initialTab }: { initialTab?: string } = {}) => {
   const [activeCalculation, setActiveCalculation] = useState<string>(initialTab || "dr-plotting");
+  const { data: currentWeather } = useCurrentWeather({ watchPosition: false, reverseGeocode: false, refreshMs: 300000 });
+  const autoInitRef = useRef(false);
   const [data, setData] = useState<NavigationData>({
     traverseLegs: [
       { course: 90, distance: 10 },
@@ -225,7 +228,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     
     // Astronomical data
     date: new Date().toISOString().split('T')[0],
-    timeZone: 3, // Turkey time zone
+    timeZone: 3, // default; auto-initialized from current location when available
     observerLatitude: 41.0082,
     observerLongitude: 28.9784,
     
@@ -239,6 +242,42 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     pilotBoardingLat: 41.1500, pilotBoardingLon: 29.1000,
     portApproachSpeed: 8, requiredUKC: 2.0, shipDraft: 8.5
   });
+
+  // Auto-initialize celestial observer defaults from current location (once)
+  useEffect(() => {
+    if (autoInitRef.current) return;
+    if (!currentWeather) return;
+    autoInitRef.current = true;
+
+    const DEFAULT_LAT = 41.0082;
+    const DEFAULT_LON = 28.9784;
+    const DEFAULT_TZ = 3;
+
+    setData((prev) => {
+      const next = { ...prev };
+
+      const tzHours =
+        typeof currentWeather.utcOffsetSeconds === "number" && Number.isFinite(currentWeather.utcOffsetSeconds)
+          ? currentWeather.utcOffsetSeconds / 3600
+          : undefined;
+
+      if (
+        prev.observerLatitude === DEFAULT_LAT &&
+        prev.observerLongitude === DEFAULT_LON &&
+        Number.isFinite(currentWeather.latitude) &&
+        Number.isFinite(currentWeather.longitude)
+      ) {
+        next.observerLatitude = currentWeather.latitude;
+        next.observerLongitude = currentWeather.longitude;
+      }
+
+      if (prev.timeZone === DEFAULT_TZ && tzHours !== undefined) {
+        next.timeZone = tzHours;
+      }
+
+      return next;
+    });
+  }, [currentWeather]);
 
   const [result, setResult] = useState<NavigationResult | null>(null);
   const [traverseResult, setTraverseResult] = useState<{
@@ -3518,6 +3557,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                             latitude: data.observerLatitude,
                             longitude: data.observerLongitude
                           }}
+                          timeZoneHours={data.timeZone}
                         />
                       </div>
                       <div className="order-1 md:order-2 grid grid-cols-2 gap-4">
