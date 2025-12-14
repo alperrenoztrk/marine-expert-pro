@@ -1,39 +1,37 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Compass, Calculator, Sigma, FileText } from "lucide-react";
+import { IconButton } from "@/components/ui/icon-button";
+import { Calculator, Sigma, FileText, Globe, Ship, Compass, Clock, Navigation2, Target, Eye, Anchor, Ruler, Waves, Sun, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-type CalcItem = { id: string; title: string; subtitle?: string };
-
-const calcItems: CalcItem[] = [
-  { id: "gc", title: "Büyük Daire (Great Circle)", subtitle: "En kısa rota ve ilk kerteriz" },
-  { id: "rhumb", title: "Rhumb Line (Mercator)", subtitle: "Sabit kerterizli rota" },
-  { id: "plane", title: "Plane Sailing", subtitle: "dLat, Dep, mesafe ve kurs" },
-  { id: "eta", title: "Zaman ve ETA", subtitle: "Süre ve varış zamanı" },
-  { id: "current", title: "Akıntı Üçgeni (CTS)", subtitle: "Steer course ve SOG" },
-  { id: "compass", title: "Pusula Dönüşümleri", subtitle: "Var, Dev, toplam hata" },
-  { id: "cpa", title: "CPA / TCPA", subtitle: "En yakın yaklaşma analizi" },
-  { id: "sight", title: "Sight Reduction", subtitle: "Hc ve azimut" },
-  { id: "bearings", title: "Kerteriz Hesaplamaları", subtitle: "Doubling/Four/Seven point" },
-  { id: "distance", title: "Mesafe Hesaplamaları", subtitle: "Ufuk, radar, ışık" },
-  { id: "tides", title: "Gelgit Hesaplamaları", subtitle: "Twelfths kuralı yükseklik" },
-  { id: "turning", title: "Dönüş Hesaplamaları", subtitle: "Advance, transfer, ROT" },
-  { id: "weather", title: "Hava Durumu", subtitle: "Rüzgar, dalga, leeway" },
-  { id: "celestial", title: "Göksel Navigasyon", subtitle: "Meridian, amplitude, sunrise" },
-  { id: "emergency", title: "Acil Durum", subtitle: "Square/Sector search" },
+const calcItems = [
+  { id: "gc", title: "Büyük Daire (Great Circle)", subtitle: "En kısa rota ve ilk kerteriz", icon: Globe },
+  { id: "rhumb", title: "Rhumb Line (Mercator)", subtitle: "Sabit kerterizli rota", icon: Ship },
+  { id: "plane", title: "Plane Sailing", subtitle: "dLat, Dep, mesafe ve kurs", icon: Navigation2 },
+  { id: "eta", title: "Zaman ve ETA", subtitle: "Süre ve varış zamanı", icon: Clock },
+  { id: "current", title: "Akıntı Üçgeni (CTS)", subtitle: "Steer course ve SOG", icon: Waves },
+  { id: "compass", title: "Pusula Dönüşümleri", subtitle: "Var, Dev, toplam hata", icon: Compass },
+  { id: "cpa", title: "CPA / TCPA", subtitle: "En yakın yaklaşma analizi", icon: Target },
+  { id: "sight", title: "Sight Reduction", subtitle: "Hc ve azimut", icon: Eye },
+  { id: "bearings", title: "Kerteriz Hesaplamaları", subtitle: "Doubling/Four/Seven point", icon: Anchor },
+  { id: "distance", title: "Mesafe Hesaplamaları", subtitle: "Ufuk, radar, ışık", icon: Ruler },
+  { id: "tides", title: "Gelgit Hesaplamaları", subtitle: "Twelfths kuralı yükseklik", icon: Waves },
+  { id: "turning", title: "Dönüş Hesaplamaları", subtitle: "Advance, transfer, ROT", icon: Navigation2 },
+  { id: "weather", title: "Hava Durumu", subtitle: "Rüzgar, dalga, leeway", icon: Sun },
+  { id: "celestial", title: "Göksel Navigasyon", subtitle: "Meridian, amplitude, sunrise", icon: Sun },
+  { id: "emergency", title: "Acil Durum", subtitle: "Square/Sector search", icon: AlertTriangle },
 ];
 
 const Navigation = () => {
   return (
-    <div className="min-h-screen bg-white p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
+      <div className="max-w-6xl mx-auto space-y-6">
         
         {/* Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-5xl font-bold text-blue-600">
+          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent">
             <span data-translatable>Seyir Hesaplamaları</span>
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-muted-foreground">
             Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
           </p>
           <div className="flex items-center justify-center gap-2">
@@ -53,28 +51,22 @@ const Navigation = () => {
         </div>
 
         {/* Per-calculation links */}
-        <div className="space-y-6">
-          {calcItems.map((it) => (
-            <Link key={it.id} to={`/navigation/calc/${it.id}`}>
-              <div className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg">
-                <div className="flex items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <Calculator className="w-12 h-12 text-blue-600" strokeWidth={1.5} />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-2xl font-bold text-blue-600">{it.title}</span>
-                    {it.subtitle && (
-                      <p className="text-sm text-gray-600 mt-1">{it.subtitle}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {calcItems.map((item, index) => (
+            <IconButton
+              key={item.id}
+              to={`/navigation/calc/${item.id}`}
+              icon={item.icon}
+              label={item.title}
+              description={item.subtitle}
+              variant="primary"
+              animationDelay={index * 50}
+            />
           ))}
         </div>
 
         {/* Info */}
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-muted-foreground">
           Her hesaplama artık ayrı bir sayfada açılır
         </div>
       </div>
