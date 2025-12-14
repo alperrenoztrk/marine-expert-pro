@@ -225,7 +225,7 @@ const App = () => {
             <ThemeProvider defaultTheme="dark" storageKey="maritime-ui-theme-v2">
               <DensityProvider>
                 <Toaster />
-                <div className="min-h-screen bg-background text-foreground">
+                <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
                   <BrowserRouter>
                     <AnimatedRoutes />
                   </BrowserRouter>
