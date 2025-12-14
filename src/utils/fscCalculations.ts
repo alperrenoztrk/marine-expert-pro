@@ -51,13 +51,16 @@ export function calculateSingleTankFSC(
   displacement: number
 ): FSCResult {
   const Ixx = calculateIxx(tank.length, tank.breadth);
-  const FSC = (Ixx * tank.density) / displacement;
+  // IMO/IS Code practice: free surface effects should be accounted for unless tank is effectively pressed up.
+  // With a rectangular-tank approximation, Ixx is constant for most fill levels; so we apply FSC for
+  // all practical partial-fill conditions and only heavily down-weight it when the tank is near empty/full.
+  const nearPressedUp = tank.fillage >= 98;
+  const nearEmpty = tank.fillage <= 2;
+  const fillageFactor = (nearPressedUp || nearEmpty) ? 0.05 : 1.0;
+  const FSC = ((Ixx * tank.density) / displacement) * fillageFactor;
   
-  // Determine criticality based on fillage
-  let criticalityLevel: 'safe' | 'warning' | 'critical' = 'safe';
-  if (tank.fillage > 15 && tank.fillage < 85) {
-    criticalityLevel = FSC > 0.1 ? 'critical' : 'warning';
-  }
+  // Criticality is better evaluated relative to GM in analyzeFSC(); here we only flag "safe" when pressed up/empty.
+  const criticalityLevel: 'safe' | 'warning' | 'critical' = (nearPressedUp || nearEmpty) ? 'safe' : 'warning';
   
   return {
     tankId: tank.id,
@@ -106,7 +109,8 @@ export function analyzeFillageEffect(
   
   return fillagePoints.map(fillage => ({
     fillage,
-    fsc: fillage > 5 && fillage < 95 ? baseFSC : baseFSC * 0.1, // Minimal FSC at very low/high fillage
+    // Simple pressed-up approximation: treat <=2% or >=98% as negligible, otherwise full effect.
+    fsc: (fillage <= 2 || fillage >= 98) ? baseFSC * 0.05 : baseFSC,
   }));
 }
 
@@ -125,10 +129,26 @@ export function analyzeFSC(
   const gmReduction = totalFSC;
   const gmReductionPercentage = (gmReduction / initialGM) * 100;
   
-  // Find critical tanks (high FSC contribution and partial fillage)
-  const criticalTanks = results.filter(
-    result => result.contribution > 15 || result.criticalityLevel === 'critical'
-  );
+  // Re-classify per-tank criticality based on GM impact and contribution
+  const resultsWithSeverity: FSCResult[] = results.map((r, idx) => {
+    const tank = tanks[idx];
+    const nearPressedUp = tank.fillage >= 98;
+    const nearEmpty = tank.fillage <= 2;
+    if (nearPressedUp || nearEmpty) {
+      return { ...r, criticalityLevel: 'safe' };
+    }
+    const fractionOfGM = initialGM > 0 ? (r.FSC / initialGM) : 1;
+    if (correctedGM < 0.15 || fractionOfGM >= 0.25 || r.contribution >= 25) {
+      return { ...r, criticalityLevel: 'critical' };
+    }
+    if (correctedGM < 0.35 || fractionOfGM >= 0.10 || r.contribution >= 15) {
+      return { ...r, criticalityLevel: 'warning' };
+    }
+    return { ...r, criticalityLevel: 'safe' };
+  });
+
+  // Find critical tanks
+  const criticalTanks = resultsWithSeverity.filter(r => r.criticalityLevel !== 'safe');
   
   // Generate recommendations
   const recommendations: string[] = [];
@@ -144,12 +164,12 @@ export function analyzeFSC(
     recommendations.push(`FSC, başlangıç GM'nin %${gmReductionPercentage.toFixed(1)}'ünü azaltıyor - bu çok yüksek!`);
   }
   
-  // Tank-specific recommendations
+  // Tank-specific recommendations (IMO-aligned: aim for pressed-up ~98% or near empty)
   tanks.forEach((tank, index) => {
-    const result = results[index];
-    if (tank.fillage > 15 && tank.fillage < 85 && result.FSC > 0.05) {
+    const result = resultsWithSeverity[index];
+    if (result.criticalityLevel !== 'safe') {
       recommendations.push(
-        `"${tank.name}" tankını tamamen doldurun (%98+) veya boşaltın (%10-) - Mevcut doluluk: %${tank.fillage}`
+        `"${tank.name}" için serbest yüzey etkisi anlamlı. Tankı mümkünse pressed-up (~%98+) yapın veya mümkünse boşaltın (≤%2). Mevcut doluluk: %${tank.fillage}`
       );
     }
   });

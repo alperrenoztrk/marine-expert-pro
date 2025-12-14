@@ -18,6 +18,7 @@ interface EngineData {
   nominalRPM: number; // Nominal RPM
   cylinderNumber: number; // Number of cylinders
   engineType: 'two-stroke' | 'four-stroke'; // Engine type
+  requiredNoxTier: 'I' | 'II' | 'III'; // Regulatory tier to check against (user selection)
   
   // Fuel System
   fuelType: 'HFO' | 'MDO' | 'MGO' | 'LNG' | 'Methanol'; // Current fuel type
@@ -110,6 +111,7 @@ interface EngineResult {
   
   // MARPOL Annex VI Emissions
   noxEmissionRate: number; // NOx emission rate (g/kWh)
+  noxLimit: number; // Applicable NOx limit for selected tier (g/kWh)
   noxDailyEmission: number; // Daily NOx emission (kg)
   soxEmissionRate: number; // SOx emission rate (g/kWh)
   soxDailyEmission: number; // Daily SOx emission (kg)
@@ -147,6 +149,7 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
   const [data, setData] = useState<EngineData>({
     mcrPower: 15000, currentLoad: 75, engineRPM: 120, nominalRPM: 127,
     cylinderNumber: 6, engineType: 'two-stroke', fuelType: 'HFO',
+    requiredNoxTier: 'II',
     fuelDensity: 950, fuelViscosity: 380, fuelTemperature: 150,
     fuelSulfurContent: 0.5, lowerCalorificValue: 40.2,
     sfocAt100: 190, sfocAt85: 185, sfocAt75: 175, sfocAt50: 195,
@@ -184,37 +187,37 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
   };
 
   // Calculate NOx emissions according to MARPOL Annex VI
-  const calculateNOxEmissions = (enginePower: number, engineRPM: number): { rate: number; tier: 'I' | 'II' | 'III' } => {
-    // MARPOL Annex VI NOx limits
-    let limit_tier_I: number;
-    let limit_tier_II: number;
-    let limit_tier_III: number;
-    
-    if (engineRPM < 130) {
-      limit_tier_I = 45;
-      limit_tier_II = 37.8;
-      limit_tier_III = 3.4;
-    } else if (engineRPM >= 130 && engineRPM < 2000) {
-      limit_tier_I = 45 * Math.pow(engineRPM / 130, -0.2);
-      limit_tier_II = 37.8 * Math.pow(engineRPM / 130, -0.2);
-      limit_tier_III = 3.4;
-    } else {
-      limit_tier_I = 9.8;
-      limit_tier_II = 7.7;
-      limit_tier_III = 1.96;
-    }
-    
-    // Typical NOx emission for current engine (estimated)
-    const baseNOx = data.engineType === 'two-stroke' ? 
-      12 + (data.currentLoad / 100) * 3 : 
-      8 + (data.currentLoad / 100) * 2;
-    
-    let tier: 'I' | 'II' | 'III';
-    if (baseNOx <= limit_tier_III) tier = 'III';
-    else if (baseNOx <= limit_tier_II) tier = 'II';
-    else tier = 'I';
-    
-    return { rate: baseNOx, tier };
+  const calculateNOxEmissions = (
+    engineRPM: number
+  ): { rate: number; limits: { I: number; II: number; III: number } } => {
+    // MARPOL Annex VI Reg. 13 (g/kWh) limits are engine speed dependent.
+    // Tier I:  n < 130: 17.0;  130 ≤ n < 2000: 45·n^-0.2;  n ≥ 2000: 9.8
+    // Tier II: n < 130: 14.4;  130 ≤ n < 2000: 44·n^-0.23; n ≥ 2000: 7.7
+    // Tier III:n < 130: 3.4;   130 ≤ n < 2000: 9·n^-0.2;   n ≥ 2000: 2.0 (≈1.96)
+    const n = Math.max(0, engineRPM);
+
+    const tierI =
+      n < 130 ? 17 :
+      n < 2000 ? 45 * Math.pow(n, -0.2) :
+      9.8;
+
+    const tierII =
+      n < 130 ? 14.4 :
+      n < 2000 ? 44 * Math.pow(n, -0.23) :
+      7.7;
+
+    const tierIII =
+      n < 130 ? 3.4 :
+      n < 2000 ? 9 * Math.pow(n, -0.2) :
+      2.0;
+
+    // Typical NOx emission for current engine (very rough estimate)
+    const baseNOx =
+      data.engineType === 'two-stroke'
+        ? 12 + (data.currentLoad / 100) * 3
+        : 8 + (data.currentLoad / 100) * 2;
+
+    return { rate: baseNOx, limits: { I: tierI, II: tierII, III: tierIII } };
   };
 
   // Calculate SOx emissions based on fuel sulfur content
@@ -282,7 +285,8 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
       const overallEfficiency = (electricalPower * 3600) / (hourlyConsumption * data.lowerCalorificValue * 1000) * 100;
       
       // Emissions calculations
-      const noxCalc = calculateNOxEmissions(powerOutput, data.engineRPM);
+      const noxCalc = calculateNOxEmissions(data.engineRPM);
+      const selectedNoxLimit = noxCalc.limits[data.requiredNoxTier];
       const noxDailyEmission = (noxCalc.rate * powerOutput * data.dailyRunningHours) / 1000; // kg/day
       
       const soxEmissionRate = calculateSOxEmissions(1) / powerOutput * 1000; // g/kWh
@@ -306,15 +310,22 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
       const fuelWasteVolume = data.pipelineVolume * 1.1; // 10% safety margin
       
       // Compliance checks
-      const noxCompliance: 'compliant' | 'non_compliant' | 'marginal' = 
-        noxCalc.rate <= 3.4 ? 'compliant' : 
-        noxCalc.rate <= 7.7 ? 'marginal' : 'non_compliant';
+      const noxCompliance: 'compliant' | 'non_compliant' | 'marginal' = (() => {
+        if (selectedNoxLimit <= 0) return 'non_compliant';
+        // Give a small margin band (within +5%) as "marginal"
+        if (noxCalc.rate <= selectedNoxLimit) return 'compliant';
+        if (noxCalc.rate <= selectedNoxLimit * 1.05) return 'marginal';
+        return 'non_compliant';
+      })();
       
       const soxCompliance: 'compliant' | 'non_compliant' | 'marginal' = 
         data.fuelSulfurContent <= 0.1 ? 'compliant' :
         data.fuelSulfurContent <= 0.5 ? 'marginal' : 'non_compliant';
       
-      const ecaCompliance = data.fuelSulfurContent <= 0.1 && noxCalc.rate <= 3.4;
+      // Simple proxy: if user selects Tier III, treat this as "NOx ECA / Tier III area check".
+      const ecaCompliance = data.requiredNoxTier === 'III'
+        ? (data.fuelSulfurContent <= 0.1 && noxCalc.rate <= selectedNoxLimit)
+        : (data.fuelSulfurContent <= 0.1);
       
       // EEOI calculation (kg CO2/nm)
       const eeoi = (co2DailyEmission * 1000) / (14.5 * 24); // Assuming 14.5 knots speed
@@ -339,8 +350,8 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
         warnings.push("Yakıt kükürt içeriği MARPOL limitini aşıyor");
       }
       
-      if (noxCalc.rate > 7.7) {
-        warnings.push("NOx emisyonu MARPOL Tier II limitini aşıyor");
+      if (noxCalc.rate > selectedNoxLimit) {
+        warnings.push(`NOx emisyonu MARPOL Tier ${data.requiredNoxTier} limitini aşıyor (Limit: ${selectedNoxLimit.toFixed(2)} g/kWh)`);
       }
       
       if (!ecaCompliance) {
@@ -371,6 +382,7 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
         seawaterPumpPower: (data.coolingWaterFlow * 10) / 3600, // Rough estimate
         coolingEfficiency: 85,
         noxEmissionRate: noxCalc.rate,
+        noxLimit: selectedNoxLimit,
         noxDailyEmission,
         soxEmissionRate,
         soxDailyEmission,
@@ -390,7 +402,7 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
         sludgeGenerationRate: tanks.sludgeGeneration,
         noxCompliance,
         soxCompliance,
-        marpolTier: noxCalc.tier,
+        marpolTier: data.requiredNoxTier,
         ecaCompliance,
         recommendations,
         warnings
@@ -493,6 +505,19 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
                     <SelectContent>
                       <SelectItem value="two-stroke">İki Zamanlı</SelectItem>
                       <SelectItem value="four-stroke">Dört Zamanlı</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="requiredNoxTier">NOₓ Regülasyon Tier (Kontrol)</Label>
+                  <Select value={data.requiredNoxTier} onValueChange={(value) => updateData('requiredNoxTier', value as any)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="I">Tier I</SelectItem>
+                      <SelectItem value="II">Tier II</SelectItem>
+                      <SelectItem value="III">Tier III (ECA)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -867,6 +892,9 @@ export const EngineCalculations = ({ initialTab }: { initialTab?: string } = {})
                 <div>
                   <Label className="text-sm font-medium">NOx Emisyonu</Label>
                   <p className="text-lg font-semibold">{result.noxEmissionRate.toFixed(2)} g/kWh</p>
+                  <p className="text-xs text-muted-foreground">
+                    Limit (Tier {data.requiredNoxTier}, RPM {data.engineRPM}): {result.noxLimit.toFixed(2)} g/kWh
+                  </p>
                   <Badge variant={result.noxCompliance === 'compliant' ? 'default' : 
                                  result.noxCompliance === 'marginal' ? 'secondary' : 'destructive'}>
                     {result.noxCompliance === 'compliant' ? 'Uygun' :

@@ -855,7 +855,11 @@ export class HydrostaticCalculations {
       sectionalAreas: hydrostaticGeom.sectionalAreas
     };
 
-    const freeSurfaceCorrections = this.calculateFreeSurfaceCorrectionsAdvanced(geometry, tanks);
+    // Prefer geometry-based FSC when tank dimensions are available; otherwise fall back to i-proxy mode.
+    const hasTankGeometry = tanks.some(t => (t.length || 0) > 0 && (t.breadth || 0) > 0);
+    const freeSurfaceCorrections = hasTankGeometry
+      ? this.calculateFSCFromTankGeometry(geometry, tanks)
+      : this.calculateFreeSurfaceCorrectionsAdvanced(geometry, tanks);
     const totalFSC = this.calculateTotalFSC(freeSurfaceCorrections);
     const kgCorrected = kg + Math.max(0, totalFSC);
     const centers = this.calculateCenterPoints(geometry, kg);
@@ -1182,8 +1186,13 @@ export class HydrostaticCalculations {
       const L = t.length || 0;
       const B = t.breadth || 0;
       const fill = t.fillRatio ?? (t.capacity > 0 ? t.currentVolume / t.capacity : 0);
-      const ixx = L > 0 && B > 0 ? (L * Math.pow(B, 3)) / 12 * Math.max(0, Math.min(1, fill)) : 0; // m^4
-      const fsm = (t.fluidDensity || 1.025) * ixx; // tonne·m
+      const fillClamped = Math.max(0, Math.min(1, fill));
+      // Pressed-up approximation (ISC 2008 practice): if tank is ~98% full (or ~2% empty), free surface is negligible.
+      // Otherwise, for a rectangular free-surface model, use full free-surface moment.
+      const pressedUpOrEmpty = fillClamped >= 0.98 || fillClamped <= 0.02;
+      const fseFactor = pressedUpOrEmpty ? 0.05 : 1.0;
+      const ixx = L > 0 && B > 0 ? (L * Math.pow(B, 3)) / 12 : 0; // m^4
+      const fsm = (t.fluidDensity || 1.025) * ixx * fseFactor; // tonne·m (proxy)
       const correction = displacement > 0 ? fsm / displacement : 0; // meters (ΔKG)
       return { tankName: t.name, freeSurfaceMoment: fsm, correction, totalFSC: correction };
     });
