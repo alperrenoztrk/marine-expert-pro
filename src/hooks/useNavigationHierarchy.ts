@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { App as CapacitorApp } from '@capacitor/app';
+
+// Navigation lock - prevents multiple rapid navigations
+let isNavigating = false;
+let navigationTimeout: NodeJS.Timeout | null = null;
 
 // Sayfa hiyerarşisi mapping'i - her sayfa için parent menü tanımı
 const navigationHierarchy: Record<string, string> = {
@@ -171,19 +175,44 @@ const navigationHierarchy: Record<string, string> = {
 export const useNavigationHierarchy = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const currentPathRef = useRef(location.pathname);
+  const listenerRef = useRef<any>(null);
+  const isInitializedRef = useRef(false);
+
+  // Update current path ref
+  currentPathRef.current = location.pathname;
+
+  // Memoized navigation function with lock
+  const navigateToParent = useCallback(() => {
+    // Prevent multiple rapid navigations
+    if (isNavigating) {
+      return;
+    }
+
+    const currentPath = currentPathRef.current;
+    const parentPath = navigationHierarchy[currentPath];
+    
+    // Lock navigation
+    isNavigating = true;
+    
+    // Clear any existing timeout
+    if (navigationTimeout) {
+      clearTimeout(navigationTimeout);
+    }
+    
+    // Set timeout to release lock after navigation completes
+    navigationTimeout = setTimeout(() => {
+      isNavigating = false;
+    }, 300); // 300ms lock to prevent double navigation
+
+    if (parentPath) {
+      navigate(parentPath, { replace: true });
+    } else {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
-    const navigateToParent = () => {
-      const currentPath = location.pathname;
-      const parentPath = navigationHierarchy[currentPath];
-      
-      if (parentPath) {
-        navigate(parentPath, { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
-    };
-
     // Handle browser back button
     const handlePopState = (event: PopStateEvent) => {
       event.preventDefault();
@@ -193,23 +222,39 @@ export const useNavigationHierarchy = () => {
       navigateToParent();
     };
 
-    // Handle mobile back button (Capacitor)
-    let backButtonListener: any;
-    CapacitorApp.addListener('backButton', () => {
-      navigateToParent();
-    }).then(listener => {
-      backButtonListener = listener;
-    });
+    // Setup Capacitor back button listener only once
+    const setupBackButtonListener = async () => {
+      // Remove existing listener if any
+      if (listenerRef.current) {
+        listenerRef.current.remove();
+        listenerRef.current = null;
+      }
 
-    // Push initial state
-    window.history.pushState(null, '', window.location.href);
+      try {
+        listenerRef.current = await CapacitorApp.addListener('backButton', () => {
+          navigateToParent();
+        });
+      } catch (error) {
+        // Capacitor not available (web browser)
+        console.debug('Capacitor back button not available');
+      }
+    };
+
+    // Only push initial state once per session
+    if (!isInitializedRef.current) {
+      window.history.pushState(null, '', window.location.href);
+      isInitializedRef.current = true;
+    }
+
     window.addEventListener('popstate', handlePopState);
+    setupBackButtonListener();
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
-      if (backButtonListener) {
-        backButtonListener.remove();
+      if (listenerRef.current) {
+        listenerRef.current.remove();
+        listenerRef.current = null;
       }
     };
-  }, [location.pathname, navigate]);
+  }, [navigateToParent]);
 };

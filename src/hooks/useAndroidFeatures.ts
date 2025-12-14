@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Keyboard } from '@capacitor/keyboard';
-import { App } from '@capacitor/app';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 export const useAndroidFeatures = () => {
@@ -20,7 +19,6 @@ export const useAndroidFeatures = () => {
       // Keyboard listeners
       let keyboardWillShowListener: any;
       let keyboardWillHideListener: any;
-      let backButtonListener: any;
 
       const setupListeners = async () => {
         keyboardWillShowListener = await Keyboard.addListener('keyboardWillShow', () => {
@@ -31,14 +29,8 @@ export const useAndroidFeatures = () => {
           setKeyboardVisible(false);
         });
 
-        // Back button handler
-        backButtonListener = await App.addListener('backButton', ({ canGoBack }) => {
-          if (!canGoBack) {
-            App.exitApp();
-          } else {
-            window.history.back();
-          }
-        });
+        // Note: Back button handling is done in useNavigationHierarchy hook
+        // to provide hierarchical navigation instead of browser history
       };
 
       setupListeners();
@@ -46,7 +38,6 @@ export const useAndroidFeatures = () => {
       return () => {
         keyboardWillShowListener?.remove();
         keyboardWillHideListener?.remove();
-        backButtonListener?.remove();
       };
     }
   }, []);
