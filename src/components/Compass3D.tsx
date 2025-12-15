@@ -50,7 +50,7 @@ const Compass3D: React.FC<Compass3DProps> = ({ headingDeg = 0, pitchDeg = 0, rol
     if (!container) return;
 
     // Initialize renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     rendererRef.current = renderer;
     container.appendChild(renderer.domElement);
@@ -183,15 +183,10 @@ const Compass3D: React.FC<Compass3DProps> = ({ headingDeg = 0, pitchDeg = 0, rol
     const resizeObs = new ResizeObserver(() => resize());
     resizeObs.observe(container);
 
-    let last = performance.now();
     const animate = () => {
       frameIdRef.current = requestAnimationFrame(animate);
-      const now = performance.now();
-      // Throttle to ~60fps without overworking low-end devices
-      if (now - last >= 14) {
-        renderer.render(scene, camera);
-        last = now;
-      }
+      // Render every RAF; on 120Hz displays this will run at ~120fps.
+      renderer.render(scene, camera);
     };
     animate();
 

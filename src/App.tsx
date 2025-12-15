@@ -9,6 +9,7 @@ import { DensityProvider } from "@/contexts/DensityContext";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "@/components/PageTransition";
 import { useNavigationHierarchy } from "@/hooks/useNavigationHierarchy";
+import { useFrameRate } from "@/hooks/useFrameRate";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
 import CalculationSectionPage from "./pages/CalculationSectionPage";
@@ -222,6 +223,9 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => {
+  // Prefer maximum smoothness on high refresh displays (e.g. 120Hz)
+  useFrameRate();
+
   return (
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
