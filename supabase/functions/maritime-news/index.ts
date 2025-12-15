@@ -3,7 +3,9 @@ import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, cache-control, pragma",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
 type FeedSource = {
@@ -160,8 +162,10 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<string>
       signal: controller.signal,
       headers: {
         // Some feeds block unknown UAs; this helps.
-        "User-Agent": "MarineExpertNewsBot/1.0 (+https://example.invalid)",
+        "User-Agent":
+          "Mozilla/5.0 (compatible; MaritimeNewsBot/1.0; +https://example.invalid) AppleWebKit/537.36",
         "Accept": "application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+        "Accept-Language": "en-US,en;q=0.9,tr;q=0.8",
       },
     });
     if (!resp.ok) {
@@ -194,11 +198,16 @@ serve(async (req) => {
     if (!Number.isFinite(limit)) limit = 30;
     limit = Math.max(5, Math.min(80, Math.trunc(limit)));
 
-    const results = await Promise.allSettled(
+    const results = await Promise.all(
       FEEDS.map(async (feed) => {
-        const xml = await fetchWithTimeout(feed.url, 10_000);
-        const items = parseRssOrAtom(xml, feed.name).map((i) => ({ ...i, source: feed.name }));
-        return { feed, items };
+        try {
+          const xml = await fetchWithTimeout(feed.url, 12_000);
+          const items = parseRssOrAtom(xml, feed.name).map((i) => ({ ...i, source: feed.name }));
+          return { feed, items, error: null as string | null };
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : String(e);
+          return { feed, items: [] as NewsItem[], error: msg };
+        }
       })
     );
 
@@ -206,12 +215,8 @@ serve(async (req) => {
     const errors: Array<{ source: string; error: string }> = [];
 
     for (const r of results) {
-      if (r.status === "fulfilled") {
-        allItems.push(...r.value.items);
-      } else {
-        const msg = r.reason instanceof Error ? r.reason.message : String(r.reason);
-        errors.push({ source: "unknown", error: msg });
-      }
+      allItems.push(...r.items);
+      if (r.error) errors.push({ source: r.feed.name, error: r.error });
     }
 
     const sorted = allItems
