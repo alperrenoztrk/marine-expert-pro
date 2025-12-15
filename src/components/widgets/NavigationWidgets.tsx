@@ -139,22 +139,22 @@ const NavigationWidgets: React.FC = () => {
               <div className="flex justify-center">
                 <MetalCompassDial 
                   headingDeg={heading ?? 0} 
-                  className="h-64 w-64" 
+                  className="h-[min(16rem,72vw)] w-[min(16rem,72vw)] max-w-full" 
                 />
               </div>
 
               {/* Heading Display */}
-              <div className="text-center space-y-2">
-                <div className="font-mono text-5xl font-bold text-foreground animate-neon-glow">
+              <div className="text-center space-y-2 min-w-0">
+                <div className="font-mono text-5xl font-bold text-foreground animate-neon-glow tabular-nums leading-none">
                   {heading !== null ? `${heading}°` : '--°'}
                 </div>
                 {heading !== null && (
-                  <div className="text-xl font-semibold text-muted-foreground uppercase tracking-widest">
+                  <div className="text-xl font-semibold text-muted-foreground uppercase tracking-widest whitespace-nowrap truncate max-w-full">
                     {getCardinalDirection(heading)}
                   </div>
                 )}
                 {heading === null && hasPermission === true && (
-                  <p className="text-xs text-muted-foreground">Pusula verisi bekleniyor...</p>
+                  <p className="text-xs text-muted-foreground whitespace-nowrap truncate max-w-full">Pusula verisi bekleniyor...</p>
                 )}
               </div>
             </>
