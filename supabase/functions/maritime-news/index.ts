@@ -36,6 +36,26 @@ const FEEDS: FeedSource[] = [
     name: "MarineLink",
     url: "https://www.marinelink.com/rss/news",
   },
+  {
+    id: "splash247",
+    name: "Splash247",
+    url: "https://splash247.com/feed/",
+  },
+  {
+    id: "hellenicshipping",
+    name: "Hellenic Shipping",
+    url: "https://www.hellenicshippingnews.com/feed/",
+  },
+  {
+    id: "safety4sea",
+    name: "Safety4Sea",
+    url: "https://www.safety4sea.com/feed/",
+  },
+  {
+    id: "offshore-energy",
+    name: "Offshore Energy",
+    url: "https://www.offshore-energy.biz/feed/",
+  },
 ];
 
 function stripHtml(input: string): string {
