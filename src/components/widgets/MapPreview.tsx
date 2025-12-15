@@ -32,7 +32,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           so we can only hide it visually via an overlay. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-7 bg-background"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-background"
       />
     </div>
   );
