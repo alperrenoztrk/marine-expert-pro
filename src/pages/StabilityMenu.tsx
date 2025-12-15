@@ -15,7 +15,7 @@ export default function StabilityMenu() {
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950" data-no-translate>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]" data-no-translate>
       {/* Decorative background shapes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
@@ -27,7 +27,7 @@ export default function StabilityMenu() {
         {/* Back button */}
         <div className="mb-8">
           <Link to="/calculations">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/50 dark:hover:bg-slate-900/40">
+            <Button variant="ghost" size="sm" className="gap-2 hover:bg-card/50">
               <ArrowLeft className="h-4 w-4" />
               Geri
             </Button>

@@ -24,7 +24,7 @@ const statusConfig: Record<SectionStatus, { label: string; className: string }> 
 export default function CalculationsMenu() {
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]"
       data-no-translate
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -44,7 +44,7 @@ export default function CalculationsMenu() {
           {calculationCategories.map((category, index) => (
             <section
               key={category.id}
-              className="relative overflow-hidden rounded-3xl bg-white/85 dark:bg-slate-900/70 backdrop-blur-sm border border-white/60 dark:border-slate-800/60 p-8 transition-all duration-500 animate-fade-in"
+              className="relative overflow-hidden rounded-3xl bg-card/85 backdrop-blur-sm border border-border/60 p-8 transition-all duration-500 animate-fade-in"
               style={{ animationDelay: `${index * 120}ms` }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-indigo-500/0 to-blue-600/0 opacity-0 pointer-events-none transition-all duration-500 group-hover:opacity-100" />
@@ -71,9 +71,9 @@ export default function CalculationsMenu() {
                     <Link
                       key={`${category.id}-${section.id}`}
                       to={target}
-                      className="group/link relative flex items-start gap-4 rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/80 dark:bg-slate-900/60 p-4 hover:border-blue-400/80 dark:hover:border-blue-500/60 transition-all duration-300"
+                      className="group/link relative flex items-start gap-4 rounded-2xl border border-border/70 bg-card/80 p-4 hover:border-blue-400/80 dark:hover:border-blue-500/60 transition-all duration-300"
                     >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-slate-800 dark:text-blue-200">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-muted dark:text-blue-200">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -83,7 +83,7 @@ export default function CalculationsMenu() {
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">{section.description}</p>
                       </div>
-                      <ChevronRight className="mt-1 h-5 w-5 text-slate-400 group-hover/link:text-blue-500 transition-colors" />
+                      <ChevronRight className="mt-1 h-5 w-5 text-muted-foreground group-hover/link:text-blue-500 transition-colors" />
                     </Link>
                   );
                 })}

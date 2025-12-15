@@ -9,11 +9,11 @@ const iconButtonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-white/80 dark:bg-slate-900/70 border-white/60 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-900 hover:shadow-blue-500/20",
-        secondary: "bg-white/80 dark:bg-slate-900/70 border-white/60 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-900 hover:shadow-emerald-500/20",
-        warning: "bg-white/80 dark:bg-slate-900/70 border-white/60 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-900 hover:shadow-amber-500/20",
-        danger: "bg-white/80 dark:bg-slate-900/70 border-white/60 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-900 hover:shadow-red-500/20",
-        purple: "bg-white/80 dark:bg-slate-900/70 border-white/60 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-900 hover:shadow-purple-500/20",
+        primary: "bg-card/80 border-border/60 hover:bg-card hover:shadow-blue-500/20",
+        secondary: "bg-card/80 border-border/60 hover:bg-card hover:shadow-emerald-500/20",
+        warning: "bg-card/80 border-border/60 hover:bg-card hover:shadow-amber-500/20",
+        danger: "bg-card/80 border-border/60 hover:bg-card hover:shadow-red-500/20",
+        purple: "bg-card/80 border-border/60 hover:bg-card hover:shadow-purple-500/20",
       },
     },
     defaultVariants: {
