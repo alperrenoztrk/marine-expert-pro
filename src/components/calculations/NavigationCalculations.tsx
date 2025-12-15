@@ -1337,8 +1337,8 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     type="button"
                     onClick={() => setActiveCalculation(item.value)}
                     className={
-                      "w-full text-left block rounded-2xl border p-5 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow-md " +
-                      (isActive ? "ring-2 ring-blue-500" : "border-gray-200 dark:border-gray-700")
+                      "w-full text-left block rounded-2xl border p-5 bg-card hover:bg-accent/30 transition-all shadow-sm hover:shadow-md " +
+                      (isActive ? "ring-2 ring-primary" : "border-border")
                     }
                   >
                     <div className="flex items-center gap-5">
@@ -2094,25 +2094,25 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
 
                     {traverseResult && (
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                        <div className="p-3 bg-card rounded border border-border">
                           <div className="text-sm text-muted-foreground">Toplam dLat (nm)</div>
                           <div className="font-mono text-lg">{traverseResult.totalDLat.toFixed(2)}</div>
                           <div className="text-sm text-muted-foreground mt-2">Toplam Departure (nm)</div>
                           <div className="font-mono text-lg">{traverseResult.totalDeparture.toFixed(2)}</div>
                         </div>
-                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                        <div className="p-3 bg-card rounded border border-border">
                           <div className="text-sm text-muted-foreground">Toplam Mesafe (nm)</div>
                           <div className="font-mono text-lg">{traverseResult.totalDistance.toFixed(2)}</div>
                           <div className="text-sm text-muted-foreground mt-2">Toplam Rota (°)</div>
                           <div className="font-mono text-lg">{traverseResult.totalCourse.toFixed(1)}</div>
                         </div>
-                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                        <div className="p-3 bg-card rounded border border-border">
                           <div className="text-sm text-muted-foreground">Son Enlem (°)</div>
                           <div className="font-mono text-lg">{traverseResult.finalLat.toFixed(5)}</div>
                           <div className="text-sm text-muted-foreground mt-2">Son Boylam (°)</div>
                           <div className="font-mono text-lg">{traverseResult.finalLon.toFixed(5)}</div>
                         </div>
-                        <div className="p-3 bg-white dark:bg-gray-800 rounded border">
+                        <div className="p-3 bg-card rounded border border-border">
                           <div className="text-sm text-muted-foreground">Toplam Süre (saat)</div>
                           <div className="font-mono text-lg">{traverseResult.totalTime.toFixed(2)}</div>
                         </div>
@@ -4759,23 +4759,23 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Düzlem Seyri</h4>
-                    <p className="text-sm text-blue-700 dark:text-blue-200">
+                  <div className="text-center p-4 bg-card rounded-lg border border-primary/30">
+                    <h4 className="font-semibold text-primary mb-2">Düzlem Seyri</h4>
+                    <p className="text-sm text-muted-foreground">
                       Harita üzerinde rota, mesafe, zaman hesaplamaları
                     </p>
                   </div>
                   
-                  <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-purple-200 dark:border-purple-800">
-                    <h4 className="font-semibold text-purple-800 dark:text-purple-200 mb-2">Göksel Seyri</h4>
-                    <p className="text-sm text-purple-700 dark:text-purple-200">
+                  <div className="text-center p-4 bg-card rounded-lg border border-accent/30">
+                    <h4 className="font-semibold text-accent mb-2">Göksel Seyri</h4>
+                    <p className="text-sm text-muted-foreground">
                       Güneş, ay, yıldız gözlemleri ile konum tespiti
                     </p>
                   </div>
                   
-                  <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-800">
-                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Kombine</h4>
-                    <p className="text-sm text-green-700 dark:text-green-200">
+                  <div className="text-center p-4 bg-card rounded-lg border border-success/30">
+                    <h4 className="font-semibold text-success mb-2">Kombine</h4>
+                    <p className="text-sm text-muted-foreground">
                       Düzlem ve göksel seyir kombinasyonu
                     </p>
                   </div>
