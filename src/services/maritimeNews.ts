@@ -81,11 +81,50 @@ function normalizeResponse(data: unknown): MaritimeNewsResponse {
   return { fetchedAt, items, errors, sources };
 }
 
+function getFunctionUrl(): string {
+  const baseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+  if (!baseUrl) {
+    // Fallback to the generated client base URL (keeps other functionality unchanged)
+    // but in our case, we prefer the runtime env to avoid pointing at an old/paused project.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const fallback = (supabase as any)?.supabaseUrl as string | undefined;
+    if (!fallback) throw new Error("Backend URL bulunamadı.");
+    return `${fallback}/functions/v1/maritime-news`;
+  }
+  return `${baseUrl}/functions/v1/maritime-news`;
+}
+
+function getAnonKey(): string {
+  const key = (import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) as
+    | string
+    | undefined;
+  if (!key) throw new Error("Backend anahtarı bulunamadı.");
+  return key;
+}
+
 export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsResponse> {
-  const { data, error } = await supabase.functions.invoke("maritime-news", {
-    body: { limit },
+  // Use direct call to avoid mis-pointing to an old/paused backend project when the generated client URL/key is stale.
+  const url = getFunctionUrl();
+  const key = getAnonKey();
+
+  console.info("📰 [MaritimeNews] Requesting:", { url, limit });
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      apikey: key,
+      authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({ limit }),
   });
 
-  if (error) throw error;
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error("📰 [MaritimeNews] HTTP error:", { status: res.status, text });
+    throw new Error(text || `Haber servisi hata döndürdü (${res.status}).`);
+  }
+
+  const data = (await res.json().catch(() => null)) as unknown;
   return normalizeResponse(data);
 }
