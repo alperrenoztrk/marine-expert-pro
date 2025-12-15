@@ -55,9 +55,13 @@ const Index = () => {
     
     const distance = touchEndX.current - touchStartX.current;
     const isLeftSwipe = distance < -100; // Sola kaydırma - ileri git
+    const isRightSwipe = distance > 100; // Sağa kaydırma - geri git (sol sayfa)
     
     if (isLeftSwipe) {
       navigate('/widgets');
+    }
+    if (isRightSwipe) {
+      navigate('/maritime-news');
     }
     
     touchStartX.current = null;
@@ -84,6 +88,11 @@ const Index = () => {
     // Only navigate if click is above 70% of screen height (above the button area)
     if (clickY > screenHeight * 0.70) return;
     
+    // Left 35% zone - go to maritime news
+    if (clickX < screenWidth * 0.35) {
+      navigate('/maritime-news');
+      return;
+    }
     // Right 35% zone - go to widgets
     if (clickX > screenWidth * 0.65) {
       navigate('/widgets');
@@ -113,6 +122,13 @@ const Index = () => {
       >
         <Settings className="w-5 h-5 text-white" />
       </button>
+
+      {/* Left arrow indicator - subtle */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-30">
+        <div className="flex flex-col items-center gap-2 animate-pulse">
+          <ChevronLeft className="w-6 h-6 text-white drop-shadow-lg" />
+        </div>
+      </div>
 
       {/* Right arrow indicator - subtle */}
       <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-30">

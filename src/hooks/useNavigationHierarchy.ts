@@ -159,6 +159,7 @@ const navigationHierarchy: Record<string, string> = {
   '/sunset-times': '/',
   '/location-selector': '/',
   '/settings': '/',
+  '/maritime-news': '/',
   
   // Widget page
   '/empty': '/',

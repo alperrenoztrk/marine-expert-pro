@@ -105,6 +105,7 @@ import SafetyAssistantPage from "./pages/SafetyAssistant";
 import SafetyQuizPage from "./pages/SafetyQuiz";
 import MachineQuizPage from "./pages/MachineQuiz";
 import WidgetPage from "./pages/WidgetPage";
+import MaritimeNews from "./pages/MaritimeNews";
 const queryClient = new QueryClient();
 
 const AnimatedRoutes = () => {
@@ -117,6 +118,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/maritime-news" element={<PageTransition><MaritimeNews /></PageTransition>} />
         <Route path="/widgets" element={<PageTransition><WidgetPage /></PageTransition>} />
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
         <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
