@@ -1,8 +1,7 @@
-import React, { useMemo, useRef } from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,21 +27,21 @@ const MaritimeNews = () => {
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
+  // Fetch once per day (local date) unless user taps "Yenile".
+  const now = new Date();
+  const dayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+    now.getDate()
+  ).padStart(2, "0")}`;
+
   const query = useQuery({
-    queryKey: ["maritime-news"],
+    queryKey: ["maritime-news", dayKey],
     queryFn: () => fetchMaritimeNews(40),
-    staleTime: 2 * 60 * 1000,
-    refetchInterval: 5 * 60 * 1000,
+    staleTime: 24 * 60 * 60 * 1000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
   });
 
   const items = query.data?.items ?? [];
-
-  const grouped = useMemo(() => {
-    // lightweight grouping by source for badge color variety
-    const map = new Map<string, number>();
-    for (const it of items) map.set(it.source, (map.get(it.source) ?? 0) + 1);
-    return map;
-  }, [items]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -130,14 +129,9 @@ const MaritimeNews = () => {
               <Card key={it.link} className="border-white/10 bg-white/5 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary" className="bg-white/10 text-white">
-                        {it.source}
-                      </Badge>
-                      {it.publishedAt ? (
-                        <span className="text-xs text-white/60">{formatDateTR(it.publishedAt)}</span>
-                      ) : null}
-                    </div>
+                    {it.publishedAt ? (
+                      <div className="text-xs text-white/60">{formatDateTR(it.publishedAt)}</div>
+                    ) : null}
                     <a
                       href={it.link}
                       target="_blank"
@@ -161,12 +155,6 @@ const MaritimeNews = () => {
                 </div>
               </Card>
             ))}
-
-            {grouped.size > 0 ? (
-              <div className="pt-2 text-xs text-white/50">
-                Kaynaklar: {Array.from(grouped.entries()).map(([k, v]) => `${k} (${v})`).join(" · ")}
-              </div>
-            ) : null}
           </div>
         )}
       </div>
