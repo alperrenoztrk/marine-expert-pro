@@ -25,15 +25,15 @@ const calcItems: CalcItem[] = [
 
 const Navigation = () => {
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-5xl font-bold text-blue-600">
+          <h1 className="text-5xl font-bold text-primary">
             <span data-translatable>Seyir Hesaplamaları</span>
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-muted-foreground">
             Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
           </p>
           <div className="flex items-center justify-center gap-2">
@@ -56,15 +56,15 @@ const Navigation = () => {
         <div className="space-y-6">
           {calcItems.map((it) => (
             <Link key={it.id} to={`/navigation/calc/${it.id}`}>
-              <div className="block rounded-2xl border border-blue-200 p-6 bg-white transition-all duration-300 shadow-lg">
+              <div className="block rounded-2xl border border-border p-6 bg-card transition-all duration-300 shadow-lg hover:shadow-xl">
                 <div className="flex items-center gap-6">
                   <div className="flex-shrink-0">
-                    <Calculator className="w-12 h-12 text-blue-600" strokeWidth={1.5} />
+                    <Calculator className="w-12 h-12 text-primary" strokeWidth={1.5} />
                   </div>
                   <div className="flex-1">
-                    <span className="text-2xl font-bold text-blue-600">{it.title}</span>
+                    <span className="text-2xl font-bold text-primary">{it.title}</span>
                     {it.subtitle && (
-                      <p className="text-sm text-gray-600 mt-1">{it.subtitle}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{it.subtitle}</p>
                     )}
                   </div>
                 </div>
@@ -74,7 +74,7 @@ const Navigation = () => {
         </div>
 
         {/* Info */}
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-muted-foreground">
           Her hesaplama artık ayrı bir sayfada açılır
         </div>
       </div>

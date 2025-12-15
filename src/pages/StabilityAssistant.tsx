@@ -358,9 +358,9 @@ export default function StabilityAssistantPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,12%)]">
       {/* Header */}
-      <div className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border-b shadow-sm">
+      <div className="flex items-center gap-4 p-4 bg-card border-b border-border shadow-sm">
         <Button variant="ghost" size="sm" onClick={handleBack}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -414,7 +414,7 @@ export default function StabilityAssistantPage() {
                 className={`max-w-[80%] rounded-lg p-3 ${
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground ml-auto'
-                    : 'bg-white dark:bg-gray-800 border shadow-sm'
+                    : 'bg-card border border-border shadow-sm'
                 }`}
               >
                 {/* Display images if present */}
@@ -460,7 +460,7 @@ export default function StabilityAssistantPage() {
                   <Bot className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
-              <div className="bg-white dark:bg-gray-800 border shadow-sm rounded-lg p-3">
+              <div className="bg-card border border-border shadow-sm rounded-lg p-3">
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">Düşünüyor...</span>
@@ -474,11 +474,11 @@ export default function StabilityAssistantPage() {
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="p-4 bg-white dark:bg-gray-800 border-t">
+      <div className="p-4 bg-card border-t border-border">
         <div className="max-w-4xl mx-auto">
           {/* Image Preview */}
           {selectedImages.length > 0 && (
-            <div className="mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="mb-3 p-3 bg-muted rounded-lg">
               <div className="flex flex-wrap gap-2">
                 {selectedImages.map((image, index) => (
                   <div key={index} className="relative">
