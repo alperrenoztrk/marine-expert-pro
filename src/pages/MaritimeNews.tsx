@@ -112,8 +112,9 @@ const MaritimeNews = () => {
           </div>
         ) : query.isError ? (
           <Card className="border-red-500/30 bg-red-500/10 p-4">
-            <div className="text-sm text-red-200">
-              Haberler alınamadı. Biraz sonra tekrar deneyin.
+            <div className="text-sm text-red-200">Haberler alınamadı. Biraz sonra tekrar deneyin.</div>
+            <div className="mt-2 text-xs text-red-200/80 break-words">
+              {query.error instanceof Error ? query.error.message : "Bilinmeyen hata"}
             </div>
           </Card>
         ) : items.length === 0 ? (
