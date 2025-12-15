@@ -274,33 +274,34 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 210 20% 8%;
-    --foreground: 210 20% 92%;
+    /* Navy blue dark theme - no gray tones */
+    --background: 220 45% 6%;
+    --foreground: 210 20% 95%;
 
-    --card: 210 20% 12%;
-    --card-foreground: 210 20% 92%;
+    --card: 220 50% 10%;
+    --card-foreground: 210 20% 95%;
 
-    --popover: 210 20% 12%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 220 50% 10%;
+    --popover-foreground: 210 20% 95%;
 
     --primary: 214 84% 60%;
-    --primary-foreground: 210 20% 8%;
+    --primary-foreground: 220 45% 6%;
     --primary-light: 214 84% 70%;
     --primary-dark: 214 84% 40%;
 
-    --secondary: 204 39% 51%;
+    --secondary: 220 55% 18%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 20% 16%;
-    --muted-foreground: 210 12% 65%;
+    --muted: 220 50% 14%;
+    --muted-foreground: 210 20% 70%;
 
-    --accent: 183 84% 49%;
+    --accent: 214 84% 55%;
     --accent-foreground: 0 0% 100%;
 
     /* Dark theme semantic colors */
     --info: 214 84% 60%;
     --info-foreground: 0 0% 100%;
-    --info-muted: 210 20% 20%;
+    --info-muted: 220 50% 18%;
     --info-muted-foreground: 214 84% 70%;
 
     --destructive: 0 84% 60%;
@@ -312,13 +313,13 @@ All colors MUST be HSL.
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    --border: 210 20% 20%;
-    --input: 210 20% 20%;
+    --border: 220 50% 18%;
+    --input: 220 50% 18%;
     --ring: 214 84% 60%;
 
-    /* Dark mode gradients */
+    /* Dark mode gradients - navy blue */
     --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-deep: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-dark)));
+    --gradient-deep: linear-gradient(135deg, hsl(220 55% 12%), hsl(220 60% 20%));
     --gradient-surface: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
     
     /* Dark shadows */
@@ -326,14 +327,14 @@ All colors MUST be HSL.
     --shadow-card: 0 4px 16px -2px hsl(var(--primary) / 0.15);
     --shadow-button: 0 2px 8px -1px hsl(var(--primary) / 0.2);
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 220 50% 8%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 214 84% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 220 50% 14%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 50% 16%;
+    --sidebar-ring: 214 84% 60%;
   }
 
 
