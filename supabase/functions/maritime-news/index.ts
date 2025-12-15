@@ -24,11 +24,6 @@ type NewsItem = {
 
 const FEEDS: FeedSource[] = [
   {
-    id: "maritime-executive",
-    name: "The Maritime Executive",
-    url: "https://www.maritime-executive.com/rss",
-  },
-  {
     id: "gcaptain",
     name: "gCaptain",
     url: "https://gcaptain.com/feed/",
@@ -36,7 +31,7 @@ const FEEDS: FeedSource[] = [
   {
     id: "marinelink",
     name: "MarineLink",
-    url: "https://www.marinelink.com/rss/news",
+    url: "https://www.marinelink.com/rss",
   },
   {
     id: "splash247",
@@ -44,19 +39,29 @@ const FEEDS: FeedSource[] = [
     url: "https://splash247.com/feed/",
   },
   {
-    id: "hellenicshipping",
-    name: "Hellenic Shipping",
-    url: "https://www.hellenicshippingnews.com/feed/",
-  },
-  {
-    id: "safety4sea",
-    name: "Safety4Sea",
-    url: "https://www.safety4sea.com/feed/",
-  },
-  {
     id: "offshore-energy",
     name: "Offshore Energy",
     url: "https://www.offshore-energy.biz/feed/",
+  },
+  {
+    id: "worldmaritimenews",
+    name: "World Maritime News",
+    url: "https://worldmaritimenews.com/feed/",
+  },
+  {
+    id: "marinelog",
+    name: "Marine Log",
+    url: "https://www.marinelog.com/feed/",
+  },
+  {
+    id: "theloadstar",
+    name: "The Loadstar",
+    url: "https://theloadstar.com/feed/",
+  },
+  {
+    id: "seatrade-maritime",
+    name: "Seatrade Maritime",
+    url: "https://www.seatrade-maritime.com/rss.xml",
   },
 ];
 
@@ -162,8 +167,7 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<string>
       signal: controller.signal,
       headers: {
         // Some feeds block unknown UAs; this helps.
-        "User-Agent":
-          "Mozilla/5.0 (compatible; MaritimeNewsBot/1.0; +https://example.invalid) AppleWebKit/537.36",
+        "User-Agent": "Mozilla/5.0 (compatible; MaritimeNewsBot/1.0) AppleWebKit/537.36",
         "Accept": "application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
         "Accept-Language": "en-US,en;q=0.9,tr;q=0.8",
       },
