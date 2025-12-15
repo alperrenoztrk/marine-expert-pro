@@ -13,7 +13,10 @@ const Index = () => {
 
   // Swipe state
   const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchLastX = useRef<number | null>(null);
+  const touchLastY = useRef<number | null>(null);
+  const didSwipeRef = useRef(false);
 
   // --- Compass logic using unified listener ---
   useEffect(() => {
@@ -43,33 +46,73 @@ const Index = () => {
 
   // Swipe handlers
   const handleTouchStart = (e: React.TouchEvent) => {
+    didSwipeRef.current = false;
     touchStartX.current = e.targetTouches[0].clientX;
+    touchStartY.current = e.targetTouches[0].clientY;
+    touchLastX.current = null;
+    touchLastY.current = null;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
+    touchLastX.current = e.targetTouches[0].clientX;
+    touchLastY.current = e.targetTouches[0].clientY;
   };
 
-  const handleTouchEnd = () => {
-    if (touchStartX.current === null || touchEndX.current === null) return;
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+
+    // Some browsers/devices may not fire touchmove for quick swipes.
+    // Always read the final finger position from touchend.
+    const endTouch = e.changedTouches[0];
+    const endX = touchLastX.current ?? endTouch.clientX;
+    const endY = touchLastY.current ?? endTouch.clientY;
     
-    const distance = touchEndX.current - touchStartX.current;
-    const isLeftSwipe = distance < -100; // Sola kaydırma - ileri git
-    const isRightSwipe = distance > 100; // Sağa kaydırma - geri git (sol sayfa)
+    const dx = endX - touchStartX.current;
+    const dy = endY - touchStartY.current;
+
+    // Treat it as a swipe only if horizontal intent is clear.
+    if (Math.abs(dx) < 80 || Math.abs(dx) < Math.abs(dy)) {
+      touchStartX.current = null;
+      touchStartY.current = null;
+      touchLastX.current = null;
+      touchLastY.current = null;
+      return;
+    }
+
+    const isLeftSwipe = dx < 0; // Sola kaydırma - ileri git
+    const isRightSwipe = dx > 0; // Sağa kaydırma - geri git (sol sayfa)
     
     if (isLeftSwipe) {
+      didSwipeRef.current = true;
       navigate('/widgets');
     }
     if (isRightSwipe) {
+      didSwipeRef.current = true;
       navigate('/maritime-news');
     }
     
     touchStartX.current = null;
-    touchEndX.current = null;
+    touchStartY.current = null;
+    touchLastX.current = null;
+    touchLastY.current = null;
+  };
+
+  const handleTouchCancel = () => {
+    touchStartX.current = null;
+    touchStartY.current = null;
+    touchLastX.current = null;
+    touchLastY.current = null;
+    didSwipeRef.current = false;
   };
 
   // Click navigation for left and right zones
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    // Avoid the synthetic click after a swipe gesture.
+    if (didSwipeRef.current) {
+      didSwipeRef.current = false;
+      return;
+    }
+
     // Don't navigate if clicking on interactive elements
     const target = e.target as HTMLElement;
     if (
@@ -105,6 +148,7 @@ const Index = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
       onClick={handleClick}
     >
       {/* Contrast overlay for readability on chart background */}
