@@ -27,21 +27,18 @@ const MaritimeNews = () => {
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
-  // Fetch once per day (local date) unless user taps "Yenile".
-  const now = new Date();
-  const dayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
-    now.getDate()
-  ).padStart(2, "0")}`;
-
   const query = useQuery({
-    queryKey: ["maritime-news", dayKey],
+    queryKey: ["maritime-news"],
     queryFn: () => fetchMaritimeNews(40),
-    staleTime: 24 * 60 * 60 * 1000,
-    refetchInterval: false,
+    // Avoid "empty list cached all day" when upstream feeds temporarily fail.
+    staleTime: 10 * 60 * 1000,
+    refetchInterval: (q) => (q.state.data?.items?.length ? false : 60 * 1000),
     refetchOnWindowFocus: false,
+    retry: 2,
   });
 
   const items = query.data?.items ?? [];
+  const sourceErrors = query.data?.errors ?? [];
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -121,7 +118,14 @@ const MaritimeNews = () => {
           </Card>
         ) : items.length === 0 ? (
           <Card className="border-white/10 bg-white/5 p-4">
-            <div className="text-sm text-white/80">Şu anda listelenecek haber bulunamadı.</div>
+            <div className="text-sm text-white/80">
+              Şu anda listelenecek haber bulunamadı.
+              {sourceErrors.length ? (
+                <div className="mt-3 text-xs text-white/60">
+                  Bazı kaynaklara erişilemedi. Yenile’ye basarak tekrar deneyin.
+                </div>
+              ) : null}
+            </div>
           </Card>
         ) : (
           <div className="space-y-3">
