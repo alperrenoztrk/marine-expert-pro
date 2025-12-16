@@ -15,6 +15,12 @@ export type MaritimeNewsResponse = {
   errors?: Array<{ source: string; error: string }>;
 };
 
+type SupabaseClientInternals = {
+  supabaseUrl?: string;
+  supabaseKey?: string;
+  anonKey?: string;
+};
+
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -86,8 +92,8 @@ function getFunctionUrl(): string {
   if (!baseUrl) {
     // Fallback to the generated client base URL (keeps other functionality unchanged)
     // but in our case, we prefer the runtime env to avoid pointing at an old/paused project.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const fallback = (supabase as any)?.supabaseUrl as string | undefined;
+    const client = supabase as unknown as SupabaseClientInternals;
+    const fallback = client.supabaseUrl;
     if (!fallback) throw new Error("Backend URL bulunamadı.");
     return `${fallback}/functions/v1/maritime-news`;
   }
@@ -98,8 +104,13 @@ function getAnonKey(): string {
   const key = (import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) as
     | string
     | undefined;
-  if (!key) throw new Error("Backend anahtarı bulunamadı.");
-  return key;
+  if (key) return key;
+
+  // Fallback to the generated Supabase client key when env is not injected (common in some builds/webviews).
+  const client = supabase as unknown as SupabaseClientInternals;
+  const fallback = client.supabaseKey || client.anonKey;
+  if (!fallback) throw new Error("Backend anahtarı bulunamadı.");
+  return fallback;
 }
 
 export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsResponse> {
