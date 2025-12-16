@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Sigma, Flame, Droplets, Wind } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const safetyFormulas = [
   {
@@ -76,22 +75,11 @@ const safetyFormulas = [
 ];
 
 export default function SafetyFormulasPage() {
-  const navigate = useNavigate();
-
-  const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/calculations");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
-            <ArrowLeft className="h-4 w-4" />
-            Geri Dön
-          </Button>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
+<div className="text-sm text-muted-foreground flex items-center gap-2">
             <Sigma className="h-4 w-4" />
             Emniyet Formülleri
           </div>

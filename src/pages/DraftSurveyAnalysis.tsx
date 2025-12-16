@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, FileText, Download } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { FileText, Download } from "lucide-react";
 
 const DraftSurveyAnalysis = () => {
-  const navigate = useNavigate();
   const [vesselName, setVesselName] = useState("");
   const [surveyDate, setSurveyDate] = useState("");
   const [loadedCargo, setLoadedCargo] = useState("");
@@ -70,15 +68,6 @@ Rapor Tarihi: ${new Date().toLocaleDateString('tr-TR')}
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Analiz & Rapor</h1>
           <p className="text-muted-foreground">Sonuç analizi ve raporlama</p>

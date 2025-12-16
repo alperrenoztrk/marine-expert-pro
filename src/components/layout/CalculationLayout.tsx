@@ -14,11 +14,6 @@ interface CalculationLayoutProps {
     imageSrc: string;
     imageAlt: string;
   };
-  back?: {
-    to?: string;
-    fallbackTo?: string;
-    label?: string;
-  };
   actions?: React.ReactNode;
   rightRail?: React.ReactNode;
   below?: React.ReactNode;
@@ -33,7 +28,6 @@ export function CalculationLayout({
   description,
   icon,
   hero,
-  back,
   actions,
   rightRail,
   below,
@@ -62,7 +56,6 @@ export function CalculationLayout({
               description={description}
               icon={icon}
               actions={actions}
-              back={back}
               variant="compact"
             />
           </div>
@@ -79,7 +72,7 @@ export function CalculationLayout({
         ) : null}
 
         {!stickyHeader ? (
-          <PageHeader title={title} description={description} icon={icon} actions={actions} back={back} />
+          <PageHeader title={title} description={description} icon={icon} actions={actions} />
         ) : null}
 
         {rightRail ? (

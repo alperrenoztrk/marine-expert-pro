@@ -16,7 +16,6 @@ export default function StabilityFreeSurfacePage(){
         imageSrc: yacht,
         imageAlt: "Yacht in clear water",
       }}
-      back={{ fallbackTo: "/stability" }}
       maxWidthClassName="max-w-6xl"
       below={
         <div className="mt-2">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import { HydrostaticsStabilityCalculations } from "@/components/calculations/HydrostaticsStabilityCalculations";
 import { BasicStabilityCalculations } from "@/components/calculations/BasicStabilityCalculations";
 import { AdvancedStabilityWizard } from "@/components/calculations/AdvancedStabilityWizard";
@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 
 export default function StabilityStabilityPage(){
-  const navigate = useNavigate();
   const [mode, setMode] = useState<'select'|'basic'|'advanced'>('select');
   const [wizardOpen, setWizardOpen] = useState(false);
   const [hasProfile, setHasProfile] = useState(false);
@@ -17,17 +16,9 @@ export default function StabilityStabilityPage(){
   useEffect(()=>{
     try { setHasProfile(!!localStorage.getItem('advanced-ship-profile')); } catch {}
   }, []);
-  const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate('/stability');
-  };
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
-        <ArrowLeft className="h-4 w-4" />
-        Geri Dön
-      </Button>
-      {mode==='select' && (
+{mode==='select' && (
         <Card>
           <CardContent className="p-6 grid gap-3">
             <div className="text-lg font-semibold">Stabilite Modu Seçin</div>

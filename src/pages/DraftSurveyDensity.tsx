@@ -62,7 +62,6 @@ const DraftSurveyDensity = () => {
         imageSrc: containerShip,
         imageAlt: "Container ship aerial view",
       }}
-      back={{ fallbackTo: "/draft-survey" }}
       maxWidthClassName="max-w-6xl"
       rightRail={
         <FormulaCard

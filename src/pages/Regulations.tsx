@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { 
-  ArrowLeft, 
   Ship, 
   Shield, 
   FileText, 
@@ -54,7 +53,6 @@ interface SOLASRegulation {
 
 const Regulations = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [selectedChapter, setSelectedChapter] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -518,10 +516,6 @@ const Regulations = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="flex items-center gap-2" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Button>
             <Separator orientation="vertical" className="h-6" />
             <div className="flex items-center gap-2">
               <Ship className="h-6 w-6 text-primary" />

@@ -1,29 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Compass, MessageCircle } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import NavigationAssistantPopup from "@/components/NavigationAssistantPopup";
 
 export default function NavigationAssistantPage(){
-  const navigate = useNavigate();
   const location = useLocation();
-  const handleBack = () => {
-    const canGoBack = (window.history?.length || 0) > 1 && location.key !== 'default';
-    if (canGoBack) {
-      navigate(-1);
-    } else {
-      navigate('/navigation');
-    }
-  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
-            <ArrowLeft className="w-4 h-4" />
-            <span data-translatable>Geri</span>
-          </Button>
-        </div>
+</div>
 
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">

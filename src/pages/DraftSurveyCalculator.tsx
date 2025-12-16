@@ -74,7 +74,6 @@ const DraftSurveyCalculator = () => {
         imageSrc: cargoShip,
         imageAlt: "Cargo ship at sea",
       }}
-      back={{ fallbackTo: "/draft-survey" }}
       maxWidthClassName="max-w-6xl"
       rightRail={
         <FormulaCard

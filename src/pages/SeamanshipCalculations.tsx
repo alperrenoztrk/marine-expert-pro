@@ -1,22 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Calculator, Anchor, Wind, Ship } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function SeamanshipCalculationsPage() {
-  const navigate = useNavigate();
   const [mooringInputs, setMooringInputs] = useState({ swl: "", safetyFactor: "0.55" });
   const [windInputs, setWindInputs] = useState({ cd: "1.2", area: "", velocity: "" });
   const [catenaryInputs, setCatenaryInputs] = useState({ weight: "", scope: "", depth: "" });
-
-  const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/calculations");
-  };
-
   const calculateMooringLoad = () => {
     const swl = parseFloat(mooringInputs.swl.replace(",", "."));
     const sf = parseFloat(mooringInputs.safetyFactor.replace(",", "."));
@@ -45,11 +38,7 @@ export default function SeamanshipCalculationsPage() {
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
-            <ArrowLeft className="h-4 w-4" />
-            Geri Dön
-          </Button>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
+<div className="text-sm text-muted-foreground flex items-center gap-2">
             <Calculator className="h-4 w-4" />
             Gemicilik Hesaplamaları
           </div>

@@ -89,8 +89,8 @@ export default function LocationSelector() {
     
     toast.success(`Konum ayarlandı: ${location.name}`);
     
-    // Geri dön
-    navigate(-1);
+    // Seçim sonrası hedef sayfaya dön
+    navigate(returnTo);
   };
 
   return (

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
-import { ArrowLeft, Calculator } from "lucide-react";
+import { Calculator } from "lucide-react";
 import {
   calculateGreatCircle,
   calculateRhumbLine,
@@ -1078,9 +1078,6 @@ export default function NavigationCalculationPage() {
     <MobileLayout>
       <div className="space-y-4" data-no-translate>
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" /> Geri
-          </Button>
           <div className="text-sm text-muted-foreground flex items-center gap-2">
             <Calculator className="h-4 w-4" /> {title}
           </div>

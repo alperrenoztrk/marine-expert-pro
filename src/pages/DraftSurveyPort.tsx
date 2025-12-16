@@ -42,7 +42,6 @@ const DraftSurveyPort = () => {
         imageSrc: lighthouse,
         imageAlt: "Lighthouse at dusk",
       }}
-      back={{ fallbackTo: "/draft-survey" }}
       maxWidthClassName="max-w-6xl"
       below={
         <CalculationCard>

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send, Brain, User, Bot, Loader2, ImageIcon, X, Camera, Plus, Pencil, Trash2 } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { callMaritimeRegulationsAssistant, type AIMessage } from "@/services/aiClient";
@@ -20,7 +20,6 @@ interface ChatMessage {
 }
 
 export default function StabilityAssistantPage() {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -119,15 +118,6 @@ export default function StabilityAssistantPage() {
   }, [messages]);
 
   const location = useLocation();
-  const handleBack = () => {
-		const canGoBack = (window.history?.length || 0) > 1 && location.key !== 'default';
-		if (canGoBack) {
-			navigate(-1);
-		} else {
-			navigate('/');
-		}
-	};
-
   const checkAndRequestPermissions = async () => {
     if (!Capacitor.isNativePlatform()) {
       return true; // Web doesn't need permission
@@ -361,10 +351,7 @@ export default function StabilityAssistantPage() {
     <div className="h-screen flex flex-col bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,12%)]">
       {/* Header */}
       <div className="flex items-center gap-4 p-4 bg-card border-b border-border shadow-sm">
-        <Button variant="ghost" size="sm" onClick={handleBack}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <Avatar className="h-10 w-10">
+<Avatar className="h-10 w-10">
           <AvatarFallback className="bg-primary text-primary-foreground">
             <Brain className="h-5 w-5" />
           </AvatarFallback>

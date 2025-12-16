@@ -1,7 +1,6 @@
 import React from "react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { BackButton } from "@/components/BackButton";
 
 interface PageHeaderProps {
   title: string;
@@ -10,11 +9,6 @@ interface PageHeaderProps {
   iconClassName?: string;
   className?: string;
   actions?: React.ReactNode;
-  back?: {
-    to?: string;
-    fallbackTo?: string;
-    label?: string;
-  };
   variant?: "default" | "compact";
 }
 
@@ -25,7 +19,6 @@ export function PageHeader({
   iconClassName,
   className,
   actions,
-  back,
   variant = "default",
 }: PageHeaderProps) {
   const isCompact = variant === "compact";
@@ -39,17 +32,6 @@ export function PageHeader({
       )}
     >
       <div className="flex items-start gap-3">
-        {back ? (
-          <BackButton
-            variant="ghost"
-            size="sm"
-            to={back.to}
-            fallbackTo={back.fallbackTo}
-            label={back.label ?? "Geri Dön"}
-            className={cn(isCompact ? "mt-0.5" : "mt-1")}
-          />
-        ) : null}
-
         <div className={cn("space-y-1", isCompact ? "" : "pt-1")}>
           <div className="flex items-center gap-3">
             {Icon ? (

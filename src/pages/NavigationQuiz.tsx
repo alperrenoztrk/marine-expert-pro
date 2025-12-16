@@ -2,24 +2,17 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, ListChecks, Shuffle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import { StabilityQuiz as Quiz } from "@/components/stability/StabilityQuiz";
 import { navigationQuestions, getRandomNavigationQuestions } from "@/data/navigationQuestions";
 
 export default function NavigationQuizPage() {
-  const navigate = useNavigate();
   const [count, setCount] = useState<number>(50);
   const [seed, setSeed] = useState<number>(Date.now());
 
   const questions = useMemo(() => {
     return getRandomNavigationQuestions(count, seed);
   }, [seed, count]);
-
-  const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/navigation");
-  };
-
   const maxCount = navigationQuestions.length;
   const selectableCounts = useMemo(() => {
     const baseCounts = [10, 25, 50, maxCount];
@@ -30,11 +23,7 @@ export default function NavigationQuizPage() {
   return (
     <div className="container mx-auto p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" className="gap-2" onClick={handleBack}>
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
-      </div>
+</div>
 
       <Card>
         <CardHeader>

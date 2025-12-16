@@ -167,7 +167,6 @@ export default function CelestialCalculations() {
       icon={Star}
       stickyHeader
       maxWidthClassName="max-w-4xl"
-      back={{ fallbackTo: "/navigation" }}
     >
       <div className="pb-20">
         <Tabs defaultValue="sextant" className="w-full">
