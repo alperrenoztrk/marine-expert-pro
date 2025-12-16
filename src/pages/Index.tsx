@@ -131,8 +131,6 @@ const Index = () => {
     }
   };
 
-  // Outer decorative degree numbers
-  const outerDegrees = [0, 20, 30, 90, 120, 130, 180, 210, 260, 270, 280, 300, 330, 350, 360];
 
   return (
     <div
@@ -187,46 +185,14 @@ const Index = () => {
           </h1>
         </div>
 
-        {/* Compass with outer decorative ring */}
+        {/* Compass */}
         <div className="mt-8 flex-1 flex items-center justify-center">
-          <div className="relative">
-            {/* Outer decorative degree ring */}
-            <svg
-              viewBox="0 0 400 400"
-              className="absolute -inset-[25%] w-[150%] h-[150%] pointer-events-none"
-              style={{ opacity: 0.25 }}
-            >
-              {outerDegrees.map((deg) => {
-                const rad = (deg - 90) * Math.PI / 180;
-                const r = 180;
-                const x = 200 + Math.cos(rad) * r;
-                const y = 200 + Math.sin(rad) * r;
-                return (
-                  <text
-                    key={`outer-${deg}`}
-                    x={x}
-                    y={y}
-                    fill="#8aa8b8"
-                    fontFamily="Arial, sans-serif"
-                    fontSize="14"
-                    fontWeight="400"
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                  >
-                    {deg === 360 ? '' : deg}
-                  </text>
-                );
-              })}
-            </svg>
-
-            {/* Main compass */}
-            <div className="relative h-[clamp(16rem,55vw,22rem)] w-[clamp(16rem,55vw,22rem)]">
-              <div className="relative h-full w-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
-                <SplashCompassDial
-                  headingDeg={headingDeg ?? 0}
-                  className="h-full w-full select-none pointer-events-none"
-                />
-              </div>
+          <div className="relative h-[clamp(16rem,55vw,22rem)] w-[clamp(16rem,55vw,22rem)]">
+            <div className="relative h-full w-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+              <SplashCompassDial
+                headingDeg={headingDeg ?? 0}
+                className="h-full w-full select-none pointer-events-none"
+              />
             </div>
           </div>
         </div>
