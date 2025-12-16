@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 
 interface MetalCompassDialProps {
   /** Heading in degrees, 0..360. If null/undefined, needle points to North (0). */
@@ -14,6 +14,50 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
   const clampedHeading = Number.isFinite(headingDeg as number)
     ? (((headingDeg as number) % 360) + 360) % 360
     : 0;
+
+  // Avoid SVG <defs> id collisions if multiple compasses render on same screen.
+  // React's useId may include ":" which is fine in HTML, but can be finicky in SVG url(#...),
+  // so we sanitize to a conservative character set.
+  const safeUid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+
+  // Smooth the needle so heading updates look premium (and less jittery).
+  const [displayHeading, setDisplayHeading] = useState(clampedHeading);
+  const displayHeadingRef = useRef(displayHeading);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    displayHeadingRef.current = displayHeading;
+  }, [displayHeading]);
+
+  useEffect(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const target = clampedHeading;
+
+    const step = () => {
+      const current = displayHeadingRef.current;
+      // shortest-path delta in [-180, 180)
+      const delta = ((target - current + 540) % 360) - 180;
+      const next = current + delta * 0.18;
+
+      if (Math.abs(delta) < 0.05) {
+        displayHeadingRef.current = target;
+        setDisplayHeading(target);
+        rafRef.current = null;
+        return;
+      }
+
+      const normalized = ((next % 360) + 360) % 360;
+      displayHeadingRef.current = normalized;
+      setDisplayHeading(normalized);
+      rafRef.current = requestAnimationFrame(step);
+    };
+
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
+  }, [clampedHeading]);
 
   const ticks = Array.from({ length: 360 / 5 }, (_, index) => index * 5);
 
@@ -33,38 +77,38 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
       <svg
         viewBox="0 0 200 200"
         role="img"
-        aria-label="Maritime compass"
+        aria-label={`Maritime compass${headingDeg !== null && headingDeg !== undefined ? `, heading ${Math.round(clampedHeading)} degrees` : ''}`}
         style={{ display: 'block', width: '100%', height: '100%' }}
         textRendering="geometricPrecision"
       >
         <defs>
           {/* Brass/Gold gradients for maritime look */}
-          <radialGradient id="brassRim" cx="50%" cy="50%">
+          <radialGradient id={`brassRim-${safeUid}`} cx="50%" cy="50%">
             <stop offset="0%" stopColor="#d4af37" />
             <stop offset="50%" stopColor="#b8960f" />
             <stop offset="100%" stopColor="#8b7506" />
           </radialGradient>
           
-          <radialGradient id="compassFace" cx="50%" cy="50%">
+          <radialGradient id={`compassFace-${safeUid}`} cx="50%" cy="50%">
             <stop offset="0%" stopColor="#1e3a5f" />
             <stop offset="100%" stopColor="#0f1f3a" />
           </radialGradient>
 
           {/* Needle gradients */}
-          <linearGradient id="needleRed" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient id={`needleRed-${safeUid}`} x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ff4444" />
             <stop offset="50%" stopColor="#dd1111" />
             <stop offset="100%" stopColor="#aa0000" />
           </linearGradient>
           
-          <linearGradient id="needleWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient id={`needleWhite-${safeUid}`} x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
             <stop offset="50%" stopColor="#e8e8e8" />
             <stop offset="100%" stopColor="#c0c0c0" />
           </linearGradient>
 
           {/* Glass dome effect */}
-          <radialGradient id="glassDome" cx="40%" cy="30%">
+          <radialGradient id={`glassDome-${safeUid}`} cx="40%" cy="30%">
             <stop offset="0%" stopColor="rgba(255,255,255,0.5)" />
             <stop offset="30%" stopColor="rgba(255,255,255,0.2)" />
             <stop offset="60%" stopColor="rgba(255,255,255,0.08)" />
@@ -72,14 +116,14 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           </radialGradient>
 
           {/* Glass edge shine */}
-          <radialGradient id="glassEdge" cx="50%" cy="50%">
+          <radialGradient id={`glassEdge-${safeUid}`} cx="50%" cy="50%">
             <stop offset="80%" stopColor="rgba(255,255,255,0)" />
             <stop offset="92%" stopColor="rgba(255,255,255,0.35)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
 
           {/* Drop shadow for depth */}
-          <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <filter id={`dropShadow-${safeUid}`} x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
             <feOffset dx="0" dy="2" result="offsetblur"/>
             <feComponentTransfer>
@@ -94,13 +138,13 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
 
         {/* Outer brass rim */}
         <g>
-          <circle cx="100" cy="100" r="99" fill="url(#brassRim)" />
+          <circle cx="100" cy="100" r="99" fill={`url(#brassRim-${safeUid})`} />
           <circle cx="100" cy="100" r="98" fill="none" stroke="#f4e5a4" strokeWidth="1" opacity="0.6" />
           <circle cx="100" cy="100" r="96" fill="none" stroke="#8b7506" strokeWidth="1.5" />
         </g>
 
         {/* Deep blue compass face */}
-        <circle cx="100" cy="100" r="94" fill="url(#compassFace)" />
+        <circle cx="100" cy="100" r="94" fill={`url(#compassFace-${safeUid})`} />
 
         {/* Inner decorative circle */}
         <circle cx="100" cy="100" r="90" fill="none" stroke="#d4af37" strokeWidth="0.5" opacity="0.4" />
@@ -136,7 +180,7 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
                 opacity={opacity}
                 stroke={isCardinal ? "#fbbf24" : isMajor ? "#e8daa4" : "#ffffff"}
                 transform={`rotate(${angle} 100 100)`}
-                filter={isCardinal ? "url(#dropShadow)" : undefined}
+                filter={isCardinal ? `url(#dropShadow-${safeUid})` : undefined}
               />
             );
           })}
@@ -148,12 +192,23 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           fontFamily="Georgia, serif"
           fontSize="28"
           fontWeight={900}
-          filter="url(#dropShadow)"
+          filter={`url(#dropShadow-${safeUid})`}
         >
           <text x={100} y={18} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">N</text>
           <text x={182} y={100} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">E</text>
           <text x={100} y={182} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">S</text>
           <text x={18} y={100} textAnchor="middle" dominantBaseline="central" stroke="#d4af37" strokeWidth="0.5">W</text>
+        </g>
+
+        {/* Fixed North index marker on rim */}
+        <g filter={`url(#dropShadow-${safeUid})`}>
+          <path
+            d="M100 3 L94 14 L106 14 Z"
+            fill="#fbbf24"
+            stroke="#8b7506"
+            strokeWidth="0.8"
+            opacity="0.95"
+          />
         </g>
 
         {/* Main degree numbers */}
@@ -185,11 +240,11 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
         </g>
 
         {/* Needle with enhanced 3D effect */}
-        <g transform={`rotate(${-clampedHeading} 100 100)`} filter="url(#dropShadow)">
+        <g transform={`rotate(${-displayHeading} 100 100)`} filter={`url(#dropShadow-${safeUid})`}>
           {/* North (red) pointer - longer and more prominent */}
           <path 
             d="M100 12 L94 86 L100 82 L106 86 Z" 
-            fill="url(#needleRed)" 
+            fill={`url(#needleRed-${safeUid})`} 
             stroke="#660000" 
             strokeWidth="0.8" 
           />
@@ -202,22 +257,22 @@ const MetalCompassDial: React.FC<MetalCompassDialProps> = ({ headingDeg = 0, cla
           {/* South (white) tail */}
           <path 
             d="M100 188 L94 114 L100 118 L106 114 Z" 
-            fill="url(#needleWhite)" 
+            fill={`url(#needleWhite-${safeUid})`} 
             stroke="#666666" 
             strokeWidth="0.8" 
           />
           
           {/* Center cap with 3D effect */}
           <circle cx="100" cy="100" r="8" fill="#4a4a4a" opacity="0.5" />
-          <circle cx="100" cy="99" r="7" fill="url(#brassRim)" />
+          <circle cx="100" cy="99" r="7" fill={`url(#brassRim-${safeUid})`} />
           <circle cx="100" cy="99" r="6" fill="#e8daa4" />
           <circle cx="99" cy="98" r="2.5" fill="rgba(255,255,255,0.6)" />
         </g>
 
         {/* Glass dome overlay with enhanced realism */}
         <g>
-          <circle cx="100" cy="100" r="94" fill="url(#glassDome)" />
-          <circle cx="100" cy="100" r="94" fill="url(#glassEdge)" />
+          <circle cx="100" cy="100" r="94" fill={`url(#glassDome-${safeUid})`} />
+          <circle cx="100" cy="100" r="94" fill={`url(#glassEdge-${safeUid})`} />
           {/* Highlight reflection */}
           <ellipse cx="85" cy="75" rx="25" ry="30" fill="rgba(255,255,255,0.15)" />
         </g>
