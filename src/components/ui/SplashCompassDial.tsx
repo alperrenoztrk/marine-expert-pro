@@ -1,206 +1,127 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 
 interface SplashCompassDialProps {
-  /** Heading in degrees, 0..360. If null/undefined, needle points to North (0). */
   headingDeg?: number | null;
-  /** Optional extra classes for sizing (e.g., h-44 w-44). SVG is responsive. */
   className?: string;
 }
 
-/**
- * Splash/landing compass dial styled to match the "Marine Expert" homepage artwork:
- * - Silver rim
- * - Deep blue face
- * - Teal/white compass rose
- */
 const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, className = "" }) => {
   const clampedHeading = Number.isFinite(headingDeg as number)
     ? (((headingDeg as number) % 360) + 360) % 360
     : 0;
 
   const safeUid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-
   const [displayHeading, setDisplayHeading] = useState(clampedHeading);
   const displayHeadingRef = useRef(displayHeading);
   const rafRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    displayHeadingRef.current = displayHeading;
-  }, [displayHeading]);
+  useEffect(() => { displayHeadingRef.current = displayHeading; }, [displayHeading]);
 
   useEffect(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     const target = clampedHeading;
-
     const step = () => {
       const current = displayHeadingRef.current;
       const delta = ((target - current + 540) % 360) - 180;
-      const next = current + delta * 0.18;
-
       if (Math.abs(delta) < 0.05) {
         displayHeadingRef.current = target;
         setDisplayHeading(target);
-        rafRef.current = null;
         return;
       }
-
-      const normalized = ((next % 360) + 360) % 360;
-      displayHeadingRef.current = normalized;
-      setDisplayHeading(normalized);
+      const next = ((current + delta * 0.18) % 360 + 360) % 360;
+      displayHeadingRef.current = next;
+      setDisplayHeading(next);
       rafRef.current = requestAnimationFrame(step);
     };
-
     rafRef.current = requestAnimationFrame(step);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    };
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [clampedHeading]);
+
+  const degreeNumbers = [30, 120, 180, 210, 270, 300, 330];
 
   return (
     <div className={className} style={{ position: "relative" }}>
-      <svg
-        viewBox="0 0 240 240"
-        role="img"
-        aria-label={`Compass${headingDeg !== null && headingDeg !== undefined ? `, heading ${Math.round(clampedHeading)} degrees` : ""}`}
-        style={{ display: "block", width: "100%", height: "100%" }}
-      >
+      <svg viewBox="0 0 300 300" style={{ display: "block", width: "100%", height: "100%" }}>
         <defs>
-          <radialGradient id={`rimSilver-${safeUid}`} cx="35%" cy="30%">
-            <stop offset="0%" stopColor="#f6fbff" />
-            <stop offset="22%" stopColor="#d9e6ee" />
-            <stop offset="55%" stopColor="#a9becb" />
-            <stop offset="78%" stopColor="#e8f2f7" />
-            <stop offset="100%" stopColor="#7c97a7" />
-          </radialGradient>
-
-          <radialGradient id={`rimInner-${safeUid}`} cx="40%" cy="35%">
-            <stop offset="0%" stopColor="#eaf3f8" />
-            <stop offset="55%" stopColor="#b9ceda" />
-            <stop offset="100%" stopColor="#6e8ea0" />
-          </radialGradient>
-
-          <radialGradient id={`faceBlue-${safeUid}`} cx="40%" cy="35%">
-            <stop offset="0%" stopColor="#1b6aa2" />
-            <stop offset="45%" stopColor="#0f4d86" />
-            <stop offset="100%" stopColor="#0a2f5a" />
-          </radialGradient>
-
-          <radialGradient id={`faceGlow-${safeUid}`} cx="40%" cy="30%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.25)" />
-            <stop offset="55%" stopColor="rgba(255,255,255,0.08)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </radialGradient>
-
-          <linearGradient id={`roseTeal-${safeUid}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#66f0e8" />
-            <stop offset="50%" stopColor="#20cfd2" />
-            <stop offset="100%" stopColor="#0796b6" />
+          <linearGradient id={`chrome-${safeUid}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f0f5f8" />
+            <stop offset="30%" stopColor="#c8d8e4" />
+            <stop offset="70%" stopColor="#98b0c0" />
+            <stop offset="100%" stopColor="#d8e4ec" />
           </linearGradient>
-
-          <filter id={`softShadow-${safeUid}`} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-            <feOffset dx="0" dy="4" result="off" />
-            <feComponentTransfer>
-              <feFuncA type="linear" slope="0.35" />
-            </feComponentTransfer>
-            <feMerge>
-              <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
+          <radialGradient id={`face-${safeUid}`} cx="50%" cy="50%">
+            <stop offset="0%" stopColor="#1a5070" />
+            <stop offset="100%" stopColor="#0a2540" />
+          </radialGradient>
+          <linearGradient id={`teal-${safeUid}`} x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stopColor="#5ee8e0" />
+            <stop offset="100%" stopColor="#0aa8b0" />
+          </linearGradient>
+          <linearGradient id={`silver-${safeUid}`} x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#b8c8d4" />
+          </linearGradient>
         </defs>
 
-        {/* Rim */}
-        <g filter={`url(#softShadow-${safeUid})`}>
-          <circle cx="120" cy="120" r="112" fill={`url(#rimSilver-${safeUid})`} />
-          <circle cx="120" cy="120" r="104" fill={`url(#rimInner-${safeUid})`} opacity="0.85" />
-          <circle cx="120" cy="120" r="100" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2" />
-          <circle cx="120" cy="120" r="96" fill="none" stroke="rgba(0,0,0,0.12)" strokeWidth="2" />
-        </g>
-
-        {/* Face */}
-        <circle cx="120" cy="120" r="90" fill={`url(#faceBlue-${safeUid})`} />
-        <circle cx="120" cy="120" r="86" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
-
-        {/* Subtle ticks */}
-        <g opacity="0.35" strokeLinecap="round">
-          {Array.from({ length: 72 }, (_, i) => i * 5).map((angle) => {
-            const major = angle % 30 === 0;
-            const cardinal = angle % 90 === 0;
-            const outer = 86;
-            const inner = cardinal ? 62 : major ? 70 : 76;
-            const sw = cardinal ? 2.2 : major ? 1.6 : 1.0;
-            return (
-              <line
-                key={`t-${angle}`}
-                x1={120}
-                y1={120 - outer}
-                x2={120}
-                y2={120 - inner}
-                stroke={cardinal ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.55)"}
-                strokeWidth={sw}
-                transform={`rotate(${angle} 120 120)`}
-              />
-            );
-          })}
-        </g>
-
-        {/* Compass letters */}
-        <g
-          fill="#ffffff"
-          fontFamily="Georgia, serif"
-          fontWeight={800}
-          fontSize="28"
-          opacity="0.95"
-          style={{ letterSpacing: "0.5px" }}
-        >
-          <text x={120} y={38} textAnchor="middle" dominantBaseline="central">
-            N
-          </text>
-          <text x={202} y={120} textAnchor="middle" dominantBaseline="central">
-            E
-          </text>
-          <text x={120} y={202} textAnchor="middle" dominantBaseline="central">
-            S
-          </text>
-          <text x={38} y={120} textAnchor="middle" dominantBaseline="central">
-            W
-          </text>
-        </g>
-
-        {/* Rose */}
-        <g>
-          {/* 8-point base */}
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
-            <path
-              key={`r-${a}`}
-              d="M120 58 L112 120 L120 112 L128 120 Z"
-              transform={`rotate(${a} 120 120)`}
-                fill={a % 90 === 0 ? `url(#roseTeal-${safeUid})` : "rgba(255,255,255,0.95)"}
-              opacity={a % 90 === 0 ? 1 : 0.78}
+        {/* Chrome rim */}
+        <circle cx="150" cy="150" r="145" fill={`url(#chrome-${safeUid})`} />
+        <circle cx="150" cy="150" r="130" fill="#1a1a1a" />
+        
+        {/* Degree ticks */}
+        {Array.from({ length: 72 }, (_, i) => {
+          const angle = i * 5;
+          const isMajor = angle % 30 === 0;
+          const rad = (angle - 90) * Math.PI / 180;
+          const outer = 130, inner = isMajor ? 112 : 122;
+          return (
+            <line key={angle}
+              x1={150 + Math.cos(rad) * outer} y1={150 + Math.sin(rad) * outer}
+              x2={150 + Math.cos(rad) * inner} y2={150 + Math.sin(rad) * inner}
+              stroke={isMajor ? "#fff" : "rgba(255,255,255,0.5)"} strokeWidth={isMajor ? 2 : 1}
             />
-          ))}
+          );
+        })}
 
-          {/* Inner teal diamond */}
-          <path d="M120 86 L106 120 L120 134 L134 120 Z" fill={`url(#roseTeal-${safeUid})`} opacity="0.95" />
+        {/* Degree numbers */}
+        {degreeNumbers.map((deg) => {
+          const rad = (deg - 90) * Math.PI / 180;
+          return (
+            <text key={deg} x={150 + Math.cos(rad) * 100} y={150 + Math.sin(rad) * 100}
+              fill="#fff" fontSize="13" fontFamily="Arial" fontWeight="600" textAnchor="middle" dominantBaseline="central">
+              {deg}
+            </text>
+          );
+        })}
+
+        {/* N marker */}
+        <text x="150" y="60" fill="#fff" fontSize="16" fontFamily="Arial" fontWeight="700" textAnchor="middle">N</text>
+
+        {/* Blue face */}
+        <circle cx="150" cy="150" r="88" fill={`url(#face-${safeUid})`} />
+
+        {/* Compass rose */}
+        <g transform={`rotate(${-displayHeading} 150 150)`}>
+          {/* Cardinal points - teal */}
+          <polygon points="150,62 142,150 150,138 158,150" fill={`url(#teal-${safeUid})`} />
+          <polygon points="150,238 142,150 150,162 158,150" fill={`url(#teal-${safeUid})`} />
+          {/* Intercardinal - silver */}
+          <polygon points="238,150 150,142 162,150 150,158" fill={`url(#silver-${safeUid})`} />
+          <polygon points="62,150 150,142 138,150 150,158" fill={`url(#silver-${safeUid})`} />
+          {/* Diagonals */}
+          <polygon points="212,88 150,142 156,150 158,142" fill={`url(#teal-${safeUid})`} opacity="0.85" />
+          <polygon points="88,88 150,142 144,150 142,142" fill={`url(#silver-${safeUid})`} opacity="0.8" />
+          <polygon points="212,212 158,150 150,156 150,158" fill={`url(#silver-${safeUid})`} opacity="0.8" />
+          <polygon points="88,212 142,150 150,156 150,158" fill={`url(#teal-${safeUid})`} opacity="0.85" />
+          {/* Inner diamond */}
+          <polygon points="150,110 132,150 150,190 168,150" fill={`url(#teal-${safeUid})`} opacity="0.6" />
         </g>
 
-        {/* Needle rotates opposite heading to mimic dial */}
-        <g transform={`rotate(${-displayHeading} 120 120)`} filter={`url(#softShadow-${safeUid})`}>
-          <path d="M120 46 L112 116 L120 110 L128 116 Z" fill="#f2f6fb" opacity="0.98" />
-          <path d="M120 194 L112 124 L120 130 L128 124 Z" fill="#0fb7c8" opacity="0.95" />
-          <circle cx="120" cy="120" r="10" fill="rgba(255,255,255,0.25)" />
-          <circle cx="120" cy="120" r="8" fill="rgba(235,245,252,0.9)" />
-          <circle cx="118" cy="118" r="3" fill="rgba(255,255,255,0.7)" />
-        </g>
-
-        {/* Face gloss */}
-        <circle cx="120" cy="120" r="90" fill={`url(#faceGlow-${safeUid})`} />
+        {/* Center pin */}
+        <circle cx="150" cy="150" r="10" fill="#d8e4ec" />
+        <circle cx="150" cy="150" r="5" fill="#fff" />
       </svg>
     </div>
   );
 };
 
 export default SplashCompassDial;
-
