@@ -7,13 +7,13 @@ const meteorologyFormulas = [
   {
     title: "Gerçek Rüzgâr Hızı",
     icon: Wind,
-    formula: "Vt = √(Va² + Vg² - 2·Va·Vg·cos(θ))",
+    formula: "V⃗t = V⃗a + V⃗g  ⇒  |Vt| = √(Va² + Vg² + 2·Va·Vg·cos(θ))",
     variables: [
       "Va: Görünür (apparent) rüzgâr hızı",
       "Vg: Gemi hızı",
-      "θ: Görünür rüzgâr ile gemi hareketi arasındaki açı"
+      "θ: Va vektörü ile gemi hız vektörü arasındaki açı"
     ],
-    note: "Gerçek rüzgâr yönü ve hızını bulmak için vektörel hesaplama gerekir."
+    note: "Not: Tanımlar vektörel olmalı. Eğer θ ‘göreli rüzgârın geldiği yön’ gibi farklı bir referansa göre ölçülürse işaret değişebilir; en güvenlisi V⃗t = V⃗a + V⃗g vektör bağıntısını kullanmaktır."
   },
   {
     title: "Hava Yoğunluğu",
@@ -74,12 +74,12 @@ const meteorologyFormulas = [
   {
     title: "Deniz Seviyesine İndirgenmiş Basınç",
     icon: Thermometer,
-    formula: "P₀ = P · e^(g·h / R·T)",
+    formula: "P₀ = P · e^( (g·h) / (R·T̄) )",
     variables: [
       "P₀: Deniz seviyesi basıncı",
       "P: Ölçülen basınç",
       "h: Yükseklik (m)",
-      "T: Ortalama sıcaklık (K)"
+      "T̄: Ortalama sıcaklık (K)"
     ],
     note: "Yaklaşık: Her 8 m yükseklik için 1 hPa düşüş"
   }

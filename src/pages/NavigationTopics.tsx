@@ -43,6 +43,24 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+// Local (bundled) visuals — avoid /src/... absolute paths (break in production builds)
+import ialaLateralMarksSvg from "@/assets/navigation/iala-lateral-marks.svg";
+import cardinalMarksSvg from "@/assets/navigation/cardinal-marks.svg";
+import isolatedDangerMarkSvg from "@/assets/navigation/isolated-danger-mark.svg";
+import safeWaterMarkSvg from "@/assets/navigation/safe-water-mark.svg";
+import mercatorProjectionSvg from "@/assets/navigation/mercator-projection.svg";
+import gnomonicProjectionSvg from "@/assets/navigation/gnomonic-projection.svg";
+import greatCircleVsRhumbSvg from "@/assets/navigation/great-circle-vs-rhumb.svg";
+import azimuthalProjectionSvg from "@/assets/navigation/azimuthal-projection.svg";
+import compassSvg from "@/assets/navigation/compass.svg";
+import sextantSvg from "@/assets/navigation/sextant.svg";
+import tideCurrentSvg from "@/assets/navigation/tide-current.svg";
+import radarDisplaySvg from "@/assets/navigation/radar-display.svg";
+import gpsSatellitesSvg from "@/assets/navigation/gps-satellites.svg";
+import ecdisDisplaySvg from "@/assets/navigation/ecdis-display.svg";
+import safetyEquipmentSvg from "@/assets/navigation/safety-equipment.svg";
+import celestialTriangleSvg from "@/assets/navigation/celestial-triangle.svg";
+
 export default function NavigationTopicsPage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [completedSections, setCompletedSections] = useState<Record<string, boolean>>({});
@@ -82,6 +100,65 @@ export default function NavigationTopicsPage() {
   const [buoyLoading, setBuoyLoading] = useState<boolean>(false);
   const [buoyLoadedOnce, setBuoyLoadedOnce] = useState<boolean>(false);
   const [buoyError, setBuoyError] = useState<string>("");
+  const BUOY_PHOTO_CACHE_KEY = "nav_buoy_photos_v1";
+
+  const buoyNames: { [key: string]: string } = {
+    'lateral-port': 'İskele Lateral Şamandırası',
+    'lateral-starboard': 'Sancak Lateral Şamandırası',
+    'preferred-port': 'Tercihli Kanal İskele',
+    'preferred-starboard': 'Tercihli Kanal Sancak',
+    'cardinal-north': 'Kuzey Kardinal Şamandırası',
+    'cardinal-east': 'Doğu Kardinal Şamandırası',
+    'cardinal-south': 'Güney Kardinal Şamandırası',
+    'cardinal-west': 'Batı Kardinal Şamandırası',
+    'isolated-danger': 'İzole Tehlike İşareti',
+    'safe-water': 'Emniyetli Su İşareti',
+    'special-mark': 'Özel İşaret',
+    'emergency-wreck': 'Acil Batık İşaretleme'
+  };
+
+  // Offline/local fallback visuals (diagrams, not photos)
+  const buoyFallbacks: Array<{ key: string; title: string; alt: string; src: string; note?: string }> = [
+    { key: 'lateral-port', title: buoyNames['lateral-port'], alt: 'İskele lateral şamandıra (şema)', src: ialaLateralMarksSvg, note: 'Offline şema' },
+    { key: 'lateral-starboard', title: buoyNames['lateral-starboard'], alt: 'Sancak lateral şamandıra (şema)', src: ialaLateralMarksSvg, note: 'Offline şema' },
+    { key: 'preferred-port', title: buoyNames['preferred-port'], alt: 'Tercihli kanal iskele (şema)', src: ialaLateralMarksSvg, note: 'Offline şema (preferred channel)' },
+    { key: 'preferred-starboard', title: buoyNames['preferred-starboard'], alt: 'Tercihli kanal sancak (şema)', src: ialaLateralMarksSvg, note: 'Offline şema (preferred channel)' },
+    { key: 'cardinal-north', title: buoyNames['cardinal-north'], alt: 'Kuzey kardinal şamandıra (şema)', src: cardinalMarksSvg, note: 'Offline şema' },
+    { key: 'cardinal-east', title: buoyNames['cardinal-east'], alt: 'Doğu kardinal şamandıra (şema)', src: cardinalMarksSvg, note: 'Offline şema' },
+    { key: 'cardinal-south', title: buoyNames['cardinal-south'], alt: 'Güney kardinal şamandıra (şema)', src: cardinalMarksSvg, note: 'Offline şema' },
+    { key: 'cardinal-west', title: buoyNames['cardinal-west'], alt: 'Batı kardinal şamandıra (şema)', src: cardinalMarksSvg, note: 'Offline şema' },
+    { key: 'isolated-danger', title: buoyNames['isolated-danger'], alt: 'İzole tehlike işareti (şema)', src: isolatedDangerMarkSvg, note: 'Offline şema' },
+    { key: 'safe-water', title: buoyNames['safe-water'], alt: 'Emniyetli su işareti (şema)', src: safeWaterMarkSvg, note: 'Offline şema' },
+    { key: 'special-mark', title: buoyNames['special-mark'], alt: 'Özel işaret (şema)', src: ialaLateralMarksSvg, note: 'Offline şema (özel işaret)' },
+    { key: 'emergency-wreck', title: buoyNames['emergency-wreck'], alt: 'Acil batık işaretleme (şema)', src: isolatedDangerMarkSvg, note: 'Offline şema (emergency wreck)' },
+  ];
+
+  // Load cached buoy photos once (deterministic fallback if network later fails)
+  useEffect(() => {
+    try {
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem(BUOY_PHOTO_CACHE_KEY) : null;
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) {
+        const sanitized = parsed
+          .filter((p: any) => p && typeof p.src === "string" && typeof p.key === "string")
+          .map((p: any) => ({
+            key: String(p.key),
+            title: String(p.title || p.key),
+            alt: String(p.alt || p.title || p.key),
+            src: String(p.src),
+            pageUrl: String(p.pageUrl || "https://commons.wikimedia.org"),
+            credit: String(p.credit || "Wikimedia Commons"),
+          })) as BuoyPhoto[];
+        if (sanitized.length) {
+          setBuoyPhotos(sanitized);
+        }
+      }
+    } catch {
+      // ignore cache parse errors
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   useEffect(() => {
@@ -152,10 +229,24 @@ export default function NavigationTopicsPage() {
           return undefined;
         }));
         const filtered = results.filter(Boolean) as BuoyPhoto[];
-        setBuoyPhotos(filtered);
+        if (filtered.length) {
+          setBuoyPhotos(filtered);
+          try {
+            if (typeof window !== "undefined") {
+              window.localStorage.setItem(BUOY_PHOTO_CACHE_KEY, JSON.stringify(filtered));
+            }
+          } catch {
+            // ignore storage errors
+          }
+        } else if (!buoyPhotos.length) {
+          setBuoyError('Fotoğraf bulunamadı; offline şemalar gösteriliyor.');
+        }
         setBuoyLoadedOnce(true);
       } catch (err: any) {
-        setBuoyError('Görseller yüklenemedi. İnternet bağlantısını veya ağ kısıtlarını kontrol edin.');
+        // If we already have cached photos, keep silent; otherwise show offline fallbacks
+        if (!buoyPhotos.length) {
+          setBuoyError('Görseller yüklenemedi. Offline şemalar gösteriliyor (internet/CORS kısıtı olabilir).');
+        }
       } finally {
         setBuoyLoading(false);
       }
@@ -536,7 +627,7 @@ export default function NavigationTopicsPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src="/src/assets/navigation/iala-lateral-marks.svg" loading="lazy" />
+                <img alt="IALA Lateral Marks (A Sistemi) – Kırmızı iskele, yeşil sancak" className="w-full h-auto rounded" src={ialaLateralMarksSvg} loading="lazy" />
                 <div className="text-center mt-2">
                   <div className="font-semibold text-sm text-blue-600">Lateral Şamandıralar</div>
                   <div className="text-xs text-gray-600 mt-1">
@@ -547,7 +638,7 @@ export default function NavigationTopicsPage() {
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: IALA A lateral işaretler (not: ABD sularında IALA B uygulanır)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src="/src/assets/navigation/cardinal-marks.svg" loading="lazy" />
+                <img alt="Cardinal Marks – Kuzey, Doğu, Güney, Batı koni tepelikleri ve renkleri" className="w-full h-auto rounded" src={cardinalMarksSvg} loading="lazy" />
                 <div className="text-center mt-2">
                   <div className="font-semibold text-sm text-blue-600">Kardinal Şamandıralar</div>
                   <div className="text-xs text-gray-600 mt-1">
@@ -560,7 +651,7 @@ export default function NavigationTopicsPage() {
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Kardinal işaretler (yerel çizim)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/isolated-danger-mark.svg" loading="lazy" />
+                <img alt="Isolated Danger Mark – kırmızı siyah bantlı, iki siyah küre tepelikli" className="w-full h-auto rounded" src={isolatedDangerMarkSvg} loading="lazy" />
                 <div className="text-center mt-2">
                   <div className="font-semibold text-sm text-red-600">İzole Tehlike İşareti</div>
                   <div className="text-xs text-gray-600 mt-1">
@@ -571,7 +662,7 @@ export default function NavigationTopicsPage() {
                 <figcaption className="text-[11px] text-muted-foreground mt-1">Görsel: Tecrit tehlike işareti (yerel çizim)</figcaption>
               </figure>
               <figure className="bg-muted/20 rounded p-3">
-                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src="/src/assets/navigation/safe-water-mark.svg" loading="lazy" />
+                <img alt="Safe Water Mark – kırmızı beyaz dikey bantlı, kırmızı küre tepelikli" className="w-full h-auto rounded" src={safeWaterMarkSvg} loading="lazy" />
                 <div className="text-center mt-2">
                   <div className="font-semibold text-sm text-green-600">Emniyetli Su İşareti</div>
                   <div className="text-xs text-gray-600 mt-1">
@@ -590,46 +681,47 @@ export default function NavigationTopicsPage() {
               {buoyError && (
                 <div className="text-xs text-red-500">{buoyError}</div>
               )}
-              {!!buoyPhotos.length && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {buoyPhotos.map(photo => {
-                    // Map photo keys to Turkish names
-                    const buoyNames: { [key: string]: string } = {
-                      'lateral-port': 'İskele Lateral Şamandırası',
-                      'lateral-starboard': 'Sancak Lateral Şamandırası',
-                      'preferred-port': 'Tercihli Kanal İskele',
-                      'preferred-starboard': 'Tercihli Kanal Sancak',
-                      'cardinal-north': 'Kuzey Kardinal Şamandırası',
-                      'cardinal-east': 'Doğu Kardinal Şamandırası',
-                      'cardinal-south': 'Güney Kardinal Şamandırası',
-                      'cardinal-west': 'Batı Kardinal Şamandırası',
-                      'isolated-danger': 'İzole Tehlike İşareti',
-                      'safe-water': 'Emniyetli Su İşareti',
-                      'special-mark': 'Özel İşaret',
-                      'emergency-wreck': 'Acil Batık İşaretleme'
-                    };
-                    
-                    return (
-                      <figure key={photo.key} className="bg-muted/20 rounded p-3">
-                        <img
-                          alt={photo.alt}
-                          className="w-full h-auto rounded"
-                          src={photo.src}
-                          loading="lazy"
-                        />
-                        <div className="text-center mt-2">
-                          <div className="font-semibold text-sm text-blue-600">
-                            {buoyNames[photo.key] || photo.title}
-                          </div>
-                        </div>
-                        <figcaption className="text-[11px] text-muted-foreground mt-1">
-                          {photo.title} — Kaynak: <a className="underline" href={photo.pageUrl} target="_blank" rel="noopener noreferrer">{photo.credit.replace(/<[^>]*>/g, '')}</a>
-                        </figcaption>
-                      </figure>
-                    );
-                  })}
-                </div>
-              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {(buoyPhotos.length ? buoyPhotos : []).map(photo => (
+                  <figure key={photo.key} className="bg-muted/20 rounded p-3">
+                    <img
+                      alt={photo.alt}
+                      className="w-full h-auto rounded"
+                      src={photo.src}
+                      loading="lazy"
+                    />
+                    <div className="text-center mt-2">
+                      <div className="font-semibold text-sm text-blue-600">
+                        {buoyNames[photo.key] || photo.title}
+                      </div>
+                    </div>
+                    <figcaption className="text-[11px] text-muted-foreground mt-1">
+                      {photo.title} — Kaynak:{" "}
+                      <a className="underline" href={photo.pageUrl} target="_blank" rel="noopener noreferrer">
+                        {photo.credit.replace(/<[^>]*>/g, '')}
+                      </a>
+                    </figcaption>
+                  </figure>
+                ))}
+
+                {(!buoyPhotos.length) && buoyFallbacks.map(fb => (
+                  <figure key={fb.key} className="bg-muted/20 rounded p-3">
+                    <img
+                      alt={fb.alt}
+                      className="w-full h-auto rounded bg-white"
+                      src={fb.src}
+                      loading="lazy"
+                    />
+                    <div className="text-center mt-2">
+                      <div className="font-semibold text-sm text-blue-600">{fb.title}</div>
+                      {fb.note ? <div className="text-[11px] text-muted-foreground mt-1">{fb.note}</div> : null}
+                    </div>
+                    <figcaption className="text-[11px] text-muted-foreground mt-1">
+                      Kaynak: Yerel şema (offline yedek)
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
             </div>
             <p className="text-xs text-muted-foreground">Not: Yerel otorite yayınları ve NtM ile güncel işaretlemeleri teyit edin.</p>
           </CardContent>
@@ -661,7 +753,7 @@ export default function NavigationTopicsPage() {
                   <img
                     className="w-full h-auto rounded"
                     alt="Mercator projeksiyonunda dünya haritası"
-                    src="/src/assets/navigation/mercator-projection.svg"
+                    src={mercatorProjectionSvg}
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -673,7 +765,7 @@ export default function NavigationTopicsPage() {
                   <img
                     className="w-full h-auto rounded"
                     alt="Gnomonik projeksiyonda dünya haritası ve büyük daireler düz çizgi"
-                    src="/src/assets/navigation/gnomonic-projection.svg"
+                    src={gnomonicProjectionSvg}
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -696,7 +788,7 @@ export default function NavigationTopicsPage() {
                   <img
                     className="w-full h-auto rounded"
                     alt="Mercator üzerinde rhumb line düz çizgi, great circle eğri"
-                    src="/src/assets/navigation/great-circle-vs-rhumb.svg"
+                    src={greatCircleVsRhumbSvg}
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -707,7 +799,7 @@ export default function NavigationTopicsPage() {
                   <img
                     className="w-full h-auto rounded"
                     alt="Azimutal eşit uzaklık projeksiyonu (kutuplar merkezli örnek)"
-                    src="/src/assets/navigation/azimuthal-projection.svg"
+                    src={azimuthalProjectionSvg}
                     loading="lazy"
                   />
                   <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -845,7 +937,7 @@ export default function NavigationTopicsPage() {
                 <img
                   className="w-full h-auto rounded"
                   alt="Manyetik pusula ve bileşenleri"
-                  src="/src/assets/navigation/compass.svg"
+                  src={compassSvg}
                   loading="lazy"
                 />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -857,7 +949,7 @@ export default function NavigationTopicsPage() {
                 <img
                   className="w-full h-auto rounded"
                   alt="Sekstant ve kullanımı"
-                  src="/src/assets/navigation/sextant.svg"
+                  src={sextantSvg}
                   loading="lazy"
                 />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -963,7 +1055,7 @@ Cevap: CE = 1.5°E, Ct = 213.5°`}</pre>
                 <img
                   className="w-full h-auto rounded"
                   alt="Gelgit eğrisi ve akıntı akışı"
-                  src="/src/assets/navigation/tide-current.svg"
+                  src={tideCurrentSvg}
                   loading="lazy"
                 />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">
@@ -1431,7 +1523,7 @@ Not: h metre cinsinden. Luminous range, meteorolojik görüşe bağlıdır.`}</p
               <img
                 className="w-full h-auto rounded"
                 alt="Radar ekranı diyagramı"
-                src="/src/assets/navigation/radar-display.svg"
+                src={radarDisplaySvg}
                 loading="lazy"
               />
               <figcaption className="text-xs text-muted-foreground mt-1">
@@ -1613,7 +1705,7 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
                 <img
                   className="w-full h-auto rounded"
                   alt="GPS uydu konumlandırması"
-                  src="/src/assets/navigation/gps-satellites.svg"
+                  src={gpsSatellitesSvg}
                   loading="lazy"
                 />
                 <figcaption className="text-xs text-muted-foreground mt-1">
@@ -1684,6 +1776,63 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
                 <li data-translatable="true">• Cihaz arızası: Hedefin AIS cihazı çalışmıyor olabilir</li>
                 <li data-translatable="true">• <strong>Altın kural:</strong> AIS + Radar + Visual lookout kombinasyonu kullan!</li>
               </ul>
+            </div>
+          </CardContent>
+          )}
+        </Card>
+
+        {/* Celestial */}
+        <Card className="shadow">
+          <CardHeader onClick={() => toggle('celestial')} className="cursor-pointer" aria-expanded={isOpen('celestial')}>
+            <CardTitle id="celestial" className="scroll-mt-24 flex items-center justify-between">
+              Göksel Navigasyon (Özet)
+              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('celestial') ? "rotate-180" : "")} />
+            </CardTitle>
+          </CardHeader>
+          {isOpen('celestial') && (
+          <CardContent className="space-y-4 text-sm">
+            <p className="text-xs text-muted-foreground" data-translatable="true">
+              GNSS’i bağımsız doğrulamak için göksel navigasyonun mantığını bilmek önemlidir.
+              Pratikte Nautical Almanac + HO‑229/249 tabloları veya ECDIS/bridge yazılımı kullanılır.
+            </p>
+
+            <figure className="bg-muted/20 rounded p-3">
+              <img
+                className="w-full h-auto rounded"
+                alt="Göksel üçgen (PZX) şeması"
+                src={celestialTriangleSvg}
+                loading="lazy"
+              />
+              <figcaption className="text-[11px] text-muted-foreground mt-1">
+                Göksel Üçgen (PZX): Enlem, deklinasyon ve yer saat açısı ilişkisi
+              </figcaption>
+            </figure>
+
+            <div className="bg-muted/20 rounded p-3">
+              <h4 className="font-semibold mb-2">Kısa Yol Haritası (Intercept Method)</h4>
+              <ol className="list-decimal pl-5 space-y-1 text-xs">
+                <li>UTC zamanı + sextant yüksekliği (Hs) kaydı.</li>
+                <li>Düzeltmeler: index, dip, refraction → <strong>Ho</strong>.</li>
+                <li>Almanac’tan <strong>GHA</strong> ve <strong>Dec</strong>.</li>
+                <li><strong>LHA = GHA ± λ</strong> (Doğu +, Batı − kabulüyle).</li>
+                <li>Assumed position ile <strong>Hc</strong> ve <strong>Zn</strong>.</li>
+                <li>Intercept: <strong>a = Ho − Hc</strong> → LOP çiz.</li>
+              </ol>
+            </div>
+
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+              <h4 className="font-semibold mb-2">Pratik Notlar</h4>
+              <ul className="list-disc pl-5 space-y-1 text-xs">
+                <li>Tek gözlem 1 LOP verir; fix için en az 2 LOP gerekir.</li>
+                <li>Zaman hatası ve yanlış düzeltmeler konumu ciddi bozar.</li>
+              </ul>
+              <div className="mt-2">
+                <Link to="/navigation/formulas#celestial">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <FileText className="h-4 w-4" /> Formüller (Göksel)
+                  </Button>
+                </Link>
+              </div>
             </div>
           </CardContent>
           )}
@@ -1786,6 +1935,55 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
               </Link>
             </div>
           </CardContent>
+        </Card>
+
+        {/* Passage Planning */}
+        <Card className="shadow">
+          <CardHeader onClick={() => toggle('passage')} className="cursor-pointer" aria-expanded={isOpen('passage')}>
+            <CardTitle id="passage" className="scroll-mt-24 flex items-center justify-between">
+              Passage Planning (Appraisal → Monitoring)
+              <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('passage') ? "rotate-180" : "")} />
+            </CardTitle>
+          </CardHeader>
+          {isOpen('passage') && (
+          <CardContent className="space-y-4 text-sm">
+            <p className="text-xs text-muted-foreground" data-translatable="true">
+              SOLAS V/34’e göre sefer planı zorunludur. Plan; risk değerlendirmesi, rota seçimi, emniyet marjları ve izleme
+              kriterlerini içerir. Çerçeve: <strong>Appraisal → Planning → Execution → Monitoring</strong>.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Appraisal (Değerlendirme)</h4>
+                <ul className="text-xs space-y-1">
+                  <li>• ENC/harita düzeltmeleri, NtM</li>
+                  <li>• Met/routeing: gale/storm warnings</li>
+                  <li>• UKC, squat, gelgit/akıntı</li>
+                  <li>• Kısıtlar: draft/air draft, SMS</li>
+                </ul>
+              </div>
+              <div className="bg-accent/20 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Planning & Execution</h4>
+                <ul className="text-xs space-y-1">
+                  <li>• WP’ler, alteration noktaları, contingency</li>
+                  <li>• No‑go area / safety contour / XTD</li>
+                  <li>• Briefing + Master/Pilot exchange</li>
+                  <li>• Speed plan ve reporting noktaları</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+              <h4 className="font-semibold mb-2">Monitoring (İzleme) — Minimum Set</h4>
+              <ul className="list-disc pl-5 space-y-1 text-xs">
+                <li>XTE limitleri ve alarm eşikleri</li>
+                <li>Fix interval (açık deniz vs kıyı)</li>
+                <li>Bağımsız doğrulama: radar/visual/celestial</li>
+                <li>Plan dışı sapmada yeniden appraisal</li>
+              </ul>
+            </div>
+          </CardContent>
+          )}
         </Card>
 
         {/* ECDIS */}
@@ -2047,7 +2245,7 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
               <img
                 className="w-full h-auto rounded"
                 alt="ECDIS ekranı diyagramı"
-                src="/src/assets/navigation/ecdis-display.svg"
+                src={ecdisDisplaySvg}
                 loading="lazy"
               />
               <figcaption className="text-xs text-muted-foreground mt-1">
@@ -2173,7 +2371,7 @@ Action: CPA > 1 nm ve açık deniz → Güvenli, rotaya devam`}</pre>
                 <img
                   className="w-full h-auto rounded"
                   alt="Gemi güvenlik ekipmanları ve acil durum prosedürleri"
-                  src="/src/assets/navigation/safety-equipment.svg"
+                  src={safetyEquipmentSvg}
                   loading="lazy"
                 />
                 <figcaption className="text-[11px] text-muted-foreground mt-1">

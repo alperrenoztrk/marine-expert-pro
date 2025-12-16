@@ -34,7 +34,7 @@ Sistem aşağıdaki ana hesaplama kategorilerini içerir:
 
 #### Hidrostatik Katsayılar
 - **TPC**: Santimetre başına ton
-- **MTC**: Trim değiştirme momenti
+- **MCT 1cm (veya MTC 1cm)**: 1 cm trim değiştiren moment
 - **LCF**: Boyuna yüzme merkezi
 - **WPA**: Su hattı alanı
 - **KB**: Yüzdürme merkezi
@@ -220,7 +220,7 @@ const analysis = HydrostaticCalculations.performStabilityAnalysis(
 2. **Hacim Deplasmanı**: ∇ = L × B × T × Cb
 3. **Su Hattı Alanı**: WPA = L × B × Cw
 4. **TPC**: TPC = WPA × ρ / 100
-5. **MTC**: MTC = Iyy / ∇
+5. **MCT 1cm**: MCT₁cm ≈ (Δ × GML) / (100 × LBP)  *(yaklaşım; onaylı hidrostatik/stabilite kitapçığı esas alınır)*
 6. **BM**: BM = Iyy / ∇
 7. **KM**: KM = KB + BM
 8. **GM**: GM = KM - KG
@@ -228,8 +228,8 @@ const analysis = HydrostaticCalculations.performStabilityAnalysis(
 ### Stabilite Formülleri
 
 1. **GZ (Küçük Açılar)**: GZ = GM × sin(φ)
-2. **GZ (Büyük Açılar)**: GZ = (KM - KG) × sin(φ) - 0.5 × B × sin²(φ)
-3. **Dikleştirme Momenti**: RM = GZ × Δ × g
+2. **GZ (Büyük Açılar)**: GZ(φ) = KN(φ) − KG · sin(φ)  *(KN: çapraz eğriler / hidrostatik tablolardan)*
+3. **Dikleştirme Momenti**: RM = Δ × GZ  *(Δ ton ise ton·m; kN·m istenirse g ve birim dönüşümü açıkça tanımlanmalı)*
 4. **Yalpa Periyodu**: T = 2π × k / √(GM × g)
 5. **Doğal Periyot**: Tn = 2π × √(D / g)
 

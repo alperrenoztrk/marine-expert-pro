@@ -11,6 +11,11 @@ const cargoTopics = [
       "Draft survey, geminin yükleme/boşaltma öncesi ve sonrası draft ölçümlerine dayalı kargo miktarının belirlenmesi işlemidir.",
       "Baş (Forward), orta (Midship) ve kıç (Aft) draft ölçümleri alınarak ortalama draft hesaplanır.",
       "TPC (Tons Per Centimeter) değeri ile deplasman değişimi hesaplanarak yük miktarı belirlenir."
+    ],
+    formulas: [
+      "Tmean = (Tf + Ta) / 2",
+      "Δd (ton) ≈ TPC × ΔT(cm)",
+      "Kargo ≈ Δ_after − Δ_before (düzeltmeler uygulanmış)"
     ]
   },
   {
@@ -20,6 +25,9 @@ const cargoTopics = [
       "Deniz suyu yoğunluğu standart 1.025 t/m³'ten farklı olduğunda düzeltme yapılmalıdır.",
       "Δ_düzeltilmiş = Δ_okunan × (ρ_gerçek / 1.025)",
       "Hidrometreyle alınan yoğunluk ölçümleri sıcaklık düzeltmesi gerektirebilir."
+    ],
+    formulas: [
+      "Δcorr = Δread × (ρactual / 1.025)"
     ]
   },
   {
@@ -29,6 +37,10 @@ const cargoTopics = [
       "Gemide trim varken ortalama draft doğrudan kullanılamaz.",
       "LCF (Longitudinal Center of Flotation) konumuna göre düzeltme yapılır.",
       "Birinci ve ikinci trim düzeltmeleri sırasıyla uygulanır."
+    ],
+    formulas: [
+      "Trim = Ta − Tf",
+      "MCT₁cm (kitapçıktan) kullanılarak trim momenti ilişkilendirilir"
     ]
   },
   {
@@ -91,6 +103,14 @@ export default function CargoTopicsPage() {
                     </li>
                   ))}
                 </ul>
+                {"formulas" in topic && (topic as any).formulas?.length ? (
+                  <div className="mt-4 bg-muted/30 rounded-lg p-3">
+                    <div className="text-sm font-medium mb-2">Hızlı Formüller</div>
+                    <pre className="font-mono text-xs leading-5 overflow-x-auto">
+                      {(topic as any).formulas.join("\n")}
+                    </pre>
+                  </div>
+                ) : null}
               </CardContent>
             </Card>
           ))}

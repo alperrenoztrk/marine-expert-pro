@@ -6,6 +6,16 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Anchor, Waves, Wind, LifeBuoy, Ruler, Wrench, BookOpen, ChevronDown } from "lucide-react";
 
+// Knot visuals (bundled)
+import anchorBendImg from "@/assets/knots/anchor-bend.jpg";
+import bowlineImg from "@/assets/knots/bowline.jpg";
+import cloveHitchImg from "@/assets/knots/clove-hitch.jpg";
+import sheetBendImg from "@/assets/knots/sheet-bend.jpg";
+import rollingHitchImg from "@/assets/knots/rolling-hitch.jpg";
+import figureEightImg from "@/assets/knots/figure-eight.jpg";
+import reefKnotImg from "@/assets/knots/reef-knot.jpg";
+import roundTurnTwoHalfHitchesImg from "@/assets/knots/round-turn-two-half-hitches.jpg";
+
 export default function SeamanshipTopicsPage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const isOpen = (id: string) => !!openSections[id];
@@ -350,6 +360,33 @@ export default function SeamanshipTopicsPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-base">Düğüm Görselleri (Hızlı Referans)</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { src: bowlineImg, title: "Bowline", note: "Güvenli halka" },
+                  { src: cloveHitchImg, title: "Clove Hitch", note: "Hızlı bağlama" },
+                  { src: sheetBendImg, title: "Sheet Bend", note: "İki halatı birleştirir" },
+                  { src: rollingHitchImg, title: "Rolling Hitch", note: "Kaydırmada tutucu" },
+                  { src: figureEightImg, title: "Figure-Eight", note: "Stopper düğümü" },
+                  { src: reefKnotImg, title: "Reef Knot", note: "Basit birleştirme" },
+                  { src: anchorBendImg, title: "Anchor Bend", note: "Demir/halat bağlantısı" },
+                  { src: roundTurnTwoHalfHitchesImg, title: "Round Turn + 2 Half Hitches", note: "Güçlü bağlama" }
+                ].map((k) => (
+                  <figure key={k.title} className="bg-muted/20 rounded p-2">
+                    <img src={k.src} alt={`${k.title} düğümü`} className="w-full h-28 object-cover rounded" loading="lazy" />
+                    <figcaption className="mt-2 text-[11px] leading-4 text-muted-foreground text-center">
+                      <div className="font-semibold text-foreground">{k.title}</div>
+                      <div>{k.note}</div>
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Not: Operasyonel kullanımda şirket prosedürleri ve SWL/snap-back emniyet kuralları esas alınmalıdır.
+              </p>
             </div>
 
             <div className="space-y-3">

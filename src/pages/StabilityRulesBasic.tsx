@@ -36,7 +36,7 @@ export default function StabilityRulesBasic() {
               <section>
                 <h3 className="text-base font-semibold text-foreground mb-2">2) Temel Kavramlar (KG, GM, GZ)</h3>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li><strong>KG</strong>: Ağırlık merkezinin su hattına olan yüksekliği. KG artarsa gemi "üst ağırlıklı" olur.</li>
+                  <li><strong>KG</strong>: Ağırlık merkezinin <strong>omurgaya (keel)</strong> olan yüksekliği (Keel-to-G). KG artarsa gemi "üst ağırlıklı" olur.</li>
                   <li><strong>GM</strong>: Başlangıç doğrultuculuk (metasentrik yükseklik). <em>GM = KM − KG</em>. GM ne kadar büyükse küçük açılarda gemi o kadar "sert" toparlar.</li>
                   <li><strong>GZ</strong>: Yalpa açısında doğrultucu kol. GZ eğrisinin altında kalan alan, geminin devrilmeye karşı enerjisidir.</li>
                 </ul>
