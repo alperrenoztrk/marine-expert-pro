@@ -37,7 +37,7 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [clampedHeading]);
 
-  const degreeNumbers = [30, 120, 180, 210, 270, 300, 330];
+  
 
   return (
     <div className={className} style={{ position: "relative" }}>
@@ -106,16 +106,6 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
           );
         })}
 
-        {/* Degree numbers - larger and bolder */}
-        {degreeNumbers.map((deg) => {
-          const rad = (deg - 90) * Math.PI / 180;
-          return (
-            <text key={deg} x={160 + Math.cos(rad) * 108} y={160 + Math.sin(rad) * 108}
-              fill="#fff" fontSize="14" fontFamily="Arial, sans-serif" fontWeight="700" textAnchor="middle" dominantBaseline="central">
-              {deg}
-            </text>
-          );
-        })}
 
         {/* N marker - larger */}
         <text x="160" y="68" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">N</text>
