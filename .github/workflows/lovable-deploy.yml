@@ -3,9 +3,9 @@ name: Lovable Deploy
 on:
   push:
     branches: [ main ]
-  create:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
   deploy:
