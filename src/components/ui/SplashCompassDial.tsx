@@ -116,21 +116,12 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
         {/* Subtle inner ring for depth */}
         <circle cx="160" cy="160" r="90" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
 
-        {/* Compass rose */}
+        {/* North indicator needle */}
         <g transform={`rotate(${-displayHeading} 160 160)`}>
-          {/* Cardinal points - teal */}
-          <polygon points="160,70 151,160 160,146 169,160" fill={`url(#teal-${safeUid})`} />
-          <polygon points="160,250 151,160 160,174 169,160" fill={`url(#teal-${safeUid})`} />
-          {/* Intercardinal - silver */}
-          <polygon points="250,160 160,151 174,160 160,169" fill={`url(#silver-${safeUid})`} />
-          <polygon points="70,160 160,151 146,160 160,169" fill={`url(#silver-${safeUid})`} />
-          {/* Diagonals */}
-          <polygon points="224,96 160,151 167,160 169,151" fill={`url(#teal-${safeUid})`} opacity="0.85" />
-          <polygon points="96,96 160,151 153,160 151,151" fill={`url(#silver-${safeUid})`} opacity="0.8" />
-          <polygon points="224,224 169,160 160,167 160,169" fill={`url(#silver-${safeUid})`} opacity="0.8" />
-          <polygon points="96,224 151,160 160,167 160,169" fill={`url(#teal-${safeUid})`} opacity="0.85" />
-          {/* Inner diamond */}
-          <polygon points="160,118 140,160 160,202 180,160" fill={`url(#teal-${safeUid})`} opacity="0.6" />
+          {/* North pointing needle - red/teal */}
+          <polygon points="160,75 152,160 160,145 168,160" fill={`url(#teal-${safeUid})`} />
+          {/* South pointer - white/silver */}
+          <polygon points="160,245 152,160 160,175 168,160" fill={`url(#silver-${safeUid})`} opacity="0.6" />
         </g>
 
         {/* Center pin with metallic effect */}
