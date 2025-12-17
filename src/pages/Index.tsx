@@ -187,7 +187,7 @@ const Index = () => {
 
         {/* Compass */}
         <div className="mt-8 flex-1 flex items-center justify-center">
-          <div className="relative h-[clamp(16rem,55vw,22rem)] w-[clamp(16rem,55vw,22rem)]">
+          <div className="relative h-[clamp(12rem,40vw,16rem)] w-[clamp(12rem,40vw,16rem)]">
             <div className="relative h-full w-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
               <SplashCompassDial
                 headingDeg={headingDeg ?? 0}
