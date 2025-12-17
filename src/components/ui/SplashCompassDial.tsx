@@ -113,11 +113,6 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
         <text x="62" y="165" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">W</text>
         <text x="258" y="165" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">E</text>
 
-        {/* Blue face with texture effect */}
-        <circle cx="160" cy="160" r="92" fill={`url(#face-${safeUid})`} filter={`url(#inner-shadow-${safeUid})`} />
-        
-        {/* Subtle inner ring for depth */}
-        <circle cx="160" cy="160" r="90" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
 
         {/* North indicator needle */}
         <g transform={`rotate(${-displayHeading} 160 160)`}>
