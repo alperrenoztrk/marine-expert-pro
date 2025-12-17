@@ -109,7 +109,12 @@ import SafetyFormulasPage from "./pages/SafetyFormulas";
 import SafetyRulesPage from "./pages/SafetyRules";
 import SafetyAssistantPage from "./pages/SafetyAssistant";
 import SafetyQuizPage from "./pages/SafetyQuiz";
+import MachineAssistantPage from "./pages/MachineAssistant";
+import MachineCalculationsPage from "./pages/MachineCalculationsPage";
+import MachineFormulasPage from "./pages/MachineFormulas";
 import MachineQuizPage from "./pages/MachineQuiz";
+import MachineRulesPage from "./pages/MachineRules";
+import MachineTopicsPage from "./pages/MachineTopics";
 import WidgetPage from "./pages/WidgetPage";
 import MaritimeNews from "./pages/MaritimeNews";
 const queryClient = new QueryClient();
@@ -204,6 +209,11 @@ const AnimatedRoutes = () => {
         <Route path="/safety/rules" element={<PageTransition><SafetyRulesPage /></PageTransition>} />
         <Route path="/safety/assistant" element={<PageTransition><SafetyAssistantPage /></PageTransition>} />
         <Route path="/safety/quiz" element={<PageTransition><SafetyQuizPage /></PageTransition>} />
+        <Route path="/machine/topics" element={<PageTransition><MachineTopicsPage /></PageTransition>} />
+        <Route path="/machine/calculations" element={<PageTransition><MachineCalculationsPage /></PageTransition>} />
+        <Route path="/machine/formulas" element={<PageTransition><MachineFormulasPage /></PageTransition>} />
+        <Route path="/machine/rules" element={<PageTransition><MachineRulesPage /></PageTransition>} />
+        <Route path="/machine/assistant" element={<PageTransition><MachineAssistantPage /></PageTransition>} />
         <Route path="/machine/quiz" element={<PageTransition><MachineQuizPage /></PageTransition>} />
         <Route path="/tank-menu" element={<PageTransition><TankMenu /></PageTransition>} />
         <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
