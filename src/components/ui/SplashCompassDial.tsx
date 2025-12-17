@@ -107,8 +107,11 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
         })}
 
 
-        {/* N marker - larger */}
+        {/* Cardinal direction markers */}
         <text x="160" y="68" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">N</text>
+        <text x="160" y="262" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">S</text>
+        <text x="62" y="165" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">W</text>
+        <text x="258" y="165" fill="#fff" fontSize="18" fontFamily="Arial, sans-serif" fontWeight="800" textAnchor="middle">E</text>
 
         {/* Blue face with texture effect */}
         <circle cx="160" cy="160" r="92" fill={`url(#face-${safeUid})`} filter={`url(#inner-shadow-${safeUid})`} />
