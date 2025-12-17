@@ -356,97 +356,36 @@ export const calculationCategories: CategoryConfig[] = [
         id: "topics",
         label: "Konu Anlatımı",
         description: "Makine dairesi sistemlerine hızlı, pratik bakış",
-        status: "info",
-        fallback: {
-          intro:
-            "Bu modül; ana makine, jeneratörler, yakıt/hava/egzoz, soğutma ve yağlama gibi temel sistemleri operasyonel perspektiften özetler. Hesap araçları bir sonraki iterasyonda aktive edilecektir.",
-          highlights: [
-            { title: "Ana Makine & Tahrik", detail: "Güç hattı, şaft, pervane ve temel performans kavramları" },
-            { title: "Yardımcı Makineler", detail: "DG setler, kazan/ekonomizer ve servis sistemleri" },
-            { title: "Yakıt Sistemi", detail: "SFOC, viskozite/ısıtma, purifier ve tüketim takibi" },
-            { title: "Bakım Yönetimi", detail: "Planlı bakım, kritik ekipman, arıza kök neden yaklaşımı" },
-          ],
-          assistantTips: [
-            "Gemi tipi, ana makine gücü (kW), sefer profili ve yakıt türünü vererek günlük yakıt tahmini iste.",
-            "Soğutma suyu sıcaklık trendi ve alarm geçmişiyle olası arıza senaryosu analizi iste.",
-            "Purifier performansı için ΔP, sıcaklık ve debi değerlerini ver; olası ayar önerisi iste.",
-          ],
-        },
+        status: "live",
+        href: "/machine/topics",
       },
       {
         id: "calculations",
         label: "Hesaplamalar",
         description: "Yakıt tüketimi, SFOC, güç/enerji ve bakım KPI’ları",
-        status: "upcoming",
-        fallback: {
-          intro:
-            "Makine hesap araçları yakında eklenecek. Şimdilik en sık kullanılan pratik hesap kalıpları ve formüller aşağıda referans olarak yer alır.",
-          formulas: [
-            {
-              name: "Yakıt Tüketimi (ton)",
-              expression: "Fuel_t = P(kW) × SFOC(g/kWh) × t(h) / 1e6",
-              note: "SFOC üretici eğrilerinden; P: ortalama şaft/elektrik gücü",
-            },
-            {
-              name: "Enerji (kWh)",
-              expression: "E = P(kW) × t(h)",
-              note: "Jeneratör yük analizi ve günlük enerji bilançosu için",
-            },
-          ],
-          rules: [
-            "Günlük tüketim hesaplarında saatlik ortalama yük (kW) kullan; anlık pik değerlerle günlük toplam şişebilir.",
-            "SFOC, yük yüzdesine bağlıdır; %50–%85 bandı genelde optimum bölgedir (tipik, makineye göre değişir).",
-            "FO/LO/JCW sıcaklıkları trendlenmeli; tekil ölçüm yerine eğilim esas alınmalı.",
-          ],
-        },
+        status: "live",
+        href: "/machine/calculations",
       },
       {
         id: "formulas",
         label: "Formüller",
         description: "Makine performansı ve tüketim için temel eşitlikler",
-        status: "info",
-        fallback: {
-          intro:
-            "Bu bölüm, günlük operasyonlarda sık kullanılan makine performans ve tüketim formüllerini hızlı erişim için toplar.",
-          formulas: [
-            { name: "Güç (kW)", expression: "P = T(N·m) × ω(rad/s) / 1000", note: "T: tork, ω: açısal hız" },
-            { name: "Açısal hız", expression: "ω = 2π × n(rpm) / 60" },
-            { name: "Yakıt Tüketimi (kg)", expression: "Fuel_kg = P(kW) × SFOC(g/kWh) × t(h) / 1000" },
-          ],
-        },
+        status: "live",
+        href: "/machine/formulas",
       },
       {
         id: "rules",
         label: "Kurallar",
         description: "MARPOL Annex VI, ISM bakım yaklaşımı ve kayıtlar",
-        status: "info",
-        fallback: {
-          intro:
-            "Makine operasyonları; emisyon, yakıt kalite/uygunluk ve bakım yönetimi açısından birden fazla düzenleme ve şirket prosedürü ile kesişir.",
-          rules: [
-            "MARPOL Annex VI: yakıt kükürt limitleri, NOx gereklilikleri ve ilgili sertifikasyon kayıtları.",
-            "ISM: kritik ekipman ve bakımın etkinliği; arıza/near-miss kayıtlarının kapatılması.",
-            "Yakıt bunkering: BDN, numune, yoğunluk/viskozite takibi ve uyumsuzluk prosedürleri.",
-          ],
-          links: [
-            { label: "Hesaplama Merkezine Dön", href: "/calculations", description: "Diğer modülleri görüntüle" },
-          ],
-        },
+        status: "live",
+        href: "/machine/rules",
       },
       {
         id: "assistant",
         label: "Asistan",
         description: "Makine arızası, trend analizi ve bakım önerileri",
-        status: "upcoming",
-        fallback: {
-          intro:
-            "Makine asistanı yakında aktive edilecek. Şimdilik, iyi bir analiz için hangi verileri paylaşmanız gerektiğini aşağıda şablon olarak bulabilirsiniz.",
-          assistantTips: [
-            "Alarm/olay zamanı, ilgili sensör trendleri (son 24–72 saat), yük yüzdesi ve hava/deniz koşullarını ekle.",
-            "Yakıt türü ve bunker tarihi; purifier ayarları ve filtre ΔP değerlerini ekle.",
-            "Yapılan son bakım/part değişimleri ve arıza tekrarı bilgilerini ekle.",
-          ],
-        },
+        status: "live",
+        href: "/machine/assistant",
       },
       {
         id: "quiz",
