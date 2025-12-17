@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import SplashCompassDial from "@/components/ui/SplashCompassDial";
+import Compass3DView from "@/components/ui/Compass3DView";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
 import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
 
@@ -185,15 +185,12 @@ const Index = () => {
           </h1>
         </div>
 
-        {/* Compass */}
         <div className="mt-8 flex-1 flex items-center justify-center">
-          <div className="relative h-[clamp(12rem,40vw,16rem)] w-[clamp(12rem,40vw,16rem)]">
-            <div className="relative h-full w-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
-              <SplashCompassDial
-                headingDeg={headingDeg ?? 0}
-                className="h-full w-full select-none pointer-events-none"
-              />
-            </div>
+          <div className="relative h-[clamp(14rem,45vw,18rem)] w-[clamp(14rem,45vw,18rem)]">
+            <Compass3DView
+              headingDeg={headingDeg ?? 0}
+              className="h-full w-full"
+            />
           </div>
         </div>
 
