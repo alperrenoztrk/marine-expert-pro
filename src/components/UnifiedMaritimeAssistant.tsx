@@ -14,9 +14,40 @@ export const UnifiedMaritimeAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<Array<{question: string, answer: string, timestamp: number}>>([]);
 
-  // API Keys
-  const GEMINI_API_KEY = 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
-  const WOLFRAM_API_KEY = 'G3KTLV-GL5URGJ7YG';
+  const getGeminiResponse = async (prompt: string): Promise<string> => {
+    try {
+      const { data, error } = await supabase.functions.invoke("gemini-chat", {
+        body: {
+          messages: [
+            { 
+              role: "system", 
+              content: `Sen "Mark" adlı bir Denizcilik Regülasyon Rehberi asistanısın. Gemilerde hangi bilgiye nereden ulaşılması gerektiğini, hangi kitabın/cildin/tablonun kullanılacağını ve pratik erişim yolunu tarif edersin.
+
+Önceliklerin:
+- IS Code, SOLAS, MARPOL, COLREG, IAMSAR, STCW, LOAD LINE, IMDG Code, Grain Code, ALRS (Admiralty List of Radio Signals), NP/NP5011, NP100 vb. kaynaklara yönlendir.
+- Soruya "Hangi kaynaktan, hangi cilt/bölüm/başlık?" şeklinde net yanıt ver.
+- Gerekirse sayfa/bölüm örnekleri (ör: ALRS Vol 3, Radiofacsimile/WeatherFax Schedules) belirt.
+- Yanıtta kısalık ve netlik: önce Kaynak/Cilt, sonra erişim yöntemi ve notlar.
+
+Yanıtını şu şablonda ver:
+- **Kaynak**: (kitap/kod adı, cilt/bölüm)
+- **Erişim**: (nereden/nasıl bulunur; dizin, konu başlığı, tablo/ek örneği)
+- **Not**: (kısa uyarı/istisna/ilgili başka kaynak)
+
+Türkçe, düzenli ve kısa yanıtla.`
+            },
+            { role: "user", content: prompt }
+          ]
+        }
+      });
+
+      if (error) throw error;
+      return data?.text || "Yanıt alınamadı";
+    } catch (error) {
+      console.error('AI API failed:', error);
+      throw error;
+    }
+  };
 
   // Auto-calculate if question contains numbers
   const detectCalculation = (text: string) => {
@@ -39,6 +70,7 @@ export const UnifiedMaritimeAssistant = () => {
 
   const performWolframCalculation = async (query: string): Promise<string | null> => {
     try {
+      const WOLFRAM_API_KEY = 'G3KTLV-GL5URGJ7YG';
       const response = await fetch(`https://api.wolframalpha.com/v2/query?appid=${WOLFRAM_API_KEY}&input=${encodeURIComponent(query)}&format=plaintext&output=json`);
       
       if (!response.ok) return null;
@@ -46,7 +78,7 @@ export const UnifiedMaritimeAssistant = () => {
       const data = await response.json();
       
       if (data.queryresult && data.queryresult.pods) {
-        const resultPod = data.queryresult.pods.find(pod => 
+        const resultPod = data.queryresult.pods.find((pod: any) => 
           pod.id === 'Result' || pod.title === 'Result' || pod.primary
         );
         
@@ -58,56 +90,6 @@ export const UnifiedMaritimeAssistant = () => {
     } catch (error) {
       console.error('Wolfram calculation failed:', error);
       return null;
-    }
-  };
-
-  const getGeminiResponse = async (prompt: string): Promise<string> => {
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Sen "Mark" adlı bir Denizcilik Regülasyon Rehberi asistanısın. Gemilerde hangi bilgiye nereden ulaşılması gerektiğini, hangi kitabın/cildin/tablonun kullanılacağını ve pratik erişim yolunu tarif edersin.
-
-Önceliklerin:
-- IS Code, SOLAS, MARPOL, COLREG, IAMSAR, STCW, LOAD LINE, IMDG Code, Grain Code, ALRS (Admiralty List of Radio Signals), NP/NP5011, NP100 vb. kaynaklara yönlendir.
-- Soruya "Hangi kaynaktan, hangi cilt/bölüm/başlık?" şeklinde net yanıt ver.
-- Gerekirse sayfa/bölüm örnekleri (ör: ALRS Vol 3, Radiofacsimile/WeatherFax Schedules) belirt.
-- Yanıtta kısalık ve netlik: önce Kaynak/Cilt, sonra erişim yöntemi ve notlar.
-
-Soru: ${prompt}
-
-Yanıtını şu şablonda ver:
-- **Kaynak**: (kitap/kod adı, cilt/bölüm)
-- **Erişim**: (nereden/nasıl bulunur; dizin, konu başlığı, tablo/ek örneği)
-- **Not**: (kısa uyarı/istisna/ilgili başka kaynak)
-
-Türkçe, düzenli ve kısa yanıtla.`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.2,
-            maxOutputTokens: 800,
-          }
-        })
-      });
-
-      if (!response.ok) throw new Error('Gemini API error');
-
-      const data = await response.json();
-      
-      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-        return data.candidates[0].content.parts[0].text;
-      }
-      
-      throw new Error('Invalid response format');
-    } catch (error) {
-      console.error('Gemini API failed:', error);
-      throw error;
     }
   };
 

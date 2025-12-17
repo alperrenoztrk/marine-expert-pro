@@ -48,7 +48,7 @@ Yanıtlarını maddeler halinde, anlaşılır ve operasyonel açıdan uygulanabi
 
       if (error) throw error;
 
-      setResponse(data.response || data.message || "Yanıt alınamadı");
+      setResponse(data?.text || "Yanıt alınamadı");
       setQuestion("");
     } catch (err) {
       console.error("Assistant error:", err);

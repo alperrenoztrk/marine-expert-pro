@@ -7,7 +7,7 @@ import { ArrowLeft, Wrench, Send, Loader2, Lightbulb, AlertTriangle, Fuel, Therm
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-chat`;
+
 
 const quickPrompts = [
   {
@@ -46,13 +46,8 @@ export default function MachineAssistant() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(CHAT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke("gemini-chat", {
+        body: {
           messages: [
             {
               role: "system",
@@ -71,51 +66,20 @@ Türkçe yanıt ver.`,
             ...conversation,
             userMessage,
           ],
-        }),
+        },
       });
 
-      if (!response.ok) {
-        if (response.status === 429) {
+      if (error) {
+        if (error.message?.includes("429")) {
           toast.error("Çok fazla istek. Lütfen biraz bekleyin.");
+          setConversation((prev) => prev.slice(0, -1));
           return;
         }
-        throw new Error("AI yanıt vermedi");
+        throw error;
       }
 
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error("Stream okunamadı");
-
-      const decoder = new TextDecoder();
-      let assistantContent = "";
-
-      setConversation((prev) => [...prev, { role: "assistant", content: "" }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
-          if (line.startsWith("data: ") && line !== "data: [DONE]") {
-            try {
-              const json = JSON.parse(line.slice(6));
-              const content = json.choices?.[0]?.delta?.content;
-              if (content) {
-                assistantContent += content;
-                setConversation((prev) => {
-                  const newConv = [...prev];
-                  newConv[newConv.length - 1] = { role: "assistant", content: assistantContent };
-                  return newConv;
-                });
-              }
-            } catch {
-              // Skip invalid JSON
-            }
-          }
-        }
-      }
+      const assistantContent = data?.text || "Yanıt alınamadı";
+      setConversation((prev) => [...prev, { role: "assistant", content: assistantContent }]);
     } catch (error) {
       console.error("AI error:", error);
       toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
