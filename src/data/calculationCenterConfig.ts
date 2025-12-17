@@ -468,102 +468,43 @@ export const calculationCategories: CategoryConfig[] = [
         id: "topics",
         label: "Konu Anlatımı",
         description: "Gemide çevre yönetimi: emisyon, atık, balast, kayıtlar",
-        status: "info",
-        fallback: {
-          intro:
-            "Çevre modülü; MARPOL ekleri, atık yönetimi, balast suyu ve raporlama (DCS/MRV vb.) başlıklarını pratik kontrol listeleriyle bir araya getirir.",
-          highlights: [
-            { title: "Emisyon Yönetimi", detail: "Yakıt tüketimi, CO₂ hesapları, EEXI/CII mantığı" },
-            { title: "Atık & Kayıtlar", detail: "Garbage Record Book, Oil Record Book, teslim tutanakları" },
-            { title: "Balast Suyu", detail: "BWM prosedürleri, değişim/arıtma ve raporlama" },
-            { title: "Uyum & Denetim", detail: "PSC hazırlığı, dokümantasyon ve uygunsuzluk yönetimi" },
-          ],
-          assistantTips: [
-            "Yakıt türü, tüketim (ton) ve sefer mesafesiyle CO₂ ve basit yoğunluk metriklerini hesaplat.",
-            "Atık teslim belgeleri ve kayıt defteri girişleri arasında tutarlılık kontrolü iste.",
-            "Balast operasyonu için tank planı ve arıtma sistemi durumuyla risk değerlendirmesi iste.",
-          ],
-        },
+        status: "live",
+        href: "/environment/topics",
       },
       {
         id: "calculations",
         label: "Hesaplamalar",
-        description: "CO₂/CO₂e, yoğunluk metrikleri ve raporlama hesapları",
-        status: "upcoming",
-        fallback: {
-          intro:
-            "Çevre hesap araçları yakında eklenecek. Şimdilik en sık kullanılan emisyon/yoğunluk hesap şablonları aşağıdadır.",
-          formulas: [
-            { name: "CO₂ Emisyonu (ton)", expression: "CO2_t = Fuel_t × CF", note: "CF: yakıta göre karbon faktörü (IMO tabloları)" },
-            { name: "Basit Emisyon Oranı", expression: "CO2_per_nm = CO2_t / Distance_nm", note: "Operasyonel kıyas için hızlı metrik" },
-          ],
-          rules: [
-            "Aynı sefer için yakıt tüketimi, makine logu ve bunker kayıtları çapraz kontrol edilmelidir.",
-            "CF (carbon factor) yakıt türüne bağlıdır; doğru yakıt sınıfını kullandığınızdan emin olun.",
-          ],
-        },
+        description: "CO₂/CO₂e, CII, EEXI ve raporlama hesapları",
+        status: "live",
+        href: "/environment/calculations",
       },
       {
         id: "formulas",
         label: "Formüller",
-        description: "Emisyon ve çevre KPI’ları için referans formüller",
-        status: "info",
-        fallback: {
-          intro:
-            "Bu bölüm, emisyon ve çevre performansına yönelik pratik formülleri tek yerde toplar. Resmî raporlama için her zaman ilgili mevzuat/rehberi esas alın.",
-          formulas: [
-            { name: "CO₂ (ton)", expression: "CO2_t = Fuel_t × CF" },
-            { name: "Enerji (kWh)", expression: "E = P(kW) × t(h)" },
-            { name: "Yakıt (ton)", expression: "Fuel_t = P(kW) × SFOC(g/kWh) × t(h) / 1e6" },
-          ],
-        },
+        description: "Emisyon ve enerji verimliliği formülleri",
+        status: "live",
+        href: "/environment/formulas",
       },
       {
         id: "rules",
         label: "Kurallar",
         description: "MARPOL, BWM, IMO DCS ve bölgesel raporlama",
-        status: "info",
-        fallback: {
-          intro:
-            "Çevre uyumu; global (IMO/MARPOL) ve bölgesel (ör. MRV) gereklilikler ile şirket prosedürlerinin birlikte yürütülmesini gerektirir.",
-          rules: [
-            "MARPOL Annex I–VI: petrol, kimyasal, atık, kanalizasyon ve hava emisyonları gereklilikleri.",
-            "BWM Convention: balast suyu yönetimi, arıtma sistemi operasyonu ve kayıtlar.",
-            "IMO DCS / bölgesel MRV: yakıt tüketimi ve sefer verilerinin doğruluğu, izlenebilirlik ve raporlama.",
-          ],
-          links: [
-            { label: "Hesaplama Merkezine Dön", href: "/calculations", description: "Diğer modülleri görüntüle" },
-          ],
-        },
+        status: "live",
+        href: "/environment/rules",
       },
       {
         id: "assistant",
         label: "Asistan",
         description: "Denetim hazırlığı, kayıt kontrolü ve aksiyon önerileri",
-        status: "upcoming",
-        fallback: {
-          intro:
-            "Çevre asistanı yakında aktive edilecek. Şimdilik denetim hazırlığı için veri toplama şablonları burada.",
-          assistantTips: [
-            "Son 30 gün: ORB/GRB girişleri, atık teslim belgeleri ve bunker BDN’leri ile tutarlılık kontrolü iste.",
-            "Balast operasyonları için: tank listesi, arıtma sistemi durumu ve rota/liman kısıtlarını ekle.",
-          ],
-        },
+        status: "live",
+        href: "/environment/assistant",
       },
       {
         id: "quiz",
         label: "Quiz",
         description: "MARPOL, atık ve balast yönetimi soru setleri",
-        status: "upcoming",
-        fallback: {
-          intro: "Çevre modülü quiz içeriği yakında eklenecek.",
-          quiz: {
-            question: "CO₂ emisyonu hesaplamasında en temel iki girdi nedir?",
-            options: ["Draft & trim", "Yakıt tüketimi & carbon factor (CF)", "Rüzgâr & dalga", "RPM & tork"],
-            answer: "Yakıt tüketimi & carbon factor (CF)",
-            explanation: "En temel hesap CO₂ = yakıt tüketimi × yakıta özgü karbon faktörü yaklaşımıdır.",
-          },
-        },
+        status: "live",
+        href: "/environment/quiz",
       },
     ],
   },

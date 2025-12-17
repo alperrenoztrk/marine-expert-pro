@@ -75,7 +75,12 @@ import EnginePage from "./pages/Engine";
 import HydrodynamicsPage from "./pages/Hydrodynamics";
 import StructuralCalculationsPage from "./pages/StructuralCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
-import EmissionCalculationsPage from "./pages/EmissionCalculations";
+import EmissionCalculationsPage from "./pages/EmissionCalculationsPage";
+import EmissionTopics from "./pages/EmissionTopics";
+import EmissionFormulas from "./pages/EmissionFormulas";
+import EmissionRules from "./pages/EmissionRules";
+import EmissionAssistant from "./pages/EmissionAssistant";
+import EmissionQuiz from "./pages/EmissionQuiz";
 import SOLASRegulationsPage from "./pages/SOLASRegulations";
 import SOLASCertificatesPage from "./pages/SOLASCertificates";
 import SOLASShipRequirementsPage from "./pages/SOLASShipRequirements";
@@ -171,6 +176,12 @@ const AnimatedRoutes = () => {
         <Route path="/structural" element={<PageTransition><StructuralCalculationsPage /></PageTransition>} />
         <Route path="/special-ships" element={<PageTransition><SpecialShipCalculationsPage /></PageTransition>} />
         <Route path="/emissions" element={<PageTransition><EmissionCalculationsPage /></PageTransition>} />
+        <Route path="/environment/topics" element={<PageTransition><EmissionTopics /></PageTransition>} />
+        <Route path="/environment/calculations" element={<PageTransition><EmissionCalculationsPage /></PageTransition>} />
+        <Route path="/environment/formulas" element={<PageTransition><EmissionFormulas /></PageTransition>} />
+        <Route path="/environment/rules" element={<PageTransition><EmissionRules /></PageTransition>} />
+        <Route path="/environment/assistant" element={<PageTransition><EmissionAssistant /></PageTransition>} />
+        <Route path="/environment/quiz" element={<PageTransition><EmissionQuiz /></PageTransition>} />
         <Route path="/solas/regulations" element={<PageTransition><SOLASRegulationsPage /></PageTransition>} />
         <Route path="/solas/certificates" element={<PageTransition><SOLASCertificatesPage /></PageTransition>} />
         <Route path="/solas/ship-requirements" element={<PageTransition><SOLASShipRequirementsPage /></PageTransition>} />
