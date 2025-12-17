@@ -87,7 +87,7 @@ function normalizeResponse(data: unknown): MaritimeNewsResponse {
   return { fetchedAt, items, errors, sources };
 }
 
-function getFunctionUrl(): string {
+function getFunctionBaseUrl(): string {
   const baseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   if (!baseUrl) {
     // Fallback to the generated client base URL (keeps other functionality unchanged)
@@ -95,9 +95,30 @@ function getFunctionUrl(): string {
     const client = supabase as unknown as SupabaseClientInternals;
     const fallback = client.supabaseUrl;
     if (!fallback) throw new Error("Backend URL bulunamadı.");
-    return `${fallback}/functions/v1/maritime-news`;
+    return fallback;
   }
-  return `${baseUrl}/functions/v1/maritime-news`;
+  return baseUrl;
+}
+
+function getFunctionUrls(): string[] {
+  const baseUrl = getFunctionBaseUrl().replace(/\/+$/, "");
+  const urls = [`${baseUrl}/functions/v1/maritime-news`];
+
+  try {
+    const parsed = new URL(baseUrl);
+    const hostParts = parsed.hostname.split(".");
+
+    // https://<project>.supabase.co -> https://<project>.functions.supabase.co/maritime-news
+    if (hostParts.length >= 3 && hostParts.includes("supabase")) {
+      const projectRef = hostParts[0];
+      const rootDomain = hostParts.slice(1).join(".");
+      urls.push(`${parsed.protocol}//${projectRef}.functions.${rootDomain}/maritime-news`);
+    }
+  } catch (e) {
+    console.warn("📰 [MaritimeNews] Could not derive functions domain", e);
+  }
+
+  return Array.from(new Set(urls));
 }
 
 function getAnonKey(): string {
@@ -115,27 +136,38 @@ function getAnonKey(): string {
 
 export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsResponse> {
   // Use direct call to avoid mis-pointing to an old/paused backend project when the generated client URL/key is stale.
-  const url = getFunctionUrl();
   const key = getAnonKey();
+  const candidateUrls = getFunctionUrls();
+  const errors: string[] = [];
 
-  console.info("📰 [MaritimeNews] Requesting:", { url, limit });
+  for (const url of candidateUrls) {
+    try {
+      console.info("📰 [MaritimeNews] Requesting:", { url, limit });
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      apikey: key,
-      authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({ limit }),
-  });
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          apikey: key,
+          authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({ limit }),
+      });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("📰 [MaritimeNews] HTTP error:", { status: res.status, text });
-    throw new Error(text || `Haber servisi hata döndürdü (${res.status}).`);
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("📰 [MaritimeNews] HTTP error:", { status: res.status, text });
+        throw new Error(text || `Haber servisi hata döndürdü (${res.status}).`);
+      }
+
+      const data = (await res.json().catch(() => null)) as unknown;
+      return normalizeResponse(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      errors.push(`${url}: ${message}`);
+      console.warn("📰 [MaritimeNews] Failed endpoint, trying next", { url, message });
+    }
   }
 
-  const data = (await res.json().catch(() => null)) as unknown;
-  return normalizeResponse(data);
+  throw new Error(`Haber servisi tüm uç noktalarda başarısız oldu. Denenenler: ${errors.join(" | ")}`);
 }
