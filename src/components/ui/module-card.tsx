@@ -46,7 +46,7 @@ export interface ModuleCardProps extends React.HTMLAttributes<HTMLElement> {
   size?: CardSize;
 }
 
-export const ModuleCard = React.forwardRef<HTMLElement, ModuleCardProps>(
+export const ModuleCard = React.forwardRef<HTMLAnchorElement, ModuleCardProps>(
   (
     {
       title,
@@ -126,22 +126,23 @@ export const ModuleCard = React.forwardRef<HTMLElement, ModuleCardProps>(
       </>
     );
 
-    const sharedProps = {
-      ref,
-      "aria-label": `${title} - ${ctaLabel}`,
-      "aria-disabled": disabled,
-      tabIndex: disabled ? -1 : 0,
-      className: cn(
-        "group relative block h-full overflow-hidden rounded-3xl border border-border/70 bg-card/80 backdrop-blur-md text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
-        disabled ? "pointer-events-none opacity-60" : "hover:-translate-y-0.5 hover:shadow-xl",
-        className,
-      ),
-      ...rest,
-    };
+    const sharedClassName = cn(
+      "group relative block h-full overflow-hidden rounded-3xl border border-border/70 bg-card/80 backdrop-blur-md text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+      disabled ? "pointer-events-none opacity-60" : "hover:-translate-y-0.5 hover:shadow-xl",
+      className,
+    );
 
     if (to) {
       return (
-        <Link to={to} {...sharedProps}>
+        <Link
+          to={to}
+          ref={ref}
+          aria-label={`${title} - ${ctaLabel}`}
+          aria-disabled={disabled}
+          tabIndex={disabled ? -1 : 0}
+          className={sharedClassName}
+          {...rest}
+        >
           {content}
         </Link>
       );
@@ -149,14 +150,30 @@ export const ModuleCard = React.forwardRef<HTMLElement, ModuleCardProps>(
 
     if (href) {
       return (
-        <a href={href} target={showExternal ? "_blank" : undefined} rel={showExternal ? "noreferrer" : undefined} {...sharedProps}>
+        <a
+          href={href}
+          ref={ref}
+          target={showExternal ? "_blank" : undefined}
+          rel={showExternal ? "noreferrer" : undefined}
+          aria-label={`${title} - ${ctaLabel}`}
+          aria-disabled={disabled}
+          tabIndex={disabled ? -1 : 0}
+          className={sharedClassName}
+          {...rest}
+        >
           {content}
         </a>
       );
     }
 
     return (
-      <div {...sharedProps}>
+      <div
+        aria-label={`${title} - ${ctaLabel}`}
+        aria-disabled={disabled}
+        tabIndex={disabled ? -1 : 0}
+        className={sharedClassName}
+        {...(rest as React.HTMLAttributes<HTMLDivElement>)}
+      >
         {content}
       </div>
     );
