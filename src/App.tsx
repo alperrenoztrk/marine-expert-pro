@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useParams } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { HelmetProvider } from "react-helmet-async";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -117,7 +117,14 @@ import MachineRulesPage from "./pages/MachineRules";
 import MachineTopicsPage from "./pages/MachineTopics";
 import WidgetPage from "./pages/WidgetPage";
 import MaritimeNews from "./pages/MaritimeNews";
+import ModuleSectionsPage from "./pages/ModuleSectionsPage";
+import type { CategoryId } from "@/data/calculationCenterConfig";
 const queryClient = new QueryClient();
+
+const HubCategoryPage = () => {
+  const { categoryId } = useParams<{ categoryId: CategoryId }>();
+  return <ModuleSectionsPage categoryId={(categoryId ?? "stability") as CategoryId} backHref="/hub" />;
+};
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -132,6 +139,8 @@ const AnimatedRoutes = () => {
         <Route path="/maritime-news" element={<PageTransition><MaritimeNews /></PageTransition>} />
         <Route path="/widgets" element={<PageTransition><WidgetPage /></PageTransition>} />
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
+        <Route path="/hub" element={<PageTransition><CalculationsMenu /></PageTransition>} />
+        <Route path="/hub/:categoryId" element={<PageTransition><HubCategoryPage /></PageTransition>} />
         <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
         <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />
         {/* Stability sub-routes */}

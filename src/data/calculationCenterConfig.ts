@@ -1,8 +1,17 @@
 import type { LucideIcon } from "lucide-react";
-import { Anchor, CloudSun, Compass, Leaf, Package, Shield, Ship, Wrench } from "lucide-react";
+import { Anchor, BookOpen, Brain, Calculator, CloudSun, Compass, Leaf, ListChecks, Package, Shield, Ship, Sigma, TrendingUp, Wrench } from "lucide-react";
 
 export type SectionId = "topics" | "calculations" | "formulas" | "rules" | "assistant" | "quiz";
-export type CategoryId = "stability" | "navigation" | "cargo" | "meteorology" | "seamanship" | "safety" | "machine" | "environment";
+export type CategoryId =
+  | "stability"
+  | "navigation"
+  | "cargo"
+  | "meteorology"
+  | "seamanship"
+  | "safety"
+  | "machine"
+  | "environment"
+  | "economics";
 export type SectionStatus = "live" | "info" | "external" | "upcoming";
 
 export interface SectionFallback {
@@ -26,6 +35,8 @@ export interface SectionConfig {
   description: string;
   status?: SectionStatus;
   href?: string;
+  badge?: string;
+  ctaLabel?: string;
   fallback?: SectionFallback;
 }
 
@@ -35,8 +46,20 @@ export interface CategoryConfig {
   subtitle: string;
   icon: LucideIcon;
   accent: string;
+  status?: SectionStatus;
+  badge?: string;
+  ctaLabel?: string;
   sections: SectionConfig[];
 }
+
+export const sectionIconMap: Record<SectionId, LucideIcon> = {
+  topics: BookOpen,
+  calculations: Calculator,
+  formulas: Sigma,
+  rules: BookOpen,
+  assistant: Brain,
+  quiz: ListChecks,
+};
 
 export const calculationCategories: CategoryConfig[] = [
   {
@@ -45,12 +68,17 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "GM, GZ, IMO kriterleri ve ileri analizler",
     icon: Ship,
     accent: "from-blue-500 via-indigo-500 to-blue-600",
+    badge: "Çekirdek",
+    status: "live",
+    ctaLabel: "Stabilite merkezine git",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Temel ve ileri stabilite dersleri",
         status: "live",
+        badge: "Hazır",
+        ctaLabel: "Derslere git",
         href: "/stability/topics",
       },
       {
@@ -58,6 +86,8 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "GZ, GM, ağırlık kaydırma ve FWA araçları",
         status: "live",
+        badge: "Hazır",
+        ctaLabel: "Hesaplamaları aç",
         href: "/stability/calculations",
       },
       {
@@ -65,6 +95,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Tüm stabilite formülleri ve açıklamaları",
         status: "live",
+        badge: "Hazır",
         href: "/stability/formulas",
       },
       {
@@ -72,6 +103,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "IMO, IS Code ve klas limitleri",
         status: "live",
+        badge: "Hazır",
         href: "/stability/rules",
       },
       {
@@ -79,6 +111,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Stabilite danışmanı ve AI destekli öneriler",
         status: "live",
+        badge: "Hazır",
         href: "/stability/assistant",
       },
       {
@@ -86,6 +119,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "Sınav soruları ve anlık geri bildirimler",
         status: "live",
+        badge: "Hazır",
         href: "/stability/quiz",
       },
     ],
@@ -96,12 +130,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "Rota, astro seyir ve COLREG pratikleri",
     icon: Compass,
     accent: "from-indigo-500 via-purple-500 to-blue-500",
+    badge: "Günlük",
+    status: "live",
+    ctaLabel: "Seyir merkezine git",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Güncel seyir doktrinleri ve vaka analizleri",
         status: "live",
+        badge: "Hazır",
         href: "/navigation/topics",
       },
       {
@@ -109,6 +147,8 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "Rota, ETA, yakıt ve gök cisimleri",
         status: "live",
+        badge: "Hazır",
+        ctaLabel: "Navigasyon araçları",
         href: "/navigation",
       },
       {
@@ -116,6 +156,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Trigonometrik ve astronomik hesap tabloları",
         status: "live",
+        badge: "Hazır",
         href: "/navigation/formulas",
       },
       {
@@ -123,6 +164,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "COLREG, STCW ve seyir jeneralleri",
         status: "live",
+        badge: "Hazır",
         href: "/regulations",
       },
       {
@@ -130,6 +172,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Seyir planı, meteoroloji ve VTS diyaloğu",
         status: "live",
+        badge: "Hazır",
         href: "/navigation/assistant",
       },
       {
@@ -137,6 +180,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "COLREG, seyir astronomisi ve radar testleri",
         status: "live",
+        badge: "Hazır",
         href: "/navigation/quiz",
       },
     ],
@@ -147,12 +191,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "Draft survey, yükleme planı ve operasyonel takip",
     icon: Package,
     accent: "from-amber-500 via-orange-500 to-rose-500",
+    badge: "Operasyon",
+    status: "live",
+    ctaLabel: "Kargo menüsü",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Yükleme öncesi prosedürler ve saha akışı",
         status: "live",
+        badge: "Hazır",
         href: "/cargo/topics",
       },
       {
@@ -160,6 +208,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "Draft survey ve yükleme hesap modülleri",
         status: "live",
+        badge: "Hazır",
         href: "/cargo/calculations",
       },
       {
@@ -167,6 +216,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Standart draft survey formülleri ve örnekler",
         status: "live",
+        badge: "Hazır",
         href: "/cargo/formulas",
       },
       {
@@ -174,6 +224,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "IMSBC, Grain Rules ve terminal prosedürleri",
         status: "live",
+        badge: "Hazır",
         href: "/cargo/rules",
       },
       {
@@ -181,6 +232,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "AI ile yükleme sırası ve trim danışmanlığı",
         status: "live",
+        badge: "Hazır",
         href: "/cargo/assistant",
       },
       {
@@ -188,6 +240,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "Draft survey ve yük hesap soruları",
         status: "live",
+        badge: "Hazır",
         href: "/cargo/quiz",
       },
     ],
@@ -198,12 +251,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "Tahmin, hava raporu ve rota optimizasyonu",
     icon: CloudSun,
     accent: "from-sky-500 via-cyan-500 to-blue-500",
+    badge: "Hava",
+    status: "live",
+    ctaLabel: "Meteoroloji menüsü",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Detaylı meteoroloji ve oşinografi dersleri",
         status: "live",
+        badge: "Hazır",
         href: "/meteorology/topics",
       },
       {
@@ -211,6 +268,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "Rüzgâr, dalga, görüş ve yoğunluk araçları",
         status: "live",
+        badge: "Hazır",
         href: "/weather",
       },
       {
@@ -218,6 +276,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Rüzgâr, dalga ve atmosfer denklemleri",
         status: "live",
+        badge: "Hazır",
         href: "/meteorology/formulas",
       },
       {
@@ -225,6 +284,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "SOLAS V/34, STCW VIII/2 ve WMO prosedürleri",
         status: "live",
+        badge: "Hazır",
         href: "/meteorology/rules",
       },
       {
@@ -232,6 +292,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Rota bazlı hava tavsiyeleri ve alarm eşikleri",
         status: "live",
+        badge: "Hazır",
         href: "/meteorology/assistant",
       },
       {
@@ -239,6 +300,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "Beaufort, bulut türleri ve storm-avoidance soruları",
         status: "live",
+        badge: "Hazır",
         href: "/meteorology/quiz",
       },
     ],
@@ -249,12 +311,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "Demirleme, palamar, ağır hava ve vardiya yönetimi",
     icon: Anchor,
     accent: "from-emerald-500 via-teal-500 to-blue-500",
+    badge: "Güverte",
+    status: "live",
+    ctaLabel: "Gemicilik menüsü",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Gemicilik konu başlıkları ve görsel anlatımlar",
         status: "live",
+        badge: "Hazır",
         href: "/seamanship/topics",
       },
       {
@@ -262,6 +328,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "Palamar yükü, zincir katenary ve römorkör kuvvetleri",
         status: "live",
+        badge: "Hazır",
         href: "/seamanship/calculations",
       },
       {
@@ -269,6 +336,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Mooring, catenary ve rüzgâr yükü eşitlikleri",
         status: "live",
+        badge: "Hazır",
         href: "/seamanship/formulas",
       },
       {
@@ -276,6 +344,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "COLREG, ISM, ISPS ve liman talimatları",
         status: "live",
+        badge: "Hazır",
         href: "/seamanship/rules",
       },
       {
@@ -283,6 +352,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Vardiya, bakım ve güvenlik için öneri setleri",
         status: "live",
+        badge: "Hazır",
         href: "/seamanship/assistant",
       },
       {
@@ -290,6 +360,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "Demirleme, çarmıh ve vardiya senaryoları",
         status: "live",
+        badge: "Hazır",
         href: "/seamanship/quiz",
       },
     ],
@@ -300,12 +371,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "IMO, SOLAS, LSA/FFA ve ISM kapsamı",
     icon: Shield,
     accent: "from-rose-500 via-orange-500 to-amber-500",
+    badge: "Kritik",
+    status: "info",
+    ctaLabel: "Emniyet menüsü",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "SMS, muster organizasyonu ve izinli işler",
         status: "live",
+        badge: "Hazır",
         href: "/safety/topics",
       },
       {
@@ -313,6 +388,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "Risk matrisi, yangın suyu ve kaçış süreleri",
         status: "live",
+        badge: "Hazır",
         href: "/safety",
       },
       {
@@ -320,6 +396,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Yangın söndürme, köpük ve CO2 miktar hesapları",
         status: "live",
+        badge: "Hazır",
         href: "/safety/formulas",
       },
       {
@@ -327,6 +404,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "SOLAS, LSA, FFA ve ulusal otorite gereklilikleri",
         status: "live",
+        badge: "Hazır",
         href: "/safety/rules",
       },
       {
@@ -334,6 +412,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Risk değerlendirme ve denetim hazırlığı için AI",
         status: "live",
+        badge: "Hazır",
         href: "/safety/assistant",
       },
       {
@@ -341,6 +420,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "SOLAS, ISM ve emniyet prosedürü soruları",
         status: "live",
+        badge: "Hazır",
         href: "/safety/quiz",
       },
     ],
@@ -351,12 +431,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "Ana makine, yardımcı makineler, yakıt ve bakım hesapları",
     icon: Wrench,
     accent: "from-slate-600 via-zinc-600 to-slate-800",
+    badge: "Teknik",
+    status: "info",
+    ctaLabel: "Makine menüsü",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Makine dairesi sistemlerine hızlı, pratik bakış",
         status: "live",
+        badge: "Hazır",
         href: "/machine/topics",
       },
       {
@@ -364,6 +448,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "Yakıt tüketimi, SFOC, güç/enerji ve bakım KPI’ları",
         status: "live",
+        badge: "Hazır",
         href: "/machine/calculations",
       },
       {
@@ -371,6 +456,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Makine performansı ve tüketim için temel eşitlikler",
         status: "live",
+        badge: "Hazır",
         href: "/machine/formulas",
       },
       {
@@ -378,6 +464,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "MARPOL Annex VI, ISM bakım yaklaşımı ve kayıtlar",
         status: "live",
+        badge: "Hazır",
         href: "/machine/rules",
       },
       {
@@ -385,6 +472,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Makine arızası, trend analizi ve bakım önerileri",
         status: "live",
+        badge: "Hazır",
         href: "/machine/assistant",
       },
       {
@@ -392,6 +480,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "Makine sistemi senaryoları ve hızlı test",
         status: "live",
+        badge: "Hazır",
         href: "/machine/quiz",
       },
     ],
@@ -402,12 +491,16 @@ export const calculationCategories: CategoryConfig[] = [
     subtitle: "Emisyon, atık yönetimi, balast ve çevresel uyum hesapları",
     icon: Leaf,
     accent: "from-emerald-600 via-green-600 to-teal-700",
+    badge: "Yeşil",
+    status: "live",
+    ctaLabel: "Çevre menüsü",
     sections: [
       {
         id: "topics",
         label: "Konu Anlatımı",
         description: "Gemide çevre yönetimi: emisyon, atık, balast, kayıtlar",
         status: "live",
+        badge: "Hazır",
         href: "/environment/topics",
       },
       {
@@ -415,6 +508,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Hesaplamalar",
         description: "CO₂/CO₂e, CII, EEXI ve raporlama hesapları",
         status: "live",
+        badge: "Hazır",
         href: "/environment/calculations",
       },
       {
@@ -422,6 +516,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Formüller",
         description: "Emisyon ve enerji verimliliği formülleri",
         status: "live",
+        badge: "Hazır",
         href: "/environment/formulas",
       },
       {
@@ -429,6 +524,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Kurallar",
         description: "MARPOL, BWM, IMO DCS ve bölgesel raporlama",
         status: "live",
+        badge: "Hazır",
         href: "/environment/rules",
       },
       {
@@ -436,6 +532,7 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Asistan",
         description: "Denetim hazırlığı, kayıt kontrolü ve aksiyon önerileri",
         status: "live",
+        badge: "Hazır",
         href: "/environment/assistant",
       },
       {
@@ -443,7 +540,66 @@ export const calculationCategories: CategoryConfig[] = [
         label: "Quiz",
         description: "MARPOL, atık ve balast yönetimi soru setleri",
         status: "live",
+        badge: "Hazır",
         href: "/environment/quiz",
+      },
+    ],
+  },
+  {
+    id: "economics",
+    title: "Ekonomik Analiz",
+    subtitle: "TCE, demurrage ve sefer kârlılığı simülasyonları",
+    icon: TrendingUp,
+    accent: "from-amber-400 via-yellow-500 to-orange-600",
+    badge: "Finans",
+    status: "info",
+    ctaLabel: "Ekonomi araçları",
+    sections: [
+      {
+        id: "calculations",
+        label: "Hesaplamalar",
+        description: "TCE, demurrage/despatch ve maliyet dökümleri",
+        status: "live",
+        badge: "Hazır",
+        ctaLabel: "Hesapla",
+        href: "/economics",
+      },
+      {
+        id: "topics",
+        label: "Konu Anlatımı",
+        description: "Navlun ekonomisi, yakıt ve operasyon ipuçları",
+        status: "upcoming",
+        badge: "Yakında",
+      },
+      {
+        id: "formulas",
+        label: "Formüller",
+        description: "Bunker, hız/yakıt eğrileri ve sefer planı",
+        status: "info",
+        badge: "Özet",
+        href: "/economics",
+      },
+      {
+        id: "assistant",
+        label: "Asistan",
+        description: "Kârlılık senaryoları için prompt setleri",
+        status: "upcoming",
+        badge: "Yakında",
+      },
+      {
+        id: "rules",
+        label: "Kurallar",
+        description: "Charter party ve lojistik sözleşme kontrol listesi",
+        status: "info",
+        badge: "Bilgi",
+        href: "/economics",
+      },
+      {
+        id: "quiz",
+        label: "Quiz",
+        description: "Navlun hesap soruları ve mini senaryolar",
+        status: "upcoming",
+        badge: "Yakında",
       },
     ],
   },
