@@ -97,14 +97,6 @@ Türkçe yanıt ver.`,
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-12">
-        <div className="mb-8">
-          <Link to="/calculations">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-card/50">
-              <ArrowLeft className="h-4 w-4" />
-              Hesaplama Merkezi
-            </Button>
-          </Link>
-        </div>
 
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold bg-gradient-to-r from-slate-600 via-zinc-600 to-slate-800 bg-clip-text text-transparent mb-3">

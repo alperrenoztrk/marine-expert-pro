@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { MobileLayout } from '@/components/MobileLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, BookOpen, GraduationCap, Shuffle, Filter } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { BookOpen, GraduationCap, Shuffle } from 'lucide-react';
 import { StabilityQuiz } from '@/components/stability/StabilityQuiz';
 import { stabilityQuestions, getQuestionsByCategory, getAllCategories, getRandomQuestions } from '@/data/stabilityQuestions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -217,7 +216,7 @@ export default function StabilityRules() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" size="sm" className="gap-2" onClick={handleBackToRules}>
-              <ArrowLeft className="h-4 w-4" /> Kurallara Dön
+              Kurallara Dön
             </Button>
             <div className="text-sm text-muted-foreground">
               {selectedCategory === 'all' ? 'Tüm Sorular' : 
@@ -238,13 +237,6 @@ export default function StabilityRules() {
   return (
     <MobileLayout>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Link to="/stability">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" /> Geri
-            </Button>
-          </Link>
-        </div>
 
         {/* Quiz Section */}
         <Card>

@@ -1,7 +1,6 @@
 // Force refresh - imports validation
 import { Button } from "@/components/ui/button";
 import { 
-  ArrowLeft, 
   Download, 
   Gauge, 
   Activity, 
@@ -21,7 +20,6 @@ import {
   Package, 
   Droplets 
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -43,7 +41,6 @@ import { LongitudinalStabilityService, LongitudinalResults } from "@/services/lo
 import { LongitudinalStabilityCalculations } from "@/components/calculations/LongitudinalStabilityCalculations";
 
 export default function StabilityLongitudinal() {
-  const navigate = useNavigate();
   const chartRef = useRef<HTMLDivElement>(null);
   const [geometry, setGeometry] = useState<ShipGeometry>({
     length: 180,
@@ -632,11 +629,6 @@ export default function StabilityLongitudinal() {
   return (
     <div className="container mx-auto p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <Button variant="outline" size="sm" className="gap-2" onClick={() => navigate('/stability')}>
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
-        
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">

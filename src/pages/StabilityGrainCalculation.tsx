@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Anchor, AlertCircle, CheckCircle2, XCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Anchor, AlertCircle, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 
 export default function StabilityGrainCalculationPage() {
-  const navigate = useNavigate();
 
   // 1. Stowage Factor Calculations
   const [volume, setVolume] = useState<number>(0);
@@ -216,11 +213,6 @@ export default function StabilityGrainCalculationPage() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex flex-col gap-4">
-        <Button variant="ghost" size="sm" className="gap-2 w-fit" onClick={() => navigate('/stability/calculations')}>
-          <ArrowLeft className="h-4 w-4" />
-          Geri Dön
-        </Button>
-
         <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
           <Card className="border-border/70 shadow-sm">
             <CardHeader className="space-y-4">

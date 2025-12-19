@@ -1,13 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Wind } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Wind } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 
 export default function StabilityWindWeatherPage() {
-  const navigate = useNavigate();
   const [windSpeed, setWindSpeed] = useState<number>(0);
   const [projectedArea, setProjectedArea] = useState<number>(0);
   const [leverArm, setLeverArm] = useState<number>(0);
@@ -31,11 +28,6 @@ export default function StabilityWindWeatherPage() {
 
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate('/stability/calculations')}>
-        <ArrowLeft className="h-4 w-4" />
-        Geri Dön
-      </Button>
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

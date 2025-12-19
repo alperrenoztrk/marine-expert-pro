@@ -281,13 +281,7 @@ export default function NavigationTopicsPage() {
   return (
     <MobileLayout>
       <div className="space-y-6 max-w-3xl mx-auto leading-relaxed break-words" data-no-translate>
-        <div className="flex items-center justify-between">
-          <Link to="/navigation">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Seyir
-            </Button>
-          </Link>
+        <div className="flex items-center justify-end">
           <div className="text-sm text-muted-foreground flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Konu Anlatımı • v2.1

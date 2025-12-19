@@ -185,14 +185,6 @@ export default function EmissionQuiz() {
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto px-6 py-12">
-        <div className="mb-8">
-          <Link to="/calculations">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-card/50">
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Button>
-          </Link>
-        </div>
 
         <div className="text-center mb-8 animate-fade-in">
           <div className="inline-flex items-center justify-center p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl mb-4">

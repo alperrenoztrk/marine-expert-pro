@@ -97,18 +97,8 @@ export default function LocationSelector() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-card p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => navigate(returnTo)}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Geri
-          </Button>
+        <div className="flex items-center justify-center">
           <h1 className="text-2xl font-bold text-foreground">Konum Seçici</h1>
-          <div></div>
         </div>
 
         {/* Current Location */}
