@@ -205,55 +205,64 @@ const MaritimeNews = () => {
                     Bu kaynaktan haber alınamadı.
                   </div>
                 ) : (
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {group.items.map((it) => (
-                      <div
+                      <a
                         key={it.link}
-                        className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-3 sm:flex-row sm:items-start"
+                        href={it.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
                       >
-                        <div className="w-full sm:w-32">
+                        {/* Görsel */}
+                        <div className="relative h-44 w-full overflow-hidden bg-slate-800">
                           {it.imageUrl ? (
-                            <div className="relative h-24 overflow-hidden rounded-md border border-white/10 bg-black/30 shadow-inner">
+                            <>
                               <img
                                 src={it.imageUrl}
                                 alt={it.title}
-                                className="h-full w-full object-cover"
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="lazy"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  if (target.nextElementSibling) {
+                                    target.nextElementSibling.classList.remove('hidden');
+                                  }
+                                }}
                               />
-                            </div>
+                              <div className="hidden absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+                                <span className="text-xs text-white/40">Görsel yüklenemedi</span>
+                              </div>
+                            </>
                           ) : (
-                            <div className="flex h-24 items-center justify-center rounded-md border border-white/10 bg-white/5 text-xs text-white/50">
-                              Görsel bulunamadı
+                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+                              <span className="text-xs text-white/40">Görsel yok</span>
                             </div>
                           )}
+                          {/* Kaynak etiketi */}
+                          <div className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                            {it.source}
+                          </div>
                         </div>
 
-                        <div className="min-w-0 flex-1 space-y-2">
-                          {it.publishedAt ? (
-                            <div className="text-xs text-white/60">{formatDateTR(it.publishedAt)}</div>
-                          ) : null}
-                          <a
-                            href={it.link}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="block text-base font-semibold text-white hover:underline"
-                          >
+                        {/* İçerik */}
+                        <div className="flex flex-1 flex-col p-4">
+                          {it.publishedAt && (
+                            <span className="mb-2 text-xs text-white/50">{formatDateTR(it.publishedAt)}</span>
+                          )}
+                          <h3 className="line-clamp-3 text-sm font-semibold leading-snug text-white group-hover:text-blue-300">
                             {it.title}
-                          </a>
-                          {it.summary ? <p className="text-sm text-white/75">{it.summary}</p> : null}
+                          </h3>
+                          {it.summary && (
+                            <p className="mt-2 line-clamp-2 text-xs text-white/60">{it.summary}</p>
+                          )}
+                          <div className="mt-auto flex items-center gap-1 pt-3 text-xs text-blue-400">
+                            <span>Haberi oku</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </div>
                         </div>
-
-                        <Button
-                          asChild
-                          size="icon"
-                          variant="outline"
-                          className="mt-1 shrink-0 border-white/15 bg-transparent text-white hover:bg-white/10 sm:mt-0"
-                        >
-                          <a href={it.link} target="_blank" rel="noreferrer" aria-label="Haberi aç">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      </div>
+                      </a>
                     ))}
                   </div>
                 )}
