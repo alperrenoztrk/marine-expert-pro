@@ -25,7 +25,7 @@ const navigationHierarchy: Record<string, string> = {
   
   // Navigation menu pages
   '/navigation-menu': '/',
-  '/navigation-topics': '/navigation-menu',
+  
   '/navigation-formulas': '/navigation-menu',
   '/navigation-quiz': '/navigation-menu',
   '/navigation-assistant': '/navigation-menu',
@@ -33,7 +33,7 @@ const navigationHierarchy: Record<string, string> = {
   
   // Stability menu pages
   '/stability': '/',
-  '/stability-topics': '/stability',
+  
   '/stability-formulas': '/stability',
   '/stability-quiz': '/stability',
   '/stability-assistant': '/stability',
@@ -41,33 +41,6 @@ const navigationHierarchy: Record<string, string> = {
   '/stability-analysis': '/stability',
   '/stable-tales': '/stability',
   
-  // Stability topics
-  '/stability-topics/transverse': '/stability-topics',
-  '/stability-topics/longitudinal': '/stability-topics',
-  '/stability-topics/trim-list': '/stability-topics',
-  '/stability-topics/gm': '/stability-topics',
-  '/stability-topics/gz': '/stability-topics',
-  '/stability-topics/gz-curve': '/stability-topics',
-  '/stability-topics/displacement': '/stability-topics',
-  '/stability-topics/draft': '/stability-topics',
-  '/stability-topics/tpc': '/stability-topics',
-  '/stability-topics/hydrostatic': '/stability-topics',
-  '/stability-topics/bonjean': '/stability-topics',
-  '/stability-topics/free-surface': '/stability-topics',
-  '/stability-topics/weight-shift': '/stability-topics',
-  '/stability-topics/passenger-shift': '/stability-topics',
-  '/stability-topics/wind-heel': '/stability-topics',
-  '/stability-topics/turning-heel': '/stability-topics',
-  '/stability-topics/list': '/stability-topics',
-  '/stability-topics/loll': '/stability-topics',
-  '/stability-topics/damage': '/stability-topics',
-  '/stability-topics/grain': '/stability-topics',
-  '/stability-topics/roll-period': '/stability-topics',
-  '/stability-topics/imo-criteria': '/stability-topics',
-  '/stability-topics/gz-imo': '/stability-topics',
-  '/stability-topics/inclination-test': '/stability-topics',
-  '/stability-topics/shearing-bending': '/stability-topics',
-  '/stability-topics/wind-weather': '/stability-topics',
   
   // Stability practical pages
   '/stability-practical': '/stability',
@@ -144,7 +117,7 @@ const navigationHierarchy: Record<string, string> = {
   
   // Seamanship menu pages
   '/seamanship-menu': '/',
-  '/seamanship-topics': '/seamanship-menu',
+  
   '/sailor-knots': '/seamanship-menu',
   
   // Weather pages

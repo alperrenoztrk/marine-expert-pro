@@ -19,8 +19,6 @@ import WeatherMenu from "./pages/WeatherMenu";
 import NavigationMenu from "./pages/NavigationMenu";
 import EconomicsMenu from "./pages/EconomicsMenu";
 import SeamanshipMenu from "./pages/SeamanshipMenu";
-import SeamanshipTopicsPage from "./pages/SeamanshipTopics";
-import SeamanshipTopicButtons from "./pages/SeamanshipTopicButtons";
 import TankMenu from "./pages/TankMenu";
 import SOLASMenu from "./pages/SOLASMenu";
 import Navigation from "./pages/Navigation";
@@ -46,10 +44,10 @@ import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
-import StabilityTopicsPage from "./pages/StabilityTopics";
+
 import StabilityFormulaDetailPage from "./pages/StabilityFormulaDetail";
 import NavigationFormulasPage from "./pages/NavigationFormulas";
-import NavigationTopicsPage from "./pages/NavigationTopics";
+
 import DetailedMeteorology from "./pages/DetailedMeteorology";
 import COLREGPresentation from "./pages/COLREGPresentation";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
@@ -76,7 +74,7 @@ import HydrodynamicsPage from "./pages/Hydrodynamics";
 import StructuralCalculationsPage from "./pages/StructuralCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 import EmissionCalculationsPage from "./pages/EmissionCalculationsPage";
-import EmissionTopics from "./pages/EmissionTopics";
+
 import EmissionFormulas from "./pages/EmissionFormulas";
 import EmissionRules from "./pages/EmissionRules";
 import EmissionAssistant from "./pages/EmissionAssistant";
@@ -91,7 +89,7 @@ import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
-import CargoTopicsPage from "./pages/CargoTopics";
+
 import CargoRulesPage from "./pages/CargoRules";
 import CargoAssistantPage from "./pages/CargoAssistant";
 import CargoQuizPage from "./pages/CargoQuiz";
@@ -104,7 +102,7 @@ import SeamanshipFormulasPage from "./pages/SeamanshipFormulas";
 import SeamanshipRulesPage from "./pages/SeamanshipRules";
 import SeamanshipAssistantPage from "./pages/SeamanshipAssistant";
 import SeamanshipQuizPage from "./pages/SeamanshipQuiz";
-import SafetyTopicsPage from "./pages/SafetyTopics";
+
 import SafetyFormulasPage from "./pages/SafetyFormulas";
 import SafetyRulesPage from "./pages/SafetyRules";
 import SafetyAssistantPage from "./pages/SafetyAssistant";
@@ -114,7 +112,7 @@ import MachineCalculationsPage from "./pages/MachineCalculationsPage";
 import MachineFormulasPage from "./pages/MachineFormulas";
 import MachineQuizPage from "./pages/MachineQuiz";
 import MachineRulesPage from "./pages/MachineRules";
-import MachineTopicsPage from "./pages/MachineTopics";
+
 import WidgetPage from "./pages/WidgetPage";
 import MaritimeNews from "./pages/MaritimeNews";
 import ModuleSectionsPage from "./pages/ModuleSectionsPage";
@@ -163,7 +161,7 @@ const AnimatedRoutes = () => {
         <Route path="/stability/practical/tank" element={<PageTransition><StabilityPracticalTankPage /></PageTransition>} />
         <Route path="/stability/practical/fwa" element={<PageTransition><StabilityPracticalFWAPage /></PageTransition>} />
         <Route path="/stability/practical/ghm" element={<PageTransition><StabilityPracticalGHMPage /></PageTransition>} />
-        <Route path="/stability/topics" element={<PageTransition><StabilityTopicsPage /></PageTransition>} />
+        
         <Route path="/stability/quiz" element={<PageTransition><StabilityQuizPage /></PageTransition>} />
         <Route path="/stability/shearing-bending" element={<PageTransition><StabilityShearingBendingPage /></PageTransition>} />
         <Route path="/stability/grain-calculation" element={<PageTransition><StabilityGrainCalculationPage /></PageTransition>} />
@@ -176,7 +174,7 @@ const AnimatedRoutes = () => {
         <Route path="/tank" element={<PageTransition><TankCalculationsPage /></PageTransition>} />
         <Route path="/cargo/calculations" element={<PageTransition><DraftSurveyCalculator /></PageTransition>} />
         <Route path="/cargo/formulas" element={<PageTransition><DraftSurveyStandard /></PageTransition>} />
-        <Route path="/cargo/topics" element={<PageTransition><CargoTopicsPage /></PageTransition>} />
+        
         <Route path="/cargo/rules" element={<PageTransition><CargoRulesPage /></PageTransition>} />
         <Route path="/cargo/assistant" element={<PageTransition><CargoAssistantPage /></PageTransition>} />
         <Route path="/cargo/quiz" element={<PageTransition><CargoQuizPage /></PageTransition>} />
@@ -190,7 +188,7 @@ const AnimatedRoutes = () => {
         <Route path="/structural" element={<PageTransition><StructuralCalculationsPage /></PageTransition>} />
         <Route path="/special-ships" element={<PageTransition><SpecialShipCalculationsPage /></PageTransition>} />
         <Route path="/emissions" element={<PageTransition><EmissionCalculationsPage /></PageTransition>} />
-        <Route path="/environment/topics" element={<PageTransition><EmissionTopics /></PageTransition>} />
+        
         <Route path="/environment/calculations" element={<PageTransition><EmissionCalculationsPage /></PageTransition>} />
         <Route path="/environment/formulas" element={<PageTransition><EmissionFormulas /></PageTransition>} />
         <Route path="/environment/rules" element={<PageTransition><EmissionRules /></PageTransition>} />
@@ -205,20 +203,18 @@ const AnimatedRoutes = () => {
         <Route path="/navigation-menu" element={<PageTransition><NavigationMenu /></PageTransition>} />
         <Route path="/economics-menu" element={<PageTransition><EconomicsMenu /></PageTransition>} />
         <Route path="/seamanship-menu" element={<PageTransition><SeamanshipMenu /></PageTransition>} />
-        <Route path="/seamanship/topics-menu" element={<PageTransition><SeamanshipTopicButtons /></PageTransition>} />
-        <Route path="/seamanship/topics" element={<PageTransition><SeamanshipTopicsPage /></PageTransition>} />
         <Route path="/seamanship/knots" element={<PageTransition><SailorKnotsPage /></PageTransition>} />
         <Route path="/seamanship/calculations" element={<PageTransition><SeamanshipCalculationsPage /></PageTransition>} />
         <Route path="/seamanship/formulas" element={<PageTransition><SeamanshipFormulasPage /></PageTransition>} />
         <Route path="/seamanship/rules" element={<PageTransition><SeamanshipRulesPage /></PageTransition>} />
         <Route path="/seamanship/assistant" element={<PageTransition><SeamanshipAssistantPage /></PageTransition>} />
         <Route path="/seamanship/quiz" element={<PageTransition><SeamanshipQuizPage /></PageTransition>} />
-        <Route path="/safety/topics" element={<PageTransition><SafetyTopicsPage /></PageTransition>} />
+        
         <Route path="/safety/formulas" element={<PageTransition><SafetyFormulasPage /></PageTransition>} />
         <Route path="/safety/rules" element={<PageTransition><SafetyRulesPage /></PageTransition>} />
         <Route path="/safety/assistant" element={<PageTransition><SafetyAssistantPage /></PageTransition>} />
         <Route path="/safety/quiz" element={<PageTransition><SafetyQuizPage /></PageTransition>} />
-        <Route path="/machine/topics" element={<PageTransition><MachineTopicsPage /></PageTransition>} />
+        
         <Route path="/machine/calculations" element={<PageTransition><MachineCalculationsPage /></PageTransition>} />
         <Route path="/machine/formulas" element={<PageTransition><MachineFormulasPage /></PageTransition>} />
         <Route path="/machine/rules" element={<PageTransition><MachineRulesPage /></PageTransition>} />
@@ -229,7 +225,7 @@ const AnimatedRoutes = () => {
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
         <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
-        <Route path="/navigation/topics" element={<PageTransition><NavigationTopicsPage /></PageTransition>} />
+        
         <Route path="/navigation/meteorology" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
         <Route path="/navigation/colreg-presentation" element={<PageTransition><COLREGPresentation /></PageTransition>} />
         <Route path="/navigation/assistant" element={<PageTransition><NavigationAssistantPage /></PageTransition>} />

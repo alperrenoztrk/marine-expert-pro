@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Compass, Calculator, Sigma, FileText } from "lucide-react";
+import { Compass, Calculator, Sigma } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type CalcItem = { id: string; title: string; subtitle?: string };
@@ -41,12 +41,6 @@ const Navigation = () => {
               <Button variant="secondary" size="sm" className="gap-2">
                 <Sigma className="h-4 w-4" />
                 Formüller
-              </Button>
-            </Link>
-            <Link to="/navigation/topics">
-              <Button variant="default" size="sm" className="gap-2">
-                <FileText className="h-4 w-4" />
-                Konu Anlatımı
               </Button>
             </Link>
           </div>

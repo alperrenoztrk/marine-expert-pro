@@ -418,15 +418,6 @@ const DetailedMeteorology = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
         <div className="max-w-7xl mx-auto space-y-6">
           
-          {/* Back Button */}
-          <div className="flex items-center gap-3">
-            <Link to="/navigation/topics">
-              <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-100 dark:hover:bg-blue-900">
-                <ArrowLeft className="h-4 w-4" />
-                Seyir Konu Anlatımı
-              </Button>
-            </Link>
-          </div>
 
           {/* Header */}
           <div className="text-center space-y-4">
