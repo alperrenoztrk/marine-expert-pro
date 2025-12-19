@@ -1,22 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Knot3DViewer from '@/components/Knot3DViewer';
 import KnotBabylonViewer from '@/components/KnotBabylonViewer';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 
 export default function SailorKnotsPage() {
 
   return (
     <div className="min-h-screen p-4 md:p-8" data-no-translate>
       <div className="max-w-6xl mx-auto">
-        <div className="mb-6 flex items-center justify-between">
-          <Link to="/seamanship-menu">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Button>
-          </Link>
+        <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold">Gemici Bağları — 3D</h1>
         </div>
 

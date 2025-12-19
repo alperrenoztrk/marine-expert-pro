@@ -38,13 +38,7 @@ export default function CalculationSectionPage() {
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-10 space-y-6">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" asChild>
-            <Link to="/calculations" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Ana merkeze dön
-            </Link>
-          </Button>
+        <div className="flex items-center justify-end">
           {section.href && !fallback && (
             <Button asChild>
               <Link to={section.href} className="gap-2">

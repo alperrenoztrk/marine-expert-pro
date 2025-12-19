@@ -1,21 +1,12 @@
 import React from 'react';
 import { MobileLayout } from '@/components/MobileLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, GraduationCap, Info } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { GraduationCap, Info } from 'lucide-react';
 
 export default function StabilityRulesBasic() {
   return (
     <MobileLayout>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Link to="/stability">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" /> Geri
-            </Button>
-          </Link>
-        </div>
 
         <Card>
           <CardHeader>
