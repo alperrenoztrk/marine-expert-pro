@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,8 +7,6 @@ import { ShipGeometry } from "@/types/hydrostatic";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
 
 export default function StabilityGrainPlaceholder() {
-  const navigate = useNavigate();
-  
   // Temel ve İleri mod seçimi
   const [basicMode, setBasicMode] = useState<boolean>(true);
   const [advancedMode, setAdvancedMode] = useState<boolean>(false);
@@ -44,11 +40,6 @@ export default function StabilityGrainPlaceholder() {
 
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <Button variant="outline" size="sm" className="gap-2" onClick={() => navigate('/stability')}>
-        <ArrowLeft className="h-4 w-4" />
-        Geri Dön
-      </Button>
-
       <Card>
         <CardHeader>
           <CardTitle>Tahıl Stabilitesi (SOLAS VI)</CardTitle>

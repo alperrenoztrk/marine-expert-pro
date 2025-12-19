@@ -1,8 +1,6 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Ship, Anchor, Shield } from "lucide-react";
+import { Ship, Anchor, Shield } from "lucide-react";
 
 export default function SpecialShipsMenu() {
   const items = [
@@ -20,15 +18,6 @@ export default function SpecialShipsMenu() {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        <div className="mb-8">
-          <Link to="/calculations">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-card/50">
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Button>
-          </Link>
-        </div>
-
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent mb-3">
             Özel Gemiler Hesaplamaları

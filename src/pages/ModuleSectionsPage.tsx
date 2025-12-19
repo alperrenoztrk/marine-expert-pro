@@ -47,16 +47,6 @@ export function ModuleSectionsPage({ categoryId, backHref = "/calculations" }: M
       </div>
 
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-8">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="gap-2" asChild>
-            <Link to={backHref}>
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Link>
-          </Button>
-          <div className="h-px flex-1 bg-gradient-to-r from-border/80 via-border/40 to-transparent" aria-hidden />
-        </div>
-
         <header className="space-y-3">
           <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">{category.badge ?? "Modül"}</p>
           <h1 className="text-4xl font-black leading-tight text-foreground sm:text-5xl">{category.title}</h1>

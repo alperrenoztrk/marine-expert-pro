@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Droplets, ArrowLeft } from "lucide-react";
+import { Droplets } from "lucide-react";
 
 export default function BallastMenu(){
   const items = [
@@ -17,15 +16,6 @@ export default function BallastMenu(){
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        <div className="mb-8">
-          <Link to="/calculations">
-            <Button variant="ghost" size="sm" className="gap-2 hover:bg-white/50 dark:hover:bg-slate-900/40">
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Button>
-          </Link>
-        </div>
-
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent mb-3">
             Balast Hesaplamaları
