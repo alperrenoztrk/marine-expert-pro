@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Anchor, BookOpen, Brain, Calculator, CloudSun, Compass, Leaf, ListChecks, Package, Shield, Ship, Sigma, TrendingUp, Wrench } from "lucide-react";
 
-export type SectionId = "topics" | "calculations" | "formulas" | "rules" | "assistant" | "quiz";
+export type SectionId = "calculations" | "formulas" | "rules" | "assistant" | "quiz";
 export type CategoryId =
   | "stability"
   | "navigation"
@@ -53,7 +53,6 @@ export interface CategoryConfig {
 }
 
 export const sectionIconMap: Record<SectionId, LucideIcon> = {
-  topics: BookOpen,
   calculations: Calculator,
   formulas: Sigma,
   rules: BookOpen,
@@ -72,15 +71,6 @@ export const calculationCategories: CategoryConfig[] = [
     status: "live",
     ctaLabel: "Stabilite merkezine git",
     sections: [
-      {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Temel ve ileri stabilite dersleri",
-        status: "live",
-        badge: "Hazır",
-        ctaLabel: "Derslere git",
-        href: "/stability/topics",
-      },
       {
         id: "calculations",
         label: "Hesaplamalar",
@@ -135,14 +125,6 @@ export const calculationCategories: CategoryConfig[] = [
     ctaLabel: "Seyir merkezine git",
     sections: [
       {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Güncel seyir doktrinleri ve vaka analizleri",
-        status: "live",
-        badge: "Hazır",
-        href: "/navigation/topics",
-      },
-      {
         id: "calculations",
         label: "Hesaplamalar",
         description: "Rota, ETA, yakıt ve gök cisimleri",
@@ -196,14 +178,6 @@ export const calculationCategories: CategoryConfig[] = [
     ctaLabel: "Kargo menüsü",
     sections: [
       {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Yükleme öncesi prosedürler ve saha akışı",
-        status: "live",
-        badge: "Hazır",
-        href: "/cargo/topics",
-      },
-      {
         id: "calculations",
         label: "Hesaplamalar",
         description: "Draft survey ve yükleme hesap modülleri",
@@ -255,14 +229,6 @@ export const calculationCategories: CategoryConfig[] = [
     status: "live",
     ctaLabel: "Meteoroloji menüsü",
     sections: [
-      {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Detaylı meteoroloji ve oşinografi dersleri",
-        status: "live",
-        badge: "Hazır",
-        href: "/meteorology/topics",
-      },
       {
         id: "calculations",
         label: "Hesaplamalar",
@@ -316,14 +282,6 @@ export const calculationCategories: CategoryConfig[] = [
     ctaLabel: "Gemicilik menüsü",
     sections: [
       {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Gemicilik konu başlıkları ve görsel anlatımlar",
-        status: "live",
-        badge: "Hazır",
-        href: "/seamanship/topics",
-      },
-      {
         id: "calculations",
         label: "Hesaplamalar",
         description: "Palamar yükü, zincir katenary ve römorkör kuvvetleri",
@@ -375,14 +333,6 @@ export const calculationCategories: CategoryConfig[] = [
     status: "info",
     ctaLabel: "Emniyet menüsü",
     sections: [
-      {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "SMS, muster organizasyonu ve izinli işler",
-        status: "live",
-        badge: "Hazır",
-        href: "/safety/topics",
-      },
       {
         id: "calculations",
         label: "Hesaplamalar",
@@ -436,14 +386,6 @@ export const calculationCategories: CategoryConfig[] = [
     ctaLabel: "Makine menüsü",
     sections: [
       {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Makine dairesi sistemlerine hızlı, pratik bakış",
-        status: "live",
-        badge: "Hazır",
-        href: "/machine/topics",
-      },
-      {
         id: "calculations",
         label: "Hesaplamalar",
         description: "Yakıt tüketimi, SFOC, güç/enerji ve bakım KPI’ları",
@@ -495,14 +437,6 @@ export const calculationCategories: CategoryConfig[] = [
     status: "live",
     ctaLabel: "Çevre menüsü",
     sections: [
-      {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Gemide çevre yönetimi: emisyon, atık, balast, kayıtlar",
-        status: "live",
-        badge: "Hazır",
-        href: "/environment/topics",
-      },
       {
         id: "calculations",
         label: "Hesaplamalar",
@@ -563,13 +497,6 @@ export const calculationCategories: CategoryConfig[] = [
         badge: "Hazır",
         ctaLabel: "Hesapla",
         href: "/economics",
-      },
-      {
-        id: "topics",
-        label: "Konu Anlatımı",
-        description: "Navlun ekonomisi, yakıt ve operasyon ipuçları",
-        status: "upcoming",
-        badge: "Yakında",
       },
       {
         id: "formulas",
