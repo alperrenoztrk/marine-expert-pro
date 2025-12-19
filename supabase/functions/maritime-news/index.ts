@@ -266,24 +266,38 @@ serve(async (req) => {
   try {
     const url = new URL(req.url);
 
-    let limit = Number(url.searchParams.get("limit") || "30");
+    const limitRaw = Number(url.searchParams.get("limit") || "NaN");
+    let limit = limitRaw;
+    let perSourceLimit = Number(url.searchParams.get("perSourceLimit") || "NaN");
     if (req.method === "POST") {
       try {
         const body = await req.json();
         if (body && typeof body.limit !== "undefined") limit = Number(body.limit);
+        if (body && typeof body.perSourceLimit !== "undefined") perSourceLimit = Number(body.perSourceLimit);
       } catch {
         // ignore invalid json
       }
     }
 
-    if (!Number.isFinite(limit)) limit = 30;
-    limit = Math.max(5, Math.min(80, Math.trunc(limit)));
+    const sourceCount = FEEDS.length || 1;
+    if (!Number.isFinite(perSourceLimit)) perSourceLimit = 10;
+    perSourceLimit = Math.max(5, Math.min(25, Math.trunc(perSourceLimit)));
+
+    if (!Number.isFinite(limit)) limit = perSourceLimit * sourceCount;
+    limit = Math.max(5, Math.min(perSourceLimit * sourceCount, Math.trunc(limit)));
 
     const results = await Promise.all(
       FEEDS.map(async (feed) => {
         try {
           const xml = await fetchWithTimeout(feed.url, 12_000);
-          const items = parseRssOrAtom(xml, feed.name).map((i) => ({ ...i, source: feed.name }));
+          const items = parseRssOrAtom(xml, feed.name)
+            .map((i) => ({ ...i, source: feed.name }))
+            .sort((a, b) => {
+              const aTs = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+              const bTs = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+              return bTs - aTs;
+            })
+            .slice(0, perSourceLimit);
           return { feed, items, error: null as string | null };
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);

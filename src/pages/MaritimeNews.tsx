@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -29,7 +29,7 @@ const MaritimeNews = () => {
 
   const query = useQuery({
     queryKey: ["maritime-news"],
-    queryFn: () => fetchMaritimeNews(40),
+    queryFn: () => fetchMaritimeNews({ perSourceLimit: 10 }),
     // Avoid "empty list cached all day" when upstream feeds temporarily fail.
     staleTime: 10 * 60 * 1000,
     refetchInterval: (q) => (q.state.data?.items?.length ? false : 60 * 1000),
@@ -40,6 +40,38 @@ const MaritimeNews = () => {
   const items = query.data?.items ?? [];
   const sourceErrors = query.data?.errors ?? [];
   const fetchedAt = query.data?.fetchedAt;
+  const sources = query.data?.sources ?? [];
+  const perSourceLimit = 10;
+
+  const errorBySource = useMemo(() => {
+    const map = new Map<string, string>();
+    sourceErrors.forEach((e) => map.set(e.source, e.error));
+    return map;
+  }, [sourceErrors]);
+
+  const groupedItems = useMemo(() => {
+    const bySource = new Map<string, typeof items>();
+    items.forEach((it) => {
+      const list = bySource.get(it.source) ?? [];
+      if (list.length < perSourceLimit) {
+        list.push(it);
+        bySource.set(it.source, list);
+      }
+    });
+
+    const definedSources = sources.map((src) => ({
+      id: src.id,
+      name: src.name,
+      url: src.url,
+      items: (bySource.get(src.name) ?? []).slice(0, perSourceLimit),
+    }));
+
+    const unknownSources = Array.from(bySource.entries())
+      .filter(([source]) => !sources.find((s) => s.name === source))
+      .map(([source, list]) => ({ id: source, name: source, url: "", items: list.slice(0, perSourceLimit) }));
+
+    return [...definedSources, ...unknownSources].filter((group) => group.items.length > 0 || errorBySource.has(group.name));
+  }, [items, sources, perSourceLimit, errorBySource]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -126,7 +158,7 @@ const MaritimeNews = () => {
               {query.error instanceof Error ? query.error.message : "Bilinmeyen hata"}
             </div>
           </Card>
-        ) : items.length === 0 ? (
+        ) : groupedItems.length === 0 ? (
           <Card className="border-white/10 bg-white/5 p-4">
             <div className="text-sm text-white/80">
               Şu anda listelenecek haber bulunamadı.
@@ -138,53 +170,93 @@ const MaritimeNews = () => {
             </div>
           </Card>
         ) : (
-          <div className="space-y-3">
-            {items.map((it) => (
-              <Card key={it.link} className="border-white/10 bg-white/5 p-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                  <div className="w-full sm:w-32">
-                    {it.imageUrl ? (
-                      <div className="relative h-24 overflow-hidden rounded-md border border-white/10 bg-black/30 shadow-inner">
-                        <img
-                          src={it.imageUrl}
-                          alt={it.title}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex h-24 items-center justify-center rounded-md border border-white/10 bg-white/5 text-xs text-white/50">
-                        Görsel yok
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="min-w-0 flex-1 space-y-2">
-                    {it.publishedAt ? (
-                      <div className="text-xs text-white/60">{formatDateTR(it.publishedAt)}</div>
+          <div className="space-y-4">
+            {groupedItems.map((group) => (
+              <Card key={group.id} className="border-white/10 bg-white/5 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-1">
+                    <h2 className="text-lg font-semibold text-white">{group.name}</h2>
+                    <p className="text-sm text-white/70">
+                      Her kaynaktan {perSourceLimit} güncel haber. Görseller otomatik olarak çekilir.
+                    </p>
+                    {errorBySource.has(group.name) ? (
+                      <p className="text-xs text-amber-200/80">
+                        Bu kaynak için uyarı: {errorBySource.get(group.name)}
+                      </p>
                     ) : null}
-                    <a
-                      href={it.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block text-base font-semibold text-white hover:underline"
-                    >
-                      {it.title}
-                    </a>
-                    {it.summary ? <p className="text-sm text-white/75">{it.summary}</p> : null}
                   </div>
-
-                  <Button
-                    asChild
-                    size="icon"
-                    variant="outline"
-                    className="mt-1 shrink-0 border-white/15 bg-transparent text-white hover:bg-white/10 sm:mt-0"
-                  >
-                    <a href={it.link} target="_blank" rel="noreferrer" aria-label="Haberi aç">
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </Button>
+                  {group.url ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="border-white/20 bg-transparent text-white hover:bg-white/10"
+                    >
+                      <a href={group.url} target="_blank" rel="noreferrer">
+                        Kaynağa Git
+                      </a>
+                    </Button>
+                  ) : null}
                 </div>
+
+                <Separator className="my-3 bg-white/10" />
+
+                {group.items.length === 0 ? (
+                  <div className="rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white/80">
+                    Bu kaynaktan haber alınamadı.
+                  </div>
+                ) : (
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {group.items.map((it) => (
+                      <div
+                        key={it.link}
+                        className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-3 sm:flex-row sm:items-start"
+                      >
+                        <div className="w-full sm:w-32">
+                          {it.imageUrl ? (
+                            <div className="relative h-24 overflow-hidden rounded-md border border-white/10 bg-black/30 shadow-inner">
+                              <img
+                                src={it.imageUrl}
+                                alt={it.title}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex h-24 items-center justify-center rounded-md border border-white/10 bg-white/5 text-xs text-white/50">
+                              Görsel bulunamadı
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="min-w-0 flex-1 space-y-2">
+                          {it.publishedAt ? (
+                            <div className="text-xs text-white/60">{formatDateTR(it.publishedAt)}</div>
+                          ) : null}
+                          <a
+                            href={it.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block text-base font-semibold text-white hover:underline"
+                          >
+                            {it.title}
+                          </a>
+                          {it.summary ? <p className="text-sm text-white/75">{it.summary}</p> : null}
+                        </div>
+
+                        <Button
+                          asChild
+                          size="icon"
+                          variant="outline"
+                          className="mt-1 shrink-0 border-white/15 bg-transparent text-white hover:bg-white/10 sm:mt-0"
+                        >
+                          <a href={it.link} target="_blank" rel="noreferrer" aria-label="Haberi aç">
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </Card>
             ))}
           </div>
