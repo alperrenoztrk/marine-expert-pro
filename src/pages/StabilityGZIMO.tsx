@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +13,6 @@ import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
 
 export default function StabilityGZIMO() {
-  const navigate = useNavigate();
   const chartRef = useRef<HTMLDivElement>(null);
   
   // Temel ve İleri mod seçimi
@@ -79,11 +77,6 @@ export default function StabilityGZIMO() {
 
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <Button variant="outline" size="sm" className="gap-2" onClick={() => navigate('/stability')}>
-        <ArrowLeft className="h-4 w-4" />
-        Geri Dön
-      </Button>
-
       <Card>
         <CardHeader>
           <CardTitle>GZ Eğrisi ve IMO Kriterleri</CardTitle>

@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StableTalesCalculator } from "@/components/stable-tales/StableTalesCalculator";
 import { PendulumStabilityCalc } from "@/components/stable-tales/PendulumStabilityCalc";
@@ -11,24 +8,8 @@ import { AdvancedSOLASChecker } from "@/components/stable-tales/AdvancedSOLASChe
 import { StabilityReportGenerator } from "@/components/stable-tales/StabilityReportGenerator";
 
 export default function StableTalesPage() {
-  const navigate = useNavigate();
-  
-  const handleBack = () => {
-    navigate('/stability');
-  };
-
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className="gap-2 hover:bg-primary hover:text-primary-foreground transition-colors mb-4" 
-        onClick={handleBack}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Stabilite Menüsüne Dön
-      </Button>
-      
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold gradient-text">
