@@ -173,7 +173,25 @@ function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number) {
   });
 }
 
-export async function fetchMaritimeNews(limit = 30, timeoutMs = 12_000): Promise<MaritimeNewsResponse> {
+export type FetchMaritimeNewsOptions = {
+  /**
+   * Maximum number of articles to keep per source. Defaults to 10 so that each
+   * feed contributes a reasonable slice of headlines with images to the UI.
+   */
+  perSourceLimit?: number;
+  /**
+   * Overall cap for returned items. When omitted, the server will default to
+   * `perSourceLimit * feedCount` to include the requested slice from every
+   * source.
+   */
+  totalLimit?: number;
+};
+
+export async function fetchMaritimeNews(
+  options: FetchMaritimeNewsOptions = {},
+  timeoutMs = 12_000
+): Promise<MaritimeNewsResponse> {
+  const { perSourceLimit = 10, totalLimit } = options;
   // Use direct call to avoid mis-pointing to an old/paused backend project when the generated client URL/key is stale.
   const key = getAnonKey();
   const candidateUrls = getFunctionUrls();
@@ -181,7 +199,7 @@ export async function fetchMaritimeNews(limit = 30, timeoutMs = 12_000): Promise
 
   for (const url of candidateUrls) {
     try {
-      console.info("📰 [MaritimeNews] Requesting:", { url, limit });
+      console.info("📰 [MaritimeNews] Requesting:", { url, totalLimit, perSourceLimit });
 
       const res = await fetchWithTimeout(url, {
         method: "POST",
@@ -190,7 +208,7 @@ export async function fetchMaritimeNews(limit = 30, timeoutMs = 12_000): Promise
           apikey: key,
           authorization: `Bearer ${key}`,
         },
-        body: JSON.stringify({ limit }),
+        body: JSON.stringify({ limit: totalLimit, perSourceLimit }),
       }, timeoutMs);
 
       if (!res.ok) {
