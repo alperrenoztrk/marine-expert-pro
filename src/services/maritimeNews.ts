@@ -15,6 +15,34 @@ export type MaritimeNewsResponse = {
   errors?: Array<{ source: string; error: string }>;
 };
 
+const FALLBACK_NEWS: MaritimeNewsResponse = {
+  fetchedAt: new Date().toISOString(),
+  items: [
+    {
+      title: "Haber servisi geçici olarak kullanılamıyor. Güncel kaynaklara aşağıdaki bağlantılardan ulaşabilirsiniz.",
+      link: "https://www.maritime-executive.com/",
+      source: "Yedek Kaynak",
+      summary:
+        "Supabase haber servisine şu anda ulaşılamıyor. Genel denizcilik haberleri için Maritime Executive, gCaptain ve Splash247 kaynaklarını ziyaret edebilirsiniz.",
+    },
+    {
+      title: "gCaptain – Son Haberler",
+      link: "https://gcaptain.com/",
+      source: "gCaptain",
+    },
+    {
+      title: "Splash247 – Denizcilik Haberleri",
+      link: "https://splash247.com/",
+      source: "Splash247",
+    },
+  ],
+  sources: [
+    { id: "gcaptain", name: "gCaptain", url: "https://gcaptain.com/" },
+    { id: "splash247", name: "Splash247", url: "https://splash247.com/" },
+    { id: "maritime-executive", name: "Maritime Executive", url: "https://www.maritime-executive.com/" },
+  ],
+};
+
 type SupabaseClientInternals = {
   supabaseUrl?: string;
   supabaseKey?: string;
@@ -182,5 +210,11 @@ export async function fetchMaritimeNews(limit = 30, timeoutMs = 12_000): Promise
     }
   }
 
-  throw new Error(`Haber servisi tüm uç noktalarda başarısız oldu. Denenenler: ${errors.join(" | ")}`);
+  console.warn("📰 [MaritimeNews] All endpoints failed, falling back to static content", { errors });
+
+  return {
+    ...FALLBACK_NEWS,
+    fetchedAt: new Date().toISOString(),
+    errors: errors.map((e, i) => ({ source: `Uç nokta ${i + 1}`, error: e })),
+  };
 }
