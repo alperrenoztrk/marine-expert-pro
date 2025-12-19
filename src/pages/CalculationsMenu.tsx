@@ -1,12 +1,21 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { ChevronRight } from "lucide-react";
 
 export default function CalculationsMenu() {
+  const highRefreshRateStyles: CSSProperties = {
+    // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
+    ['--frame-rate' as string]: "120",
+    ['--animation-duration' as string]: "8.33ms",
+    ['--transition-duration' as string]: "16.67ms"
+  };
+
   return (
     <div
       className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 px-4 py-8 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]"
       data-no-translate
+      style={highRefreshRateStyles}
     >
       {/* Background decorations */}
       <div className="pointer-events-none absolute inset-0">
