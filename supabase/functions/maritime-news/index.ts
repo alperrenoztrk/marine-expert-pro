@@ -20,6 +20,7 @@ type NewsItem = {
   publishedAt?: string; // ISO
   source: string;
   summary?: string;
+  imageUrl?: string;
 };
 
 const FEEDS: FeedSource[] = [
@@ -104,6 +105,80 @@ function normalizeLink(link: unknown): string {
   return String(link);
 }
 
+function normalizeImageUrl(value: unknown): string | undefined {
+  if (!value) return undefined;
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+    // Avoid data URIs or relative paths; only allow http(s).
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return undefined;
+  }
+
+  if (Array.isArray(value)) {
+    for (const v of value) {
+      const candidate = normalizeImageUrl(v);
+      if (candidate) return candidate;
+    }
+    return undefined;
+  }
+
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const keys = ["@_url", "@_href", "url", "href", "#text", "__text", "_text"];
+    for (const key of keys) {
+      const candidate = normalizeImageUrl(obj[key]);
+      if (candidate) return candidate;
+    }
+  }
+
+  return undefined;
+}
+
+function extractImageFromHtml(html: string | undefined): string | undefined {
+  if (!html) return undefined;
+  const match = html.match(/<img[^>]+src=["']([^"'>]+)["']/i);
+  if (!match) return undefined;
+  return normalizeImageUrl(match[1]);
+}
+
+function findImageUrl(entry: Record<string, unknown>): string | undefined {
+  // Common RSS/Atom fields
+  const fields = [
+    "media:content",
+    "media:thumbnail",
+    "media:group",
+    "enclosure",
+    "image",
+  ];
+
+  for (const field of fields) {
+    const candidate = normalizeImageUrl(entry[field]);
+    if (candidate) return candidate;
+  }
+
+  // Atom links can include rel="enclosure" with image type
+  const link = entry["link"];
+  if (Array.isArray(link)) {
+    for (const l of link) {
+      if (typeof l === "object" && l && (l as Record<string, unknown>)["@_rel"] === "enclosure") {
+        const candidate = normalizeImageUrl((l as Record<string, unknown>)["@_href"]);
+        if (candidate) return candidate;
+      }
+    }
+  }
+
+  // Try to find the first image in HTML content
+  const htmlFields = ["content:encoded", "description", "summary", "content"];
+  for (const field of htmlFields) {
+    const candidate = extractImageFromHtml(typeof entry[field] === "string" ? (entry[field] as string) : undefined);
+    if (candidate) return candidate;
+  }
+
+  return undefined;
+}
+
 function parseRssOrAtom(xml: string, fallbackSourceName: string): NewsItem[] {
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -127,8 +202,9 @@ function parseRssOrAtom(xml: string, fallbackSourceName: string): NewsItem[] {
         const link = normalizeLink(it?.link);
         const summary = it?.description ? stripHtml(String(it.description)).slice(0, 800) : undefined;
         const publishedAt = toIsoDate(it?.pubDate ?? it?.published ?? it?.updated);
+        const imageUrl = findImageUrl(it ?? {});
         if (!title || !link) return null;
-        return { title, link, summary, publishedAt, source: sourceName } satisfies NewsItem;
+        return { title, link, summary, publishedAt, imageUrl, source: sourceName } satisfies NewsItem;
       })
       .filter(Boolean) as NewsItem[];
   }
@@ -150,8 +226,9 @@ function parseRssOrAtom(xml: string, fallbackSourceName: string): NewsItem[] {
             ? stripHtml(String(e.content)).slice(0, 800)
             : undefined;
         const publishedAt = toIsoDate(e?.published ?? e?.updated);
+        const imageUrl = findImageUrl(e ?? {});
         if (!title || !link) return null;
-        return { title, link, summary, publishedAt, source: sourceName } satisfies NewsItem;
+        return { title, link, summary, publishedAt, imageUrl, source: sourceName } satisfies NewsItem;
       })
       .filter(Boolean) as NewsItem[];
   }
