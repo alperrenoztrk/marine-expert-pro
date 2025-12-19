@@ -134,7 +134,16 @@ function getAnonKey(): string {
   return fallback;
 }
 
-export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsResponse> {
+function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  return fetch(url, { ...init, signal: controller.signal }).finally(() => {
+    clearTimeout(timeout);
+  });
+}
+
+export async function fetchMaritimeNews(limit = 30, timeoutMs = 12_000): Promise<MaritimeNewsResponse> {
   // Use direct call to avoid mis-pointing to an old/paused backend project when the generated client URL/key is stale.
   const key = getAnonKey();
   const candidateUrls = getFunctionUrls();
@@ -144,7 +153,7 @@ export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsRespons
     try {
       console.info("📰 [MaritimeNews] Requesting:", { url, limit });
 
-      const res = await fetch(url, {
+      const res = await fetchWithTimeout(url, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -152,7 +161,7 @@ export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsRespons
           authorization: `Bearer ${key}`,
         },
         body: JSON.stringify({ limit }),
-      });
+      }, timeoutMs);
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
@@ -164,8 +173,12 @@ export async function fetchMaritimeNews(limit = 30): Promise<MaritimeNewsRespons
       return normalizeResponse(data);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      errors.push(`${url}: ${message}`);
-      console.warn("📰 [MaritimeNews] Failed endpoint, trying next", { url, message });
+      const withTimeout =
+        err instanceof DOMException && err.name === "AbortError"
+          ? `Zaman aşımı (${timeoutMs} ms)`
+          : message;
+      errors.push(`${url}: ${withTimeout}`);
+      console.warn("📰 [MaritimeNews] Failed endpoint, trying next", { url, message: withTimeout });
     }
   }
 

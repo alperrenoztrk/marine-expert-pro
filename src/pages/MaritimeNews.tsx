@@ -39,6 +39,7 @@ const MaritimeNews = () => {
 
   const items = query.data?.items ?? [];
   const sourceErrors = query.data?.errors ?? [];
+  const fetchedAt = query.data?.fetchedAt;
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -80,6 +81,9 @@ const MaritimeNews = () => {
             <p className="mt-1 text-sm text-white/70">
               Güncel denizcilik haberleri (RSS). Sola kaydırarak ana sayfaya dönebilirsiniz.
             </p>
+            {fetchedAt ? (
+              <p className="mt-1 text-xs text-white/50">Son güncelleme: {formatDateTR(fetchedAt)}</p>
+            ) : null}
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <Button
