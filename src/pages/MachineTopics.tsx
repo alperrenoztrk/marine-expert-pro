@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Wrench, Fuel, Thermometer, Gauge, Settings, AlertTriangle, Droplets, Wind } from "lucide-react";
@@ -298,13 +299,13 @@ SFOC = Yakıt Tüketimi (g) / Üretilen Güç (kWh)
 
 export default function MachineTopics() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]">
+    <MobileLayout className="relative overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -left-32 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12">
+      <div className="relative z-10 mx-auto max-w-4xl px-3 py-6 sm:px-4 md:px-6">
         <div className="mb-8">
           <Link to="/calculations">
             <Button variant="ghost" size="sm" className="gap-2 hover:bg-card/50">
@@ -374,6 +375,6 @@ export default function MachineTopics() {
           ))}
         </div>
       </div>
-    </div>
+    </MobileLayout>
   );
 }

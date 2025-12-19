@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { MobileLayout } from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Leaf, Ship, Trash2, Droplets, FileCheck, AlertTriangle, Factory, Wind, Recycle } from "lucide-react";
+import { ArrowLeft, Leaf, Trash2, Droplets, FileCheck, Factory, Wind, Recycle } from "lucide-react";
 
 const topics = [
   {
@@ -133,14 +134,22 @@ const topics = [
 
 export default function EmissionTopics() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]">
+    <MobileLayout className="relative overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl" />
         <div className="absolute top-1/3 -left-32 w-80 h-80 bg-green-400/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-12">
+      <div className="relative z-10 mx-auto max-w-4xl px-3 py-6 sm:px-4 md:px-6">
+        <div className="mb-6">
+          <Link to="/environment/calculations">
+            <Button variant="ghost" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Hesaplama Merkezi
+            </Button>
+          </Link>
+        </div>
 
         <div className="text-center mb-12 animate-fade-in">
           <div className="inline-flex items-center justify-center p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl mb-4">
@@ -156,8 +165,8 @@ export default function EmissionTopics() {
 
         <div className="space-y-6">
           {topics.map((topic, index) => (
-            <Card 
-              key={topic.id} 
+            <Card
+              key={topic.id}
               className="overflow-hidden border-border/60 bg-card/85 backdrop-blur-sm animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -184,6 +193,6 @@ export default function EmissionTopics() {
           ))}
         </div>
       </div>
-    </div>
+    </MobileLayout>
   );
 }
