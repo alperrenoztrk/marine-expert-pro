@@ -108,9 +108,14 @@ const MaritimeNews = () => {
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <Card key={i} className="border-white/10 bg-white/5 p-4">
-                <Skeleton className="h-5 w-2/3" />
-                <Skeleton className="mt-3 h-4 w-1/3" />
-                <Skeleton className="mt-3 h-4 w-full" />
+                <div className="flex gap-4">
+                  <Skeleton className="h-24 w-32 rounded-md" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-5 w-2/3" />
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </div>
               </Card>
             ))}
           </div>
@@ -136,8 +141,25 @@ const MaritimeNews = () => {
           <div className="space-y-3">
             {items.map((it) => (
               <Card key={it.link} className="border-white/10 bg-white/5 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                  <div className="w-full sm:w-32">
+                    {it.imageUrl ? (
+                      <div className="relative h-24 overflow-hidden rounded-md border border-white/10 bg-black/30 shadow-inner">
+                        <img
+                          src={it.imageUrl}
+                          alt={it.title}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex h-24 items-center justify-center rounded-md border border-white/10 bg-white/5 text-xs text-white/50">
+                        Görsel yok
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="min-w-0 flex-1 space-y-2">
                     {it.publishedAt ? (
                       <div className="text-xs text-white/60">{formatDateTR(it.publishedAt)}</div>
                     ) : null}
@@ -145,17 +167,18 @@ const MaritimeNews = () => {
                       href={it.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-2 block text-base font-semibold text-white hover:underline"
+                      className="block text-base font-semibold text-white hover:underline"
                     >
                       {it.title}
                     </a>
-                    {it.summary ? <p className="mt-2 text-sm text-white/75">{it.summary}</p> : null}
+                    {it.summary ? <p className="text-sm text-white/75">{it.summary}</p> : null}
                   </div>
+
                   <Button
                     asChild
                     size="icon"
                     variant="outline"
-                    className="shrink-0 border-white/15 bg-transparent text-white hover:bg-white/10"
+                    className="mt-1 shrink-0 border-white/15 bg-transparent text-white hover:bg-white/10 sm:mt-0"
                   >
                     <a href={it.link} target="_blank" rel="noreferrer" aria-label="Haberi aç">
                       <ExternalLink className="h-4 w-4" />

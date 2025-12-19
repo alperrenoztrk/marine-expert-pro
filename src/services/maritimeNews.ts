@@ -6,6 +6,7 @@ export type MaritimeNewsItem = {
   publishedAt?: string;
   source: string;
   summary?: string;
+  imageUrl?: string;
 };
 
 export type MaritimeNewsResponse = {
@@ -86,6 +87,7 @@ function normalizeResponse(data: unknown): MaritimeNewsResponse {
           publishedAt: typeof it["publishedAt"] === "string" ? it["publishedAt"] : undefined,
           source: toStringSafe(it["source"]),
           summary: typeof it["summary"] === "string" ? it["summary"] : undefined,
+          imageUrl: typeof it["imageUrl"] === "string" ? it["imageUrl"] : undefined,
         }))
         .filter((it) => Boolean(it.title && it.link))
     : [];
