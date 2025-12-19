@@ -175,42 +175,30 @@ export const useNavigationHierarchy = () => {
 
   useEffect(() => {
     const navigateToParent = () => {
-      const currentPath = location.pathname;
-      const parentPath = navigationHierarchy[currentPath];
-      
-      if (parentPath) {
-        navigate(parentPath, { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
-    };
+      const historyLength = window.history.length;
+      const parentPath = navigationHierarchy[location.pathname];
 
-    // Handle browser back button
-    const handlePopState = (event: PopStateEvent) => {
-      event.preventDefault();
-      // Push forward again to prevent actual back navigation
-      window.history.pushState(null, '', window.location.href);
-      // Navigate to logical parent
-      navigateToParent();
+      if (historyLength > 1) {
+        navigate(-1);
+        return;
+      }
+
+      if (parentPath && parentPath !== location.pathname) {
+        navigate(parentPath, { replace: true });
+        return;
+      }
+
+      navigate('/', { replace: true });
     };
 
     // Handle mobile back button (Capacitor)
-    let backButtonListener: any;
-    CapacitorApp.addListener('backButton', () => {
-      navigateToParent();
-    }).then(listener => {
+    let backButtonListener: { remove: () => void } | undefined;
+    CapacitorApp.addListener('backButton', navigateToParent).then(listener => {
       backButtonListener = listener;
     });
 
-    // Push initial state
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', handlePopState);
-
     return () => {
-      window.removeEventListener('popstate', handlePopState);
-      if (backButtonListener) {
-        backButtonListener.remove();
-      }
+      backButtonListener?.remove();
     };
   }, [location.pathname, navigate]);
 };
