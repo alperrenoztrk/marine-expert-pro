@@ -104,7 +104,7 @@ import MeteorologyFormulasPage from "./pages/MeteorologyFormulas";
 import MeteorologyRulesPage from "./pages/MeteorologyRules";
 import MeteorologyAssistantPage from "./pages/MeteorologyAssistant";
 import MeteorologyQuizPage from "./pages/MeteorologyQuiz";
-import SeamanshipCalculationsPage from "./pages/SeamanshipCalculations";
+import SeamanshipCalculationsPage, { SeamanshipCalculationDetailPage } from "./pages/SeamanshipCalculations";
 import SeamanshipFormulasPage from "./pages/SeamanshipFormulas";
 import SeamanshipRulesPage from "./pages/SeamanshipRules";
 import SeamanshipAssistantPage from "./pages/SeamanshipAssistant";
@@ -223,6 +223,10 @@ const AnimatedRoutes = () => {
         <Route path="/seamanship-menu" element={<PageTransition><SeamanshipMenu /></PageTransition>} />
         <Route path="/seamanship/knots" element={<PageTransition><SailorKnotsPage /></PageTransition>} />
         <Route path="/seamanship/calculations" element={<PageTransition><SeamanshipCalculationsPage /></PageTransition>} />
+        <Route
+          path="/seamanship/calculations/:tool"
+          element={<PageTransition><SeamanshipCalculationDetailPage /></PageTransition>}
+        />
         <Route path="/seamanship/formulas" element={<PageTransition><SeamanshipFormulasPage /></PageTransition>} />
         <Route path="/seamanship/rules" element={<PageTransition><SeamanshipRulesPage /></PageTransition>} />
         <Route path="/seamanship/assistant" element={<PageTransition><SeamanshipAssistantPage /></PageTransition>} />
