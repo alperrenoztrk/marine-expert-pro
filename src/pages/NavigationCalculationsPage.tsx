@@ -1,4 +1,5 @@
-import { CalculationLayout } from "@/components/layout/CalculationLayout";
+import { MobileLayout } from "@/components/MobileLayout";
+import { CalculationGridScreen } from "@/components/ui/calculation-grid";
 import { CalculationCard } from "@/components/ui/calculation-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -372,18 +373,14 @@ export default function NavigationCalculationsPage() {
   };
 
   return (
-    <CalculationLayout
-      title="Seyir Hesaplamaları"
-      description="Tüm navigasyon hesaplamalarını tek panelde toplayan stabilite arayüzü."
-      icon={Calculator}
-      actions={
-        <Button variant="outline" asChild>
-          <Link to="/navigation">Seyir Modülüne Dön</Link>
-        </Button>
-      }
-      maxWidthClassName="max-w-6xl"
-    >
-      <div className="space-y-6" data-no-translate>
+    <MobileLayout>
+      <CalculationGridScreen
+        eyebrow="Seyir"
+        title="Seyir Hesaplamaları"
+        subtitle="Tüm navigasyon hesaplamalarını tek panelde toplayan arayüz"
+        backHref="/navigation"
+      >
+        <div className="space-y-6" data-no-translate>
         <div className="text-sm text-muted-foreground flex items-center gap-2 justify-end">
           <BookOpen className="h-4 w-4" />
           Hesaplama Rehberi
@@ -1392,7 +1389,8 @@ ${emergencyResults.searchLegNm ? `Search Leg: ${emergencyResults.searchLegNm.toF
         </div>
 
         <Separator />
-      </div>
-    </CalculationLayout>
+        </div>
+      </CalculationGridScreen>
+    </MobileLayout>
   );
 }
