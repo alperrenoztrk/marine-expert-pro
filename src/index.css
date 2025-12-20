@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,28 +12,28 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Maritime color palette */
-    --background: 210 20% 98%;
-    --foreground: 210 12% 16%;
+    --background: 0 0% 100%;
+    --foreground: 265 4% 12.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 12% 16%;
+    --card-foreground: 265 4% 12.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 12% 16%;
+    --popover-foreground: 265 4% 12.9%;
 
-    --primary: 214 84% 42%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 266 4% 20.8%;
+    --primary-foreground: 248 0.3% 98.4%;
     --primary-light: 214 84% 60%;
     --primary-dark: 214 84% 28%;
 
-    --secondary: 204 39% 41%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 248 0.7% 96.8%;
+    --secondary-foreground: 266 4% 20.8%;
 
-    --muted: 210 20% 94%;
-    --muted-foreground: 210 12% 45%;
+    --muted: 248 0.7% 96.8%;
+    --muted-foreground: 257 4.6% 55.4%;
 
-    --accent: 183 84% 39%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 248 0.7% 96.8%;
+    --accent-foreground: 266 4% 20.8%;
 
     /* Theme-aware semantic colors */
     --info: 214 84% 42%;
@@ -38,7 +41,7 @@ All colors MUST be HSL.
     --info-muted: 214 84% 95%;
     --info-muted-foreground: 214 84% 30%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 27 24.5% 57.7%;
     --destructive-foreground: 0 0% 100%;
 
     --warning: 43 96% 56%;
@@ -47,11 +50,11 @@ All colors MUST be HSL.
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 214 84% 42%;
+    --border: 256 1.3% 92.9%;
+    --input: 256 1.3% 92.9%;
+    --ring: 257 4% 70.4%;
 
-    --radius: 0.75rem;
+    --radius: 0.375rem;
 
     /* Maximum performance frame rate settings */
     --frame-rate: 120;
@@ -76,7 +79,7 @@ All colors MUST be HSL.
     --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-deep: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-dark)));
     --gradient-surface: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
-    
+
     /* Shadows */
     --shadow-calculator: 0 8px 32px -4px hsl(var(--primary) / 0.1);
     --shadow-card: 0 4px 16px -2px hsl(var(--primary) / 0.08);
@@ -210,7 +213,7 @@ All colors MUST be HSL.
       font-size: clamp(2.5rem, 8vw, 4rem);
       line-height: 1.1;
     }
-    
+
     .maritime-subtitle {
       font-size: clamp(1rem, 4vw, 1.25rem);
     }
@@ -220,19 +223,57 @@ All colors MUST be HSL.
 
     --sidebar-background: 0 0% 98%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-foreground: 265 4% 12.9%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary: 266 4% 20.8%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-primary-foreground: 248 0.3% 98.4%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent: 248 0.7% 96.8%;
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent-foreground: 266 4% 20.8%;
 
-    --sidebar-border: 220 13% 91%;
+    --sidebar-border: 256 1.3% 92.9%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 257 4% 70.4%;
+
+    --chart-1: 41 22.2% 64.6%;
+
+    --chart-2: 185 11.8% 60%;
+
+    --chart-3: 227 7% 39.8%;
+
+    --chart-4: 84 18.9% 82.8%;
+
+    --chart-5: 70 18.8% 76.9%;
+
+    --sidebar: 248 0.3% 98.4%;
+
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
+
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+    --tracking-normal: 0em;
+
+    --spacing: 0.25rem;
   }
 
   /* Mobile Safe Area Support */
@@ -248,18 +289,18 @@ All colors MUST be HSL.
     html {
       font-size: 14px;
     }
-    
+
     .container {
       padding-left: 1rem;
       padding-right: 1rem;
     }
-    
+
     /* Touch-friendly buttons */
     button, .button {
       min-height: 44px;
       min-width: 44px;
     }
-    
+
     /* Improved scrolling */
     * {
       -webkit-overflow-scrolling: touch;
@@ -275,28 +316,28 @@ All colors MUST be HSL.
 
   .dark {
     /* Navy blue dark theme - no gray tones */
-    --background: 220 45% 6%;
-    --foreground: 210 20% 95%;
+    --background: 0 0% 15%;
+    --foreground: 248 0.3% 98.4%;
 
-    --card: 220 50% 10%;
-    --card-foreground: 210 20% 95%;
+    --card: 266 4% 20.8%;
+    --card-foreground: 248 0.3% 98.4%;
 
-    --popover: 220 50% 10%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 266 4% 20.8%;
+    --popover-foreground: 248 0.3% 98.4%;
 
-    --primary: 214 84% 60%;
-    --primary-foreground: 220 45% 6%;
+    --primary: 256 1.3% 92.9%;
+    --primary-foreground: 266 4% 20.8%;
     --primary-light: 214 84% 70%;
     --primary-dark: 214 84% 40%;
 
-    --secondary: 220 55% 18%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 260 4.1% 27.9%;
+    --secondary-foreground: 248 0.3% 98.4%;
 
-    --muted: 220 50% 14%;
-    --muted-foreground: 210 20% 70%;
+    --muted: 260 4.1% 27.9%;
+    --muted-foreground: 257 4% 70.4%;
 
-    --accent: 214 84% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 260 4.1% 27.9%;
+    --accent-foreground: 248 0.3% 98.4%;
 
     /* Dark theme semantic colors */
     --info: 214 84% 60%;
@@ -304,8 +345,8 @@ All colors MUST be HSL.
     --info-muted: 220 50% 18%;
     --info-muted-foreground: 214 84% 70%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 22 19.1% 70.4%;
+    --destructive-foreground: 248 0.3% 98.4%;
 
     --warning: 43 96% 56%;
     --warning-foreground: 0 0% 15%;
@@ -313,31 +354,43 @@ All colors MUST be HSL.
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    --border: 220 50% 18%;
-    --input: 220 50% 18%;
-    --ring: 214 84% 60%;
+    --border: 0 0% 100% / 10%;
+    --input: 0 0% 100% / 15%;
+    --ring: 264 2.7% 55.1%;
 
     /* Dark mode gradients - navy blue */
     --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-deep: linear-gradient(135deg, hsl(220 55% 12%), hsl(220 60% 20%));
     --gradient-surface: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
-    
+
     /* Dark shadows */
     --shadow-calculator: 0 8px 32px -4px hsl(var(--primary) / 0.2);
     --shadow-card: 0 4px 16px -2px hsl(var(--primary) / 0.15);
     --shadow-button: 0 2px 8px -1px hsl(var(--primary) / 0.2);
 
     --sidebar-background: 220 50% 8%;
-    --sidebar-foreground: 210 20% 95%;
-    --sidebar-primary: 214 84% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 50% 14%;
-    --sidebar-accent-foreground: 210 20% 95%;
-    --sidebar-border: 220 50% 16%;
-    --sidebar-ring: 214 84% 60%;
+    --sidebar-foreground: 248 0.3% 98.4%;
+    --sidebar-primary: 264 24.3% 48.8%;
+    --sidebar-primary-foreground: 248 0.3% 98.4%;
+    --sidebar-accent: 260 4.1% 27.9%;
+    --sidebar-accent-foreground: 248 0.3% 98.4%;
+    --sidebar-border: 0 0% 100% / 10%;
+    --sidebar-ring: 264 2.7% 55.1%;
+    --chart-1: 264 24.3% 48.8%;
+    --chart-2: 162 17% 69.6%;
+    --chart-3: 70 18.8% 76.9%;
+    --chart-4: 304 26.5% 62.7%;
+    --chart-5: 16 24.6% 64.5%;
+    --sidebar: 266 4% 20.8%;
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   }
-
-
 
   /* Nature Theme - Enhanced Green & Brown Pattern (Green Focused) */
   .nature {
@@ -392,7 +445,7 @@ All colors MUST be HSL.
     --gradient-spring: linear-gradient(135deg, hsl(120 70% 55%), hsl(90 70% 50%), hsl(60 70% 45%), hsl(30 70% 40%));
     --gradient-earth: linear-gradient(135deg, hsl(30 60% 45%), hsl(45 60% 50%), hsl(60 60% 55%), hsl(75 60% 60%));
     --gradient-organic: linear-gradient(135deg, hsl(120 70% 40%), hsl(30 60% 45%), hsl(60 60% 50%), hsl(90 60% 55%));
-    
+
   /* Enhanced Nature Green & Brown Shadows */
   --shadow-calculator: 0 8px 32px -4px hsl(120 70% 40% / 0.2), 0 0 20px hsl(90 70% 45% / 0.15);
   --shadow-card: 0 4px 16px -2px hsl(120 70% 40% / 0.15), 0 0 10px hsl(90 70% 45% / 0.1);
@@ -466,7 +519,7 @@ All colors MUST be HSL.
     --gradient-cyber: linear-gradient(135deg, hsl(0 0% 3%), hsl(60 100% 45%), hsl(45 100% 45%), hsl(0 0% 3%));
     --gradient-matrix: linear-gradient(135deg, hsl(60 100% 40%), hsl(60 100% 60%), hsl(60 100% 80%));
     --gradient-warning: linear-gradient(135deg, hsl(45 100% 55%), hsl(60 100% 60%), hsl(30 100% 60%));
-    
+
     /* Cyberpunk Yellow & Black Shadows */
     --shadow-calculator: 0 8px 32px -4px hsl(60 100% 60% / 0.3), 0 0 20px hsl(60 100% 60% / 0.2);
     --shadow-card: 0 4px 16px -2px hsl(45 100% 55% / 0.2), 0 0 10px hsl(45 100% 55% / 0.1);
@@ -654,7 +707,6 @@ All colors MUST be HSL.
     background-color: hsl(120 30% 95%) !important;
   }
 
-
   /* Neon Theme - True Neon Experience with Bright Colors & Glow Effects */
   .neon {
     --background: 0 0% 5%;
@@ -708,7 +760,7 @@ All colors MUST be HSL.
     --gradient-cyber: linear-gradient(135deg, hsl(0 0% 5%), hsl(300 100% 50%), hsl(180 100% 50%), hsl(0 0% 5%));
     --gradient-matrix: linear-gradient(135deg, hsl(120 100% 60%), hsl(120 100% 80%), hsl(120 100% 90%));
     --gradient-warning: linear-gradient(135deg, hsl(300 100% 70%), hsl(180 100% 70%), hsl(60 100% 70%));
-    
+
     /* Intense Neon Glow Shadows */
     --shadow-calculator: 0 8px 32px -4px hsl(300 100% 70% / 0.6), 0 0 30px hsl(300 100% 70% / 0.5), 0 0 60px hsl(300 100% 70% / 0.3);
     --shadow-card: 0 4px 16px -2px hsl(180 100% 70% / 0.5), 0 0 20px hsl(180 100% 70% / 0.4), 0 0 40px hsl(180 100% 70% / 0.2);
@@ -1079,28 +1131,28 @@ All colors MUST be HSL.
       padding-left: 0.75rem;
       padding-right: 0.75rem;
     }
-    
+
     /* Optimize touch targets for mobile */
     button {
       min-height: 44px;
     }
-    
+
     input, select, textarea {
       min-height: 44px;
       font-size: 16px; /* Prevents zoom on iOS */
     }
-    
+
     /* Better spacing for mobile cards */
     .card {
       margin-bottom: 1rem;
     }
-    
+
     /* Optimize tab navigation for mobile */
     [role="tablist"] {
       overflow-x: auto;
       scroll-behavior: smooth;
     }
-    
+
     /* Hide tab scrollbars on mobile but keep swipe */
     [role="tablist"]::-webkit-scrollbar {
       display: none;
@@ -1109,7 +1161,7 @@ All colors MUST be HSL.
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    
+
     /* Better text sizing for mobile */
     h1 { font-size: 1.5rem; }
     h2 { font-size: 1.25rem; }
@@ -1125,12 +1177,12 @@ All colors MUST be HSL.
       padding-right: max(0.75rem, env(safe-area-inset-right));
     }
   }
-  
+
   /* Improved touch scrolling */
   * {
     -webkit-overflow-scrolling: touch;
   }
-  
+
   /* Better focus states for mobile */
   @media (max-width: 768px) {
     input:focus, 
@@ -1526,7 +1578,7 @@ All colors MUST be HSL.
   .neon-billboard {
     padding: 0.75rem;
   }
-  
+
   .neon-text {
     font-size: 1.75rem !important;
     text-shadow: 
@@ -1534,7 +1586,7 @@ All colors MUST be HSL.
       0 0 30px hsl(300 100% 70% / 0.6),
       0 0 45px hsl(60 100% 70% / 0.4) !important;
   }
-  
+
   .billboard-background {
     box-shadow: 
       0 0 25px hsl(180 100% 70% / 0.6),
@@ -1624,7 +1676,7 @@ All colors MUST be HSL.
   .neon-text-interactive {
     touch-action: manipulation !important;
   }
-  
+
   .neon-text-interactive::before,
   .neon-text-interactive::after {
     background: radial-gradient(
