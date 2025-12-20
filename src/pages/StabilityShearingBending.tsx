@@ -1,11 +1,17 @@
-import { useEffect } from "react";
+import { MobileLayout } from "@/components/MobileLayout";
+import { StructuralCalculations } from "@/components/calculations/StructuralCalculations";
+import { CalculationGridScreen } from "@/components/ui/calculation-grid";
 
 export default function StabilityShearingBendingPage() {
-  // Legacy page now redirects into central calculations tab without changing menu buttons
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.location.replace("/stability/calculations#shearBending");
-    }
-  }, []);
-  return null;
+  return (
+    <MobileLayout>
+      <CalculationGridScreen
+        eyebrow="Stabilite"
+        title="Shear Force & Bending Moment"
+        subtitle="Boyuna yük dağılımını analiz edin ve kesme kuvveti ile eğilme momenti diyagramlarını oluşturun"
+      >
+        <StructuralCalculations initialTab="diagrams" />
+      </CalculationGridScreen>
+    </MobileLayout>
+  );
 }
