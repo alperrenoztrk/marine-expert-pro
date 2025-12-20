@@ -1,30 +1,19 @@
-import { IconButton } from "@/components/ui/icon-button";
+import { CalculationGrid, type CalculationGridItem } from "@/components/ui/calculation-grid";
 import { Anchor, Waves, Wind, Shield, AlertTriangle, Activity, Ship } from "lucide-react";
 import React from "react";
 
 export const StabilityCalculations = () => {
-  const calculationMenuItems = [
-    { id: "grain", label: "Tahıl Hesabı", icon: Anchor, path: "/stability/grain-calculation" },
-    { id: "gz-curve", label: "GZ Eğrisi ve Stabilite Kolu", icon: Activity, path: "/stability/gz-curve" },
-    { id: "free-surface", label: "Free Surface Effect", icon: Waves, path: "/stability/free-surface" },
-    { id: "wind-weather", label: "Wind and Weather Stability", icon: Wind, path: "/stability/wind-weather" },
-    { id: "imo-criteria", label: "IMO Stability Criteria", icon: Shield, path: "/stability/imo-criteria" },
-    { id: "shear-bending", label: "Shear Force & Bending Moment", icon: AlertTriangle, path: "/stability/shearing-bending" },
-    { id: "damage", label: "Damage Stability", icon: Ship, path: "/stability/damage" },
+  const calculationMenuItems: CalculationGridItem[] = [
+    { id: "grain", title: "Tahıl Hesabı", icon: Anchor, to: "/stability/grain-calculation" },
+    { id: "gz-curve", title: "GZ Eğrisi ve Stabilite Kolu", icon: Activity, to: "/stability/gz-curve" },
+    { id: "free-surface", title: "Free Surface Effect", icon: Waves, to: "/stability/free-surface" },
+    { id: "wind-weather", title: "Wind and Weather Stability", icon: Wind, to: "/stability/wind-weather" },
+    { id: "imo-criteria", title: "IMO Stability Criteria", icon: Shield, to: "/stability/imo-criteria" },
+    { id: "shear-bending", title: "Shear Force & Bending Moment", icon: AlertTriangle, to: "/stability/shearing-bending" },
+    { id: "damage", title: "Damage Stability", icon: Ship, to: "/stability/damage" },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {calculationMenuItems.map((item, index) => (
-        <IconButton
-          key={item.id}
-          to={item.path}
-          icon={item.icon}
-          label={item.label}
-          variant="primary"
-          animationDelay={index * 100}
-        />
-      ))}
-    </div>
+    <CalculationGrid items={calculationMenuItems} />
   );
 };

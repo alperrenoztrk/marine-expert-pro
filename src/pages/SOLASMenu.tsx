@@ -1,44 +1,21 @@
 import React from "react";
-import { IconButton } from "@/components/ui/icon-button";
+import { CalculationGridScreen, type CalculationGridItem } from "@/components/ui/calculation-grid";
 import { Shield, FileText, Ship, AlertTriangle } from "lucide-react";
 
 export default function SOLASMenu() {
-  const items = [
-    { to: "/solas/regulations", icon: FileText, label: "SOLAS Düzenlemeleri" },
-    { to: "/solas/certificates", icon: Shield, label: "Sertifikalar" },
-    { to: "/solas/ship-requirements", icon: Ship, label: "Gemi Gereksinimleri" },
-    { to: "/solas/safety-equipment", icon: AlertTriangle, label: "Güvenlik Ekipmanları" },
+  const items: CalculationGridItem[] = [
+    { to: "/solas/regulations", icon: FileText, title: "SOLAS Düzenlemeleri" },
+    { to: "/solas/certificates", icon: Shield, title: "Sertifikalar" },
+    { to: "/solas/ship-requirements", icon: Ship, title: "Gemi Gereksinimleri" },
+    { to: "/solas/safety-equipment", icon: AlertTriangle, title: "Güvenlik Ekipmanları" },
   ];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]" data-no-translate>
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -left-32 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-sky-400/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent mb-3">
-            SOLAS
-          </h1>
-          <p className="text-lg text-muted-foreground">Safety of Life at Sea</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {items.map((item, index) => (
-            <IconButton
-              key={item.to}
-              to={item.to}
-              icon={item.icon}
-              label={item.label}
-              variant="primary"
-              animationDelay={index * 100}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+    <CalculationGridScreen
+      eyebrow="Güvenlik"
+      title="SOLAS"
+      subtitle="Safety of Life at Sea"
+      items={items}
+    />
   );
 }
