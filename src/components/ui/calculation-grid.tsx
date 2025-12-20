@@ -18,7 +18,7 @@ interface CalculationGridProps {
 }
 
 const iconContainerStyle =
-  "flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] bg-gradient-to-br from-[#5f7dff] via-[#3f66ff] to-[#2F5BFF] text-white shadow-[0_14px_30px_rgba(47,91,255,0.18)]";
+  "flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] bg-gradient-to-br from-[#5f7dff] via-[#3f66ff] to-[#2F5BFF] text-white shadow-[0_14px_30px_rgba(47,91,255,0.28)]";
 
 export function CalculationGrid({ items, className }: CalculationGridProps) {
   return (
@@ -39,16 +39,16 @@ export function CalculationMenuCard({ title, icon: Icon, to, href, disabled }: C
         <Icon className="h-7 w-7" strokeWidth={2} />
       </div>
       <div className="flex-1">
-        <p className="text-[17px] font-semibold leading-snug text-[#2F5BFF]">{title}</p>
+        <p className="text-[17px] font-semibold leading-snug text-slate-100">{title}</p>
       </div>
     </div>
   );
 
   const sharedClassName = cn(
-    "group block rounded-[22px] border border-white/60 bg-white/90 p-4 shadow-[0_14px_40px_rgba(47,91,255,0.08)] transition-all duration-200",
+    "group block rounded-[22px] border border-slate-800/70 bg-slate-950/70 p-4 shadow-[0_14px_40px_rgba(47,91,255,0.18)] transition-all duration-200 backdrop-blur",
     disabled
       ? "pointer-events-none opacity-60"
-      : "hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(47,91,255,0.12)]",
+      : "hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(47,91,255,0.22)]",
   );
 
   if (to && !disabled) {
@@ -84,20 +84,20 @@ interface CalculationGridScreenProps {
 
 export function CalculationGridScreen({ title, subtitle, eyebrow, items, children }: CalculationGridScreenProps) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-sky-50 to-blue-100 px-4 py-10 sm:px-6 sm:py-14">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-10 sm:px-6 sm:py-14">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 left-8 h-60 w-60 rounded-full bg-blue-200/30 blur-3xl" />
-        <div className="absolute top-24 right-4 h-72 w-72 rounded-full bg-sky-200/25 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-blue-100/40 blur-3xl" />
+        <div className="absolute -top-24 left-8 h-60 w-60 rounded-full bg-sky-500/15 blur-3xl" />
+        <div className="absolute top-24 right-4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-8">
         <header className="space-y-3 text-center">
           {eyebrow && (
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#2F5BFF]/70">{eyebrow}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-400/80">{eyebrow}</p>
           )}
-          <h1 className="text-3xl font-black leading-tight text-[#1d3e8a] sm:text-4xl md:text-[34px]">{title}</h1>
-          {subtitle && <p className="text-base text-slate-600">{subtitle}</p>}
+          <h1 className="text-3xl font-black leading-tight text-slate-50 sm:text-4xl md:text-[34px]">{title}</h1>
+          {subtitle && <p className="text-base text-slate-300">{subtitle}</p>}
         </header>
 
         {children ?? <CalculationGrid items={items ?? []} />}
