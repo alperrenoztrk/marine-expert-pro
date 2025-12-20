@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, ListChecks, Shuffle } from "lucide-react";
+import { Leaf, ListChecks, Shuffle } from "lucide-react";
 
 import { StabilityQuiz as Quiz } from "@/components/stability/StabilityQuiz";
 import { cargoQuestions } from "@/data/cargoQuestions";
@@ -23,16 +23,28 @@ export default function CargoQuizPage() {
   }, [maxCount]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="container mx-auto p-6 space-y-4">
-        <div className="flex items-center justify-between">
-</div>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -left-32 w-80 h-80 bg-green-400/10 rounded-full blur-3xl" />
+      </div>
 
-        <Card>
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-12 space-y-6">
+        <div className="text-center mb-2 animate-fade-in">
+          <div className="inline-flex items-center justify-center p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl mb-4">
+            <Leaf className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+          </div>
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent mb-3">
+            Kargo & Operasyon Quiz
+          </h1>
+          <p className="text-muted-foreground">Draft survey, IMSBC, IMDG ve tahıl bilgilerinizi test edin</p>
+        </div>
+
+        <Card className="border-border/60 bg-card/85 backdrop-blur-sm animate-fade-in">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ListChecks className="h-5 w-5" />
-              Kargo & Operasyon Quiz
+              Soru Havuzu
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -41,7 +53,7 @@ export default function CargoQuizPage() {
               <span>•</span>
               <span>Görüntülenen: {count} soru</span>
               <span>•</span>
-              <span>Draft survey, IMSBC, IMDG, tahıl</span>
+              <span>Karıştırarak pratik yapın</span>
             </div>
 
             <div className="flex flex-wrap gap-2">
