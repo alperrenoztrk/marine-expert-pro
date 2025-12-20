@@ -1,30 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Brain } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { AssistantInterface } from "@/components/AssistantInterface";
 
-import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
+const quickPrompts = [
+  "Yıllık ISM iç denetimi öncesi hazırlık listesi ve doküman kontrolleri neler olmalı?",
+  "Hot work permit verirken risk değerlendirmesi ve gaz ölçüm adımlarını sıralar mısın?",
+  "MOB tatbikatı için köprüüstü ve güverte ekibine verilecek görevleri özetler misin?",
+  "Risk assessment formunda frekans/şiddet matrisini nasıl puanlamalıyım?",
+  "SOLAS gereği abandon ship tatbikatında dikkat edilmesi gereken kritik adımlar nelerdir?",
+  "LOTO uygulanacak makine bakımında kilitleme/etiketleme adımlarını listeleyebilir misin?",
+];
+
+const systemPrompt = `Sen denizcilik güvenliği ve ISM/ISPS uyumu konusunda uzman bir asistansın.
+Risk değerlendirme, tatbikat planlama, permit to work, LOTO ve iç denetim hazırlığı konularında rehberlik verirsin.
+Yanıtlarını Türkçe, madde madde ve uygulanabilir şekilde yaz; SOLAS, ISM, ISPS ve şirket prosedürlerine uygun uyarıları ekle.`;
 
 export default function SafetyAssistantPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center justify-between">
-<div className="text-sm text-muted-foreground flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            Emniyet Asistanı
-          </div>
-        </div>
-
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-rose-600 via-orange-600 to-amber-600 bg-clip-text text-transparent">
-            Emniyet Asistanı
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Risk değerlendirme ve denetim hazırlığı için AI
-          </p>
-        </div>
-
-        <UnifiedMaritimeAssistant />
-      </div>
-    </div>
+    <AssistantInterface
+      title="Emniyet Asistanı"
+      subtitle="Risk değerlendirme ve denetim hazırlığı için destek"
+      badge="Emniyet Asistanı"
+      quickPrompts={quickPrompts}
+      systemPrompt={systemPrompt}
+      placeholder="Emniyet, denetim veya tatbikat planlamasıyla ilgili sorunuzu yazın..."
+      icon={ShieldCheck}
+      accentGradient="from-rose-600 via-orange-600 to-amber-600"
+      iconColor="text-rose-600 dark:text-rose-400"
+    />
   );
 }
+

@@ -1,30 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Brain } from "lucide-react";
+import { ShipWheel } from "lucide-react";
+import { AssistantInterface } from "@/components/AssistantInterface";
 
-import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
+const quickPrompts = [
+  "Ağır hava koşullarında demirleme prosedürü ve kontrol listesi nedir?",
+  "Güverte ekibinin vardiya planını SOLAS ve STCW'ye uygun nasıl düzenlerim?",
+  "Permit to work sürecinde sıcak çalışma için hangi adımları uygulamalıyım?",
+  "Yanaşma manevrasında halat dizilimi ve emniyetli çalışma mesafeleri nelerdir?",
+  "Lashing ekipmanlarının günlük kontrolünde bakılması gereken kritik noktalar hangileri?",
+  "ISM gereği haftalık tatbikat planını nasıl yapılandırmalıyım?",
+];
+
+const systemPrompt = `Sen denizcilik operasyonlarında gemicilik ve güverte yönetimi uzmanı bir asistansın.
+Yanaşma-manavra, demirleme, izinli işler (PTW), vardiya düzeni, bakım ve ISM/SOLAS gereklilikleri hakkında rehberlik verirsin.
+Yanıtlarını Türkçe, adım adım ve sahada uygulanabilir şekilde yaz; güvenlik uyarılarını ve ekipman kontrollerini vurgula.`;
 
 export default function SeamanshipAssistantPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center justify-between">
-<div className="text-sm text-muted-foreground flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            Gemicilik Asistanı
-          </div>
-        </div>
-
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
-            Gemicilik Asistanı
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Vardiya, bakım ve güvenlik için öneri setleri
-          </p>
-        </div>
-
-        <UnifiedMaritimeAssistant />
-      </div>
-    </div>
+    <AssistantInterface
+      title="Gemicilik Asistanı"
+      subtitle="Vardiya, bakım ve operasyonel güvenlik için rehber"
+      badge="Gemicilik Asistanı"
+      quickPrompts={quickPrompts}
+      systemPrompt={systemPrompt}
+      placeholder="Gemicilik, operasyon veya PTW süreçleriyle ilgili sorunuzu yazın..."
+      icon={ShipWheel}
+      accentGradient="from-emerald-600 via-teal-600 to-blue-600"
+      iconColor="text-emerald-600 dark:text-emerald-400"
+    />
   );
 }
+
