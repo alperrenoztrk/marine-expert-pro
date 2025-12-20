@@ -1,5 +1,5 @@
 import { CalculationGrid, type CalculationGridItem } from "@/components/ui/calculation-grid";
-import { Anchor, Waves, Wind, Shield, AlertTriangle, Activity, Ship } from "lucide-react";
+import { Anchor, Waves, Wind, Shield, AlertTriangle, Activity } from "lucide-react";
 import React from "react";
 
 export const StabilityCalculations = () => {
@@ -10,7 +10,6 @@ export const StabilityCalculations = () => {
     { id: "wind-weather", title: "Wind and Weather Stability", icon: Wind, to: "/stability/wind-weather" },
     { id: "imo-criteria", title: "IMO Stability Criteria", icon: Shield, to: "/stability/imo-criteria" },
     { id: "shear-bending", title: "Shear Force & Bending Moment", icon: AlertTriangle, to: "/stability/shearing-bending" },
-    { id: "damage", title: "Damage Stability", icon: Ship, to: "/stability/damage" },
   ];
 
   return (
