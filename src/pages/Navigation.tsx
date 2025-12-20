@@ -1,78 +1,60 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Compass, Calculator, Sigma } from "lucide-react";
+import { MobileLayout } from "@/components/MobileLayout";
+import { CalculationGridScreen, type CalculationGridItem } from "@/components/ui/calculation-grid";
+import {
+  Activity,
+  Anchor,
+  Beaker,
+  Compass,
+  Hourglass,
+  Map,
+  Navigation,
+  Radar,
+  ShipWheel,
+  Sigma,
+  Waves,
+  Wind,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
-type CalcItem = { id: string; title: string; subtitle?: string };
-
-const calcItems: CalcItem[] = [
-  { id: "gc", title: "Büyük Daire (Great Circle)", subtitle: "En kısa rota ve ilk kerteriz" },
-  { id: "rhumb", title: "Rhumb Line (Mercator)", subtitle: "Sabit kerterizli rota" },
-  { id: "plane", title: "Plane Sailing", subtitle: "dLat, Dep, mesafe ve kurs" },
-  { id: "eta", title: "Zaman ve ETA", subtitle: "Süre ve varış zamanı" },
-  { id: "current", title: "Akıntı Üçgeni (CTS)", subtitle: "Steer course ve SOG" },
-  { id: "compass", title: "Pusula Dönüşümleri", subtitle: "Var, Dev, toplam hata" },
-  { id: "cpa", title: "CPA / TCPA", subtitle: "En yakın yaklaşma analizi" },
-  { id: "sight", title: "Sight Reduction", subtitle: "Hc ve azimut" },
-  { id: "bearings", title: "Kerteriz Hesaplamaları", subtitle: "Doubling/Four/Seven point" },
-  { id: "distance", title: "Mesafe Hesaplamaları", subtitle: "Ufuk, radar, ışık" },
-  { id: "tides", title: "Gelgit Hesaplamaları", subtitle: "Twelfths kuralı yükseklik" },
-  { id: "turning", title: "Dönüş Hesaplamaları", subtitle: "Advance, transfer, ROT" },
-  { id: "weather", title: "Hava Durumu", subtitle: "Rüzgar, dalga, leeway" },
-  { id: "celestial", title: "Göksel Navigasyon", subtitle: "Meridian, amplitude, sunrise" },
-  { id: "emergency", title: "Acil Durum", subtitle: "Square/Sector search" },
+const calculationMenuItems: CalculationGridItem[] = [
+  { id: "gc", title: "Büyük Daire (Great Circle)", icon: Map, to: "/navigation/calc/gc" },
+  { id: "rhumb", title: "Rhumb Line (Mercator)", icon: Compass, to: "/navigation/calc/rhumb" },
+  { id: "plane", title: "Plane Sailing", icon: ShipWheel, to: "/navigation/calc/plane" },
+  { id: "eta", title: "Zaman ve ETA", icon: Hourglass, to: "/navigation/calc/eta" },
+  { id: "current", title: "Akıntı Üçgeni (CTS)", icon: Waves, to: "/navigation/calc/current" },
+  { id: "compass", title: "Pusula Dönüşümleri", icon: Navigation, to: "/navigation/calc/compass" },
+  { id: "cpa", title: "CPA / TCPA", icon: Radar, to: "/navigation/calc/cpa" },
+  { id: "sight", title: "Sight Reduction", icon: Beaker, to: "/navigation/calc/sight" },
+  { id: "bearings", title: "Kerteriz Hesaplamaları", icon: Anchor, to: "/navigation/calc/bearings" },
+  { id: "distance", title: "Mesafe Hesaplamaları", icon: Activity, to: "/navigation/calc/distance" },
+  { id: "tides", title: "Gelgit Hesaplamaları", icon: Waves, to: "/navigation/calc/tides" },
+  { id: "turning", title: "Dönüş Hesaplamaları", icon: ShipWheel, to: "/navigation/calc/turning" },
+  { id: "weather", title: "Hava Durumu", icon: Wind, to: "/navigation/calc/weather" },
+  { id: "celestial", title: "Göksel Navigasyon", icon: Sigma, to: "/navigation/calc/celestial" },
+  { id: "emergency", title: "Acil Durum", icon: Activity, to: "/navigation/calc/emergency" },
 ];
 
 const Navigation = () => {
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-5xl font-bold text-primary">
-            <span data-translatable>Seyir Hesaplamaları</span>
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın
-          </p>
-          <div className="flex items-center justify-center gap-2">
-            <Link to="/navigation/formulas">
-              <Button variant="secondary" size="sm" className="gap-2">
-                <Sigma className="h-4 w-4" />
-                Formüller
-              </Button>
-            </Link>
-          </div>
+    <MobileLayout>
+      <CalculationGridScreen
+        eyebrow="Seyir"
+        title="Seyir Hesaplamaları"
+        subtitle="Mesafe, hız, rota, konum ve zaman hesaplamalarınızı yapın"
+        backHref="/navigation-menu"
+        items={calculationMenuItems}
+      >
+        <div className="flex justify-center">
+          <Link
+            to="/navigation/formulas"
+            className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-[#2F5BFF] shadow-sm ring-1 ring-inset ring-white/60 transition hover:-translate-y-0.5"
+          >
+            <Sigma className="h-4 w-4" />
+            Formüller
+          </Link>
         </div>
-
-        {/* Per-calculation links */}
-        <div className="space-y-6">
-          {calcItems.map((it) => (
-            <Link key={it.id} to={`/navigation/calc/${it.id}`}>
-              <div className="block rounded-2xl border border-border p-6 bg-card transition-all duration-300 shadow-lg hover:shadow-xl">
-                <div className="flex items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <Calculator className="w-12 h-12 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-2xl font-bold text-primary">{it.title}</span>
-                    {it.subtitle && (
-                      <p className="text-sm text-muted-foreground mt-1">{it.subtitle}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Info */}
-        <div className="text-center text-sm text-muted-foreground">
-          Her hesaplama artık ayrı bir sayfada açılır
-        </div>
-      </div>
-    </div>
+      </CalculationGridScreen>
+    </MobileLayout>
   );
 };
 
