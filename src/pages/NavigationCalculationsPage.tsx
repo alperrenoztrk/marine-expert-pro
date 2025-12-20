@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Calculator, BookOpen } from "lucide-react";
+import { Calculator, BookOpen } from "lucide-react";
 import { useState } from "react";
 import { 
   calculateGreatCircle, 
@@ -373,17 +372,9 @@ export default function NavigationCalculationsPage() {
   return (
     <MobileLayout>
       <div className="space-y-4" data-no-translate>
-        <div className="flex items-center justify-between">
-          <Link to="/navigation">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Seyir
-            </Button>
-          </Link>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Hesaplama Rehberi
-          </div>
+        <div className="flex items-center justify-end text-sm text-muted-foreground gap-2">
+          <BookOpen className="h-4 w-4" />
+          Hesaplama Rehberi
         </div>
 
         <Card className="shadow-lg">

@@ -1,5 +1,4 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { useTheme } from "@/hooks/useTheme";
 import TimeWidgets from "@/components/widgets/TimeWidgets";
 import WeatherInfoWidgets from "@/components/widgets/WeatherInfoWidgets";
 import LocationCelestialWidgets from "@/components/widgets/LocationCelestialWidgets";
-import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Tema bazlı renk şemaları
 const getThemeConfig = (isDark: boolean) => ({
@@ -22,7 +21,6 @@ const getThemeConfig = (isDark: boolean) => ({
 });
 
 const WidgetPage = () => {
-  const navigate = useNavigate();
   const { theme } = useTheme();
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -78,10 +76,8 @@ const WidgetPage = () => {
     const currentIndex = tabs.indexOf(activeTab);
     
     if (isRightSwipe) {
-      // Sağa kaydırma: Önceki sekmeye git veya ana sayfaya dön
-      if (currentIndex === 0) {
-        navigate('/');
-      } else {
+      // Sağa kaydırma: Önceki sekmeye git
+      if (currentIndex > 0) {
         setActiveTab(tabs[currentIndex - 1]);
       }
     } else if (isLeftSwipe) {
@@ -114,16 +110,14 @@ const WidgetPage = () => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     
-    // Only navigate if click is above 70% of screen height
+    // Only change tab if click is above 70% of screen height
     if (clickY > screenHeight * 0.70) return;
-    
+
     const currentIndex = tabs.indexOf(activeTab);
-    
+
     // Left 35% zone
     if (clickX < screenWidth * 0.35) {
-      if (currentIndex === 0) {
-        navigate('/');
-      } else {
+      if (currentIndex > 0) {
         setActiveTab(tabs[currentIndex - 1]);
       }
     }
@@ -290,18 +284,6 @@ const WidgetPage = () => {
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
     >
-      {/* Settings button */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          navigate('/settings');
-        }}
-        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
-        aria-label="Ayarlar"
-      >
-        <Settings className="w-6 h-6 text-foreground" />
-      </button>
-
       {/* Sol ok göstergesi - Her zaman göster */}
       <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
         <div className="flex flex-col items-center gap-2 animate-pulse">

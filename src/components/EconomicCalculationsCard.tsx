@@ -1,11 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { DollarSign, TrendingUp, Calculator, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { DollarSign, TrendingUp, Calculator } from "lucide-react";
 
 export const EconomicCalculationsCard = () => {
-  const navigate = useNavigate();
-
   return (
     <Card className="h-full border-info/20 hover:border-info/30 transition-colors">
       <CardHeader className="pb-3">
@@ -43,14 +39,6 @@ export const EconomicCalculationsCard = () => {
             </div>
           </div>
         </div>
-        
-        <Button 
-          onClick={() => navigate("/economics")} 
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 cyberpunk:from-yellow-500 cyberpunk:to-yellow-600 cyberpunk:hover:from-yellow-600 cyberpunk:hover:to-yellow-700"
-        >
-          Hesaplamalara Git
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </Button>
       </CardContent>
     </Card>
   );

@@ -2,7 +2,6 @@ import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import type { SectionConfig, SectionStatus } from "@/data/calculationCenterConfig";
 
@@ -131,40 +130,6 @@ export const ModuleCard = React.forwardRef<HTMLAnchorElement, ModuleCardProps>(
       disabled ? "pointer-events-none opacity-60" : "hover:-translate-y-0.5 hover:shadow-xl",
       className,
     );
-
-    if (to) {
-      return (
-        <Link
-          to={to}
-          ref={ref}
-          aria-label={`${title} - ${ctaLabel}`}
-          aria-disabled={disabled}
-          tabIndex={disabled ? -1 : 0}
-          className={sharedClassName}
-          {...rest}
-        >
-          {content}
-        </Link>
-      );
-    }
-
-    if (href) {
-      return (
-        <a
-          href={href}
-          ref={ref}
-          target={showExternal ? "_blank" : undefined}
-          rel={showExternal ? "noreferrer" : undefined}
-          aria-label={`${title} - ${ctaLabel}`}
-          aria-disabled={disabled}
-          tabIndex={disabled ? -1 : 0}
-          className={sharedClassName}
-          {...rest}
-        >
-          {content}
-        </a>
-      );
-    }
 
     return (
       <div
