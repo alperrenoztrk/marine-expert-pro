@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import SplashCompassDial from "@/components/ui/SplashCompassDial";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
-import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Newspaper, RefreshCw, Settings } from "lucide-react";
+import { fetchMaritimeNews } from "@/services/maritimeNews";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -131,6 +133,38 @@ const Index = () => {
     }
   };
 
+  const headlinesQuery = useQuery({
+    queryKey: ["maritime-news", "headlines"],
+    queryFn: () => fetchMaritimeNews({ totalLimit: 12, perSourceLimit: 6 }),
+    staleTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const headlineItems = useMemo(() => {
+    const items = headlinesQuery.data?.items ?? [];
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      const key = `${item.source}-${item.title}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return Boolean(item.title);
+    });
+  }, [headlinesQuery.data?.items]);
+
+  const formatDateTR = (iso?: string): string => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleString("tr-TR", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
 
   return (
     <div
@@ -201,10 +235,87 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Maritime news headlines */}
+        <div className="mt-10 w-full max-w-4xl text-left">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white">
+                <Newspaper className="h-5 w-5" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-white/70">Güncel denizcilik haberleri</p>
+                <h2 className="text-xl font-semibold text-white">Başlıklar</h2>
+                {headlinesQuery.data?.fetchedAt ? (
+                  <p className="text-xs text-white/50">Son güncelleme: {formatDateTR(headlinesQuery.data.fetchedAt)}</p>
+                ) : null}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+                size="sm"
+                onClick={() => headlinesQuery.refetch()}
+                disabled={headlinesQuery.isFetching}
+              >
+                <RefreshCw className={"mr-2 h-4 w-4 " + (headlinesQuery.isFetching ? "animate-spin" : "")} />
+                Yenile
+              </Button>
+              <Button
+                variant="outline"
+                className="border-white/20 bg-white/5 text-white hover:bg-white/15"
+                size="sm"
+                onClick={() => navigate('/maritime-news')}
+              >
+                Tüm Haberler
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur-md">
+            {headlinesQuery.isLoading ? (
+              <div className="grid gap-3 md:grid-cols-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-16 animate-pulse rounded-xl bg-white/10" />
+                ))}
+              </div>
+            ) : headlinesQuery.isError ? (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-100">
+                Haber başlıkları yüklenemedi. Biraz sonra tekrar deneyin.
+              </div>
+            ) : headlineItems.length === 0 ? (
+              <div className="text-sm text-white/70">Gösterilecek haber başlığı bulunamadı.</div>
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2">
+                {headlineItems.slice(0, 12).map((item, idx) => (
+                  <a
+                    key={`${item.link}-${idx}`}
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex h-full items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3 transition-all hover:border-white/30 hover:bg-white/10"
+                  >
+                    <div className="mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-cyan-300" aria-hidden />
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold leading-snug text-white group-hover:text-cyan-200">
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-white/60">
+                        {item.source}
+                        {item.publishedAt ? ` • ${formatDateTR(item.publishedAt)}` : ""}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* CTA Button */}
         <div className="w-full pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-6">
           <Link to="/calculations" className="inline-block w-full max-w-[22rem]" aria-label="Keşfetmeye Başla">
-            <Button 
+            <Button
               className="w-full rounded-full py-6 text-[clamp(1.3rem,4vw,1.6rem)] font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_12px_32px_rgba(0,0,0,0.4)] active:scale-[0.98]"
               style={{
                 background: 'linear-gradient(180deg, #35e0e0 0%, #20c5c5 50%, #18b0b0 100%)',
