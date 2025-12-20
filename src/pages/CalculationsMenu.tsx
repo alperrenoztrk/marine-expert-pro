@@ -2,7 +2,6 @@ import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { ChevronRight } from "lucide-react";
-
 export default function CalculationsMenu() {
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
@@ -10,13 +9,7 @@ export default function CalculationsMenu() {
     ['--animation-duration' as string]: "8.33ms",
     ['--transition-duration' as string]: "16.67ms"
   };
-
-  return (
-    <div
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 px-4 py-8 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]"
-      data-no-translate
-      style={highRefreshRateStyles}
-    >
+  return <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 px-4 py-8 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]" data-no-translate style={highRefreshRateStyles}>
       {/* Background decorations */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-32 left-1/4 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
@@ -37,31 +30,22 @@ export default function CalculationsMenu() {
 
         {/* Categories with direct links */}
         <div className="flex flex-col gap-6">
-          {calculationCategories.map((category) => {
-            const CategoryIcon = category.icon;
-            return (
-              <section key={category.id} className="space-y-3">
+          {calculationCategories.map(category => {
+          const CategoryIcon = category.icon;
+          return <section key={category.id} className="space-y-3">
                 {/* Category Header */}
                 <div className="flex items-center gap-3">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${category.accent} text-white shadow-lg`}>
                     <CategoryIcon className="h-5 w-5" />
                   </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-foreground">{category.title}</h2>
-                    <p className="text-xs text-muted-foreground">{category.subtitle}</p>
-                  </div>
+                  
                 </div>
 
                 {/* Section Links - Grid */}
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
-                  {category.sections.map((section) => {
-                    const SectionIcon = sectionIconMap[section.id];
-                    return (
-                      <Link
-                        key={section.id}
-                        to={section.href || "#"}
-                        className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
-                      >
+                  {category.sections.map(section => {
+                const SectionIcon = sectionIconMap[section.id];
+                return <Link key={section.id} to={section.href || "#"} className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md">
                         <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white transition-transform group-hover:scale-110`}>
                           <SectionIcon className="h-4 w-4" />
                         </div>
@@ -69,15 +53,12 @@ export default function CalculationsMenu() {
                           {section.label}
                         </span>
                         <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                      </Link>
-                    );
-                  })}
+                      </Link>;
+              })}
                 </div>
-              </section>
-            );
-          })}
+              </section>;
+        })}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
