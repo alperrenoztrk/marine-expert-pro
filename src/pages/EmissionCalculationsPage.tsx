@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Leaf, Calculator, Ship, Fuel, TrendingDown, AlertTriangle } from "lucide-react";
+import { Calculator, Ship, TrendingDown, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { CalculationLayout } from "@/components/layout/CalculationLayout";
-import { CalculationCard } from "@/components/ui/calculation-card";
+import { MobileLayout } from "@/components/MobileLayout";
+import { CalculationGridScreen } from "@/components/ui/calculation-grid";
 
 const carbonFactors: Record<string, number> = {
   "HFO": 3.114,
@@ -65,7 +64,7 @@ export default function EmissionCalculationsPage() {
 
     const cf = carbonFactors[fuelType];
     const co2 = fuel * cf;
-    const aer = (co2 * 1000000) / (deadweight * dist); // gCO2/ton-nm
+    const aer = (co2 * 1000000) / (deadweight * dist);
 
     const shipData = shipTypes.find(s => s.value === shipType);
     const ciiRef = shipData?.ciiRef || 4745;
@@ -100,249 +99,239 @@ export default function EmissionCalculationsPage() {
 
   const getCiiColor = (rating: string) => {
     switch (rating) {
-      case "A": return "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30";
-      case "B": return "text-green-600 bg-green-100 dark:bg-green-900/30";
-      case "C": return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30";
-      case "D": return "text-orange-600 bg-orange-100 dark:bg-orange-900/30";
-      case "E": return "text-red-600 bg-red-100 dark:bg-red-900/30";
-      default: return "text-muted-foreground bg-muted";
+      case "A": return "text-emerald-600 bg-emerald-100";
+      case "B": return "text-green-600 bg-green-100";
+      case "C": return "text-yellow-600 bg-yellow-100";
+      case "D": return "text-orange-600 bg-orange-100";
+      case "E": return "text-red-600 bg-red-100";
+      default: return "text-slate-600 bg-slate-100";
     }
   };
 
   return (
-    <CalculationLayout
-      title="Emisyon Hesaplamaları"
-      description="CO₂, CII ve EEXI değerlendirmelerini tek panelden yönetin"
-      icon={Leaf}
-      actions={
-        <Button variant="outline" asChild>
-          <Link to="/calculations">Hesaplama Merkezine Dön</Link>
-        </Button>
-      }
-      maxWidthClassName="max-w-5xl"
-    >
-      <CalculationCard>
-        <CardContent className="space-y-6">
-          <Tabs defaultValue="cii" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 bg-card/80 backdrop-blur-sm">
-              <TabsTrigger value="cii">CO₂ & CII</TabsTrigger>
-              <TabsTrigger value="eexi">EEXI</TabsTrigger>
-            </TabsList>
+    <MobileLayout>
+      <CalculationGridScreen
+        eyebrow="Emisyon"
+        title="CO₂, CII & EEXI Hesaplamaları"
+        subtitle="Karbon emisyonu ve enerji verimliliği değerlendirmeleri"
+        backHref="/emissions"
+      >
+        <Card className="bg-white/90 border-white/60 shadow-lg">
+          <CardContent className="pt-6 space-y-6">
+            <Tabs defaultValue="cii" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2 bg-white/80">
+                <TabsTrigger value="cii">CO₂ & CII</TabsTrigger>
+                <TabsTrigger value="eexi">EEXI</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="cii">
-              <Card className="border-border/60 bg-card/85 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingDown className="h-5 w-5 text-emerald-600" />
-                    CO₂ Emisyonu ve CII Hesaplama
-                  </CardTitle>
-                  <CardDescription>Yıllık yakıt tüketimi ve sefer verilerine göre karbon yoğunluğu</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Gemi Tipi</Label>
-                      <Select value={shipType} onValueChange={setShipType}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {shipTypes.map(type => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Yakıt Tipi</Label>
-                      <Select value={fuelType} onValueChange={setFuelType}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.keys(carbonFactors).map(fuel => (
-                            <SelectItem key={fuel} value={fuel}>
-                              {fuel} (CF: {carbonFactors[fuel]})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Yakıt Tüketimi (ton/yıl)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={fuelConsumption}
-                        onChange={(e) => setFuelConsumption(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Kat Edilen Mesafe (nm/yıl)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={distance}
-                        onChange={(e) => setDistance(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>DWT (ton)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={dwt}
-                        onChange={(e) => setDwt(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <Button
-                    onClick={calculateCO2AndCII}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-                  >
-                    <Calculator className="h-4 w-4 mr-2" />
-                    Hesapla
-                  </Button>
-
-                  {result && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/60">
-                      <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20">
-                        <p className="text-sm text-muted-foreground">Yıllık CO₂ Emisyonu</p>
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                          {result.co2.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} ton
-                        </p>
+              <TabsContent value="cii">
+                <Card className="border-white/60 bg-white/80">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-[#2F5BFF]">
+                      <TrendingDown className="h-5 w-5" />
+                      CO₂ Emisyonu ve CII Hesaplama
+                    </CardTitle>
+                    <CardDescription>Yıllık yakıt tüketimi ve sefer verilerine göre karbon yoğunluğu</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Gemi Tipi</Label>
+                        <Select value={shipType} onValueChange={setShipType}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {shipTypes.map(type => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
-                      <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20">
-                        <p className="text-sm text-muted-foreground">AER (gCO₂/ton-nm)</p>
-                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                          {result.aer.toFixed(2)}
-                        </p>
+                      <div className="space-y-2">
+                        <Label>Yakıt Tipi</Label>
+                        <Select value={fuelType} onValueChange={setFuelType}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.keys(carbonFactors).map(fuel => (
+                              <SelectItem key={fuel} value={fuel}>
+                                {fuel} (CF: {carbonFactors[fuel]})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
-                      <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20">
-                        <p className="text-sm text-muted-foreground">CII Değeri</p>
-                        <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                          {result.cii.toFixed(3)}
-                        </p>
+                      <div className="space-y-2">
+                        <Label>Yakıt Tüketimi (ton/yıl)</Label>
+                        <Input
+                          type="text"
+                          value={fuelConsumption}
+                          onChange={(e) => setFuelConsumption(e.target.value)}
+                        />
                       </div>
 
-                      <div className={`p-4 rounded-xl ${getCiiColor(result.ciiRating)}`}>
-                        <p className="text-sm opacity-80">CII Derecesi</p>
-                        <p className="text-3xl font-bold">{result.ciiRating}</p>
-                        {(result.ciiRating === "D" || result.ciiRating === "E") && (
-                          <p className="text-xs mt-1 flex items-center gap-1">
-                            <AlertTriangle className="h-3 w-3" />
-                            Düzeltici aksiyon gerekli
+                      <div className="space-y-2">
+                        <Label>Kat Edilen Mesafe (nm/yıl)</Label>
+                        <Input
+                          type="text"
+                          value={distance}
+                          onChange={(e) => setDistance(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>DWT (ton)</Label>
+                        <Input
+                          type="text"
+                          value={dwt}
+                          onChange={(e) => setDwt(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={calculateCO2AndCII}
+                      className="w-full bg-[#2F5BFF] hover:bg-[#2F5BFF]/90"
+                    >
+                      <Calculator className="h-4 w-4 mr-2" />
+                      Hesapla
+                    </Button>
+
+                    {result && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                        <div className="p-4 rounded-xl bg-blue-50">
+                          <p className="text-sm text-slate-600">Yıllık CO₂ Emisyonu</p>
+                          <p className="text-2xl font-bold text-[#2F5BFF]">
+                            {result.co2.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} ton
                           </p>
-                        )}
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-blue-50">
+                          <p className="text-sm text-slate-600">AER (gCO₂/ton-nm)</p>
+                          <p className="text-2xl font-bold text-[#2F5BFF]">
+                            {result.aer.toFixed(2)}
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-blue-50">
+                          <p className="text-sm text-slate-600">CII Değeri</p>
+                          <p className="text-2xl font-bold text-[#2F5BFF]">
+                            {result.cii.toFixed(3)}
+                          </p>
+                        </div>
+
+                        <div className={`p-4 rounded-xl ${getCiiColor(result.ciiRating)}`}>
+                          <p className="text-sm opacity-80">CII Derecesi</p>
+                          <p className="text-3xl font-bold">{result.ciiRating}</p>
+                          {(result.ciiRating === "D" || result.ciiRating === "E") && (
+                            <p className="text-xs mt-1 flex items-center gap-1">
+                              <AlertTriangle className="h-3 w-3" />
+                              Düzeltici aksiyon gerekli
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="eexi">
+                <Card className="border-white/60 bg-white/80">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-[#2F5BFF]">
+                      <Ship className="h-5 w-5" />
+                      EEXI Hesaplama
+                    </CardTitle>
+                    <CardDescription>Energy Efficiency Existing Ship Index</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Yakıt Tipi</Label>
+                        <Select value={fuelType} onValueChange={setFuelType}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.keys(carbonFactors).map(fuel => (
+                              <SelectItem key={fuel} value={fuel}>
+                                {fuel} (CF: {carbonFactors[fuel]})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Ana Makine Gücü (kW)</Label>
+                        <Input
+                          type="text"
+                          value={eexiData.power}
+                          onChange={(e) => setEexiData({ ...eexiData, power: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>SFC (g/kWh)</Label>
+                        <Input
+                          type="text"
+                          value={eexiData.sfc}
+                          onChange={(e) => setEexiData({ ...eexiData, sfc: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Kapasite (DWT/GT)</Label>
+                        <Input
+                          type="text"
+                          value={eexiData.capacity}
+                          onChange={(e) => setEexiData({ ...eexiData, capacity: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Referans Hız (knot)</Label>
+                        <Input
+                          type="text"
+                          value={eexiData.speed}
+                          onChange={(e) => setEexiData({ ...eexiData, speed: e.target.value })}
+                        />
                       </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            <TabsContent value="eexi">
-              <Card className="border-border/60 bg-card/85 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Ship className="h-5 w-5 text-emerald-600" />
-                    EEXI Hesaplama
-                  </CardTitle>
-                  <CardDescription>Energy Efficiency Existing Ship Index</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Yakıt Tipi</Label>
-                      <Select value={fuelType} onValueChange={setFuelType}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.keys(carbonFactors).map(fuel => (
-                            <SelectItem key={fuel} value={fuel}>
-                              {fuel} (CF: {carbonFactors[fuel]})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <Button
+                      onClick={calculateEEXI}
+                      className="w-full bg-[#2F5BFF] hover:bg-[#2F5BFF]/90"
+                    >
+                      <Calculator className="h-4 w-4 mr-2" />
+                      EEXI Hesapla
+                    </Button>
 
-                    <div className="space-y-2">
-                      <Label>Ana Makine Gücü (kW)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={eexiData.power}
-                        onChange={(e) => setEexiData({ ...eexiData, power: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>SFC (g/kWh)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={eexiData.sfc}
-                        onChange={(e) => setEexiData({ ...eexiData, sfc: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Kapasite (DWT/GT)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={eexiData.capacity}
-                        onChange={(e) => setEexiData({ ...eexiData, capacity: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Referans Hız (knot)</Label>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        value={eexiData.speed}
-                        onChange={(e) => setEexiData({ ...eexiData, speed: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <Button
-                    onClick={calculateEEXI}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-                  >
-                    <Calculator className="h-4 w-4 mr-2" />
-                    EEXI Hesapla
-                  </Button>
-
-                  {eexiResult !== null && (
-                    <div className="p-6 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-center">
-                      <p className="text-sm text-muted-foreground mb-2">Hesaplanan EEXI</p>
-                      <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
-                        {eexiResult.toFixed(4)}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        gCO₂ / (ton·nm)
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </CalculationCard>
-    </CalculationLayout>
+                    {eexiResult !== null && (
+                      <div className="p-6 rounded-xl bg-blue-50 text-center">
+                        <p className="text-sm text-slate-600 mb-2">Hesaplanan EEXI</p>
+                        <p className="text-4xl font-bold text-[#2F5BFF]">
+                          {eexiResult.toFixed(4)}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-2">
+                          gCO₂ / (ton·nm)
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </CalculationGridScreen>
+    </MobileLayout>
   );
 }
