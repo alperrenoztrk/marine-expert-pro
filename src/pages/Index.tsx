@@ -1,12 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SplashCompassDial from "@/components/ui/SplashCompassDial";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
+import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   // Compass state
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
+
+  // Swipe state
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchLastX = useRef<number | null>(null);
+  const touchLastY = useRef<number | null>(null);
+  const didSwipeRef = useRef(false);
 
   // --- Compass logic using unified listener ---
   useEffect(() => {
@@ -32,13 +42,107 @@ const Index = () => {
     };
   }, []);
 
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    didSwipeRef.current = false;
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchStartY.current = e.targetTouches[0].clientY;
+    touchLastX.current = null;
+    touchLastY.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchLastX.current = e.targetTouches[0].clientX;
+    touchLastY.current = e.targetTouches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+
+    const endTouch = e.changedTouches[0];
+    const endX = touchLastX.current ?? endTouch.clientX;
+    const endY = touchLastY.current ?? endTouch.clientY;
+    
+    const dx = endX - touchStartX.current;
+    const dy = endY - touchStartY.current;
+
+    if (Math.abs(dx) < 80 || Math.abs(dx) < Math.abs(dy)) {
+      touchStartX.current = null;
+      touchStartY.current = null;
+      touchLastX.current = null;
+      touchLastY.current = null;
+      return;
+    }
+
+    const isLeftSwipe = dx < 0;
+    const isRightSwipe = dx > 0;
+    
+    if (isLeftSwipe) {
+      didSwipeRef.current = true;
+      navigate('/widgets');
+    }
+    if (isRightSwipe) {
+      didSwipeRef.current = true;
+      navigate('/maritime-news');
+    }
+    
+    touchStartX.current = null;
+    touchStartY.current = null;
+    touchLastX.current = null;
+    touchLastY.current = null;
+  };
+
+  const handleTouchCancel = () => {
+    touchStartX.current = null;
+    touchStartY.current = null;
+    touchLastX.current = null;
+    touchLastY.current = null;
+    didSwipeRef.current = false;
+  };
+
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (didSwipeRef.current) {
+      didSwipeRef.current = false;
+      return;
+    }
+
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') ||
+      target.closest('a') ||
+      target.closest('[role="button"]')
+    ) {
+      return;
+    }
+
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    if (clickY > screenHeight * 0.70) return;
+    
+    if (clickX < screenWidth * 0.35) {
+      navigate('/maritime-news');
+      return;
+    }
+    if (clickX > screenWidth * 0.65) {
+      navigate('/widgets');
+    }
+  };
+
 
   return (
     <div
-      className="relative min-h-[100svh] overflow-hidden"
+      className="relative min-h-[100svh] overflow-hidden touch-auto cursor-pointer"
       style={{
         background: 'linear-gradient(180deg, #2a4a5e 0%, #1e3a4a 30%, #1a3040 60%, #152535 100%)'
       }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
+      onClick={handleClick}
     >
       {/* Subtle texture overlay */}
       <div 
@@ -48,6 +152,28 @@ const Index = () => {
           mixBlendMode: 'overlay'
         }}
       />
+
+      {/* Settings button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate('/settings');
+        }}
+        className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+        aria-label="Ayarlar"
+      >
+        <Settings className="w-6 h-6 text-white/70" />
+      </button>
+
+      {/* Left arrow indicator */}
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-30">
+        <ChevronLeft className="w-6 h-6 text-white drop-shadow-lg animate-pulse" />
+      </div>
+
+      {/* Right arrow indicator */}
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-30">
+        <ChevronRight className="w-6 h-6 text-white drop-shadow-lg animate-pulse" />
+      </div>
 
       {/* Main content */}
       <div className="relative z-10 flex min-h-[100svh] flex-col items-center px-6 text-center">

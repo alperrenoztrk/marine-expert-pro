@@ -1,0 +1,2283 @@
+// Force refresh - imports validation
+import { Button } from "@/components/ui/button";
+import { 
+  Download, 
+  Gauge, 
+  Activity, 
+  TrendingUp, 
+  Ruler, 
+  BookOpen, 
+  Calculator, 
+  Lightbulb, 
+  GraduationCap, 
+  HelpCircle, 
+  CheckCircle, 
+  AlertTriangle, 
+  Timer, 
+  Waves, 
+  Ship, 
+  Settings, 
+  Package, 
+  Droplets 
+} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useMemo, useRef, useState } from "react";
+import React from "react";
+import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
+import { ShipGeometry } from "@/types/hydrostatic";
+import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { LongitudinalStabilityService, LongitudinalResults } from "@/services/longitudinalStability";
+import { LongitudinalStabilityCalculations } from "@/components/calculations/LongitudinalStabilityCalculations";
+
+export default function StabilityLongitudinal() {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [geometry, setGeometry] = useState<ShipGeometry>({
+    length: 180,
+    breadth: 30,
+    depth: 18,
+    draft: 10,
+    blockCoefficient: 0.75,
+    waterplaneCoefficient: 0.85,
+    midshipCoefficient: 0.98,
+    prismaticCoefficient: 0.77,
+    verticalPrismaticCoefficient: 0.75,
+  });
+  const [kg, setKg] = useState<number>(12);
+  const [angle, setAngle] = useState<number>(20);
+  const [result, setResult] = useState<{ gz: number; rightingMoment: number; stabilityIndex: number } | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<string>("calculator");
+  const [basicMode, setBasicMode] = useState<boolean>(true);
+  const [showStepByStep, setShowStepByStep] = useState<boolean>(false);
+  const [learningProgress, setLearningProgress] = useState<number>(0);
+  const [advancedMode, setAdvancedMode] = useState<boolean>(false);
+  const [selectedShipType, setSelectedShipType] = useState<string>("cargo");
+  const [loadCondition, setLoadCondition] = useState<string>("loaded");
+  const [trimCondition, setTrimCondition] = useState<number>(0);
+  const [showAnswers, setShowAnswers] = useState<boolean>(false);
+  const [scenario2Answer, setScenario2Answer] = useState<boolean>(false);
+  
+  // Calculation states
+  const [momentWeight, setMomentWeight] = useState<number>(0);
+  const [momentDistance, setMomentDistance] = useState<number>(0);
+  const [loadingWeight, setLoadingWeight] = useState<number>(0);
+  const [loadingDistance, setLoadingDistance] = useState<number>(0);
+  const [ballastWeight, setBallastWeight] = useState<number>(0);
+  const [ballastDistance, setBallastDistance] = useState<number>(0);
+  const [currentDraft, setCurrentDraft] = useState<number>(0);
+  const [targetDraft, setTargetDraft] = useState<number>(0);
+  // Longitudinal-only calculator states
+  const [xcfFromAft, setXcfFromAft] = useState<number>(90);
+  const [initialDraftFwd, setInitialDraftFwd] = useState<number>(10);
+  const [initialDraftAft, setInitialDraftAft] = useState<number>(10);
+  const [trimMoments, setTrimMoments] = useState<{ weightTonnes: number; distanceMeters: number; description?: string }[]>([
+    { weightTonnes: 0, distanceMeters: 0, description: "Yük/ballast hareketi" }
+  ]);
+  const [longitudinalResult, setLongitudinalResult] = useState<LongitudinalResults | null>(null);
+
+  // Longitudinal helpers
+  const addMomentRow = () => {
+    setTrimMoments((rows) => [...rows, { weightTonnes: 0, distanceMeters: 0, description: '' }]);
+  };
+
+  const updateMomentRow = (idx: number, field: 'weightTonnes' | 'distanceMeters' | 'description', value: string) => {
+    setTrimMoments((rows) => rows.map((r, i) => i === idx ? { ...r, [field]: field === 'description' ? value : parseFloat(value) || 0 } : r));
+  };
+
+  const removeMomentRow = (idx: number) => {
+    setTrimMoments((rows) => rows.filter((_, i) => i !== idx));
+  };
+
+  const computeLongitudinal = () => {
+    const v = HydrostaticUtils.validateShipGeometry(geometry);
+    setErrors(v.errors);
+    if (!v.isValid) {
+      setLongitudinalResult(null);
+      return;
+    }
+    const res = LongitudinalStabilityService.compute({
+      geometry,
+      kg,
+      xCFfromAft: xcfFromAft,
+      initialDraftForward: initialDraftFwd,
+      initialDraftAft: initialDraftAft,
+      moments: trimMoments
+    });
+    setLongitudinalResult(res);
+  };
+  
+  // Calculation functions
+  const calculateLongitudinalMoment = () => {
+    return momentWeight * momentDistance;
+  };
+  
+  const calculateLoadingTrim = () => {
+    const moment = loadingWeight * loadingDistance;
+    return moment / (geometry.length * geometry.breadth * geometry.waterplaneCoefficient * 1.025);
+  };
+  
+  const calculateBallastTrim = () => {
+    const moment = ballastWeight * ballastDistance;
+    return moment / (geometry.length * geometry.breadth * geometry.waterplaneCoefficient * 1.025);
+  };
+  
+  const correctDrafts = () => {
+    const correction = targetDraft - currentDraft;
+    return correction;
+  };
+  const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string}>({});
+  const [showQuizResults, setShowQuizResults] = useState<boolean>(false);
+  const [currentScenario, setCurrentScenario] = useState<number>(0);
+  const [currentQuizSet, setCurrentQuizSet] = useState<number>(0);
+  
+  // Longitudinal stability example data
+  const exampleData = {
+    length: 180,
+    breadth: 30,
+    depth: 18,
+    draft: 12,
+    blockCoefficient: 0.75,
+    waterplaneCoefficient: 0.85,
+    midshipCoefficient: 0.98,
+    prismaticCoefficient: 0.77,
+    verticalPrismaticCoefficient: 0.75,
+    kg: 13.5
+  };
+
+  const handleChange = (key: keyof ShipGeometry) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setGeometry((prev) => ({ ...prev, [key]: isNaN(value) ? 0 : value }));
+  };
+
+  const loadExampleData = () => {
+    setGeometry(exampleData);
+    setKg(exampleData.kg);
+    setAngle(20);
+    setErrors([]);
+    setResult(null);
+  };
+
+  const handleCalculate = () => {
+    const v = HydrostaticUtils.validateShipGeometry(geometry);
+    setErrors(v.errors);
+    if (!v.isValid) {
+      setResult(null);
+      return;
+    }
+    const res = HydrostaticUtils.calculateLargeAngleStability(geometry, kg, angle);
+    setResult(res);
+  };
+
+  const shipPresets = {
+    cargo: {
+      name: "Kargo Gemisi",
+      geometry: { length: 180, breadth: 30, depth: 18, draft: 12, blockCoefficient: 0.75, waterplaneCoefficient: 0.85, midshipCoefficient: 0.98, prismaticCoefficient: 0.77, verticalPrismaticCoefficient: 0.75 },
+      kg: 15,
+      lcg: 88, // ~L/2 - slightly aft
+      vcg: 15
+    },
+    container: {
+      name: "Konteyner Gemisi", 
+      geometry: { length: 200, breadth: 32, depth: 20, draft: 13, blockCoefficient: 0.65, waterplaneCoefficient: 0.82, midshipCoefficient: 0.95, prismaticCoefficient: 0.68, verticalPrismaticCoefficient: 0.70 },
+      kg: 16,
+      lcg: 95,
+      vcg: 16
+    },
+    tanker: {
+      name: "Tanker",
+      geometry: { length: 250, breadth: 44, depth: 22, draft: 16, blockCoefficient: 0.82, waterplaneCoefficient: 0.90, midshipCoefficient: 0.99, prismaticCoefficient: 0.83, verticalPrismaticCoefficient: 0.80 },
+      kg: 14,
+      lcg: 125,
+      vcg: 14
+    },
+    bulk: {
+      name: "Dökme Yük Gemisi",
+      geometry: { length: 190, breadth: 32, depth: 20, draft: 14, blockCoefficient: 0.78, waterplaneCoefficient: 0.88, midshipCoefficient: 0.98, prismaticCoefficient: 0.80, verticalPrismaticCoefficient: 0.77 },
+      kg: 16,
+      lcg: 92,
+      vcg: 16
+    }
+  };
+
+  const handleShipTypeChange = (type: string) => {
+    setSelectedShipType(type);
+    const preset = shipPresets[type as keyof typeof shipPresets];
+    if (preset) {
+      setGeometry(preset.geometry);
+      setKg(preset.kg);
+    }
+  };
+
+  const calculateTrimData = () => {
+    if (!result) return null;
+    const centers = HydrostaticCalculations.calculateCenterPoints(geometry, kg);
+    const displacement = geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025;
+    
+    // Basic trim calculations
+    const lcf = geometry.length * 0.485; // Approx LCF
+    const lcg = geometry.length * 0.485; // Approx LCG for current condition
+    const mct = (displacement * centers.gml * Math.pow(geometry.breadth, 2)) / (12 * geometry.length); // MCT approximation
+    
+    return {
+      displacement,
+      lcf,
+      lcg,
+      mct,
+      gml: centers.gml,
+      trimMoment: displacement * (lcg - lcf),
+      trimAngle: trimCondition
+    };
+  };
+
+  const getTrimRecommendation = (trimAngle: number) => {
+    const absTrim = Math.abs(trimAngle);
+    if (absTrim < 0.5) return { status: "good", message: "Optimal trim - iyi dengeleme" };
+    if (absTrim < 1.0) return { status: "acceptable", message: "Kabul edilebilir trim" };
+    if (absTrim < 2.0) return { status: "caution", message: "Dikkat - trim fazla" };
+    return { status: "warning", message: "Kritik trim - düzeltme gerekli" };
+  };
+
+  const getOperationalLimits = () => {
+    return {
+      maxTrimByHead: -2.0,  // metres
+      maxTrimByStern: 3.0,  // metres  
+      optimalTrimRange: [-0.5, 1.0], // metres
+      maxList: 5.0, // degrees
+      cargoOperationLimit: 1.5 // metres trim
+    };
+  };
+
+  const handleTrimQuizAnswer = (questionId: string, answer: string) => {
+    const newAnswers = { ...quizAnswers, [questionId]: answer };
+    setQuizAnswers(newAnswers);
+    
+    // Şık seçildiğinde direkt sonuçları göster
+    const currentQuizData = longitudinalQuizBank[currentQuizSet];
+    const allQuestionsAnswered = Object.keys(newAnswers).length >= currentQuizData.questions.length;
+    
+    if (allQuestionsAnswered) {
+      setShowQuizResults(true);
+      let score = 0;
+      currentQuizData.questions.forEach(q => {
+        if (parseInt(newAnswers[q.id]) === q.correct) {
+          score++;
+        }
+      });
+      
+      const successRate = (score / currentQuizData.questions.length) * 100;
+      setLearningProgress(Math.max(learningProgress, Math.round(successRate)));
+    }
+  };
+
+  // 10 farklı boyuna stabilite senaryosu
+  const longitudinalScenarioBank = [
+    {
+      title: "🚢 Kritik Trim Durumu",
+      situation: "250m konteyner gemisi, aşırı kıç trim = 4.8m. Kargo operasyonu devam ediyor, hava kötüleşiyor.",
+      question: "Güvenli trim limitine (max 3.0m) ulaşmak için hangi ballast stratejisini uygularsın?",
+      hint: "Trim değişimi = (Transfer momenti) / (GML × Δ/100)",
+      answer: "Fore peak ballast + center tank stratejisi. ~1200 ton fore'a transfer. Hesap: ΔTrim = (1200×80m) / (450×48000/100) ≈ 1.8m azalış"
+    },
+    {
+      title: "⚖️ LCG-LCF Dengesizliği", 
+      situation: "Kargo yüklemesi sonrası LCG = 92.5m, LCF = 88.2m. Deplasman = 35000 ton. Trim hesabı gerekli.",
+      question: "Bu koşullarda beklenen trim değerini ve yönünü hesapla.",
+      hint: "Trim = (LCG - LCF) × 100 / GML",
+      answer: "Pozitif trim (kıçtan bastık). Trim ≈ (92.5-88.2) × 100 / 420 ≈ 1.02m. Kıç draft artışı beklenir."
+    },
+    {
+      title: "📦 Hold Flooding Analizi",
+      situation: "Hold 2'ye 800 ton deniz suyu girdi (LCG=65m). Original LCG=82m, deplasman=42000 ton.",
+      question: "Su girişi sonrası yeni LCG'yi ve trim değişimini hesapla.",
+      hint: "Yeni LCG = (W1×LCG1 + W2×LCG2) / (W1+W2)",
+      answer: "Yeni LCG = (42000×82 + 800×65) / 42800 ≈ 81.7m. LCG azalışı → trim by head artışı, yaklaşık 0.5m trim değişimi"
+    },
+    {
+      title: "⛽ Yakıt Tüketim Etkisi",
+      situation: "Uzun seyir, aft fuel tank %30'a düştü. Fore service tank doldu. Trim kontrolü kritik.",
+      question: "Yakıt tüketiminin longitudinal pozisyona etkisini analiz et ve düzeltici eylem öner.",
+      hint: "LCG değişimi fuel consumption pattern'ına bağlı",
+      answer: "Aft tank boşalması LCG'yi forward'a çeker. Fore tank doluluğu etkiyi artırır. Önlem: Mid tank kullan, aft tank supplement et"
+    },
+    {
+      title: "🏗️ Crane Operasyon Krizi",
+      situation: "Deck crane ile 60 ton yük 15m yükseklikte, 35m fore'da asılı. Stability + trim critical.",
+      question: "Bu operasyonun hem transverse hem longitudinal stabilitye etkisini değerlendir.",
+      hint: "KG artışı + LCG değişimi kombine etki",
+      answer: "KG artışı: ~0.8m, LCG forward shift: ~0.15m. GM azalışı + trim by head eğilimi. Max weather: SS-2"
+    },
+    {
+      title: "🌊 Sloshing Tank Problemi",
+      situation: "Center ballast tank %60 dolu, rolling motion ile sloshing effect. Trim oscillations.",
+      question: "Sloshing'in longitudinal stability'e etkisini analiz et ve çözüm öner.",
+      hint: "Free surface moment hem transverse hem longitudinal",
+      answer: "Longitudinal free surface azaltır GML'yi. Çözüm: Tank tamamen doldur veya boşalt. Partial filling avoid et"
+    },
+    {
+      title: "📏 MCT Calculation Emergency",
+      situation: "Port'ta rapid trim correction gerekli. MCT=120 ton.m/cm. Target: 2.5m trim azaltma.",
+      question: "Gerekli moment transferini ve ballast miktarını hesapla.",
+      hint: "Required moment = MCT × trim change (cm)",
+      answer: "Gerekli moment = 120 × 250cm = 30000 ton.m. 80m arm ile transfer: 30000/80 = 375 ton ballast transfer"
+    },
+    {
+      title: "⚡ Blackout Trim Management",
+      situation: "Ana güç kesintisi, emergency power sınırlı. Aşırı kıç trim var, deniz state kötü.",
+      question: "Sınırlı güçle optimal trim düzeltme stratejisi geliştirir.",
+      hint: "Priority systems with limited power consumption",
+      answer: "1. Fore peak ballast pump (priority), 2. Fuel transfer system, 3. Emergency bilge pump. Avoid high-power consumers"
+    },
+    {
+      title: "🚁 Multi-helicopter Operations",
+      situation: "SAR operasyonu: 2 helikopter (8+6 ton) farklı pozisyonlarda konacak. Trim + stability critical.",
+      question: "Multi-heli operasyonunun ship stability'e total etkisini hesapla.",
+      hint: "Combined weight + moment calculation",
+      answer: "Total weight: 14 ton, Combined moment effect significant. Optimal positioning: symmetric about LCG. Pre-ballast adjustment needed"
+    },
+    {
+      title: "📊 Loading Computer Failure",
+      situation: "Loading computer down, manuel calculation gerekli. Multi-hold loading planning.",
+      question: "3 hold'a 5000 ton kargo dağıtımını manuel hesapla ve optimal trim elde et.",
+      hint: "Manual moment calculation for each hold",
+      answer: "Hold distribution: Aft 40%, Mid 35%, Fore 25%. Target LCG ≈ LCF için calculate. Trim < 1.5m maintain et"
+    }
+  ];
+
+  // 🎯 SADECE BOYUNA STABİLİTE/TRIM KONULARI - Detaylı Çözümlü Sorular - 20 set
+  const longitudinalQuizBank = [
+    // 🧮 SAYISAL TRIM/BOYUNA STABİLİTE SORULARI (1-10)
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Gemi: LBP=150m, MCT=800 t.m/cm, cargo 500t yükleniyor LCG=75m, LCF=72m. Trim değişimi?",
+          options: ["1.875cm by stern", "2.125cm by stern", "2.375cm by stern"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Trim = (Weight × (LCG - LCF)) / MCT = (500 × (75-72)) / 800 = 1500/800 = 1.875cm by stern. LCG > LCF olduğunda trim by stern oluşur."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1", 
+          question: "TPC=28 t/cm, 1200t cargo discharge ediliyor. Draft değişimi nedir?",
+          options: ["42.9cm azalma", "46.2cm azalma", "38.7cm azalma"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Draft change = Weight / TPC = 1200 / 28 = 42.86cm ≈ 42.9cm. TPC (Tonnes Per Centimetre), 1cm draft değişimi için gerekli weight'i gösterir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Fore draft=9.2m, Mid=9.6m, Aft=10.1m. Simpson's rule ile mean draft? (F+6M+A)/8",
+          options: ["9.59m", "9.63m", "9.67m"],
+          correct: 1,
+          explanation: "ÇÖZÜM: Mean draft = (F + 6M + A) / 8 = (9.2 + 6×9.6 + 10.1) / 8 = (9.2 + 57.6 + 10.1) / 8 = 76.9/8 = 9.63m. Simpson's rule, trim durumunda en doğru mean draft hesabını verir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "FWA hesabı: Displacement=18000t, TPC=35 t/cm. Fresh water allowance?",
+          options: ["12.9cm", "15.4cm", "17.8cm"],
+          correct: 0,
+          explanation: "ÇÖZÜM: FWA = Displacement / (40 × TPC) = 18000 / (40 × 35) = 18000/1400 = 12.86cm ≈ 12.9cm. FWA, tatlı sudan deniz suyuna geçerken izin verilen extra draft'tır."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "DWA hesabı: Dock density=1015 kg/m³, Displacement=15000t, TPC=25 t/cm. Dock water allowance?",
+          options: ["6.0cm", "7.2cm", "8.4cm"],
+          correct: 0,
+          explanation: "ÇÖZÜM: DWA = (1025 - dock density) × Displacement / (100 × TPC) = (1025-1015) × 15000 / (100×25) = 10×15000/2500 = 6.0cm. DWA, farklı yoğunluktaki dok suyunda draft correction'dır."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "MT1=1200 t.m/cm, mevcut trim=1.8m, hedef even keel. Gerekli trimming moment?",
+          options: ["2160 t.m", "2520 t.m", "2880 t.m"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Required moment = MT1 × desired trim change = 1200 × 1.8m = 1200 × 180cm = 216000 t.cm = 2160 t.m. MT1, 1cm trim değişimi için gerekli moment'tir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "LCF shift: Draft 8m→10m, LCF değişimi +2m forward. TPC effect on trim calculation?",
+          options: ["MCT increases", "MCT decreases", "No MCT change"],
+          correct: 0,
+          explanation: "ÇÖZÜM: LCF forward shift, waterplane area'nın center'ını öne taşır. Bu da MCT'yi artırır çünkü same moment ile daha az trim oluşur. MCT = Δ×GML / (100×LBP) formülünde GML ve effective length artar."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Ballast tank: 1500t ballast, LCG=45m, ship LCF=78m, MCT=950 t.m/cm. Trim etkisi?",
+          options: ["5.21cm by head", "4.89cm by head", "5.53cm by head"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Trim = Weight × (LCG - LCF) / MCT = 1500 × (45-78) / 950 = 1500 × (-33) / 950 = -49500/950 = -5.21cm = 5.21cm by head. Negative değer by head trim'i gösterir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Longitudinal bending moment: Still water BM=+2500 t.m, wave BM=-1800 t.m. Total BM?",
+          options: ["700 t.m sagging", "700 t.m hogging", "4300 t.m hogging"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Total BM = Still water BM + Wave BM = 2500 + (-1800) = 700 t.m. Positive BM = hogging (deck compression), Negative BM = sagging (deck tension). Bu durumda net sagging."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Squat calculation: Speed=12 knots, Cb=0.75, h/T=1.3. Squat = 0.4×V²×Cb/(h/T), sonuç?",
+          options: ["33.2cm", "39.6cm", "45.1cm"],
+          correct: 0,
+          explanation: "ÇÖZÜM: Squat = 0.4 × V² × Cb / (h/T) = 0.4 × 12² × 0.75 / 1.3 = 0.4 × 144 × 0.75 / 1.3 = 43.2/1.3 = 33.23cm. Squat, shallow water'da dynamic sinkage'dır."
+        }
+      ]
+    },
+    // 📚 KAVRAMSAL BOYUNA STABİLİTE SORULARI (11-20)
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Longitudinal Metacentric Height (GML) transverse GM'den neden çok daha büyüktür?",
+          options: ["Longer waterplane length", "Second moment of area about longitudinal axis", "Different calculation method"],
+          correct: 1,
+          explanation: "AÇIKLAMA: GML = ILong/∇ formülünde ILong (longitudinal second moment of area) çok büyüktür çünkü waterplane'in length dimension'ı width'den çok daha büyüktür. Typical: GML = 100-300m, GM = 0.5-2m."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Trim by stern'in propeller efficiency'e pozitif etkisi nedir?",
+          options: ["Reduced cavitation", "Better propeller immersion", "Lower fuel consumption"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Trim by stern, propeller'ı daha derine daldırır, bu da propeller disk area'sının tamamen suda kalmasını sağlar. Better immersion, thrust efficiency'yi artırır ve propeller wash effect'i iyileştirir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Hogging ve Sagging arasındaki temel fark nedir?",
+          options: ["Loading condition difference", "Wave position effect", "Structural stress direction"],
+          correct: 2,
+          explanation: "AÇIKLAMA: Hogging: deck compression + bottom tension (positive BM), Sagging: deck tension + bottom compression (negative BM). Her ikisi de longitudinal bending moment direction'ını gösterir ve structural integrity'yi etkiler."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "LCF (Longitudinal Center of Flotation) neden önemlidir?",
+          options: ["Stability calculation center", "Trim moment reference point", "Buoyancy center location"],
+          correct: 1,
+          explanation: "AÇIKLAMA: LCF, trim hesaplamalarında reference point'tir. LCG-LCF distance, trim direction'ını belirler. LCG > LCF = trim by stern, LCG < LCF = trim by head. Draft değişimiyle LCF position'ı da değişir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Heavy weather'da optimum trim strategy neden 'slightly by head'dir?",
+          options: ["Better fuel economy", "Reduced bow slamming", "Improved visibility"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Slight trim by head, bow'un wave impact'ini azaltır ve slamming phenomenon'unu minimize eder. Bu, structural damage riskini azaltır ve crew comfort'ını artırır. Typical: 0.5-1.0m by head heavy weather'da optimal."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Bulk carrier'da sequential loading neden kritiktir?",
+          options: ["Time efficiency", "Structural stress control", "Cargo segregation"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Sequential loading, longitudinal bending moment'ları kontrol eder. Yanlış loading sequence, excessive hogging/sagging'e neden olabilir. Alternate hold loading genellikle preferred method'dur structural stress minimization için."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Container ship'lerde bay loading sequence neden trim control açısından önemlidir?",
+          options: ["Crane efficiency", "Progressive LCG control", "Port requirements"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Her bay loading LCG'yi değiştirir. Forward bay'lar trim by head, aft bay'lar trim by stern yaratır. Proper sequence, excessive trim'i önler ve propeller immersion'ı maintain eder. Real-time trim monitoring gereklidir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Pounding phenomenon hangi trim condition'da daha sık görülür?",
+          options: ["Even keel", "Trim by head", "Trim by stern"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Trim by head, bow'u wave impact'ine daha exposed hale getirir. Forward perpendicular area'nın water line'a yakınlığı, wave-ship interaction'ını artırır ve pounding risk'ini yükseltir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Load line regulations'a göre maximum allowable trim limitation basis nedir?",
+          options: ["Fixed L/50 rule", "Ship-specific calculation", "Stability booklet reference"],
+          correct: 2,
+          explanation: "AÇIKLAMA: Load line regulations, ship-specific trim limitations'ı stability booklet'te referans alır. Generic L/50 rule guide'dır, actual limits ship design'a göre belirlenir ve approved stability information'da specify edilir."
+        }
+      ]
+    },
+    {
+      questions: [
+        {
+          id: "q1",
+          question: "Trim optimization'ın fuel efficiency'e etkisinin temel prensibi nedir?",
+          options: ["Engine load reduction", "Hull resistance minimization", "Propeller efficiency improvement"],
+          correct: 1,
+          explanation: "AÇIKLAMA: Optimum trim, hull resistance'ı minimize eder. Wave-making resistance ve frictional resistance'ın optimal balance'ı sağlanır. Typical optimum: slight stern trim (0.5-1.5m) most commercial vessels için fuel efficiency açısından ideal."
+        }
+      ]
+    }
+  ];
+
+  // Random senaryo seçimi (component mount'ta)
+  React.useEffect(() => {
+    setCurrentScenario(Math.floor(Math.random() * longitudinalScenarioBank.length));
+    setCurrentQuizSet(Math.floor(Math.random() * longitudinalQuizBank.length));
+  }, []);
+
+  // Keyboard navigation for quiz sets
+  React.useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (activeTab === "practice") {
+        if (event.key === "ArrowLeft") {
+          // Previous quiz set
+          const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : longitudinalQuizBank.length - 1;
+          setCurrentQuizSet(prevSet);
+          setQuizAnswers({});
+          setShowQuizResults(false);
+        } else if (event.key === "ArrowRight") {
+          // Next quiz set
+          const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+          setCurrentQuizSet(nextSet);
+          setQuizAnswers({});
+          setShowQuizResults(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [activeTab, currentQuizSet, longitudinalQuizBank.length]);
+
+
+
+  const chartData = useMemo(() => {
+    const points = HydrostaticCalculations.generateGZCurve(geometry, kg, 0, 90, 1);
+    return points.map((p) => ({ angle: p.angle, gz: Number(p.gz.toFixed(3)) }));
+  }, [geometry, kg]);
+  const centers = useMemo(() => HydrostaticCalculations.calculateCenterPoints(geometry, kg), [geometry, kg]);
+
+  const handleExportPng = async () => {
+    if (chartRef.current) await exportNodeToPng(chartRef.current, 'gz-longitudinal.png');
+  };
+
+  const handleExportCsv = () => {
+    exportToCsv(chartData.map((d) => ({ angle: d.angle, gz: d.gz })), 'gz-longitudinal.csv');
+  };
+
+  return (
+    <div className="container mx-auto p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <button
+                onClick={() => {
+                  setBasicMode(true);
+                  setAdvancedMode(false);
+                  setActiveTab("learn");
+                }}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  basicMode 
+                    ? "bg-blue-500 text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                }`}
+              >
+                📚 Temel
+              </button>
+              <button
+                onClick={() => {
+                  setBasicMode(false);
+                  setAdvancedMode(true);
+                  setActiveTab("officer");
+                }}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  advancedMode 
+                    ? "bg-orange-500 text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                }`}
+              >
+                🎯 İleri
+              </button>
+            </div>
+            <Badge variant={advancedMode ? "default" : "secondary"} className="gap-2">
+              {basicMode ? <BookOpen className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+              {basicMode ? "Temel Seviye" : "İleri Seviye"}
+            </Badge>
+          </div>
+          {basicMode && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">İlerleme:</span>
+              <Progress value={learningProgress} className="w-20" />
+              <span className="text-sm font-medium">{learningProgress}%</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Boyuna Stabilite ve Trim Hesaplamaları
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                          <TabsList className={`grid w-full ${basicMode ? 'grid-cols-5' : 'grid-cols-3'}`}>
+              {basicMode ? (
+                <>
+                  <TabsTrigger value="learn" className="gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Öğren
+                  </TabsTrigger>
+                                      <TabsTrigger value="calculator" className="gap-2">
+                      <Calculator className="h-4 w-4" />
+                      Hesapla
+                    </TabsTrigger>
+                    <TabsTrigger value="calculations" className="gap-2">
+                      <TrendingUp className="h-4 w-4" />
+                      Hesaplamalar
+                    </TabsTrigger>
+                  <TabsTrigger value="concepts" className="gap-2">
+                    <Lightbulb className="h-4 w-4" />
+                    Kavramlar
+                  </TabsTrigger>
+                  <TabsTrigger value="practice" className="gap-2">
+                    <HelpCircle className="h-4 w-4" />
+                    Alıştırma
+                  </TabsTrigger>
+                </>
+              ) : (
+                <>
+                  <TabsTrigger value="officer" className="gap-2">
+                    <Ship className="h-4 w-4" />
+                    Trim Kontrolü
+                  </TabsTrigger>
+                  <TabsTrigger value="loading" className="gap-2">
+                    <Settings className="h-4 w-4" />
+                    Yükleme
+                  </TabsTrigger>
+                  <TabsTrigger value="emergency" className="gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    Acil Trim
+                  </TabsTrigger>
+                </>
+              )}
+            </TabsList>
+
+            <TabsContent value="learn" className="space-y-4 mt-6">
+              {renderLearningContent()}
+            </TabsContent>
+
+                          <TabsContent value="calculator" className="space-y-4 mt-6">
+                {renderCalculatorContent()}
+              </TabsContent>
+
+              <TabsContent value="calculations" className="space-y-4 mt-6">
+                {renderCalculationsContent()}
+              </TabsContent>
+
+            <TabsContent value="concepts" className="space-y-4 mt-6">
+              {renderConceptsContent()}
+            </TabsContent>
+
+            <TabsContent value="practice" className="space-y-4 mt-6">
+              {renderPracticeContent()}
+            </TabsContent>
+
+            {/* Officer Mode Tabs */}
+            <TabsContent value="officer" className="space-y-4 mt-6">
+              {renderOfficerTrimControl()}
+            </TabsContent>
+
+            <TabsContent value="loading" className="space-y-4 mt-6">
+              {renderLoadingOperations()}
+            </TabsContent>
+
+            <TabsContent value="emergency" className="space-y-4 mt-6">
+              {renderEmergencyTrim()}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  function renderLearningContent() {
+    return (
+      <div className="space-y-6">
+        <Alert>
+          <BookOpen className="h-4 w-4" />
+          <AlertTitle>Boyuna Stabilite Nedir?</AlertTitle>
+          <AlertDescription className="space-y-3 mt-3">
+            <p>
+              <strong>Boyuna stabilite</strong>, geminin boyuna ekseni etrafındaki dengesidir. 
+              Trim ve list kontrolü için kritik önem taşır.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Trim Kontrolü</h4>
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  Baş-kıç dengesi. Trim = (T kıç - T baş) / LBP
+                </p>
+              </div>
+              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">List Kontrolü</h4>
+                <p className="text-sm text-green-800 dark:text-green-200">
+                  Sancak-iskele dengesi. Yük dağılımı ile kontrol edilir.
+                </p>
+              </div>
+            </div>
+          </AlertDescription>
+        </Alert>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Adım Adım Öğrenme</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <div>
+                  <h4 className="font-medium">1. Adım: Trim Kavramını Anlayın</h4>
+                  <p className="text-sm text-muted-foreground">Baş ve kıç draft farkının LBP'ye oranı</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <div className="h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">2</div>
+                <div>
+                  <h4 className="font-medium">2. Adım: LCG ve LCF İlişkisini Öğrenin</h4>
+                  <p className="text-sm text-muted-foreground">Ağırlık merkezi ile flotasyon merkezi arasındaki mesafe</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                <div className="h-5 w-5 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs">3</div>
+                <div>
+                  <h4 className="font-medium">3. Adım: MCT Hesaplayın</h4>
+                  <p className="text-sm text-muted-foreground">Moment to Change Trim - 1cm trim değişimi için gereken moment</p>
+                </div>
+              </div>
+
+              <Button 
+                onClick={() => {
+                  setActiveTab("calculator");
+                  setShowStepByStep(true);
+                  setLearningProgress(25);
+                }}
+                className="w-full"
+              >
+                Hesaplamaya Başla
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  function renderCalculatorContent() {
+    return (
+      <div className="space-y-6">
+        {showStepByStep && (
+          <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Calculator className="h-5 w-5" />
+                Adım Adım Trim Hesaplama
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Alert>
+                  <Lightbulb className="h-4 w-4" />
+                  <AlertTitle>Öğrenci İpucu</AlertTitle>
+                  <AlertDescription>
+                    Trim hesaplaması için LCG ve LCF konumları kritiktir. 
+                    MCT değeri ile trim değişimi hesaplanabilir.
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {!!errors.length && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Girdi Hatası</AlertTitle>
+            <AlertDescription>
+              <ul className="list-disc ml-4">
+                {errors.map((e, i) => (<li key={i}>{e}</li>))}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">📏 Gemi Boyutları</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label className="flex items-center gap-2">
+                  Uzunluk LBP (m)
+                  <Badge variant="outline" className="text-xs">Length Between Perpendiculars</Badge>
+                </Label>
+                <Input type="number" value={geometry.length} onChange={handleChange('length')} />
+              </div>
+              <div>
+                <Label className="flex items-center gap-2">
+                  Genişlik B (m)
+                  <Badge variant="outline" className="text-xs">Beam</Badge>
+                </Label>
+                <Input type="number" value={geometry.breadth} onChange={handleChange('breadth')} />
+              </div>
+              <div>
+                <Label className="flex items-center gap-2">
+                  Derinlik D (m)
+                  <Badge variant="outline" className="text-xs">Depth</Badge>
+                </Label>
+                <Input type="number" value={geometry.depth} onChange={handleChange('depth')} />
+              </div>
+              <div>
+                <Label className="flex items-center gap-2">
+                  Draft T (m)
+                  <Badge variant="outline" className="text-xs">Draft</Badge>
+                </Label>
+                <Input type="number" value={geometry.draft} onChange={handleChange('draft')} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">📊 Form Katsayıları & Trim</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label className="flex items-center gap-2">
+                  Cb - Blok Katsayısı
+                  <Badge variant="outline" className="text-xs">0.60-0.85</Badge>
+                </Label>
+                <Input type="number" step="0.01" value={geometry.blockCoefficient} onChange={handleChange('blockCoefficient')} />
+              </div>
+              <div>
+                <Label className="flex items-center gap-2">
+                  Cw - Su çizgisi Katsayısı
+                  <Badge variant="outline" className="text-xs">0.75-0.95</Badge>
+                </Label>
+                <Input type="number" step="0.01" value={geometry.waterplaneCoefficient} onChange={handleChange('waterplaneCoefficient')} />
+              </div>
+              <div>
+                <Label className="flex items-center gap-2">
+                  KG (m) - Ağırlık Merkezi
+                  <Badge variant="outline" className="text-xs">Critical!</Badge>
+                </Label>
+                <Input type="number" step="0.01" value={kg} onChange={(e) => setKg(parseFloat(e.target.value))} />
+              </div>
+              <div>
+                <Label className="flex items-center gap-2">
+                  Trim Açısı (°)
+                  <Badge variant="outline" className="text-xs">Test Angle</Badge>
+                </Label>
+                <Input type="number" step="1" value={angle} onChange={(e) => setAngle(parseFloat(e.target.value))} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="flex flex-wrap gap-3 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+          <Button 
+            onClick={() => {
+              handleCalculate();
+              setLearningProgress(75);
+            }}
+            className="gap-2"
+            size="lg"
+          >
+            <Calculator className="h-4 w-4" />
+            Hesapla ve Öğren
+          </Button>
+          <Button 
+            variant="secondary" 
+            className="gap-2"
+            onClick={() => {
+              computeLongitudinal();
+              setLearningProgress(Math.max(learningProgress, 85));
+            }}
+          >
+            <Ruler className="h-4 w-4" /> Boyuna Trim Hesapla
+          </Button>
+          <Button variant="secondary" onClick={loadExampleData}>
+            Örnek Veri Yükle
+          </Button>
+          <Button variant="outline" className="gap-2" onClick={handleExportPng}>
+            <Download className="h-4 w-4" /> PNG İndir
+          </Button>
+          <Button variant="outline" className="gap-2" onClick={handleExportCsv}>
+            <Download className="h-4 w-4" /> CSV İndir
+          </Button>
+          <Button variant="ghost" onClick={() => { setResult(null); setErrors([]); }}>
+            Temizle
+          </Button>
+        </div>
+
+        {/* NEW: Longitudinal-only calculator UI */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Ruler className="h-5 w-5" /> Boyuna Stabilite Hesaplayıcı (GML, MCT, Trim)
+            </CardTitle>
+            <CardDescription>
+              GML ve MCT 1 cm ile toplam trim ve yeni draftları hesaplar. Ne/Neden açıklamaları içerir.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>CF Konumu xCF (kıçtan, m)</Label>
+                <Input type="number" step="0.1" value={xcfFromAft} onChange={(e) => setXcfFromAft(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
+                <p className="text-xs text-muted-foreground mt-1">Neden: Trim dağıtımı CF etrafında yapılır.</p>
+              </div>
+              <div>
+                <Label>Baş Draftı Tfwd (m)</Label>
+                <Input type="number" step="0.01" value={initialDraftFwd} onChange={(e) => setInitialDraftFwd(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
+                <p className="text-xs text-muted-foreground mt-1">Ne: Baştaki mevcut draft.</p>
+              </div>
+              <div>
+                <Label>Kıç Draftı Taft (m)</Label>
+                <Input type="number" step="0.01" value={initialDraftAft} onChange={(e) => setInitialDraftAft(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))} />
+                <p className="text-xs text-muted-foreground mt-1">Ne: Kıçtaki mevcut draft.</p>
+              </div>
+            </div>
+
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Trim Momenti Girdileri (W × d)</Label>
+                <Button variant="outline" onClick={addMomentRow}>Satır Ekle</Button>
+              </div>
+              <div className="space-y-2">
+                {trimMoments.map((row, idx) => (
+                  <div key={idx} className="grid grid-cols-12 gap-2 items-end">
+                    <div className="col-span-4">
+                      <Label>Açıklama</Label>
+                      <Input value={row.description || ''} onChange={(e) => updateMomentRow(idx, 'description', e.target.value)} placeholder="Yük/ballast hareketi" />
+                    </div>
+                    <div className="col-span-3">
+                      <Label>Ağırlık (ton)</Label>
+                      <Input type="number" step="0.1" value={row.weightTonnes} onChange={(e) => updateMomentRow(idx, 'weightTonnes', e.target.value)} />
+                    </div>
+                    <div className="col-span-3">
+                      <Label>Mesafe d (m)</Label>
+                      <Input type="number" step="0.1" value={row.distanceMeters} onChange={(e) => updateMomentRow(idx, 'distanceMeters', e.target.value)} />
+                      <p className="text-xs text-muted-foreground mt-1">İşaret: başa (+), kıça (−) kabul ederek tutarlı olun.</p>
+                    </div>
+                    <div className="col-span-2 flex gap-2">
+                      <Button variant="ghost" onClick={() => removeMomentRow(idx)}>Sil</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <Button className="mt-2" onClick={computeLongitudinal}><Calculator className="h-4 w-4 mr-2" /> Hesapla</Button>
+              </div>
+            </div>
+
+            {longitudinalResult && (
+              <div className="space-y-4">
+                <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertTitle>Boyuna Hesaplama Sonuçları</AlertTitle>
+                  <AlertDescription>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 text-sm">
+                      <div>
+                        <div className="font-semibold">GML (m)</div>
+                        <div>{longitudinalResult.gml.toFixed(3)}</div>
+                        <div className="text-xs text-muted-foreground">Neden: Trim direncinin temel ölçüsü</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">MCT 1 cm (t·m/cm)</div>
+                        <div>{longitudinalResult.mct1cm.toFixed(1)}</div>
+                        <div className="text-xs text-muted-foreground">Ne: 1 cm trim için gereken moment</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Toplam Trim (cm)</div>
+                        <div>{longitudinalResult.trimChangeCm.toFixed(2)} {longitudinalResult.trimChangeCm >= 0 ? 'by stern' : 'by head'}</div>
+                        <div className="text-xs text-muted-foreground">Ne: ∑(W·d) / MCT</div>
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Trim Dağılımı (CF = {longitudinalResult.distribution.xCFfromAft.toFixed(2)} m)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div>Başa düşen: {longitudinalResult.distribution.forwardCm.toFixed(2)} cm</div>
+                      <div>Kıça düşen: {longitudinalResult.distribution.aftCm.toFixed(2)} cm</div>
+                      <div className="text-xs text-muted-foreground">Neden: Trim CF etrafında paylaştırılır (baş/kıç oranı konuma göre).</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Yeni Draftlar</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div>Yeni Baş Draft: {longitudinalResult.newDrafts.forward.toFixed(3)} m</div>
+                      <div>Yeni Kıç Draft: {longitudinalResult.newDrafts.aft.toFixed(3)} m</div>
+                      <div>Ortalama Draft: {longitudinalResult.newDrafts.mean.toFixed(3)} m</div>
+                      <div className="text-xs text-muted-foreground">İşaret: Trim by stern ise kıç artar, baş azalır; tersi için ters işaret.</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {result && (
+          <div className="space-y-6">
+            <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+              <CheckCircle className="h-4 w-4" />
+              <AlertTitle>✅ Hesaplama Tamamlandı!</AlertTitle>
+              <AlertDescription>
+                <div className="space-y-2 mt-3">
+                  <p><strong>Trim Analizi:</strong></p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm">
+                        <strong>GM Boyuna = {centers.gml.toFixed(3)} m</strong>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Boyuna stabilite kalitesi
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm">
+                        <strong>GZ = {result.gz.toFixed(3)} m</strong>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {angle}° açıdaki düzeltici kol
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            <div ref={chartRef}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>GZ Eğrisi (Boyuna Stabilite)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={{ gz: { label: 'GZ', color: 'hsl(var(--primary))' } }} className="w-full h-80">
+                    <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+                      <CartesianGrid strokeDasharray="4 4" />
+                      <XAxis dataKey="angle" tickFormatter={(v) => `${v}°`} />
+                      <YAxis tickFormatter={(v) => `${v} m`} />
+                      <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
+                      <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={3} dot={false} />
+                    </LineChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-muted-foreground">GZ (Düzeltici Kol)</div>
+                    <div className="text-2xl font-bold">{result.gz.toFixed(3)} m</div>
+                    <div className="text-xs text-muted-foreground mt-1">{angle}° açıda</div>
+                  </div>
+                  <Gauge className="h-8 w-8 text-blue-500" />
+                </div>
+              </Card>
+
+              <Card className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-muted-foreground">Düzeltici Moment</div>
+                    <div className="text-2xl font-bold">{result.rightingMoment.toFixed(0)} kNm</div>
+                    <div className="text-xs text-muted-foreground mt-1">Righting moment</div>
+                  </div>
+                  <Activity className="h-8 w-8 text-green-500" />
+                </div>
+              </Card>
+
+              <Card className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-muted-foreground">Stabilite İndeksi</div>
+                    <div className="text-2xl font-bold">{result.stabilityIndex.toFixed(3)}</div>
+                    <div className="text-xs text-muted-foreground mt-1">Stability index</div>
+                  </div>
+                  <TrendingUp className="h-8 w-8 text-purple-500" />
+                </div>
+              </Card>
+
+              <Card className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-muted-foreground">GM Boyuna</div>
+                    <div className="text-2xl font-bold">{centers.gml.toFixed(2)} m</div>
+                    <div className="text-xs text-muted-foreground mt-1">Longitudinal GM</div>
+                  </div>
+                  <Ruler className="h-8 w-8 text-orange-500" />
+                </div>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>📈 Trim Hesaplama Özeti</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <div className="font-medium">Deplasman</div>
+                    <div>{(geometry.length * geometry.breadth * geometry.draft * geometry.blockCoefficient * 1.025).toFixed(0)} ton</div>
+                  </div>
+                  <div>
+                    <div className="font-medium">LCG (yaklaşık)</div>
+                    <div>{(geometry.length * 0.485).toFixed(1)} m</div>
+                  </div>
+                  <div>
+                    <div className="font-medium">Test Açısı</div>
+                    <div>{angle}°</div>
+                  </div>
+                  <div>
+                    <div className="font-medium">GM Boyuna</div>
+                    <div>{centers.gml.toFixed(2)} m</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button 
+              onClick={() => {
+                setActiveTab("concepts");
+                setLearningProgress(100);
+              }}
+              className="w-full"
+              size="lg"
+            >
+              Kavramları Öğrenmeye Devam Et 🎓
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderConceptsContent() {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="h-5 w-5" />
+                Trim Nedir?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p>
+                <strong>Trim</strong>, geminin baş ve kıç draft farkıdır. Pozitif trim kıçtan bastık demektir.
+              </p>
+              <div className="space-y-3">
+                <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200">Pozitif Trim</h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">Kıç drafı &gt; Baş drafı - Kıçtan bastık</p>
+                </div>
+                <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 dark:text-blue-200">Negatif Trim</h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">Baş drafı &gt; Kıç drafı - Baştan bastık</p>
+                </div>
+                <div className="p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                  <h4 className="font-semibold text-gray-800 dark:text-gray-200">Even Keel</h4>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">Baş = Kıç draft - Düz trim</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                MCT (Moment to Change Trim)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p>
+                <strong>MCT</strong>, 1 cm trim değişimi için gereken momenttir.
+              </p>
+              <div className="space-y-3">
+                <div className="p-3 bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-500">
+                  <h4 className="font-semibold">MCT Formülü</h4>
+                  <p className="text-sm font-mono">MCT = (Δ × GML × B²) / (12 × L)</p>
+                </div>
+                <div className="p-3 bg-green-50 dark:bg-green-950 border-l-4 border-green-500">
+                  <h4 className="font-semibold">Trim Değişimi</h4>
+                  <p className="text-sm font-mono">ΔTrim = (W × d) / MCT</p>
+                </div>
+                <div className="p-3 bg-orange-50 dark:bg-orange-950 border-l-4 border-orange-500">
+                  <h4 className="font-semibold">Trim Tanımı</h4>
+                  <p className="text-sm font-mono">Trim = (T kıç - T baş) / LBP</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>📚 Boyuna Stabilite Terimleri</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">LCG - Longitudinal Center of Gravity</h4>
+                  <p className="text-sm text-muted-foreground">Geminin boyuna ağırlık merkezi konumu</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">LCF - Longitudinal Center of Flotation</h4>
+                  <p className="text-sm text-muted-foreground">Su çizgisi alanının merkezi - trim ekseni</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">GML - Longitudinal Metacentric Height</h4>
+                  <p className="text-sm text-muted-foreground">Boyuna metasentrik yükseklik</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">TPC - Tonnes Per Centimeter</h4>
+                  <p className="text-sm text-muted-foreground">1 cm batma için gereken ağırlık</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">Trim Moment</h4>
+                  <p className="text-sm text-muted-foreground">Trim yaratan moment = W × (LCG - LCF)</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">List</h4>
+                  <p className="text-sm text-muted-foreground">Sancak-iskele yönündeki eğilme açısı</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  function renderPracticeContent() {
+    const currentScenarioData = longitudinalScenarioBank[currentScenario];
+    const currentQuizData = longitudinalQuizBank[currentQuizSet];
+    
+    return (
+      <div className="space-y-6">
+        <Alert>
+          <HelpCircle className="h-4 w-4" />
+          <AlertTitle>Gelişmiş Boyuna Stabilite Alıştırmaları</AlertTitle>
+          <AlertDescription>
+            Profesyonel seviye trim ve boyuna stabilite senaryolarıyla bilginizi test edin.
+          </AlertDescription>
+        </Alert>
+
+        {/* Random Challenging Scenario */}
+        <Card className="border-orange-200">
+          <CardHeader>
+            <CardTitle className="text-lg">{currentScenarioData.title}</CardTitle>
+            <div className="flex gap-2">
+              <Badge variant="destructive">Zor Seviye</Badge>
+              <Badge variant="outline">Senaryo #{currentScenario + 1}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg border-l-4 border-red-500">
+                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">📋 Trim Analizi</h4>
+                <p className="text-sm text-red-700 dark:text-red-300 mb-3">
+                  <strong>Durum:</strong> {currentScenarioData.situation}
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  <strong>Görev:</strong> {currentScenarioData.question}
+                </p>
+              </div>
+              
+              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <strong>💡 İpucu:</strong> {currentScenarioData.hint}
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setScenario2Answer(!scenario2Answer)}
+                >
+                  {scenario2Answer ? "Çözümü Gizle" : "Çözümü Gör"}
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  onClick={() => {
+                    setCurrentScenario(Math.floor(Math.random() * longitudinalScenarioBank.length));
+                    setScenario2Answer(false);
+                  }}
+                >
+                  🎲 Yeni Senaryo
+                </Button>
+              </div>
+
+              {scenario2Answer && (
+                <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
+                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Uzman Çözümü:</h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    {currentScenarioData.answer}
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Dynamic Quiz System */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Quiz</span>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Set {currentQuizSet + 1} / {longitudinalQuizBank.length}</span>
+                <Badge variant="outline">{currentQuizData.questions.length} Soru</Badge>
+              </div>
+            </CardTitle>
+            <div className="text-sm text-muted-foreground mt-2">
+              🧩 Boyuna Stabilite ve Trim Quiz Soruları
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {currentQuizData.questions.map((question, idx) => (
+                <div key={question.id} className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
+                  <h4 className="font-semibold mb-3">Soru {idx + 1}: {question.question}</h4>
+                  <div className="space-y-2">
+                    {question.options.map((option, optionIdx) => (
+                      <label key={optionIdx} className="flex items-center gap-2">
+                        <input 
+                          type="radio" 
+                          name={`trim-quiz-${currentQuizSet}-${question.id}`} 
+                          value={optionIdx.toString()}
+                          checked={quizAnswers[question.id] === optionIdx.toString()}
+                          onChange={(e) => handleTrimQuizAnswer(question.id, e.target.value)}
+                          disabled={showQuizResults}
+                        />
+                        <span className={`text-sm ${
+                          showQuizResults ? 
+                            (parseInt(quizAnswers[question.id]) === question.correct ? 
+                              (optionIdx === question.correct ? "text-green-600 font-semibold" : "") :
+                              (optionIdx === parseInt(quizAnswers[question.id]) ? "text-red-600 line-through" : 
+                               optionIdx === question.correct ? "text-green-600 font-semibold" : "")
+                            ) : ""
+                        }`}>
+                          {String.fromCharCode(65 + optionIdx)}) {option}
+                          {showQuizResults && optionIdx === question.correct && " ✅"}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : longitudinalQuizBank.length - 1;
+                    setCurrentQuizSet(prevSet);
+                    setQuizAnswers({});
+                    setShowQuizResults(false);
+                  }}
+                  className="flex-1"
+                  disabled={showQuizResults}
+                >
+                  ← Önceki Set
+                  <span className="ml-2 text-xs opacity-60">←</span>
+                </Button>
+                
+                                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+                      setCurrentQuizSet(nextSet);
+                      setQuizAnswers({});
+                      setShowQuizResults(false);
+                    }}
+                    className="flex-1"
+                    disabled={showQuizResults}
+                  >
+                    Sonraki Set →
+                    <span className="ml-2 text-xs opacity-60">→</span>
+                  </Button>
+              </div>
+              
+              {/* Quiz Progress Indicator */}
+              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Quiz İlerlemesi</span>
+                  <span className="font-medium">{currentQuizSet + 1} / {longitudinalQuizBank.length}</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${((currentQuizSet + 1) / longitudinalQuizBank.length) * 100}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                  <span>Set 1</span>
+                  <span>Set {longitudinalQuizBank.length}</span>
+                </div>
+                <div className="mt-2 text-xs text-center text-muted-foreground">
+                  <span>💡 Sol/Sağ ok tuşları ile hızlı geçiş yapabilirsiniz</span>
+                </div>
+              </div>
+              
+              {showQuizResults && (
+                <div className="mt-4 space-y-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                    <h4 className="font-semibold mb-2">🎯 Quiz Sonuçları:</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          )}/{currentQuizData.questions.length}
+                        </div>
+                        <div className="text-sm text-muted-foreground">Doğru Cevap</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {Math.round((currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) * 100)}%
+                        </div>
+                        <div className="text-sm text-muted-foreground">Başarı Oranı</div>
+                      </div>
+                      <div className="text-center">
+                        <div className={`text-2xl font-bold ${
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'text-green-600' :
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {(currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? '🏆' :
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? '👍' : '📚'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {(currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.8 ? 'Mükemmel!' :
+                          (currentQuizData.questions.reduce((score, q) => 
+                            score + (parseInt(quizAnswers[q.id]) === q.correct ? 1 : 0), 0
+                          ) / currentQuizData.questions.length) >= 0.6 ? 'İyi!' : 'Tekrar Et'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Detaylı Çözümler */}
+                  <div className="space-y-3">
+                    <h5 className="font-semibold text-gray-800">📚 Detaylı Çözümler & Açıklamalar:</h5>
+                    {currentQuizData.questions.map((question, idx) => {
+                      const userAnswer = parseInt(quizAnswers[question.id] || "-1");
+                      const isCorrect = userAnswer === question.correct;
+                      
+                      return (
+                        <div key={question.id} className={`p-4 rounded-lg border-2 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                          <h6 className="font-medium mb-2">{question.question}</h6>
+                          <div className="space-y-1 mb-3">
+                            {question.options.map((option, optionIdx) => (
+                              <div 
+                                key={optionIdx} 
+                                className={`p-2 rounded text-sm ${
+                                  optionIdx === question.correct 
+                                    ? 'bg-green-100 text-green-800 border border-green-300' 
+                                    : userAnswer === optionIdx 
+                                      ? 'bg-red-100 text-red-800 border border-red-300' 
+                                      : 'bg-gray-100'
+                                }`}
+                              >
+                                {optionIdx === question.correct && "✅ "}
+                                {userAnswer === optionIdx && userAnswer !== question.correct && "❌ "}
+                                {option}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {question.explanation && (
+                            <div className="bg-blue-50 border-l-4 border-blue-400 p-3">
+                              <div className="text-blue-800 text-sm">
+                                <strong>🔍 Detaylı Açıklama:</strong>
+                                <p className="mt-1 whitespace-pre-line">{question.explanation}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Quiz Navigation After Results */}
+                  <div className="flex gap-3 pt-4 border-t">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const prevSet = currentQuizSet > 0 ? currentQuizSet - 1 : longitudinalQuizBank.length - 1;
+                        setCurrentQuizSet(prevSet);
+                        setQuizAnswers({});
+                        setShowQuizResults(false);
+                      }}
+                      className="flex-1 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+                    >
+                      ← Önceki Set
+                    </Button>
+                    
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        const nextSet = currentQuizSet < longitudinalQuizBank.length - 1 ? currentQuizSet + 1 : 0;
+                        setCurrentQuizSet(nextSet);
+                        setQuizAnswers({});
+                        setShowQuizResults(false);
+                      }}
+                      className="flex-1 bg-green-50 hover:bg-green-100 border-green-200 text-green-700"
+                    >
+                      Sonraki Set →
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  function renderOfficerTrimControl() {
+    const trimData = calculateTrimData();
+    const trimRec = trimData ? getTrimRecommendation(trimData.trimAngle) : null;
+    const limits = getOperationalLimits();
+
+    return (
+      <div className="space-y-6">
+        {/* Quick Ship Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-blue-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Ship className="h-5 w-5" />
+                Hızlı Gemi Seçimi
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Select value={selectedShipType} onValueChange={handleShipTypeChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Gemi tipi seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(shipPresets).map(([key, preset]) => (
+                    <SelectItem key={key} value={key}>
+                      {preset.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">LOA:</span>
+                  <span className="font-medium ml-2">{geometry.length}m</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Beam:</span>
+                  <span className="font-medium ml-2">{geometry.breadth}m</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Draft:</span>
+                  <span className="font-medium ml-2">{geometry.draft}m</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">KG:</span>
+                  <span className="font-medium ml-2">{kg}m</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-orange-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Settings className="h-5 w-5" />
+                Yükleme Durumu
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Yükleme Durumu</Label>
+                <Select value={loadCondition} onValueChange={setLoadCondition}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ballast">Ballast</SelectItem>
+                    <SelectItem value="partial">Kısmi Yüklü</SelectItem>
+                    <SelectItem value="loaded">Tam Yüklü</SelectItem>
+                    <SelectItem value="heavy">Ağır Yüklü</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">Mevcut Trim (m)</Label>
+                <Input 
+                  type="number" 
+                  step="0.1" 
+                  value={trimCondition} 
+                  onChange={(e) => setTrimCondition(parseFloat(e.target.value))}
+                  placeholder="Pozitif = Kıçtan bastık"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Trim Controls */}
+        <Card>
+          <CardHeader>
+            <CardTitle>⚡ Hızlı Trim Kontrol</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <Label>KG Düzeltme (m)</Label>
+                <Input 
+                  type="number" 
+                  step="0.1" 
+                  value={kg} 
+                  onChange={(e) => setKg(parseFloat(e.target.value))}
+                  className="text-lg font-medium"
+                />
+              </div>
+              <div>
+                <Label>Draft (m)</Label>
+                <Input 
+                  type="number" 
+                  step="0.1" 
+                  value={geometry.draft} 
+                  onChange={handleChange('draft')}
+                  className="text-lg font-medium"
+                />
+              </div>
+              <div>
+                <Label>Test Açısı (°)</Label>
+                <Input 
+                  type="number" 
+                  step="1" 
+                  value={angle} 
+                  onChange={(e) => setAngle(parseFloat(e.target.value))}
+                  className="text-lg font-medium"
+                />
+              </div>
+              <div className="flex items-end">
+                <Button 
+                  onClick={handleCalculate}
+                  className="w-full h-10"
+                  size="lg"
+                >
+                  🚀 HESAPLA
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Results Dashboard */}
+        {result && trimData && (
+          <div className="space-y-4">
+            {/* Critical Status */}
+            <Alert className={`${
+              Math.abs(trimCondition) > 2.0 ? "border-red-500 bg-red-50 dark:bg-red-950" :
+              Math.abs(trimCondition) > 1.0 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950" :
+              "border-green-500 bg-green-50 dark:bg-green-950"
+            }`}>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle className="text-lg">
+                {Math.abs(trimCondition) > 2.0 ? "🚨 KRİTİK TRİM" :
+                 Math.abs(trimCondition) > 1.0 ? "⚠️ FAZLA TRİM" :
+                 "✅ OPTİMAL TRİM"}
+              </AlertTitle>
+              <AlertDescription>
+                <div className="mt-2">
+                  <p className="text-base font-medium">
+                    Trim = {trimCondition.toFixed(2)} m 
+                    {trimCondition > 0 ? " (Kıçtan bastık)" : trimCondition < 0 ? " (Baştan bastık)" : " (Even keel)"}
+                  </p>
+                  <p className="text-sm mt-1">
+                    {trimRec?.message}
+                  </p>
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            {/* Quick Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="p-4 text-center">
+                <div className="text-2xl font-bold text-blue-600">{trimData.gml.toFixed(2)}m</div>
+                <div className="text-sm text-muted-foreground">GM Boyuna</div>
+                <div className="text-xs text-green-600">Longitudinal</div>
+              </Card>
+
+              <Card className="p-4 text-center">
+                <div className="text-2xl font-bold text-green-600">{trimData.mct.toFixed(0)}</div>
+                <div className="text-sm text-muted-foreground">MCT (tm/cm)</div>
+                <div className="text-xs text-green-600">Moment to change trim</div>
+              </Card>
+
+              <Card className="p-4 text-center">
+                <div className="text-2xl font-bold text-purple-600">{trimCondition.toFixed(2)}m</div>
+                <div className="text-sm text-muted-foreground">Mevcut Trim</div>
+                <div className={`text-xs ${
+                  Math.abs(trimCondition) < 0.5 ? 'text-green-600' :
+                  Math.abs(trimCondition) < 2.0 ? 'text-orange-600' :
+                  'text-red-600'
+                }`}>
+                  {Math.abs(trimCondition) < 0.5 ? 'Optimal' :
+                   Math.abs(trimCondition) < 2.0 ? 'Dikkat' :
+                   'Kritik'}
+                </div>
+              </Card>
+
+              <Card className="p-4 text-center">
+                <div className="text-2xl font-bold text-orange-600">{trimData.displacement.toFixed(0)}</div>
+                <div className="text-sm text-muted-foreground">Deplasman (ton)</div>
+                <div className="text-xs text-orange-600">Current displacement</div>
+              </Card>
+            </div>
+
+            {/* Operational Limits */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Gauge className="h-5 w-5" />
+                  Operasyonel Trim Limitleri
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg text-center">
+                    <h4 className="font-semibold text-green-800 dark:text-green-200">Optimal Aralık</h4>
+                    <p className="text-lg font-bold">{limits.optimalTrimRange[0]}m ~ {limits.optimalTrimRange[1]}m</p>
+                    <p className="text-xs text-muted-foreground">En verimli seyir</p>
+                  </div>
+                  <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg text-center">
+                    <h4 className="font-semibold text-yellow-800 dark:text-yellow-200">Maks Kıç Trim</h4>
+                    <p className="text-lg font-bold">{limits.maxTrimByStern}m</p>
+                    <p className="text-xs text-muted-foreground">Güvenli limit</p>
+                  </div>
+                  <div className="p-3 bg-red-50 dark:bg-red-950 rounded-lg text-center">
+                    <h4 className="font-semibold text-red-800 dark:text-red-200">Maks Baş Trim</h4>
+                    <p className="text-lg font-bold">{limits.maxTrimByHead}m</p>
+                    <p className="text-xs text-muted-foreground">Tehlikeli limit</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderLoadingOperations() {
+    return (
+      <div className="space-y-6">
+        <Alert>
+          <Settings className="h-4 w-4" />
+          <AlertTitle>Yükleme Operasyonları ve Trim Kontrolü</AlertTitle>
+          <AlertDescription>
+            Yük operasyonları sırasında trim değişimlerini izleyin ve kontrol edin.
+          </AlertDescription>
+        </Alert>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Ship className="h-5 w-5" />
+                Trim Hesaplama Araçları
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label>Yüklenecek Ağırlık (ton)</Label>
+                  <Input type="number" placeholder="500" />
+                </div>
+                <div>
+                  <Label>Yük Konumu (LCG'den uzaklık, m)</Label>
+                  <Input type="number" placeholder="20" />
+                </div>
+                <div>
+                  <Label>MCT (tm/cm)</Label>
+                  <Input type="number" value={result ? calculateTrimData()?.mct.toFixed(0) || "250" : "250"} disabled />
+                </div>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  Trim Değişimini Hesapla
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Ballast Transfer Planı
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label>Hedef Trim (m)</Label>
+                  <Input type="number" step="0.1" defaultValue="0.5" />
+                </div>
+                <div>
+                  <Label>Mevcut Trim (m)</Label>
+                  <Input type="number" value={trimCondition.toFixed(2)} disabled />
+                </div>
+                <div>
+                  <Label>Ballast Tank Seçimi</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tank seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fore-peak">Fore Peak Tank</SelectItem>
+                      <SelectItem value="aft-peak">Aft Peak Tank</SelectItem>
+                      <SelectItem value="no1-db">No.1 Deep Tank</SelectItem>
+                      <SelectItem value="no2-db">No.2 Deep Tank</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="w-full bg-green-600 hover:bg-green-700">
+                  Ballast Planı Oluştur
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>📋 Yükleme Kontrol Listesi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h4 className="font-semibold">Yükleme Öncesi:</h4>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">İlk trim durumu kaydet</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">Draft okumalarını al</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">Yük dağılım planını kontrol et</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">MCT değerini hesapla</span>
+                  </label>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h4 className="font-semibold">Yükleme Sırası:</h4>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">Her hold sonrası trim kontrol</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">Ballast transfer işlemleri</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">List kontrolü (max 2°)</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">Final trim hesaplama</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>🎯 Trim Optimizasyon Önerileri</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-semibold mb-2 text-green-600">Yakıt Verimliliği İçin</h4>
+                <ul className="text-sm space-y-1 text-muted-foreground">
+                  <li>• Hafif kıç trimi (0.5-1.0m)</li>
+                  <li>• Even keel'e yakın</li>
+                  <li>• Pervane merkezinde optimal akış</li>
+                </ul>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-semibold mb-2 text-blue-600">Kötü Hava İçin</h4>
+                <ul className="text-sm space-y-1 text-muted-foreground">
+                  <li>• Çok hafif baş trimi</li>
+                  <li>• Dalga etkisini azaltır</li>
+                  <li>• Slamming'i önler</li>
+                </ul>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-semibold mb-2 text-orange-600">Port Operasyonları</h4>
+                <ul className="text-sm space-y-1 text-muted-foreground">
+                  <li>• Even keel tercih edilir</li>
+                  <li>• Crane erişimi optimal</li>
+                  <li>• Güvenli ramp kullanımı</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  function renderEmergencyTrim() {
+    return (
+      <div className="space-y-6">
+        <Alert variant="destructive" className="border-red-500">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle className="text-lg">🚨 ACİL TRİM DURUMU PROSEDÜRLERİ</AlertTitle>
+          <AlertDescription>
+            Kritik trim durumlarında uygulanması gereken acil prosedürler.
+          </AlertDescription>
+        </Alert>
+
+        {/* Emergency Action Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-red-200">
+            <CardHeader className="bg-red-50 dark:bg-red-950">
+              <CardTitle className="text-red-800 dark:text-red-200">
+                🚨 AŞIRI BAŞ TRİMİ (&lt; -2.0m)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <ol className="space-y-3 text-sm">
+                <li className="flex gap-3">
+                  <span className="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                  <div>
+                    <strong>Derhal Hızı Azalt</strong>
+                    <p className="text-muted-foreground">Slamming riskini azalt</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                  <div>
+                    <strong>Aft Peak'e Ballast Al</strong>
+                    <p className="text-muted-foreground">Kıç trim'i artır</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                  <div>
+                    <strong>Fore Peak'ten Ballast Ver</strong>
+                    <p className="text-muted-foreground">Baş ağırlığını azalt</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                  <div>
+                    <strong>Draft Kontrolü</strong>
+                    <p className="text-muted-foreground">Her 30 dakikada bir ölç</p>
+                  </div>
+                </li>
+              </ol>
+            </CardContent>
+          </Card>
+
+          <Card className="border-orange-200">
+            <CardHeader className="bg-orange-50 dark:bg-orange-950">
+              <CardTitle className="text-orange-800 dark:text-orange-200">
+                ⚠️ AŞIRI KIÇ TRİMİ (&gt; 3.0m)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <ol className="space-y-3 text-sm">
+                <li className="flex gap-3">
+                  <span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                  <div>
+                    <strong>Pervane Verimliliği Kontrol</strong>
+                    <p className="text-muted-foreground">Kavitasyon kontrolü</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                  <div>
+                    <strong>Fore Peak'e Ballast Al</strong>
+                    <p className="text-muted-foreground">Baş trim'i artır</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                  <div>
+                    <strong>Aft Ballast Transfer</strong>
+                    <p className="text-muted-foreground">Kıçtan öne ballast transfer</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                  <div>
+                    <strong>Manevra Kabiliyeti Test</strong>
+                    <p className="text-muted-foreground">Dümen etkisini kontrol et</p>
+                  </div>
+                </li>
+              </ol>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Emergency Calculations */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Acil Trim Düzeltme Hesaplama
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold mb-3">Ballast Transfer Hesaplama</h4>
+                <div className="space-y-3">
+                  <div>
+                    <Label>Mevcut Trim (m)</Label>
+                    <Input type="number" value={trimCondition.toFixed(2)} disabled />
+                  </div>
+                  <div>
+                    <Label>Hedef Trim (m)</Label>
+                    <Input type="number" step="0.1" defaultValue="0.5" />
+                  </div>
+                  <div>
+                    <Label>MCT (tm/cm)</Label>
+                    <Input type="number" value={result ? calculateTrimData()?.mct.toFixed(0) || "250" : "250"} disabled />
+                  </div>
+                  <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                    Gerekli Ballast Miktarını Hesapla
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-3">Acil Ballast Transfer Zamanı</h4>
+                <div className="space-y-3">
+                  <div>
+                    <Label>Ballast Pump Kapasitesi (m³/h)</Label>
+                    <Input type="number" defaultValue="200" />
+                  </div>
+                  <div>
+                    <Label>Transfer Edilecek Miktar (m³)</Label>
+                    <Input type="number" placeholder="Hesaplanacak..." disabled />
+                  </div>
+                  <div>
+                    <Label>Tahmini Süre (dakika)</Label>
+                    <Input type="number" placeholder="Hesaplanacak..." disabled />
+                  </div>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                    Transfer Süresini Hesapla
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Emergency Contacts */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Acil Durum İletişim
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg text-center">
+                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">VTS Center</h4>
+                <p className="text-sm">VHF Channel 16</p>
+                <p className="text-sm">Traffic Control</p>
+                <Button size="sm" className="mt-2 bg-red-600 hover:bg-red-700">
+                  Hemen Ara
+                </Button>
+              </div>
+              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg text-center">
+                <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Port Control</h4>
+                <p className="text-sm">VHF Channel 12</p>
+                <p className="text-sm">Harbor Master</p>
+                <Button size="sm" className="mt-2 bg-blue-600 hover:bg-blue-700">
+                  İletişim Kur
+                </Button>
+              </div>
+              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg text-center">
+                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Company DPA</h4>
+                <p className="text-sm">24/7 Hotline</p>
+                <p className="text-sm">Technical Support</p>
+                <Button size="sm" className="mt-2 bg-green-600 hover:bg-green-700">
+                  Bildir
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Current Status Summary */}
+        {result && (
+          <Alert className={`${
+            Math.abs(trimCondition) > 2.0 ? "border-red-500 bg-red-50 dark:bg-red-950" :
+            Math.abs(trimCondition) > 1.0 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950" :
+            "border-green-500 bg-green-50 dark:bg-green-950"
+          }`}>
+            <CheckCircle className="h-4 w-4" />
+            <AlertTitle>Mevcut Trim Durumu</AlertTitle>
+            <AlertDescription>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
+                <div>
+                  <div className="font-semibold">Trim</div>
+                  <div className="text-lg">{trimCondition.toFixed(2)}m</div>
+                </div>
+                <div>
+                  <div className="font-semibold">Durum</div>
+                  <div className="text-lg">{loadCondition}</div>
+                </div>
+                <div>
+                  <div className="font-semibold">Risk Seviyesi</div>
+                  <div className="text-lg">
+                    {Math.abs(trimCondition) > 2.0 ? "YÜKSEK" :
+                     Math.abs(trimCondition) > 1.0 ? "ORTA" :
+                     "DÜŞÜK"}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold">Tavsiye</div>
+                  <div className="text-lg">
+                    {Math.abs(trimCondition) > 2.0 ? "ACİL EYLEM" :
+                     Math.abs(trimCondition) > 1.0 ? "DİKKATLİ" :
+                     "NORMAL"}
+                  </div>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+      </div>
+    );
+  }
+
+  function renderCalculationsContent() {
+    return <LongitudinalStabilityCalculations />;
+  }
+}

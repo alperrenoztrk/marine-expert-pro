@@ -1,161 +1,29 @@
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Brain, Send, Loader2, Lightbulb, Anchor } from "lucide-react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { ArrowLeft, Brain } from "lucide-react";
 
-const quickPrompts = [
-  "Demirleme operasyonu için kontrol listesi ve güvenlik önlemleri",
-  "Gemide yangın çıkması durumunda müdahale prosedürü",
-  "Ağır hava koşullarında güverte güvenliği nasıl sağlanır?",
-  "Palamar operasyonu sırasında dikkat edilecek noktalar",
-  "Güverte bakım planlaması ve periyodik kontroller",
-  "Yanaşma/kalkma manevralarında dikkat edilecek hususlar",
-];
+import { UnifiedMaritimeAssistant } from "@/components/UnifiedMaritimeAssistant";
 
 export default function SeamanshipAssistantPage() {
-  const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const askQuestion = async (q: string) => {
-    if (!q.trim()) {
-      toast.error("Lütfen bir soru yazın");
-      return;
-    }
-
-    setLoading(true);
-    setResponse("");
-
-    try {
-      const systemPrompt = `Sen denizcilik sektöründe gemicilik ve güverte operasyonları konusunda uzman bir asistansın.
-Demirleme, palamar, cargo operasyonları, vardiya prosedürleri, bakım ve güvenlik konularında derin bilgiye sahipsin.
-Soruları Türkçe olarak, teknik doğrulukla ve pratik örneklerle yanıtla.
-Operasyonel güvenlik ve best practices'leri vurgula.
-Yanıtlarını maddeler halinde, anlaşılır ve uygulanabilir şekilde ver.`;
-
-      const { data, error } = await supabase.functions.invoke("gemini-chat", {
-        body: {
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: q }
-          ]
-        }
-      });
-
-      if (error) throw error;
-
-      setResponse(data?.text || "Yanıt alınamadı");
-      setQuestion("");
-    } catch (err) {
-      console.error("Assistant error:", err);
-      toast.error("Yanıt alınırken bir hata oluştu");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-[hsl(220,50%,6%)] dark:via-[hsl(220,50%,8%)] dark:to-[hsl(220,50%,10%)]">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -left-32 w-80 h-80 bg-teal-400/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-12">
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center justify-center p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl mb-4">
-            <Brain className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="container mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-between">
+<div className="text-sm text-muted-foreground flex items-center gap-2">
+            <Brain className="h-4 w-4" />
+            Gemicilik Asistanı
           </div>
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent mb-3">
+        </div>
+
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
             Gemicilik Asistanı
           </h1>
-          <p className="text-muted-foreground">Vardiya, bakım ve güvenlik için öneri setleri</p>
+          <p className="text-muted-foreground mt-2">
+            Vardiya, bakım ve güvenlik için öneri setleri
+          </p>
         </div>
 
-        <div className="space-y-6">
-          {/* Quick Prompts */}
-          <Card className="border-border/60 bg-card/85 backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Lightbulb className="h-5 w-5 text-amber-500" />
-                Hızlı Sorular
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {quickPrompts.map((prompt, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    className="text-xs h-auto py-2 px-3 whitespace-normal text-left"
-                    onClick={() => {
-                      setQuestion(prompt);
-                      askQuestion(prompt);
-                    }}
-                    disabled={loading}
-                  >
-                    {prompt.substring(0, 50)}...
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Question Input */}
-          <Card className="border-border/60 bg-card/85 backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Sorunuzu Yazın</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Textarea
-                placeholder="Gemicilik, güverte operasyonları, bakım ve vardiya prosedürleri hakkında sorularınızı yazın..."
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                className="min-h-[100px] resize-none"
-              />
-              <Button
-                onClick={() => askQuestion(question)}
-                disabled={loading || !question.trim()}
-                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Yanıt hazırlanıyor...
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-4 w-4 mr-2" />
-                    Sor
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Response */}
-          {response && (
-            <Card className="border-border/60 bg-card/85 backdrop-blur-sm animate-fade-in">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Anchor className="h-5 w-5 text-emerald-600" />
-                  Yanıt
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <div className="whitespace-pre-wrap text-sm text-foreground leading-relaxed">
-                    {response}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+        <UnifiedMaritimeAssistant />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { ChevronRight } from "lucide-react";
 
@@ -56,18 +57,19 @@ export default function CalculationsMenu() {
                   {category.sections.map((section) => {
                     const SectionIcon = sectionIconMap[section.id];
                     return (
-                      <div
+                      <Link
                         key={section.id}
-                        className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur"
+                        to={section.href || "#"}
+                        className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
                       >
-                        <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white`}>
+                        <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white transition-transform group-hover:scale-110`}>
                           <SectionIcon className="h-4 w-4" />
                         </div>
                         <span className="text-center text-xs font-medium text-foreground">
                           {section.label}
                         </span>
-                        <ChevronRight className="h-3 w-3 text-muted-foreground" />
-                      </div>
+                        <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                      </Link>
                     );
                   })}
                 </div>

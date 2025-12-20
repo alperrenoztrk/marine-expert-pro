@@ -1096,7 +1096,8 @@ export default function NavigationCalculationPage() {
           </CardContent>
         </Card>
 
-        <div className="flex justify-end">
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={() => navigate("/navigation")}>Listeye Dön</Button>
           <Button variant="default" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="gap-2">
             <Calculator className="h-4 w-4" /> Başa Dön
           </Button>
