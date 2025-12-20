@@ -118,16 +118,15 @@ function normalizeResponse(data: unknown): MaritimeNewsResponse {
 }
 
 function getFunctionBaseUrl(): string {
+  // Use the environment variable which points to the correct project
   const baseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-  if (!baseUrl) {
-    // Fallback to the generated client base URL (keeps other functionality unchanged)
-    // but in our case, we prefer the runtime env to avoid pointing at an old/paused project.
-    const client = supabase as unknown as SupabaseClientInternals;
-    const fallback = client.supabaseUrl;
-    if (!fallback) throw new Error("Backend URL bulunamadı.");
-    return fallback;
-  }
-  return baseUrl;
+  if (baseUrl) return baseUrl;
+  
+  // Fallback: use supabase client URL
+  const client = supabase as unknown as SupabaseClientInternals;
+  const fallback = client.supabaseUrl;
+  if (!fallback) throw new Error("Backend URL bulunamadı.");
+  return fallback;
 }
 
 function getFunctionUrls(): string[] {
