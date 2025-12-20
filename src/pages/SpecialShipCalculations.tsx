@@ -9,7 +9,6 @@ const SpecialShipCalculationsPage = () => {
         eyebrow="Özel Gemiler"
         title="Özel Gemi Hesaplamaları"
         subtitle="Tanker, konteyner, yolcu gemisi özel hesaplamalarını yapın"
-        backHref="/special-ships"
       >
         <SpecialShipCalculations />
       </CalculationGridScreen>

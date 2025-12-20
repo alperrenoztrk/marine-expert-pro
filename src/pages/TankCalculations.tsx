@@ -59,7 +59,6 @@ const TankCalculationsPage = ({ initialTab }: { initialTab?: string } = {}) => {
         eyebrow="Tank"
         title="Tank Hesaplamaları"
         subtitle="Sounding Table hesaplamaları"
-        backHref="/tanks"
       >
         <Card className="bg-white/90 border-white/60 shadow-lg">
           <CardContent className="pt-6">
