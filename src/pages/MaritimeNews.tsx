@@ -49,6 +49,17 @@ const MaritimeNews = () => {
     return map;
   }, [sourceErrors]);
 
+  const headlineItems = useMemo(() => {
+    const seen = new Set<string>();
+
+    return items.filter((item) => {
+      const key = `${item.source}-${item.title}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return Boolean(item.title);
+    });
+  }, [items]);
+
   const groupedItems = useMemo(() => {
     const bySource = new Map<string, typeof items>();
     items.forEach((it) => {
@@ -135,6 +146,53 @@ const MaritimeNews = () => {
         </div>
 
         <Separator className="bg-white/10" />
+
+        <Card className="border-white/10 bg-white/5 p-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Başlıklar</h2>
+              <p className="text-sm text-white/70">Güncel denizcilik haberlerinin özet başlıkları.</p>
+            </div>
+            {query.data?.fetchedAt ? (
+              <p className="text-xs text-white/50">Son güncelleme: {formatDateTR(query.data.fetchedAt)}</p>
+            ) : null}
+          </div>
+
+          {query.isLoading ? (
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-10 rounded-md bg-white/10" />
+              ))}
+            </div>
+          ) : query.isError ? (
+            <div className="mt-3 text-sm text-red-200">
+              Başlıklar yüklenemedi. Lütfen tekrar deneyin.
+            </div>
+          ) : headlineItems.length === 0 ? (
+            <div className="mt-3 text-sm text-white/70">Şu anda gösterilecek başlık bulunamadı.</div>
+          ) : (
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {headlineItems.slice(0, 20).map((item, idx) => (
+                <a
+                  key={`${item.link}-${idx}`}
+                  href={item.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-start gap-3 rounded-md border border-white/5 bg-white/5 p-3 transition-all hover:border-white/20 hover:bg-white/10"
+                >
+                  <div className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-cyan-300" aria-hidden />
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold leading-tight text-white group-hover:text-cyan-200">{item.title}</p>
+                    <p className="text-xs text-white/60">
+                      {item.source}
+                      {item.publishedAt ? ` • ${formatDateTR(item.publishedAt)}` : ""}
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </Card>
 
         {query.isLoading ? (
           <div className="space-y-3">
