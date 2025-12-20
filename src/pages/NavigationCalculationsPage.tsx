@@ -1,4 +1,5 @@
-import { MobileLayout } from "@/components/MobileLayout";
+import { CalculationLayout } from "@/components/layout/CalculationLayout";
+import { CalculationCard } from "@/components/ui/calculation-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calculator, BookOpen } from "lucide-react";
+import { Calculator, BookOpen } from "lucide-react";
 import { useState } from "react";
 import { 
   calculateGreatCircle, 
@@ -371,22 +372,24 @@ export default function NavigationCalculationsPage() {
   };
 
   return (
-    <MobileLayout>
-      <div className="space-y-4" data-no-translate>
-        <div className="flex items-center justify-between">
-          <Link to="/navigation">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Seyir
-            </Button>
-          </Link>
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Hesaplama Rehberi
-          </div>
+    <CalculationLayout
+      title="Seyir Hesaplamaları"
+      description="Tüm navigasyon hesaplamalarını tek panelde toplayan stabilite arayüzü."
+      icon={Calculator}
+      actions={
+        <Button variant="outline" asChild>
+          <Link to="/navigation">Seyir Modülüne Dön</Link>
+        </Button>
+      }
+      maxWidthClassName="max-w-6xl"
+    >
+      <div className="space-y-6" data-no-translate>
+        <div className="text-sm text-muted-foreground flex items-center gap-2 justify-end">
+          <BookOpen className="h-4 w-4" />
+          Hesaplama Rehberi
         </div>
 
-        <Card className="shadow-lg">
+        <CalculationCard className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calculator className="h-5 w-5" /> Seyir Hesaplamaları – İçindekiler
@@ -403,7 +406,7 @@ export default function NavigationCalculationsPage() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </CalculationCard>
 
         <Card className="shadow">
           <CardHeader>
@@ -1390,6 +1393,6 @@ ${emergencyResults.searchLegNm ? `Search Leg: ${emergencyResults.searchLegNm.toF
 
         <Separator />
       </div>
-    </MobileLayout>
+    </CalculationLayout>
   );
 }
