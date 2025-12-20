@@ -65,7 +65,7 @@ import StabilityGZCurvePage from "./pages/StabilityGZCurve";
 import StabilityWindWeatherPage from "./pages/StabilityWindWeather";
 import StabilityIMOCriteriaPage from "./pages/StabilityIMOCriteria";
 import SafetyCalculationsPage from "./pages/SafetyCalculations";
-import WeatherCalculationsPage from "./pages/WeatherCalculations";
+import WeatherCalculationsPage, { WeatherCalculationDetailPage } from "./pages/WeatherCalculations";
 import TankCalculationsPage from "./pages/TankCalculations";
 import BallastPage from "./pages/Ballast";
 import EnginePage from "./pages/Engine";
@@ -88,6 +88,14 @@ import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
+import DraftSurveyPreloading from "./pages/DraftSurveyPreloading";
+import DraftSurveyIntermediate from "./pages/DraftSurveyIntermediate";
+import DraftSurveyPostdischarge from "./pages/DraftSurveyPostdischarge";
+import DraftSurveyComparative from "./pages/DraftSurveyComparative";
+import DraftSurveyBallast from "./pages/DraftSurveyBallast";
+import DraftSurveyDensity from "./pages/DraftSurveyDensity";
+import DraftSurveyBunker from "./pages/DraftSurveyBunker";
+import CargoCalculationsPage from "./pages/CargoCalculations";
 
 import CargoRulesPage from "./pages/CargoRules";
 import CargoAssistantPage from "./pages/CargoAssistant";
@@ -168,9 +176,21 @@ const AnimatedRoutes = () => {
         <Route path="/stability/imo-criteria" element={<PageTransition><StabilityIMOCriteriaPage /></PageTransition>} />
         <Route path="/safety" element={<PageTransition><SafetyCalculationsPage /></PageTransition>} />
         <Route path="/weather" element={<PageTransition><WeatherCalculationsPage /></PageTransition>} />
+        <Route
+          path="/weather/calculations/:tab?"
+          element={<PageTransition><WeatherCalculationDetailPage /></PageTransition>}
+        />
         <Route path="/meteorology/topics" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
         <Route path="/tank" element={<PageTransition><TankCalculationsPage /></PageTransition>} />
-        <Route path="/cargo/calculations" element={<PageTransition><DraftSurveyCalculator /></PageTransition>} />
+        <Route path="/cargo/calculations" element={<PageTransition><CargoCalculationsPage /></PageTransition>} />
+        <Route path="/cargo/calculations/draft-survey" element={<PageTransition><DraftSurveyCalculator /></PageTransition>} />
+        <Route path="/cargo/calculations/preloading" element={<PageTransition><DraftSurveyPreloading /></PageTransition>} />
+        <Route path="/cargo/calculations/intermediate" element={<PageTransition><DraftSurveyIntermediate /></PageTransition>} />
+        <Route path="/cargo/calculations/postdischarge" element={<PageTransition><DraftSurveyPostdischarge /></PageTransition>} />
+        <Route path="/cargo/calculations/comparative" element={<PageTransition><DraftSurveyComparative /></PageTransition>} />
+        <Route path="/cargo/calculations/ballast" element={<PageTransition><DraftSurveyBallast /></PageTransition>} />
+        <Route path="/cargo/calculations/density" element={<PageTransition><DraftSurveyDensity /></PageTransition>} />
+        <Route path="/cargo/calculations/bunker" element={<PageTransition><DraftSurveyBunker /></PageTransition>} />
         <Route path="/cargo/formulas" element={<PageTransition><DraftSurveyStandard /></PageTransition>} />
         
         <Route path="/cargo/rules" element={<PageTransition><CargoRulesPage /></PageTransition>} />
