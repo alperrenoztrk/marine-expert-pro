@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, RotateCcw, Trophy, XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { QuizQuestion } from "@/types/quiz";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { ChevronLeft, ChevronRight, RotateCcw, CheckCircle, XCircle, Info } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { QuizQuestion } from '@/types/quiz';
 
 interface QuizProps {
   questions: QuizQuestion[];
@@ -12,172 +12,288 @@ interface QuizProps {
 }
 
 export const StabilityQuiz: React.FC<QuizProps> = ({ questions, onComplete }) => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showResult, setShowResult] = useState(false);
-  const [score, setScore] = useState(0);
-  const [answered, setAnswered] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
+  const [showResults, setShowResults] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
 
+  const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
-  const question = questions[currentQuestion];
+  const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
+  // Reset quiz state when questions change
   useEffect(() => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setScore(0);
-    setAnswered(false);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswers({});
+    setShowResults(false);
+    setQuizCompleted(false);
   }, [questions]);
 
-  const handleAnswer = (answerIndex: number) => {
-    if (answered) return;
+  const handleOptionSelect = (optionIndex: number) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currentQuestion.id]: optionIndex
+    }));
+  };
 
-    setSelectedAnswer(answerIndex);
-    setAnswered(true);
-
-    if (answerIndex === question?.correctAnswer) {
-      setScore((prev) => prev + 1);
+  const goToPreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setShowResults(false);
     }
   };
 
-  const nextQuestion = () => {
-    if (currentQuestion < totalQuestions - 1) {
-      setCurrentQuestion((prev) => prev + 1);
-      setSelectedAnswer(null);
-      setAnswered(false);
-    } else {
-      setShowResult(true);
-      onComplete?.(score, totalQuestions);
+  const goToNextQuestion = () => {
+    if (currentQuestionIndex < totalQuestions - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setShowResults(false);
     }
   };
 
-  const restartQuiz = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setScore(0);
-    setAnswered(false);
+  const showCurrentQuestionResult = () => {
+    setShowResults(true);
   };
 
-  const progress = useMemo(
-    () => ((currentQuestion + 1) / Math.max(totalQuestions, 1)) * 100,
-    [currentQuestion, totalQuestions]
-  );
+  const calculateScore = () => {
+    let correct = 0;
+    questions.forEach(question => {
+      if (selectedAnswers[question.id] === question.correctAnswer) {
+        correct++;
+      }
+    });
+    return correct;
+  };
 
-  if (totalQuestions === 0) {
+  const finishQuiz = () => {
+    setQuizCompleted(true);
+    const score = calculateScore();
+    onComplete?.(score, totalQuestions);
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestionIndex(0);
+    setSelectedAnswers({});
+    setShowResults(false);
+    setQuizCompleted(false);
+  };
+
+  const isCurrentQuestionAnswered = selectedAnswers[currentQuestion.id] !== undefined;
+  const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+  const allQuestionsAnswered = questions.every(q => selectedAnswers[q.id] !== undefined);
+
+  if (quizCompleted) {
+    const score = calculateScore();
+    const percentage = Math.round((score / totalQuestions) * 100);
+    
     return (
-      <Card className="border-border/60 bg-card/85 backdrop-blur-sm">
-        <CardContent className="py-8 text-center text-muted-foreground">
-          Henüz soru yüklenmedi.
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-center">Quiz Tamamlandı!</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="text-center space-y-4">
+            <div className="text-6xl font-bold text-primary">{percentage}%</div>
+            <div className="text-lg">
+              {score} / {totalQuestions} doğru cevap
+            </div>
+            <div className="text-sm text-muted-foreground">
+              {percentage >= 80 ? "Tebrikler! Mükemmel bir performans!" : 
+               percentage >= 60 ? "İyi bir sonuç! Biraz daha çalışarak daha iyi olabilir." :
+               "Daha fazla çalışma gerekiyor. Tekrar deneyin!"}
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <h3 className="font-semibold">Soru Detayları:</h3>
+            {questions.map((question, index) => {
+              const userAnswer = selectedAnswers[question.id];
+              const isCorrect = userAnswer === question.correctAnswer;
+              
+              return (
+                <div key={question.id} className="border rounded-lg p-4 space-y-2">
+                  <div className="flex items-start gap-2">
+                    {isCorrect ? (
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                    ) : (
+                      <XCircle className="h-5 w-5 text-red-500 mt-0.5" />
+                    )}
+                    <div className="flex-1">
+                      <div className="font-medium">
+                        {index + 1}. {question.question}
+                      </div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        Sizin cevabınız: {question.options[userAnswer]} 
+                        {!isCorrect && (
+                          <span className="text-green-600 block">
+                            Doğru cevap: {question.options[question.correctAnswer]}
+                          </span>
+                        )}
+                      </div>
+                      {!isCorrect && (
+                        <div className="text-sm text-blue-600 mt-2 p-2 bg-blue-50 rounded">
+                          <strong>Açıklama:</strong> {question.explanation}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="flex justify-center">
+            <Button onClick={resetQuiz} className="gap-2">
+              <RotateCcw className="h-4 w-4" />
+              Tekrar Dene
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  if (showResult) {
+  if (!currentQuestion) {
     return (
-      <Card className="border-border/60 bg-card/85 backdrop-blur-sm animate-fade-in text-center">
-        <CardContent className="pt-8 pb-8 space-y-6">
-          <Trophy className="h-16 w-16 mx-auto text-amber-500" />
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">Quiz Tamamlandı!</h2>
-            <p className="text-muted-foreground mt-2">
-              {totalQuestions} sorudan {score} tanesini doğru yanıtladınız
-            </p>
-          </div>
-
-          <div className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
-            %{Math.round((score / Math.max(totalQuestions, 1)) * 100)}
-          </div>
-
-          <p className="text-sm text-muted-foreground">
-            {score >= Math.ceil(totalQuestions * 0.8)
-              ? "Mükemmel! Konuda uzman seviyesindesiniz."
-              : score >= Math.ceil(totalQuestions * 0.6)
-                ? "İyi! Biraz daha çalışmayla mükemmel olabilirsiniz."
-                : "Daha fazla çalışmanız önerilir."}
-          </p>
-
-          <Button
-            onClick={restartQuiz}
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-          >
-            <RotateCcw className="h-4 w-4 mr-2" />
-            Tekrar Dene
-          </Button>
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardContent className="text-center py-8">
+          <div className="text-muted-foreground">Henüz soru yüklenmedi.</div>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-border/60 bg-card/85 backdrop-blur-sm animate-fade-in">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-lg">Soru {currentQuestion + 1}/{totalQuestions}</CardTitle>
-          <span className="text-sm text-muted-foreground">Puan: {score}</span>
-        </div>
-        <div className="w-full bg-muted rounded-full h-2 mt-2">
-          <div
-            className="bg-emerald-500 h-2 rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        {question?.category && (
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-100/80 dark:bg-emerald-900/30 px-3 py-1 text-sm text-emerald-700 dark:text-emerald-200">
-            {question.category}
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">
+            Soru {currentQuestionIndex + 1} / {totalQuestions}
+          </CardTitle>
+          <div className="text-sm text-muted-foreground">
+            {currentQuestion.category}
           </div>
-        )}
+        </div>
+        <Progress value={progress} className="w-full" />
+        
+        {/* Info banner about manual navigation */}
+        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <Info className="h-4 w-4 text-blue-600" />
+          <span className="text-sm text-blue-800">
+            Quiz'de otomatik geçiş yoktur. Önceki ve sonraki butonları kullanarak kendi hızınızda ilerleyebilirsiniz.
+          </span>
+        </div>
       </CardHeader>
+      
       <CardContent className="space-y-6">
-        <p className="text-foreground font-medium text-lg leading-relaxed">{question?.question}</p>
-
-        <div className="space-y-3">
-          {question?.options.map((option, index) => (
-            <button
-              key={index}
-              onClick={() => handleAnswer(index)}
-              disabled={answered}
-              className={cn(
-                "w-full p-4 rounded-xl text-left transition-all",
-                answered
-                  ? index === question.correctAnswer
-                    ? "bg-emerald-100 dark:bg-emerald-900/30 border-2 border-emerald-500"
-                    : index === selectedAnswer
-                      ? "bg-red-100 dark:bg-red-900/30 border-2 border-red-500"
-                      : "bg-muted/50 border border-border"
-                  : "bg-muted/50 border border-border hover:bg-muted hover:border-emerald-300"
-              )}
-            >
-              <div className="flex items-center gap-3">
-                {answered && index === question.correctAnswer && (
-                  <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0" />
-                )}
-                {answered && index === selectedAnswer && index !== question.correctAnswer && (
-                  <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                )}
-                <span className="text-foreground">{option}</span>
-              </div>
-            </button>
-          ))}
+        <div className="text-lg font-medium leading-relaxed">
+          {currentQuestion.question}
         </div>
-
-        {answered && (
-          <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-            <p className="text-sm text-blue-700 dark:text-blue-300">
-              <strong>Açıklama:</strong> {question?.explanation}
-            </p>
+        
+        <div className="space-y-3">
+          {currentQuestion.options.map((option, index) => {
+            const isSelected = selectedAnswers[currentQuestion.id] === index;
+            const isCorrect = index === currentQuestion.correctAnswer;
+            const isIncorrect = showResults && isSelected && !isCorrect;
+            const shouldHighlightCorrect = showResults && isCorrect;
+            
+            return (
+              <button
+                key={index}
+                onClick={() => !showResults && handleOptionSelect(index)}
+                disabled={showResults}
+                className={cn(
+                  "w-full text-left p-4 rounded-lg border-2 transition-all",
+                  "hover:bg-muted/50 disabled:cursor-not-allowed",
+                  isSelected && !showResults && "border-primary bg-primary/10",
+                  shouldHighlightCorrect && "border-green-500 bg-green-50 text-green-800",
+                  isIncorrect && "border-red-500 bg-red-50 text-red-800",
+                  !isSelected && !showResults && "border-border"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold",
+                    isSelected && !showResults && "border-primary bg-primary text-primary-foreground",
+                    shouldHighlightCorrect && "border-green-500 bg-green-500 text-white",
+                    isIncorrect && "border-red-500 bg-red-500 text-white",
+                    !isSelected && !showResults && "border-muted-foreground"
+                  )}>
+                    {String.fromCharCode(65 + index)}
+                  </div>
+                  <span className="flex-1">{option}</span>
+                  {showResults && isCorrect && (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  )}
+                  {showResults && isIncorrect && (
+                    <XCircle className="h-5 w-5 text-red-500" />
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        
+        {showResults && (
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="font-medium text-blue-800 mb-2">Açıklama:</div>
+            <div className="text-blue-700 text-sm leading-relaxed">
+              {currentQuestion.explanation}
+            </div>
           </div>
         )}
-
-        {answered && (
+        
+        {/* Enhanced navigation section */}
+        <div className="flex items-center justify-between pt-4 border-t">
           <Button
-            onClick={nextQuestion}
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
+            variant="outline"
+            onClick={goToPreviousQuestion}
+            disabled={currentQuestionIndex === 0}
+            className="gap-2"
           >
-            {currentQuestion < totalQuestions - 1 ? "Sonraki Soru" : "Sonucu Gör"}
+            <ChevronLeft className="h-4 w-4" />
+            Önceki Soru
           </Button>
-        )}
+          
+          <div className="flex gap-2">
+            {isCurrentQuestionAnswered && !showResults && (
+              <Button
+                variant="secondary"
+                onClick={showCurrentQuestionResult}
+              >
+                Cevabı Göster
+              </Button>
+            )}
+            
+            {isLastQuestion && allQuestionsAnswered ? (
+              <Button
+                onClick={finishQuiz}
+                className="gap-2"
+              >
+                Quiz'i Bitir
+                <CheckCircle className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Button
+                onClick={goToNextQuestion}
+                disabled={currentQuestionIndex === totalQuestions - 1}
+                className="gap-2"
+              >
+                Sonraki Soru
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+        
+        {/* Question status and navigation info */}
+        <div className="text-center space-y-2">
+          <div className="text-xs text-muted-foreground">
+            Yanıtlanmış sorular: {Object.keys(selectedAnswers).length} / {totalQuestions}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Navigasyon: Önceki/Sonraki butonları ile sorular arasında geçiş yapabilirsiniz
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
