@@ -1,42 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Compass, MessageCircle } from "lucide-react";
-import { useLocation } from "react-router-dom";
-import NavigationAssistantPopup from "@/components/NavigationAssistantPopup";
+import { Compass } from "lucide-react";
+import { AssistantInterface } from "@/components/AssistantInterface";
 
-export default function NavigationAssistantPage(){
-  const location = useLocation();
+const quickPrompts = [
+  "54°30'N 012°20'W noktası için manyetik sapma/variasyon ve deviasyon düzeltmesini nasıl uygularım?",
+  "Rotada 2 knot iskele akıntı varsa 12 saatlik seyrin DR hesabını nasıl güncellerim?",
+  "Atışlı rota (GC) ile loxodrom rotası arasındaki farkları ve hangi durumda hangisini seçmeliyim?",
+  "Karmaşık bir trafik ayrım şeridinde COLREG'e uygun geçiş planını madde madde yazar mısın?",
+  "ETA hesaplamak için rota uzunluğu, makine hızı ve beklenen karşı akıntıyı nasıl hesaba katmalıyım?",
+  "Seyir fenerleri için görünürlük mesafesini coğrafi ve ışık mesafesiyle nasıl kontrol ederim?",
+];
+
+const systemPrompt = `Sen seyir ve köprüüstü operasyonları konusunda uzman bir asistansın.
+Seyir hesaplamaları, rota planlama, akıntı ve rüzgar düzeltmeleri, ETA, COLREG uygulamaları ve seyir yardımcıları konusunda rehberlik verirsin.
+Yanıtlarını Türkçe, maddeler halinde ve uygulanabilir şekilde yaz; kontrol adımlarını ve emniyet uyarılarını ekle.`;
+
+export default function NavigationAssistantPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 cyberpunk:from-black cyberpunk:to-gray-900 neon:from-slate-900 neon:to-slate-800 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center gap-3">
-</div>
-
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <Compass className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
-              <span data-translatable>Seyir Asistanı</span>
-            </h1>
-          </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Gerçek seyir asistanı ile hızlı hesap ve öneriler
-          </p>
-        </div>
-
-        <Card className="shadow border border-emerald-200/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-              <MessageCircle className="h-5 w-5" />
-              <span data-translatable>Sohbet</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <NavigationAssistantPopup variant="inline" />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <AssistantInterface
+      title="Seyir Asistanı"
+      subtitle="Gerçek seyir asistanı ile hızlı hesap ve öneriler"
+      badge="Seyir Asistanı"
+      quickPrompts={quickPrompts}
+      systemPrompt={systemPrompt}
+      placeholder="Seyir hesapları, COLREG veya rota planıyla ilgili sorunuzu yazın..."
+      icon={Compass}
+      accentGradient="from-blue-600 to-indigo-600"
+      iconColor="text-blue-600 dark:text-blue-400"
+    />
   );
 }
 
