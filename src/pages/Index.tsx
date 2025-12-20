@@ -136,7 +136,11 @@ const Index = () => {
     <div
       className="relative min-h-[100svh] overflow-hidden touch-auto cursor-pointer"
       style={{
-        background: 'linear-gradient(180deg, #2a4a5e 0%, #1e3a4a 30%, #1a3040 60%, #152535 100%)'
+        background: `
+          radial-gradient(circle at 20% 18%, hsl(var(--primary) / 0.18), transparent 32%),
+          radial-gradient(circle at 80% 12%, hsl(var(--accent) / 0.12), transparent 28%),
+          linear-gradient(180deg, hsl(var(--secondary) / 0.2) 0%, hsl(var(--background)) 50%, hsl(var(--background)) 100%)
+        `
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
