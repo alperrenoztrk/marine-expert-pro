@@ -44,8 +44,10 @@ import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
 import Regulations from "./pages/Regulations";
 import StabilityFormulasPage from "./pages/StabilityFormulas";
+
 import StabilityFormulaDetailPage from "./pages/StabilityFormulaDetail";
 import NavigationFormulasPage from "./pages/NavigationFormulas";
+
 import DetailedMeteorology from "./pages/DetailedMeteorology";
 import COLREGPresentation from "./pages/COLREGPresentation";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
@@ -72,6 +74,7 @@ import HydrodynamicsPage from "./pages/Hydrodynamics";
 import StructuralCalculationsPage from "./pages/StructuralCalculations";
 import SpecialShipCalculationsPage from "./pages/SpecialShipCalculations";
 import EmissionCalculationsPage from "./pages/EmissionCalculationsPage";
+
 import EmissionFormulas from "./pages/EmissionFormulas";
 import EmissionRules from "./pages/EmissionRules";
 import EmissionAssistant from "./pages/EmissionAssistant";
@@ -86,6 +89,7 @@ import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
+
 import CargoRulesPage from "./pages/CargoRules";
 import CargoAssistantPage from "./pages/CargoAssistant";
 import CargoQuizPage from "./pages/CargoQuiz";
@@ -98,6 +102,7 @@ import SeamanshipFormulasPage from "./pages/SeamanshipFormulas";
 import SeamanshipRulesPage from "./pages/SeamanshipRules";
 import SeamanshipAssistantPage from "./pages/SeamanshipAssistant";
 import SeamanshipQuizPage from "./pages/SeamanshipQuiz";
+
 import SafetyFormulasPage from "./pages/SafetyFormulas";
 import SafetyRulesPage from "./pages/SafetyRules";
 import SafetyAssistantPage from "./pages/SafetyAssistant";
@@ -107,25 +112,26 @@ import MachineCalculationsPage from "./pages/MachineCalculationsPage";
 import MachineFormulasPage from "./pages/MachineFormulas";
 import MachineQuizPage from "./pages/MachineQuiz";
 import MachineRulesPage from "./pages/MachineRules";
+
 import WidgetPage from "./pages/WidgetPage";
 import MaritimeNews from "./pages/MaritimeNews";
 import ModuleSectionsPage from "./pages/ModuleSectionsPage";
 import type { CategoryId } from "@/data/calculationCenterConfig";
 const queryClient = new QueryClient();
+
 const HubCategoryPage = () => {
-  const {
-    categoryId
-  } = useParams<{
-    categoryId: CategoryId;
-  }>();
+  const { categoryId } = useParams<{ categoryId: CategoryId }>();
   return <ModuleSectionsPage categoryId={(categoryId ?? "stability") as CategoryId} backHref="/hub" />;
 };
+
 const AnimatedRoutes = () => {
   const location = useLocation();
-
+  
   // Apply hierarchical navigation
   useNavigationHierarchy();
-  return <AnimatePresence mode="wait">
+  
+  return (
+    <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
         <Route path="/maritime-news" element={<PageTransition><MaritimeNews /></PageTransition>} />
@@ -149,7 +155,7 @@ const AnimatedRoutes = () => {
         <Route path="/stability/analysis" element={<PageTransition><StabilityAnalysisPage /></PageTransition>} />
         <Route path="/stability/stable-tales" element={<PageTransition><StableTalesPage /></PageTransition>} />
         <Route path="/stability/formulas" element={<PageTransition><StabilityFormulasPage /></PageTransition>} />
-        
+        <Route path="/stability/formulas/:id" element={<PageTransition><StabilityFormulaDetailPage /></PageTransition>} />
         <Route path="/stability/calculations" element={<PageTransition><StabilityCalculationsPage /></PageTransition>} />
         <Route path="/stability/practical" element={<PageTransition><StabilityPracticalPage /></PageTransition>} />
         <Route path="/stability/practical/tank" element={<PageTransition><StabilityPracticalTankPage /></PageTransition>} />
@@ -238,12 +244,16 @@ const AnimatedRoutes = () => {
         <Route path="/location-selector" element={<PageTransition><LocationSelector /></PageTransition>} />
         <Route path="*" element={<PageTransition><Index /></PageTransition>} />
       </Routes>
-    </AnimatePresence>;
+    </AnimatePresence>
+  );
 };
+
 const App = () => {
   // Prefer maximum smoothness on high refresh displays (e.g. 120Hz)
   useFrameRate();
-  return <QueryClientProvider client={queryClient}>
+
+  return (
+    <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <LanguageProvider>
           <TooltipProvider>
@@ -260,6 +270,8 @@ const App = () => {
           </TooltipProvider>
         </LanguageProvider>
       </HelmetProvider>
-    </QueryClientProvider>;
+    </QueryClientProvider>
+  );
 };
+
 export default App;
