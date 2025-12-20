@@ -28,6 +28,12 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         style={{ border: 0 }}
         title="Location Map"
       />
+      {/* OSM embed iframe renders attribution inside the iframe (cross-origin),
+          so we can only hide it visually via an overlay. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-background"
+      />
     </div>
   );
 };
