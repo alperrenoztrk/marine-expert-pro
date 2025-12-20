@@ -6,9 +6,11 @@ import SplashCompassDial from "@/components/ui/SplashCompassDial";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
 import { ChevronLeft, ChevronRight, Newspaper, RefreshCw, Settings } from "lucide-react";
 import { fetchMaritimeNews } from "@/services/maritimeNews";
+import { useTheme } from "@/hooks/useTheme";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   
   // Compass state
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
@@ -165,13 +167,27 @@ const Index = () => {
     });
   };
 
+  const backgroundStyle = useMemo(() => {
+    if (theme === "dark") {
+      return {
+        background:
+          "radial-gradient(circle at 20% 20%, rgba(56, 125, 152, 0.25), transparent 32%)," +
+          "radial-gradient(circle at 80% 10%, rgba(64, 174, 186, 0.2), transparent 35%)," +
+          "linear-gradient(180deg, #0f202d 0%, #0b1724 38%, #08111c 70%, #040a14 100%)",
+      };
+    }
+
+    return {
+      background:
+        "linear-gradient(180deg, #2a4a5e 0%, #1e3a4a 30%, #1a3040 60%, #152535 100%)",
+    };
+  }, [theme]);
+
 
   return (
     <div
       className="relative min-h-[100svh] overflow-hidden touch-auto cursor-pointer"
-      style={{
-        background: 'linear-gradient(180deg, #2a4a5e 0%, #1e3a4a 30%, #1a3040 60%, #152535 100%)'
-      }}
+      style={backgroundStyle}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
