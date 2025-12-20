@@ -114,7 +114,6 @@ export default function EmissionCalculationsPage() {
         eyebrow="Emisyon"
         title="CO₂, CII & EEXI Hesaplamaları"
         subtitle="Karbon emisyonu ve enerji verimliliği değerlendirmeleri"
-        backHref="/emissions"
       >
         <Card className="bg-white/90 border-white/60 shadow-lg">
           <CardContent className="pt-6 space-y-6">

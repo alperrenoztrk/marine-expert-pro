@@ -9,7 +9,6 @@ const SafetyCalculationsPage = () => {
         eyebrow="Güvenlik"
         title="Güvenlik Hesaplamaları"
         subtitle="Can salı, yangın sistemi ve acil durum hesaplamalarınızı yapın"
-        backHref="/safety"
       >
         <SafetyCalculations />
       </CalculationGridScreen>

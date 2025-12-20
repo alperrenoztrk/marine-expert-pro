@@ -79,11 +79,10 @@ interface CalculationGridScreenProps {
   subtitle?: string;
   eyebrow?: string;
   items?: CalculationGridItem[];
-  backHref?: string;
   children?: ReactNode;
 }
 
-export function CalculationGridScreen({ title, subtitle, eyebrow, items, backHref, children }: CalculationGridScreenProps) {
+export function CalculationGridScreen({ title, subtitle, eyebrow, items, children }: CalculationGridScreenProps) {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-sky-50 to-blue-100 px-4 py-10 sm:px-6 sm:py-14">
       <div className="pointer-events-none absolute inset-0">
@@ -93,17 +92,6 @@ export function CalculationGridScreen({ title, subtitle, eyebrow, items, backHre
       </div>
 
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-8">
-        {backHref && (
-          <div>
-            <Link
-              to={backHref}
-              className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-[#2F5BFF] shadow-sm ring-1 ring-inset ring-white/60 transition hover:-translate-y-0.5"
-            >
-              ← Geri
-            </Link>
-          </div>
-        )}
-
         <header className="space-y-3 text-center">
           {eyebrow && (
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#2F5BFF]/70">{eyebrow}</p>

@@ -9,7 +9,6 @@ const WeatherCalculationsPage = () => {
         eyebrow="Meteoroloji"
         title="Meteoroloji Hesaplamaları"
         subtitle="Beaufort & Douglas skalaları, rüzgar/akıntı etkileri ve kuvvet analizi"
-        backHref="/weather"
       >
         <WeatherCalcs />
       </CalculationGridScreen>

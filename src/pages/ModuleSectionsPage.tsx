@@ -6,10 +6,9 @@ import { Link } from "react-router-dom";
 
 interface ModuleSectionsPageProps {
   categoryId: CategoryId;
-  backHref?: string;
 }
 
-export function ModuleSectionsPage({ categoryId, backHref = "/calculations" }: ModuleSectionsPageProps) {
+export function ModuleSectionsPage({ categoryId }: ModuleSectionsPageProps) {
   const category = calculationCategories.find((entry) => entry.id === categoryId);
 
   if (!category) {
@@ -31,7 +30,6 @@ export function ModuleSectionsPage({ categoryId, backHref = "/calculations" }: M
       eyebrow="Hesaplama Menüsü"
       title={category.title}
       subtitle={category.subtitle}
-      backHref={backHref}
       items={category.sections.map((section) => {
         const Icon = sectionIconMap[section.id as SectionId];
         const status = section.status ?? "live";

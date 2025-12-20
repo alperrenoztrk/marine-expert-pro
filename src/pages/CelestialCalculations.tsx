@@ -153,7 +153,6 @@ export default function CelestialCalculations() {
         eyebrow="Göksel"
         title="Göksel Hesaplamalar"
         subtitle="Sextant ve göksel navigasyon hesaplamaları"
-        backHref="/navigation"
       >
         <div className="pb-20">
           <Tabs defaultValue="sextant" className="w-full">

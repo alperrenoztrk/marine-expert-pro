@@ -12,7 +12,6 @@ export default function MachineCalculationsPage() {
         eyebrow="Makine"
         title="Makine Hesaplamaları"
         subtitle="Motor gücü, yakıt tüketimi ve performans hesaplamalarınızı yapın"
-        backHref="/engine"
       >
         <Card className="bg-white/90 border-white/60 shadow-lg">
           <CardHeader className="pb-4">

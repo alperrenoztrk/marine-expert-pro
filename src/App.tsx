@@ -121,7 +121,7 @@ const queryClient = new QueryClient();
 
 const HubCategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: CategoryId }>();
-  return <ModuleSectionsPage categoryId={(categoryId ?? "stability") as CategoryId} backHref="/hub" />;
+  return <ModuleSectionsPage categoryId={(categoryId ?? "stability") as CategoryId} />;
 };
 
 const AnimatedRoutes = () => {

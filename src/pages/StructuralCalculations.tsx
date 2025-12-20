@@ -9,7 +9,6 @@ const StructuralCalculationsPage = () => {
         eyebrow="Yapısal"
         title="Yapısal Hesaplamalar"
         subtitle="Mukavemet, gerilme ve yapısal analiz hesaplamalarınızı yapın"
-        backHref="/structural"
       >
         <StructuralCalculations />
       </CalculationGridScreen>

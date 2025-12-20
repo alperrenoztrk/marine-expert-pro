@@ -378,7 +378,6 @@ export default function NavigationCalculationsPage() {
         eyebrow="Seyir"
         title="Seyir Hesaplamaları"
         subtitle="Tüm navigasyon hesaplamalarını tek panelde toplayan arayüz"
-        backHref="/navigation"
       >
         <div className="space-y-6" data-no-translate>
         <div className="text-sm text-muted-foreground flex items-center gap-2 justify-end">

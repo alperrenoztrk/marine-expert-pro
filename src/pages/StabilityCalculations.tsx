@@ -9,7 +9,6 @@ export default function StabilityCalculationsPage() {
         eyebrow="Stabilite"
         title="Stabilite Hesaplamaları"
         subtitle="Gemi stabilitesiyle ilgili tüm hesaplara tek şablondan erişin"
-        backHref="/stability"
       >
         <StabilityCalculations />
       </CalculationGridScreen>

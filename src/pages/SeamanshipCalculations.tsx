@@ -41,7 +41,6 @@ export default function SeamanshipCalculationsPage() {
         eyebrow="Gemicilik"
         title="Gemicilik Hesaplamaları"
         subtitle="Palamar yükü, rüzgâr kuvveti ve katenary hesapları"
-        backHref="/seamanship"
       >
         <div className="space-y-6">
           <Card className="bg-white/90 border-white/60 shadow-lg">
