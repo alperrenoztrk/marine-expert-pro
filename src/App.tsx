@@ -29,7 +29,6 @@ import StabilityAssistantPage from "./pages/StabilityAssistant";
 import StabilityGZIMO from "./pages/StabilityGZIMO";
 import StabilityRules from "./pages/StabilityRules";
 import StabilityAdvancedPage from "./pages/StabilityAdvanced";
-import StabilityDamagePage from "./pages/StabilityDamage";
 import StabilityGrainPage from "./pages/StabilityGrain";
 import StabilityGMPage from "./pages/StabilityGM";
 import StabilityWeightShiftPage from "./pages/StabilityWeightShift";
@@ -146,7 +145,6 @@ const AnimatedRoutes = () => {
         <Route path="/stability/rules" element={<PageTransition><StabilityRules /></PageTransition>} />
         <Route path="/stability/gz-imo" element={<PageTransition><StabilityGZIMO /></PageTransition>} />
         <Route path="/stability/advanced" element={<PageTransition><StabilityAdvancedPage /></PageTransition>} />
-        <Route path="/stability/damage" element={<PageTransition><StabilityDamagePage /></PageTransition>} />
         <Route path="/stability/grain" element={<PageTransition><StabilityGrainPage /></PageTransition>} />
         <Route path="/stability/gm" element={<PageTransition><StabilityGMPage /></PageTransition>} />
         <Route path="/stability/weight-shift" element={<PageTransition><StabilityWeightShiftPage /></PageTransition>} />
