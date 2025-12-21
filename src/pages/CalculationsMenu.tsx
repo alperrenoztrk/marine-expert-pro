@@ -1,11 +1,12 @@
 import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
-import { BookOpen, ChevronDown, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Wrench } from "lucide-react";
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
+  const [showMachines, setShowMachines] = useState(false);
 
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
@@ -67,6 +68,20 @@ export default function CalculationsMenu() {
             <span>Gemi Personeli</span>
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${showCrew ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowMachines((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 text-white shadow group-hover:scale-105">
+              <Wrench className="h-4 w-4" />
+            </span>
+            <span>Gemi Makineleri</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showMachines ? "rotate-180" : "rotate-0"}`}
             />
           </button>
 
@@ -157,6 +172,42 @@ export default function CalculationsMenu() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {showMachines && (
+            <section className="space-y-3 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Gemi Makine Envanteri</h2>
+                <p className="text-xs text-muted-foreground">
+                  Ana makineden güverte ve yardımcı sistemlere kadar gemideki kritik makineleri görüntüleyin.
+                </p>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {shipMachines.map((machine) => (
+                  <div
+                    key={machine.name}
+                    className="flex flex-col gap-2 rounded-xl border border-border/50 bg-gradient-to-br from-white/70 via-card to-slate-50/70 p-3 text-left shadow-sm dark:from-background dark:via-card dark:to-slate-900/40"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 text-white shadow">
+                          <Wrench className="h-4 w-4" />
+                        </span>
+                        <div>
+                          <div className="text-sm font-semibold text-foreground">{machine.name}</div>
+                          <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{machine.category}</div>
+                        </div>
+                      </div>
+                      <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-100">
+                        {machine.location}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{machine.description}</p>
                   </div>
                 ))}
               </div>
@@ -269,5 +320,68 @@ const crewHierarchy = [
         reportsTo: "Birinci Zabit",
       },
     ],
+  },
+];
+
+const shipMachines = [
+  {
+    name: "Ana Makine",
+    category: "Ana Tahrik",
+    location: "Makine Dairesi",
+    description: "Ana tahrik sistemi; pervaneye güç aktarır, hız ve yakıt performansını belirler.",
+  },
+  {
+    name: "Ana Dizel Jeneratörler",
+    category: "Elektrik Üretimi",
+    location: "Makine Dairesi",
+    description: "Gemi genel elektrik ihtiyacını karşılayan jeneratörler; paralel çalışma ve yük paylaşımı yapılır.",
+  },
+  {
+    name: "Acil Durum Jeneratörü",
+    category: "Emniyet",
+    location: "Üst Güverte / Emergency Compartment",
+    description: "Ana güç kaynağı kaybında devreye girerek emniyet kritik sistemlere enerji sağlar.",
+  },
+  {
+    name: "Kazan (Boiler)",
+    category: "Buhar ve Isı",
+    location: "Makine Dairesi",
+    description: "Buhar ihtiyacı, ısıtma serpantinleri ve yakıt ön-isıtma için kullanılan yardımcı kazan sistemi.",
+  },
+  {
+    name: "Separatörler (FO/LO/DO)",
+    category: "Yakıt & Yağ Arıtma",
+    location: "Makine Dairesi",
+    description: "Yakıt ve yağların arıtılması, su ve partikül ayrıştırılması için kullanılan santrifüj separatörler.",
+  },
+  {
+    name: "Pompalar (SW, FW, Ballast, Bilge)",
+    category: "Akışkan Transferi",
+    location: "Makine Dairesi / Pomp Room",
+    description: "Deniz suyu, tatlı su, balast ve sintine transferlerini yöneten ana pompa grupları.",
+  },
+  {
+    name: "Bow Thruster",
+    category: "Yardımcı Tahrik",
+    location: "Baş Pik",
+    description: "Liman manevralarında pruvaları kontrol etmek için kullanılan yanaşma manevra thrusterı.",
+  },
+  {
+    name: "Shaft Generator / PTO",
+    category: "Entegre Güç",
+    location: "Ana Makine Üzeri",
+    description: "Ana makineden alınan mekanik gücü elektrik enerjisine çevirerek yakıt tasarrufu sağlar.",
+  },
+  {
+    name: "Hava Kompresörleri",
+    category: "Başlatma ve Servis Havası",
+    location: "Makine Dairesi",
+    description: "Ana makine start havası, kontrol devreleri ve genel servis ihtiyaçları için basınçlı hava üretimi.",
+  },
+  {
+    name: "Klima & Chiller Ünitesi",
+    category: "HVAC",
+    location: "Üst Yapı / Makine",
+    description: "Yaşam mahalleri ve köprüüstü için iklimlendirme, nem kontrolü ve soğutma sağlar.",
   },
 ];
