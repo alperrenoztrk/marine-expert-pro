@@ -1,11 +1,9 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import SplashCompassDial from "@/components/ui/SplashCompassDial";
 import { createCompassListener, requestCompassPermission } from "@/utils/heading";
-import { ChevronLeft, ChevronRight, Newspaper, RefreshCw, Settings } from "lucide-react";
-import { fetchMaritimeNews } from "@/services/maritimeNews";
+import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 
 const Index = () => {
@@ -133,38 +131,6 @@ const Index = () => {
     if (clickX > screenWidth * 0.65) {
       navigate('/widgets');
     }
-  };
-
-  const headlinesQuery = useQuery({
-    queryKey: ["maritime-news", "headlines"],
-    queryFn: () => fetchMaritimeNews({ totalLimit: 12, perSourceLimit: 6 }),
-    staleTime: 15 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
-
-  const headlineItems = useMemo(() => {
-    const items = headlinesQuery.data?.items ?? [];
-    const seen = new Set<string>();
-    return items.filter((item) => {
-      const key = `${item.source}-${item.title}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return Boolean(item.title);
-    });
-  }, [headlinesQuery.data?.items]);
-
-  const formatDateTR = (iso?: string): string => {
-    if (!iso) return "";
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return "";
-    return d.toLocaleString("tr-TR", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
   };
 
   return (
@@ -333,89 +299,6 @@ const Index = () => {
                 className="h-full w-full select-none pointer-events-none"
               />
             </div>
-          </div>
-        </div>
-
-        {/* Maritime news headlines */}
-        <div className="mt-10 w-full max-w-4xl text-left">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm text-white border border-white/10">
-                <Newspaper className="h-5 w-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-white/60">Güncel denizcilik haberleri</p>
-                <h2 className="text-xl font-semibold text-white">Başlıklar</h2>
-                {headlinesQuery.data?.fetchedAt ? (
-                  <p className="text-xs text-white/40">Son güncelleme: {formatDateTR(headlinesQuery.data.fetchedAt)}</p>
-                ) : null}
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-                size="sm"
-                onClick={() => headlinesQuery.refetch()}
-                disabled={headlinesQuery.isFetching}
-              >
-                <RefreshCw className={"mr-2 h-4 w-4 " + (headlinesQuery.isFetching ? "animate-spin" : "")} />
-                Yenile
-              </Button>
-              <Button
-                variant="outline"
-                className="border-white/20 bg-white/5 text-white hover:bg-white/15 backdrop-blur-sm"
-                size="sm"
-                onClick={() => navigate('/maritime-news')}
-              >
-                Tüm Haberler
-              </Button>
-            </div>
-          </div>
-
-          <div 
-            className="mt-4 rounded-2xl border border-white/10 p-4 backdrop-blur-md"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)',
-              boxShadow: '0 10px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
-            }}
-          >
-            {headlinesQuery.isLoading ? (
-              <div className="grid gap-3 md:grid-cols-2">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-16 animate-pulse rounded-xl bg-white/10" />
-                ))}
-              </div>
-            ) : headlinesQuery.isError ? (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-100">
-                Haber başlıkları yüklenemedi. Biraz sonra tekrar deneyin.
-              </div>
-            ) : headlineItems.length === 0 ? (
-              <div className="text-sm text-white/70">Gösterilecek haber başlığı bulunamadı.</div>
-            ) : (
-              <div className="grid gap-3 md:grid-cols-2">
-                {headlineItems.slice(0, 12).map((item, idx) => (
-                  <a
-                    key={`${item.link}-${idx}`}
-                    href={item.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex h-full items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3 transition-all hover:border-cyan-400/30 hover:bg-white/10"
-                  >
-                    <div className="mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-cyan-400" aria-hidden />
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold leading-snug text-white group-hover:text-cyan-300">
-                        {item.title}
-                      </p>
-                      <p className="text-xs text-white/50">
-                        {item.source}
-                        {item.publishedAt ? ` • ${formatDateTR(item.publishedAt)}` : ""}
-                      </p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            )}
           </div>
         </div>
 
