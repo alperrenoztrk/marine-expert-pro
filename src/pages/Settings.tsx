@@ -10,7 +10,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getLanguageFlag } from "@/utils/languages";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/safeClient";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { SupabaseStatusIndicator } from "@/components/SupabaseStatusIndicator";
 import { APIStatusIndicator } from "@/components/APIStatusIndicator";

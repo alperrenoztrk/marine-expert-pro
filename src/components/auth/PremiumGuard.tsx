@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { usePro } from '@/hooks/usePro';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/safeClient';
 
 interface PremiumGuardProps {
   children: ReactNode;

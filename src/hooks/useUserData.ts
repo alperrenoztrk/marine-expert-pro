@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/safeClient';
 
 interface CalculationHistory {
   id: string;
@@ -99,14 +99,14 @@ export const useUserData = (userId?: string) => {
         throw error;
       }
       
-      const preferences = data || {
+      const preferences = (data || {
         language: 'tr',
         ad_frequency: 3,
-        theme: 'system',
+        theme: 'system' as const,
         email_notifications: true,
         calculation_notifications: true,
         favorite_calculations: []
-      };
+      }) as UserPreferences;
       
       setUserPreferences(preferences);
       return preferences;
