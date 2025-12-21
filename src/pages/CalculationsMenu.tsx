@@ -1,11 +1,12 @@
 import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
-import { BookOpen, ChevronDown, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Map, Navigation, Radar, Radio, SatelliteDish, ScrollText, Waves } from "lucide-react";
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
+  const [showBridgeDevices, setShowBridgeDevices] = useState(false);
 
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
@@ -67,6 +68,20 @@ export default function CalculationsMenu() {
             <span>Gemi Personeli</span>
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${showCrew ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowBridgeDevices((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 via-cyan-500 to-blue-500 text-white shadow group-hover:scale-105">
+              <Radar className="h-4 w-4" />
+            </span>
+            <span>Köprüüstü Aygıtları</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showBridgeDevices ? "rotate-180" : "rotate-0"}`}
             />
           </button>
 
@@ -162,11 +177,121 @@ export default function CalculationsMenu() {
               </div>
             </section>
           )}
+
+          {showBridgeDevices && (
+            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Köprüüstü Aygıtları</h2>
+                <p className="text-xs text-muted-foreground">
+                  VHF, DSC, ECDIS, radar, NAVTEX ve diğer seyir/iletişim cihazları için hızlı erişim butonları.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                {bridgeDevices.map((device) => {
+                  const DeviceIcon = device.icon;
+                  return (
+                    <button
+                      key={device.id}
+                      type="button"
+                      className="group flex h-full flex-col items-start gap-2 rounded-xl border border-border/50 bg-background/80 p-3 text-left shadow-sm transition hover:border-primary/40 hover:bg-card"
+                    >
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${device.accent} text-white shadow-sm transition-transform group-hover:scale-110`}>
+                        <DeviceIcon className="h-5 w-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-semibold text-foreground">{device.label}</h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{device.description}</p>
+                      </div>
+                      <span className="rounded-full bg-primary/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                        {device.status}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+const bridgeDevices = [
+  {
+    id: "vhf",
+    label: "VHF Telsiz",
+    description: "CH16 dinleme, DSC çağrı alarmı ve günlük kayıt kontrolleri.",
+    status: "GMDSS",
+    icon: Radio,
+    accent: "from-sky-500 via-cyan-500 to-emerald-500",
+  },
+  {
+    id: "dsc",
+    label: "DSC Konsolu",
+    description: "MMSI doğrulama, test çağrısı ve distress/mayday prosedürleri.",
+    status: "ALARM",
+    icon: SatelliteDish,
+    accent: "from-amber-500 via-orange-500 to-rose-500",
+  },
+  {
+    id: "ecdis",
+    label: "ECDIS",
+    description: "Elektronik harita güncellemeleri, rota planı ve sensör overlay kontrolü.",
+    status: "SEYİR",
+    icon: Map,
+    accent: "from-indigo-500 via-blue-600 to-sky-500",
+  },
+  {
+    id: "radar",
+    label: "Radar / ARPA",
+    description: "CPA/TCPA izlemesi, guard zone ve yağmur/deniz clutter optimizasyonu.",
+    status: "İZLEME",
+    icon: Radar,
+    accent: "from-purple-500 via-violet-500 to-indigo-500",
+  },
+  {
+    id: "navtex",
+    label: "NAVTEX",
+    description: "MSI yayınları, kıyı istasyon seçimi ve otomatik kaydedilen mesajlar.",
+    status: "MSI",
+    icon: ScrollText,
+    accent: "from-emerald-500 via-green-500 to-teal-500",
+  },
+  {
+    id: "ais",
+    label: "AIS",
+    description: "Statik/voyage verileri, güvenlik mesajı (safety-related) gönderme ve hedef listesi.",
+    status: "TRAFFIC",
+    icon: Navigation,
+    accent: "from-cyan-500 via-blue-500 to-slate-500",
+  },
+  {
+    id: "gyro",
+    label: "Gyro & Manyetik Pusula",
+    description: "Error kontrolü, tekrar ayarı ve manyetik/gyro heading karşılaştırması.",
+    status: "KOMPAS",
+    icon: Waves,
+    accent: "from-sky-600 via-blue-500 to-indigo-500",
+  },
+  {
+    id: "gps",
+    label: "GNSS Alıcısı",
+    description: "Konum doğruluğu, HDOP/PDOP izlemesi ve bütünlük alarmlarının takibi.",
+    status: "GPS",
+    icon: Navigation,
+    accent: "from-amber-400 via-yellow-500 to-lime-500",
+  },
+  {
+    id: "vsat",
+    label: "VSAT / İnternet",
+    description: "Bağlantı durumu, bant genişliği kullanımı ve yedekleme (L-band/4G) geçişi.",
+    status: "BAĞLANTI",
+    icon: SatelliteDish,
+    accent: "from-teal-500 via-cyan-500 to-blue-500",
+  },
+];
 
 const crewHierarchy = [
   {
