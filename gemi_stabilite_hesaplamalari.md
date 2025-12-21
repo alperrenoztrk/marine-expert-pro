@@ -179,25 +179,6 @@ P = \frac{MCT \times \text{Trim (cm)}}{l}
 
 \[
 \Delta GM = \frac{P \times KM}{\Delta}
-
-### Hasarlı (Damage) Stabilite Hesabı
-
-Hasar alan kompartmana dolan su, yeni ağırlık ve serbest yüzey etkisi yaratarak GM'yi düşürür.
-
-- **Yeni KG:**
-\[
-KG_{yeni} = \frac{\Delta \cdot KG + \sum(w_i \cdot KG_i)}{\Delta + \sum w_i}
-\]
-
-- **FSM Düzeltmesi:** Kısmi dolu kompartmanlarda
-\[
-GG_1 = \frac{\sum FSM}{\Delta_{yeni}}
-\]
-
-- **Düzeltilmiş GM:**
-\[
-GM_{damage} = KM - KG_{yeni} - GG_1
-\]
 \]
 
 ---

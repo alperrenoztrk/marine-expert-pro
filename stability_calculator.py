@@ -27,36 +27,6 @@ class TankBilgisi:
     sivi_yogunlugu: float = 1.025  # ton/m³ (deniz suyu için)
 
 
-@dataclass
-class HasarKompartman:
-    """Hasarlı durum analizinde kullanılan kompartman bilgisi"""
-
-    boy: float  # metre
-    en: float  # metre
-    yukseklik: float  # metre
-    kg: float  # metre (kompartman hacim merkezinin KG değeri)
-    doluluk_orani: float = 1.0  # 0-1 arası doluluk
-    permeabilite: float = 0.95  # deniz suyu için tipik değer
-    sivi_yogunlugu: float = 1.025  # ton/m³
-
-    def hacim(self) -> float:
-        """Hasarlı kompartmanın etkin su hacmini hesaplar"""
-
-        return self.boy * self.en * self.yukseklik * self.doluluk_orani * self.permeabilite
-
-    def agirlik(self) -> float:
-        """Kompartmana dolan suyun ağırlığını hesaplar"""
-
-        return self.hacim() * self.sivi_yogunlugu
-
-    def fsm(self) -> float:
-        """Kompartmandaki serbest yüzey momentini basitçe tahmin eder"""
-
-        if not (0 < self.doluluk_orani < 1):
-            return 0.0
-        return (self.boy * (self.en ** 3) * self.sivi_yogunlugu * self.doluluk_orani) / 12
-
-
 class EnineStabiliteHesaplama:
     """Enine stabilite hesaplamaları için ana sınıf"""
     
@@ -228,49 +198,6 @@ class EnineStabiliteHesaplama:
                 fsm = (tank.boy * tank.en**3 * tank.sivi_yogunlugu) / 12
                 toplam_fsm += fsm
         return toplam_fsm
-
-    def hasarli_durum_gm(self, kompartmanlar: List[HasarKompartman]) -> dict:
-        """
-        Hasarlı stabilite (damage stability) için GM ve KG güncellemelerini hesaplar.
-
-        Basit yaklaşım: kompartmana giren suyun ağırlığı ve momenti eklenir, serbest
-        yüzey etkisi için her kısmi dolu kompartman FSM olarak hesaba katılır.
-
-        Args:
-            kompartmanlar: Hasar gören kompartman bilgileri listesi
-
-        Returns:
-            dict: Yeni deplasman, KG, düzeltilmiş GM ve serbest yüzey düzeltmeleri
-        """
-
-        toplam_moment = self.deplasman * self.kg
-        toplam_agirlik = self.deplasman
-        toplam_fsm = 0.0
-
-        for kompartman in kompartmanlar:
-            w = kompartman.agirlik()
-            toplam_moment += w * kompartman.kg
-            toplam_agirlik += w
-            toplam_fsm += kompartman.fsm()
-
-        if toplam_agirlik == 0:
-            yeni_kg = 0.0
-            gm_duzeltilmis = 0.0
-        else:
-            yeni_kg = toplam_moment / toplam_agirlik
-            gm_duzeltilmis = self.km - yeni_kg
-
-        gg1_fsm = toplam_fsm / toplam_agirlik if toplam_agirlik else 0.0
-        gm_damage = gm_duzeltilmis - gg1_fsm
-
-        return {
-            "yeni_deplasman": toplam_agirlik,
-            "yeni_kg": yeni_kg,
-            "gm_intact": gm_duzeltilmis,
-            "toplam_fsm": toplam_fsm,
-            "gg1_fsm": gg1_fsm,
-            "gm_damage": gm_damage,
-        }
     
     def gm_kuculmesi_fsm(self, fsm: float) -> float:
         """
