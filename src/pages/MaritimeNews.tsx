@@ -32,7 +32,9 @@ function toProxyImageUrl(url?: string): string | undefined {
     const sanitized = `${parsed.hostname}${parsed.pathname}${parsed.search}${parsed.hash}`.replace(/^[\/]+/, "");
     if (!sanitized) return undefined;
 
-    return `https://images.weserv.nl/?url=${encodeURIComponent(sanitized)}&w=900&h=600&fit=cover`;
+    // Request higher-resolution, consistently sized thumbnails via the image proxy.
+    // Larger dimensions reduce pixelation from low-quality upstream images while keeping aspect coverage.
+    return `https://images.weserv.nl/?url=${encodeURIComponent(sanitized)}&w=1600&h=900&fit=cover`;
   } catch {
     return undefined;
   }
