@@ -1,9 +1,11 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
-import { ChevronRight } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight } from "lucide-react";
 
 export default function CalculationsMenu() {
+  const [showLessons, setShowLessons] = useState(true);
+
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
     ['--frame-rate' as string]: "120",
@@ -33,49 +35,69 @@ export default function CalculationsMenu() {
           <h1 className="text-3xl font-black leading-tight text-foreground sm:text-4xl">
             Tüm Hesaplama Araçları
           </h1>
+          <p className="text-sm text-muted-foreground">
+            Merkezdeki tüm hesaplama içeriklerini tek bir dersler butonu altında toplayabilirsiniz.
+          </p>
         </header>
 
-        {/* Categories with direct links */}
-        <div className="flex flex-col gap-6">
-          {calculationCategories.map((category) => {
-            const CategoryIcon = category.icon;
-            return (
-              <section key={category.id} className="space-y-3">
-                {/* Category Header */}
-                <div className="flex items-center gap-3">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${category.accent} text-white shadow-lg`}>
-                    <CategoryIcon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-foreground">{category.title}</h2>
-                    <p className="text-xs text-muted-foreground">{category.subtitle}</p>
-                  </div>
-                </div>
+        <div className="flex flex-col gap-4">
+          <button
+            type="button"
+            onClick={() => setShowLessons((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 text-white shadow group-hover:scale-105">
+              <BookOpen className="h-4 w-4" />
+            </span>
+            <span>Dersler</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showLessons ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
 
-                {/* Section Links - Grid */}
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
-                  {category.sections.map((section) => {
-                    const SectionIcon = sectionIconMap[section.id];
-                    return (
-                      <Link
-                        key={section.id}
-                        to={section.href || "#"}
-                        className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
-                      >
-                        <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white transition-transform group-hover:scale-110`}>
-                          <SectionIcon className="h-4 w-4" />
-                        </div>
-                        <span className="text-center text-xs font-medium text-foreground">
-                          {section.label}
-                        </span>
-                        <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                      </Link>
-                    );
-                  })}
-                </div>
-              </section>
-            );
-          })}
+          {showLessons && (
+            <div className="flex flex-col gap-6">
+              {calculationCategories.map((category) => {
+                const CategoryIcon = category.icon;
+                return (
+                  <section key={category.id} className="space-y-3">
+                    {/* Category Header */}
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${category.accent} text-white shadow-lg`}>
+                        <CategoryIcon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-bold text-foreground">{category.title}</h2>
+                        <p className="text-xs text-muted-foreground">{category.subtitle}</p>
+                      </div>
+                    </div>
+
+                    {/* Section Links - Grid */}
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+                      {category.sections.map((section) => {
+                        const SectionIcon = sectionIconMap[section.id];
+                        return (
+                          <Link
+                            key={section.id}
+                            to={section.href || "#"}
+                            className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
+                          >
+                            <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white transition-transform group-hover:scale-110`}>
+                              <SectionIcon className="h-4 w-4" />
+                            </div>
+                            <span className="text-center text-xs font-medium text-foreground">
+                              {section.label}
+                            </span>
+                            <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
