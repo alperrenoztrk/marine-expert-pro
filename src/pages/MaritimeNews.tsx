@@ -22,6 +22,22 @@ function formatDateTR(iso?: string): string {
   });
 }
 
+function toProxyImageUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  try {
+    const parsed = new URL(url);
+    if (!parsed.protocol.startsWith("http")) return undefined;
+
+    const sanitized = `${parsed.hostname}${parsed.pathname}${parsed.search}${parsed.hash}`.replace(/^[\/]+/, "");
+    if (!sanitized) return undefined;
+
+    return `https://images.weserv.nl/?url=${encodeURIComponent(sanitized)}&w=900&h=600&fit=cover`;
+  } catch {
+    return undefined;
+  }
+}
+
 const MaritimeNews = () => {
   const navigate = useNavigate();
   const touchStartX = useRef<number | null>(null);
@@ -209,64 +225,69 @@ const MaritimeNews = () => {
                   </div>
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {group.items.map((it) => (
-                      <a
-                        key={it.link}
-                        href={it.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
-                      >
-                        {/* Görsel */}
-                        <div className="relative h-44 w-full overflow-hidden bg-slate-800">
-                          {it.imageUrl ? (
-                            <>
-                              <img
-                                src={it.imageUrl}
-                                alt={it.title}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                loading="lazy"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.style.display = 'none';
-                                  if (target.nextElementSibling) {
-                                    target.nextElementSibling.classList.remove('hidden');
-                                  }
-                                }}
-                              />
-                              <div className="hidden absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
-                                <span className="text-xs text-white/40">Görsel yüklenemedi</span>
-                              </div>
-                            </>
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
-                              <span className="text-xs text-white/40">Görsel yok</span>
-                            </div>
-                          )}
-                          {/* Kaynak etiketi */}
-                          <div className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
-                            {it.source}
-                          </div>
-                        </div>
+                    {group.items.map((it) => {
+                      const imageUrl = toProxyImageUrl(it.imageUrl);
 
-                        {/* İçerik */}
-                        <div className="flex flex-1 flex-col p-4">
-                          {it.publishedAt && (
-                            <span className="mb-2 text-xs text-white/50">{formatDateTR(it.publishedAt)}</span>
-                          )}
-                          <h3 className="line-clamp-3 text-sm font-semibold leading-snug text-white group-hover:text-blue-300">
-                            {it.title}
-                          </h3>
-                          {it.summary && (
-                            <p className="mt-2 line-clamp-2 text-xs text-white/60">{it.summary}</p>
-                          )}
-                          <div className="mt-auto flex items-center gap-1 pt-3 text-xs text-blue-400">
-                            <span>Haberi oku</span>
-                            <ExternalLink className="h-3 w-3" />
+                      return (
+                        <a
+                          key={it.link}
+                          href={it.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
+                        >
+                          {/* Görsel */}
+                          <div className="relative h-44 w-full overflow-hidden bg-slate-800">
+                            {imageUrl ? (
+                              <>
+                                <img
+                                  src={imageUrl}
+                                  alt={it.title}
+                                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  loading="lazy"
+                                  referrerPolicy="no-referrer"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = "none";
+                                    if (target.nextElementSibling) {
+                                      target.nextElementSibling.classList.remove("hidden");
+                                    }
+                                  }}
+                                />
+                                <div className="hidden absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+                                  <span className="text-xs text-white/40">Görsel yüklenemedi</span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+                                <span className="text-xs text-white/40">Görsel yok</span>
+                              </div>
+                            )}
+                            {/* Kaynak etiketi */}
+                            <div className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                              {it.source}
+                            </div>
                           </div>
-                        </div>
-                      </a>
-                    ))}
+
+                          {/* İçerik */}
+                          <div className="flex flex-1 flex-col p-4">
+                            {it.publishedAt && (
+                              <span className="mb-2 text-xs text-white/50">{formatDateTR(it.publishedAt)}</span>
+                            )}
+                            <h3 className="line-clamp-3 text-sm font-semibold leading-snug text-white group-hover:text-blue-300">
+                              {it.title}
+                            </h3>
+                            {it.summary && (
+                              <p className="mt-2 line-clamp-2 text-xs text-white/60">{it.summary}</p>
+                            )}
+                            <div className="mt-auto flex items-center gap-1 pt-3 text-xs text-blue-400">
+                              <span>Haberi oku</span>
+                              <ExternalLink className="h-3 w-3" />
+                            </div>
+                          </div>
+                        </a>
+                      );
+                    })}
                   </div>
                 )}
               </Card>
