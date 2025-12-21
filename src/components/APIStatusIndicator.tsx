@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, Loader2, AlertCircle, Link as LinkIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/safeClient';
 
 interface APIStatus {
   name: string;

@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Lightbulb } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/safeClient";
 
 interface AssistantInterfaceProps {
   title: string;
