@@ -65,47 +65,53 @@ export default function CrewRoleDetailPage() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <section className="rounded-xl border border-border/50 bg-background/80 p-5 shadow-sm">
-              <div className="mb-3 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow">
-                  <ShieldCheck className="h-4 w-4" />
-                </div>
-                <div>
-                  <h2 className="text-base font-semibold text-foreground">Her Durumda Temel Sorumluluklar</h2>
-                  <p className="text-xs text-muted-foreground">Acil durum ve rutin operasyonlarda değişmeyen görevler</p>
-                </div>
+          <section className="mt-6 rounded-xl border border-border/50 bg-background/80 p-5 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 via-blue-500 to-indigo-600 text-white shadow">
+                <ShieldCheck className="h-5 w-5" />
               </div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {role.alwaysDuties.map((duty) => (
-                  <li key={duty} className="flex gap-2">
-                    <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
-                    <span className="leading-relaxed text-foreground dark:text-slate-200">{duty}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+              <div>
+                <h2 className="text-base font-semibold text-foreground">Görevler</h2>
+                <p className="text-xs text-muted-foreground">Temel sorumluluklar ve günlük işlerin birleşik görünümü</p>
+              </div>
+            </div>
 
-            <section className="rounded-xl border border-border/50 bg-background/80 p-5 shadow-sm">
-              <div className="mb-3 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow">
-                  <Sparkles className="h-4 w-4" />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-lg border border-border/40 bg-card/60 p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheck className="h-4 w-4" />
+                  </span>
+                  Her Durumda Temel Sorumluluklar
                 </div>
-                <div>
-                  <h2 className="text-base font-semibold text-foreground">Genel Görevler</h2>
-                  <p className="text-xs text-muted-foreground">Planlı bakım, raporlama ve günlük işler</p>
-                </div>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {role.alwaysDuties.map((duty) => (
+                    <li key={duty} className="flex gap-2">
+                      <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-500" />
+                      <span className="leading-relaxed text-foreground dark:text-slate-200">{duty}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {role.generalTasks.map((task) => (
-                  <li key={task} className="flex gap-2">
-                    <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500" />
-                    <span className="leading-relaxed text-foreground dark:text-slate-200">{task}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
+
+              <div className="rounded-lg border border-border/40 bg-card/60 p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                    <Sparkles className="h-4 w-4" />
+                  </span>
+                  Genel Görevler
+                </div>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {role.generalTasks.map((task) => (
+                    <li key={task} className="flex gap-2">
+                      <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-blue-500" />
+                      <span className="leading-relaxed text-foreground dark:text-slate-200">{task}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground">
             <div className="space-y-1">
