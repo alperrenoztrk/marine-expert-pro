@@ -123,6 +123,7 @@ import MachineRulesPage from "./pages/MachineRules";
 import WidgetPage from "./pages/WidgetPage";
 import MaritimeNews from "./pages/MaritimeNews";
 import ModuleSectionsPage from "./pages/ModuleSectionsPage";
+import CrewRoleDetailPage from "./pages/CrewRoleDetail";
 import type { CategoryId } from "@/data/calculationCenterConfig";
 const queryClient = new QueryClient();
 
@@ -146,6 +147,7 @@ const AnimatedRoutes = () => {
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
         <Route path="/hub" element={<PageTransition><CalculationsMenu /></PageTransition>} />
         <Route path="/hub/:categoryId" element={<PageTransition><HubCategoryPage /></PageTransition>} />
+        <Route path="/crew/:roleSlug" element={<PageTransition><CrewRoleDetailPage /></PageTransition>} />
         <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
         <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />
         {/* Stability sub-routes */}
