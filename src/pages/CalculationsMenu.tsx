@@ -29,7 +29,7 @@ export default function CalculationsMenu() {
     {
       name: "Ana Makine (Sevk Sistemi)",
       description:
-        "Ana dizel makine, türbin ve diesel-electric tahrik kombinasyonlarının devreye alma, yük paylaşımı ve seyir performansını izle",
+        "Ana dizel makine, türbin ve diesel-electric tahrik kombinasyonlarının devreye alma, yük paylaşımı ve seyir performansını izleme",
       icon: Cog,
     },
     {
@@ -339,6 +339,7 @@ export default function CalculationsMenu() {
                   );
                 })}
               </div>
+
             </section>
           )}
         </div>
