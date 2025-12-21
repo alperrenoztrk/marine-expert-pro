@@ -2,7 +2,7 @@ import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { crewHierarchy } from "@/data/crewHierarchy";
-import { BookOpen, ChevronDown, ChevronRight, Compass, Navigation, Radio, Radar, SatelliteDish, Waves } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Compass, Navigation, Radio, Radar, SatelliteDish, Waves, Wrench } from "lucide-react";
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
@@ -55,6 +55,17 @@ export default function CalculationsMenu() {
         </header>
 
         <div className="flex flex-col gap-4">
+          <Link
+            to="/machine/calculations"
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-slate-600 via-zinc-600 to-slate-800 text-white shadow group-hover:scale-105">
+              <Wrench className="h-4 w-4" />
+            </span>
+            <span>Gemi Makineleri</span>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+
           <button
             type="button"
             onClick={() => setShowLessons((prev) => !prev)}
