@@ -3,7 +3,7 @@ Enine Stabilite Hesaplama Test ve Örnek Dosyası
 """
 
 from stability_calculator import (
-    EnineStabiliteHesaplama, YukBilgisi, TankBilgisi,
+    EnineStabiliteHesaplama, YukBilgisi, TankBilgisi, HasarKompartman,
     StabiliteRapor, meyil_momenti_hesapla
 )
 import math
@@ -157,6 +157,43 @@ def test_bumba_kren():
         print(f"\n✓ Operasyon güvenli (GM = {yeni_gm:.4f} m > 0)")
     else:
         print(f"\n✗ DİKKAT! Operasyon tehlikeli (GM = {yeni_gm:.4f} m < 0)")
+
+
+def test_damage_stability():
+    """Hasarlı durumda GM ve KG güncellemelerini test eder"""
+    baslik("HASARLI (DAMAGE) STABİLİTE")
+
+    deplasman = 12000
+    km = 9.0
+    kg = 6.8
+    hesaplama = EnineStabiliteHesaplama(deplasman, km, kg)
+
+    kompartmanlar = [
+        HasarKompartman(boy=20, en=12, yukseklik=8, kg=3.5, doluluk_orani=1.0, permeabilite=0.95),
+        HasarKompartman(boy=10, en=8, yukseklik=6, kg=4.0, doluluk_orani=0.6, permeabilite=0.9),
+    ]
+
+    print("Hasarlı kompartmanlar:")
+    for i, k in enumerate(kompartmanlar, 1):
+        print(f"  Kompartman {i}: {k.boy}×{k.en}×{k.yukseklik} m, KG={k.kg} m, doluluk=%{k.doluluk_orani*100:.0f}")
+
+    sonuc = hesaplama.hasarli_durum_gm(kompartmanlar)
+
+    print("\nÖnceki durum:")
+    print(f"  Δ = {deplasman} ton, KG = {kg} m, GM = {hesaplama.gm:.3f} m")
+
+    print("\nHasar sonrası hesaplar:")
+    print(f"  Yeni Δ = {sonuc['yeni_deplasman']:.2f} ton")
+    print(f"  Yeni KG = {sonuc['yeni_kg']:.3f} m")
+    print(f"  GM (FSM'siz) = {sonuc['gm_intact']:.3f} m")
+    print(f"  Toplam FSM = {sonuc['toplam_fsm']:.2f} ton.m")
+    print(f"  GG₁(FSM) = {sonuc['gg1_fsm']:.4f} m")
+    print(f"  Düzeltilmiş GM (damage) = {sonuc['gm_damage']:.3f} m")
+
+    if sonuc["gm_damage"] > 0:
+        print("\n✓ Hasar sonrası gemi hala pozitif GM'ye sahip")
+    else:
+        print("\n✗ DİKKAT! Hasar sonrası GM negatif")
 
 
 def test_serbest_yuzey():
@@ -358,6 +395,7 @@ def main():
     test_yalpa_periyodu()
     test_gz_egri_solas()
     test_kritik_gm_havuz()
+    test_damage_stability()
     test_rapor_olusturma()
     
     print("\n" + "="*60)
