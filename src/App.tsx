@@ -82,6 +82,7 @@ import SOLASRegulationsPage from "./pages/SOLASRegulations";
 import SOLASCertificatesPage from "./pages/SOLASCertificates";
 import SOLASShipRequirementsPage from "./pages/SOLASShipRequirements";
 import SOLASSafetyEquipmentPage from "./pages/SOLASSafetyEquipment";
+import BridgeDeviceDetailPage from "./pages/BridgeDeviceDetail";
 import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
 import SunriseTimes from "./pages/SunriseTimes";
@@ -148,6 +149,7 @@ const AnimatedRoutes = () => {
         <Route path="/hub" element={<PageTransition><CalculationsMenu /></PageTransition>} />
         <Route path="/hub/:categoryId" element={<PageTransition><HubCategoryPage /></PageTransition>} />
         <Route path="/crew/:roleSlug" element={<PageTransition><CrewRoleDetailPage /></PageTransition>} />
+        <Route path="/bridge/:deviceId" element={<PageTransition><BridgeDeviceDetailPage /></PageTransition>} />
         <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
         <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />
         {/* Stability sub-routes */}

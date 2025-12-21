@@ -1,6 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
+import { bridgeDevices } from "@/data/bridgeDevices";
 import { crewHierarchy } from "@/data/crewHierarchy";
 import {
   BookOpen,
@@ -9,16 +10,11 @@ import {
   Anchor,
   Battery,
   Cog,
-  Compass,
   Droplets,
   Factory,
   Flame,
   Gauge,
-  Navigation,
-  Radio,
-  Radar,
   ShieldCheck,
-  SatelliteDish,
   Snowflake,
   Waves
 } from "lucide-react";
@@ -28,17 +24,6 @@ export default function CalculationsMenu() {
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
-
-  const bridgeDevices = [
-    { name: "VHF", description: "Kanal yönetimi, distress ve routine call kontrolleri", icon: Radio },
-    { name: "DSC", description: "Distress, urgency ve safety çağrı protokolleri", icon: Waves },
-    { name: "ECDIS", description: "Rota planlama, ENC güncellemeleri ve alarmlar", icon: Navigation },
-    { name: "Radar", description: "ARPA, CPA/TCPA ve yağmur/deniz clutter ayarları", icon: Radar },
-    { name: "Navtex", description: "Meteoroloji, seyir uyarıları ve MSI mesajları", icon: SatelliteDish },
-    { name: "AIS", description: "Mesaj tipleri, target filtreleri ve emniyet mesajları", icon: Radio },
-    { name: "Gyro / Pusula", description: "Heading kontrolü, düzeltmeler ve hata analizi", icon: Compass },
-    { name: "Otopilot", description: "Track control, yaw damping ve alarm limitleri", icon: Navigation },
-  ];
 
   const machinerySystems = [
     {
@@ -289,13 +274,13 @@ export default function CalculationsMenu() {
                 {bridgeDevices.map((device) => {
                   const DeviceIcon = device.icon;
                   return (
-                    <button
-                      key={device.name}
-                      type="button"
+                    <Link
+                      key={device.id}
+                      to={`/bridge/${device.id}`}
                       className="group flex h-full flex-col items-start gap-2 rounded-xl border border-border/50 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-500 text-white shadow">
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${device.accent} text-white shadow`}>
                           <DeviceIcon className="h-4 w-4" />
                         </span>
                         <span className="text-sm font-semibold text-foreground">{device.name}</span>
@@ -305,7 +290,7 @@ export default function CalculationsMenu() {
                         Ayrı modül
                         <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
                       </span>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
