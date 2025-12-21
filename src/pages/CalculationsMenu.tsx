@@ -4,7 +4,7 @@ import { calculationCategories, sectionIconMap } from "@/data/calculationCenterC
 import { BookOpen, ChevronDown, ChevronRight } from "lucide-react";
 
 export default function CalculationsMenu() {
-  const [showLessons, setShowLessons] = useState(true);
+  const [showLessons, setShowLessons] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
 
   const highRefreshRateStyles: CSSProperties = {
