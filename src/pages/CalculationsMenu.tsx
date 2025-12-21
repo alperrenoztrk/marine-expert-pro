@@ -2,11 +2,23 @@ import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { crewHierarchy } from "@/data/crewHierarchy";
-import { BookOpen, ChevronDown, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight, Compass, Navigation, Radio, Radar, SatelliteDish, Waves } from "lucide-react";
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
+  const [showBridgeDevices, setShowBridgeDevices] = useState(false);
+
+  const bridgeDevices = [
+    { name: "VHF", description: "Kanal yönetimi, distress ve routine call kontrolleri", icon: Radio },
+    { name: "DSC", description: "Distress, urgency ve safety çağrı protokolleri", icon: Waves },
+    { name: "ECDIS", description: "Rota planlama, ENC güncellemeleri ve alarmlar", icon: Navigation },
+    { name: "Radar", description: "ARPA, CPA/TCPA ve yağmur/deniz clutter ayarları", icon: Radar },
+    { name: "Navtex", description: "Meteoroloji, seyir uyarıları ve MSI mesajları", icon: SatelliteDish },
+    { name: "AIS", description: "Mesaj tipleri, target filtreleri ve emniyet mesajları", icon: Radio },
+    { name: "Gyro / Pusula", description: "Heading kontrolü, düzeltmeler ve hata analizi", icon: Compass },
+    { name: "Otopilot", description: "Track control, yaw damping ve alarm limitleri", icon: Navigation },
+  ];
 
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
@@ -68,6 +80,20 @@ export default function CalculationsMenu() {
             <span>Gemi Personeli</span>
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${showCrew ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowBridgeDevices((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-sky-500 text-white shadow group-hover:scale-105">
+              📡
+            </span>
+            <span>Köprüüstü Aygıtları</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showBridgeDevices ? "rotate-180" : "rotate-0"}`}
             />
           </button>
 
@@ -164,6 +190,42 @@ export default function CalculationsMenu() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </section>
+          )}
+
+          {showBridgeDevices && (
+            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Köprüüstü Aygıtları Paneli</h2>
+                <p className="text-xs text-muted-foreground">
+                  VHF, DSC, ECDIS, radar, Navtex ve diğer tüm seyir cihazlarını ayrı ayrı açın.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {bridgeDevices.map((device) => {
+                  const DeviceIcon = device.icon;
+                  return (
+                    <button
+                      key={device.name}
+                      type="button"
+                      className="group flex h-full flex-col items-start gap-2 rounded-xl border border-border/50 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-500 text-white shadow">
+                          <DeviceIcon className="h-4 w-4" />
+                        </span>
+                        <span className="text-sm font-semibold text-foreground">{device.name}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{device.description}</p>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                        Ayrı modül
+                        <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </section>
           )}
