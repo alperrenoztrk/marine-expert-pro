@@ -6,6 +6,8 @@ import {
   BookOpen,
   ChevronDown,
   ChevronRight,
+  Anchor,
+  Battery,
   Cog,
   Compass,
   Droplets,
@@ -15,10 +17,10 @@ import {
   Navigation,
   Radio,
   Radar,
+  ShieldCheck,
   SatelliteDish,
   Snowflake,
-  Waves,
-  Wind
+  Waves
 } from "lucide-react";
 
 export default function CalculationsMenu() {
@@ -39,14 +41,51 @@ export default function CalculationsMenu() {
   ];
 
   const machinerySystems = [
-    { name: "Ana Makine", description: "Start-up, turlar, takat ayarı ve güvenlik kilitlemeleri", icon: Cog },
-    { name: "Jeneratörler", description: "Yük paylaşımı, paralel bağlama ve koruma testleri", icon: Factory },
-    { name: "Yakıt Separatörü", description: "Püre, temiz yakıt devreleri ve alarm kontrolleri", icon: Droplets },
-    { name: "Yardımcı Kazan", description: "Buhar basıncı, seviye kontrolü ve güvenlik vanaları", icon: Flame },
-    { name: "Hava Kompresörleri", description: "Start/stop, kurutucu kontrolleri ve hava şişesi emniyeti", icon: Wind },
-    { name: "Soğutma Sistemi", description: "Chiller, kondenser ve evaporatör devre takibi", icon: Snowflake },
-    { name: "Tatlı Su Yapıcı", description: "Vakum, tuzluluk takibi ve distile su transferi", icon: Waves },
-    { name: "Pompalar", description: "Balast, sintine, soğutma suyu ve yakıt pompaları", icon: Gauge }
+    {
+      name: "Ana Makine (Sevk Sistemi)",
+      description: "Ana dizel makine, türbin ve diesel-electric tahrik kombinasyonları",
+      icon: Cog,
+    },
+    {
+      name: "Yardımcı Makineler",
+      description: "Yardımcı dizel, acil durum ve ana şaft tahrikli jeneratörler",
+      icon: Factory,
+    },
+    {
+      name: "Elektrik & Güç Sistemleri",
+      description: "Ana/acil switchboard, UPS, trafolar ve batarya gruplarının yönetimi",
+      icon: Battery,
+    },
+    {
+      name: "Yakıt & Yağ Sistemleri",
+      description: "Fuel/Lube oil separatörleri, günlük tanklar ve transfer/besleme pompaları",
+      icon: Droplets,
+    },
+    {
+      name: "Pompalar",
+      description: "Sintine, balast, yangın ve soğutma suyu pompa kontrolleri",
+      icon: Gauge,
+    },
+    {
+      name: "Soğutma & HVAC",
+      description: "Merkezi soğutma, HVAC, soğuk hava depoları ve reefer devreleri",
+      icon: Snowflake,
+    },
+    {
+      name: "Kazanlar (Boiler)",
+      description: "Auxiliary boiler ve EGB ile ısıtma ve buhar ihtiyacı yönetimi",
+      icon: Flame,
+    },
+    {
+      name: "Emniyet & Kontrol Sistemleri",
+      description: "Yangın algılama/CO₂, ECR, alarm ve izleme sistemlerinin entegrasyonu",
+      icon: ShieldCheck,
+    },
+    {
+      name: "Güverte Makineleri",
+      description: "Irgat, mooring winch, kreyn, capstan ve Ro-Ro rampaları",
+      icon: Anchor,
+    },
   ];
 
   const highRefreshRateStyles: CSSProperties = {

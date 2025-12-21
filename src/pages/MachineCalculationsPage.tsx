@@ -8,15 +8,42 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const onboardMachines = [
-  { name: "Ana Makine", detail: "Ana tahrik motoru ve kumanda sistemi" },
-  { name: "Jeneratörler", detail: "Güverte ve yaşam mahalli enerji ihtiyacı" },
-  { name: "Yardımcı Kazan", detail: "Buhar, ısıtma ve yakıt şartlandırma" },
-  { name: "Baş/ Kıç Pervane", detail: "Bow/Stern thruster manevra desteği" },
-  { name: "Pompa Sistemi", detail: "Balast, sintine, yangın ve soğutma pompaları" },
-  { name: "Separator ve Arıtma", detail: "Yakıt/yağ separatörleri, OWS, biyolojik arıtma" },
-  { name: "Hava Kompresörleri", detail: "Ana/yardımcı makine start hava sistemi" },
-  { name: "Shaftline & Redüktör", detail: "Şaft, kaplin, dişli kutusu ve PTO" },
-  { name: "Kontrol & Otomasyon", detail: "AMS/IAS, alarm ve izleme panelleri" },
+  {
+    name: "Ana Makine (Sevk Sistemi)",
+    detail: "Ana dizel makine, buhar/gaz türbini veya diesel-electric tahrik",
+  },
+  {
+    name: "Yardımcı Makineler",
+    detail: "Yardımcı dizel ve acil jeneratörler, ana şafttan tahrikli jeneratör",
+  },
+  {
+    name: "Elektrik & Güç Sistemleri",
+    detail: "Ana/acil switchboard, UPS, trafolar ve batarya grupları",
+  },
+  {
+    name: "Yakıt & Yağ Sistemleri",
+    detail: "Fuel/Lube oil separatörleri, günlük tanklar, transfer ve besleme pompaları",
+  },
+  {
+    name: "Pompalar",
+    detail: "Sintine, balast, yangın, soğutma suyu ve tatlı/deniz suyu pompaları",
+  },
+  {
+    name: "Soğutma & HVAC",
+    detail: "Merkezi soğutma devresi, HVAC, soğuk hava depoları ve reefer sistemleri",
+  },
+  {
+    name: "Kazanlar (Boiler)",
+    detail: "Auxiliary boiler ve EGB; ısıtma, yakıt viskozitesi ve buhar ihtiyacı",
+  },
+  {
+    name: "Emniyet & Kontrol Sistemleri",
+    detail: "Yangın algılama/CO₂, ECR operasyonu, alarm ve izleme sistemleri",
+  },
+  {
+    name: "Güverte Makineleri",
+    detail: "Irgat, mooring winch, kreyn, capstan ve Ro-Ro rampaları",
+  },
 ];
 
 export default function MachineCalculationsPage() {
