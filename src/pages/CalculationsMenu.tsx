@@ -2,12 +2,30 @@ import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { crewHierarchy } from "@/data/crewHierarchy";
-import { BookOpen, ChevronDown, ChevronRight, Compass, Navigation, Radio, Radar, SatelliteDish, Waves } from "lucide-react";
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  Cog,
+  Compass,
+  Droplets,
+  Factory,
+  Flame,
+  Gauge,
+  Navigation,
+  Radio,
+  Radar,
+  SatelliteDish,
+  Snowflake,
+  Waves,
+  Wind
+} from "lucide-react";
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
+  const [showMachinery, setShowMachinery] = useState(false);
 
   const bridgeDevices = [
     { name: "VHF", description: "Kanal yönetimi, distress ve routine call kontrolleri", icon: Radio },
@@ -18,6 +36,17 @@ export default function CalculationsMenu() {
     { name: "AIS", description: "Mesaj tipleri, target filtreleri ve emniyet mesajları", icon: Radio },
     { name: "Gyro / Pusula", description: "Heading kontrolü, düzeltmeler ve hata analizi", icon: Compass },
     { name: "Otopilot", description: "Track control, yaw damping ve alarm limitleri", icon: Navigation },
+  ];
+
+  const machinerySystems = [
+    { name: "Ana Makine", description: "Start-up, turlar, takat ayarı ve güvenlik kilitlemeleri", icon: Cog },
+    { name: "Jeneratörler", description: "Yük paylaşımı, paralel bağlama ve koruma testleri", icon: Factory },
+    { name: "Yakıt Separatörü", description: "Püre, temiz yakıt devreleri ve alarm kontrolleri", icon: Droplets },
+    { name: "Yardımcı Kazan", description: "Buhar basıncı, seviye kontrolü ve güvenlik vanaları", icon: Flame },
+    { name: "Hava Kompresörleri", description: "Start/stop, kurutucu kontrolleri ve hava şişesi emniyeti", icon: Wind },
+    { name: "Soğutma Sistemi", description: "Chiller, kondenser ve evaporatör devre takibi", icon: Snowflake },
+    { name: "Tatlı Su Yapıcı", description: "Vakum, tuzluluk takibi ve distile su transferi", icon: Waves },
+    { name: "Pompalar", description: "Balast, sintine, soğutma suyu ve yakıt pompaları", icon: Gauge }
   ];
 
   const highRefreshRateStyles: CSSProperties = {
@@ -94,6 +123,20 @@ export default function CalculationsMenu() {
             <span>Köprüüstü Aygıtları</span>
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${showBridgeDevices ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowMachinery((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-600 via-orange-500 to-yellow-500 text-white shadow group-hover:scale-105">
+              🛠️
+            </span>
+            <span>Gemi Makineleri</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showMachinery ? "rotate-180" : "rotate-0"}`}
             />
           </button>
 
@@ -221,6 +264,42 @@ export default function CalculationsMenu() {
                       <p className="text-xs text-muted-foreground leading-relaxed">{device.description}</p>
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
                         Ayrı modül
+                        <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {showMachinery && (
+            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Gemi Makineleri Paneli</h2>
+                <p className="text-xs text-muted-foreground">
+                  Jeneratör, separatör, kazan, kompresör ve diğer makineleri tek ekranda açın.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {machinerySystems.map((system) => {
+                  const MachineryIcon = system.icon;
+                  return (
+                    <button
+                      key={system.name}
+                      type="button"
+                      className="group flex h-full flex-col items-start gap-2 rounded-xl border border-border/50 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-amber-600 via-orange-500 to-yellow-500 text-white shadow">
+                          <MachineryIcon className="h-4 w-4" />
+                        </span>
+                        <span className="text-sm font-semibold text-foreground">{system.name}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{system.description}</p>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                        Erişim
                         <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
                       </span>
                     </button>
