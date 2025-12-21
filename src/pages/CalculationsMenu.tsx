@@ -28,47 +28,56 @@ export default function CalculationsMenu() {
   const machinerySystems = [
     {
       name: "Ana Makine (Sevk Sistemi)",
-      description: "Ana dizel makine, türbin ve diesel-electric tahrik kombinasyonları",
+      description:
+        "Ana dizel makine, türbin ve diesel-electric tahrik kombinasyonlarının devreye alma, yük paylaşımı ve seyir performansını izle",
       icon: Cog,
     },
     {
       name: "Yardımcı Makineler",
-      description: "Yardımcı dizel, acil durum ve ana şaft tahrikli jeneratörler",
+      description:
+        "Yardımcı dizel, acil durum ve ana şaft tahrikli jeneratörlerin paralel çalışma, senkronizasyon ve güç yönetimi",
       icon: Factory,
     },
     {
       name: "Elektrik & Güç Sistemleri",
-      description: "Ana/acil switchboard, UPS, trafolar ve batarya gruplarının yönetimi",
+      description:
+        "Ana/acil switchboard, UPS, trafolar ve batarya gruplarının yük aktarımı, gerilim/frekans denetimi ve kesintisiz güç sürekliliği",
       icon: Battery,
     },
     {
       name: "Yakıt & Yağ Sistemleri",
-      description: "Fuel/Lube oil separatörleri, günlük tanklar ve transfer/besleme pompaları",
+      description:
+        "Fuel/Lube oil separatörleri, günlük tanklar ve transfer/besleme pompalarının arıtma, ısıtma ve otomatik tank balansı",
       icon: Droplets,
     },
     {
       name: "Pompalar",
-      description: "Sintine, balast, yangın ve soğutma suyu pompa kontrolleri",
+      description:
+        "Sintine, balast, yangın ve soğutma suyu pompalarının otomatik start/stop, basınç koruma ve hat yedekliliği",
       icon: Gauge,
     },
     {
       name: "Soğutma & HVAC",
-      description: "Merkezi soğutma, HVAC, soğuk hava depoları ve reefer devreleri",
+      description:
+        "Merkezi soğutma, HVAC, soğuk hava depoları ve reefer devrelerinin ısı değiştirici kontrolü, fan/pompa kademesi ve nem-sıcaklık optimizasyonu",
       icon: Snowflake,
     },
     {
       name: "Kazanlar (Boiler)",
-      description: "Auxiliary boiler ve EGB ile ısıtma ve buhar ihtiyacı yönetimi",
+      description:
+        "Auxiliary boiler ve EGB ile yakma hava ayarı, buhar basıncı regülasyonu ve ısıtma devrelerinin arıza/tekrar devreye alma işlemleri",
       icon: Flame,
     },
     {
       name: "Emniyet & Kontrol Sistemleri",
-      description: "Yangın algılama/CO₂, ECR, alarm ve izleme sistemlerinin entegrasyonu",
+      description:
+        "Yangın algılama/CO₂, ECR, alarm ve izleme sistemlerinin sensör doğrulama, arıza izolasyonu ve otomatik güvenlik müdahaleleri",
       icon: ShieldCheck,
     },
     {
       name: "Güverte Makineleri",
-      description: "Irgat, mooring winch, kreyn, capstan ve Ro-Ro rampaları",
+      description:
+        "Irgat, mooring winch, kreyn, capstan ve Ro-Ro rampalarının yük limit kontrolü, hidrolik/elektrik tahrik gözetimi ve emniyet kilitlemeleri",
       icon: Anchor,
     },
   ];
