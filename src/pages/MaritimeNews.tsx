@@ -22,30 +22,6 @@ function formatDateTR(iso?: string): string {
   });
 }
 
-function buildSafeImageUrl(raw?: string): string | undefined {
-  const trimmed = raw?.trim();
-  if (!trimmed) return undefined;
-
-  // Handle protocol-relative URLs (e.g. //example.com/image.jpg)
-  if (trimmed.startsWith("//")) {
-    return `https:${trimmed}`;
-  }
-
-  try {
-    const parsed = new URL(trimmed);
-
-    // Prevent browsers from blocking mixed-content images by proxying http assets.
-    if (parsed.protocol === "http:") {
-      return `https://images.weserv.nl/?url=${encodeURIComponent(trimmed)}`;
-    }
-
-    return parsed.toString();
-  } catch (error) {
-    console.warn("📰 [MaritimeNews] Invalid image URL", { raw, error });
-    return undefined;
-  }
-}
-
 const MaritimeNews = () => {
   const navigate = useNavigate();
   const touchStartX = useRef<number | null>(null);
@@ -233,24 +209,20 @@ const MaritimeNews = () => {
                   </div>
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {group.items.map((it) => {
-                      // Use proxy/https fallback to avoid mixed-content blocks on some feeds
-                      const displayImageUrl = buildSafeImageUrl(it.imageUrl);
-
-                      return (
-                        <a
-                          key={it.link}
-                          href={it.link}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
-                        >
-                          {/* Görsel */}
-                          <div className="relative h-44 w-full overflow-hidden bg-slate-800">
-                            {displayImageUrl ? (
-                              <>
-                                <img
-                                src={displayImageUrl}
+                    {group.items.map((it) => (
+                      <a
+                        key={it.link}
+                        href={it.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
+                      >
+                        {/* Görsel */}
+                        <div className="relative h-44 w-full overflow-hidden bg-slate-800">
+                          {it.imageUrl ? (
+                            <>
+                              <img
+                                src={it.imageUrl}
                                 alt={it.title}
                                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="lazy"
