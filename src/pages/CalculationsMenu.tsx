@@ -1,92 +1,16 @@
 import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
+import { bridgeDevices } from "@/data/bridgeDevices";
+import { machinerySystems } from "@/data/machinerySystems";
 import { crewHierarchy } from "@/data/crewHierarchy";
-import {
-  BookOpen,
-  ChevronDown,
-  ChevronRight,
-  Anchor,
-  Battery,
-  Cog,
-  Compass,
-  Droplets,
-  Factory,
-  Flame,
-  Gauge,
-  Navigation,
-  Radio,
-  Radar,
-  ShieldCheck,
-  SatelliteDish,
-  Snowflake,
-  Waves
-} from "lucide-react";
+import { BookOpen, ChevronDown, ChevronRight } from "lucide-react";
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
-
-  const bridgeDevices = [
-    { name: "VHF", description: "Kanal yönetimi, distress ve routine call kontrolleri", icon: Radio },
-    { name: "DSC", description: "Distress, urgency ve safety çağrı protokolleri", icon: Waves },
-    { name: "ECDIS", description: "Rota planlama, ENC güncellemeleri ve alarmlar", icon: Navigation },
-    { name: "Radar", description: "ARPA, CPA/TCPA ve yağmur/deniz clutter ayarları", icon: Radar },
-    { name: "Navtex", description: "Meteoroloji, seyir uyarıları ve MSI mesajları", icon: SatelliteDish },
-    { name: "AIS", description: "Mesaj tipleri, target filtreleri ve emniyet mesajları", icon: Radio },
-    { name: "Gyro / Pusula", description: "Heading kontrolü, düzeltmeler ve hata analizi", icon: Compass },
-    { name: "Otopilot", description: "Track control, yaw damping ve alarm limitleri", icon: Navigation },
-  ];
-
-  const machinerySystems = [
-    {
-      name: "Ana Makine (Sevk Sistemi)",
-      description: "Ana dizel makine, türbin ve diesel-electric tahrik kombinasyonları",
-      icon: Cog,
-    },
-    {
-      name: "Yardımcı Makineler",
-      description: "Yardımcı dizel, acil durum ve ana şaft tahrikli jeneratörler",
-      icon: Factory,
-    },
-    {
-      name: "Elektrik & Güç Sistemleri",
-      description: "Ana/acil switchboard, UPS, trafolar ve batarya gruplarının yönetimi",
-      icon: Battery,
-    },
-    {
-      name: "Yakıt & Yağ Sistemleri",
-      description: "Fuel/Lube oil separatörleri, günlük tanklar ve transfer/besleme pompaları",
-      icon: Droplets,
-    },
-    {
-      name: "Pompalar",
-      description: "Sintine, balast, yangın ve soğutma suyu pompa kontrolleri",
-      icon: Gauge,
-    },
-    {
-      name: "Soğutma & HVAC",
-      description: "Merkezi soğutma, HVAC, soğuk hava depoları ve reefer devreleri",
-      icon: Snowflake,
-    },
-    {
-      name: "Kazanlar (Boiler)",
-      description: "Auxiliary boiler ve EGB ile ısıtma ve buhar ihtiyacı yönetimi",
-      icon: Flame,
-    },
-    {
-      name: "Emniyet & Kontrol Sistemleri",
-      description: "Yangın algılama/CO₂, ECR, alarm ve izleme sistemlerinin entegrasyonu",
-      icon: ShieldCheck,
-    },
-    {
-      name: "Güverte Makineleri",
-      description: "Irgat, mooring winch, kreyn, capstan ve Ro-Ro rampaları",
-      icon: Anchor,
-    },
-  ];
 
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
@@ -289,13 +213,13 @@ export default function CalculationsMenu() {
                 {bridgeDevices.map((device) => {
                   const DeviceIcon = device.icon;
                   return (
-                    <button
-                      key={device.name}
-                      type="button"
+                    <Link
+                      key={device.id}
+                      to={`/bridge/${device.id}`}
                       className="group flex h-full flex-col items-start gap-2 rounded-xl border border-border/50 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-500 text-white shadow">
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${device.accent} text-white shadow`}>
                           <DeviceIcon className="h-4 w-4" />
                         </span>
                         <span className="text-sm font-semibold text-foreground">{device.name}</span>
@@ -305,7 +229,7 @@ export default function CalculationsMenu() {
                         Ayrı modül
                         <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
                       </span>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
@@ -325,23 +249,23 @@ export default function CalculationsMenu() {
                 {machinerySystems.map((system) => {
                   const MachineryIcon = system.icon;
                   return (
-                    <button
-                      key={system.name}
-                      type="button"
+                    <Link
+                      key={system.id}
+                      to={`/machinery/${system.id}`}
                       className="group flex h-full flex-col items-start gap-2 rounded-xl border border-border/50 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-amber-600 via-orange-500 to-yellow-500 text-white shadow">
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${system.accent} text-white shadow`}>
                           <MachineryIcon className="h-4 w-4" />
                         </span>
                         <span className="text-sm font-semibold text-foreground">{system.name}</span>
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed">{system.description}</p>
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                        Erişim
+                        Ayrı modül
                         <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
                       </span>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
