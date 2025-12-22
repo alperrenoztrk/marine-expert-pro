@@ -1,11 +1,21 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
+import { Capacitor } from "@capacitor/core";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchMaritimeNews } from "@/services/maritimeNews";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { fetchMaritimeNews, type MaritimeNewsItem } from "@/services/maritimeNews";
 import { ChevronRight, ExternalLink, RefreshCw } from "lucide-react";
 
 function formatDateTR(iso?: string): string {
@@ -44,6 +54,22 @@ const MaritimeNews = () => {
   const navigate = useNavigate();
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+
+  const [readerOpen, setReaderOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MaritimeNewsItem | null>(null);
+
+  const openExternal = async (url: string) => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const { Browser } = await import("@capacitor/browser");
+        await Browser.open({ url });
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    } catch {
+      window.location.href = url;
+    }
+  };
 
   const query = useQuery({
     queryKey: ["maritime-news"],
@@ -117,6 +143,15 @@ const MaritimeNews = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      <Helmet>
+        <title>Denizcilik Haberleri | Güncel RSS</title>
+        <meta
+          name="description"
+          content="Denizcilik haberleri: gCaptain, MarineLink ve diğer kaynaklardan güncel RSS başlıklarını uygulama içinde okuyun."
+        />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
       {/* Right arrow indicator - back to home */}
       <div className="fixed right-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-30">
         <div className="flex flex-col items-center gap-2 animate-pulse">
@@ -231,12 +266,14 @@ const MaritimeNews = () => {
                       const imageUrl = toProxyImageUrl(it.imageUrl);
 
                       return (
-                        <a
+                        <button
                           key={it.link}
-                          href={it.link}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-white/20 hover:bg-white/10"
+                          type="button"
+                          onClick={() => {
+                            setSelectedItem(it);
+                            setReaderOpen(true);
+                          }}
+                          className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 text-left transition-all hover:border-white/20 hover:bg-white/10"
                         >
                           {/* Görsel */}
                           <div className="relative h-44 w-full overflow-hidden bg-slate-800">
@@ -283,11 +320,11 @@ const MaritimeNews = () => {
                               <p className="mt-2 line-clamp-2 text-xs text-white/60">{it.summary}</p>
                             )}
                             <div className="mt-auto flex items-center gap-1 pt-3 text-xs text-blue-400">
-                              <span>Haberi oku</span>
-                              <ExternalLink className="h-3 w-3" />
+                              <span>Uygulamada oku</span>
+                              <ChevronRight className="h-3 w-3" />
                             </div>
                           </div>
-                        </a>
+                        </button>
                       );
                     })}
                   </div>
@@ -297,6 +334,62 @@ const MaritimeNews = () => {
           </div>
         )}
       </div>
+
+      <Dialog
+        open={readerOpen}
+        onOpenChange={(open) => {
+          setReaderOpen(open);
+          if (!open) setSelectedItem(null);
+        }}
+      >
+        <DialogContent className="max-w-4xl border-white/10 bg-slate-950 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-white">{selectedItem?.title ?? "Haber"}</DialogTitle>
+            <DialogDescription className="text-white/70">
+              {selectedItem?.source ? `${selectedItem.source} • ` : ""}
+              {selectedItem?.publishedAt ? formatDateTR(selectedItem.publishedAt) : ""}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-2 overflow-hidden rounded-md border border-white/10 bg-black/30">
+            {selectedItem?.link ? (
+              <iframe
+                title={selectedItem.title}
+                src={selectedItem.link}
+                className="h-[70svh] w-full"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="p-6 text-sm text-white/70">Haber bağlantısı bulunamadı.</div>
+            )}
+          </div>
+
+          <div className="text-xs text-white/50">
+            Not: Bazı siteler güvenlik nedeniyle uygulama içinde görüntülenmeyi engelleyebilir. Bu durumda “Dışarıda aç”ı kullanın.
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="border-white/20 bg-transparent text-white hover:bg-white/10"
+              onClick={() => setReaderOpen(false)}
+            >
+              Kapat
+            </Button>
+            <Button
+              variant="secondary"
+              className="bg-white/10 hover:bg-white/15"
+              onClick={() => {
+                if (selectedItem?.link) openExternal(selectedItem.link);
+              }}
+              disabled={!selectedItem?.link}
+            >
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Dışarıda aç
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
