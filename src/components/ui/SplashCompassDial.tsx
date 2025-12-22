@@ -215,7 +215,7 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
         <circle cx="200" cy="200" r="170" fill="none" stroke="#ffd700" strokeWidth="1.5" opacity="0.5" />
         
         {/* Degree ring background */}
-        <circle cx="200" cy="200" r="168" fill="#0a0a0a" />
+        <circle cx="200" cy="200" r="168" fill="#091a2e" />
         
         {/* Degree ticks and numbers */}
         {Array.from({ length: 72 }, (_, i) => {
