@@ -258,7 +258,7 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
         })}
         
         {/* Navy enamel face */}
-        <circle cx="200" cy="200" r="146" fill={`url(#navy-face-${safeUid})`} filter={`url(#inner-shadow-${safeUid})`} />
+        <circle cx="200" cy="200" r="148" fill={`url(#navy-face-${safeUid})`} filter={`url(#inner-shadow-${safeUid})`} />
         
         {/* Compass Rose - decorative rays */}
         <g transform="translate(200, 200)">
@@ -374,7 +374,7 @@ const SplashCompassDial: React.FC<SplashCompassDialProps> = ({ headingDeg = 0, c
         <circle cx="197" cy="197" r="3" fill="rgba(255,255,255,0.6)" />
         
         {/* Glass dome overlay */}
-        <circle cx="200" cy="200" r="146" fill={`url(#glass-dome-${safeUid})`} />
+        <circle cx="200" cy="200" r="148" fill={`url(#glass-dome-${safeUid})`} />
         
         {/* Glass dome edge highlight */}
         <ellipse cx="160" cy="140" rx="60" ry="30" fill={`url(#glass-highlight-${safeUid})`} opacity="0.3" transform="rotate(-20, 160, 140)" />
