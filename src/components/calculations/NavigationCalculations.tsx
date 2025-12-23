@@ -200,7 +200,18 @@ interface NavigationResult {
   approachSpeed: number; // Recommended approach speed
   minimumDepth: number; // Minimum depth along route (m)
   safeDraft: number; // Safe draft considering UKC (m)
-  
+
+  // Basic time–speed–distance helpers
+  basicDistance?: number;
+  basicTimeHours?: number;
+  basicSpeed?: number;
+  speedKmh?: number;
+  speedMs?: number;
+  remainingTimeHours?: number;
+  averageSpeed?: number;
+  smg?: number;
+  dmg?: number;
+
   recommendations: string[];
 }
 
@@ -291,6 +302,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     legPositions: Array<{ lat: number; lon: number }>;
   } | null>(null);
 
+  const [basicTSD, setBasicTSD] = useState({ distanceNm: 120, speedKn: 12, timeHours: 10 });
+  const [progressCalc, setProgressCalc] = useState({
+    distanceRunNm: 40,
+    plannedDistanceNm: 120,
+    remainingDistanceNm: 80,
+    timeElapsedHours: 3
+  });
+
   // Utility functions for calculations
   const toRadians = (degrees: number) => degrees * Math.PI / 180;
   const toDegrees = (radians: number) => radians * 180 / Math.PI;
@@ -304,6 +323,17 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
   };
 
   const clampLatitude = (lat: number) => Math.max(-90, Math.min(90, lat));
+  const formatHours = (hours: number) => {
+    if (!Number.isFinite(hours)) return "-";
+    const totalMinutes = Math.round(hours * 60);
+    const hh = Math.floor(totalMinutes / 60)
+      .toString()
+      .padStart(2, "0");
+    const mm = (totalMinutes % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${hh}:${mm}`;
+  };
 
   // Navigation star data (simplified - in reality this would come from an almanac)
   const navigationStars = [
@@ -490,6 +520,81 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
     } as NavigationResult));
 
     toast.success("Mercator Sailing hesaplandı");
+  };
+
+  const updateBasicResult = (partial: Partial<NavigationResult>) => {
+    setResult(prev => ({
+      ...(prev || ({} as NavigationResult)),
+      ...partial
+    }));
+  };
+
+  const calculateBasicTime = () => {
+    if (!basicTSD.distanceNm || !basicTSD.speedKn) {
+      toast.error("Mesafe ve hız girin");
+      return;
+    }
+    const timeHours = basicTSD.distanceNm / basicTSD.speedKn;
+    updateBasicResult({
+      basicTimeHours: timeHours,
+      basicDistance: basicTSD.distanceNm,
+      basicSpeed: basicTSD.speedKn,
+      speedKmh: basicTSD.speedKn * 1.852,
+      speedMs: basicTSD.speedKn * 0.514444
+    });
+  };
+
+  const calculateBasicDistance = () => {
+    if (!basicTSD.speedKn || !basicTSD.timeHours) {
+      toast.error("Hız ve zaman girin");
+      return;
+    }
+    const distance = basicTSD.speedKn * basicTSD.timeHours;
+    updateBasicResult({
+      basicDistance: distance,
+      basicTimeHours: basicTSD.timeHours,
+      basicSpeed: basicTSD.speedKn,
+      speedKmh: basicTSD.speedKn * 1.852,
+      speedMs: basicTSD.speedKn * 0.514444
+    });
+  };
+
+  const calculateBasicSpeed = () => {
+    if (!basicTSD.distanceNm || !basicTSD.timeHours) {
+      toast.error("Mesafe ve zaman girin");
+      return;
+    }
+    const speed = basicTSD.distanceNm / basicTSD.timeHours;
+    updateBasicResult({
+      basicSpeed: speed,
+      basicDistance: basicTSD.distanceNm,
+      basicTimeHours: basicTSD.timeHours,
+      speedKmh: speed * 1.852,
+      speedMs: speed * 0.514444
+    });
+  };
+
+  const calculateProgressStats = () => {
+    if (!progressCalc.plannedDistanceNm || !progressCalc.timeElapsedHours) {
+      toast.error("Toplam mesafe ve geçen zamanı girin");
+      return;
+    }
+
+    const remainingDistance = progressCalc.remainingDistanceNm ||
+      Math.max(progressCalc.plannedDistanceNm - progressCalc.distanceRunNm, 0);
+
+    const avgSpeed = progressCalc.distanceRunNm && progressCalc.timeElapsedHours
+      ? progressCalc.distanceRunNm / progressCalc.timeElapsedHours
+      : 0;
+
+    const remainingTime = data.speed > 0 ? remainingDistance / data.speed : Number.NaN;
+
+    updateBasicResult({
+      remainingTimeHours: remainingTime,
+      averageSpeed: avgSpeed,
+      smg: avgSpeed,
+      dmg: progressCalc.distanceRunNm
+    });
   };
 
   // ETA Calculation
@@ -1628,6 +1733,142 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     </div>
                   </div>
+
+                  <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <Card className="border-dashed">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">Temel Zaman – Mesafe – Hız</CardTitle>
+                        <CardDescription>Klasik formüller ve birim dönüşümleri</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div className="space-y-1">
+                            <Label>Mesafe (nm)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(basicTSD.distanceNm) ? basicTSD.distanceNm : ''}
+                              onChange={(e) => setBasicTSD((prev) => ({ ...prev, distanceNm: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="120"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Hız (knot)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(basicTSD.speedKn) ? basicTSD.speedKn : ''}
+                              onChange={(e) => setBasicTSD((prev) => ({ ...prev, speedKn: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="12"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Zaman (saat)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(basicTSD.timeHours) ? basicTSD.timeHours : ''}
+                              onChange={(e) => setBasicTSD((prev) => ({ ...prev, timeHours: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="10"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <Button variant="outline" size="sm" onClick={calculateBasicTime}>Zamanı Hesapla</Button>
+                          <Button variant="outline" size="sm" onClick={calculateBasicDistance}>Mesafeyi Hesapla</Button>
+                          <Button variant="outline" size="sm" onClick={calculateBasicSpeed}>Hızı Hesapla</Button>
+                        </div>
+                        {result?.basicTimeHours !== undefined && (
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                            <div className="p-3 rounded border bg-muted/40">
+                              <div className="text-muted-foreground">Zaman</div>
+                              <div className="font-mono text-lg">{formatHours(result.basicTimeHours)}</div>
+                            </div>
+                            <div className="p-3 rounded border bg-muted/40">
+                              <div className="text-muted-foreground">Hız</div>
+                              <div className="font-mono text-lg">{result.basicSpeed?.toFixed(2)} kn</div>
+                            </div>
+                            <div className="p-3 rounded border bg-muted/40">
+                              <div className="text-muted-foreground">Km/saat</div>
+                              <div className="font-mono text-lg">{result.speedKmh?.toFixed(2)}</div>
+                            </div>
+                            <div className="p-3 rounded border bg-muted/40">
+                              <div className="text-muted-foreground">m/s</div>
+                              <div className="font-mono text-lg">{result.speedMs?.toFixed(2)}</div>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-dashed">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">Kalan Mesafe / SMG / DMG</CardTitle>
+                        <CardDescription>Ortalama hız ve kalan süre hesapları</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className="space-y-1">
+                            <Label>Gidilen (nm)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(progressCalc.distanceRunNm) ? progressCalc.distanceRunNm : ''}
+                              onChange={(e) => setProgressCalc((prev) => ({ ...prev, distanceRunNm: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="40"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Planlanan (nm)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(progressCalc.plannedDistanceNm) ? progressCalc.plannedDistanceNm : ''}
+                              onChange={(e) => setProgressCalc((prev) => ({ ...prev, plannedDistanceNm: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="120"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Kalan (nm)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(progressCalc.remainingDistanceNm) ? progressCalc.remainingDistanceNm : ''}
+                              onChange={(e) => setProgressCalc((prev) => ({ ...prev, remainingDistanceNm: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="80"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label>Geçen Süre (saat)</Label>
+                            <Input
+                              type="number"
+                              value={Number.isFinite(progressCalc.timeElapsedHours) ? progressCalc.timeElapsedHours : ''}
+                              onChange={(e) => setProgressCalc((prev) => ({ ...prev, timeElapsedHours: e.target.value === '' ? Number.NaN : parseFloat(e.target.value) }))}
+                              placeholder="3"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Button variant="outline" size="sm" onClick={calculateProgressStats}>Kalan Süre & SMG Hesapla</Button>
+                        </div>
+                        {result?.averageSpeed !== undefined && (
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                            <div className="p-3 rounded border bg-emerald-50 dark:bg-emerald-900/20">
+                              <div className="text-muted-foreground">Ortalama Hız (SMG)</div>
+                              <div className="font-mono text-lg">{result.averageSpeed?.toFixed(2)} kn</div>
+                            </div>
+                            <div className="p-3 rounded border bg-blue-50 dark:bg-blue-900/20">
+                              <div className="text-muted-foreground">DMG</div>
+                              <div className="font-mono text-lg">{result.dmg?.toFixed(1)} nm</div>
+                            </div>
+                            <div className="p-3 rounded border bg-amber-50 dark:bg-amber-900/20">
+                              <div className="text-muted-foreground">Kalan Mesafe</div>
+                              <div className="font-mono text-lg">{Number.isFinite(progressCalc.remainingDistanceNm) ? progressCalc.remainingDistanceNm.toFixed(1) : "-"} nm</div>
+                            </div>
+                            <div className="p-3 rounded border bg-rose-50 dark:bg-rose-900/20">
+                              <div className="text-muted-foreground">Kalan Süre</div>
+                              <div className="font-mono text-lg">{formatHours(result.remainingTimeHours ?? Number.NaN)}</div>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
                   <div className="mt-4">
                     <Button onClick={() => calculateETA()} className="gap-2">
                       <Clock className="w-4 h-4" /> ETA Hesapla
