@@ -240,7 +240,7 @@ const Index = () => {
       <div className="relative z-10 flex min-h-[100svh] flex-col items-center px-6 text-center">
         {/* Title */}
         <div className="pt-12 sm:pt-16">
-          <h1 
+          <h1
             className="select-none font-black tracking-wider"
             style={{
               background: 'linear-gradient(135deg, #ffffff 0%, #7dd3fc 50%, #ffffff 100%)',
@@ -255,12 +255,6 @@ const Index = () => {
             <span className="block text-[clamp(2.5rem,9vw,4.5rem)] leading-tight">MARINE</span>
             <span className="block text-[clamp(2.5rem,9vw,4.5rem)] leading-tight">EXPERT PRO</span>
           </h1>
-          <p 
-            className="mt-2 text-white/60 uppercase tracking-[3px] text-sm"
-            style={{ animation: 'fade-in 0.6s ease-out 0.3s both' }}
-          >
-            Professional Maritime Solutions
-          </p>
         </div>
 
         {/* Compass */}
