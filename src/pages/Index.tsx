@@ -214,28 +214,6 @@ const Index = () => {
         />
       </div>
 
-      {/* Sailing ship */}
-      <div 
-        className="absolute bottom-[18%] w-[80px] h-[40px] z-[3] pointer-events-none"
-        style={{
-          filter: 'drop-shadow(0 4px 15px rgba(0,0,0,0.3))',
-          animation: 'ship-sail 20s linear infinite, ship-bob 2.5s ease-in-out infinite'
-        }}
-      >
-        <svg viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          <path d="M10 45 L25 55 L95 55 L110 45 L100 45 L95 40 L25 40 L20 45 Z" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5"/>
-          <rect x="30" y="32" width="60" height="8" rx="1" fill="rgba(255,255,255,0.85)"/>
-          <rect x="55" y="18" width="25" height="14" rx="1" fill="rgba(255,255,255,0.9)"/>
-          <rect x="58" y="21" width="8" height="6" rx="0.5" fill="rgba(56,189,248,0.4)"/>
-          <rect x="69" y="21" width="8" height="6" rx="0.5" fill="rgba(56,189,248,0.4)"/>
-          <rect x="72" y="8" width="6" height="10" fill="rgba(255,255,255,0.9)"/>
-          <rect x="71" y="6" width="8" height="3" rx="0.5" fill="rgba(255,255,255,0.8)"/>
-          <rect x="44" y="5" width="2" height="27" fill="rgba(255,255,255,0.8)"/>
-          <rect x="35" y="6" width="20" height="1" fill="rgba(255,255,255,0.6)"/>
-          <path d="M85 32 L85 22 L92 28" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" fill="none"/>
-        </svg>
-      </div>
-
       {/* Settings button */}
       <button
         onClick={(e) => {
@@ -324,14 +302,6 @@ const Index = () => {
         @keyframes wave-move {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
-        }
-        @keyframes ship-sail {
-          0% { left: -100px; }
-          100% { left: calc(100% + 100px); }
-        }
-        @keyframes ship-bob {
-          0%, 100% { transform: translateY(0) rotate(-1deg); }
-          50% { transform: translateY(-6px) rotate(1deg); }
         }
         @keyframes beacon-rotate {
           0%, 100% { transform: rotate(-30deg); opacity: 0.9; }
