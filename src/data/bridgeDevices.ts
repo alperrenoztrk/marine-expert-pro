@@ -25,6 +25,7 @@ export interface BridgeDeviceInfo {
   summary: string;
   icon: typeof Radio;
   accent: string;
+  images: string[];
   duties: string[];
   operations: string[];
   monitoring: string[];
@@ -40,6 +41,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "GMDSS kapsamında gemi-gemi ve gemi-kıyı arasındaki temel ses haberleşmesini sağlar; kanal 16 sürekli dinleme ve köprüüstü koordinasyonu için kritik rol oynar.",
     icon: Radio,
     accent: "from-sky-500 via-blue-500 to-indigo-500",
+    images: [
+      "https://images.unsplash.com/photo-1459535653751-d571815e906b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "Görüş hattı mesafelerde emniyet, operasyonel ve liman kılavuz çağrıları",
       "Mayday, Pan-Pan ve Sécurité anonslarının hızlı ve prosedüre uygun iletimi",
@@ -72,6 +77,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Digital Selective Calling, GMDSS'in dijital uyarı katmanıdır; otomatik konumlu distress/urgency çağrılarını ve seçilmiş istasyonla sessiz arama kurar.",
     icon: Waves,
     accent: "from-cyan-500 via-sky-500 to-blue-600",
+    images: [
+      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1499946980998-6c3e886f1b56?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "Tek tuşla MMSI ve GNSS konum bilgisi içeren distress alarmı gönderir",
       "Seçici arama ile belirli gemi/kiyi istasyonuna rutin veya urgency çağrı",
@@ -104,6 +113,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Elektronik seyir haritası sistemi; SOLAS uyumlu rota planlama, ENCs, alarmlar ve sensör entegrasyonu ile kâğıt haritaya eşdeğer resmi seyir sağlar.",
     icon: Navigation,
     accent: "from-emerald-500 via-teal-500 to-cyan-500",
+    images: [
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "Passage plan üretimi: appraisal–planning–execution–monitoring aşamalarının dijital yönetimi",
       "ENC güncellemeleri, T&P notları ve katmanların (CATZOC, batimetri, AIO) doğrulanması",
@@ -136,6 +149,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Radar ve ARPA hedef takibi, çarpışma önleme ve yakın seyirde durumsal farkındalığın ana sensörüdür; deniz/yağmur clutter kontrolü güvenli ayrımı sağlar.",
     icon: RadarIcon,
     accent: "from-indigo-500 via-blue-600 to-slate-700",
+    images: [
+      "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "Hedef tespiti ve ARPA takibiyle CPA/TCPA hesaplama",
       "Head-up/ North-up/ Course-up modlarıyla pilotaj ve açık deniz kullanımına uygun görünüm",
@@ -168,6 +185,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Navigational Telex, kıyı istasyonlarından seyrüsefer ve meteoroloji uyarılarını otomatik alır; MSI ve SAR bildirimleri için düşük bant genişlikli zorunlu GMDSS katmanıdır.",
     icon: SatelliteDish,
     accent: "from-amber-500 via-orange-500 to-rose-500",
+    images: [
+      "https://images.unsplash.com/photo-1504904126298-3f4f9ae7c33d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1455763916899-e8b50eca9967?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "NAVAREA/METAREA yayınlarının otomatik alımı ve kategorilere göre filtrelenmesi",
       "SAR, seyir engelleri, fener/dalmaçya arızaları ve meteorolojik fırtına uyarılarının köprüüstüne iletimi",
@@ -200,6 +221,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Automatic Identification System, seyir bilgilerini yayınlar ve alır; çarpışma önleme, trafik resmi ve liman otoritesi bilgi akışı için ana veri kaynağıdır.",
     icon: Radio,
     accent: "from-violet-500 via-indigo-500 to-blue-500",
+    images: [
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "Statik (IMO, MMSI, çağrı adı) ve dinamik (SOG, COG, ROT) bilgileri periyodik yayınlama",
       "Voyage related veriler (ETA, yük, varış limanı, taslak) ve emniyet mesajları",
@@ -232,6 +257,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Gyro ve manyetik pusula, heading referansını sağlar; sensör entegrasyonunda hataların izlenmesi rota tutuşu ve sensör güvenliği için kritiktir.",
     icon: Compass,
     accent: "from-slate-600 via-gray-700 to-stone-800",
+    images: [
+      "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "COG/heading referansı sağlayarak radar, ECDIS, autopilot ve conning sistemlerini besler",
       "Gyro deviation ve magnetic variation hesaplarıyla gerçek/Manyetik yönleri düzeltir",
@@ -264,6 +293,10 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Otopilot, rota veya track takip ederken dümen komutlarını optimize eder; yakıt, konfor ve güvenlik için kontrol modları ve limitler hassas ayarlanmalıdır.",
     icon: Navigation2,
     accent: "from-teal-500 via-cyan-500 to-blue-500",
+    images: [
+      "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+    ],
     duties: [
       "Heading hold, course over ground veya track control modlarında otomatik dümenleme",
       "Rudder limit, rate limit ve yaw damping ile konforlu ve ekonomik seyir",
