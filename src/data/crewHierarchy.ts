@@ -73,19 +73,34 @@ export const crewHierarchy: CrewGroup[] = [
       },
       {
         slug: "ucuncu-zabit",
-        rank: "Üçüncü Zabit (Third Officer)",
-        responsibility: "Emniyet ekipmanlarının günlük kontrolleri, köprüüstü vardiyaları ve mustering listeleri.",
+        rank: "Üçüncü Zabit (Third Officer / 3/O)",
+        responsibility: "Operasyonel sorumluluğu olan zabit; bağımsız vardiya, navigasyon ve emniyet yönetimi.",
         reportsTo: "Birinci Zabit",
         alwaysDuties: [
-          "Günlük köprüüstü ve seyir ekipmanı kontrollerinin yapılması",
-          "Yaşam mahalli ve güverte emniyet turu; kapı, ışık ve alarm kontrolleri",
-          "Muster listelerinin güncel tutulması ve acil durum ekipman sayımlarının yapılması",
+          "08–12 / 20–24 vardiyalarında bağımsız köprüüstü nöbeti; yoğun trafik ve kısıtlı sularda Master'ı zamanında çağırma",
+          "Seyir planına uygunluk, harita & ECDIS sorumluluğu ve navigational warnings takibi",
+          "Safety Officer olarak yangın, can kurtarma ve acil durum ekipmanlarının haftalık/aylık kontrolleri ile drill organizasyonu",
         ],
         generalTasks: [
-          "Emniyet kayıtlarının (weekly/monthly check list) eksiksiz doldurulması",
-          "Tatbikat hazırlıkları, acil durum ekipman testleri ve raporlaması",
-          "Çapa, demir taraması ve manevra hazırlıklarında destek",
-          "Köprüüstü stoklarının (bayrak, flama, sinyal fişekleri) takip edilmesi",
+          "Passage plan hazırlığına aktif katkı ve NAVTEX/Notices to Mariners takibi",
+          "Limanda loading/discharging watch, tank soundings ve draft survey; gerektiğinde operasyonu yönetebilme",
+          "Güverte tayfalarının günlük iş planı, disiplin ve iş güvenliği gözetimi; PSC/vetting hazırlıkları",
+        ],
+      },
+      {
+        slug: "dorduncu-zabit",
+        rank: "Dördüncü Zabit (Fourth Officer / 4/O)",
+        responsibility: "En junior güverte zabiti; öğrenme ve destek ağırlıklı temel vardiya ve emniyet görevleri.",
+        reportsTo: "Kaptan veya Birinci Zabit",
+        alwaysDuties: [
+          "00–04 / 12–16 vardiyalarında kaptan veya C/O gözetiminde vardiya tutma; radar/ECDIS/ARPA kullanımı ve logbook kaydı",
+          "COLREG'e uygun seyir, kritik durumda üst zabiti çağırma ve basit rota/pozisyon kontrolleri",
+          "Lifejacket, lifebuoy, yangın dolapları, hortumlar ve portatif tüplerin haftalık kontrolleri; muster list uygulamalarına destek",
+        ],
+        generalTasks: [
+          "Harita ve yayın düzeltmelerine, Notices to Mariners takibine ve ECDIS güncelleme kontrollerine destek",
+          "Limanda güverte nöbeti (gangway watch) ve yük operasyonlarında Birinci Zabite destek",
+          "Sistemleri öğrenerek tecrübe kazanma, disiplin ve köprüüstü prosedürlerini pekiştirme",
         ],
       },
       {
