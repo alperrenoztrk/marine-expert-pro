@@ -17,13 +17,14 @@ export type CrewGroup = {
 export const crewHierarchy: CrewGroup[] = [
   {
     department: "Köprüüstü / Operasyon",
-    focus: "Seyir, emniyet ve yük operasyonu yönetimi",
-    colorCode: "KAPTANLIK",
+    focus: "Seyir, emniyet ve yük operasyonlarının planlanması ve icrası",
+    colorCode: "Kaptanlık",
     roles: [
       {
         slug: "kaptan",
         rank: "Kaptan (Master)",
-        responsibility: "Geminin en üst amiri; seyir, güvenlik, yük ve idari tüm kararlar.",
+        responsibility:
+          "Geminin en üst amiri olup seyir, emniyet, yük operasyonları ve tüm idari kararlardan sorumludur.",
         reportsTo: "Şirket",
         alwaysDuties: [
           "Gemi emniyetinin korunması ve ISM/ISPS gerekliliklerinin eksiksiz uygulanması",
@@ -39,8 +40,9 @@ export const crewHierarchy: CrewGroup[] = [
       },
       {
         slug: "birinci-zabit",
-        rank: "Birinci Zabit (Chief Officer)",
-        responsibility: "Güverte departmanı yöneticisi; yük operasyonları, emniyet ekipmanları, ISM/ISPS kayıtları.",
+        rank: "Birinci Zabit (Chief Officer / C/O)",
+        responsibility:
+          "Güverte departmanının amiri; yük operasyonları, emniyet ekipmanları, ISM ve ISPS uygulamaları ile kayıtların yönetimi.",
         reportsTo: "Kaptan",
         alwaysDuties: [
           "Güverte emniyet turu ve çalışma izinlerinin (PTW) kontrolü",
@@ -56,8 +58,9 @@ export const crewHierarchy: CrewGroup[] = [
       },
       {
         slug: "ikinci-zabit",
-        rank: "İkinci Zabit (Second Officer)",
-        responsibility: "Seyir planı, harita ve yayınların güncellemesi, köprüüstü vardiyaları, GMDSS sorumlusu.",
+        rank: "İkinci Zabit (Second Officer / 2/O)",
+        responsibility:
+          "Seyir planlaması, harita ve nautikal yayınların güncellenmesi, köprüüstü vardiyaları ve GMDSS sorumluluğu.",
         reportsTo: "Kaptan",
         alwaysDuties: [
           "GMDSS teçhizatının günlük kontrolleri ve seyir uyarılarının takibi",
@@ -74,7 +77,8 @@ export const crewHierarchy: CrewGroup[] = [
       {
         slug: "ucuncu-zabit",
         rank: "Üçüncü Zabit (Third Officer / 3/O)",
-        responsibility: "Operasyonel sorumluluğu olan zabit; bağımsız vardiya, navigasyon ve emniyet yönetimi.",
+        responsibility:
+          "Bağımsız vardiya tutan güverte zabiti; navigasyon, emniyet ekipmanları ve acil durum hazırlıkları.",
         reportsTo: "Birinci Zabit",
         alwaysDuties: [
           "08–12 / 20–24 vardiyalarında bağımsız köprüüstü nöbeti; yoğun trafik ve kısıtlı sularda Master'ı zamanında çağırma",
@@ -90,7 +94,8 @@ export const crewHierarchy: CrewGroup[] = [
       {
         slug: "dorduncu-zabit",
         rank: "Dördüncü Zabit (Fourth Officer / 4/O)",
-        responsibility: "En junior güverte zabiti; öğrenme ve destek ağırlıklı temel vardiya ve emniyet görevleri.",
+        responsibility:
+          "Güverte departmanındaki en kıdemsiz zabit; temel seyir vardiyaları ve emniyet görevlerini yerine getirir. (Her gemide bulunması zorunlu değildir.)",
         reportsTo: "Kaptan veya Birinci Zabit",
         alwaysDuties: [
           "00–04 / 12–16 vardiyalarında kaptan veya C/O gözetiminde vardiya tutma; radar/ECDIS/ARPA kullanımı ve logbook kaydı",
@@ -122,8 +127,9 @@ export const crewHierarchy: CrewGroup[] = [
       },
       {
         slug: "ustagemici",
-        rank: "Usta Gemici & Gemiciler",
-        responsibility: "Güverte vardiyaları, halat operasyonu, yük güverte güvenlik ve bakım işleri.",
+        rank: "Usta Gemici & Gemiciler (AB / OS)",
+        responsibility:
+          "Güverte vardiyaları, halat ve bağlama operasyonları, yük güvertesi emniyeti ve bakım işleri.",
         reportsTo: "Reis",
         alwaysDuties: [
           "Vardiya sırasında çevre güvenliği, seyir nöbetleri ve lookout görevlerinin yürütülmesi",
@@ -139,8 +145,9 @@ export const crewHierarchy: CrewGroup[] = [
       },
       {
         slug: "guverte-stajyer",
-        rank: "Stajyer Zabiti / Güverte Stajyeri",
-        responsibility: "Seyir ve operasyon süreçlerine destek; eğitim amaçlı görevler.",
+        rank: "Güverte Stajyeri (Deck Cadet)",
+        responsibility:
+          "Eğitim amaçlı görev yapar; seyir, vardiya ve operasyonlara gözetim altında katılır. Yetki ve imza sorumluluğu yoktur.",
         reportsTo: "Kaptan",
         alwaysDuties: [
           "Eğitmen zabit gözetiminde vardiya disiplinine ve emniyet kurallarına uymak",
@@ -158,13 +165,14 @@ export const crewHierarchy: CrewGroup[] = [
   },
   {
     department: "Makine / Teknik",
-    focus: "Ana makine, yardımcı sistemler ve enerji yönetimi",
-    colorCode: "MAKİNE",
+    focus: "Ana makine, yardımcı makineler ve enerji sistemleri",
+    colorCode: "Makine",
     roles: [
       {
         slug: "bas-muhendis",
         rank: "Baş Mühendis (Chief Engineer)",
-        responsibility: "Makine departmanı amiri; enerji, bakım stratejisi ve emniyetli operasyon.",
+        responsibility:
+          "Makine departmanının amiri; enerji yönetimi, bakım planlaması ve emniyetli teknik operasyonlardan sorumludur.",
         reportsTo: "Kaptan",
         alwaysDuties: [
           "Ana makine, yardımcı sistemler ve emniyet cihazlarının çalışma sürekliliğinin sağlanması",
@@ -181,7 +189,8 @@ export const crewHierarchy: CrewGroup[] = [
       {
         slug: "ikinci-muhendis",
         rank: "İkinci Mühendis (Second Engineer)",
-        responsibility: "Günlük makina operasyonu, PMS uygulamaları, yakıt transferi ve teknik raporlama.",
+        responsibility:
+          "Günlük makine operasyonları, PMS uygulamaları, yakıt ve yağ transferleri ile teknik raporlamalar.",
         reportsTo: "Baş Mühendis",
         alwaysDuties: [
           "Vardiya devri öncesi ekipman kontrolleri ve yağlama/güvenlik sistemlerinin doğrulanması",
@@ -198,7 +207,8 @@ export const crewHierarchy: CrewGroup[] = [
       {
         slug: "ucuncu-muhendis",
         rank: "Üçüncü/Dördüncü Mühendis",
-        responsibility: "Aux makineler, kazan, safra ve seperatör bakımları; vardiya mühendisliği.",
+        responsibility:
+          "Yardımcı makineler, kazan, safra sistemleri ve separatörlerin bakımı; vardiya mühendisliği.",
         reportsTo: "İkinci Mühendis",
         alwaysDuties: [
           "Vardiya sırasında makine parametrelerinin izlenmesi ve anormalliklerin raporlanması",
@@ -215,7 +225,8 @@ export const crewHierarchy: CrewGroup[] = [
       {
         slug: "eto",
         rank: "Elektrik Zabiti (ETO)",
-        responsibility: "Elektrik-elektronik sistemler, köprüüstü cihazları, alarm ve otomasyon bakımı.",
+        responsibility:
+          "Elektrik ve elektronik sistemler, köprüüstü cihazları, alarm ve otomasyon sistemlerinin bakımı.",
         reportsTo: "Baş Mühendis",
         alwaysDuties: [
           "Güç dağıtım panoları ve acil güç kaynaklarının emniyetli durumda tutulması",
@@ -232,7 +243,7 @@ export const crewHierarchy: CrewGroup[] = [
       {
         slug: "yagci-fitter",
         rank: "Yağcı / Fitter / Silici",
-        responsibility: "Makine dairesi vardiyaları, yağlama ve bakım işleri, kaynak ve metal işleri desteği.",
+        responsibility: "Makine dairesi vardiyaları, yağlama, mekanik bakım ve metal işlerine destek.",
         reportsTo: "İkinci Mühendis",
         alwaysDuties: [
           "Vardiya sırasında yağlama devreleri, sızıntılar ve sıcaklıkların kontrolü",
@@ -248,8 +259,9 @@ export const crewHierarchy: CrewGroup[] = [
       },
       {
         slug: "makine-stajyer",
-        rank: "Makine Stajyeri",
-        responsibility: "Makine vardiyalarına destek, sistem kontrolleri ve bakım süreçlerine katılım.",
+        rank: "Makine Stajyeri (Engine Cadet)",
+        responsibility:
+          "Makine vardiyalarına destek verir; bakım ve sistem kontrollerine eğitim amaçlı katılır.",
         reportsTo: "Baş Mühendis",
         alwaysDuties: [
           "Gözetmen mühendis eşliğinde vardiya güvenliği ve LOTO kurallarına uymak",
@@ -267,8 +279,8 @@ export const crewHierarchy: CrewGroup[] = [
   },
   {
     department: "İkmal / Yaşam Mahalli",
-    focus: "Kumanya, ikmal, gemi içi düzen ve mürettebat hizmetleri",
-    colorCode: "IKMAL",
+    focus: "Gemi içi yaşam, kumanya ve mürettebat hizmetleri",
+    colorCode: "İKMAL",
     roles: [
       {
         slug: "asci",
@@ -302,23 +314,6 @@ export const crewHierarchy: CrewGroup[] = [
           "Yemek servisi hazırlıkları, bulaşık ve depo düzeninin sağlanması",
           "Çamaşırhane ve sarf malzeme stok takibinin yapılması",
           "Tatbikatlarda muster istasyonlarına katılım ve misafir yönetiminde destek",
-        ],
-      },
-      {
-        slug: "yagli-vardiya-destek",
-        rank: "Yağlı Vardiya Destekleri",
-        responsibility: "Can salları, yangın ekipmanı ve acil durum istasyonları için ikmal desteği.",
-        reportsTo: "Birinci Zabit",
-        alwaysDuties: [
-          "Acil durum istasyonlarındaki ekipmanların eksiksiz ve kullanılabilir olduğunun kontrolü",
-          "İkmal sırasında sıcak çalışma ve yükleme güvenliği prosedürlerine uyum",
-          "Kişisel koruyucu donanımların doğru kullanımının sağlanması",
-        ],
-        generalTasks: [
-          "Yangın hortumları, nozüller, can salı ve can yeleği malzemelerinin ikmaline destek",
-          "Depolama alanlarının düzeni, raf ve kutu etiketlerinin takibi",
-          "Tatbikatlarda ekipman hazırlığı ve dağıtımında yardım",
-          "Emniyet ekipman envanterlerinin güncellenmesine katkı",
         ],
       },
     ],

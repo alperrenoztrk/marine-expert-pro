@@ -749,7 +749,7 @@ export default function CalculationsMenu() {
               <div className="flex flex-col gap-1 text-center">
                 <h2 className="text-lg font-bold text-foreground">Gemi Personeli Hiyerarşisi</h2>
                 <p className="text-xs text-muted-foreground">
-                  Köprüüstü, makine, güverte ve ikmal ekiplerini hiyerarşik sırayla görüntüleyin.
+                  Köprüüstü, makine ve ikmal departmanlarında görev yapan gemi personelinin hiyerarşik yapısı.
                 </p>
               </div>
 
