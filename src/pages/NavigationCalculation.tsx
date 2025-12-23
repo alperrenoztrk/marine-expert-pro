@@ -13,18 +13,45 @@ import {
   calculateRhumbLine,
   calculatePlaneSailing,
   calculateEtaHours,
+  solveSpeedDistanceTime,
+  knotsToKmh,
+  kmhToKnots,
+  knotsToMs,
+  msToKnots,
+  calculateEtaUtc,
+  hoursToHhMm,
+  calculateRemaining,
   solveCurrentTriangle,
   calculateCompassTotalError,
+  convertTVMDCFromCompass,
+  convertTVMDCFromTrue,
   computeArpaCpaTcpa,
   calculateSightReduction,
+  calculateMiddleLatitudeSailing,
+  chartCmToNm,
+  chartNmToCm,
+  calculateDeadReckoning,
+  calculateFixFromTwoBearings,
+  calculateRunningFix,
+  computeTargetMotionFromTwoRadarPlots,
+  assessColregSituation,
   calculateDoublingAngle,
   calculateFourPointBearing,
   calculateSevenPointBearing,
   calculateDistance,
   calculateTide,
+  calculateHeightOfTideAtTime,
+  estimateSquatBarrass,
+  calculateUKC,
   calculateTurning,
   calculateWeather,
   calculateCelestial,
+  calculateCrossTrackDistance,
+  calculateLookAheadDistance,
+  correctSextantAltitude,
+  computeSunInterceptSight,
+  generateDailySunAlmanac,
+  generateSightReductionTable,
   calculateEmergency,
   type PlaneSailingInput,
   type CurrentTriangleInput,
@@ -44,13 +71,23 @@ type CalcId =
   | "rhumb"
   | "plane"
   | "eta"
+  | "midlat"
+  | "chart"
+  | "position"
   | "current"
   | "compass"
   | "cpa"
+  | "radar"
+  | "colreg"
   | "sight"
+  | "astro"
   | "bearings"
+  | "fix"
   | "distance"
   | "tides"
+  | "safety"
+  | "passage"
+  | "ecdis"
   | "turning"
   | "weather"
   | "celestial"
@@ -60,14 +97,24 @@ const CALC_TITLES: Record<CalcId, string> = {
   gc: "Büyük Daire (Great Circle)",
   rhumb: "Rhumb Line (Mercator)",
   plane: "Plane Sailing",
-  eta: "Zaman ve ETA",
+  eta: "Temel Seyir (Zaman–Mesafe–Hız)",
+  midlat: "Middle Latitude Sailing",
+  chart: "Chart Ölçeği (cm ↔ NM)",
+  position: "DR / Enlem–Boylam",
   current: "Akıntı Üçgeni (CTS)",
   compass: "Pusula Dönüşümleri",
   cpa: "CPA / TCPA",
+  radar: "Radar Plot (Hedef Rota/Hız)",
+  colreg: "COLREG Durum & Manevra",
   sight: "Sight Reduction",
+  astro: "Astronomik Seyir (Almanac + LOP)",
   bearings: "Kerteriz Hesaplamaları",
+  fix: "Fixing Position",
   distance: "Mesafe Hesaplamaları",
-  tides: "Gelgit Hesaplamaları",
+  tides: "Gelgit + UKC",
+  safety: "Seyir Emniyeti (Squat/UKC)",
+  passage: "Passage Plan (Leg ETA)",
+  ecdis: "ECDIS (XTD / Look-ahead)",
   turning: "Dönüş Hesaplamaları",
   weather: "Hava Durumu",
   celestial: "Göksel Navigasyon",
@@ -109,6 +156,40 @@ export default function NavigationCalculationPage() {
   const [etaInputs, setEtaInputs] = useState({ distance: "", speed: "" });
   const [etaResults, setEtaResults] = useState<any>(null);
 
+  // Temel seyir (1️⃣): d/t/v, unit conversions, ETD->ETA, remaining
+  const [basicInputs, setBasicInputs] = useState({
+    distanceNm: "",
+    speedKn: "",
+    timeHours: "",
+    convertValue: "",
+    convertFrom: "kn" as "kn" | "kmh" | "ms",
+    convertTo: "kmh" as "kn" | "kmh" | "ms",
+    etdUtc: "",
+    plannedTotalNm: "",
+    dmgNm: "",
+    sogKn: "",
+  });
+  const [basicResults, setBasicResults] = useState<any>(null);
+
+  const [midlatInputs, setMidlatInputs] = useState({
+    lat1: emptyDMS(true),
+    lon1: emptyDMS(false),
+    lat2: emptyDMS(true),
+    lon2: emptyDMS(false),
+  });
+  const [midlatResults, setMidlatResults] = useState<any>(null);
+
+  const [chartInputs, setChartInputs] = useState({ lengthCm: "", scale: "", distanceNm: "" });
+  const [chartResults, setChartResults] = useState<any>(null);
+
+  const [positionInputs, setPositionInputs] = useState({
+    startLat: emptyDMS(true),
+    startLon: emptyDMS(false),
+    courseTrue: "",
+    distanceNm: "",
+  });
+  const [positionResults, setPositionResults] = useState<any>(null);
+
   const [currentInputs, setCurrentInputs] = useState({ course: "", speed: "", set: "", drift: "" });
   const [currentResults, setCurrentResults] = useState<any>(null);
 
@@ -125,6 +206,24 @@ export default function NavigationCalculationPage() {
   });
   const [sightResults, setSightResults] = useState<any>(null);
 
+  const [astroInputs, setAstroInputs] = useState({
+    apLat: emptyDMS(true),
+    apLon: emptyDMS(false),
+    dateUtc: "",
+    hsDeg: "",
+    icMin: "",
+    heM: "",
+    pressureHPa: "",
+    tempC: "",
+    tableLat: emptyDMS(true),
+    tableDec: emptyDMS(true),
+    lhaStart: "0",
+    lhaEnd: "90",
+    lhaStep: "1",
+    almanacDateUtc: "",
+  });
+  const [astroResults, setAstroResults] = useState<any>(null);
+
   const [bearingInputs, setBearingInputs] = useState({ angle: "", run: "", type: "doubling" as "doubling" | "four" | "seven" });
   const [bearingResults, setBearingResults] = useState<any>(null);
 
@@ -135,6 +234,96 @@ export default function NavigationCalculationPage() {
   const [tideTableInputs, setTideTableInputs] = useState({ lowTide: "", highTide: "", lowTideTime: "06:00" });
   const [tideTable, setTideTable] = useState<Array<{ time: string; height: number; change: number; status: string }>>([]);
   const [tideResults, setTideResults] = useState<any>(null);
+
+  const [tideHotInputs, setTideHotInputs] = useState({
+    lwTimeUtc: "",
+    lwHeightM: "",
+    hwTimeUtc: "",
+    hwHeightM: "",
+    queryTimeUtc: "",
+  });
+  const [tideHotResults, setTideHotResults] = useState<any>(null);
+
+  const [ukcInputs, setUkcInputs] = useState({
+    chartedDepthM: "",
+    draftM: "",
+    safetyMarginM: "",
+    speedKn: "",
+    blockCoeff: "0.70",
+    environment: "open" as "open" | "confined",
+  });
+  const [ukcResults, setUkcResults] = useState<any>(null);
+
+  const [safetyInputs, setSafetyInputs] = useState({
+    chartedDepthM: "",
+    tideM: "",
+    draftM: "",
+    speedKn: "",
+    blockCoeff: "0.70",
+    environment: "open" as "open" | "confined",
+    safetyMarginM: "",
+  });
+  const [safetyResults, setSafetyResults] = useState<any>(null);
+
+  const [fixInputs, setFixInputs] = useState({
+    obj1Lat: emptyDMS(true),
+    obj1Lon: emptyDMS(false),
+    brg1: "",
+    obj2Lat: emptyDMS(true),
+    obj2Lon: emptyDMS(false),
+    brg2: "",
+    runObjOldLat: emptyDMS(true),
+    runObjOldLon: emptyDMS(false),
+    runBrg1: "",
+    runObjNewLat: emptyDMS(true),
+    runObjNewLon: emptyDMS(false),
+    runBrg2: "",
+    runCourse: "",
+    runDistance: "",
+  });
+  const [fixResults, setFixResults] = useState<any>(null);
+
+  const [radarInputs2, setRadarInputs2] = useState({
+    bearing1: "",
+    range1: "",
+    time1Utc: "",
+    bearing2: "",
+    range2: "",
+    time2Utc: "",
+    ownCourse: "",
+    ownSpeed: "",
+  });
+  const [radarResults2, setRadarResults2] = useState<any>(null);
+
+  const [colregInputs, setColregInputs] = useState({
+    relativeBearing: "",
+  });
+  const [colregResults, setColregResults] = useState<any>(null);
+
+  const [passageInputs, setPassageInputs] = useState({
+    etdUtc: "",
+    leg1Dist: "",
+    leg1Sog: "",
+    leg2Dist: "",
+    leg2Sog: "",
+    leg3Dist: "",
+    leg3Sog: "",
+    leg4Dist: "",
+    leg4Sog: "",
+  });
+  const [passageResults, setPassageResults] = useState<any>(null);
+
+  const [ecdisInputs, setEcdisInputs] = useState({
+    startLat: emptyDMS(true),
+    startLon: emptyDMS(false),
+    endLat: emptyDMS(true),
+    endLon: emptyDMS(false),
+    posLat: emptyDMS(true),
+    posLon: emptyDMS(false),
+    sogKn: "",
+    lookAheadMin: "",
+  });
+  const [ecdisResults, setEcdisResults] = useState<any>(null);
 
   const [turningInputs, setTurningInputs] = useState({ length: "", courseChange: "", speed: "" });
   const [turningResults, setTurningResults] = useState<any>(null);
@@ -173,6 +362,16 @@ export default function NavigationCalculationPage() {
               break;
             case "eta":
               if (data.etaInputs) setEtaInputs(data.etaInputs);
+              if (data.basicInputs) setBasicInputs(data.basicInputs);
+              break;
+            case "midlat":
+              if (data.midlatInputs) setMidlatInputs(data.midlatInputs);
+              break;
+            case "chart":
+              if (data.chartInputs) setChartInputs(data.chartInputs);
+              break;
+            case "position":
+              if (data.positionInputs) setPositionInputs(data.positionInputs);
               break;
             case "current":
               if (data.currentInputs) setCurrentInputs(data.currentInputs);
@@ -183,11 +382,23 @@ export default function NavigationCalculationPage() {
             case "cpa":
               if (data.cpaInputs) setCpaInputs(data.cpaInputs);
               break;
+            case "radar":
+              if (data.radarInputs2) setRadarInputs2(data.radarInputs2);
+              break;
+            case "colreg":
+              if (data.colregInputs) setColregInputs(data.colregInputs);
+              break;
             case "sight":
               if (data.sightInputs) setSightInputs(data.sightInputs);
               break;
+            case "astro":
+              if (data.astroInputs) setAstroInputs(data.astroInputs);
+              break;
             case "bearings":
               if (data.bearingInputs) setBearingInputs(data.bearingInputs);
+              break;
+            case "fix":
+              if (data.fixInputs) setFixInputs(data.fixInputs);
               break;
             case "distance":
               if (data.distanceInputs) setDistanceInputs(data.distanceInputs);
@@ -195,6 +406,17 @@ export default function NavigationCalculationPage() {
             case "tides":
               if (data.tideInputs) setTideInputs(data.tideInputs);
               if (data.tideTableInputs) setTideTableInputs(data.tideTableInputs);
+              if (data.tideHotInputs) setTideHotInputs(data.tideHotInputs);
+              if (data.ukcInputs) setUkcInputs(data.ukcInputs);
+              break;
+            case "safety":
+              if (data.safetyInputs) setSafetyInputs(data.safetyInputs);
+              break;
+            case "passage":
+              if (data.passageInputs) setPassageInputs(data.passageInputs);
+              break;
+            case "ecdis":
+              if (data.ecdisInputs) setEcdisInputs(data.ecdisInputs);
               break;
             case "turning":
               if (data.turningInputs) setTurningInputs(data.turningInputs);
@@ -235,6 +457,16 @@ export default function NavigationCalculationPage() {
           break;
         case "eta":
           dataToSave.etaInputs = etaInputs;
+          dataToSave.basicInputs = basicInputs;
+          break;
+        case "midlat":
+          dataToSave.midlatInputs = midlatInputs;
+          break;
+        case "chart":
+          dataToSave.chartInputs = chartInputs;
+          break;
+        case "position":
+          dataToSave.positionInputs = positionInputs;
           break;
         case "current":
           dataToSave.currentInputs = currentInputs;
@@ -245,11 +477,23 @@ export default function NavigationCalculationPage() {
         case "cpa":
           dataToSave.cpaInputs = cpaInputs;
           break;
+        case "radar":
+          dataToSave.radarInputs2 = radarInputs2;
+          break;
+        case "colreg":
+          dataToSave.colregInputs = colregInputs;
+          break;
         case "sight":
           dataToSave.sightInputs = sightInputs;
           break;
+        case "astro":
+          dataToSave.astroInputs = astroInputs;
+          break;
         case "bearings":
           dataToSave.bearingInputs = bearingInputs;
+          break;
+        case "fix":
+          dataToSave.fixInputs = fixInputs;
           break;
         case "distance":
           dataToSave.distanceInputs = distanceInputs;
@@ -257,6 +501,17 @@ export default function NavigationCalculationPage() {
         case "tides":
           dataToSave.tideInputs = tideInputs;
           dataToSave.tideTableInputs = tideTableInputs;
+          dataToSave.tideHotInputs = tideHotInputs;
+          dataToSave.ukcInputs = ukcInputs;
+          break;
+        case "safety":
+          dataToSave.safetyInputs = safetyInputs;
+          break;
+        case "passage":
+          dataToSave.passageInputs = passageInputs;
+          break;
+        case "ecdis":
+          dataToSave.ecdisInputs = ecdisInputs;
           break;
         case "turning":
           dataToSave.turningInputs = turningInputs;
@@ -276,8 +531,10 @@ export default function NavigationCalculationPage() {
     } catch (error) {
       console.error("Error saving inputs:", error);
     }
-  }, [id, gcInputs, rhumbInputs, planeInputs, etaInputs, currentInputs, compassInputs, 
-      cpaInputs, sightInputs, bearingInputs, distanceInputs, tideInputs, tideTableInputs,
+  }, [id, gcInputs, rhumbInputs, planeInputs, etaInputs, basicInputs, midlatInputs, chartInputs, positionInputs,
+      currentInputs, compassInputs, cpaInputs, radarInputs2, colregInputs, sightInputs, astroInputs,
+      bearingInputs, fixInputs, distanceInputs, tideInputs, tideTableInputs, tideHotInputs, ukcInputs,
+      safetyInputs, passageInputs, ecdisInputs,
       turningInputs, weatherInputs, celestialInputs, emergencyInputs]);
 
   const onCalculate = () => {
@@ -314,9 +571,98 @@ export default function NavigationCalculationPage() {
           setPlaneResults(result);
           break;
         }
+        case "midlat": {
+          const input: PlaneSailingInput = {
+            lat1Deg: dmsToDecimal(midlatInputs.lat1),
+            lon1Deg: dmsToDecimal(midlatInputs.lon1),
+            lat2Deg: dmsToDecimal(midlatInputs.lat2),
+            lon2Deg: dmsToDecimal(midlatInputs.lon2),
+          };
+          const result = calculateMiddleLatitudeSailing(input);
+          setMidlatResults(result);
+          break;
+        }
+        case "chart": {
+          const lengthCm = chartInputs.lengthCm ? parseFloat(chartInputs.lengthCm) : undefined;
+          const scale = chartInputs.scale ? parseFloat(chartInputs.scale) : undefined;
+          const distanceNm = chartInputs.distanceNm ? parseFloat(chartInputs.distanceNm) : undefined;
+          const out: any = {};
+          if (lengthCm !== undefined && scale !== undefined) {
+            out.nmFromCm = chartCmToNm(lengthCm, scale);
+          }
+          if (distanceNm !== undefined && scale !== undefined) {
+            out.cmFromNm = chartNmToCm(distanceNm, scale);
+          }
+          setChartResults(out);
+          break;
+        }
+        case "position": {
+          const startLat = dmsToDecimal(positionInputs.startLat);
+          const startLon = dmsToDecimal(positionInputs.startLon);
+          const courseTrueDeg = parseFloat(positionInputs.courseTrue);
+          const distanceNm = parseFloat(positionInputs.distanceNm);
+          const dest = calculateDeadReckoning({
+            start: { latDeg: startLat, lonDeg: startLon },
+            courseTrueDeg,
+            distanceNm,
+          });
+          setPositionResults(dest);
+          break;
+        }
         case "eta": {
-          const hours = calculateEtaHours(parseFloat(etaInputs.distance), parseFloat(etaInputs.speed));
-          setEtaResults({ hours, hoursMinutes: `${Math.floor(hours)}h ${Math.round((hours % 1) * 60)}m` });
+          const toNum = (v: string) => (v.trim() === "" ? undefined : parseFloat(v));
+          const sdt = solveSpeedDistanceTime({
+            distanceNm: toNum(basicInputs.distanceNm),
+            speedKn: toNum(basicInputs.speedKn),
+            timeHours: toNum(basicInputs.timeHours),
+          });
+          const hhmm = hoursToHhMm(sdt.timeHours);
+
+          // Unit conversion
+          const cv = toNum(basicInputs.convertValue);
+          let converted: number | null = null;
+          if (cv !== undefined) {
+            const from = basicInputs.convertFrom;
+            const to = basicInputs.convertTo;
+            const asKn =
+              from === "kn" ? cv :
+              from === "kmh" ? kmhToKnots(cv) :
+              msToKnots(cv);
+            converted =
+              to === "kn" ? asKn :
+              to === "kmh" ? knotsToKmh(asKn) :
+              knotsToMs(asKn);
+          }
+
+          // ETD->ETA (UTC, datetime-local is treated as UTC by adding Z)
+          let etaUtcIso: string | null = null;
+          if (basicInputs.etdUtc.trim() !== "" && isFinite(sdt.distanceNm) && isFinite(sdt.speedKn) && sdt.speedKn > 0) {
+            const etd = new Date(`${basicInputs.etdUtc}Z`);
+            if (!isNaN(etd.getTime())) {
+              etaUtcIso = calculateEtaUtc({ distanceNm: sdt.distanceNm, speedKn: sdt.speedKn, etdUtc: etd }).toISOString();
+            }
+          }
+
+          // Remaining
+          let remaining: any = null;
+          const plannedTotal = toNum(basicInputs.plannedTotalNm);
+          const dmg = toNum(basicInputs.dmgNm);
+          const sog = toNum(basicInputs.sogKn);
+          if (plannedTotal !== undefined && dmg !== undefined && sog !== undefined) {
+            remaining = calculateRemaining({ plannedTotalDistanceNm: plannedTotal, distanceMadeGoodNm: dmg, currentSogKn: sog });
+          }
+
+          setBasicResults({
+            solved: sdt,
+            timeHhMm: hhmm,
+            converted,
+            etaUtcIso,
+            remaining,
+          });
+          setEtaResults({
+            hours: sdt.timeHours,
+            hoursMinutes: `${hhmm.hh}h ${hhmm.mm}m`,
+          });
           break;
         }
         case "current": {
@@ -336,9 +682,19 @@ export default function NavigationCalculationPage() {
             parseFloat(compassInputs.deviation)
           );
           const compass = parseFloat(compassInputs.compass);
+          const tvmdcFromCompass = convertTVMDCFromCompass({
+            courseDeg: compass,
+            variationDeg: parseFloat(compassInputs.variation || "0"),
+            deviationDeg: parseFloat(compassInputs.deviation || "0"),
+          });
+          const tvmdcFromTrue = convertTVMDCFromTrue({
+            courseDeg: tvmdcFromCompass.trueDeg,
+            variationDeg: parseFloat(compassInputs.variation || "0"),
+            deviationDeg: parseFloat(compassInputs.deviation || "0"),
+          });
           setCompassResults({
-            magnetic: compass + parseFloat(compassInputs.deviation || "0"),
-            true: compass + parseFloat(compassInputs.variation || "0") + parseFloat(compassInputs.deviation || "0"),
+            ...tvmdcFromCompass,
+            check: tvmdcFromTrue,
             totalError: result.totalErrorDeg,
           });
           break;
@@ -356,6 +712,32 @@ export default function NavigationCalculationPage() {
           setCpaResults(result);
           break;
         }
+        case "radar": {
+          const t1 = new Date(`${radarInputs2.time1Utc}Z`);
+          const t2 = new Date(`${radarInputs2.time2Utc}Z`);
+          const result = computeTargetMotionFromTwoRadarPlots({
+            plot1: {
+              bearingTrueDeg: parseFloat(radarInputs2.bearing1),
+              rangeNm: parseFloat(radarInputs2.range1),
+              timeUtc: t1,
+            },
+            plot2: {
+              bearingTrueDeg: parseFloat(radarInputs2.bearing2),
+              rangeNm: parseFloat(radarInputs2.range2),
+              timeUtc: t2,
+            },
+            ownCourseTrueDeg: parseFloat(radarInputs2.ownCourse),
+            ownSpeedKn: parseFloat(radarInputs2.ownSpeed),
+          });
+          setRadarResults2(result);
+          break;
+        }
+        case "colreg": {
+          const rb = parseFloat(colregInputs.relativeBearing);
+          const result = assessColregSituation(rb);
+          setColregResults(result);
+          break;
+        }
         case "sight": {
           const input: SightReductionInput = {
             latDeg: dmsToDecimal(sightInputs.lat),
@@ -364,6 +746,46 @@ export default function NavigationCalculationPage() {
           };
           const result = calculateSightReduction(input);
           setSightResults(result);
+          break;
+        }
+        case "astro": {
+          const dateUtc = new Date(`${astroInputs.dateUtc}Z`);
+          const almanacDate = astroInputs.almanacDateUtc.trim() ? new Date(`${astroInputs.almanacDateUtc}T00:00Z`) : dateUtc;
+
+          const hsDeg = parseFloat(astroInputs.hsDeg);
+          const icMin = astroInputs.icMin.trim() ? parseFloat(astroInputs.icMin) : 0;
+          const heM = astroInputs.heM.trim() ? parseFloat(astroInputs.heM) : 0;
+          const pressureHPa = astroInputs.pressureHPa.trim() ? parseFloat(astroInputs.pressureHPa) : 1010;
+          const tempC = astroInputs.tempC.trim() ? parseFloat(astroInputs.tempC) : 10;
+
+          const corr = correctSextantAltitude({
+            hsDeg,
+            indexCorrectionMin: icMin,
+            heightOfEyeM: heM,
+            pressureHPa,
+            temperatureC: tempC,
+          });
+
+          const intercept = computeSunInterceptSight({
+            assumedPosition: {
+              latDeg: dmsToDecimal(astroInputs.apLat),
+              lonDeg: dmsToDecimal(astroInputs.apLon),
+            },
+            dateUtc,
+            hoDeg: corr.hoDeg,
+            body: "sun",
+          });
+
+          const almanacRows = generateDailySunAlmanac(almanacDate);
+          const table = generateSightReductionTable(
+            dmsToDecimal(astroInputs.tableLat),
+            dmsToDecimal(astroInputs.tableDec),
+            parseFloat(astroInputs.lhaStart),
+            parseFloat(astroInputs.lhaEnd),
+            parseFloat(astroInputs.lhaStep)
+          );
+
+          setAstroResults({ correction: corr, intercept, almanacRows, table });
           break;
         }
         case "bearings": {
@@ -386,6 +808,24 @@ export default function NavigationCalculationPage() {
           setBearingResults(result);
           break;
         }
+        case "fix": {
+          const fix = calculateFixFromTwoBearings({
+            object1: { latDeg: dmsToDecimal(fixInputs.obj1Lat), lonDeg: dmsToDecimal(fixInputs.obj1Lon) },
+            bearingToObject1TrueDeg: parseFloat(fixInputs.brg1),
+            object2: { latDeg: dmsToDecimal(fixInputs.obj2Lat), lonDeg: dmsToDecimal(fixInputs.obj2Lon) },
+            bearingToObject2TrueDeg: parseFloat(fixInputs.brg2),
+          });
+          const running = calculateRunningFix({
+            objectOld: { latDeg: dmsToDecimal(fixInputs.runObjOldLat), lonDeg: dmsToDecimal(fixInputs.runObjOldLon) },
+            bearing1TrueDeg: parseFloat(fixInputs.runBrg1),
+            objectNew: { latDeg: dmsToDecimal(fixInputs.runObjNewLat), lonDeg: dmsToDecimal(fixInputs.runObjNewLon) },
+            bearing2TrueDeg: parseFloat(fixInputs.runBrg2),
+            runCourseTrueDeg: parseFloat(fixInputs.runCourse),
+            runDistanceNm: parseFloat(fixInputs.runDistance),
+          });
+          setFixResults({ fix, running });
+          break;
+        }
         case "distance": {
           const input: DistanceCalculationInput = {
             heightM: parseFloat(distanceInputs.height),
@@ -403,6 +843,84 @@ export default function NavigationCalculationPage() {
           };
           const result = calculateTide(input);
           setTideResults(result);
+
+          // Height of Tide at time (HW/LW)
+          try {
+            if (tideHotInputs.lwTimeUtc && tideHotInputs.hwTimeUtc && tideHotInputs.queryTimeUtc) {
+              const hot = calculateHeightOfTideAtTime({
+                lowWaterTimeUtc: new Date(`${tideHotInputs.lwTimeUtc}Z`),
+                lowWaterHeightM: parseFloat(tideHotInputs.lwHeightM),
+                highWaterTimeUtc: new Date(`${tideHotInputs.hwTimeUtc}Z`),
+                highWaterHeightM: parseFloat(tideHotInputs.hwHeightM),
+                queryTimeUtc: new Date(`${tideHotInputs.queryTimeUtc}Z`),
+              });
+              setTideHotResults(hot);
+
+              const squatM = estimateSquatBarrass({
+                speedKn: ukcInputs.speedKn ? parseFloat(ukcInputs.speedKn) : 0,
+                blockCoefficient: ukcInputs.blockCoeff ? parseFloat(ukcInputs.blockCoeff) : 0.7,
+                environment: ukcInputs.environment,
+              });
+              const ukc = calculateUKC({
+                chartedDepthM: parseFloat(ukcInputs.chartedDepthM),
+                heightOfTideM: hot.heightM,
+                draftM: parseFloat(ukcInputs.draftM),
+                squatM,
+                safetyMarginM: ukcInputs.safetyMarginM ? parseFloat(ukcInputs.safetyMarginM) : 0,
+              });
+              setUkcResults({ squatM, ...ukc });
+            }
+          } catch (e) {
+            // ignore HOT/UKC errors
+          }
+          break;
+        }
+        case "safety": {
+          const squatM = estimateSquatBarrass({
+            speedKn: parseFloat(safetyInputs.speedKn),
+            blockCoefficient: safetyInputs.blockCoeff ? parseFloat(safetyInputs.blockCoeff) : 0.7,
+            environment: safetyInputs.environment,
+          });
+          const ukc = calculateUKC({
+            chartedDepthM: parseFloat(safetyInputs.chartedDepthM),
+            heightOfTideM: parseFloat(safetyInputs.tideM),
+            draftM: parseFloat(safetyInputs.draftM),
+            squatM,
+            safetyMarginM: safetyInputs.safetyMarginM ? parseFloat(safetyInputs.safetyMarginM) : 0,
+          });
+          setSafetyResults({ squatM, ...ukc });
+          break;
+        }
+        case "passage": {
+          const etd = new Date(`${passageInputs.etdUtc}Z`);
+          const legs = [
+            { dist: passageInputs.leg1Dist, sog: passageInputs.leg1Sog, name: "Leg 1" },
+            { dist: passageInputs.leg2Dist, sog: passageInputs.leg2Sog, name: "Leg 2" },
+            { dist: passageInputs.leg3Dist, sog: passageInputs.leg3Sog, name: "Leg 3" },
+            { dist: passageInputs.leg4Dist, sog: passageInputs.leg4Sog, name: "Leg 4" },
+          ].filter((l) => l.dist.trim() !== "" && l.sog.trim() !== "");
+
+          let t = etd.getTime();
+          const rows = legs.map((l) => {
+            const d = parseFloat(l.dist);
+            const sog = parseFloat(l.sog);
+            const hours = d / sog;
+            const startIso = new Date(t).toISOString();
+            t += hours * 60 * 60 * 1000;
+            const etaIso = new Date(t).toISOString();
+            return { name: l.name, distanceNm: d, sogKn: sog, durationHours: hours, startIso, etaIso };
+          });
+          setPassageResults({ rows, etdIso: etd.toISOString(), totalDistanceNm: rows.reduce((a, r) => a + r.distanceNm, 0) });
+          break;
+        }
+        case "ecdis": {
+          const xtd = calculateCrossTrackDistance({
+            legStart: { latDeg: dmsToDecimal(ecdisInputs.startLat), lonDeg: dmsToDecimal(ecdisInputs.startLon) },
+            legEnd: { latDeg: dmsToDecimal(ecdisInputs.endLat), lonDeg: dmsToDecimal(ecdisInputs.endLon) },
+            position: { latDeg: dmsToDecimal(ecdisInputs.posLat), lonDeg: dmsToDecimal(ecdisInputs.posLon) },
+          });
+          const look = calculateLookAheadDistance(parseFloat(ecdisInputs.sogKn), parseFloat(ecdisInputs.lookAheadMin));
+          setEcdisResults({ xtd, look });
           break;
         }
         case "turning": {
@@ -597,16 +1115,193 @@ export default function NavigationCalculationPage() {
             />
           </div>
         );
+      case "midlat":
+        return (
+          <div className="space-y-4">
+            <CoordinateInput
+              id="ml-lat1"
+              label="Başlangıç Enlemi"
+              value={midlatInputs.lat1}
+              onChange={(val) => setMidlatInputs({ ...midlatInputs, lat1: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="ml-lon1"
+              label="Başlangıç Boylamı"
+              value={midlatInputs.lon1}
+              onChange={(val) => setMidlatInputs({ ...midlatInputs, lon1: val })}
+              isLatitude={false}
+            />
+            <CoordinateInput
+              id="ml-lat2"
+              label="Hedef Enlemi"
+              value={midlatInputs.lat2}
+              onChange={(val) => setMidlatInputs({ ...midlatInputs, lat2: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="ml-lon2"
+              label="Hedef Boylamı"
+              value={midlatInputs.lon2}
+              onChange={(val) => setMidlatInputs({ ...midlatInputs, lon2: val })}
+              isLatitude={false}
+            />
+          </div>
+        );
+      case "chart":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="chart-cm">Haritada Uzunluk (cm)</Label>
+                <Input
+                  id="chart-cm"
+                  type="number"
+                  placeholder="3.5"
+                  value={chartInputs.lengthCm}
+                  onChange={(e) => setChartInputs({ ...chartInputs, lengthCm: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="chart-scale">Ölçek Paydası (1:xxxx)</Label>
+                <Input
+                  id="chart-scale"
+                  type="number"
+                  placeholder="50000"
+                  value={chartInputs.scale}
+                  onChange={(e) => setChartInputs({ ...chartInputs, scale: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="chart-nm">Mesafe (NM)</Label>
+                <Input
+                  id="chart-nm"
+                  type="number"
+                  placeholder="12"
+                  value={chartInputs.distanceNm}
+                  onChange={(e) => setChartInputs({ ...chartInputs, distanceNm: e.target.value })}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground flex items-end">
+                1 NM = 185200 cm, cm↔NM dönüşümü için ölçek zorunludur.
+              </div>
+            </div>
+          </div>
+        );
+      case "position":
+        return (
+          <div className="space-y-4">
+            <CoordinateInput
+              id="dr-lat"
+              label="Başlangıç Enlemi"
+              value={positionInputs.startLat}
+              onChange={(val) => setPositionInputs({ ...positionInputs, startLat: val })}
+              isLatitude={true}
+            />
+            <CoordinateInput
+              id="dr-lon"
+              label="Başlangıç Boylamı"
+              value={positionInputs.startLon}
+              onChange={(val) => setPositionInputs({ ...positionInputs, startLon: val })}
+              isLatitude={false}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="dr-course">Kurs (True, °)</Label>
+                <Input id="dr-course" type="number" value={positionInputs.courseTrue} onChange={(e) => setPositionInputs({ ...positionInputs, courseTrue: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="dr-distance">Mesafe (NM)</Label>
+                <Input id="dr-distance" type="number" value={positionInputs.distanceNm} onChange={(e) => setPositionInputs({ ...positionInputs, distanceNm: e.target.value })} />
+              </div>
+            </div>
+          </div>
+        );
       case "eta":
         return (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="eta-distance">Mesafe (nm)</Label>
-              <Input id="eta-distance" type="number" placeholder="" value={etaInputs.distance} onChange={(e) => setEtaInputs({ ...etaInputs, distance: e.target.value })} />
+          <div className="space-y-4">
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Hız – Mesafe – Zaman</div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="b-distance">Mesafe (NM)</Label>
+                  <Input id="b-distance" type="number" value={basicInputs.distanceNm} onChange={(e) => setBasicInputs({ ...basicInputs, distanceNm: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="b-speed">Hız (kn)</Label>
+                  <Input id="b-speed" type="number" value={basicInputs.speedKn} onChange={(e) => setBasicInputs({ ...basicInputs, speedKn: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="b-time">Zaman (saat)</Label>
+                  <Input id="b-time" type="number" value={basicInputs.timeHours} onChange={(e) => setBasicInputs({ ...basicInputs, timeHours: e.target.value })} />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">3 değerden 2’sini girin, diğeri hesaplanır.</div>
             </div>
-            <div>
-              <Label htmlFor="eta-speed">Hız (knot)</Label>
-              <Input id="eta-speed" type="number" placeholder="" value={etaInputs.speed} onChange={(e) => setEtaInputs({ ...etaInputs, speed: e.target.value })} />
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Knot ↔ km/h ↔ m/s</div>
+              <div className="grid grid-cols-3 gap-4 items-end">
+                <div>
+                  <Label htmlFor="b-conv-value">Değer</Label>
+                  <Input id="b-conv-value" type="number" value={basicInputs.convertValue} onChange={(e) => setBasicInputs({ ...basicInputs, convertValue: e.target.value })} />
+                </div>
+                <div>
+                  <Label>From</Label>
+                  <Select value={basicInputs.convertFrom} onValueChange={(v) => setBasicInputs({ ...basicInputs, convertFrom: v as any })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="kn">kn</SelectItem>
+                      <SelectItem value="kmh">km/h</SelectItem>
+                      <SelectItem value="ms">m/s</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>To</Label>
+                  <Select value={basicInputs.convertTo} onValueChange={(v) => setBasicInputs({ ...basicInputs, convertTo: v as any })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="kn">kn</SelectItem>
+                      <SelectItem value="kmh">km/h</SelectItem>
+                      <SelectItem value="ms">m/s</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">ETD → ETA (UTC)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="b-etd">ETD (UTC)</Label>
+                  <Input id="b-etd" type="datetime-local" value={basicInputs.etdUtc} onChange={(e) => setBasicInputs({ ...basicInputs, etdUtc: e.target.value })} />
+                </div>
+                <div className="text-xs text-muted-foreground flex items-end">
+                  Mesafe/Hız yukarıdan kullanılır.
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Remaining Time / Remaining Distance</div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="b-total">Planlanan Toplam (NM)</Label>
+                  <Input id="b-total" type="number" value={basicInputs.plannedTotalNm} onChange={(e) => setBasicInputs({ ...basicInputs, plannedTotalNm: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="b-dmg">DMG (NM)</Label>
+                  <Input id="b-dmg" type="number" value={basicInputs.dmgNm} onChange={(e) => setBasicInputs({ ...basicInputs, dmgNm: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="b-sog">SOG (kn)</Label>
+                  <Input id="b-sog" type="number" value={basicInputs.sogKn} onChange={(e) => setBasicInputs({ ...basicInputs, sogKn: e.target.value })} />
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -677,6 +1372,70 @@ export default function NavigationCalculationPage() {
             </div>
           </div>
         );
+      case "radar":
+        return (
+          <div className="space-y-4">
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Plot 1 (UTC)</div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="r1-bearing">Bearing T (°)</Label>
+                  <Input id="r1-bearing" type="number" value={radarInputs2.bearing1} onChange={(e) => setRadarInputs2({ ...radarInputs2, bearing1: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="r1-range">Range (NM)</Label>
+                  <Input id="r1-range" type="number" value={radarInputs2.range1} onChange={(e) => setRadarInputs2({ ...radarInputs2, range1: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="r1-time">Time (UTC)</Label>
+                  <Input id="r1-time" type="datetime-local" value={radarInputs2.time1Utc} onChange={(e) => setRadarInputs2({ ...radarInputs2, time1Utc: e.target.value })} />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Plot 2 (UTC)</div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="r2-bearing">Bearing T (°)</Label>
+                  <Input id="r2-bearing" type="number" value={radarInputs2.bearing2} onChange={(e) => setRadarInputs2({ ...radarInputs2, bearing2: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="r2-range">Range (NM)</Label>
+                  <Input id="r2-range" type="number" value={radarInputs2.range2} onChange={(e) => setRadarInputs2({ ...radarInputs2, range2: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="r2-time">Time (UTC)</Label>
+                  <Input id="r2-time" type="datetime-local" value={radarInputs2.time2Utc} onChange={(e) => setRadarInputs2({ ...radarInputs2, time2Utc: e.target.value })} />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30">
+              <div className="text-sm font-semibold mb-3">Own Ship</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="r-own-course">Course T (°)</Label>
+                  <Input id="r-own-course" type="number" value={radarInputs2.ownCourse} onChange={(e) => setRadarInputs2({ ...radarInputs2, ownCourse: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="r-own-speed">Speed (kn)</Label>
+                  <Input id="r-own-speed" type="number" value={radarInputs2.ownSpeed} onChange={(e) => setRadarInputs2({ ...radarInputs2, ownSpeed: e.target.value })} />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case "colreg":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="colreg-rb">Relative Bearing (°) (0=pruva, 90=sancak beam)</Label>
+              <Input id="colreg-rb" type="number" value={colregInputs.relativeBearing} onChange={(e) => setColregInputs({ ...colregInputs, relativeBearing: e.target.value })} />
+            </div>
+            <div className="text-xs text-muted-foreground">Bu ekran hızlı sınıflama içindir; nihai COLREG kararı AIS/ARPA/ışıklar ve çevre şartlarıyla teyit edilmelidir.</div>
+          </div>
+        );
       case "sight":
         return (
           <div className="space-y-4">
@@ -697,6 +1456,76 @@ export default function NavigationCalculationPage() {
             <div>
               <Label htmlFor="sight-lha" data-translatable>LHA (°)</Label>
               <Input id="sight-lha" type="number" placeholder="" value={sightInputs.lha} onChange={(e) => setSightInputs({ ...sightInputs, lha: e.target.value })} />
+            </div>
+          </div>
+        );
+      case "astro":
+        return (
+          <div className="space-y-4">
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Nautical Almanac (Sun) – UTC</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="astro-date">Sight zamanı (UTC)</Label>
+                  <Input id="astro-date" type="datetime-local" value={astroInputs.dateUtc} onChange={(e) => setAstroInputs({ ...astroInputs, dateUtc: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-alm-date">Günlük Almanac tarihi (UTC)</Label>
+                  <Input id="astro-alm-date" type="date" value={astroInputs.almanacDateUtc} onChange={(e) => setAstroInputs({ ...astroInputs, almanacDateUtc: e.target.value })} />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Assumed Position (AP)</div>
+              <CoordinateInput id="astro-ap-lat" label="AP Enlem" value={astroInputs.apLat} onChange={(val) => setAstroInputs({ ...astroInputs, apLat: val })} isLatitude={true} />
+              <CoordinateInput id="astro-ap-lon" label="AP Boylam" value={astroInputs.apLon} onChange={(val) => setAstroInputs({ ...astroInputs, apLon: val })} isLatitude={false} />
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Sextant (Hs → Ho)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="astro-hs">Hs (°)</Label>
+                  <Input id="astro-hs" type="number" value={astroInputs.hsDeg} onChange={(e) => setAstroInputs({ ...astroInputs, hsDeg: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-ic">IC (′) (index correction)</Label>
+                  <Input id="astro-ic" type="number" value={astroInputs.icMin} onChange={(e) => setAstroInputs({ ...astroInputs, icMin: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-he">Height of eye (m)</Label>
+                  <Input id="astro-he" type="number" value={astroInputs.heM} onChange={(e) => setAstroInputs({ ...astroInputs, heM: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-p">Pressure (hPa)</Label>
+                  <Input id="astro-p" type="number" value={astroInputs.pressureHPa} onChange={(e) => setAstroInputs({ ...astroInputs, pressureHPa: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-t">Temp (°C)</Label>
+                  <Input id="astro-t" type="number" value={astroInputs.tempC} onChange={(e) => setAstroInputs({ ...astroInputs, tempC: e.target.value })} />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Sight Reduction Table (Hc/Zn)</div>
+              <CoordinateInput id="astro-tab-lat" label="Lat (° ′) (table)" value={astroInputs.tableLat} onChange={(val) => setAstroInputs({ ...astroInputs, tableLat: val })} isLatitude={true} />
+              <CoordinateInput id="astro-tab-dec" label="Dec (° ′) (table)" value={astroInputs.tableDec} onChange={(val) => setAstroInputs({ ...astroInputs, tableDec: val })} isLatitude={true} />
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="astro-lha-start">LHA start (°)</Label>
+                  <Input id="astro-lha-start" type="number" value={astroInputs.lhaStart} onChange={(e) => setAstroInputs({ ...astroInputs, lhaStart: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-lha-end">LHA end (°)</Label>
+                  <Input id="astro-lha-end" type="number" value={astroInputs.lhaEnd} onChange={(e) => setAstroInputs({ ...astroInputs, lhaEnd: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="astro-lha-step">Step (°)</Label>
+                  <Input id="astro-lha-step" type="number" value={astroInputs.lhaStep} onChange={(e) => setAstroInputs({ ...astroInputs, lhaStep: e.target.value })} />
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -725,6 +1554,64 @@ export default function NavigationCalculationPage() {
             <div>
               <Label htmlFor="bearing-run">Koşulan Mesafe (nm)</Label>
               <Input id="bearing-run" type="number" placeholder="" value={bearingInputs.run} onChange={(e) => setBearingInputs({ ...bearingInputs, run: e.target.value })} />
+            </div>
+          </div>
+        );
+      case "fix":
+        return (
+          <div className="space-y-6">
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">İki Kerterizle Fix</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <CoordinateInput id="fix-obj1-lat" label="Object 1 Lat" value={fixInputs.obj1Lat} onChange={(val) => setFixInputs({ ...fixInputs, obj1Lat: val })} isLatitude={true} />
+                  <CoordinateInput id="fix-obj1-lon" label="Object 1 Lon" value={fixInputs.obj1Lon} onChange={(val) => setFixInputs({ ...fixInputs, obj1Lon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="fix-brg1">Bearing to Object 1 (True, °)</Label>
+                    <Input id="fix-brg1" type="number" value={fixInputs.brg1} onChange={(e) => setFixInputs({ ...fixInputs, brg1: e.target.value })} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <CoordinateInput id="fix-obj2-lat" label="Object 2 Lat" value={fixInputs.obj2Lat} onChange={(val) => setFixInputs({ ...fixInputs, obj2Lat: val })} isLatitude={true} />
+                  <CoordinateInput id="fix-obj2-lon" label="Object 2 Lon" value={fixInputs.obj2Lon} onChange={(val) => setFixInputs({ ...fixInputs, obj2Lon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="fix-brg2">Bearing to Object 2 (True, °)</Label>
+                    <Input id="fix-brg2" type="number" value={fixInputs.brg2} onChange={(e) => setFixInputs({ ...fixInputs, brg2: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Running Fix (Taşınmış Kerteriz)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <CoordinateInput id="run-obj1-lat" label="Object (t1) Lat" value={fixInputs.runObjOldLat} onChange={(val) => setFixInputs({ ...fixInputs, runObjOldLat: val })} isLatitude={true} />
+                  <CoordinateInput id="run-obj1-lon" label="Object (t1) Lon" value={fixInputs.runObjOldLon} onChange={(val) => setFixInputs({ ...fixInputs, runObjOldLon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="run-brg1">Bearing (t1) True (°)</Label>
+                    <Input id="run-brg1" type="number" value={fixInputs.runBrg1} onChange={(e) => setFixInputs({ ...fixInputs, runBrg1: e.target.value })} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <CoordinateInput id="run-obj2-lat" label="Object (t2) Lat" value={fixInputs.runObjNewLat} onChange={(val) => setFixInputs({ ...fixInputs, runObjNewLat: val })} isLatitude={true} />
+                  <CoordinateInput id="run-obj2-lon" label="Object (t2) Lon" value={fixInputs.runObjNewLon} onChange={(val) => setFixInputs({ ...fixInputs, runObjNewLon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="run-brg2">Bearing (t2) True (°)</Label>
+                    <Input id="run-brg2" type="number" value={fixInputs.runBrg2} onChange={(e) => setFixInputs({ ...fixInputs, runBrg2: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="run-course">Run Course True (°)</Label>
+                  <Input id="run-course" type="number" value={fixInputs.runCourse} onChange={(e) => setFixInputs({ ...fixInputs, runCourse: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="run-distance">Run Distance (NM)</Label>
+                  <Input id="run-distance" type="number" value={fixInputs.runDistance} onChange={(e) => setFixInputs({ ...fixInputs, runDistance: e.target.value })} />
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -791,6 +1678,70 @@ export default function NavigationCalculationPage() {
               </div>
             </div>
 
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">HW / LW → Height of Tide (UTC)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="hot-lw-time">LW Time (UTC)</Label>
+                  <Input id="hot-lw-time" type="datetime-local" value={tideHotInputs.lwTimeUtc} onChange={(e) => setTideHotInputs({ ...tideHotInputs, lwTimeUtc: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="hot-lw-h">LW Height (m)</Label>
+                  <Input id="hot-lw-h" type="number" value={tideHotInputs.lwHeightM} onChange={(e) => setTideHotInputs({ ...tideHotInputs, lwHeightM: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="hot-hw-time">HW Time (UTC)</Label>
+                  <Input id="hot-hw-time" type="datetime-local" value={tideHotInputs.hwTimeUtc} onChange={(e) => setTideHotInputs({ ...tideHotInputs, hwTimeUtc: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="hot-hw-h">HW Height (m)</Label>
+                  <Input id="hot-hw-h" type="number" value={tideHotInputs.hwHeightM} onChange={(e) => setTideHotInputs({ ...tideHotInputs, hwHeightM: e.target.value })} />
+                </div>
+                <div className="col-span-2">
+                  <Label htmlFor="hot-q-time">Query Time (UTC)</Label>
+                  <Input id="hot-q-time" type="datetime-local" value={tideHotInputs.queryTimeUtc} onChange={(e) => setTideHotInputs({ ...tideHotInputs, queryTimeUtc: e.target.value })} />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Rule of Twelfths eğrisi ile yaklaşık “height of tide” üretir.</div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">UKC (Squat + Tide + Draft)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="ukc-depth">Charted Depth (m)</Label>
+                  <Input id="ukc-depth" type="number" value={ukcInputs.chartedDepthM} onChange={(e) => setUkcInputs({ ...ukcInputs, chartedDepthM: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ukc-draft">Draft (m)</Label>
+                  <Input id="ukc-draft" type="number" value={ukcInputs.draftM} onChange={(e) => setUkcInputs({ ...ukcInputs, draftM: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ukc-speed">Speed (kn)</Label>
+                  <Input id="ukc-speed" type="number" value={ukcInputs.speedKn} onChange={(e) => setUkcInputs({ ...ukcInputs, speedKn: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ukc-cb">Block Coefficient (Cb)</Label>
+                  <Input id="ukc-cb" type="number" value={ukcInputs.blockCoeff} onChange={(e) => setUkcInputs({ ...ukcInputs, blockCoeff: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ukc-env">Environment</Label>
+                  <Select value={ukcInputs.environment} onValueChange={(v) => setUkcInputs({ ...ukcInputs, environment: v as any })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="open">Open</SelectItem>
+                      <SelectItem value="confined">Confined</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="ukc-safety">Safety Margin (m)</Label>
+                  <Input id="ukc-safety" type="number" value={ukcInputs.safetyMarginM} onChange={(e) => setUkcInputs({ ...ukcInputs, safetyMarginM: e.target.value })} />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Height of Tide sonucu yukarıdaki HW/LW hesaplamasından alınır.</div>
+            </div>
+
             {tideTable.length > 0 && (
               <div className="rounded border p-3 bg-muted/30">
                 <h4 className="font-semibold mb-3">12 Saatlik Gelgit Tablosu</h4>
@@ -818,6 +1769,117 @@ export default function NavigationCalculationPage() {
                 </div>
               </div>
             )}
+          </div>
+        );
+      case "safety":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="safe-depth">Charted Depth (m)</Label>
+                <Input id="safe-depth" type="number" value={safetyInputs.chartedDepthM} onChange={(e) => setSafetyInputs({ ...safetyInputs, chartedDepthM: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="safe-tide">Tide (m)</Label>
+                <Input id="safe-tide" type="number" value={safetyInputs.tideM} onChange={(e) => setSafetyInputs({ ...safetyInputs, tideM: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="safe-draft">Draft (m)</Label>
+                <Input id="safe-draft" type="number" value={safetyInputs.draftM} onChange={(e) => setSafetyInputs({ ...safetyInputs, draftM: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="safe-speed">Speed (kn)</Label>
+                <Input id="safe-speed" type="number" value={safetyInputs.speedKn} onChange={(e) => setSafetyInputs({ ...safetyInputs, speedKn: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="safe-cb">Cb</Label>
+                <Input id="safe-cb" type="number" value={safetyInputs.blockCoeff} onChange={(e) => setSafetyInputs({ ...safetyInputs, blockCoeff: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="safe-env">Environment</Label>
+                <Select value={safetyInputs.environment} onValueChange={(v) => setSafetyInputs({ ...safetyInputs, environment: v as any })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="open">Open</SelectItem>
+                    <SelectItem value="confined">Confined</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="safe-margin">Safety Margin (m)</Label>
+                <Input id="safe-margin" type="number" value={safetyInputs.safetyMarginM} onChange={(e) => setSafetyInputs({ ...safetyInputs, safetyMarginM: e.target.value })} />
+              </div>
+            </div>
+          </div>
+        );
+      case "passage":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="pp-etd">ETD (UTC)</Label>
+              <Input id="pp-etd" type="datetime-local" value={passageInputs.etdUtc} onChange={(e) => setPassageInputs({ ...passageInputs, etdUtc: e.target.value })} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="pp-l1d">Leg 1 Distance (NM)</Label>
+                <Input id="pp-l1d" type="number" value={passageInputs.leg1Dist} onChange={(e) => setPassageInputs({ ...passageInputs, leg1Dist: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l1s">Leg 1 SOG (kn)</Label>
+                <Input id="pp-l1s" type="number" value={passageInputs.leg1Sog} onChange={(e) => setPassageInputs({ ...passageInputs, leg1Sog: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l2d">Leg 2 Distance (NM)</Label>
+                <Input id="pp-l2d" type="number" value={passageInputs.leg2Dist} onChange={(e) => setPassageInputs({ ...passageInputs, leg2Dist: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l2s">Leg 2 SOG (kn)</Label>
+                <Input id="pp-l2s" type="number" value={passageInputs.leg2Sog} onChange={(e) => setPassageInputs({ ...passageInputs, leg2Sog: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l3d">Leg 3 Distance (NM)</Label>
+                <Input id="pp-l3d" type="number" value={passageInputs.leg3Dist} onChange={(e) => setPassageInputs({ ...passageInputs, leg3Dist: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l3s">Leg 3 SOG (kn)</Label>
+                <Input id="pp-l3s" type="number" value={passageInputs.leg3Sog} onChange={(e) => setPassageInputs({ ...passageInputs, leg3Sog: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l4d">Leg 4 Distance (NM)</Label>
+                <Input id="pp-l4d" type="number" value={passageInputs.leg4Dist} onChange={(e) => setPassageInputs({ ...passageInputs, leg4Dist: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="pp-l4s">Leg 4 SOG (kn)</Label>
+                <Input id="pp-l4s" type="number" value={passageInputs.leg4Sog} onChange={(e) => setPassageInputs({ ...passageInputs, leg4Sog: e.target.value })} />
+              </div>
+            </div>
+          </div>
+        );
+      case "ecdis":
+        return (
+          <div className="space-y-4">
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Leg</div>
+              <CoordinateInput id="ecdis-slat" label="Start Lat" value={ecdisInputs.startLat} onChange={(val) => setEcdisInputs({ ...ecdisInputs, startLat: val })} isLatitude={true} />
+              <CoordinateInput id="ecdis-slon" label="Start Lon" value={ecdisInputs.startLon} onChange={(val) => setEcdisInputs({ ...ecdisInputs, startLon: val })} isLatitude={false} />
+              <CoordinateInput id="ecdis-elat" label="End Lat" value={ecdisInputs.endLat} onChange={(val) => setEcdisInputs({ ...ecdisInputs, endLat: val })} isLatitude={true} />
+              <CoordinateInput id="ecdis-elon" label="End Lon" value={ecdisInputs.endLon} onChange={(val) => setEcdisInputs({ ...ecdisInputs, endLon: val })} isLatitude={false} />
+            </div>
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Position</div>
+              <CoordinateInput id="ecdis-plat" label="Pos Lat" value={ecdisInputs.posLat} onChange={(val) => setEcdisInputs({ ...ecdisInputs, posLat: val })} isLatitude={true} />
+              <CoordinateInput id="ecdis-plon" label="Pos Lon" value={ecdisInputs.posLon} onChange={(val) => setEcdisInputs({ ...ecdisInputs, posLon: val })} isLatitude={false} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="ecdis-sog">SOG (kn)</Label>
+                <Input id="ecdis-sog" type="number" value={ecdisInputs.sogKn} onChange={(e) => setEcdisInputs({ ...ecdisInputs, sogKn: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="ecdis-look">Look-ahead (min)</Label>
+                <Input id="ecdis-look" type="number" value={ecdisInputs.lookAheadMin} onChange={(e) => setEcdisInputs({ ...ecdisInputs, lookAheadMin: e.target.value })} />
+              </div>
+            </div>
           </div>
         );
       case "turning":
@@ -977,10 +2039,28 @@ export default function NavigationCalculationPage() {
             <pre className="font-mono text-sm leading-6">{`Sonuç:\ndLat: ${planeResults.dLatMin.toFixed(2)} dk\nDeparture: ${planeResults.depMin.toFixed(2)} dk\nKerteriz: ${planeResults.courseDeg.toFixed(1)}°\nMesafe: ${planeResults.distanceNm.toFixed(2)} nm`}</pre>
           )
         );
+      case "midlat":
+        return (
+          midlatResults && (
+            <pre className="font-mono text-sm leading-6">{`Sonuç:\nMean Lat: ${midlatResults.meanLatDeg.toFixed(4)}°\ndLat: ${midlatResults.dLatMin.toFixed(2)}′\ndLong: ${midlatResults.dLongMin.toFixed(2)}′\nDeparture: ${midlatResults.departureMin.toFixed(2)}′\nKurs: ${midlatResults.courseDeg.toFixed(1)}°\nMesafe: ${midlatResults.distanceNm.toFixed(2)} NM`}</pre>
+          )
+        );
+      case "chart":
+        return (
+          chartResults && (
+            <pre className="font-mono text-sm leading-6">{`Sonuç:\n${chartResults.nmFromCm !== undefined ? `cm → NM: ${chartResults.nmFromCm.toFixed(3)} NM\n` : ""}${chartResults.cmFromNm !== undefined ? `NM → cm: ${chartResults.cmFromNm.toFixed(2)} cm` : ""}`}</pre>
+          )
+        );
+      case "position":
+        return (
+          positionResults && (
+            <pre className="font-mono text-sm leading-6">{`DR Sonucu:\nLat: ${formatDecimalAsDMS(positionResults.latDeg, true)}\nLon: ${formatDecimalAsDMS(positionResults.lonDeg, false)}`}</pre>
+          )
+        );
       case "eta":
         return (
-          etaResults && (
-            <pre className="font-mono text-sm leading-6">{`Sonuç:\nSüre: ${etaResults.hoursMinutes}\nSaat: ${etaResults.hours.toFixed(2)} saat`}</pre>
+          basicResults && (
+            <pre className="font-mono text-sm leading-6">{`Sonuç:\nMesafe: ${basicResults.solved.distanceNm.toFixed(2)} NM\nHız: ${basicResults.solved.speedKn.toFixed(2)} kn\nZaman: ${basicResults.solved.timeHours.toFixed(3)} h (${basicResults.timeHhMm.hh}h ${basicResults.timeHhMm.mm}m)\n${basicResults.converted !== null ? `\nDönüşüm: ${basicResults.converted.toFixed(4)}` : ""}${basicResults.etaUtcIso ? `\nETA (UTC): ${basicResults.etaUtcIso}` : ""}${basicResults.remaining ? `\n\nKalan Mesafe: ${basicResults.remaining.remainingDistanceNm.toFixed(2)} NM\nKalan Süre: ${basicResults.remaining.remainingTimeHours.toFixed(2)} h` : ""}`}</pre>
           )
         );
       case "current":
@@ -992,7 +2072,7 @@ export default function NavigationCalculationPage() {
       case "compass":
         return (
           compassResults && (
-            <pre className="font-mono text-sm leading-6">{`Sonuç:\nManyetik Kerteriz: ${compassResults.magnetic.toFixed(1)}°\nGerçek Kerteriz: ${compassResults.true.toFixed(1)}°\nToplam Hata: ${compassResults.totalError.toFixed(1)}°`}</pre>
+            <pre className="font-mono text-sm leading-6">{`Sonuç (TVMDC):\nCompass: ${compassResults.compassDeg.toFixed(1)}°\nMagnetic: ${compassResults.magneticDeg.toFixed(1)}°\nTrue: ${compassResults.trueDeg.toFixed(1)}°\nCompass Error (Var+Dev): ${compassResults.compassErrorDeg.toFixed(1)}°\nToplam Hata: ${compassResults.totalError.toFixed(1)}°`}</pre>
           )
         );
       case "cpa":
@@ -1001,16 +2081,91 @@ export default function NavigationCalculationPage() {
             <pre className="font-mono text-sm leading-6">{`Sonuç:\nCPA Mesafesi: ${cpaResults.cpaNm.toFixed(2)} nm\nTCPA: ${cpaResults.tcpaMin.toFixed(1)} dk`}</pre>
           )
         );
+      case "radar":
+        return (
+          radarResults2 && (
+            <pre className="font-mono text-sm leading-6">{`Sonuç:\nRelative Course: ${radarResults2.relativeCourseDeg.toFixed(1)}°\nRelative Speed: ${radarResults2.relativeSpeedKn.toFixed(2)} kn\n\nTarget Course (T): ${radarResults2.targetCourseTrueDeg.toFixed(1)}°\nTarget Speed: ${radarResults2.targetSpeedKn.toFixed(2)} kn\n\nCPA: ${radarResults2.cpaNm.toFixed(2)} NM\nTCPA: ${radarResults2.tcpaMin.toFixed(1)} min`}</pre>
+          )
+        );
+      case "colreg":
+        return (
+          colregResults && (
+            <pre className="font-mono text-sm leading-6">{`COLREG Quick Check:\nSituation: ${colregResults.situation}\nGive-way: ${colregResults.isGiveWay === null ? "—" : colregResults.isGiveWay ? "Yes" : "No"}\nNote: ${colregResults.note}`}</pre>
+          )
+        );
       case "sight":
         return (
           sightResults && (
             <pre className="font-mono text-sm leading-6">{`Sonuç:\nHesaplanan Yükseklik: ${sightResults.hcDeg.toFixed(2)}°\nAzimut: ${sightResults.azimuthDeg.toFixed(1)}°`}</pre>
           )
         );
+      case "astro":
+        return (
+          astroResults && (
+            <div className="space-y-3">
+              <pre className="font-mono text-sm leading-6">{`Sextant Correction:\nHa: ${astroResults.correction.haDeg.toFixed(4)}°\nHo: ${astroResults.correction.hoDeg.toFixed(4)}°\nDip: ${astroResults.correction.dipMin.toFixed(2)}′\nRefraction: ${astroResults.correction.refractionMin.toFixed(2)}′\n\nSun Almanac / Sight:\nGHA: ${astroResults.intercept.ghaDeg.toFixed(2)}°\nDec: ${astroResults.intercept.decDeg.toFixed(2)}°\nLHA: ${astroResults.intercept.lhaDeg.toFixed(2)}°\nHc: ${astroResults.intercept.hcDeg.toFixed(2)}°\nZn: ${astroResults.intercept.znDeg.toFixed(1)}°\nIntercept: ${astroResults.intercept.interceptNm.toFixed(2)} NM (${astroResults.intercept.towardAway})`}</pre>
+              <div className="rounded border p-3 bg-muted/30">
+                <div className="text-sm font-semibold mb-2">Daily Sun Almanac (UTC, hourly)</div>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">UTC</th>
+                        <th className="text-left p-2">GHA Sun</th>
+                        <th className="text-left p-2">Dec Sun</th>
+                        <th className="text-left p-2">GHA Aries</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {astroResults.almanacRows.slice(0, 24).map((r: any) => (
+                        <tr key={r.utcHour} className="border-b">
+                          <td className="p-2 font-mono">{String(r.utcHour).padStart(2, "0")}:00</td>
+                          <td className="p-2 font-mono">{r.ghaSunDeg.toFixed(2)}°</td>
+                          <td className="p-2 font-mono">{r.decSunDeg.toFixed(2)}°</td>
+                          <td className="p-2 font-mono">{r.ghaAriesDeg.toFixed(2)}°</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="rounded border p-3 bg-muted/30">
+                <div className="text-sm font-semibold mb-2">Sight Reduction Table (sample)</div>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">LHA</th>
+                        <th className="text-left p-2">Hc</th>
+                        <th className="text-left p-2">Zn</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {astroResults.table.slice(0, 60).map((row: any, i: number) => (
+                        <tr key={i} className="border-b">
+                          <td className="p-2 font-mono">{row.lhaDeg.toFixed(0)}°</td>
+                          <td className="p-2 font-mono">{row.hcDeg.toFixed(2)}°</td>
+                          <td className="p-2 font-mono">{row.znDeg.toFixed(1)}°</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="text-xs text-muted-foreground mt-2">Not: HO-249/HO-229 tablo mantığı burada algoritmik üretilmiştir.</div>
+              </div>
+            </div>
+          )
+        );
       case "bearings":
         return (
           bearingResults && (
             <pre className="font-mono text-sm leading-6">{`Sonuç:\nMesafe Off: ${bearingResults.distanceOffNm.toFixed(2)} nm`}</pre>
+          )
+        );
+      case "fix":
+        return (
+          fixResults && (
+            <pre className="font-mono text-sm leading-6">{`İki Kerteriz Fix:\nLat: ${formatDecimalAsDMS(fixResults.fix.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.fix.fix.lonDeg, false)}\nIntersection angle: ${fixResults.fix.intersectionAngleDeg.toFixed(1)}°\n\nRunning Fix:\nLat: ${formatDecimalAsDMS(fixResults.running.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.running.fix.lonDeg, false)}\nIntersection angle: ${fixResults.running.intersectionAngleDeg.toFixed(1)}°`}</pre>
           )
         );
       case "distance":
@@ -1021,8 +2176,56 @@ export default function NavigationCalculationPage() {
         );
       case "tides":
         return (
-          tideResults && (
-            <pre className="font-mono text-sm leading-6">{`Sonuç (Rule of Twelfths):\nYükseklik: ${tideResults.heightM.toFixed(2)} m`}</pre>
+          (tideResults || tideHotResults || ukcResults) && (
+            <pre className="font-mono text-sm leading-6">{`Rule of Twelfths:\nYükseklik: ${tideResults?.heightM?.toFixed?.(2) ?? "—"} m\n\nHW/LW → Height of Tide:\n${tideHotResults ? `Height: ${tideHotResults.heightM.toFixed(2)} m\nStage: ${tideHotResults.stage}\n` : "—\n"}\nUKC:\n${ukcResults ? `Squat: ${ukcResults.squatM.toFixed(2)} m\nUKC: ${ukcResults.ukcM.toFixed(2)} m\nSafe: ${ukcResults.isSafe ? "Yes" : "No"}` : "—"}`}</pre>
+          )
+        );
+      case "safety":
+        return (
+          safetyResults && (
+            <pre className="font-mono text-sm leading-6">{`Squat: ${safetyResults.squatM.toFixed(2)} m\nUKC: ${safetyResults.ukcM.toFixed(2)} m\nSafe: ${safetyResults.isSafe ? "Yes" : "No"}`}</pre>
+          )
+        );
+      case "passage":
+        return (
+          passageResults && (
+            <div className="rounded border p-3 bg-muted/30">
+              <div className="text-sm font-semibold mb-2">Leg ETA (UTC)</div>
+              <div className="text-xs text-muted-foreground mb-2">ETD: <span className="font-mono">{passageResults.etdIso}</span></div>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-2">Leg</th>
+                      <th className="text-left p-2">Dist (NM)</th>
+                      <th className="text-left p-2">SOG (kn)</th>
+                      <th className="text-left p-2">Dur (h)</th>
+                      <th className="text-left p-2">Start</th>
+                      <th className="text-left p-2">ETA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {passageResults.rows.map((r: any) => (
+                      <tr key={r.name} className="border-b">
+                        <td className="p-2">{r.name}</td>
+                        <td className="p-2 font-mono">{r.distanceNm.toFixed(2)}</td>
+                        <td className="p-2 font-mono">{r.sogKn.toFixed(2)}</td>
+                        <td className="p-2 font-mono">{r.durationHours.toFixed(2)}</td>
+                        <td className="p-2 font-mono">{r.startIso}</td>
+                        <td className="p-2 font-mono">{r.etaIso}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">Toplam mesafe: <span className="font-mono">{passageResults.totalDistanceNm.toFixed(2)} NM</span></div>
+            </div>
+          )
+        );
+      case "ecdis":
+        return (
+          ecdisResults && (
+            <pre className="font-mono text-sm leading-6">{`XTD: ${ecdisResults.xtd.xtdNm.toFixed(3)} NM\nSide: ${ecdisResults.xtd.side}\nAlong-track: ${ecdisResults.xtd.alongTrackNm.toFixed(2)} NM\n\nLook-ahead distance: ${ecdisResults.look.lookAheadDistanceNm.toFixed(2)} NM`}</pre>
           )
         );
       case "turning":

@@ -534,3 +534,821 @@ export function calculateEmergency(input: EmergencyInput): EmergencyResult {
   return result;
 }
 
+// -----------------------------
+// Extended navigation utilities
+// -----------------------------
+
+export type SpeedUnit = "kn" | "kmh" | "ms";
+export type DistanceUnit = "nm" | "km" | "m";
+export type AngleSignConvention = "east-positive" | "west-positive";
+
+export type LatLon = { latDeg: number; lonDeg: number }; // lon: East positive, West negative
+
+export function knotsToKmh(kn: number): number {
+  return kn * 1.852;
+}
+
+export function kmhToKnots(kmh: number): number {
+  return kmh / 1.852;
+}
+
+export function knotsToMs(kn: number): number {
+  return kn * 0.514444;
+}
+
+export function msToKnots(ms: number): number {
+  return ms / 0.514444;
+}
+
+export function nmToKm(nm: number): number {
+  return nm * 1.852;
+}
+
+export function kmToNm(km: number): number {
+  return km / 1.852;
+}
+
+export function hoursToHhMm(hours: number): { hh: number; mm: number } {
+  if (!isFinite(hours)) return { hh: 0, mm: 0 };
+  const hh = Math.trunc(hours);
+  const mm = Math.round((hours - hh) * 60);
+  if (mm === 60) return { hh: hh + 1, mm: 0 };
+  return { hh, mm };
+}
+
+export type SpeedDistanceTimeInput = {
+  distanceNm?: number;
+  speedKn?: number;
+  timeHours?: number;
+};
+
+export type SpeedDistanceTimeResult = {
+  distanceNm: number;
+  speedKn: number;
+  timeHours: number;
+};
+
+export function solveSpeedDistanceTime(input: SpeedDistanceTimeInput): SpeedDistanceTimeResult {
+  const { distanceNm, speedKn, timeHours } = input;
+  const known = [distanceNm, speedKn, timeHours].filter((v) => v !== undefined && isFinite(v as number)).length;
+  if (known < 2) throw new Error("At least two values are required");
+
+  let d = distanceNm;
+  let v = speedKn;
+  let t = timeHours;
+
+  if (d === undefined || !isFinite(d)) {
+    if (v === undefined || !isFinite(v) || v <= 0) throw new Error("Speed must be > 0");
+    if (t === undefined || !isFinite(t) || t < 0) throw new Error("Time must be >= 0");
+    d = v * t;
+  } else if (v === undefined || !isFinite(v)) {
+    if (t === undefined || !isFinite(t) || t <= 0) throw new Error("Time must be > 0");
+    v = d / t;
+  } else if (t === undefined || !isFinite(t)) {
+    if (v <= 0) throw new Error("Speed must be > 0");
+    t = d / v;
+  }
+
+  return { distanceNm: d, speedKn: v, timeHours: t };
+}
+
+export type EtaEtdInput = {
+  distanceNm: number;
+  speedKn: number;
+  etdUtc: Date;
+};
+
+export function calculateEtaUtc({ distanceNm, speedKn, etdUtc }: EtaEtdInput): Date {
+  const hours = calculateEtaHours(distanceNm, speedKn);
+  return new Date(etdUtc.getTime() + hours * 60 * 60 * 1000);
+}
+
+export type RemainingInput = {
+  plannedTotalDistanceNm: number;
+  distanceMadeGoodNm: number;
+  currentSogKn: number;
+};
+
+export type RemainingResult = {
+  remainingDistanceNm: number;
+  remainingTimeHours: number;
+};
+
+export function calculateRemaining(input: RemainingInput): RemainingResult {
+  const remainingDistanceNm = Math.max(0, input.plannedTotalDistanceNm - input.distanceMadeGoodNm);
+  const remainingTimeHours = input.currentSogKn > 0 ? remainingDistanceNm / input.currentSogKn : Infinity;
+  return { remainingDistanceNm, remainingTimeHours };
+}
+
+export function calculateAverageSpeed(totalDistanceNm: number, totalTimeHours: number): number {
+  if (!isFinite(totalDistanceNm) || !isFinite(totalTimeHours) || totalTimeHours <= 0) {
+    throw new Error("Invalid total distance or time");
+  }
+  return totalDistanceNm / totalTimeHours;
+}
+
+export type DLatDLongResult = {
+  dLatMin: number;
+  dLongMinAtMeanLat: number;
+  dLatDir: "N" | "S";
+  dLongDir: "E" | "W";
+  meanLatDeg: number;
+};
+
+export function computeDLatDLong(lat1Deg: number, lon1Deg: number, lat2Deg: number, lon2Deg: number): DLatDLongResult {
+  const dLatDeg = lat2Deg - lat1Deg;
+  const dLonDeg = lon2Deg - lon1Deg;
+  const meanLatDeg = (lat1Deg + lat2Deg) / 2;
+  const dLatMin = Math.abs(dLatDeg * 60);
+  const dLongMinAtMeanLat = Math.abs(dLonDeg * 60 * Math.cos(toRadians(meanLatDeg)));
+  return {
+    dLatMin,
+    dLongMinAtMeanLat,
+    dLatDir: dLatDeg >= 0 ? "N" : "S",
+    dLongDir: dLonDeg >= 0 ? "E" : "W",
+    meanLatDeg,
+  };
+}
+
+export type MiddleLatitudeSailingResult = {
+  meanLatDeg: number;
+  dLatMin: number;
+  dLongMin: number;
+  departureMin: number;
+  courseDeg: number;
+  distanceNm: number;
+};
+
+export function calculateMiddleLatitudeSailing(input: PlaneSailingInput): MiddleLatitudeSailingResult {
+  const { lat1Deg, lon1Deg, lat2Deg, lon2Deg } = input;
+  const dLatMinSigned = 60 * (lat2Deg - lat1Deg);
+  const meanLatDeg = (lat1Deg + lat2Deg) / 2;
+  const dLongMinSigned = 60 * (lon2Deg - lon1Deg);
+  const departureMinSigned = dLongMinSigned * Math.cos(toRadians(meanLatDeg));
+  const courseDeg = normalizeAngle(toDegrees(Math.atan2(departureMinSigned, dLatMinSigned)));
+  const distanceNm = Math.sqrt(dLatMinSigned * dLatMinSigned + departureMinSigned * departureMinSigned);
+  return {
+    meanLatDeg,
+    dLatMin: dLatMinSigned,
+    dLongMin: dLongMinSigned,
+    departureMin: departureMinSigned,
+    courseDeg,
+    distanceNm,
+  };
+}
+
+export type DeadReckoningInput = {
+  start: LatLon;
+  courseTrueDeg: number;
+  distanceNm: number;
+};
+
+export function calculateDeadReckoning(input: DeadReckoningInput): LatLon {
+  const { start, courseTrueDeg, distanceNm } = input;
+  if (!isFinite(start.latDeg) || !isFinite(start.lonDeg) || !isFinite(courseTrueDeg) || !isFinite(distanceNm)) {
+    throw new Error("Invalid DR inputs");
+  }
+
+  const dLatDeg = (distanceNm * Math.cos(toRadians(courseTrueDeg))) / 60;
+  const meanLatDeg = start.latDeg + dLatDeg / 2;
+  const dLonDeg = (distanceNm * Math.sin(toRadians(courseTrueDeg))) / (60 * Math.cos(toRadians(meanLatDeg)));
+  return { latDeg: start.latDeg + dLatDeg, lonDeg: start.lonDeg + dLonDeg };
+}
+
+export function relativeToTrueBearing(headingTrueDeg: number, relativeBearingDeg: number): number {
+  return normalizeAngle(headingTrueDeg + relativeBearingDeg);
+}
+
+export type TVMDCInput = {
+  courseDeg: number;
+  variationDeg?: number; // East positive, West negative
+  deviationDeg?: number; // East positive, West negative
+};
+
+export type TVMDCResult = {
+  trueDeg: number;
+  magneticDeg: number;
+  compassDeg: number;
+  compassErrorDeg: number; // Var + Dev
+};
+
+export function convertTVMDCFromCompass(input: TVMDCInput): TVMDCResult {
+  const variationDeg = input.variationDeg ?? 0;
+  const deviationDeg = input.deviationDeg ?? 0;
+  const compassDeg = normalizeAngle(input.courseDeg);
+  const magneticDeg = normalizeAngle(compassDeg + deviationDeg);
+  const trueDeg = normalizeAngle(magneticDeg + variationDeg);
+  return {
+    trueDeg,
+    magneticDeg,
+    compassDeg,
+    compassErrorDeg: variationDeg + deviationDeg,
+  };
+}
+
+export function convertTVMDCFromTrue(input: TVMDCInput): TVMDCResult {
+  const variationDeg = input.variationDeg ?? 0;
+  const deviationDeg = input.deviationDeg ?? 0;
+  const trueDeg = normalizeAngle(input.courseDeg);
+  const magneticDeg = normalizeAngle(trueDeg - variationDeg);
+  const compassDeg = normalizeAngle(magneticDeg - deviationDeg);
+  return {
+    trueDeg,
+    magneticDeg,
+    compassDeg,
+    compassErrorDeg: variationDeg + deviationDeg,
+  };
+}
+
+// Chart scale: 1 : scaleDenominator (e.g., 1:50000). Input length in cm.
+export function chartCmToNm(lengthCm: number, scaleDenominator: number): number {
+  if (!isFinite(lengthCm) || !isFinite(scaleDenominator) || scaleDenominator <= 0) throw new Error("Invalid chart scale inputs");
+  // 1 nm = 185200 cm
+  return (lengthCm * scaleDenominator) / 185200;
+}
+
+export function chartNmToCm(distanceNm: number, scaleDenominator: number): number {
+  if (!isFinite(distanceNm) || !isFinite(scaleDenominator) || scaleDenominator <= 0) throw new Error("Invalid chart scale inputs");
+  return (distanceNm * 185200) / scaleDenominator;
+}
+
+// ---- Fixing / LOP (local-plane approximation; suitable for coastal distances)
+type XY = { xNm: number; yNm: number };
+
+function latLonToLocalNm(origin: LatLon, p: LatLon): XY {
+  const meanLatRad = toRadians((origin.latDeg + p.latDeg) / 2);
+  const xNm = (p.lonDeg - origin.lonDeg) * 60 * Math.cos(meanLatRad);
+  const yNm = (p.latDeg - origin.latDeg) * 60;
+  return { xNm, yNm };
+}
+
+function localNmToLatLon(origin: LatLon, xy: XY): LatLon {
+  const latDeg = origin.latDeg + xy.yNm / 60;
+  const meanLatRad = toRadians((origin.latDeg + latDeg) / 2);
+  const lonDeg = origin.lonDeg + xy.xNm / (60 * Math.cos(meanLatRad));
+  return { latDeg, lonDeg };
+}
+
+function bearingToUnitVectorNm(bearingDeg: number): XY {
+  // Bearing degrees: 0=N, 90=E (navigation convention)
+  return { xNm: Math.sin(toRadians(bearingDeg)), yNm: Math.cos(toRadians(bearingDeg)) };
+}
+
+export type TwoBearingFixInput = {
+  object1: LatLon;
+  bearingToObject1TrueDeg: number; // observed bearing from ship to object1 (true)
+  object2: LatLon;
+  bearingToObject2TrueDeg: number; // observed bearing from ship to object2 (true)
+};
+
+export type TwoBearingFixResult = {
+  fix: LatLon;
+  intersectionAngleDeg: number; // acute angle between LOPs (good: ~30-150)
+};
+
+export function calculateFixFromTwoBearings(input: TwoBearingFixInput): TwoBearingFixResult {
+  const { object1, object2, bearingToObject1TrueDeg, bearingToObject2TrueDeg } = input;
+  const origin: LatLon = { latDeg: (object1.latDeg + object2.latDeg) / 2, lonDeg: (object1.lonDeg + object2.lonDeg) / 2 };
+  const p1 = latLonToLocalNm(origin, object1);
+  const p2 = latLonToLocalNm(origin, object2);
+
+  // Reciprocal bearings (from object to ship)
+  const brg1 = normalizeAngle(bearingToObject1TrueDeg + 180);
+  const brg2 = normalizeAngle(bearingToObject2TrueDeg + 180);
+  const d1 = bearingToUnitVectorNm(brg1);
+  const d2 = bearingToUnitVectorNm(brg2);
+
+  // Solve p1 + t*d1 = p2 + u*d2
+  const det = d1.xNm * (-d2.yNm) - d1.yNm * (-d2.xNm); // det([d1, -d2])
+  if (Math.abs(det) < 1e-9) {
+    throw new Error("Bearings are nearly parallel; fix is ill-conditioned");
+  }
+
+  const rhsX = p2.xNm - p1.xNm;
+  const rhsY = p2.yNm - p1.yNm;
+  const t = (rhsX * (-d2.yNm) - rhsY * (-d2.xNm)) / det;
+
+  const ix = p1.xNm + t * d1.xNm;
+  const iy = p1.yNm + t * d1.yNm;
+
+  const angle = Math.acos(
+    Math.max(
+      -1,
+      Math.min(1, (d1.xNm * d2.xNm + d1.yNm * d2.yNm) / (Math.hypot(d1.xNm, d1.yNm) * Math.hypot(d2.xNm, d2.yNm)))
+    )
+  );
+  const intersectionAngleDeg = Math.min(toDegrees(angle), 180 - toDegrees(angle));
+
+  return { fix: localNmToLatLon(origin, { xNm: ix, yNm: iy }), intersectionAngleDeg };
+}
+
+export type RunningFixInput = {
+  objectOld: LatLon;
+  bearing1TrueDeg: number; // first observed bearing (ship->object) at t1
+  objectNew: LatLon;
+  bearing2TrueDeg: number; // second observed bearing (ship->object) at t2
+  runCourseTrueDeg: number; // DR run between t1 and t2
+  runDistanceNm: number;
+};
+
+export function calculateRunningFix(input: RunningFixInput): TwoBearingFixResult {
+  // Advance the first LOP by the run, then intersect with second LOP.
+  const origin: LatLon = { latDeg: (input.objectOld.latDeg + input.objectNew.latDeg) / 2, lonDeg: (input.objectOld.lonDeg + input.objectNew.lonDeg) / 2 };
+  const p1 = latLonToLocalNm(origin, input.objectOld);
+  const p2 = latLonToLocalNm(origin, input.objectNew);
+
+  const brg1Rec = normalizeAngle(input.bearing1TrueDeg + 180);
+  const brg2Rec = normalizeAngle(input.bearing2TrueDeg + 180);
+
+  const d1 = bearingToUnitVectorNm(brg1Rec);
+  const d2 = bearingToUnitVectorNm(brg2Rec);
+
+  // Advance the whole first line by the run vector
+  const run = bearingToUnitVectorNm(input.runCourseTrueDeg);
+  const adv: XY = { xNm: run.xNm * input.runDistanceNm, yNm: run.yNm * input.runDistanceNm };
+  const p1a: XY = { xNm: p1.xNm + adv.xNm, yNm: p1.yNm + adv.yNm };
+
+  const det = d1.xNm * (-d2.yNm) - d1.yNm * (-d2.xNm);
+  if (Math.abs(det) < 1e-9) throw new Error("Bearings are nearly parallel; fix is ill-conditioned");
+
+  const rhsX = p2.xNm - p1a.xNm;
+  const rhsY = p2.yNm - p1a.yNm;
+  const t = (rhsX * (-d2.yNm) - rhsY * (-d2.xNm)) / det;
+  const ix = p1a.xNm + t * d1.xNm;
+  const iy = p1a.yNm + t * d1.yNm;
+
+  const angle = Math.acos(
+    Math.max(
+      -1,
+      Math.min(1, (d1.xNm * d2.xNm + d1.yNm * d2.yNm) / (Math.hypot(d1.xNm, d1.yNm) * Math.hypot(d2.xNm, d2.yNm)))
+    )
+  );
+  const intersectionAngleDeg = Math.min(toDegrees(angle), 180 - toDegrees(angle));
+
+  return { fix: localNmToLatLon(origin, { xNm: ix, yNm: iy }), intersectionAngleDeg };
+}
+
+// ---- Radar plotting (two plots -> target true course/speed)
+export type RadarPlot = {
+  bearingTrueDeg: number; // True bearing of target from own ship at plot time
+  rangeNm: number;
+  timeUtc: Date;
+};
+
+export type RadarTargetMotionInput = {
+  plot1: RadarPlot;
+  plot2: RadarPlot;
+  ownCourseTrueDeg: number;
+  ownSpeedKn: number;
+};
+
+export type RadarTargetMotionResult = {
+  relativeCourseDeg: number;
+  relativeSpeedKn: number;
+  targetCourseTrueDeg: number;
+  targetSpeedKn: number;
+  cpaNm: number;
+  tcpaMin: number;
+};
+
+export function computeTargetMotionFromTwoRadarPlots(input: RadarTargetMotionInput): RadarTargetMotionResult {
+  const dtHours = (input.plot2.timeUtc.getTime() - input.plot1.timeUtc.getTime()) / (60 * 60 * 1000);
+  if (!isFinite(dtHours) || dtHours <= 0) throw new Error("Plot2 time must be after Plot1 time");
+
+  const r1x = input.plot1.rangeNm * Math.sin(toRadians(input.plot1.bearingTrueDeg));
+  const r1y = input.plot1.rangeNm * Math.cos(toRadians(input.plot1.bearingTrueDeg));
+  const r2x = input.plot2.rangeNm * Math.sin(toRadians(input.plot2.bearingTrueDeg));
+  const r2y = input.plot2.rangeNm * Math.cos(toRadians(input.plot2.bearingTrueDeg));
+
+  const vrx = (r2x - r1x) / dtHours;
+  const vry = (r2y - r1y) / dtHours;
+  const relativeSpeedKn = Math.hypot(vrx, vry);
+  const relativeCourseDeg = normalizeAngle(toDegrees(Math.atan2(vrx, vry)));
+
+  const vox = input.ownSpeedKn * Math.sin(toRadians(input.ownCourseTrueDeg));
+  const voy = input.ownSpeedKn * Math.cos(toRadians(input.ownCourseTrueDeg));
+
+  const vtx = vrx + vox;
+  const vty = vry + voy;
+  const targetSpeedKn = Math.hypot(vtx, vty);
+  const targetCourseTrueDeg = normalizeAngle(toDegrees(Math.atan2(vtx, vty)));
+
+  // CPA/TCPA computed at plot2 instant
+  const arpa = computeArpaCpaTcpa({
+    targetBearingDeg: input.plot2.bearingTrueDeg,
+    targetDistanceNm: input.plot2.rangeNm,
+    targetCourseDeg: targetCourseTrueDeg,
+    targetSpeedKn: targetSpeedKn,
+    ownCourseDeg: input.ownCourseTrueDeg,
+    ownSpeedKn: input.ownSpeedKn,
+  });
+
+  return {
+    relativeCourseDeg,
+    relativeSpeedKn,
+    targetCourseTrueDeg,
+    targetSpeedKn,
+    cpaNm: arpa.cpaNm,
+    tcpaMin: arpa.tcpaMin,
+  };
+}
+
+// ---- COLREG quick classification (heuristic, based on relative bearing)
+export type ColregSituation =
+  | "head-on"
+  | "crossing-starboard"
+  | "crossing-port"
+  | "overtaking"
+  | "unknown";
+
+export type ColregAssessment = {
+  situation: ColregSituation;
+  isGiveWay: boolean | null;
+  note: string;
+};
+
+export function assessColregSituation(relativeBearingDeg: number): ColregAssessment {
+  const rb = normalizeAngle(relativeBearingDeg);
+  // Convention: 0° = dead ahead, 90° = starboard beam, 180° = dead astern, 270° = port beam
+  const within = (a: number, b: number, tol: number) => Math.min(normalizeAngle(a - b), normalizeAngle(b - a)) <= tol;
+
+  if (within(rb, 0, 5) || within(rb, 360, 5)) {
+    return { situation: "head-on", isGiveWay: true, note: "Head-on ihtimali: her iki gemi de sancağa dönerek geçiş yapmalı (Genel yaklaşım)." };
+  }
+  if (rb > 112.5 && rb < 247.5) {
+    return { situation: "overtaking", isGiveWay: null, note: "Overtaking sektörü: yaklaşanın (overtaking) give-way olduğu durumlar olabilir; ışık/işaret ve gerçek hareketle teyit edin." };
+  }
+  if (rb > 0 && rb <= 112.5) {
+    return { situation: "crossing-starboard", isGiveWay: true, note: "Hedef sancak tarafında: crossing durumda genellikle siz give-way olursunuz (duruma göre teyit)." };
+  }
+  if (rb >= 247.5 && rb < 360) {
+    return { situation: "crossing-port", isGiveWay: false, note: "Hedef iskele tarafında: crossing durumda genellikle siz stand-on olursunuz (duruma göre teyit)." };
+  }
+  return { situation: "unknown", isGiveWay: null, note: "Sınıflama için yeterli veri yok." };
+}
+
+// ---- Tides / UKC / Squat
+export type HeightOfTideInput = {
+  lowWaterTimeUtc: Date;
+  lowWaterHeightM: number;
+  highWaterTimeUtc: Date;
+  highWaterHeightM: number;
+  queryTimeUtc: Date;
+};
+
+export type HeightOfTideResult = {
+  heightM: number;
+  stage: "rising" | "falling";
+  fractionOfRange: number; // 0..1 within the LW->HW or HW->LW segment
+};
+
+function twelfthsFraction(u: number): number {
+  // Map 0..1 to rule-of-twelfths cumulative fraction over 6 hours:
+  // at hours 0..6: 0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12
+  // Linear interpolation between points.
+  const points = [
+    { t: 0, f: 0 },
+    { t: 1 / 6, f: 1 / 12 },
+    { t: 2 / 6, f: 3 / 12 },
+    { t: 3 / 6, f: 6 / 12 },
+    { t: 4 / 6, f: 9 / 12 },
+    { t: 5 / 6, f: 11 / 12 },
+    { t: 1, f: 1 },
+  ];
+  const x = Math.max(0, Math.min(1, u));
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = points[i];
+    const b = points[i + 1];
+    if (x >= a.t && x <= b.t) {
+      const k = (x - a.t) / (b.t - a.t);
+      return a.f + k * (b.f - a.f);
+    }
+  }
+  return 1;
+}
+
+export function calculateHeightOfTideAtTime(input: HeightOfTideInput): HeightOfTideResult {
+  const { lowWaterTimeUtc, lowWaterHeightM, highWaterTimeUtc, highWaterHeightM, queryTimeUtc } = input;
+  const tLW = lowWaterTimeUtc.getTime();
+  const tHW = highWaterTimeUtc.getTime();
+  const tq = queryTimeUtc.getTime();
+  if (!(isFinite(lowWaterHeightM) && isFinite(highWaterHeightM))) throw new Error("Invalid tide heights");
+  if (!(isFinite(tLW) && isFinite(tHW) && isFinite(tq))) throw new Error("Invalid times");
+  if (tLW === tHW) throw new Error("LW and HW times must differ");
+
+  const range = highWaterHeightM - lowWaterHeightM;
+  const isRisingSegment = tLW < tHW;
+
+  // Determine whether query is in the LW->HW segment or HW->LW segment by projecting onto a 12h cycle.
+  // If query is outside LW->HW interval, assume it belongs to HW->LW following immediately after HW.
+  let stage: "rising" | "falling";
+  let startTime: number;
+  let endTime: number;
+  let startHeight: number;
+  let endHeight: number;
+
+  if (isRisingSegment) {
+    if (tq >= tLW && tq <= tHW) {
+      stage = "rising";
+      startTime = tLW;
+      endTime = tHW;
+      startHeight = lowWaterHeightM;
+      endHeight = highWaterHeightM;
+    } else {
+      stage = "falling";
+      startTime = tHW;
+      endTime = tHW + (tHW - tLW); // assume symmetric 6h
+      startHeight = highWaterHeightM;
+      endHeight = lowWaterHeightM;
+    }
+  } else {
+    // If provided order is reversed, treat it accordingly
+    if (tq >= tHW && tq <= tLW) {
+      stage = "falling";
+      startTime = tHW;
+      endTime = tLW;
+      startHeight = highWaterHeightM;
+      endHeight = lowWaterHeightM;
+    } else {
+      stage = "rising";
+      startTime = tLW;
+      endTime = tLW + (tLW - tHW);
+      startHeight = lowWaterHeightM;
+      endHeight = highWaterHeightM;
+    }
+  }
+
+  const u = (tq - startTime) / (endTime - startTime);
+  const frac = twelfthsFraction(u);
+  const heightM = startHeight + frac * (endHeight - startHeight);
+
+  return {
+    heightM,
+    stage,
+    fractionOfRange: frac,
+  };
+}
+
+export type SecondaryPortCorrection = {
+  timeDiffMin: number; // add to primary time
+  heightDiffM: number; // add to primary height
+};
+
+export function applySecondaryPortCorrection(primaryTimeUtc: Date, primaryHeightM: number, corr: SecondaryPortCorrection): { timeUtc: Date; heightM: number } {
+  return {
+    timeUtc: new Date(primaryTimeUtc.getTime() + corr.timeDiffMin * 60 * 1000),
+    heightM: primaryHeightM + corr.heightDiffM,
+  };
+}
+
+export type SquatEnvironment = "open" | "confined";
+
+export type SquatInput = {
+  speedKn: number;
+  blockCoefficient?: number; // typical 0.6..0.85
+  environment?: SquatEnvironment;
+};
+
+export function estimateSquatBarrass(input: SquatInput): number {
+  const V = input.speedKn;
+  const Cb = input.blockCoefficient ?? 0.7;
+  const env = input.environment ?? "open";
+  if (!isFinite(V) || V < 0) throw new Error("Invalid speed");
+  if (!isFinite(Cb) || Cb <= 0 || Cb > 1) throw new Error("Invalid block coefficient");
+  // Simple Barrass-style approximation (meters)
+  const k = env === "confined" ? 2 : 1;
+  return (k * Cb * V * V) / 100;
+}
+
+export type UkcInput = {
+  chartedDepthM: number;
+  heightOfTideM: number;
+  draftM: number;
+  squatM?: number;
+  safetyMarginM?: number;
+};
+
+export type UkcResult = {
+  ukcM: number;
+  isSafe: boolean;
+};
+
+export function calculateUKC(input: UkcInput): UkcResult {
+  const squatM = input.squatM ?? 0;
+  const safetyMarginM = input.safetyMarginM ?? 0;
+  const ukcM = input.chartedDepthM + input.heightOfTideM - input.draftM - squatM - safetyMarginM;
+  return { ukcM, isSafe: ukcM >= 0 };
+}
+
+// ---- ECDIS / Route check helpers
+export type CrossTrackInput = {
+  legStart: LatLon;
+  legEnd: LatLon;
+  position: LatLon;
+};
+
+export type CrossTrackResult = {
+  xtdNm: number; // absolute cross track distance in NM
+  side: "port" | "starboard" | "on-track";
+  alongTrackNm: number; // projection from start along leg
+};
+
+export function calculateCrossTrackDistance(input: CrossTrackInput): CrossTrackResult {
+  const origin: LatLon = input.legStart;
+  const a = latLonToLocalNm(origin, input.legStart);
+  const b = latLonToLocalNm(origin, input.legEnd);
+  const p = latLonToLocalNm(origin, input.position);
+  const abx = b.xNm - a.xNm;
+  const aby = b.yNm - a.yNm;
+  const apx = p.xNm - a.xNm;
+  const apy = p.yNm - a.yNm;
+  const ab2 = abx * abx + aby * aby;
+  if (ab2 < 1e-9) throw new Error("Leg start/end too close");
+
+  const t = (apx * abx + apy * aby) / ab2;
+  const projx = a.xNm + t * abx;
+  const projy = a.yNm + t * aby;
+  const dx = p.xNm - projx;
+  const dy = p.yNm - projy;
+  const xtdNmSigned = (abx * apy - aby * apx) / Math.sqrt(ab2); // + means left of track (port) in ENU convention
+  const xtdNm = Math.hypot(dx, dy);
+
+  let side: "port" | "starboard" | "on-track" = "on-track";
+  if (Math.abs(xtdNmSigned) > 1e-6) side = xtdNmSigned > 0 ? "port" : "starboard";
+  return { xtdNm, side, alongTrackNm: t * Math.sqrt(ab2) };
+}
+
+export type LookAheadResult = {
+  lookAheadDistanceNm: number;
+};
+
+export function calculateLookAheadDistance(sogKn: number, lookAheadMinutes: number): LookAheadResult {
+  if (!isFinite(sogKn) || !isFinite(lookAheadMinutes) || sogKn < 0 || lookAheadMinutes < 0) throw new Error("Invalid look-ahead inputs");
+  return { lookAheadDistanceNm: sogKn * (lookAheadMinutes / 60) };
+}
+
+// ---- Astronomical navigation (Sun-focused almanac + sextant correction)
+export type SunAlmanacResult = {
+  ghaSunDeg: number;
+  decSunDeg: number;
+  ghaAriesDeg: number;
+  gmstDeg: number;
+};
+
+function julianDateUtc(dateUtc: Date): number {
+  // Unix epoch -> JD
+  return dateUtc.getTime() / 86400000 + 2440587.5;
+}
+
+function gmstDegFromJulianDate(jd: number): number {
+  // IAU 2006-ish: good enough for nav training use
+  const T = (jd - 2451545.0) / 36525.0;
+  const gmst =
+    280.46061837 +
+    360.98564736629 * (jd - 2451545.0) +
+    0.000387933 * T * T -
+    (T * T * T) / 38710000.0;
+  return normalizeAngle(gmst);
+}
+
+export function computeSunAlmanac(dateUtc: Date): SunAlmanacResult {
+  const jd = julianDateUtc(dateUtc);
+  const n = jd - 2451545.0;
+
+  const L = normalizeAngle(280.460 + 0.9856474 * n); // mean longitude
+  const g = normalizeAngle(357.528 + 0.9856003 * n); // mean anomaly
+  const lambda = normalizeAngle(L + 1.915 * Math.sin(toRadians(g)) + 0.020 * Math.sin(toRadians(2 * g))); // ecliptic longitude
+  const epsilon = 23.439 - 0.0000004 * n; // obliquity
+
+  const sinLambda = Math.sin(toRadians(lambda));
+  const cosLambda = Math.cos(toRadians(lambda));
+  const cosEps = Math.cos(toRadians(epsilon));
+  const sinEps = Math.sin(toRadians(epsilon));
+
+  const raRad = Math.atan2(cosEps * sinLambda, cosLambda); // radians, -pi..pi
+  const decRad = Math.asin(sinEps * sinLambda);
+
+  const raDeg = normalizeAngle(toDegrees(raRad));
+  const decSunDeg = toDegrees(decRad);
+
+  const gmstDeg = gmstDegFromJulianDate(jd);
+  const ghaAriesDeg = gmstDeg; // by definition: GHA Aries = GMST (deg)
+  const ghaSunDeg = normalizeAngle(gmstDeg - raDeg);
+
+  return { ghaSunDeg, decSunDeg, ghaAriesDeg, gmstDeg };
+}
+
+export type SextantCorrectionInput = {
+  hsDeg: number; // Sextant altitude (degrees)
+  indexCorrectionMin?: number; // minutes (IC), add algebraically
+  heightOfEyeM?: number;
+  pressureHPa?: number; // default 1010
+  temperatureC?: number; // default 10
+};
+
+export type SextantCorrectionResult = {
+  haDeg: number; // apparent altitude after IC + dip
+  hoDeg: number; // observed altitude after refraction (simplified)
+  dipMin: number;
+  refractionMin: number;
+};
+
+export function correctSextantAltitude(input: SextantCorrectionInput): SextantCorrectionResult {
+  const hs = input.hsDeg;
+  if (!isFinite(hs) || hs < 0 || hs > 90) throw new Error("Invalid sextant altitude");
+
+  const IC = input.indexCorrectionMin ?? 0;
+  const HE = input.heightOfEyeM ?? 0;
+  const P = input.pressureHPa ?? 1010;
+  const T = input.temperatureC ?? 10;
+
+  // Dip (minutes). Common approximation: dip' = 1.76 * sqrt(HE in meters)
+  const dipMin = HE > 0 ? 1.76 * Math.sqrt(HE) : 0;
+
+  // Apparent altitude Ha = Hs + IC - Dip
+  const haDeg = hs + IC / 60 - dipMin / 60;
+
+  // Refraction (minutes). Simple Bennett-style approximation, valid for Ha > ~5°.
+  // R' ≈ (0.00452 * P) / ((273 + T) * tan(Ha))
+  let refractionMin = 0;
+  const haRad = toRadians(Math.max(0.5, haDeg));
+  refractionMin = (0.00452 * P) / ((273 + T) * Math.tan(haRad));
+  refractionMin = Math.max(0, Math.min(60, refractionMin)); // clamp
+
+  const hoDeg = haDeg - refractionMin / 60;
+  return { haDeg, hoDeg, dipMin, refractionMin };
+}
+
+export type InterceptSightInput = {
+  assumedPosition: LatLon;
+  dateUtc: Date;
+  hoDeg: number; // corrected observed altitude
+  body: "sun";
+};
+
+export type InterceptSightResult = {
+  ghaDeg: number;
+  decDeg: number;
+  lhaDeg: number;
+  hcDeg: number;
+  znDeg: number;
+  interceptNm: number; // Ho - Hc (nm)
+  towardAway: "toward" | "away";
+};
+
+export function computeSunInterceptSight(input: InterceptSightInput): InterceptSightResult {
+  const almanac = computeSunAlmanac(input.dateUtc);
+  const lhaDeg = normalizeAngle(almanac.ghaSunDeg - input.assumedPosition.lonDeg); // lon East positive => LHA = GHA - lonE
+  const sr = calculateSightReduction({
+    latDeg: input.assumedPosition.latDeg,
+    decDeg: almanac.decSunDeg,
+    lhaDeg,
+  });
+  const interceptNm = (input.hoDeg - sr.hcDeg) * 60;
+  return {
+    ghaDeg: almanac.ghaSunDeg,
+    decDeg: almanac.decSunDeg,
+    lhaDeg,
+    hcDeg: sr.hcDeg,
+    znDeg: sr.azimuthDeg,
+    interceptNm: Math.abs(interceptNm),
+    towardAway: interceptNm >= 0 ? "toward" : "away",
+  };
+}
+
+export type SightReductionTableRow = {
+  lhaDeg: number;
+  hcDeg: number;
+  znDeg: number;
+};
+
+export function generateSightReductionTable(latDeg: number, decDeg: number, lhaStartDeg: number, lhaEndDeg: number, stepDeg: number): SightReductionTableRow[] {
+  if (!isFinite(stepDeg) || stepDeg <= 0) throw new Error("Invalid step");
+  const rows: SightReductionTableRow[] = [];
+  const a = Math.min(lhaStartDeg, lhaEndDeg);
+  const b = Math.max(lhaStartDeg, lhaEndDeg);
+  for (let lha = a; lha <= b + 1e-9; lha += stepDeg) {
+    const r = calculateSightReduction({ latDeg, decDeg, lhaDeg: lha });
+    rows.push({ lhaDeg: normalizeAngle(lha), hcDeg: r.hcDeg, znDeg: r.azimuthDeg });
+  }
+  return rows;
+}
+
+export type DailySunAlmanacRow = {
+  utcHour: number;
+  ghaSunDeg: number;
+  decSunDeg: number;
+  ghaAriesDeg: number;
+};
+
+export function generateDailySunAlmanac(dateUtc: Date): DailySunAlmanacRow[] {
+  const base = new Date(Date.UTC(dateUtc.getUTCFullYear(), dateUtc.getUTCMonth(), dateUtc.getUTCDate(), 0, 0, 0));
+  const rows: DailySunAlmanacRow[] = [];
+  for (let h = 0; h <= 23; h++) {
+    const t = new Date(base.getTime() + h * 60 * 60 * 1000);
+    const a = computeSunAlmanac(t);
+    rows.push({ utcHour: h, ghaSunDeg: a.ghaSunDeg, decSunDeg: a.decSunDeg, ghaAriesDeg: a.ghaAriesDeg });
+  }
+  return rows;
+}
+
