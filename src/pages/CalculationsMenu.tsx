@@ -245,12 +245,6 @@ export default function CalculationsMenu() {
           <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground backdrop-blur">
             Hesaplama Merkezi
           </div>
-          <h1 className="text-3xl font-black leading-tight text-foreground sm:text-4xl">
-            Tüm Hesaplama Araçları
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Merkezdeki tüm hesaplama içeriklerini tek bir dersler butonu altında toplayabilirsiniz.
-          </p>
         </header>
 
         <div className="flex flex-col gap-4">
