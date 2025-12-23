@@ -19,7 +19,7 @@ export default function CargoCalculationsPage() {
   return (
     <MobileLayout>
       <CalculationGridScreen
-        eyebrow="Kargo & Operasyon"
+        eyebrow="Yük Elleçleme ve İstifleme"
         title="Yük Elleçleme ve İstifleme"
         subtitle="Draft survey, balast ve operasyonel yük hesaplarını aynı temada toplayın"
       >

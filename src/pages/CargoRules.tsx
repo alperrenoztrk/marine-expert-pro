@@ -58,7 +58,7 @@ export default function CargoRulesPage() {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 bg-clip-text text-transparent">
-            Kargo & Operasyon Kuralları
+            Yük Elleçleme ve İstifleme Kuralları
           </h1>
           <p className="text-muted-foreground mt-2">
             IMSBC, Grain Rules ve terminal prosedürleri

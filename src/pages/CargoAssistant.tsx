@@ -18,7 +18,7 @@ Güvenlik, klas ve SOLAS/MARPOL gerekliliklerini vurgula; hesap veya kontrol ad�
 export default function CargoAssistantPage() {
   return (
     <AssistantInterface
-      title="Kargo & Operasyon Asistanı"
+      title="Yük Elleçleme ve İstifleme Asistanı"
       subtitle="Yükleme planı, trim/stabilite ve IMDG danışmanlığı"
       badge="Kargo Asistanı"
       quickPrompts={quickPrompts}
