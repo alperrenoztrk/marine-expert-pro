@@ -27,6 +27,19 @@ export default function CalculationsMenu() {
   const [showMachinery, setShowMachinery] = useState(false);
   const [showShipTasks, setShowShipTasks] = useState(false);
 
+  const bridgeNavigationTasks = [
+    { task: "Passage plan", responsible: "Master + 2/O", worker: "2/O", href: "/passage-plan" },
+    { task: "Vardiya tutma", responsible: "Master", worker: "2/O – 3/O – 4/O" },
+    { task: "Radar / ARPA takibi", responsible: "Vardiya zabiti", worker: "Vardiya zabiti" },
+    { task: "COLREG uygulama", responsible: "Vardiya zabiti", worker: "Vardiya zabiti" },
+    { task: "Kaptanı çağırma kararı", responsible: "Vardiya zabiti", worker: "Vardiya zabiti" },
+    { task: "Logbook doldurma", responsible: "Vardiya zabiti", worker: "Vardiya zabiti" },
+    { task: "Pilot embark/disembark", responsible: "Master", worker: "2/O–3/O" },
+    { task: "Kısıtlı sularda seyir", responsible: "Master", worker: "Master + OOW" },
+    { task: "GMDSS acil çağrı", responsible: "Master", worker: "2/O" },
+    { task: "Köprüüstü disiplin", responsible: "Master", worker: "Tüm zabitler" },
+  ];
+
   const machinerySystems = [
     {
       name: "Ana Makine (Sevk Sistemi)",
@@ -378,20 +391,20 @@ export default function CalculationsMenu() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/30">
-                      {[
-                        ["Passage plan", "Master + 2/O", "2/O"],
-                        ["Vardiya tutma", "Master", "2/O – 3/O – 4/O"],
-                        ["Radar / ARPA takibi", "Vardiya zabiti", "Vardiya zabiti"],
-                        ["COLREG uygulama", "Vardiya zabiti", "Vardiya zabiti"],
-                        ["Kaptanı çağırma kararı", "Vardiya zabiti", "Vardiya zabiti"],
-                        ["Logbook doldurma", "Vardiya zabiti", "Vardiya zabiti"],
-                        ["Pilot embark/disembark", "Master", "2/O–3/O"],
-                        ["Kısıtlı sularda seyir", "Master", "Master + OOW"],
-                        ["GMDSS acil çağrı", "Master", "2/O"],
-                        ["Köprüüstü disiplin", "Master", "Tüm zabitler"],
-                      ].map(([task, responsible, worker]) => (
+                      {bridgeNavigationTasks.map(({ task, responsible, worker, href }) => (
                         <tr key={task}>
-                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 pr-4 text-foreground">
+                            {href ? (
+                              <Link
+                                to={href}
+                                className="text-primary underline decoration-dotted underline-offset-2 transition-colors hover:text-primary/80"
+                              >
+                                {task}
+                              </Link>
+                            ) : (
+                              task
+                            )}
+                          </td>
                           <td className="py-1.5 pr-4 text-primary">{responsible}</td>
                           <td className="py-1.5 text-muted-foreground">{worker}</td>
                         </tr>
