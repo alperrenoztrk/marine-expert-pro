@@ -11,11 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { 
   Ship, 
-  Shield, 
-  FileText, 
-  Download, 
-  Search, 
+  Shield,
+  FileText,
+  Download,
+  Search,
   AlertTriangle,
+  Scale,
   Globe,
   Compass,
   Map,
@@ -969,6 +970,94 @@ const Regulations = () => {
           </TabsContent>
 
           <TabsContent value="navrules" className="space-y-6">
+            <Card className="border border-border/60 shadow-sm">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <Scale className="h-5 w-5 text-primary" />
+                  <div>
+                    <CardTitle>Denizcilik Regülasyonları</CardTitle>
+                    <CardDescription>Uluslararası ve ulusal denizcilik kuralları</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                    <h3 className="mb-3 font-bold text-foreground">🌐 IMO Sözleşmeleri</h3>
+                    <ul className="space-y-2 text-sm text-foreground/90">
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <Link
+                          to="/solas/regulations"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-semibold text-foreground transition hover:text-primary hover:underline"
+                        >
+                          <strong>SOLAS</strong> – Denizde Can Güvenliği
+                        </Link>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <span><strong>MARPOL</strong> – Deniz Kirliliğinin Önlenmesi</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <span><strong>STCW</strong> – Gemi Adamları Eğitim ve Belgelendirme</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <span><strong>MLC</strong> – Denizcilik Çalışma Sözleşmesi</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <span><strong>COLREG</strong> – Denizde Çatışmayı Önleme Kuralları</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <span><strong>Load Lines</strong> – Yükleme Hattı Sözleşmesi</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                    <h3 className="mb-3 font-bold text-foreground">🛡️ Emniyet Kodları</h3>
+                    <ul className="space-y-2 text-sm text-foreground/90">
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                        <span>ISM, ISPS, ISPS Drill & Security Level gereklilikleri</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                        <span>LSA, FSS, HSC, IGF, Polar Code, CSS Code</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                        <span>ISM / SMS prosedür ve kayıtları</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                    <h3 className="mb-3 font-bold text-foreground">📦 Kargo & Özel Kurallar</h3>
+                    <ul className="space-y-2 text-sm text-foreground/90">
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                        <span>IMDG Code – Tehlikeli yük sınıfları ve paketleme</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                        <span>IBC/IGC – Kimyasal ve gaz tanker gereklilikleri</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                        <span>Grain Code, Timber Code, INF Code</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Uluslararası Regülasyonlar */}
             <Card className="border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30">
               <CardHeader>
