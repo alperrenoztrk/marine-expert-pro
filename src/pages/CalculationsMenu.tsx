@@ -17,7 +17,8 @@ import {
   ShieldCheck,
   Snowflake,
   Waves,
-  ClipboardList
+  ClipboardList,
+  Scale
 } from "lucide-react";
 
 export default function CalculationsMenu() {
@@ -26,6 +27,7 @@ export default function CalculationsMenu() {
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
   const [showShipTasks, setShowShipTasks] = useState(false);
+  const [showRegulations, setShowRegulations] = useState(false);
 
   const bridgeNavigationTasks = [
     { task: "Passage plan", responsible: "Master + 2/O", worker: "2/O", href: "/passage-plan" },
@@ -319,6 +321,20 @@ export default function CalculationsMenu() {
             <span>Gemide Yapılan Tüm İşler ve Sorumluları</span>
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${showShipTasks ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowRegulations((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-red-500 via-rose-500 to-pink-500 text-white shadow group-hover:scale-105">
+              <Scale className="h-4 w-4" />
+            </span>
+            <span>Regülasyonlar</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showRegulations ? "rotate-180" : "rotate-0"}`}
             />
           </button>
 
@@ -860,6 +876,196 @@ export default function CalculationsMenu() {
                       </ul>
                     </details>
                   ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {showRegulations && (
+            <section className="space-y-4 rounded-2xl border border-border/50 bg-card/60 p-4 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 via-rose-500 to-pink-500 text-white shadow-lg">
+                  <Scale className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-foreground">📜 Denizcilik Regülasyonları</h2>
+                  <p className="text-xs text-muted-foreground">Uluslararası ve ulusal denizcilik kuralları</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {/* IMO Conventions */}
+                <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                  <h3 className="mb-3 font-bold text-foreground">🌐 IMO Sözleşmeleri</h3>
+                  <ul className="space-y-2 text-sm text-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>SOLAS</strong> – Denizde Can Güvenliği</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>MARPOL</strong> – Deniz Kirliliğinin Önlenmesi</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>STCW</strong> – Gemi Adamları Eğitim ve Belgelendirme</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>MLC</strong> – Denizcilik Çalışma Sözleşmesi</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>COLREG</strong> – Denizde Çatışmayı Önleme Kuralları</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>Load Lines</strong> – Yükleme Hattı Sözleşmesi</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Safety Codes */}
+                <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                  <h3 className="mb-3 font-bold text-foreground">🛡️ Emniyet Kodları</h3>
+                  <ul className="space-y-2 text-sm text-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>ISM Code</strong> – Uluslararası Güvenlik Yönetimi</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>ISPS Code</strong> – Gemi ve Liman Tesisi Güvenliği</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IMDG Code</strong> – Tehlikeli Yükler</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IMSBC Code</strong> – Katı Dökme Yükler</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IGC Code</strong> – Gaz Taşıyıcı Gemiler</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IBC Code</strong> – Kimyasal Tankerler</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Environmental */}
+                <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                  <h3 className="mb-3 font-bold text-foreground">🌿 Çevresel Düzenlemeler</h3>
+                  <ul className="space-y-2 text-sm text-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>BWM Convention</strong> – Balast Suyu Yönetimi</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>AFS Convention</strong> – Zehirli Boya Sistemleri</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>Hong Kong Convention</strong> – Gemi Geri Dönüşümü</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>EEDI/EEXI</strong> – Enerji Verimliliği İndeksleri</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>CII</strong> – Karbon Yoğunluğu Göstergesi</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>EU ETS</strong> – Emisyon Ticaret Sistemi</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Inspection & Surveys */}
+                <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                  <h3 className="mb-3 font-bold text-foreground">🔍 Denetim & Sörvey</h3>
+                  <ul className="space-y-2 text-sm text-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>PSC</strong> – Liman Devleti Kontrolü</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>FSC</strong> – Bayrak Devleti Kontrolü</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>Class Survey</strong> – Klas Denetimleri</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>Vetting</strong> – Tanker Denetimleri (SIRE, CDI)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>ISM Audit</strong> – İç ve Dış Denetimler</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Certificates */}
+                <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                  <h3 className="mb-3 font-bold text-foreground">📋 Gemi Sertifikaları</h3>
+                  <ul className="space-y-2 text-sm text-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>SMC</strong> – Safety Management Certificate</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>DOC</strong> – Document of Compliance</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>ISSC</strong> – International Ship Security Certificate</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>IOPP</strong> – Oil Pollution Prevention Certificate</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>Load Line Certificate</strong> – Yükleme Hattı Belgesi</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Regional */}
+                <div className="rounded-xl border border-border/40 bg-background/50 p-4">
+                  <h3 className="mb-3 font-bold text-foreground">🗺️ Bölgesel Düzenlemeler</h3>
+                  <ul className="space-y-2 text-sm text-foreground/90">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>Paris MoU</strong> – Avrupa PSC Rejimi</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>Tokyo MoU</strong> – Asya-Pasifik PSC</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>US USCG</strong> – ABD Sahil Güvenlik</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>EU Regulations</strong> – AB Denizcilik Mevzuatı</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>Black Sea MoU</strong> – Karadeniz PSC</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </section>
