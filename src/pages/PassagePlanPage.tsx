@@ -271,6 +271,25 @@ export default function PassagePlanPage() {
           </div>
         </section>
 
+        <section className="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-foreground">🗺️ Örnek Passage Plan: Port Weller → Port Huron (Upbound)</h2>
+          <p className="text-sm text-muted-foreground">Great Lakes Pilotage Authority - District No. 2</p>
+          <div className="grid gap-4">
+            {Array.from({ length: 44 }, (_, i) => i + 1).map((page) => (
+              <div key={page} className="rounded-xl border border-border/50 bg-slate-900/60 p-2 overflow-hidden">
+                <p className="text-xs text-primary mb-2 font-medium">Sayfa {page} / 44</p>
+                <img 
+                  src={`/passage-plan/page_${page}.jpg`} 
+                  alt={`Passage Plan Sayfa ${page}`}
+                  className="w-full rounded-lg"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground italic">Not to be used for navigation / Navigasyon için kullanılmaz</p>
+        </section>
+
       </div>
     </div>
   );
