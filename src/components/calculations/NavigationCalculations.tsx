@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { CoordinateInput } from "@/components/CoordinateInput";
 import { DirectionInput } from "@/components/DirectionInput";
 import NavigationAssistantPopup from "@/components/NavigationAssistantPopup";
+import { computeSunAlmanac, generateDailySunAlmanac } from "./navigationMath";
 
 interface NavigationData {
   // Traverse sailing legs
@@ -3840,13 +3841,14 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                           />
                         </div>
                         {(() => {
-                          const selectedDate = new Date(data.date);
-                          const jd = calculateJulianDay(selectedDate);
-                          const sunPos = calculateSunPosition(jd, data.observerLatitude, data.observerLongitude);
-                          const { gha } = calculateSunGHA(jd);
-                          const lha = normalizeAngle(gha + data.observerLongitude);
+                          // Use UTC date (00:00Z) so Almanac lookup is unambiguous.
+                          const selectedDateUtc = new Date(`${data.date}T00:00:00Z`);
+                          const almanac = computeSunAlmanac(selectedDateUtc);
+                          const gha = almanac.ghaSunDeg;
+                          // East-positive lon convention: LHA = GHA - lonE
+                          const lha = normalizeAngle(gha - data.observerLongitude);
                           const latRad = toRadians(data.observerLatitude);
-                          const decRad = toRadians(sunPos.declination);
+                          const decRad = toRadians(almanac.decSunDeg);
                           const lhaRad = toRadians(lha);
                           const hcRad = Math.asin(Math.sin(latRad) * Math.sin(decRad) + Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad));
                           const hc = toDegrees(hcRad);
@@ -3862,7 +3864,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                               </div>
                               <div className="space-y-2">
                                 <Label>Dekl. (°)</Label>
-                                <div className="text-right py-2 px-3 rounded border bg-muted">{sunPos.declination.toFixed(2)}</div>
+                                <div className="text-right py-2 px-3 rounded border bg-muted">{almanac.decSunDeg.toFixed(2)}</div>
                               </div>
                               <div className="space-y-2">
                                 <Label>Hc (°)</Label>
@@ -4457,6 +4459,57 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     </div>
 
                     <Separator />
+
+                    {/* 2025 Almanac (Sun + Aries) - built-in table */}
+                    {(() => {
+                      const baseUtc = new Date(`${data.date}T00:00:00Z`);
+                      const is2025 = baseUtc.getUTCFullYear() === 2025;
+                      const rows = is2025 ? generateDailySunAlmanac(baseUtc) : [];
+
+                      return (
+                        <Card className="bg-muted/30">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <Sun className="h-4 w-4 text-yellow-500" />
+                              2025 Güneş Almanacı (UTC saatlik)
+                            </CardTitle>
+                            <CardDescription>
+                              {is2025
+                                ? "Uygulama içi 2025 tablosu (GHA Güneş, Dekl., GHA Aries)."
+                                : "Bu tablo sadece 2025 yılı için dahili olarak mevcuttur."}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            {is2025 ? (
+                              <div className="max-h-80 overflow-auto rounded border">
+                                <table className="w-full text-xs">
+                                  <thead className="sticky top-0 bg-background">
+                                    <tr className="text-left">
+                                      <th className="p-2">UTC</th>
+                                      <th className="p-2">GHA Aries (°)</th>
+                                      <th className="p-2">GHA Güneş (°)</th>
+                                      <th className="p-2">Dekl. (°)</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {rows.map((r) => (
+                                      <tr key={r.utcHour} className="border-t">
+                                        <td className="p-2 font-mono">{String(r.utcHour).padStart(2, "0")}:00</td>
+                                        <td className="p-2 font-mono">{r.ghaAriesDeg.toFixed(2)}</td>
+                                        <td className="p-2 font-mono">{r.ghaSunDeg.toFixed(2)}</td>
+                                        <td className="p-2 font-mono">{r.decSunDeg.toFixed(2)}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            ) : (
+                              <div className="text-sm text-muted-foreground">Tarih 2025'e alın.</div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    })()}
 
                     {/* Quick Reference Tables */}
                     <div className="space-y-3">

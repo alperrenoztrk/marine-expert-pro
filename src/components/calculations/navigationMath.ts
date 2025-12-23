@@ -1,6 +1,8 @@
 // Core navigation calculation utilities extracted from assistant components.
 // Keep these functions pure and UI-agnostic so multiple UIs can reuse them.
 
+import { getSunAriesAlmanac2025Utc } from "@/utils/nauticalAlmanac2025";
+
 export type CurrentTriangleInput = {
   courseDeg: number; // Intended track/course over ground to maintain (degrees)
   speedKn: number;   // Ship speed through water (knots)
@@ -1212,6 +1214,17 @@ function gmstDegFromJulianDate(jd: number): number {
 }
 
 export function computeSunAlmanac(dateUtc: Date): SunAlmanacResult {
+  const almanac2025 = getSunAriesAlmanac2025Utc(dateUtc);
+  if (almanac2025) {
+    // Keep gmstDeg for compatibility with existing callers, even though Aries here is from GAST.
+    return {
+      ghaSunDeg: almanac2025.ghaSunDeg,
+      decSunDeg: almanac2025.decSunDeg,
+      ghaAriesDeg: almanac2025.ghaAriesDeg,
+      gmstDeg: almanac2025.ghaAriesDeg,
+    };
+  }
+
   const jd = julianDateUtc(dateUtc);
   const n = jd - 2451545.0;
 
