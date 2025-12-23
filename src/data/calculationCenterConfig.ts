@@ -64,7 +64,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "stability",
     title: "Stabilite",
-    subtitle: "GM, GZ, IMO kriterleri ve ileri analizler",
+    subtitle: "",
     icon: Ship,
     accent: "from-blue-500 via-indigo-500 to-blue-600",
     badge: "Çekirdek",
@@ -117,7 +117,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "navigation",
     title: "Seyir",
-    subtitle: "Rota, astro seyir ve COLREG pratikleri",
+    subtitle: "",
     icon: Compass,
     accent: "from-indigo-500 via-purple-500 to-blue-500",
     badge: "Günlük",
@@ -170,7 +170,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "cargo",
     title: "Yük Elleçleme ve İstifleme",
-    subtitle: "Draft survey, yükleme planı ve operasyonel takip",
+    subtitle: "",
     icon: Package,
     accent: "from-amber-500 via-orange-500 to-rose-500",
     badge: "Operasyon",
@@ -222,7 +222,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "meteorology",
     title: "Meteoroloji",
-    subtitle: "Tahmin, hava raporu ve rota optimizasyonu",
+    subtitle: "",
     icon: CloudSun,
     accent: "from-sky-500 via-cyan-500 to-blue-500",
     badge: "Hava",
@@ -274,7 +274,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "seamanship",
     title: "Gemicilik",
-    subtitle: "Demirleme, palamar, ağır hava ve vardiya yönetimi",
+    subtitle: "",
     icon: Anchor,
     accent: "from-emerald-500 via-teal-500 to-blue-500",
     badge: "Güverte",
@@ -326,7 +326,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "safety",
     title: "Denizde Güvenlik",
-    subtitle: "IMO, SOLAS, LSA/FFA ve ISM kapsamı",
+    subtitle: "",
     icon: Shield,
     accent: "from-rose-500 via-orange-500 to-amber-500",
     badge: "Kritik",
@@ -378,7 +378,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "machine",
     title: "Gemi Makineleri",
-    subtitle: "Ana makine, yardımcı makineler, yakıt ve bakım hesapları",
+    subtitle: "",
     icon: Wrench,
     accent: "from-slate-600 via-zinc-600 to-slate-800",
     badge: "Teknik",
@@ -430,7 +430,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "environment",
     title: "Denizcilik ve Çevre Koruma",
-    subtitle: "Emisyon, atık yönetimi, balast ve çevresel uyum hesapları",
+    subtitle: "",
     icon: Leaf,
     accent: "from-emerald-600 via-green-600 to-teal-700",
     badge: "Yeşil",
@@ -482,7 +482,7 @@ export const calculationCategories: CategoryConfig[] = [
   {
     id: "economics",
     title: "Deniz İşletmeciliğinde Ticari Operasyonlar",
-    subtitle: "TCE, demurrage ve sefer kârlılığı simülasyonları",
+    subtitle: "",
     icon: TrendingUp,
     accent: "from-amber-400 via-yellow-500 to-orange-600",
     badge: "Finans",
