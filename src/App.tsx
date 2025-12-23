@@ -38,6 +38,7 @@ import SailorKnotsPage from "./pages/SailorKnots";
 import StabilityAnalysisPage from "./pages/StabilityAnalysis";
 import StableTalesPage from "./pages/StableTales";
 import EmptyPage from "./pages/EmptyPage";
+import PassagePlanPage from "./pages/PassagePlanPage";
 import MoonPhases from "./pages/MoonPhases";
 import Settings from "./pages/Settings";
 import Formulas from "./pages/Formulas";
@@ -150,6 +151,7 @@ const AnimatedRoutes = () => {
         <Route path="/hub/:categoryId" element={<PageTransition><HubCategoryPage /></PageTransition>} />
         <Route path="/crew/:roleSlug" element={<PageTransition><CrewRoleDetailPage /></PageTransition>} />
         <Route path="/bridge/:deviceId" element={<PageTransition><BridgeDeviceDetailPage /></PageTransition>} />
+        <Route path="/passage-plan" element={<PageTransition><PassagePlanPage /></PageTransition>} />
         <Route path="/calculations/:categoryId/:sectionId" element={<PageTransition><CalculationSectionPage /></PageTransition>} />
         <Route path="/stability" element={<PageTransition><StabilityMenu /></PageTransition>} />
         {/* Stability sub-routes */}
