@@ -644,6 +644,58 @@ export default function CalculationsMenu() {
                   </table>
                 </div>
               </div>
+
+              {/* 9. Makine Dairesi İşleri */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">⚙️</span>
+                  <h3 className="font-bold text-foreground">9️⃣ MAKİNE DAİRESİ İŞLERİ</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 pr-4 font-semibold text-primary">Asıl Sorumlu</th>
+                        <th className="py-2 font-semibold text-muted-foreground">Fiilen Yapan</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Ana makine operasyonu", "Chief Engineer", "2/E – 3/E"],
+                        ["Yardımcı makine bakımı", "2nd Engineer", "3/E – 4/E"],
+                        ["Jeneratör operasyonu", "2nd Engineer", "3/E – Oiler"],
+                        ["Yakıt transferi", "Chief Engineer", "3/E"],
+                        ["Yağlama sistemi", "2nd Engineer", "4/E – Oiler"],
+                        ["Soğutma sistemi", "2nd Engineer", "3/E"],
+                        ["Balast operasyonu", "Chief Engineer", "3/E"],
+                        ["Sintine pompası", "3rd Engineer", "4/E – Oiler"],
+                        ["Separator çalıştırma", "3rd Engineer", "4/E"],
+                        ["Kazan operasyonu", "2nd Engineer", "3/E"],
+                        ["Kompresör bakımı", "3rd Engineer", "4/E"],
+                        ["Pompa bakımları", "2nd Engineer", "3/E – 4/E"],
+                        ["Elektrik sistemleri", "Electrician", "Electrician"],
+                        ["Otomasyon sistemleri", "Chief Engineer", "Electrician"],
+                        ["Spare parts yönetimi", "Chief Engineer", "2/E"],
+                        ["Makine logbook", "Chief Engineer", "Vardiya mühendisi"],
+                        ["PMS kayıtları", "2nd Engineer", "Tüm mühendisler"],
+                        ["Bunkering operasyonu", "Chief Engineer", "2/E – 3/E"],
+                        ["LO/FO analizleri", "Chief Engineer", "2/E"],
+                        ["Makine dairesi temizliği", "Chief Engineer", "Oiler – Wiper"],
+                        ["Emergency generator", "2nd Engineer", "3/E"],
+                        ["Steering gear bakımı", "2nd Engineer", "3/E"],
+                        ["Makine dairesi güvenliği", "Chief Engineer", "Tüm personel"],
+                      ].map(([task, responsible, worker]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 pr-4 text-primary">{responsible}</td>
+                          <td className="py-1.5 text-muted-foreground">{worker}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </section>
           )}
 
