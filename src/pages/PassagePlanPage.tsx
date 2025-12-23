@@ -133,8 +133,10 @@ export default function PassagePlanPage() {
             </div>
           </div>
           <p className="text-sm text-muted-foreground">
-            Geminin iskele çözüldüğü andan varışta bağlanana kadar izleyeceği emniyetli, yasal ve optimize edilmiş rota planı.
-            PSC açısından kaza olursa ilk bakılan belge passage plan’dır; dört aşamanın her biri ayrı ayrı belgelenmelidir.
+            Passage plan, geminin iskeleden ayrılışından varış limanında bağlanmasına kadar takip edeceği emniyetli ve yasal
+            seyir rotasıdır. PSC incelemelerinde ve kaza durumlarında ilk kontrol edilen belgelerden biridir. Bu nedenle
+            passage planın dört aşaması olan appraisal, planning, execution ve monitoring süreçlerinin tamamı ayrı ayrı
+            dokümante edilmelidir.
           </p>
         </header>
 
