@@ -121,6 +121,7 @@ import MachineCalculationsPage from "./pages/MachineCalculationsPage";
 import MachineFormulasPage from "./pages/MachineFormulas";
 import MachineQuizPage from "./pages/MachineQuiz";
 import MachineRulesPage from "./pages/MachineRules";
+import RegulationDetailPage from "./pages/RegulationDetailPage";
 
 import WidgetPage from "./pages/WidgetPage";
 import MaritimeNews from "./pages/MaritimeNews";
@@ -264,6 +265,7 @@ const AnimatedRoutes = () => {
         <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
         <Route path="/formulas" element={<PageTransition><Formulas /></PageTransition>} />
         <Route path="/regulations" element={<PageTransition><Regulations /></PageTransition>} />
+        <Route path="/regulations/:slug" element={<PageTransition><RegulationDetailPage /></PageTransition>} />
         <Route path="/clock" element={<PageTransition><ClockPage /></PageTransition>} />
         <Route path="/auth/callback" element={<PageTransition><AuthCallback /></PageTransition>} />
         <Route path="/weather-forecast" element={<PageTransition><WeatherForecast /></PageTransition>} />
