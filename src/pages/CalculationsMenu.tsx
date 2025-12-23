@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
 import { bridgeDevices } from "@/data/bridgeDevices";
 import { crewHierarchy } from "@/data/crewHierarchy";
+import { shipDuties, type ShipDutyIcon } from "@/data/shipDuties";
 import {
   BookOpen,
   ChevronDown,
@@ -24,6 +25,7 @@ export default function CalculationsMenu() {
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
+  const [showShipDuties, setShowShipDuties] = useState(false);
 
   const machinerySystems = [
     {
@@ -202,6 +204,13 @@ export default function CalculationsMenu() {
     },
   ];
 
+  const dutyIconMap: Record<ShipDutyIcon, typeof Waves> = {
+    Waves,
+    Cog,
+    Anchor,
+    ShieldCheck,
+  };
+
   const highRefreshRateStyles: CSSProperties = {
     // Ensure the calculations menu animates at 120Hz for ultra-smooth interactions
     ['--frame-rate' as string]: "120",
@@ -262,6 +271,20 @@ export default function CalculationsMenu() {
             <span>Gemi Personeli</span>
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${showCrew ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowShipDuties((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 text-white shadow group-hover:scale-105">
+              📋
+            </span>
+            <span>GEMİDE YAPILAN TÜM İŞLER ve SORUMLULARI</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showShipDuties ? "rotate-180" : "rotate-0"}`}
             />
           </button>
 
@@ -386,6 +409,58 @@ export default function CalculationsMenu() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </section>
+          )}
+
+          {showShipDuties && (
+            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Gemide Yapılan Tüm İşler &amp; Sorumlular</h2>
+                <p className="text-xs text-muted-foreground">
+                  Köprüüstü, makine, güverte ve emniyet operasyonlarındaki iş akışlarını sorumlu kişilerle birlikte inceleyin.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+                {shipDuties.map((duty) => {
+                  const DutyIcon = dutyIconMap[duty.icon as keyof typeof dutyIconMap];
+                  return (
+                    <div
+                      key={duty.area}
+                      className="flex h-full flex-col gap-3 rounded-xl border border-border/50 bg-background/70 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${duty.accent} text-white shadow`}>
+                          <DutyIcon className="h-5 w-5" />
+                        </span>
+                        <div className="space-y-1">
+                          <h3 className="text-sm font-semibold text-foreground">{duty.area}</h3>
+                          <p className="text-xs text-muted-foreground leading-relaxed">{duty.summary}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        {duty.tasks.map((task) => (
+                          <div
+                            key={task.title}
+                            className="rounded-lg border border-border/40 bg-card/70 p-3 shadow-sm"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="space-y-1">
+                                <div className="text-sm font-semibold text-foreground">{task.title}</div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">{task.details}</p>
+                              </div>
+                              <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                                {task.responsible}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}
