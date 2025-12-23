@@ -586,11 +586,12 @@ const Regulations = () => {
         </Card>
 
         <Tabs defaultValue="chapters" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 h-auto p-1">
+          <TabsList className="grid w-full grid-cols-5 h-auto p-1">
             <TabsTrigger value="chapters" className="data-[state=active]:bg-background data-[state=active]:text-foreground">SOLAS 2020</TabsTrigger>
             <TabsTrigger value="uscg" className="data-[state=active]:bg-background data-[state=active]:text-foreground">COLREG</TabsTrigger>
             <TabsTrigger value="amendments" className="data-[state=active]:bg-background data-[state=active]:text-foreground">2024 Updates</TabsTrigger>
             <TabsTrigger value="navrules" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Seyir Kuralları</TabsTrigger>
+            <TabsTrigger value="marpol" className="data-[state=active]:bg-background data-[state=active]:text-foreground">MARPOL 2023</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters" className="space-y-4">
@@ -1164,6 +1165,73 @@ const Regulations = () => {
 
             {/* Gelgit Tablosu ve Hesaplamaları */}
             <TideCalculationCard />
+          </TabsContent>
+
+          <TabsContent value="marpol" className="space-y-6">
+            <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
+              <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div className="space-y-2">
+                  <CardTitle className="flex items-center gap-2">
+                    <Waves className="h-5 w-5 text-blue-600" />
+                    MARPOL Consolidated Edition 2023
+                  </CardTitle>
+                  <CardDescription>
+                    Deniz kirliliğinin önlenmesine yönelik en güncel konsolide (2023) sürümün özet PDF'i ve resmi kaynak bağlantıları.
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => openAsset('/MARPOL-Consolidated-2023-Overview.pdf')}
+                    className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    <Download className="h-4 w-4" />
+                    Özet PDF'i Aç
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openExternal('https://www.imo.org/en/publications/pages/home.aspx')}
+                    className="flex items-center gap-2"
+                  >
+                    <Globe className="h-4 w-4" />
+                    Resmi IMO Yayını
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Card className="shadow-sm">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Öne Çıkan Başlıklar</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm text-muted-foreground">
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>Ek I–VI için 2023 konsolide değişiklik notları</li>
+                        <li>Özel alanlar, OWS/15 ppm ve ORB kayıt gereklilikleri</li>
+                        <li>Yakıt numunesi, EEOI/CII ve SEEMP notları</li>
+                      </ul>
+                      <p className="text-xs text-blue-700 dark:text-blue-300">
+                        Not: Özet PDF, 2023 konsolide MARPOL hükümlerinin saha kullanımına yönelik kısa bir referanstır; resmi metin için IMO yayınına başvurulmalıdır.
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="shadow-sm">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Ekler</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-wrap gap-2">
+                      {["Ek I - Petrol", "Ek II - Zararlı Döküntüler", "Ek III - Paketli Maddeler", "Ek IV - Pis Su", "Ek V - Çöp", "Ek VI - Hava Kirliliği"].map((item) => (
+                        <Badge key={item} variant="secondary" className="text-xs">
+                          {item}
+                        </Badge>
+                      ))}
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
