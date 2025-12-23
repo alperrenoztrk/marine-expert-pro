@@ -8,6 +8,24 @@ import {
   Navigation2
 } from "lucide-react";
 
+const bridgeDeviceImages = {
+  shipBridge: new URL("../assets/maritime/ship-bridge.jpg", import.meta.url).href,
+  lighthouse: new URL("../assets/maritime/lighthouse.jpg", import.meta.url).href,
+  oceanWaves: new URL("../assets/maritime/ocean-waves.jpg", import.meta.url).href,
+  navigationCompassPhoto: new URL("../assets/maritime/navigation-compass.jpg", import.meta.url).href,
+
+  radarDisplay: new URL("../assets/navigation/radar-display.svg", import.meta.url).href,
+  ecdisDisplay: new URL("../assets/navigation/ecdis-display.svg", import.meta.url).href,
+  gpsSatellites: new URL("../assets/navigation/gps-satellites.svg", import.meta.url).href,
+  compassDiagram: new URL("../assets/navigation/compass.svg", import.meta.url).href,
+
+  vhfRadio: new URL("../assets/navigation/vhf-radio.svg", import.meta.url).href,
+  dscDistress: new URL("../assets/navigation/dsc-distress.svg", import.meta.url).href,
+  navtexReceiver: new URL("../assets/navigation/navtex-receiver.svg", import.meta.url).href,
+  aisTargets: new URL("../assets/navigation/ais-targets.svg", import.meta.url).href,
+  autopilotControl: new URL("../assets/navigation/autopilot-control.svg", import.meta.url).href
+} as const;
+
 export type BridgeDeviceId =
   | "vhf"
   | "dsc"
@@ -42,8 +60,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Radio,
     accent: "from-sky-500 via-blue-500 to-indigo-500",
     images: [
-      "https://images.unsplash.com/photo-1459535653751-d571815e906b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.vhfRadio,
+      bridgeDeviceImages.shipBridge
     ],
     duties: [
       "Görüş hattı mesafelerde emniyet, operasyonel ve liman kılavuz çağrıları",
@@ -78,8 +96,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Waves,
     accent: "from-cyan-500 via-sky-500 to-blue-600",
     images: [
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1499946980998-6c3e886f1b56?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.dscDistress,
+      bridgeDeviceImages.shipBridge
     ],
     duties: [
       "Tek tuşla MMSI ve GNSS konum bilgisi içeren distress alarmı gönderir",
@@ -114,8 +132,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Navigation,
     accent: "from-emerald-500 via-teal-500 to-cyan-500",
     images: [
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.ecdisDisplay,
+      bridgeDeviceImages.gpsSatellites
     ],
     duties: [
       "Passage plan üretimi: appraisal–planning–execution–monitoring aşamalarının dijital yönetimi",
@@ -150,8 +168,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: RadarIcon,
     accent: "from-indigo-500 via-blue-600 to-slate-700",
     images: [
-      "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.radarDisplay,
+      bridgeDeviceImages.shipBridge
     ],
     duties: [
       "Hedef tespiti ve ARPA takibiyle CPA/TCPA hesaplama",
@@ -186,8 +204,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: SatelliteDish,
     accent: "from-amber-500 via-orange-500 to-rose-500",
     images: [
-      "https://images.unsplash.com/photo-1504904126298-3f4f9ae7c33d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1455763916899-e8b50eca9967?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.navtexReceiver,
+      bridgeDeviceImages.lighthouse
     ],
     duties: [
       "NAVAREA/METAREA yayınlarının otomatik alımı ve kategorilere göre filtrelenmesi",
@@ -222,8 +240,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Radio,
     accent: "from-violet-500 via-indigo-500 to-blue-500",
     images: [
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.aisTargets,
+      bridgeDeviceImages.gpsSatellites
     ],
     duties: [
       "Statik (IMO, MMSI, çağrı adı) ve dinamik (SOG, COG, ROT) bilgileri periyodik yayınlama",
@@ -258,8 +276,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Compass,
     accent: "from-slate-600 via-gray-700 to-stone-800",
     images: [
-      "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.compassDiagram,
+      bridgeDeviceImages.navigationCompassPhoto
     ],
     duties: [
       "COG/heading referansı sağlayarak radar, ECDIS, autopilot ve conning sistemlerini besler",
@@ -294,8 +312,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Navigation2,
     accent: "from-teal-500 via-cyan-500 to-blue-500",
     images: [
-      "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80"
+      bridgeDeviceImages.autopilotControl,
+      bridgeDeviceImages.oceanWaves
     ],
     duties: [
       "Heading hold, course over ground veya track control modlarında otomatik dümenleme",

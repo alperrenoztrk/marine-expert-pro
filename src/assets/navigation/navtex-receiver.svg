@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06121A"/>
+      <stop offset="0.55" stop-color="#0B2A3A"/>
+      <stop offset="1" stop-color="#0F3D2E"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bg)"/>
+
+  <!-- MSI dots -->
+  <g opacity="0.18" fill="#A7F3D0">
+    <circle cx="150" cy="180" r="6"/>
+    <circle cx="190" cy="150" r="5"/>
+    <circle cx="240" cy="210" r="4"/>
+    <circle cx="1040" cy="160" r="6"/>
+    <circle cx="1000" cy="210" r="4"/>
+    <circle cx="1080" cy="230" r="5"/>
+  </g>
+
+  <!-- Navtex receiver / printer -->
+  <g filter="url(#shadow)">
+    <rect x="230" y="230" width="740" height="440" rx="40" fill="#0B1020" stroke="#334155" stroke-width="3"/>
+
+    <!-- screen -->
+    <rect x="290" y="290" width="360" height="180" rx="26" fill="#052E2B" stroke="#34D399" stroke-opacity="0.55" stroke-width="3"/>
+    <g opacity="0.95">
+      <path d="M318 334H620" stroke="#A7F3D0" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+      <path d="M318 372H570" stroke="#A7F3D0" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
+      <path d="M318 410H600" stroke="#A7F3D0" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+    </g>
+
+    <!-- controls -->
+    <rect x="680" y="290" width="230" height="180" rx="26" fill="#0F172A" stroke="#334155" stroke-width="3"/>
+    <g fill="#111827" stroke="#475569" stroke-width="2">
+      <rect x="708" y="320" width="174" height="34" rx="12"/>
+      <rect x="708" y="366" width="174" height="34" rx="12"/>
+      <rect x="708" y="412" width="90" height="34" rx="12"/>
+      <rect x="804" y="412" width="78" height="34" rx="12"/>
+    </g>
+
+    <!-- paper feed -->
+    <g>
+      <rect x="290" y="498" width="620" height="136" rx="24" fill="#0F172A" stroke="#334155" stroke-width="3"/>
+      <path d="M330 520H870" stroke="#64748B" stroke-width="10" stroke-linecap="round" opacity="0.7"/>
+      <rect x="330" y="540" width="540" height="120" rx="18" fill="url(#paper)" stroke="#CBD5E1" stroke-width="3"/>
+      <g opacity="0.7" stroke="#334155" stroke-width="8" stroke-linecap="round">
+        <path d="M360 576H820"/>
+        <path d="M360 612H780"/>
+        <path d="M360 648H800"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- NAVTEX label -->
+  <g opacity="0.92">
+    <rect x="70" y="70" width="260" height="64" rx="18" fill="#0B1020" stroke="#334155" stroke-width="2"/>
+    <text x="100" y="112" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="28" font-weight="900" fill="#D1FAE5">
+      NAVTEX / MSI
+    </text>
+  </g>
+</svg>
