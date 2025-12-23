@@ -271,15 +271,6 @@ export default function PassagePlanPage() {
           </div>
         </section>
 
-        <section className="space-y-2 rounded-2xl border border-dashed border-primary/40 bg-card/70 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-foreground">⚠️ Aşırı Gerçekçi PSC / Vetting Gerçeği</h2>
-          <ul className="space-y-1 text-sm text-muted-foreground">
-            <li>• “Plan var” demek yetmez; plan mantıklı olmalı.</li>
-            <li>• UKC yazılı olup hesap yoksa deficiency riski oluşur.</li>
-            <li>• Contingency yoksa major bulunabilir.</li>
-            <li>• OOW planı bilmiyorsa detention riski vardır.</li>
-          </ul>
-        </section>
       </div>
     </div>
   );
