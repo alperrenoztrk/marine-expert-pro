@@ -8,24 +8,6 @@ import {
   Navigation2
 } from "lucide-react";
 
-const bridgeDeviceImages = {
-  shipBridge: new URL("../assets/maritime/ship-bridge.jpg", import.meta.url).href,
-  lighthouse: new URL("../assets/maritime/lighthouse.jpg", import.meta.url).href,
-  oceanWaves: new URL("../assets/maritime/ocean-waves.jpg", import.meta.url).href,
-  navigationCompassPhoto: new URL("../assets/maritime/navigation-compass.jpg", import.meta.url).href,
-
-  radarDisplay: new URL("../assets/navigation/radar-display.svg", import.meta.url).href,
-  ecdisDisplay: new URL("../assets/navigation/ecdis-display.svg", import.meta.url).href,
-  gpsSatellites: new URL("../assets/navigation/gps-satellites.svg", import.meta.url).href,
-  compassDiagram: new URL("../assets/navigation/compass.svg", import.meta.url).href,
-
-  vhfRadio: new URL("../assets/navigation/vhf-radio.svg", import.meta.url).href,
-  dscDistress: new URL("../assets/navigation/dsc-distress.svg", import.meta.url).href,
-  navtexReceiver: new URL("../assets/navigation/navtex-receiver.svg", import.meta.url).href,
-  aisTargets: new URL("../assets/navigation/ais-targets.svg", import.meta.url).href,
-  autopilotControl: new URL("../assets/navigation/autopilot-control.svg", import.meta.url).href
-} as const;
-
 export type BridgeDeviceId =
   | "vhf"
   | "dsc"
@@ -60,8 +42,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Radio,
     accent: "from-sky-500 via-blue-500 to-indigo-500",
     images: [
-      bridgeDeviceImages.vhfRadio,
-      bridgeDeviceImages.shipBridge
+      "https://upload.wikimedia.org/wikipedia/commons/d/dc/Maritime_VHF_Sailor_RT144.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/2/29/VHF_radio_with_Maritime_Distress_Safety_System.jpg"
     ],
     duties: [
       "Görüş hattı mesafelerde emniyet, operasyonel ve liman kılavuz çağrıları",
@@ -96,8 +78,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Waves,
     accent: "from-cyan-500 via-sky-500 to-blue-600",
     images: [
-      bridgeDeviceImages.dscDistress,
-      bridgeDeviceImages.shipBridge
+      "https://upload.wikimedia.org/wikipedia/commons/d/d5/AN_ICS_DSC_2_GMDSS_control_panel.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/3/36/Sankt_Erik_VHF_marine_radio_DSC_0188w.jpg"
     ],
     duties: [
       "Tek tuşla MMSI ve GNSS konum bilgisi içeren distress alarmı gönderir",
@@ -132,8 +114,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Navigation,
     accent: "from-emerald-500 via-teal-500 to-cyan-500",
     images: [
-      bridgeDeviceImages.ecdisDisplay,
-      bridgeDeviceImages.gpsSatellites
+      "https://upload.wikimedia.org/wikipedia/commons/c/ca/Cap_San_Diego_Br%C3%BCcke_Radar_ECDIS.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/d/dc/Sichem_Osprey_radar_and_ECDIS.jpg"
     ],
     duties: [
       "Passage plan üretimi: appraisal–planning–execution–monitoring aşamalarının dijital yönetimi",
@@ -168,8 +150,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: RadarIcon,
     accent: "from-indigo-500 via-blue-600 to-slate-700",
     images: [
-      bridgeDeviceImages.radarDisplay,
-      bridgeDeviceImages.shipBridge
+      "https://upload.wikimedia.org/wikipedia/commons/d/dd/Tarmo_bridge_radar_display.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/c/ca/Cap_San_Diego_Br%C3%BCcke_Radar_ECDIS.jpg"
     ],
     duties: [
       "Hedef tespiti ve ARPA takibiyle CPA/TCPA hesaplama",
@@ -204,8 +186,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: SatelliteDish,
     accent: "from-amber-500 via-orange-500 to-rose-500",
     images: [
-      bridgeDeviceImages.navtexReceiver,
-      bridgeDeviceImages.lighthouse
+      "https://upload.wikimedia.org/wikipedia/commons/1/1f/Navtex.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/e/e8/NASA-Marine-NAVTEX-RX.jpg"
     ],
     duties: [
       "NAVAREA/METAREA yayınlarının otomatik alımı ve kategorilere göre filtrelenmesi",
@@ -240,8 +222,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Radio,
     accent: "from-violet-500 via-indigo-500 to-blue-500",
     images: [
-      bridgeDeviceImages.aisTargets,
-      bridgeDeviceImages.gpsSatellites
+      "https://upload.wikimedia.org/wikipedia/commons/6/63/Ais_dcu_bridge.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/fc/Nauticast_Inland_AIS_Transponder_make_ACR_type_R-4-203.JPG"
     ],
     duties: [
       "Statik (IMO, MMSI, çağrı adı) ve dinamik (SOG, COG, ROT) bilgileri periyodik yayınlama",
@@ -276,8 +258,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Compass,
     accent: "from-slate-600 via-gray-700 to-stone-800",
     images: [
-      bridgeDeviceImages.compassDiagram,
-      bridgeDeviceImages.navigationCompassPhoto
+      "https://upload.wikimedia.org/wikipedia/commons/f/fe/NS_Savannah_-_Close-up_of_Gyrocompass.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/e/e6/US_Navy_091002-N-0807W-006_Quartermaster_Seaman_Ricky_C._Rodriguez_uses_a_gyrocompass_during_sea_and_anchor_detail_aboard_the_amphibious_dock_landing_ship_USS_Harpers_Ferry_%28LSD_49%29.jpg"
     ],
     duties: [
       "COG/heading referansı sağlayarak radar, ECDIS, autopilot ve conning sistemlerini besler",
@@ -312,8 +294,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Navigation2,
     accent: "from-teal-500 via-cyan-500 to-blue-500",
     images: [
-      bridgeDeviceImages.autopilotControl,
-      bridgeDeviceImages.oceanWaves
+      "https://upload.wikimedia.org/wikipedia/commons/a/a1/Boat_autopilot.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1a/Yacht_Instruments%2C_Southerly_Pearl.jpg"
     ],
     duties: [
       "Heading hold, course over ground veya track control modlarında otomatik dümenleme",
