@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#3B0A2A"/>
+      <stop offset="1" stop-color="#7C1D1D"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FB7185" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F97316" stop-opacity="0.9"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bg)"/>
+
+  <!-- waves -->
+  <g opacity="0.18" stroke="#FDA4AF" stroke-width="8">
+    <path d="M0 640C120 610 240 610 360 640C480 670 600 670 720 640C840 610 960 610 1080 640C1140 655 1170 662 1200 668"/>
+    <path d="M0 710C120 680 240 680 360 710C480 740 600 740 720 710C840 680 960 680 1080 710C1140 725 1170 732 1200 738"/>
+  </g>
+
+  <!-- DSC console -->
+  <g filter="url(#shadow)">
+    <rect x="240" y="220" width="720" height="460" rx="40" fill="#0B1020" stroke="#334155" stroke-width="3"/>
+    <rect x="300" y="290" width="360" height="180" rx="24" fill="url(#glass)" stroke="#FED7AA" stroke-opacity="0.55" stroke-width="3"/>
+    <g opacity="0.9">
+      <path d="M330 375H610" stroke="#1F0A13" stroke-width="10" stroke-linecap="round"/>
+      <path d="M330 418H540" stroke="#1F0A13" stroke-width="10" stroke-linecap="round" opacity="0.75"/>
+    </g>
+
+    <!-- distress cover -->
+    <g>
+      <rect x="710" y="290" width="190" height="180" rx="28" fill="#111827" stroke="#475569" stroke-width="3"/>
+      <path d="M740 320H870" stroke="#64748B" stroke-width="10" stroke-linecap="round"/>
+      <path d="M740 352H850" stroke="#64748B" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+      <rect x="740" y="378" width="130" height="70" rx="18" fill="#7F1D1D" stroke="#FCA5A5" stroke-width="3"/>
+      <text x="762" y="422" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="26" font-weight="900" fill="#FFF1F2">
+        DISTRESS
+      </text>
+    </g>
+
+    <!-- keypad -->
+    <g>
+      <rect x="300" y="510" width="600" height="140" rx="22" fill="#0F172A" stroke="#334155" stroke-width="3"/>
+      <g fill="#111827" stroke="#475569" stroke-width="2">
+        <rect x="330" y="540" width="80" height="44" rx="12"/>
+        <rect x="420" y="540" width="80" height="44" rx="12"/>
+        <rect x="510" y="540" width="80" height="44" rx="12"/>
+        <rect x="600" y="540" width="80" height="44" rx="12"/>
+        <rect x="690" y="540" width="80" height="44" rx="12"/>
+        <rect x="780" y="540" width="90" height="44" rx="12"/>
+
+        <rect x="330" y="596" width="120" height="44" rx="12"/>
+        <rect x="460" y="596" width="120" height="44" rx="12"/>
+        <rect x="590" y="596" width="120" height="44" rx="12"/>
+        <rect x="720" y="596" width="150" height="44" rx="12"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- signal arcs -->
+  <g>
+    <path d="M140 210C210 150 300 120 400 120" stroke="#FDBA74" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
+    <path d="M160 260C230 210 300 190 380 190" stroke="#FDA4AF" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+    <circle cx="120" cy="280" r="16" fill="#FFE4E6"/>
+  </g>
+
+  <!-- label -->
+  <g opacity="0.92">
+    <rect x="70" y="70" width="300" height="64" rx="18" fill="#0B1020" stroke="#334155" stroke-width="2"/>
+    <text x="100" y="112" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="28" font-weight="900" fill="#FFE4E6">
+      DSC / DISTRESS
+    </text>
+  </g>
+</svg>
