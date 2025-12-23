@@ -16,7 +16,8 @@ import {
   Gauge,
   ShieldCheck,
   Snowflake,
-  Waves
+  Waves,
+  ClipboardList
 } from "lucide-react";
 
 export default function CalculationsMenu() {
@@ -24,6 +25,7 @@ export default function CalculationsMenu() {
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
+  const [showShipTasks, setShowShipTasks] = useState(false);
 
   const machinerySystems = [
     {
@@ -293,6 +295,20 @@ export default function CalculationsMenu() {
             />
           </button>
 
+          <button
+            type="button"
+            onClick={() => setShowShipTasks((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 text-white shadow group-hover:scale-105">
+              <ClipboardList className="h-4 w-4" />
+            </span>
+            <span>Gemide Yapılan Tüm İşler ve Sorumluları</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showShipTasks ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
           {showLessons && (
             <div className="flex flex-col gap-6">
               {calculationCategories.map((category) => {
@@ -335,6 +351,48 @@ export default function CalculationsMenu() {
                 );
               })}
             </div>
+          )}
+
+          {showShipTasks && (
+            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Gemide Yapılan Tüm İşler ve Sorumluları</h2>
+                <p className="text-xs text-muted-foreground">
+                  Gemide düzenli olarak yapılan işler, kontroller ve bunların sorumlu personelleri
+                </p>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                {[
+                  { title: "Günlük Kontroller", responsible: "Vardiya Zabiti / Makine Zabiti", tasks: ["Seyir cihazları kontrolü", "Makine dairesi günlük kontrolleri", "Güverte turları", "Meteoroloji kayıtları"] },
+                  { title: "Haftalık Kontroller", responsible: "1. Zabit / 2. Mühendis", tasks: ["Yangın söndürme sistemleri testi", "Cankurtaran araçları kontrolü", "Emniyet teçhizatı muayenesi", "Yardımcı makine bakımları"] },
+                  { title: "Aylık Kontroller", responsible: "Kaptan / Başmühendis", tasks: ["ISM denetimleri", "Tatbikat planlaması", "Bakım planı gözden geçirme", "Sertifika geçerlilikleri"] },
+                  { title: "Köprüüstü Operasyonları", responsible: "Kaptan / Vardiya Zabiti", tasks: ["Seyir planlaması", "Vardiya tutma", "GMDSS iletişimleri", "Hava raporları"] },
+                  { title: "Makine Dairesi İşleri", responsible: "Başmühendis / Makine Zabitleri", tasks: ["Ana makine bakımı", "Jeneratör operasyonu", "Yakıt yönetimi", "Kazan bakımı"] },
+                  { title: "Güverte İşleri", responsible: "Bosun / Güverte Personeli", tasks: ["Boya/Bakım çalışmaları", "Liman operasyonları", "Kargo elleçleme", "Demirleme/Bağlama"] },
+                  { title: "Emniyet İşleri", responsible: "Emniyet Zabiti / Tüm Personel", tasks: ["Yangın tatbikatları", "Terk gemi tatbikatları", "ISM prosedürleri", "Kaza raporlaması"] },
+                  { title: "İkmal & Catering", responsible: "Steward / Aşçı", tasks: ["Kumanya yönetimi", "Yemek hazırlama", "Kamara temizliği", "Stok kontrolü"] },
+                ].map((category) => (
+                  <div
+                    key={category.title}
+                    className="rounded-xl border border-border/50 bg-gradient-to-br from-white/60 via-card to-slate-50/70 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:from-background dark:via-card dark:to-slate-900/40"
+                  >
+                    <div className="mb-2 flex items-center gap-2">
+                      <ClipboardList className="h-5 w-5 text-purple-500" />
+                      <h3 className="font-bold text-foreground">{category.title}</h3>
+                    </div>
+                    <p className="mb-2 text-xs text-primary font-medium">{category.responsible}</p>
+                    <ul className="space-y-1">
+                      {category.tasks.map((task) => (
+                        <li key={task} className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <ChevronRight className="h-3 w-3 text-purple-400" />
+                          {task}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
           )}
 
           {showCrew && (
