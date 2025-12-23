@@ -113,6 +113,8 @@ function normalizeImageUrl(value: unknown): string | undefined {
     if (!trimmed) return undefined;
     // Avoid data URIs or relative paths; only allow http(s).
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // Some feeds (e.g. gCaptain, Splash247) use protocol-relative URLs. Normalize them to https to keep images visible.
+    if (/^\/\//.test(trimmed)) return `https:${trimmed}`;
     return undefined;
   }
 
