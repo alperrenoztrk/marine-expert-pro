@@ -66,7 +66,6 @@ const planSections = [
   {
     title: "C. UKC (Under Keel Clearance)",
     bullets: ["Static draft", "Squat", "Tide", "Heel", "Wave response"],
-    note: "PSC sorusu: Bu bölgede minimum UKC kaçtır?",
   },
   {
     title: "D. SPEED & ETA PLANLAMASI",
@@ -83,7 +82,6 @@ const planSections = [
       "Hava bozarsa hangi rota?",
       "Trafik kilitlenirse bekleme alanı?",
     ],
-    note: "PSC bunu özellikle arar.",
   },
 ];
 
@@ -197,7 +195,6 @@ export default function PassagePlanPage() {
                     <li key={bullet}>• {bullet}</li>
                   ))}
                 </ul>
-                {section.note && <p className="mt-2 text-xs text-primary">{section.note}</p>}
               </div>
             ))}
           </div>
