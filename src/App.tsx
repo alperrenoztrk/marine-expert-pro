@@ -12,6 +12,11 @@ import { useNavigationHierarchy } from "@/hooks/useNavigationHierarchy";
 import { useFrameRate } from "@/hooks/useFrameRate";
 import Index from "./pages/Index";
 import CalculationsMenu from "./pages/CalculationsMenu";
+import LessonsPage from "./pages/LessonsPage";
+import CrewHierarchyPage from "./pages/CrewHierarchyPage";
+import BridgeDevicesPage from "./pages/BridgeDevicesPage";
+import MachineryHubPage from "./pages/MachineryHubPage";
+import ShipTasksPage from "./pages/ShipTasksPage";
 import CalculationSectionPage from "./pages/CalculationSectionPage";
 import StabilityMenu from "./pages/StabilityMenu";
 import SafetyMenu from "./pages/SafetyMenu";
@@ -148,6 +153,11 @@ const AnimatedRoutes = () => {
         <Route path="/maritime-news" element={<PageTransition><MaritimeNews /></PageTransition>} />
         <Route path="/widgets" element={<PageTransition><WidgetPage /></PageTransition>} />
         <Route path="/calculations" element={<PageTransition><CalculationsMenu /></PageTransition>} />
+        <Route path="/lessons" element={<PageTransition><LessonsPage /></PageTransition>} />
+        <Route path="/crew" element={<PageTransition><CrewHierarchyPage /></PageTransition>} />
+        <Route path="/bridge" element={<PageTransition><BridgeDevicesPage /></PageTransition>} />
+        <Route path="/machinery" element={<PageTransition><MachineryHubPage /></PageTransition>} />
+        <Route path="/ship-tasks" element={<PageTransition><ShipTasksPage /></PageTransition>} />
         <Route path="/hub" element={<PageTransition><CalculationsMenu /></PageTransition>} />
         <Route path="/hub/:categoryId" element={<PageTransition><HubCategoryPage /></PageTransition>} />
         <Route path="/crew/:roleSlug" element={<PageTransition><CrewRoleDetailPage /></PageTransition>} />
