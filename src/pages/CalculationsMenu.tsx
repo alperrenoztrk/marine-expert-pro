@@ -14,6 +14,7 @@ import {
   Factory,
   Flame,
   Gauge,
+  FileText,
   ShieldCheck,
   Snowflake,
   Waves,
@@ -26,6 +27,7 @@ export default function CalculationsMenu() {
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
+  const [showRegulations, setShowRegulations] = useState(false);
   const [showShipTasks, setShowShipTasks] = useState(false);
   const [showRegulations, setShowRegulations] = useState(false);
 
@@ -96,6 +98,33 @@ export default function CalculationsMenu() {
       description:
         "Irgat, mooring winch, kreyn, capstan ve Ro-Ro rampalarının yük limit kontrolü, hidrolik/elektrik tahrik gözetimi ve emniyet kilitlemeleri",
       icon: Anchor,
+    },
+  ];
+
+  const regulationTopics = [
+    {
+      title: "IMO / Uluslararası Kodlar",
+      description: "SOLAS, MARPOL, STCW ve ISM kapsamındaki temel gereklilikler ve güncel revizyonlar.",
+      accent: "from-sky-500 via-blue-500 to-indigo-500",
+      tag: "Güvenlik",
+    },
+    {
+      title: "Bayrak Devleti Kuralları",
+      description: "Bayrak otoritesinin yayınladığı sirküler, kılavuz ve klas koordinasyon süreçleri.",
+      accent: "from-emerald-500 via-teal-500 to-cyan-500",
+      tag: "Yetkili",
+    },
+    {
+      title: "Liman Devleti Kontrolleri",
+      description: "PSC kontrol listeleri, sık karşılaşılan eksiklikler ve hızlı hazırlık adımları.",
+      accent: "from-amber-500 via-orange-500 to-rose-500",
+      tag: "Denetim",
+    },
+    {
+      title: "Şirket Prosedürleri",
+      description: "SMS el kitabı, acil durum prosedürleri ve gemi içi raporlama formlarının özet erişimi.",
+      accent: "from-violet-500 via-purple-500 to-fuchsia-500",
+      tag: "İç Sistem",
     },
   ];
 
@@ -306,6 +335,20 @@ export default function CalculationsMenu() {
 
           <button
             type="button"
+            onClick={() => setShowRegulations((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 via-cyan-500 to-emerald-500 text-white shadow group-hover:scale-105">
+              <FileText className="h-4 w-4" />
+            </span>
+            <span>Regülasyonlar</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showRegulations ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
             onClick={() => setShowShipTasks((prev) => !prev)}
             className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
           >
@@ -374,6 +417,41 @@ export default function CalculationsMenu() {
                 );
               })}
             </div>
+          )}
+
+          {showRegulations && (
+            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Regülasyonlar Paneli</h2>
+                <p className="text-xs text-muted-foreground">
+                  SOLAS, MARPOL ve şirket SMS prosedürleri gibi tüm kritik düzenlemeleri tek yerden görüntüleyin.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {regulationTopics.map((topic) => (
+                  <article
+                    key={topic.title}
+                    className="group flex h-full flex-col gap-2 rounded-xl border border-border/50 bg-background/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${topic.accent} text-white shadow`}>
+                        <FileText className="h-4 w-4" />
+                      </span>
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">{topic.tag}</p>
+                        <h3 className="text-sm font-semibold text-foreground">{topic.title}</h3>
+                      </div>
+                    </div>
+                    <p className="text-xs leading-relaxed text-muted-foreground">{topic.description}</p>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                      İncele
+                      <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
+                    </span>
+                  </article>
+                ))}
+              </div>
+            </section>
           )}
 
           {showShipTasks && (
