@@ -900,7 +900,9 @@ export default function CalculationsMenu() {
                   <ul className="space-y-2 text-sm text-foreground/90">
                     <li className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      <span><strong>SOLAS</strong> – Denizde Can Güvenliği</span>
+                      <span className="font-semibold text-foreground">
+                        <strong>SOLAS</strong> – Denizde Can Güvenliği
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
