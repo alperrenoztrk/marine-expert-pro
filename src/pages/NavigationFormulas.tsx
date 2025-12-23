@@ -19,10 +19,13 @@ export default function NavigationFormulasPage() {
         { id: "current", title: "Akıntı Üçgeni (CTS)" },
         { id: "compass", title: "Pusula Dönüşümleri" },
         { id: "cpa", title: "CPA / TCPA" },
+        { id: "colreg", title: "COLREG Manevra" },
         { id: "position", title: "Konum Tespiti" },
         { id: "bearings", title: "Kerteriz Hesaplamaları" },
         { id: "distance", title: "Mesafe Hesaplamaları" },
-        { id: "turning", title: "Dönüş Hesaplamaları" }
+        { id: "turning", title: "Dönüş Hesaplamaları" },
+        { id: "safety", title: "Seyir Emniyeti" },
+        { id: "passage", title: "Passage Plan" }
       ]
     },
     {
@@ -43,7 +46,8 @@ export default function NavigationFormulasPage() {
       items: [
         { id: "pilotage", title: "Kıyı Seyri" },
         { id: "celestial", title: "Göksel Navigasyon" },
-        { id: "sight", title: "Sight Reduction" }
+        { id: "sight", title: "Sight Reduction" },
+        { id: "ecdis", title: "ECDIS Kontrolleri" }
       ]
     },
     {
@@ -107,6 +111,51 @@ export default function NavigationFormulasPage() {
           </CardContent>
         </Card>
 
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" /> Seyir Hesaplamaları Kapsamı (15 başlık)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <ol className="list-decimal pl-4 space-y-2">
+              <li><strong>Temel Seyir:</strong> hız–mesafe–zaman, knot ↔ km/h ↔ m/s dönüşümleri, ETA/ETD, kalan süre/mesafe, ortalama hız ve SMG/DMG hesapları.</li>
+              <li><strong>Rota & Kerteriz:</strong> plane sailing, Departure, D.Lat/D.Long, middle latitude sailing, true/magnetic/compass course, chart ölçeği ve kerterizlerle rota doğrulaması.</li>
+              <li><strong>Enlem–Boylam:</strong> dLat/dLong yön tayini, 1° = 60 NM ilişkisi, cos φ ile boylamdan NM dönüşümü, iki nokta arası mesafe.</li>
+              <li><strong>Harita Üzeri:</strong> paralel cetvel/pergel kullanımı, gerçek rota ve mesafe → zaman dönüşümü, chart correction sonrası kontrol.</li>
+              <li><strong>Manyetik & Pusula:</strong> variation, deviation, TVMDC (True–Variation–Magnetic–Deviation–Compass) zinciri, işaret kuralları ve pusula hatası.</li>
+              <li><strong>Akıntı & Rüzgâr:</strong> set/drift, CTS, SOG, leeway, vektör üçgeni ve akıntı etkisiyle ETA düzeltmesi.</li>
+              <li><strong>Kerteriz:</strong> tek/iki/üç kerteriz, relative → true bearing, transit hattı, running fix, DR ve EP.</li>
+              <li><strong>Radar:</strong> radar mesafe/kerteriz, CPA/TCPA, relative & true motion, manuel radar plot, hedef sürat/rota çözümü.</li>
+              <li><strong>COLREG bağlamı:</strong> karşılaşma tespiti, çatışma riski, manevra sonrası yeni CPA/TCPA ve relative movement analizi.</li>
+              <li><strong>Great Circle & Rhumb Line:</strong> başlangıç/son kurs, vertex enlemi, GC vs RL mesafe farkı, composite great circle.</li>
+              <li><strong>Gelgit:</strong> HW/LW zamanı ve yükseklik, Rule of Twelfths, secondary port düzeltmeleri, UKC/Squat + tide etkisi.</li>
+              <li><strong>Seyir Emniyeti:</strong> UKC, squat, güvenli hız ve mesafe, WOP, dönüş dairesi, advance & transfer.</li>
+              <li><strong>Passage Plan:</strong> toplam rota mesafesi, leg bazlı ETA, wheel-over pozisyonları, no-go area, TSS ve abort point hesapları.</li>
+              <li><strong>Astronomik Seyir:</strong> GHA/LHA, declination, sextant/dip/refraction düzeltmeleri, LOP, noon sight, güneş/yıldız fix.</li>
+              <li><strong>Elektronik Seyir (ECDIS):</strong> XTD, safety contour/depth, look-ahead time, rota kontrol konturları.</li>
+            </ol>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" /> Gerekli Tablolar ve Yayınlar
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <ul className="list-disc pl-4 space-y-1">
+              <li><strong>Tide Tables & Tidal Stream Atlas:</strong> HW/LW zaman-yükseklik, secondary port farkları ve akıntı set/drift referansları.</li>
+              <li><strong>Nautical Almanac:</strong> GHA/LHA, declination, refraction & parallax düzeltmeleri; sunrise/sunset ve meridian passage verileri.</li>
+              <li><strong>Sight Reduction Tables (HO-249/HO-229):</strong> intercept/azimut çözümü için tablo kullanımı.</li>
+              <li><strong>Deviation Card & Compass Error Log:</strong> manyetik/pusula düzeltmeleri ve TVMDC doğrulaması.</li>
+              <li><strong>Chart Catalogue & Corrections:</strong> güncel harita/ENC listesi, NM/UWN/SNW bültenleri ve ECDIS route check çıktıları.</li>
+              <li><strong>Current & Wind Reference Sheets:</strong> leeway açı katsayıları, manevra diyagramları, advance/transfer ve wheel-over tabloları.</li>
+            </ul>
+          </CardContent>
+        </Card>
+
         {/* 1. Seyir Hesaplamaları */}
         <div className="space-y-4">
           <div className="text-sm font-semibold text-primary px-1">1. Seyir Hesaplamaları</div>
@@ -126,6 +175,15 @@ d = 2R × arcsin(√(sin²((φ₂−φ₁)/2) + cosφ₁ · cosφ₂ · sin²((�
 
 İlk Kurs (θ₀):
 θ₀ = atan2(sinΔλ · cosφ₂, cosφ₁ · sinφ₂ − sinφ₁ · cosφ₂ · cosΔλ)
+
+Son Kurs (θ_f):
+θ_f = atan2(sinΔλ · cosφ₁, −cosφ₂ · sinφ₁ + sinφ₂ · cosφ₁ · cosΔλ)
+
+Vertex Enlemi:
+φ_vertex = arccos(|sinθ₀ · cosφ₁|)
+
+Composite GC:
+Kutuplara yaklaşmamak için yüksek enlemde GC leg + RL leg ile birleştir.
 
 R ≈ 3440.065 nm`}</pre>
               </div>
@@ -162,10 +220,16 @@ Yaklaşık: Departure = 60 · Δλ · cosφ̄, dLat = 60 · Δφ`}</pre>
             {isOpen('plane') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`dLat = 60 · Δφ
-Dep = 60 · Δλ · cosφ̄
+                <pre className="font-mono text-sm leading-6">{`dLat = 60 · Δφ (N/S yönü)
+Dep = 60 · Δλ · cosφ̄ (E/W yönü)
 Kurs = atan2(Dep, dLat)
-Mesafe = √(dLat² + Dep²)`}</pre>
+Mesafe = √(dLat² + Dep²)
+
+Middle Lat Sailing:
+φ̄ = (φ₁ + φ₂) / 2
+Departure = Mesafe × cosφ̄
+D.Long (dakika) = Departure / cosφ̄
+Course (RL): atan2(D.Long, dLat)`}</pre>
               </div>
             </CardContent>
             )}
@@ -181,8 +245,21 @@ Mesafe = √(dLat² + Dep²)`}</pre>
             {isOpen('time-eta') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`t (saat) = d / V
-ETA = ETD + t`}</pre>
+                <pre className="font-mono text-sm leading-6">{`Hız = Mesafe / Zaman
+Zaman = Mesafe / Hız
+Mesafe = Hız × Zaman
+
+Hız dönüşümleri:
+1 knot = 1 nm/sa = 1.852 km/sa = 0.5144 m/s
+
+ETA = ETD + (Mesafe / Hız)
+ETD = ETA − (Mesafe / Hız)
+Remaining Time = Kalan Mesafe / Anlık SOG
+Ortalama Hız = Toplam Mesafe / Toplam Süre
+SMG = DMG / Geçen Süre
+DMG = Σ leg mesafeleri
+Kalan Mesafe = Planlanan Toplam Mesafe − DMG`}</pre>
+                <div className="text-xs text-muted-foreground">SMG/DMG ve SOG/Course Made Good değerleri log/radar/GPS verileriyle doğrulanmalıdır.</div>
               </div>
             </CardContent>
             )}
@@ -200,7 +277,7 @@ ETA = ETD + t`}</pre>
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`sin(CTS − TR) = (c / V) · sin(set − TR)
 SOG = V · cos(CTS − TR) + c · cos(set − TR)`}</pre>
-                <div className="text-xs text-muted-foreground">TR: istenen rota, V: gemi sürati, c/set: akıntı</div>
+                <div className="text-xs text-muted-foreground">TR: istenen rota, V: gemi sürati, c/set: akıntı. ETA_düzeltilmiş = Mesafe_plan / SOG.</div>
               </div>
             </CardContent>
             )}
@@ -216,10 +293,17 @@ SOG = V · cos(CTS − TR) + c · cos(set − TR)`}</pre>
             {isOpen('compass') && (
             <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`Cm = Ct − Var
+                <pre className="font-mono text-sm leading-6">{`TVMDC zinciri:
+True = Magnetic + Variation
+Magnetic = Compass + Deviation
+Compass Error = Variation + Deviation
+
+Cm = Ct − Var
 Cc = Cm − Dev
-Ct = Cc + Var + Dev`}</pre>
-                <div className="text-xs text-muted-foreground">Kural: E(+) W(−)</div>
+Ct = Cc + Var + Dev
+
+Kural: East (+), West (−)`}</pre>
+                <div className="text-xs text-muted-foreground">Deviation card ve manyetik yıllık değişim (annual change) değerlerini güncel tutun.</div>
               </div>
             </CardContent>
             )}
@@ -244,6 +328,30 @@ dCPA = |R + Vrel · tCPA|`}</pre>
           </Card>
 
           <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('colreg')} className="cursor-pointer" aria-expanded={isOpen('colreg')}>
+              <CardTitle id="colreg" className="scroll-mt-24 flex items-center justify-between">
+                COLREG Manevra
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('colreg') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('colreg') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`Çatışma Riski:
+Relative bearing sabit, mesafe azalıyor → risk var
+
+Yeni CPA/TCPA (manevra sonrası):
+R' = R + V₁·t + V₂·t  (manevra yön/ hız vektörleriyle)
+tCPA' = −(R' · Vrel') / |Vrel'|²
+dCPA' = |R' + Vrel' · tCPA'|
+
+Öneri: İdare manevrası → CPA artmalı, TCPA uzamalı, relative bearing değişmeli.`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
             <CardHeader onClick={() => toggleSection('distance')} className="cursor-pointer" aria-expanded={isOpen('distance')}>
               <CardTitle id="distance" className="scroll-mt-24 flex items-center justify-between">
                 Mesafe Hesaplamaları
@@ -253,7 +361,12 @@ dCPA = |R + Vrel · tCPA|`}</pre>
             {isOpen('distance') && (
           <CardContent className="space-y-3 text-sm">
               <div className="bg-muted/30 rounded p-3">
-                <pre className="font-mono text-sm leading-6">{`Geographical (Horizon) Range:
+                <pre className="font-mono text-sm leading-6">{`1° Enlem = 60 NM (1' = 1 NM)
+D.Lat (dakika) = 60 · Δφ
+D.Long (dakika) = 60 · Δλ · cosφ̄
+Mesafe (nm) ≈ √(D.Lat² + D.Long²)
+
+Geographical (Horizon) Range:
 d = 2.08 · √h_m  (nm, h metre)
 veya d = 1.17 · √h_ft (nm, h feet)
 
@@ -263,6 +376,136 @@ d = 2.23 · (√h₁ + √h₂)  (h metre)
 Light Geographic Range (USCG Light List):
 d = 2.08 · (√h_observer + √h_light)  (h metre)
 Not: Luminous range; nominal ışık gücü ve meteorolojik görüşe bağlıdır.`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('position')} className="cursor-pointer" aria-expanded={isOpen('position')}>
+              <CardTitle id="position" className="scroll-mt-24 flex items-center justify-between">
+                Konum Tespiti
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('position') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('position') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`DR (Dead Reckoning):
+Δφ = (d · cosC) / 60
+Δλ = (d · sinC) / (60 · cosφ̄)
+Lat₂ = Lat₁ + Δφ, Lon₂ = Lon₁ + Δλ
+
+EP (Estimated Position):
+Set/Drift → vektörel ekleme: R_EP = R_DR + (c · t)
+
+Running Fix:
+1) İlk kerteriz konumu DR ile ileri taşınır
+2) İkinci kerteriz çizgisi ile kesişim = Fix
+
+DMG/SMG:
+DMG = Σ √(Δφ² + Δλ²) (nm)
+SMG = DMG / Geçen Süre`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('bearings')} className="cursor-pointer" aria-expanded={isOpen('bearings')}>
+              <CardTitle id="bearings" className="scroll-mt-24 flex items-center justify-between">
+                Kerteriz Hesaplamaları
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('bearings') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('bearings') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`Relative → True Bearing:
+Brg_T = Heading_T + Brg_R (360° normalize)
+Compass → Magnetic → True: Cc + Dev + Var = Ct
+
+İki Kerteriz:
+Hatların kesişimi = Fix, açı 30°-150° arası tercih
+
+Üç Kerteriz:
+En kesin hat ortada, sapmalar ±5° kontrol
+
+Transit / Leading Line:
+İki işaret aynı hizada → emniyet hattı
+
+Running Fix (taşınmış kerteriz):
+İlk kerteriz, aradan geçen zaman × hız kadar ileri taşınır.`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('turning')} className="cursor-pointer" aria-expanded={isOpen('turning')}>
+              <CardTitle id="turning" className="scroll-mt-24 flex items-center justify-between">
+                Dönüş Hesaplamaları
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('turning') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('turning') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`Rate of Turn (ROT):
+ROT (°/dk) = (30 × V(kn)) / R(turning radius, m)
+
+Advance & Transfer:
+Advance ≈ V · t_align (rota değişene kadar alınan mesafe)
+Transfer ≈ R × tan(ΔC / 2)
+
+Wheel-Over Point:
+WOP mesafesi = Transfer + güvenlik payı
+WOP zamanı = WOP / SOG
+
+Turning Circle:
+Diameter ≈ 4-5 × ship L, taktikte katalog değerleri kullanılır.`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('safety')} className="cursor-pointer" aria-expanded={isOpen('safety')}>
+              <CardTitle id="safety" className="scroll-mt-24 flex items-center justify-between">
+                Seyir Emniyeti
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('safety') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('safety') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`UKC = CD + HoT − Draft − Squat
+Squat (open water) ≈ (V(kn)²) / (100 · beam_m)
+Safe Speed: TSS/COG/SOG, görüş ve manevra mesafesine bağlı
+Safe Passing Distance: dCPA > 1-2 NM (trafik durumuna göre)
+Wheel-over mesafeleri: pilot card ve manevra el kitabı değerleri
+No-Go Area: CD + HoT − UKC_lim < 0 → yasak bölge`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('passage')} className="cursor-pointer" aria-expanded={isOpen('passage')}>
+              <CardTitle id="passage" className="scroll-mt-24 flex items-center justify-between">
+                Passage Plan
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('passage') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('passage') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`Toplam Mesafe = Σ leg mesafeleri
+Leg ETA = Mesafe_leg / SOG + ETD_leg
+Wheel-Over noktası: WOP_time = (Transfer + emniyet) / SOG
+Abort Point: t_abort = mesafe güvenli liman / SOG
+TSS geçişi: XTD ≤ limit, hız ≤ sınır, VTS bildirimi
+UKC kontrolü: HoT + CD − (Draft + Squat) ≥ güvenli pay`}</pre>
               </div>
             </CardContent>
             )}
@@ -293,6 +536,13 @@ Echo Ranging:
 R = (c · t) / 2
 c = 3×10⁸ m/s (radar)
 c = 1500 m/s (sonar)
+
+Relative / True Motion:
+V_rel = V_target − V_own (vektörel)
+Course/Speed Target = atan2(V_rel_y, V_rel_x), |V_rel|
+
+Manual Plot Δt:
+Relative displacement / Δt → V_rel; CPA/TCPA grafikle doğrula.
 
 Parallel Index:
 Sabit mesafe → güvenli geçiş`}</pre>
@@ -328,7 +578,11 @@ k ≈ 0.1-0.2 (tip faktörü)
 
 Wind Force:
 F = 0.00338 · V² · A
-A: rüzgar alan (m²)`}</pre>
+A: rüzgar alan (m²)
+
+Rüzgâr/akıntı düzeltmesi:
+SOG = V · cos(CTS − TR) + c · cos(set − TR)
+CTS = TR + arcsin((c/V) · sin(set − TR))`}</pre>
               </div>
             </CardContent>
             )}
@@ -346,18 +600,24 @@ A: rüzgar alan (m²)`}</pre>
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Rule of Twelfths:
 1. saat: 1/12 · TR
-2. saat: 2/12 · TR  
+2. saat: 2/12 · TR
 3. saat: 3/12 · TR
 4. saat: 3/12 · TR
 5. saat: 2/12 · TR
 6. saat: 1/12 · TR
+
+Height of Tide:
+H = Low + (Rule_of_Twelfths × Tidal_Range)
+UKC = Charted_Depth + H − Draft − Squat
 
 Harmonik Analiz:
 h(t) = M + Σ[Aᵢ · cos(ωᵢt + φᵢ)]
 
 Secondary Port:
 H₂ = H₁ + Diff
-T₂ = T₁ + Time_Diff`}</pre>
+T₂ = T₁ + Time_Diff
+
+Kaynaklar: Admiralty Tide Tables, Tide/Stream Atlas, Tidal Curve.`}</pre>
               </div>
             </CardContent>
             )}
@@ -390,7 +650,12 @@ Transit/Range:
 İki işaret çizgisi → güvenli rota
 
 Sounding Pattern:
-3-4-3 metre → konum onayı`}</pre>
+3-4-3 metre → konum onayı
+
+Harita üzeri mesafe:
+Mesafe (nm) = Ölçek uzunluğu (cm) × ölçek katsayısı / 1.852e5
+Paralel cetvel ile rota çiz, pergel ile mesafe ölç
+Rota kontrolü: Chart correction + T/P+NM bülteni sonrası yeniden kontrol`}</pre>
               </div>
             </CardContent>
             )}
@@ -418,11 +683,13 @@ A = arcsin(sinδ / cosφ)
 Time Sight:
 Lon = GHA + LHA
 
-Moon Distance:
-Angular distance → longitude
-
+ Moon Distance:
+ Angular distance → longitude
+ 
 Sun's Bearing at Sunrise/Sunset:
-Brg = arccos(-tanφ · tanδ)`}</pre>
+Brg = arccos(-tanφ · tanδ)
+
+Kaynaklar: Nautical Almanac (GHA/Dec), sextant düzeltmeleri (IC, dip, refraction, parallax), sunrise/sunset tabloları.`}</pre>
               </div>
             </CardContent>
             )}
@@ -444,10 +711,33 @@ sin(Hc) = sinφ · sinδ + cosφ · cosδ · cos(LHA)
 Azimut (Z):
 cos(Z) = (sinδ − sinφ · sinHc) / (cosφ · cosHc)
 
-Intercept:
-a = Ho - Hc (toward/away)
+ Intercept:
+ a = Ho - Hc (toward/away)
+ 
+LHA = GHA + Lon (W(-), E(+))
 
-LHA = GHA + Lon (W(-), E(+))`}</pre>
+Tablolar: HO-249/HO-229 sight reduction tabloları ve Nautical Almanac verileri.`}</pre>
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          <Card className="shadow">
+            <CardHeader onClick={() => toggleSection('ecdis')} className="cursor-pointer" aria-expanded={isOpen('ecdis')}>
+              <CardTitle id="ecdis" className="scroll-mt-24 flex items-center justify-between">
+                ECDIS Kontrolleri
+                <ChevronDown className={"h-4 w-4 transition-transform " + (isOpen('ecdis') ? "rotate-180" : "")} />
+              </CardTitle>
+            </CardHeader>
+            {isOpen('ecdis') && (
+            <CardContent className="space-y-3 text-sm">
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm leading-6">{`XTD ≤ limit (genelde 0.5-1.0 NM)
+Safety Contour = max(Chart Datum + UKC_pay, tavsiye edilen)
+Safety Depth = Draft + Squat + UKC_pay
+Look-ahead Time = t_look = mesafe alarm / SOG
+Route Check: shallow contour, isolated danger, ENC güncelliği
+BRM: anti-grounding alarm, cross-track alarm, ETA per leg`}</pre>
               </div>
             </CardContent>
             )}
