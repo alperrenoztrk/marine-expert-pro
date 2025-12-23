@@ -892,47 +892,29 @@ export default function CalculationsMenu() {
                 <div className="rounded-xl border border-border/40 bg-background/50 p-4">
                   <h3 className="mb-3 font-bold text-foreground">🌐 IMO Sözleşmeleri</h3>
                   <ul className="space-y-2 text-sm text-foreground/90">
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                        <span><strong>SOLAS</strong> – Denizde Can Güvenliği</span>
-                      </span>
-                      <a href="https://www.imo.org/en/About/Conventions/Pages/International-Convention-for-the-Safety-of-Life-at-Sea-(SOLAS),-1974.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>SOLAS</strong> – Denizde Can Güvenliği</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                        <span><strong>MARPOL</strong> – Deniz Kirliliğinin Önlenmesi</span>
-                      </span>
-                      <a href="https://www.imo.org/en/About/Conventions/Pages/International-Convention-for-the-Prevention-of-Pollution-from-Ships-(MARPOL).aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>MARPOL</strong> – Deniz Kirliliğinin Önlenmesi</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                        <span><strong>STCW</strong> – Gemi Adamları Eğitim ve Belgelendirme</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/HumanElement/Pages/STCW-Conv-LINK.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>STCW</strong> – Gemi Adamları Eğitim ve Belgelendirme</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                        <span><strong>MLC</strong> – Denizcilik Çalışma Sözleşmesi</span>
-                      </span>
-                      <a href="https://www.ilo.org/maritime/rules/WCMS_090250/lang--en/index.htm" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>MLC</strong> – Denizcilik Çalışma Sözleşmesi</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                        <span><strong>COLREG</strong> – Denizde Çatışmayı Önleme Kuralları</span>
-                      </span>
-                      <a href="https://www.imo.org/en/About/Conventions/Pages/COLREG.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>COLREG</strong> – Denizde Çatışmayı Önleme Kuralları</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                        <span><strong>Load Lines</strong> – Yükleme Hattı Sözleşmesi</span>
-                      </span>
-                      <a href="https://www.imo.org/en/About/Conventions/Pages/International-Convention-on-Load-Lines.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span><strong>Load Lines</strong> – Yükleme Hattı Sözleşmesi</span>
                     </li>
                   </ul>
                 </div>
@@ -941,47 +923,29 @@ export default function CalculationsMenu() {
                 <div className="rounded-xl border border-border/40 bg-background/50 p-4">
                   <h3 className="mb-3 font-bold text-foreground">🛡️ Emniyet Kodları</h3>
                   <ul className="space-y-2 text-sm text-foreground/90">
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                        <span><strong>ISM Code</strong> – Uluslararası Güvenlik Yönetimi</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/HumanElement/Pages/ISMCode.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>ISM Code</strong> – Uluslararası Güvenlik Yönetimi</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                        <span><strong>ISPS Code</strong> – Gemi ve Liman Tesisi Güvenliği</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Security/Pages/SOLAS-XI-2%20ISPS%20Code.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>ISPS Code</strong> – Gemi ve Liman Tesisi Güvenliği</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                        <span><strong>IMDG Code</strong> – Tehlikeli Yükler</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Safety/Pages/DangerousGoods-default.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IMDG Code</strong> – Tehlikeli Yükler</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                        <span><strong>IMSBC Code</strong> – Katı Dökme Yükler</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Safety/Pages/CargoesInBulk-default.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IMSBC Code</strong> – Katı Dökme Yükler</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                        <span><strong>IGC Code</strong> – Gaz Taşıyıcı Gemiler</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Safety/Pages/IGCCode.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IGC Code</strong> – Gaz Taşıyıcı Gemiler</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                        <span><strong>IBC Code</strong> – Kimyasal Tankerler</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Environment/Pages/IBCCode.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                      <span><strong>IBC Code</strong> – Kimyasal Tankerler</span>
                     </li>
                   </ul>
                 </div>
@@ -990,47 +954,29 @@ export default function CalculationsMenu() {
                 <div className="rounded-xl border border-border/40 bg-background/50 p-4">
                   <h3 className="mb-3 font-bold text-foreground">🌿 Çevresel Düzenlemeler</h3>
                   <ul className="space-y-2 text-sm text-foreground/90">
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span><strong>BWM Convention</strong> – Balast Suyu Yönetimi</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Environment/Pages/BWMConventionandGuidelines.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>BWM Convention</strong> – Balast Suyu Yönetimi</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span><strong>AFS Convention</strong> – Zehirli Boya Sistemleri</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Environment/Pages/Anti-foulingSystems.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>AFS Convention</strong> – Zehirli Boya Sistemleri</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span><strong>Hong Kong Convention</strong> – Gemi Geri Dönüşümü</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Environment/Pages/Ship-Recycling.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>Hong Kong Convention</strong> – Gemi Geri Dönüşümü</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span><strong>EEDI/EEXI</strong> – Enerji Verimliliği İndeksleri</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Environment/Pages/Technical-and-Operational-Measures.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>EEDI/EEXI</strong> – Enerji Verimliliği İndeksleri</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span><strong>CII</strong> – Karbon Yoğunluğu Göstergesi</span>
-                      </span>
-                      <a href="https://www.imo.org/en/MediaCentre/HotTopics/Pages/Reducing-greenhouse-gas-emissions-from-ships.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>CII</strong> – Karbon Yoğunluğu Göstergesi</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span><strong>EU ETS</strong> – Emisyon Ticaret Sistemi</span>
-                      </span>
-                      <a href="https://climate.ec.europa.eu/eu-action/transport/reducing-emissions-shipping-sector_en" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-600 hover:bg-emerald-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span><strong>EU ETS</strong> – Emisyon Ticaret Sistemi</span>
                     </li>
                   </ul>
                 </div>
@@ -1039,40 +985,25 @@ export default function CalculationsMenu() {
                 <div className="rounded-xl border border-border/40 bg-background/50 p-4">
                   <h3 className="mb-3 font-bold text-foreground">🔍 Denetim & Sörvey</h3>
                   <ul className="space-y-2 text-sm text-foreground/90">
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
-                        <span><strong>PSC</strong> – Liman Devleti Kontrolü</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/IIIS/Pages/Port%20State%20Control.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-sky-500/20 px-2 py-0.5 text-xs font-medium text-sky-600 hover:bg-sky-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>PSC</strong> – Liman Devleti Kontrolü</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
-                        <span><strong>FSC</strong> – Bayrak Devleti Kontrolü</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/IIIS/Pages/Flag%20State%20Implementation.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-sky-500/20 px-2 py-0.5 text-xs font-medium text-sky-600 hover:bg-sky-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>FSC</strong> – Bayrak Devleti Kontrolü</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
-                        <span><strong>Class Survey</strong> – Klas Denetimleri</span>
-                      </span>
-                      <a href="https://iacs.org.uk/resolutions/unified-requirements" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-sky-500/20 px-2 py-0.5 text-xs font-medium text-sky-600 hover:bg-sky-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>Class Survey</strong> – Klas Denetimleri</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
-                        <span><strong>Vetting</strong> – Tanker Denetimleri (SIRE, CDI)</span>
-                      </span>
-                      <a href="https://www.ocimf.org/programmes/sire" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-sky-500/20 px-2 py-0.5 text-xs font-medium text-sky-600 hover:bg-sky-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>Vetting</strong> – Tanker Denetimleri (SIRE, CDI)</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
-                        <span><strong>ISM Audit</strong> – İç ve Dış Denetimler</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/HumanElement/Pages/ISMCode.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-sky-500/20 px-2 py-0.5 text-xs font-medium text-sky-600 hover:bg-sky-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" />
+                      <span><strong>ISM Audit</strong> – İç ve Dış Denetimler</span>
                     </li>
                   </ul>
                 </div>
@@ -1081,40 +1012,25 @@ export default function CalculationsMenu() {
                 <div className="rounded-xl border border-border/40 bg-background/50 p-4">
                   <h3 className="mb-3 font-bold text-foreground">📋 Gemi Sertifikaları</h3>
                   <ul className="space-y-2 text-sm text-foreground/90">
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
-                        <span><strong>SMC</strong> – Safety Management Certificate</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/HumanElement/Pages/ISMCode.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-600 hover:bg-violet-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>SMC</strong> – Safety Management Certificate</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
-                        <span><strong>DOC</strong> – Document of Compliance</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/HumanElement/Pages/ISMCode.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-600 hover:bg-violet-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>DOC</strong> – Document of Compliance</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
-                        <span><strong>ISSC</strong> – International Ship Security Certificate</span>
-                      </span>
-                      <a href="https://www.imo.org/en/OurWork/Security/Pages/SOLAS-XI-2%20ISPS%20Code.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-600 hover:bg-violet-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>ISSC</strong> – International Ship Security Certificate</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
-                        <span><strong>IOPP</strong> – Oil Pollution Prevention Certificate</span>
-                      </span>
-                      <a href="https://www.imo.org/en/About/Conventions/Pages/International-Convention-for-the-Prevention-of-Pollution-from-Ships-(MARPOL).aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-600 hover:bg-violet-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>IOPP</strong> – Oil Pollution Prevention Certificate</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
-                        <span><strong>Load Line Certificate</strong> – Yükleme Hattı Belgesi</span>
-                      </span>
-                      <a href="https://www.imo.org/en/About/Conventions/Pages/International-Convention-on-Load-Lines.aspx" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-600 hover:bg-violet-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span><strong>Load Line Certificate</strong> – Yükleme Hattı Belgesi</span>
                     </li>
                   </ul>
                 </div>
@@ -1123,40 +1039,25 @@ export default function CalculationsMenu() {
                 <div className="rounded-xl border border-border/40 bg-background/50 p-4">
                   <h3 className="mb-3 font-bold text-foreground">🗺️ Bölgesel Düzenlemeler</h3>
                   <ul className="space-y-2 text-sm text-foreground/90">
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
-                        <span><strong>Paris MoU</strong> – Avrupa PSC Rejimi</span>
-                      </span>
-                      <a href="https://www.parismou.org/publications-category/memorandum-understanding" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-rose-500/20 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>Paris MoU</strong> – Avrupa PSC Rejimi</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
-                        <span><strong>Tokyo MoU</strong> – Asya-Pasifik PSC</span>
-                      </span>
-                      <a href="https://www.tokyo-mou.org/publications/memorandum.php" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-rose-500/20 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>Tokyo MoU</strong> – Asya-Pasifik PSC</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
-                        <span><strong>US USCG</strong> – ABD Sahil Güvenlik</span>
-                      </span>
-                      <a href="https://www.uscg.mil/Mariners/National-Vessel-Documentation-Center/" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-rose-500/20 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>US USCG</strong> – ABD Sahil Güvenlik</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
-                        <span><strong>EU Regulations</strong> – AB Denizcilik Mevzuatı</span>
-                      </span>
-                      <a href="https://transport.ec.europa.eu/transport-modes/maritime_en" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-rose-500/20 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>EU Regulations</strong> – AB Denizcilik Mevzuatı</span>
                     </li>
-                    <li className="flex items-center justify-between gap-2">
-                      <span className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
-                        <span><strong>Black Sea MoU</strong> – Karadeniz PSC</span>
-                      </span>
-                      <a href="https://www.bsmou.org/" target="_blank" rel="noopener noreferrer" className="shrink-0 rounded bg-rose-500/20 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-500/30 transition-colors">PDF</a>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span><strong>Black Sea MoU</strong> – Karadeniz PSC</span>
                     </li>
                   </ul>
                 </div>
