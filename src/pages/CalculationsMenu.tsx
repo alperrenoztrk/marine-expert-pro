@@ -4,11 +4,12 @@ import { calculationCategories, sectionIconMap } from "@/data/calculationCenterC
 import { bridgeDevices } from "@/data/bridgeDevices";
 import { crewHierarchy } from "@/data/crewHierarchy";
 import {
+  Anchor,
+  Battery,
   BookOpen,
   ChevronDown,
   ChevronRight,
-  Anchor,
-  Battery,
+  ClipboardList,
   Cog,
   Droplets,
   Factory,
@@ -21,9 +22,55 @@ import {
 
 export default function CalculationsMenu() {
   const [showLessons, setShowLessons] = useState(false);
+  const [showShipTasks, setShowShipTasks] = useState(false);
   const [showCrew, setShowCrew] = useState(false);
   const [showBridgeDevices, setShowBridgeDevices] = useState(false);
   const [showMachinery, setShowMachinery] = useState(false);
+
+  const shipTasks = [
+    {
+      title: "Seyir Planlama & Köprüüstü Vardiyası",
+      responsible: "Kaptan, 1.Zabıt, Köprüüstü vardiya zabitleri",
+      description:
+        "Passage plan (APP/UKC/ETA), ECDIS/harita güncelleme, rota risk kontrolü, seyir defteri ve vardiya devri",
+      backup: "2.Zabıt / 3.Zabıt",
+    },
+    {
+      title: "Güverte Operasyonları & ISPS",
+      responsible: "1.Zabıt (CSO/SSO), Güverte tayfaları",
+      description:
+        "Demirleme/şamandıra, vardiya düzeni, güvenlik devriyesi, ISPS turları, acil durum ekipman kontrolleri",
+      backup: "Kaptan onayı",
+    },
+    {
+      title: "Makine Operasyonu & Bakım",
+      responsible: "Başmühendis, 2.Mühendis, vardiya mühendisleri",
+      description:
+        "Ana/yardımcı makinelerin günlük kontrolleri, yağlama-yakıt transferleri, PMS takibi ve defter girişleri",
+      backup: "Elektrik zabiti / 3.Mühendis",
+    },
+    {
+      title: "Kargo ve Tank İşleri",
+      responsible: "Yük zabiti, P/A operatörü, güverte makinistleri",
+      description:
+        "Yükleme/boşaltma sırası, kargo planı, tank seviye-gaz ölçümleri, inert gaz, manifold ve hortum kontrolleri",
+      backup: "1.Zabıt koordinasyonu",
+    },
+    {
+      title: "Emniyet, Eğitim ve Tatbikatlar",
+      responsible: "Kaptan, 1.Zabıt (SMS), güvenlik temsilcisi",
+      description:
+        "SMS kayıtları, risk değerlendirmeleri, muster list güncellemesi, aylık/yasal tatbikat planlama ve raporlama",
+      backup: "Kaptan yardımcısı / kıdemli zabit",
+    },
+    {
+      title: "İkmal, Kumanya ve Evrak Yönetimi",
+      responsible: "Kaptan, zabitler, aşçı/kambus görevlisi",
+      description:
+        "Kumanya-sarf stok sayımı, tedarik talepleri, sertifika takipleri, liman formaliteleri ve ajans yazışmaları",
+      backup: "Purser / 2.Zabıt",
+    },
+  ];
 
   const machinerySystems = [
     {
@@ -253,6 +300,20 @@ export default function CalculationsMenu() {
 
           <button
             type="button"
+            onClick={() => setShowShipTasks((prev) => !prev)}
+            className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 via-emerald-500 to-green-500 text-white shadow group-hover:scale-105">
+              <ClipboardList className="h-4 w-4" />
+            </span>
+            <span>GEMİDE YAPILAN TÜM İŞLER ve SORUMLULARI</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${showShipTasks ? "rotate-180" : "rotate-0"}`}
+            />
+          </button>
+
+          <button
+            type="button"
             onClick={() => setShowCrew((prev) => !prev)}
             className="group inline-flex items-center justify-center gap-2 self-center rounded-full border border-border/60 bg-card/80 px-5 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-card"
           >
@@ -335,6 +396,46 @@ export default function CalculationsMenu() {
                 );
               })}
             </div>
+          )}
+
+          {showShipTasks && (
+            <section className="space-y-3 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+              <div className="flex flex-col gap-1 text-center">
+                <h2 className="text-lg font-bold text-foreground">Gemide Yapılan Tüm İşler ve Sorumluları</h2>
+                <p className="text-xs text-muted-foreground">
+                  Köprüüstü, güverte, makine ve idari görevlerin sorumluluk dağılımını tek ekranda görün.
+                </p>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2">
+                {shipTasks.map((task) => (
+                  <div
+                    key={task.title}
+                    className="flex flex-col gap-3 rounded-xl border border-border/50 bg-gradient-to-br from-white/60 via-card to-slate-50/70 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:from-background dark:via-card dark:to-slate-900/40"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 via-teal-500 to-sky-500 text-white shadow">
+                        <ClipboardList className="h-5 w-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-semibold text-foreground">{task.title}</h3>
+                        <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{task.responsible}</p>
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground">{task.description}</p>
+
+                    <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+                      <span className="rounded-full bg-primary/10 px-2 py-1 font-semibold text-primary">Ana Sorumlu</span>
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-1 font-medium text-emerald-700 dark:text-emerald-300">
+                        {task.responsible}
+                      </span>
+                      <span className="rounded-full bg-slate-500/10 px-2 py-1 font-medium text-foreground">Yedek: {task.backup}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           )}
 
           {showCrew && (
