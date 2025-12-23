@@ -11,10 +11,10 @@ export const EconomicCalculationsCard = () => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <DollarSign className="w-5 h-5 text-green-500" />
-          Ekonomik Hesaplamalar
+          Deniz İşletmeciliğinde Ticari Operasyonlar
         </CardTitle>
         <CardDescription>
-          Denizcilik ekonomisi ve maliyet analizleri
+          Navlun ekonomisi, kârlılık ve operasyonel maliyetler
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

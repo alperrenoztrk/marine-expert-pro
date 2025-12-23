@@ -32,7 +32,7 @@ export default function CargoQuizPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ListChecks className="h-5 w-5" />
-              Kargo & Operasyon Quiz
+              Yük Elleçleme ve İstifleme Quiz
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
