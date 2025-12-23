@@ -354,43 +354,295 @@ export default function CalculationsMenu() {
           )}
 
           {showShipTasks && (
-            <section className="space-y-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
+            <section className="space-y-6 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur">
               <div className="flex flex-col gap-1 text-center">
                 <h2 className="text-lg font-bold text-foreground">Gemide Yapılan Tüm İşler ve Sorumluları</h2>
                 <p className="text-xs text-muted-foreground">
-                  Gemide düzenli olarak yapılan işler, kontroller ve bunların sorumlu personelleri
+                  Gemide düzenli olarak yapılan işler ve bunların asıl sorumlularıyla fiilen yapan personel
                 </p>
               </div>
-              <div className="grid gap-3 md:grid-cols-2">
-                {[
-                  { title: "Günlük Kontroller", responsible: "Vardiya Zabiti / Makine Zabiti", tasks: ["Seyir cihazları kontrolü", "Makine dairesi günlük kontrolleri", "Güverte turları", "Meteoroloji kayıtları"] },
-                  { title: "Haftalık Kontroller", responsible: "1. Zabit / 2. Mühendis", tasks: ["Yangın söndürme sistemleri testi", "Cankurtaran araçları kontrolü", "Emniyet teçhizatı muayenesi", "Yardımcı makine bakımları"] },
-                  { title: "Aylık Kontroller", responsible: "Kaptan / Başmühendis", tasks: ["ISM denetimleri", "Tatbikat planlaması", "Bakım planı gözden geçirme", "Sertifika geçerlilikleri"] },
-                  { title: "Köprüüstü Operasyonları", responsible: "Kaptan / Vardiya Zabiti", tasks: ["Seyir planlaması", "Vardiya tutma", "GMDSS iletişimleri", "Hava raporları"] },
-                  { title: "Makine Dairesi İşleri", responsible: "Başmühendis / Makine Zabitleri", tasks: ["Ana makine bakımı", "Jeneratör operasyonu", "Yakıt yönetimi", "Kazan bakımı"] },
-                  { title: "Güverte İşleri", responsible: "Bosun / Güverte Personeli", tasks: ["Boya/Bakım çalışmaları", "Liman operasyonları", "Kargo elleçleme", "Demirleme/Bağlama"] },
-                  { title: "Emniyet İşleri", responsible: "Emniyet Zabiti / Tüm Personel", tasks: ["Yangın tatbikatları", "Terk gemi tatbikatları", "ISM prosedürleri", "Kaza raporlaması"] },
-                  { title: "İkmal & Catering", responsible: "Steward / Aşçı", tasks: ["Kumanya yönetimi", "Yemek hazırlama", "Kamara temizliği", "Stok kontrolü"] },
-                ].map((category) => (
-                  <div
-                    key={category.title}
-                    className="rounded-xl border border-border/50 bg-gradient-to-br from-white/60 via-card to-slate-50/70 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:from-background dark:via-card dark:to-slate-900/40"
-                  >
-                    <div className="mb-2 flex items-center gap-2">
-                      <ClipboardList className="h-5 w-5 text-purple-500" />
-                      <h3 className="font-bold text-foreground">{category.title}</h3>
-                    </div>
-                    <p className="mb-2 text-xs text-primary font-medium">{category.responsible}</p>
-                    <ul className="space-y-1">
-                      {category.tasks.map((task) => (
-                        <li key={task} className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <ChevronRight className="h-3 w-3 text-purple-400" />
-                          {task}
-                        </li>
+
+              {/* 1. Seyir & Köprüüstü İşleri */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">⚓</span>
+                  <h3 className="font-bold text-foreground">1️⃣ SEYİR & KÖPRÜÜSTÜ İŞLERİ</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 pr-4 font-semibold text-primary">Asıl Sorumlu</th>
+                        <th className="py-2 font-semibold text-muted-foreground">Fiilen Yapan</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Passage plan", "Master + 2/O", "2/O"],
+                        ["Vardiya tutma", "Master", "2/O – 3/O – 4/O"],
+                        ["Radar / ARPA takibi", "Vardiya zabiti", "Vardiya zabiti"],
+                        ["COLREG uygulama", "Vardiya zabiti", "Vardiya zabiti"],
+                        ["Kaptanı çağırma kararı", "Vardiya zabiti", "Vardiya zabiti"],
+                        ["Logbook doldurma", "Vardiya zabiti", "Vardiya zabiti"],
+                        ["Pilot embark/disembark", "Master", "2/O–3/O"],
+                        ["Kısıtlı sularda seyir", "Master", "Master + OOW"],
+                        ["GMDSS acil çağrı", "Master", "2/O"],
+                        ["Köprüüstü disiplin", "Master", "Tüm zabitler"],
+                      ].map(([task, responsible, worker]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 pr-4 text-primary">{responsible}</td>
+                          <td className="py-1.5 text-muted-foreground">{worker}</td>
+                        </tr>
                       ))}
-                    </ul>
-                  </div>
-                ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 2. Navigasyon & Harita İşleri */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🗺️</span>
+                  <h3 className="font-bold text-foreground">2️⃣ NAVİGASYON & HARİTA İŞLERİ</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 font-semibold text-primary">Sorumlu</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Harita düzeltmeleri", "2. Kaptan"],
+                        ["ECDIS güncellemeleri", "2. Kaptan"],
+                        ["Notice to Mariners", "2. Kaptan"],
+                        ["Navigational warnings", "2. Kaptan"],
+                        ["Gyro / manyetik pusula kontrolü", "2/O – 3/O"],
+                        ["Draft & position plotting", "OOW"],
+                        ["BNWAS / AIS kontrol", "OOW"],
+                        ["Seyir cihazları bakımı", "2/O"],
+                      ].map(([task, responsible]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 text-primary">{responsible}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 3. Yük Operasyonları */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">📦</span>
+                  <h3 className="font-bold text-foreground">3️⃣ YÜK OPERASYONLARI</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 pr-4 font-semibold text-primary">Asıl Sorumlu</th>
+                        <th className="py-2 font-semibold text-muted-foreground">Sahadaki</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Yük planı", "Chief Officer", "C/O"],
+                        ["Loading / Discharging", "Chief Officer", "3/O"],
+                        ["Draft survey", "C/O", "3/O"],
+                        ["Tank sounding", "C/O", "3/O"],
+                        ["Cargo watch", "3/O – 4/O", "3/O"],
+                        ["Mooring / unmooring", "Master", "2/O–3/O"],
+                        ["Hatch cover operasyonu", "C/O", "Bosun"],
+                        ["Cargo damage takibi", "C/O", "3/O"],
+                      ].map(([task, responsible, worker]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 pr-4 text-primary">{responsible}</td>
+                          <td className="py-1.5 text-muted-foreground">{worker}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 4. Emniyet & ISM/ISPS */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🧯</span>
+                  <h3 className="font-bold text-foreground">4️⃣ EMNİYET & ISM / ISPS</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 font-semibold text-primary">Sorumlu</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Safety Officer", "3. Kaptan"],
+                        ["Yangın ekipmanları", "3/O"],
+                        ["Can kurtarma araçları", "3/O"],
+                        ["Weekly / Monthly checks", "3/O"],
+                        ["Drill organizasyonu", "3/O"],
+                        ["Muster list", "Master"],
+                        ["ISM kayıtları", "Master + C/O"],
+                        ["ISPS (güvenlik)", "Master"],
+                        ["Security watch", "3/O – 4/O"],
+                      ].map(([task, responsible]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 text-primary">{responsible}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 5. Güverte Bakım & Onarım */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🔧</span>
+                  <h3 className="font-bold text-foreground">5️⃣ GÜVERTE BAKIM & ONARIM</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 pr-4 font-semibold text-primary">Sorumlu</th>
+                        <th className="py-2 font-semibold text-muted-foreground">Yapan</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Boya & pas", "C/O", "Bosun + AB"],
+                        ["Güverte temizliği", "C/O", "AB"],
+                        ["Halat – tel bakımı", "C/O", "Bosun"],
+                        ["Vinç – capstan yağlama", "C/O", "AB"],
+                        ["Güverte aydınlatma", "C/O", "AB"],
+                        ["Fener & işaretler", "C/O", "AB"],
+                      ].map(([task, responsible, worker]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 pr-4 text-primary">{responsible}</td>
+                          <td className="py-1.5 text-muted-foreground">{worker}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 6. Personel & Disiplin */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">👥</span>
+                  <h3 className="font-bold text-foreground">6️⃣ PERSONEL & DİSİPLİN</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 font-semibold text-primary">Sorumlu</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Günlük iş planı", "Chief Officer"],
+                        ["Güverte personeli", "C/O"],
+                        ["Disiplin", "Master"],
+                        ["İş güvenliği", "3/O"],
+                        ["Yeni personel oryantasyonu", "3/O"],
+                        ["Eğitim", "Master + C/O"],
+                      ].map(([task, responsible]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 text-primary">{responsible}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 7. Dokümantasyon & Denetim */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">📑</span>
+                  <h3 className="font-bold text-foreground">7️⃣ DOKÜMANTASYON & DENETİM</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">İş</th>
+                        <th className="py-2 font-semibold text-primary">Sorumlu</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["PSC hazırlık", "Master + C/O + 3/O"],
+                        ["Logbooks", "OOW"],
+                        ["Checklists", "İlgili zabit"],
+                        ["Certificates", "Master"],
+                        ["Company reporting", "Master"],
+                        ["Deficiency takibi", "C/O"],
+                      ].map(([task, responsible]) => (
+                        <tr key={task}>
+                          <td className="py-1.5 pr-4 text-foreground">{task}</td>
+                          <td className="py-1.5 text-primary">{responsible}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 8. Acil Durumlar */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🚨</span>
+                  <h3 className="font-bold text-foreground">8️⃣ ACİL DURUMLAR</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/50 text-left">
+                        <th className="py-2 pr-4 font-semibold text-foreground">Durum</th>
+                        <th className="py-2 font-semibold text-primary">Lider</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {[
+                        ["Yangın", "Master"],
+                        ["Can kurtarma", "3/O"],
+                        ["Adam denize", "Master"],
+                        ["Collision", "Master"],
+                        ["Grounding", "Master"],
+                        ["Abandon ship", "Master"],
+                        ["Medical emergency", "Master"],
+                        ["Oil spill", "C/O"],
+                      ].map(([situation, leader]) => (
+                        <tr key={situation}>
+                          <td className="py-1.5 pr-4 text-foreground">{situation}</td>
+                          <td className="py-1.5 text-primary">{leader}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </section>
           )}
