@@ -32,13 +32,24 @@ function formatDateTR(iso?: string): string {
   });
 }
 
-function toProxyImageUrl(url?: string): string | undefined {
+function normalizeImageUrl(url?: string): string | undefined {
   if (!url) return undefined;
 
   try {
-    const parsed = new URL(url);
+    const parsed = url.startsWith("//") ? new URL(`https:${url}`) : new URL(url);
     if (!parsed.protocol.startsWith("http")) return undefined;
+    return parsed.toString();
+  } catch {
+    return undefined;
+  }
+}
 
+function toProxyImageUrl(url?: string): string | undefined {
+  const normalized = normalizeImageUrl(url);
+  if (!normalized) return undefined;
+
+  try {
+    const parsed = new URL(normalized);
     const sanitized = `${parsed.hostname}${parsed.pathname}${parsed.search}${parsed.hash}`.replace(/^[\/]+/, "");
     if (!sanitized) return undefined;
 
@@ -263,7 +274,9 @@ const MaritimeNews = () => {
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {group.items.map((it) => {
-                      const imageUrl = toProxyImageUrl(it.imageUrl);
+                      const proxiedImageUrl = toProxyImageUrl(it.imageUrl);
+                      const fallbackImageUrl = normalizeImageUrl(it.imageUrl);
+                      const displayImageUrl = proxiedImageUrl ?? fallbackImageUrl;
 
                       return (
                         <button
@@ -277,16 +290,29 @@ const MaritimeNews = () => {
                         >
                           {/* Görsel */}
                           <div className="relative h-44 w-full overflow-hidden bg-slate-800">
-                            {imageUrl ? (
+                            {displayImageUrl ? (
                               <>
                                 <img
-                                  src={imageUrl}
+                                  src={displayImageUrl}
                                   alt={it.title}
                                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                   loading="lazy"
                                   referrerPolicy="no-referrer"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
+                                    const fallbackTried = target.dataset.fallbackTried === "true";
+                                    const fallbackSrc = fallbackImageUrl;
+
+                                    if (!fallbackTried && fallbackSrc && target.src !== fallbackSrc) {
+                                      target.dataset.fallbackTried = "true";
+                                      target.src = fallbackSrc;
+                                      target.style.display = "";
+                                      if (target.nextElementSibling) {
+                                        target.nextElementSibling.classList.add("hidden");
+                                      }
+                                      return;
+                                    }
+
                                     target.style.display = "none";
                                     if (target.nextElementSibling) {
                                       target.nextElementSibling.classList.remove("hidden");
