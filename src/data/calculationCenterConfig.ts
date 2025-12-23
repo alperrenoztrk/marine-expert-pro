@@ -63,7 +63,7 @@ export const sectionIconMap: Record<SectionId, LucideIcon> = {
 export const calculationCategories: CategoryConfig[] = [
   {
     id: "stability",
-    title: "Stabilite Hesaplayıcısı",
+    title: "Stabilite",
     subtitle: "GM, GZ, IMO kriterleri ve ileri analizler",
     icon: Ship,
     accent: "from-blue-500 via-indigo-500 to-blue-600",
@@ -116,7 +116,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "navigation",
-    title: "Seyir Hesaplayıcısı",
+    title: "Seyir",
     subtitle: "Rota, astro seyir ve COLREG pratikleri",
     icon: Compass,
     accent: "from-indigo-500 via-purple-500 to-blue-500",
@@ -169,7 +169,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "cargo",
-    title: "Kargo & Operasyon Araçları",
+    title: "Yük Elleçleme ve İstifleme",
     subtitle: "Draft survey, yükleme planı ve operasyonel takip",
     icon: Package,
     accent: "from-amber-500 via-orange-500 to-rose-500",
@@ -221,7 +221,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "meteorology",
-    title: "Meteoroloji Araçları",
+    title: "Meteoroloji",
     subtitle: "Tahmin, hava raporu ve rota optimizasyonu",
     icon: CloudSun,
     accent: "from-sky-500 via-cyan-500 to-blue-500",
@@ -273,7 +273,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "seamanship",
-    title: "Gemicilik Araçları",
+    title: "Gemicilik",
     subtitle: "Demirleme, palamar, ağır hava ve vardiya yönetimi",
     icon: Anchor,
     accent: "from-emerald-500 via-teal-500 to-blue-500",
@@ -325,7 +325,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "safety",
-    title: "Emniyet & Düzenlemeler",
+    title: "Denizde Güvenlik",
     subtitle: "IMO, SOLAS, LSA/FFA ve ISM kapsamı",
     icon: Shield,
     accent: "from-rose-500 via-orange-500 to-amber-500",
@@ -377,7 +377,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "machine",
-    title: "Makine Modülü",
+    title: "Gemi Makineleri",
     subtitle: "Ana makine, yardımcı makineler, yakıt ve bakım hesapları",
     icon: Wrench,
     accent: "from-slate-600 via-zinc-600 to-slate-800",
@@ -429,7 +429,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "environment",
-    title: "Çevre Modülü",
+    title: "Denizcilik ve Çevre Koruma",
     subtitle: "Emisyon, atık yönetimi, balast ve çevresel uyum hesapları",
     icon: Leaf,
     accent: "from-emerald-600 via-green-600 to-teal-700",
@@ -481,7 +481,7 @@ export const calculationCategories: CategoryConfig[] = [
   },
   {
     id: "economics",
-    title: "Ekonomik Analiz",
+    title: "Deniz İşletmeciliğinde Ticari Operasyonlar",
     subtitle: "TCE, demurrage ve sefer kârlılığı simülasyonları",
     icon: TrendingUp,
     accent: "from-amber-400 via-yellow-500 to-orange-600",
