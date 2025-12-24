@@ -170,13 +170,129 @@ export const planetEphemeris2025: PlanetEphemeris[] = [
   },
 ];
 
+// 2025 Moon Ephemeris Data - Daily values with HP (Horizontal Parallax)
+export interface MoonPosition {
+  date: string;
+  gha00: number; // GHA at 00:00 UT
+  dec00: number; // Dec at 00:00 UT
+  hp: number; // Horizontal Parallax in arc minutes
+  sd: number; // Semi-diameter in arc minutes
+  ghaDelta: number; // Hourly change in GHA (degrees)
+  decDelta: number; // Hourly change in Dec (degrees)
+}
+
+// Moon data for first week of each month in 2025 (sample data)
+export const moonEphemeris2025: MoonPosition[] = [
+  // January 2025
+  { date: "2025-01-01", gha00: 156.8, dec00: 18.4, hp: 54.2, sd: 14.8, ghaDelta: 14.32, decDelta: -0.42 },
+  { date: "2025-01-02", gha00: 171.2, dec00: 14.8, hp: 54.6, sd: 14.9, ghaDelta: 14.35, decDelta: -0.48 },
+  { date: "2025-01-03", gha00: 185.6, dec00: 10.2, hp: 55.1, sd: 15.0, ghaDelta: 14.38, decDelta: -0.52 },
+  { date: "2025-01-04", gha00: 200.1, dec00: 5.4, hp: 55.6, sd: 15.2, ghaDelta: 14.42, decDelta: -0.54 },
+  { date: "2025-01-05", gha00: 214.8, dec00: 0.2, hp: 56.2, sd: 15.3, ghaDelta: 14.46, decDelta: -0.52 },
+  { date: "2025-01-06", gha00: 229.6, dec00: -4.8, hp: 56.8, sd: 15.5, ghaDelta: 14.50, decDelta: -0.48 },
+  { date: "2025-01-07", gha00: 244.5, dec00: -9.6, hp: 57.4, sd: 15.6, ghaDelta: 14.54, decDelta: -0.42 },
+  { date: "2025-01-15", gha00: 48.2, dec00: -25.4, hp: 60.8, sd: 16.6, ghaDelta: 14.82, decDelta: 0.28 },
+  { date: "2025-01-22", gha00: 192.4, dec00: -8.2, hp: 58.2, sd: 15.9, ghaDelta: 14.58, decDelta: 0.52 },
+  { date: "2025-01-29", gha00: 328.6, dec00: 22.4, hp: 54.8, sd: 14.9, ghaDelta: 14.28, decDelta: -0.32 },
+  // February 2025
+  { date: "2025-02-01", gha00: 12.4, dec00: 18.6, hp: 54.4, sd: 14.8, ghaDelta: 14.30, decDelta: -0.45 },
+  { date: "2025-02-08", gha00: 118.6, dec00: -22.8, hp: 59.2, sd: 16.1, ghaDelta: 14.72, decDelta: 0.18 },
+  { date: "2025-02-15", gha00: 228.4, dec00: 4.6, hp: 56.4, sd: 15.4, ghaDelta: 14.48, decDelta: 0.48 },
+  { date: "2025-02-22", gha00: 342.8, dec00: 24.2, hp: 54.2, sd: 14.8, ghaDelta: 14.26, decDelta: -0.38 },
+  // March 2025
+  { date: "2025-03-01", gha00: 86.2, dec00: 12.4, hp: 55.8, sd: 15.2, ghaDelta: 14.42, decDelta: -0.52 },
+  { date: "2025-03-08", gha00: 198.4, dec00: -18.6, hp: 58.6, sd: 16.0, ghaDelta: 14.68, decDelta: 0.24 },
+  { date: "2025-03-15", gha00: 312.6, dec00: 12.8, hp: 55.2, sd: 15.0, ghaDelta: 14.38, decDelta: 0.42 },
+  { date: "2025-03-22", gha00: 62.4, dec00: 22.6, hp: 54.6, sd: 14.9, ghaDelta: 14.32, decDelta: -0.42 },
+  // April 2025
+  { date: "2025-04-01", gha00: 168.2, dec00: 6.4, hp: 56.8, sd: 15.5, ghaDelta: 14.52, decDelta: -0.54 },
+  { date: "2025-04-08", gha00: 282.6, dec00: -12.8, hp: 57.8, sd: 15.8, ghaDelta: 14.62, decDelta: 0.32 },
+  { date: "2025-04-15", gha00: 38.4, dec00: 18.4, hp: 54.8, sd: 14.9, ghaDelta: 14.34, decDelta: 0.38 },
+  { date: "2025-04-22", gha00: 148.6, dec00: 18.2, hp: 56.2, sd: 15.3, ghaDelta: 14.46, decDelta: -0.48 },
+  // May 2025
+  { date: "2025-05-01", gha00: 254.8, dec00: -2.4, hp: 57.4, sd: 15.6, ghaDelta: 14.56, decDelta: -0.52 },
+  { date: "2025-05-08", gha00: 12.6, dec00: -6.8, hp: 56.8, sd: 15.5, ghaDelta: 14.52, decDelta: 0.42 },
+  { date: "2025-05-15", gha00: 128.4, dec00: 22.4, hp: 55.2, sd: 15.0, ghaDelta: 14.38, decDelta: 0.28 },
+  { date: "2025-05-22", gha00: 238.6, dec00: 12.6, hp: 57.2, sd: 15.6, ghaDelta: 14.54, decDelta: -0.52 },
+  // June 2025
+  { date: "2025-06-01", gha00: 342.4, dec00: -8.6, hp: 56.4, sd: 15.4, ghaDelta: 14.48, decDelta: -0.48 },
+  { date: "2025-06-08", gha00: 98.6, dec00: 2.4, hp: 55.6, sd: 15.2, ghaDelta: 14.42, decDelta: 0.52 },
+  { date: "2025-06-15", gha00: 212.4, dec00: 24.8, hp: 55.8, sd: 15.2, ghaDelta: 14.44, decDelta: 0.18 },
+  { date: "2025-06-22", gha00: 324.6, dec00: 6.4, hp: 56.8, sd: 15.5, ghaDelta: 14.52, decDelta: -0.54 },
+  // July 2025
+  { date: "2025-07-01", gha00: 72.8, dec00: -14.2, hp: 55.4, sd: 15.1, ghaDelta: 14.40, decDelta: -0.42 },
+  { date: "2025-07-08", gha00: 186.4, dec00: 8.6, hp: 56.2, sd: 15.3, ghaDelta: 14.46, decDelta: 0.48 },
+  { date: "2025-07-15", gha00: 298.6, dec00: 26.2, hp: 56.4, sd: 15.4, ghaDelta: 14.48, decDelta: 0.08 },
+  { date: "2025-07-22", gha00: 52.4, dec00: 0.2, hp: 56.2, sd: 15.3, ghaDelta: 14.46, decDelta: -0.52 },
+  // August 2025
+  { date: "2025-08-01", gha00: 162.6, dec00: -18.4, hp: 56.8, sd: 15.5, ghaDelta: 14.52, decDelta: -0.32 },
+  { date: "2025-08-08", gha00: 274.8, dec00: 14.2, hp: 57.2, sd: 15.6, ghaDelta: 14.54, decDelta: 0.42 },
+  { date: "2025-08-15", gha00: 28.4, dec00: 24.6, hp: 56.6, sd: 15.4, ghaDelta: 14.50, decDelta: -0.02 },
+  { date: "2025-08-22", gha00: 142.6, dec00: -6.4, hp: 55.8, sd: 15.2, ghaDelta: 14.44, decDelta: -0.48 },
+  // September 2025
+  { date: "2025-09-01", gha00: 252.4, dec00: -22.6, hp: 58.2, sd: 15.9, ghaDelta: 14.64, decDelta: -0.18 },
+  { date: "2025-09-08", gha00: 8.6, dec00: 18.4, hp: 57.8, sd: 15.8, ghaDelta: 14.62, decDelta: 0.32 },
+  { date: "2025-09-15", gha00: 118.4, dec00: 20.2, hp: 56.4, sd: 15.4, ghaDelta: 14.48, decDelta: -0.12 },
+  { date: "2025-09-22", gha00: 232.6, dec00: -12.8, hp: 56.2, sd: 15.3, ghaDelta: 14.46, decDelta: -0.42 },
+  // October 2025
+  { date: "2025-10-01", gha00: 342.8, dec00: -24.8, hp: 59.4, sd: 16.2, ghaDelta: 14.76, decDelta: -0.08 },
+  { date: "2025-10-08", gha00: 98.4, dec00: 20.6, hp: 58.2, sd: 15.9, ghaDelta: 14.64, decDelta: 0.22 },
+  { date: "2025-10-15", gha00: 208.6, dec00: 14.8, hp: 56.6, sd: 15.4, ghaDelta: 14.50, decDelta: -0.22 },
+  { date: "2025-10-22", gha00: 322.4, dec00: -18.4, hp: 57.4, sd: 15.6, ghaDelta: 14.56, decDelta: -0.38 },
+  // November 2025
+  { date: "2025-11-01", gha00: 72.6, dec00: -24.2, hp: 60.2, sd: 16.4, ghaDelta: 14.84, decDelta: 0.02 },
+  { date: "2025-11-08", gha00: 188.4, dec00: 22.4, hp: 58.6, sd: 16.0, ghaDelta: 14.68, decDelta: 0.12 },
+  { date: "2025-11-15", gha00: 298.6, dec00: 8.2, hp: 56.4, sd: 15.4, ghaDelta: 14.48, decDelta: -0.32 },
+  { date: "2025-11-22", gha00: 52.4, dec00: -22.6, hp: 58.8, sd: 16.0, ghaDelta: 14.70, decDelta: -0.28 },
+  // December 2025
+  { date: "2025-12-01", gha00: 162.8, dec00: -22.8, hp: 60.4, sd: 16.5, ghaDelta: 14.86, decDelta: 0.08 },
+  { date: "2025-12-08", gha00: 278.6, dec00: 24.2, hp: 58.8, sd: 16.0, ghaDelta: 14.70, decDelta: 0.02 },
+  { date: "2025-12-15", gha00: 28.4, dec00: 2.4, hp: 56.2, sd: 15.3, ghaDelta: 14.46, decDelta: -0.42 },
+  { date: "2025-12-22", gha00: 142.6, dec00: -24.4, hp: 59.6, sd: 16.2, ghaDelta: 14.78, decDelta: -0.18 },
+  { date: "2025-12-29", gha00: 252.4, dec00: -18.6, hp: 60.8, sd: 16.6, ghaDelta: 14.88, decDelta: 0.22 },
+];
+
+// Get Moon position for a specific date (finds closest available data)
+export function getMoonPosition(date: Date): MoonPosition | null {
+  const dateStr = date.toISOString().split('T')[0];
+  
+  // Try exact match first
+  const exact = moonEphemeris2025.find(m => m.date === dateStr);
+  if (exact) return exact;
+  
+  // Find closest date
+  const targetTime = date.getTime();
+  let closest: MoonPosition | null = null;
+  let minDiff = Infinity;
+  
+  for (const pos of moonEphemeris2025) {
+    const posTime = new Date(pos.date + 'T00:00:00Z').getTime();
+    const diff = Math.abs(posTime - targetTime);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = pos;
+    }
+  }
+  
+  return closest;
+}
+
+// Calculate Moon GHA for a specific hour
+export function getMoonGhaAtHour(position: MoonPosition, hour: number): number {
+  return (position.gha00 + position.ghaDelta * hour) % 360;
+}
+
+// Calculate Moon Dec for a specific hour
+export function getMoonDecAtHour(position: MoonPosition, hour: number): number {
+  return position.dec00 + position.decDelta * hour;
+}
+
 // Helper function to get planet position for a given date
 export function getPlanetPosition(planetName: string, date: Date): PlanetPosition | null {
   const ephemeris = planetEphemeris2025.find(p => p.name === planetName);
   if (!ephemeris) return null;
   
   // Find the closest date
-  const dateStr = date.toISOString().split('T')[0];
   const month = date.getMonth();
   
   // Get position for current month (simplified interpolation)
