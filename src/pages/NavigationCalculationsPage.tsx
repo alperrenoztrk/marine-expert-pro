@@ -397,11 +397,19 @@ export default function NavigationCalculationsPage() {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {sections.map((s) => (
-                <a key={s.id} href={`#${s.id}`}>
-                  <Button variant="outline" size="sm" className="whitespace-nowrap">
-                    {s.title}
-                  </Button>
-                </a>
+                s.id === "gc" ? (
+                  <Link key={s.id} to="/navigation/calc/gc">
+                    <Button variant="outline" size="sm" className="whitespace-nowrap">
+                      {s.title}
+                    </Button>
+                  </Link>
+                ) : (
+                  <a key={s.id} href={`#${s.id}`}>
+                    <Button variant="outline" size="sm" className="whitespace-nowrap">
+                      {s.title}
+                    </Button>
+                  </a>
+                )
               ))}
             </div>
           </CardContent>
