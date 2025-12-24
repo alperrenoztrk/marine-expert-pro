@@ -330,6 +330,58 @@ export function calculateGreatCircle(lat1Deg: number, lon1Deg: number, lat2Deg: 
   };
 }
 
+export type GreatCircleWaypointInput = {
+  start: LatLon;
+  end: LatLon;
+  // Either specify a fixed number of segments, or a step distance.
+  segments?: number; // e.g. 10 => 11 points including endpoints
+  stepNm?: number; // e.g. 60 => approximately 1° arc steps
+};
+
+export function generateGreatCircleWaypoints(input: GreatCircleWaypointInput): LatLon[] {
+  const { start, end } = input;
+  if (!isFinite(start.latDeg) || !isFinite(start.lonDeg) || !isFinite(end.latDeg) || !isFinite(end.lonDeg)) {
+    throw new Error("Invalid waypoint coordinates");
+  }
+  const dist = calculateGreatCircle(start.latDeg, start.lonDeg, end.latDeg, end.lonDeg).distance;
+  const seg = input.segments && input.segments > 0 ? Math.floor(input.segments) : input.stepNm && input.stepNm > 0 ? Math.max(1, Math.round(dist / input.stepNm)) : 10;
+
+  const lat1 = toRadians(start.latDeg);
+  const lon1 = toRadians(start.lonDeg);
+  const lat2 = toRadians(end.latDeg);
+  const lon2 = toRadians(end.lonDeg);
+
+  // Convert to unit vectors.
+  const v1 = {
+    x: Math.cos(lat1) * Math.cos(lon1),
+    y: Math.cos(lat1) * Math.sin(lon1),
+    z: Math.sin(lat1),
+  };
+  const v2 = {
+    x: Math.cos(lat2) * Math.cos(lon2),
+    y: Math.cos(lat2) * Math.sin(lon2),
+    z: Math.sin(lat2),
+  };
+  const dot = Math.max(-1, Math.min(1, v1.x * v2.x + v1.y * v2.y + v1.z * v2.z));
+  const omega = Math.acos(dot);
+  if (!isFinite(omega) || omega < 1e-12) return [start, end];
+
+  const waypoints: LatLon[] = [];
+  for (let i = 0; i <= seg; i++) {
+    const t = i / seg;
+    const so = Math.sin(omega);
+    const k1 = Math.sin((1 - t) * omega) / so;
+    const k2 = Math.sin(t * omega) / so;
+    const x = k1 * v1.x + k2 * v2.x;
+    const y = k1 * v1.y + k2 * v2.y;
+    const z = k1 * v1.z + k2 * v2.z;
+    const lat = Math.atan2(z, Math.hypot(x, y));
+    const lon = Math.atan2(y, x);
+    waypoints.push({ latDeg: toDegrees(lat), lonDeg: toDegrees(lon) });
+  }
+  return waypoints;
+}
+
 // Rhumb Line calculations (matching formula exactly)
 export function calculateRhumbLine(lat1Deg: number, lon1Deg: number, lat2Deg: number, lon2Deg: number) {
   const lat1Rad = toRadians(lat1Deg);
@@ -576,6 +628,28 @@ export function hoursToHhMm(hours: number): { hh: number; mm: number } {
   const mm = Math.round((hours - hh) * 60);
   if (mm === 60) return { hh: hh + 1, mm: 0 };
   return { hh, mm };
+}
+
+// ---- Time helpers (GMT/UTC, Zone Time, Local Mean Time)
+export function longitudeDegToTimeMinutes(lonDegEastPositive: number): number {
+  if (!isFinite(lonDegEastPositive)) throw new Error("Invalid longitude");
+  // 360° -> 24h => 15°/h => 1° -> 4 minutes
+  return lonDegEastPositive * 4;
+}
+
+export function utcToZoneTime(dateUtc: Date, zoneOffsetHours: number): Date {
+  if (!isFinite(zoneOffsetHours)) throw new Error("Invalid zone offset");
+  return new Date(dateUtc.getTime() + zoneOffsetHours * 60 * 60 * 1000);
+}
+
+export function zoneTimeToUtc(dateZone: Date, zoneOffsetHours: number): Date {
+  if (!isFinite(zoneOffsetHours)) throw new Error("Invalid zone offset");
+  return new Date(dateZone.getTime() - zoneOffsetHours * 60 * 60 * 1000);
+}
+
+export function utcToLocalMeanTime(dateUtc: Date, lonDegEastPositive: number): Date {
+  const minutes = longitudeDegToTimeMinutes(lonDegEastPositive);
+  return new Date(dateUtc.getTime() + minutes * 60 * 1000);
 }
 
 export type SpeedDistanceTimeInput = {
@@ -890,6 +964,199 @@ export function calculateRunningFix(input: RunningFixInput): TwoBearingFixResult
   return { fix: localNmToLatLon(origin, { xNm: ix, yNm: iy }), intersectionAngleDeg };
 }
 
+// ---- Fixing helpers: 3 bearings, bearing+distance, two distances (mevki dairesi)
+export type ThreeBearingFixInput = {
+  object1: LatLon;
+  bearingToObject1TrueDeg: number;
+  object2: LatLon;
+  bearingToObject2TrueDeg: number;
+  object3: LatLon;
+  bearingToObject3TrueDeg: number;
+};
+
+export type ThreeBearingFixResult = {
+  fix: LatLon;
+  // Least-squares residual (nm): 0 means perfect common intersection.
+  residualNm: number;
+  // Best-case acute intersection angle among any pair of LOPs (deg).
+  bestIntersectionAngleDeg: number;
+};
+
+function solveLeastSquaresIntersection(lines: Array<{ p: XY; dir: XY }>): { x: XY; residual: number; bestAngleDeg: number } {
+  // Each line defined by point p and direction dir (unit-ish).
+  // Use normal form: n·x = n·p, where n is perpendicular to dir.
+  // Solve x that minimizes ||A x - b|| in least squares.
+  let a11 = 0, a12 = 0, a22 = 0;
+  let b1 = 0, b2 = 0;
+  let bestAngleDeg = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const d = lines[i].dir;
+    const n = { xNm: -d.yNm, yNm: d.xNm }; // perpendicular
+    const nn = n.xNm * n.xNm + n.yNm * n.yNm;
+    if (nn < 1e-12) continue;
+
+    a11 += n.xNm * n.xNm;
+    a12 += n.xNm * n.yNm;
+    a22 += n.yNm * n.yNm;
+
+    const bi = n.xNm * lines[i].p.xNm + n.yNm * lines[i].p.yNm;
+    b1 += n.xNm * bi;
+    b2 += n.yNm * bi;
+
+    for (let j = i + 1; j < lines.length; j++) {
+      const d2 = lines[j].dir;
+      const dot = (d.xNm * d2.xNm + d.yNm * d2.yNm) / (Math.hypot(d.xNm, d.yNm) * Math.hypot(d2.xNm, d2.yNm));
+      const ang = Math.acos(Math.max(-1, Math.min(1, dot)));
+      const acuteDeg = Math.min(toDegrees(ang), 180 - toDegrees(ang));
+      bestAngleDeg = Math.max(bestAngleDeg, acuteDeg);
+    }
+  }
+
+  const det = a11 * a22 - a12 * a12;
+  if (Math.abs(det) < 1e-12) {
+    throw new Error("LOP geometry is ill-conditioned (nearly parallel bearings)");
+  }
+  const xNm = (b1 * a22 - b2 * a12) / det;
+  const yNm = (a11 * b2 - a12 * b1) / det;
+
+  // Residual: sqrt(mean squared perpendicular distance)
+  let sse = 0;
+  let m = 0;
+  for (const l of lines) {
+    const d = l.dir;
+    const n = { xNm: -d.yNm, yNm: d.xNm };
+    const denom = Math.hypot(n.xNm, n.yNm);
+    if (denom < 1e-12) continue;
+    const dist = (n.xNm * (xNm - l.p.xNm) + n.yNm * (yNm - l.p.yNm)) / denom;
+    sse += dist * dist;
+    m += 1;
+  }
+  const residual = m > 0 ? Math.sqrt(sse / m) : 0;
+
+  return { x: { xNm, yNm }, residual, bestAngleDeg };
+}
+
+export function calculateFixFromThreeBearings(input: ThreeBearingFixInput): ThreeBearingFixResult {
+  const { object1, object2, object3, bearingToObject1TrueDeg, bearingToObject2TrueDeg, bearingToObject3TrueDeg } = input;
+  const origin: LatLon = {
+    latDeg: (object1.latDeg + object2.latDeg + object3.latDeg) / 3,
+    lonDeg: (object1.lonDeg + object2.lonDeg + object3.lonDeg) / 3,
+  };
+  const p1 = latLonToLocalNm(origin, object1);
+  const p2 = latLonToLocalNm(origin, object2);
+  const p3 = latLonToLocalNm(origin, object3);
+
+  const brg1Rec = normalizeAngle(bearingToObject1TrueDeg + 180);
+  const brg2Rec = normalizeAngle(bearingToObject2TrueDeg + 180);
+  const brg3Rec = normalizeAngle(bearingToObject3TrueDeg + 180);
+
+  const d1 = bearingToUnitVectorNm(brg1Rec);
+  const d2 = bearingToUnitVectorNm(brg2Rec);
+  const d3 = bearingToUnitVectorNm(brg3Rec);
+
+  const solved = solveLeastSquaresIntersection([
+    { p: p1, dir: d1 },
+    { p: p2, dir: d2 },
+    { p: p3, dir: d3 },
+  ]);
+
+  return {
+    fix: localNmToLatLon(origin, solved.x),
+    residualNm: solved.residual,
+    bestIntersectionAngleDeg: solved.bestAngleDeg,
+  };
+}
+
+export type BearingDistanceFixInput = {
+  object: LatLon;
+  bearingToObjectTrueDeg: number; // ship -> object (true)
+  distanceToObjectNm: number;
+};
+
+export type BearingDistanceFixResult = {
+  fix: LatLon;
+};
+
+export function calculateFixFromBearingAndDistance(input: BearingDistanceFixInput): BearingDistanceFixResult {
+  const { object, bearingToObjectTrueDeg, distanceToObjectNm } = input;
+  if (!isFinite(bearingToObjectTrueDeg) || !isFinite(distanceToObjectNm) || distanceToObjectNm < 0) {
+    throw new Error("Invalid bearing/distance inputs");
+  }
+  // Object -> ship is reciprocal bearing.
+  const reciprocal = normalizeAngle(bearingToObjectTrueDeg + 180);
+  const fix = calculateDeadReckoning({
+    start: object,
+    courseTrueDeg: reciprocal,
+    distanceNm: distanceToObjectNm,
+  });
+  return { fix };
+}
+
+export type TwoDistanceFixInput = {
+  object1: LatLon;
+  distanceToObject1Nm: number;
+  object2: LatLon;
+  distanceToObject2Nm: number;
+  // Optional approximate position to choose between the two intersections.
+  approximate?: LatLon;
+};
+
+export type TwoDistanceFixResult = {
+  // Chosen fix (closest to approximate if provided; otherwise the first solution).
+  fix: LatLon;
+  // Both candidates (can be 0/1/2 points depending on geometry).
+  candidates: LatLon[];
+};
+
+export function calculateFixFromTwoDistances(input: TwoDistanceFixInput): TwoDistanceFixResult {
+  const { object1, object2, distanceToObject1Nm: r1, distanceToObject2Nm: r2, approximate } = input;
+  if (!isFinite(r1) || !isFinite(r2) || r1 < 0 || r2 < 0) throw new Error("Invalid distances");
+
+  const origin: LatLon = { latDeg: (object1.latDeg + object2.latDeg) / 2, lonDeg: (object1.lonDeg + object2.lonDeg) / 2 };
+  const c1 = latLonToLocalNm(origin, object1);
+  const c2 = latLonToLocalNm(origin, object2);
+
+  const dx = c2.xNm - c1.xNm;
+  const dy = c2.yNm - c1.yNm;
+  const d = Math.hypot(dx, dy);
+  if (d < 1e-9) throw new Error("Objects too close (circle centers coincide)");
+
+  // No intersection if circles are separate or one contains the other.
+  if (d > r1 + r2 + 1e-9 || d < Math.abs(r1 - r2) - 1e-9) {
+    return { fix: localNmToLatLon(origin, c1), candidates: [] };
+  }
+
+  // Compute intersection points in local plane.
+  const a = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+  const h2 = r1 * r1 - a * a;
+  const h = h2 > 0 ? Math.sqrt(Math.max(0, h2)) : 0;
+
+  const ux = dx / d;
+  const uy = dy / d;
+  const px = c1.xNm + a * ux;
+  const py = c1.yNm + a * uy;
+
+  const rx = -uy * h;
+  const ry = ux * h;
+
+  const pA: XY = { xNm: px + rx, yNm: py + ry };
+  const pB: XY = { xNm: px - rx, yNm: py - ry };
+
+  const cand = [localNmToLatLon(origin, pA)];
+  if (h > 1e-9) cand.push(localNmToLatLon(origin, pB));
+
+  let chosen = cand[0];
+  if (approximate && cand.length > 1) {
+    const axy = latLonToLocalNm(origin, approximate);
+    const dA = Math.hypot(pA.xNm - axy.xNm, pA.yNm - axy.yNm);
+    const dB = Math.hypot(pB.xNm - axy.xNm, pB.yNm - axy.yNm);
+    chosen = dB < dA ? cand[1] : cand[0];
+  }
+
+  return { fix: chosen, candidates: cand };
+}
+
 // ---- Radar plotting (two plots -> target true course/speed)
 export type RadarPlot = {
   bearingTrueDeg: number; // True bearing of target from own ship at plot time
@@ -1003,6 +1270,62 @@ export type HeightOfTideResult = {
   stage: "rising" | "falling";
   fractionOfRange: number; // 0..1 within the LW->HW or HW->LW segment
 };
+
+export type TidalStreamInput = {
+  // Stage relative to slack
+  stage: "flood" | "ebb";
+  hourFromSlack: number; // 0..6 (rule-of-twelfths style)
+  // Spring/neap max rates and ranges (for scaling)
+  springMaxRateKn: number;
+  neapMaxRateKn: number;
+  springRangeM: number;
+  neapRangeM: number;
+  actualRangeM: number;
+  // Directions for flood/ebb (deg true). If omitted, use flood+180 for ebb.
+  floodSetDeg?: number;
+  ebbSetDeg?: number;
+};
+
+export type TidalStreamResult = {
+  setDeg: number;
+  rateKn: number;
+  maxRateKn: number;
+  springNeapFactor: number; // 0..1
+};
+
+export function calculateTidalStream(input: TidalStreamInput): TidalStreamResult {
+  const {
+    stage,
+    hourFromSlack,
+    springMaxRateKn,
+    neapMaxRateKn,
+    springRangeM,
+    neapRangeM,
+    actualRangeM,
+    floodSetDeg,
+    ebbSetDeg,
+  } = input;
+
+  if (!isFinite(hourFromSlack) || hourFromSlack < 0) throw new Error("Invalid hour from slack");
+  if (!isFinite(springMaxRateKn) || !isFinite(neapMaxRateKn) || springMaxRateKn < 0 || neapMaxRateKn < 0) throw new Error("Invalid rates");
+  if (!isFinite(springRangeM) || !isFinite(neapRangeM) || !isFinite(actualRangeM)) throw new Error("Invalid ranges");
+
+  const denom = springRangeM - neapRangeM;
+  const rawFactor = Math.abs(denom) < 1e-9 ? 0.5 : (actualRangeM - neapRangeM) / denom;
+  const springNeapFactor = Math.max(0, Math.min(1, rawFactor));
+  const maxRateKn = neapMaxRateKn + springNeapFactor * (springMaxRateKn - neapMaxRateKn);
+
+  // Simple sinusoidal approximation: 0 at slack (0,6), max at mid (3)
+  const h = Math.max(0, Math.min(6, hourFromSlack));
+  const shape = Math.sin((Math.PI * h) / 6);
+  const rateKn = Math.max(0, maxRateKn * shape);
+
+  const flood = normalizeAngle(floodSetDeg ?? 0);
+  const ebb = normalizeAngle(ebbSetDeg ?? (flood + 180));
+  const setDeg = stage === "flood" ? flood : ebb;
+
+  return { setDeg, rateKn, maxRateKn, springNeapFactor };
+}
 
 function twelfthsFraction(u: number): number {
   // Map 0..1 to rule-of-twelfths cumulative fraction over 6 hours:

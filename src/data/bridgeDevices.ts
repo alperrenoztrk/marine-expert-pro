@@ -5,7 +5,9 @@ import {
   Radio,
   SatelliteDish,
   Waves,
-  Navigation2
+  Navigation2,
+  HardDrive,
+  Bell
 } from "lucide-react";
 
 const bridgeDeviceImages = {
@@ -34,7 +36,11 @@ export type BridgeDeviceId =
   | "navtex"
   | "ais"
   | "gyro"
-  | "autopilot";
+  | "autopilot"
+  | "inmarsat"
+  | "echo-sounder"
+  | "vdr"
+  | "bnwas";
 
 export interface BridgeDeviceInfo {
   id: BridgeDeviceId;
@@ -338,6 +344,124 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "VDR ve bridge alert management sistemine alarm/veri çıkışı",
       "Follow-up/Non-follow-up (NFU) ve tiller/joystick kontrol istasyonlarıyla birlikte çalışır"
     ]
+  }
+  ,
+  {
+    id: "inmarsat",
+    name: "Inmarsat / SafetyNET",
+    description: "MSI, SafetyNET, veri/telefon ve GMDSS uydu katmanı",
+    summary:
+      "Inmarsat-C (EGC) ve modern uydu terminalleri; NAVAREA/METAREA SafetyNET mesajları, distress/urgency haberleşmesi ve veri servisleri için kullanılır. NAVTEX kapsaması dışına çıkıldığında kritik yedek MSI kaynağıdır.",
+    icon: SatelliteDish,
+    accent: "from-fuchsia-500 via-violet-500 to-indigo-600",
+    images: [bridgeDeviceImages.gpsSatellites, bridgeDeviceImages.shipBridge],
+    duties: [
+      "SafetyNET MSI mesajlarının alınması ve ilgili tehlikelerin rota planına işlenmesi",
+      "GMDSS prosedürlerine uygun distress/urgency trafiğinin yürütülmesi",
+      "Ekipman testleri, terminal log’larının tutulması ve printer/ekran arşivi",
+      "Sea Area A3 operasyonlarında NAVTEX’in tamamlayıcısı/yedeği olarak hazır bulundurma",
+    ],
+    operations: [
+      "EGC/SafetyNET alım parametrelerini (NAVAREA/METAREA) sefer bölgesine göre ayarla",
+      "GNSS girişinin terminale doğru geldiğini kontrol et; konum yoksa manuel gir ve kaydet",
+      "Printer/ekran kayıtlarının timestamp (UTC) ile tutulduğunu doğrula",
+      "Distress test prosedürlerini şirket/flag talimatlarına uygun periyotta uygula",
+    ],
+    monitoring: [
+      "Alım kesintilerinde anten, güç ve terminal self-test sonuçlarını kontrol et",
+      "Yanlış filtreleme nedeniyle kritik MSI kaçmaması için alan/sektör ayarlarını periyodik gözden geçir",
+      "UTC saat senkronizasyonunun doğru olduğundan emin ol (VDR/bridge log tutarlılığı)",
+    ],
+    integration: [
+      "NAVTEX, AIS SRM ve VHF Sécurité ile birlikte MSI bütünlüğü",
+      "Passage plan appraisal aşamasında MSI risklerinin rota üzerine işlenmesi",
+      "VDR kayıtlarının ve bridge log’un olay sonrası analiz için uyumlu tutulması",
+    ],
+  },
+  {
+    id: "echo-sounder",
+    name: "Echo Sounder (Elektronik İskandil)",
+    description: "Derinlik takibi, sığlık alarmları ve draft/tide offset yönetimi",
+    summary:
+      "Echo sounder, özellikle coastal/confined waters’da en kritik doğrulama sensörüdür. Draft ofseti, tide ofseti ve alarm eşikleri doğru ayarlanmadığında yanlış güven hissi yaratabilir.",
+    icon: Waves,
+    accent: "from-cyan-600 via-sky-600 to-blue-700",
+    images: [bridgeDeviceImages.oceanWaves, bridgeDeviceImages.shipBridge],
+    duties: [
+      "Derinlik trendini izleyerek sığ su riskini erken tespit",
+      "Shallow/deep alarm limitlerini passage plan’a uygun yönetmek",
+      "Charted soundings ile karşılaştırma yaparak sensör/doğruluk kontrolü",
+    ],
+    operations: [
+      "Draft offset ve (varsa) tide offset ayarlarını güncel draft’a göre doğrula",
+      "Uygun frekans seçimi (50/200 kHz) ile yumuşak/sert dip ayrımına dikkat et",
+      "Alarm eşiğini dar geçit ve pilotajda daha konservatif ayarla",
+    ],
+    monitoring: [
+      "Kabarcık/sürat etkisiyle okuma bozulursa hız ve sensör modu ayarlarını gözden geçir",
+      "Derinlik ile ECDIS bathymetry arasında tutarsızlıkta pozisyon/doğruluk teyidi yap",
+      "Kayıt (paper/digital) çalışıyorsa timestamp ile sakla",
+    ],
+    integration: [
+      "UKC hesapları (tide+squat) ile birlikte gerçek zamanlı derinlik doğrulaması",
+      "VDR’ye derinlik girdisinin sağlandığını ve alarm log’larının kaydedildiğini kontrol et",
+    ],
+  },
+  {
+    id: "vdr",
+    name: "VDR / S-VDR",
+    description: "Köprüüstü ses/veri/ekran kayıtları (kaza sonrası analiz)",
+    summary:
+      "VDR; radar/ECDIS görüntüleri, bridge audio, VHF, GNSS, gyro, log, echo sounder gibi girdileri kayıt altına alır. Kaza sonrası incelemenin temel kaynağıdır.",
+    icon: HardDrive,
+    accent: "from-slate-500 via-gray-600 to-zinc-700",
+    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.radarDisplay],
+    duties: [
+      "VDR durum ışığı ve self-test’lerin vardiya öncesi kontrolü",
+      "Girdi kaynaklarının (GPS/gyro/log/echo sounder/radar video) aktif olduğunun doğrulanması",
+      "APT (Annual Performance Test) ve servis kayıtlarının takip edilmesi",
+    ],
+    operations: [
+      "UTC zaman kaynağının doğru olduğunu doğrula (timestamp tutarlılığı)",
+      "Alarm/arıza durumunda şirket prosedürüne göre kayıt ve bildirim",
+      "Uzun süreli arızada bridge log’a not düş ve yedek kayıt yöntemlerini devreye al",
+    ],
+    monitoring: [
+      "Kritik olaylarda (near miss, heavy weather) VDR kayıtlarının tutulduğunu teyit et",
+      "Video input’larda siyah ekran/overlay sorunlarında kablo ve seçili kaynakları kontrol et",
+    ],
+    integration: [
+      "BNWAS, radar/ECDIS, VHF/DSC ve sensörlerden gelen log’ların ortak zaman tabanında tutulması",
+      "Eğitim/olay sonrası değerlendirmede playback ile BRM analizine destek",
+    ],
+  },
+  {
+    id: "bnwas",
+    name: "BNWAS",
+    description: "Vardiya uyanıklık alarm sistemi (SOLAS gereği)",
+    summary:
+      "BNWAS, köprüüstü vardiya zabitinin uyanıklığını kontrol eder; süre sonunda onay gelmezse aşamalı alarm üretir. Tek personel vardiyada risk azaltır ve PSC denetimlerinde kritik kontrol maddesidir.",
+    icon: Bell,
+    accent: "from-amber-500 via-orange-500 to-rose-600",
+    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.autopilotControl],
+    duties: [
+      "Zamanlayıcı (3–12 dk gibi) ve alarm kademelerinin gemi prosedürüne uygun ayarı",
+      "Reset butonları/hareket sensörleri işlev testi ve alarm zincirinin doğrulanması",
+      "Bridge log’da vardiya başlangıcında BNWAS aktifliğinin kaydı",
+    ],
+    operations: [
+      "Pilotaj/dar geçitlerde uygun modun seçilmesi (master talimatına göre)",
+      "Yanlış alarm ve inhibit kullanımlarının kayıt altına alınması",
+      "Alarm escalation (captain call) hatlarının çalıştığının periyodik kontrolü",
+    ],
+    monitoring: [
+      "Alarm log’larını ve sistem hatalarını izleyip bakım planına işlemek",
+      "Kritik dönemlerde (gece vardiyası/az personel) inhibit yerine destek gözcü tercih etmek",
+    ],
+    integration: [
+      "Bridge alert management (BAM) ve VDR ile alarm kayıtlarının bütünleşmesi",
+      "BRM prosedürleri ile birlikte vardiya disiplininin güçlendirilmesi",
+    ],
   }
 ];
 
