@@ -147,7 +147,7 @@ export const calculationCategories: CategoryConfig[] = [
         description: "COLREG, STCW ve seyir jeneralleri",
         status: "live",
         badge: "Hazır",
-        href: "/regulations",
+        href: "/navigation/rules",
       },
       {
         id: "assistant",
