@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { parseSignedAngleEW } from "@/utils/angleParsing";
 import { 
@@ -336,11 +337,19 @@ export const NavigationCalculationsCard = () => {
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {sections.map((s) => (
-              <a key={s.id} href={`#${s.id}`}>
-                <Button variant="outline" size="sm" className="whitespace-nowrap">
-                  {s.title}
-                </Button>
-              </a>
+              s.id === "gc" ? (
+                <Link key={s.id} to="/navigation/calc/gc">
+                  <Button variant="outline" size="sm" className="whitespace-nowrap">
+                    {s.title}
+                  </Button>
+                </Link>
+              ) : (
+                <a key={s.id} href={`#${s.id}`}>
+                  <Button variant="outline" size="sm" className="whitespace-nowrap">
+                    {s.title}
+                  </Button>
+                </a>
+              )
             ))}
           </div>
         </CardContent>
