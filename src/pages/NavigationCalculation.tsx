@@ -1679,6 +1679,25 @@ export default function NavigationCalculationPage() {
               </div>
             </div>
 
+            <div className="rounded border p-3 bg-muted/30">
+              <div className="text-sm font-semibold mb-2">Dünya limanları için tide tables</div>
+              <div className="text-xs text-muted-foreground mb-3">
+                Liman adına göre hazır gelgit çizelgesi/tablolarına ulaşmak için:
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <a href="https://www.worldtides.info" target="_blank" rel="noreferrer">
+                    WorldTides
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="https://www.tide-forecast.com" target="_blank" rel="noreferrer">
+                    Tide-Forecast
+                  </a>
+                </Button>
+              </div>
+            </div>
+
             <div className="rounded border p-3 bg-muted/30 space-y-3">
               <div className="text-sm font-semibold">HW / LW → Height of Tide (UTC)</div>
               <div className="grid grid-cols-2 gap-4">

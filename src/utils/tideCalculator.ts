@@ -10,6 +10,12 @@ export interface TideEvent {
   lunarPhase: string;
 }
 
+export interface TideHeightPoint {
+  time: Date;
+  height: number; // Relative height (0-100)
+  trend: 'rising' | 'falling' | 'slack';
+}
+
 export interface DailyTides {
   date: Date;
   events: TideEvent[];
@@ -26,20 +32,41 @@ const LUNAR_DAY_HOURS = 24.84;    // Hours for moon to return to same position
 // Moon's transit delay from previous day (approximately 50 minutes)
 const DAILY_MOON_DELAY_MINUTES = 50;
 
-// Calculate tide events for a given date and location
-export function calculateDailyTides(
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function getDayOfYear(date: Date) {
+  return Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function getModelForDate(
   date: Date,
-  highTideOffset: number = 0, // Hours after moon transit for high tide
-  portFactor: number = 1.0    // Port-specific amplitude factor
-): DailyTides {
+  highTideOffset: number,
+  portFactor: number
+): {
+  startOfDay: Date;
+  moonPhaseNameTr: string;
+  isSpringTide: boolean;
+  isNeapTide: boolean;
+  tidalRange: 'spring' | 'neap' | 'normal';
+  baseAmplitude: number;
+  firstHighTideHours: number; // hours after startOfDay (normalized 0..TIDAL_PERIOD_HOURS)
+} {
   const moonPhase = getMoonPhase(date);
-  
+
   // Determine if spring or neap tide based on moon phase
-  const isSpringTide = moonPhase.phase === 'new' || moonPhase.phase === 'full' ||
-                       moonPhase.age < 2 || (moonPhase.age > 13.5 && moonPhase.age < 16.5);
-  const isNeapTide = moonPhase.phase === 'first-quarter' || moonPhase.phase === 'last-quarter' ||
-                     (moonPhase.age > 6 && moonPhase.age < 9) || (moonPhase.age > 21 && moonPhase.age < 24);
-  
+  const isSpringTide =
+    moonPhase.phase === 'new' ||
+    moonPhase.phase === 'full' ||
+    moonPhase.age < 2 ||
+    (moonPhase.age > 13.5 && moonPhase.age < 16.5);
+  const isNeapTide =
+    moonPhase.phase === 'first-quarter' ||
+    moonPhase.phase === 'last-quarter' ||
+    (moonPhase.age > 6 && moonPhase.age < 9) ||
+    (moonPhase.age > 21 && moonPhase.age < 24);
+
   // Calculate base amplitude based on lunar phase
   let baseAmplitude = 50; // Normal amplitude
   if (isSpringTide) {
@@ -47,48 +74,79 @@ export function calculateDailyTides(
   } else if (isNeapTide) {
     baseAmplitude = 30; // Lower during neap tides
   }
-  
+
   // Apply port factor
   baseAmplitude *= portFactor;
-  
-  // Calculate moon transit time for the date
-  // Simplified: assume moon transits at midnight on new moon, add delay for age
-  const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+
+  // Simplified moon transit time model
+  const dayOfYear = getDayOfYear(date);
   const moonTransitMinutes = (dayOfYear * DAILY_MOON_DELAY_MINUTES) % (24 * 60);
-  
-  // Generate tide events
-  const events: TideEvent[] = [];
-  const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0);
-  
-  // Calculate first high tide of the day
-  let firstHighTideHours = (moonTransitMinutes / 60) + highTideOffset;
-  
-  // Normalize to start from beginning of day
+
+  // First high tide of the day (relative to start of day)
+  let firstHighTideHours = moonTransitMinutes / 60 + highTideOffset;
+
+  // Normalize within one tidal period.
   while (firstHighTideHours < 0) firstHighTideHours += TIDAL_PERIOD_HOURS;
   while (firstHighTideHours >= TIDAL_PERIOD_HOURS) firstHighTideHours -= TIDAL_PERIOD_HOURS;
-  
-  // Generate 4 main tide events (2 high, 2 low)
+
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  return {
+    startOfDay,
+    moonPhaseNameTr: moonPhase.nameTr,
+    isSpringTide,
+    isNeapTide,
+    tidalRange: isSpringTide ? 'spring' : isNeapTide ? 'neap' : 'normal',
+    baseAmplitude,
+    firstHighTideHours,
+  };
+}
+
+function heightAtHoursSinceStart(
+  hoursFromStart: number,
+  baseAmplitude: number,
+  firstHighTideHours: number
+): { height: number; trend: 'rising' | 'falling' | 'slack' } {
+  // Cosine model: peak at firstHighTideHours, trough half-period later.
+  const x = (hoursFromStart - firstHighTideHours) / TIDAL_PERIOD_HOURS;
+  const angle = 2 * Math.PI * x;
+  const raw = 50 + baseAmplitude * Math.cos(angle);
+  const height = clamp(raw, 0, 100);
+
+  // derivative sign indicates rising/falling; around sin(angle)=0 it's slack.
+  const s = Math.sin(angle);
+  const eps = 1e-6;
+  const trend: 'rising' | 'falling' | 'slack' = Math.abs(s) < eps ? 'slack' : s < 0 ? 'rising' : 'falling';
+
+  return { height: Math.round(height), trend };
+}
+
+// Calculate tide events for a given date and location
+export function calculateDailyTides(
+  date: Date,
+  highTideOffset: number = 0, // Hours after moon transit for high tide
+  portFactor: number = 1.0    // Port-specific amplitude factor
+): DailyTides {
+  const model = getModelForDate(date, highTideOffset, portFactor);
+
+  // Generate tide events (2 high, 2 low)
+  const events: TideEvent[] = [];
   for (let i = 0; i < 4; i++) {
     const isHigh = i % 2 === 0;
-    const hoursFromStart = firstHighTideHours + (i * TIDAL_PERIOD_HOURS / 2);
+    const hoursFromStart = model.firstHighTideHours + (i * TIDAL_PERIOD_HOURS / 2);
     
     if (hoursFromStart < 24) {
-      const eventTime = new Date(startOfDay);
+      const eventTime = new Date(model.startOfDay);
       eventTime.setMinutes(eventTime.getMinutes() + Math.round(hoursFromStart * 60));
       
-      // Deterministic relative height (no randomness).
-      // NOTE: This is a simplified model and represents a relative 0-100 scale.
-      let height = 50 + (isHigh ? baseAmplitude : -baseAmplitude);
-      
-      // Clamp to 0-100 range
-      height = Math.max(0, Math.min(100, height));
+      const height = 50 + (isHigh ? model.baseAmplitude : -model.baseAmplitude);
       
       events.push({
         time: eventTime,
         type: isHigh ? 'high' : 'low',
-        height: Math.round(height),
-        lunarPhase: moonPhase.nameTr
+        height: Math.round(clamp(height, 0, 100)),
+        lunarPhase: model.moonPhaseNameTr
       });
     }
   }
@@ -99,11 +157,45 @@ export function calculateDailyTides(
   return {
     date,
     events,
-    springTide: isSpringTide,
-    neapTide: isNeapTide,
-    moonPhase: moonPhase.nameTr,
-    tidalRange: isSpringTide ? 'spring' : isNeapTide ? 'neap' : 'normal'
+    springTide: model.isSpringTide,
+    neapTide: model.isNeapTide,
+    moonPhase: model.moonPhaseNameTr,
+    tidalRange: model.tidalRange,
   };
+}
+
+// Relative tide height at an arbitrary time (same simplified model).
+export function calculateTideHeightAt(
+  dateTime: Date,
+  highTideOffset: number = 0,
+  portFactor: number = 1.0
+): TideHeightPoint {
+  const model = getModelForDate(dateTime, highTideOffset, portFactor);
+  const hoursFromStart = (dateTime.getTime() - model.startOfDay.getTime()) / (1000 * 60 * 60);
+  const { height, trend } = heightAtHoursSinceStart(hoursFromStart, model.baseAmplitude, model.firstHighTideHours);
+  return { time: new Date(dateTime), height, trend };
+}
+
+// Hourly (or step-based) tide table for a given date.
+export function generateTideTableForDay(
+  date: Date,
+  highTideOffset: number = 0,
+  portFactor: number = 1.0,
+  stepMinutes: number = 60
+): TideHeightPoint[] {
+  const model = getModelForDate(date, highTideOffset, portFactor);
+  const step = Math.max(5, Math.round(stepMinutes));
+  const points: TideHeightPoint[] = [];
+
+  for (let minutes = 0; minutes < 24 * 60; minutes += step) {
+    const t = new Date(model.startOfDay);
+    t.setMinutes(t.getMinutes() + minutes);
+    const hoursFromStart = minutes / 60;
+    const { height, trend } = heightAtHoursSinceStart(hoursFromStart, model.baseAmplitude, model.firstHighTideHours);
+    points.push({ time: t, height, trend });
+  }
+
+  return points;
 }
 
 // Calculate tides for a week
