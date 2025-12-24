@@ -135,6 +135,11 @@ export const regulationItems: RegulationItem[] = [
         label: "COLREG metni",
         href: "https://www.imo.org/en/About/Conventions/Pages/COLREG.aspx",
       },
+      {
+        label:
+          "MEB Ders Materyali: Seyir ve Elektronik Seyir Atölyesi 11 (ISBN: 978-975-11-6911-2, MEB__212930)",
+        href: "http://kitap.eba.gov.tr/",
+      },
     ],
   },
   {

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Scale, Shield, FileText, Anchor } from "lucide-react";
+import { Scale, Shield, FileText, Anchor } from "lucide-react";
 
 const seamanshipRules = [
   {
