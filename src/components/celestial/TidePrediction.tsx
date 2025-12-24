@@ -9,6 +9,7 @@ import { Waves, ArrowUp, ArrowDown, Moon, Sun, Calendar, Info, Download } from "
 import { 
   calculateDailyTides, 
   calculateWeeklyTides,
+  generateTideTableForDay,
   turkishPorts,
   formatTideTime,
   getTidalStrength,
@@ -96,6 +97,10 @@ export function TidePrediction({ selectedDate }: TidePredictionProps) {
   const weeklyTides = useMemo(() => {
     return calculateWeeklyTides(selectedDate, selectedPort.highTideOffset, selectedPort.factor);
   }, [selectedDate, selectedPort]);
+
+  const hourlyTable = useMemo(() => {
+    return generateTideTableForDay(selectedDate, selectedPort.highTideOffset, selectedPort.factor, 60);
+  }, [selectedDate, selectedPort]);
   
   const moonPhase = getMoonPhase(selectedDate);
   const tidalStrength = getTidalStrength(dailyTides.tidalRange);
@@ -177,6 +182,32 @@ export function TidePrediction({ selectedDate }: TidePredictionProps) {
         </CardContent>
       </Card>
 
+      {/* Worldwide Tide Tables */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Dünya Limanları Gelgit Tabloları</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="text-sm text-muted-foreground">
+              Resmî navigasyon için “tide tables”/liman gelgit çizelgesine ihtiyaç varsa, liman adına göre arama yapabilirsiniz.
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild variant="outline">
+                <a href="https://www.worldtides.info" target="_blank" rel="noreferrer">
+                  WorldTides (harita)
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href="https://www.tide-forecast.com" target="_blank" rel="noreferrer">
+                  Tide-Forecast
+                </a>
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Current Conditions */}
       <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
         <CardHeader className="pb-2">
@@ -241,6 +272,42 @@ export function TidePrediction({ selectedDate }: TidePredictionProps) {
             <p className="text-sm text-muted-foreground">
               <strong>{tidalStrength.description}</strong>
             </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Daily Tide Table (Hourly) */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Günlük Gelgit Tablosu (Saatlik)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="h-[320px]">
+            <table className="w-full text-sm">
+              <thead className="bg-slate-100 sticky top-0">
+                <tr>
+                  <th className="text-left p-2 font-medium">Saat</th>
+                  <th className="text-right p-2 font-medium">Yükseklik (0–100)</th>
+                  <th className="text-right p-2 font-medium">Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hourlyTable.map((row) => (
+                  <tr key={row.time.toISOString()} className="border-b border-slate-100 hover:bg-slate-50">
+                    <td className="p-2 font-mono">{formatTideTime(row.time)}</td>
+                    <td className="p-2 text-right font-mono">{row.height}</td>
+                    <td className="p-2 text-right">
+                      <span className="text-muted-foreground">
+                        {row.trend === "rising" ? "Yükseliyor" : row.trend === "falling" ? "Alçalıyor" : "Durgun"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </ScrollArea>
+          <div className="mt-3 text-xs text-muted-foreground">
+            Not: Bu tablo basitleştirilmiş modelle üretilen <strong>göreli</strong> (0–100) değerdir; resmî tablo yerine geçmez.
           </div>
         </CardContent>
       </Card>

@@ -154,6 +154,20 @@ export function TideManualGuideDialog() {
                 PDF’yi aç
               </a>
             </div>
+            <div className="rounded border p-3 text-sm space-y-2">
+              <div className="font-semibold">Online (dünya genelinde) gelgit tablosu arama</div>
+              <div className="flex flex-wrap gap-3">
+                <a className="underline" href="https://www.worldtides.info" target="_blank" rel="noreferrer">
+                  WorldTides
+                </a>
+                <a className="underline" href="https://www.tide-forecast.com" target="_blank" rel="noreferrer">
+                  Tide-Forecast
+                </a>
+              </div>
+              <div className="text-muted-foreground">
+                Not: Navigasyon için her zaman resmî kaynak/kurum yayınlarını (örn. Admiralty/NOAA vb.) tercih edin.
+              </div>
+            </div>
             <div className="rounded-lg border bg-muted/30 p-3">
               <img src={tideTableExcerpt} alt="Tide table excerpt" className="w-full h-auto rounded-md" loading="lazy" />
             </div>
