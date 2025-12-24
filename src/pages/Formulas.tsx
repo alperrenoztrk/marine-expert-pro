@@ -131,7 +131,7 @@ const Formulas = () => {
         <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
           <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
           <h1 
-            className="text-xl sm:text-2xl font-bold text-foreground leading-tight break-words nature-title"
+            className="text-xl sm:text-2xl font-bold text-foreground leading-tight break-words "
             data-translatable
           >
             Mark'a Sor

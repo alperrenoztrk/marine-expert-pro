@@ -30,7 +30,7 @@ const TimeWidgets: React.FC<TimeWidgetsProps> = ({
         <div className="relative text-center space-y-2 w-full">
           <Clock className="h-6 w-6 text-primary mx-auto animate-pulse" />
           <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">ULUSAL</div>
-          <div className="font-mono text-3xl font-bold tracking-tight text-foreground animate-neon-glow">
+          <div className="font-mono text-3xl font-bold tracking-tight text-foreground animate-glow">
             {nationalTime}
           </div>
         </div>
