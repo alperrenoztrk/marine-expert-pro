@@ -3,7 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Waves, ArrowUp, ArrowDown, Moon, Sun, Calendar, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { exportToCsv } from "@/utils/exportUtils";
+import { Waves, ArrowUp, ArrowDown, Moon, Sun, Calendar, Info, Download } from "lucide-react";
 import { 
   calculateDailyTides, 
   calculateWeeklyTides,
@@ -21,6 +23,69 @@ interface TidePredictionProps {
 
 export function TidePrediction({ selectedDate }: TidePredictionProps) {
   const [selectedPort, setSelectedPort] = useState<PortInfo>(turkishPorts[0]);
+  const [downloadDays, setDownloadDays] = useState<"7" | "30">("7");
+
+  const toSafeFilePart = (input: string) => {
+    const trMap: Record<string, string> = {
+      "Ç": "C",
+      "ç": "c",
+      "Ğ": "G",
+      "ğ": "g",
+      "İ": "I",
+      "ı": "i",
+      "Ö": "O",
+      "ö": "o",
+      "Ş": "S",
+      "ş": "s",
+      "Ü": "U",
+      "ü": "u",
+    };
+    const mapped = input.replace(/[ÇçĞğİıÖöŞşÜü]/g, (ch) => trMap[ch] ?? ch);
+    const ascii = mapped.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return ascii
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+  };
+
+  const toIsoDate = (d: Date) => {
+    // Local date YYYY-MM-DD
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    const y = x.getFullYear();
+    const m = String(x.getMonth() + 1).padStart(2, "0");
+    const day = String(x.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  const handleDownloadTideTableCsv = () => {
+    const start = new Date(selectedDate);
+    start.setHours(0, 0, 0, 0);
+    const days = Number(downloadDays);
+
+    const rows: Array<Record<string, string | number>> = [];
+    for (let i = 0; i < days; i++) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      const daily = calculateDailyTides(d, selectedPort.highTideOffset, selectedPort.factor);
+      const strength = getTidalStrength(daily.tidalRange);
+
+      for (const ev of daily.events) {
+        rows.push({
+          liman: selectedPort.name,
+          tarih: d.toLocaleDateString("tr-TR"),
+          saat: formatTideTime(ev.time),
+          olay: ev.type === "high" ? "Yüksek" : "Alçak",
+          yukseklik_goreli_0_100: ev.height,
+          ay_fazi: daily.moonPhase,
+          gelgit_tipi: strength.label,
+        });
+      }
+    }
+
+    const fileName = `gelgit_tablosu_${toSafeFilePart(selectedPort.name)}_${toIsoDate(start)}_${days}gun.csv`;
+    exportToCsv(rows, fileName);
+  };
   
   // Calculate tides for selected date and port
   const dailyTides = useMemo(() => {
@@ -73,6 +138,41 @@ export function TidePrediction({ selectedDate }: TidePredictionProps) {
               <Info className="h-4 w-4" />
               <span>Ortalama gelgit genliği: {selectedPort.tidalRange}</span>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Download Tide Table */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Download className="h-5 w-5 text-blue-500" />
+            Gelgit Tablosu İndir
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium">Aralık:</span>
+              <Select value={downloadDays} onValueChange={(v) => setDownloadDays(v as "7" | "30")}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7">7 gün (güncel + 6)</SelectItem>
+                  <SelectItem value="30">30 gün</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1 text-sm text-muted-foreground">
+              Başlangıç tarihi: <strong>{selectedDate.toLocaleDateString("tr-TR")}</strong> • Sadece seçtiğiniz liman için indirilir.
+            </div>
+
+            <Button onClick={handleDownloadTideTableCsv} className="gap-2">
+              <Download className="h-4 w-4" />
+              CSV İndir
+            </Button>
           </div>
         </CardContent>
       </Card>

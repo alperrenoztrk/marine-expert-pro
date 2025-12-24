@@ -77,15 +77,9 @@ export function calculateDailyTides(
       const eventTime = new Date(startOfDay);
       eventTime.setMinutes(eventTime.getMinutes() + Math.round(hoursFromStart * 60));
       
-      // Calculate height with some variation
-      let height: number;
-      if (isHigh) {
-        // High tide: 50 + amplitude
-        height = 50 + baseAmplitude * (0.9 + Math.random() * 0.2);
-      } else {
-        // Low tide: 50 - amplitude
-        height = 50 - baseAmplitude * (0.9 + Math.random() * 0.2);
-      }
+      // Deterministic relative height (no randomness).
+      // NOTE: This is a simplified model and represents a relative 0-100 scale.
+      let height = 50 + (isHigh ? baseAmplitude : -baseAmplitude);
       
       // Clamp to 0-100 range
       height = Math.max(0, Math.min(100, height));

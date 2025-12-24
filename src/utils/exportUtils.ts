@@ -10,12 +10,26 @@ export async function exportNodeToPng(node: HTMLElement, fileName = 'chart.png')
   link.click();
 }
 
-export function exportToCsv(rows: Array<Record<string, string | number>>, fileName = 'data.csv') {
+type CsvCell = string | number | boolean | null | undefined;
+
+export function exportToCsv(rows: Array<Record<string, CsvCell>>, fileName = 'data.csv') {
   if (!rows.length) return;
   const headers = Object.keys(rows[0]);
-  const csv = [headers.join(',')]
-    .concat(rows.map(r => headers.map(h => String(r[h] ?? '')).join(',')))
-    .join('\n');
+
+  const escapeCsv = (value: string) => {
+    // RFC 4180-ish: wrap with quotes if contains quote/comma/newline; double quotes inside.
+    const needsQuotes = /[",\r\n]/.test(value);
+    const escaped = value.replace(/"/g, '""');
+    return needsQuotes ? `"${escaped}"` : escaped;
+  };
+
+  const toCell = (v: CsvCell) => escapeCsv(String(v ?? ''));
+
+  // Add BOM for better Excel compatibility with UTF-8 (Turkish chars).
+  const csv = '\ufeff' + [headers.map(toCell).join(',')]
+    .concat(rows.map(r => headers.map(h => toCell(r[h])).join(',')))
+    .join('\r\n');
+
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
