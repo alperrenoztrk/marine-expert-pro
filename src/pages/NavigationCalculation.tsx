@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
-import { Calculator } from "lucide-react";
+import { BookOpen, Calculator } from "lucide-react";
 import { supabase } from "@/integrations/supabase/safeClient";
 import {
   calculateGreatCircle,
@@ -2014,6 +2014,20 @@ export default function NavigationCalculationPage() {
       case "tides":
         return (
           <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold">Gelgit hesabı (öğrenme modu dahil)</div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => navigate("/tide-trainer")}
+              >
+                <BookOpen className="h-4 w-4" />
+                Konu Anlatımı
+              </Button>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="tide-hour">Saat (1-6)</Label>
