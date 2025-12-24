@@ -393,11 +393,13 @@ export function calculateRhumbLine(lat1Deg: number, lon1Deg: number, lat2Deg: nu
     deltaLonRad = deltaLonRad > 0 ? -(2*Math.PI-deltaLonRad) : (2*Math.PI+deltaLonRad);
   }
 
-  const q = Math.log(Math.tan(Math.PI/4 + lat2Rad/2) / Math.tan(Math.PI/4 + lat1Rad/2)) / deltaLatRad;
-  const qSafe = Math.abs(deltaLatRad) > 1e-12 ? q : Math.cos(lat1Rad);
+  // Use the standard Mercator formula with robust handling of Δφ≈0 cases.
+  // Δψ = ln( tan(π/4+φ₂/2) / tan(π/4+φ₁/2) )
+  const deltaPsi = Math.log(Math.tan(Math.PI / 4 + lat2Rad / 2) / Math.tan(Math.PI / 4 + lat1Rad / 2));
+  const q = Math.abs(deltaPsi) > 1e-12 ? deltaLatRad / deltaPsi : Math.cos(lat1Rad);
 
-  const distance = 60 * Math.sqrt(Math.pow(toDegrees(deltaLatRad), 2) + Math.pow(qSafe * toDegrees(deltaLonRad), 2));
-  const course = normalizeAngle(toDegrees(Math.atan2(deltaLonRad, q * deltaLatRad)));
+  const distance = 60 * Math.sqrt(Math.pow(toDegrees(deltaLatRad), 2) + Math.pow(q * toDegrees(deltaLonRad), 2));
+  const course = normalizeAngle(toDegrees(Math.atan2(deltaLonRad, deltaPsi)));
 
   return { distance, course };
 }
@@ -465,14 +467,17 @@ export function calculateDistance(input: DistanceCalculationInput): DistanceCalc
   
   switch (type) {
     case 'dip':
-      distanceNm = 2.075 * Math.sqrt(heightM);
+      // Geographic range / distance to the horizon (nm), h in meters
+      distanceNm = 2.08 * Math.sqrt(heightM);
       break;
     case 'radar':
-      distanceNm = 2.35 * Math.sqrt(heightM);
+      // Radar/VHF horizon with refraction allowance (nm), h in meters
+      distanceNm = 2.23 * Math.sqrt(heightM);
       break;
     case 'light':
       if (lightHeightM !== undefined) {
-        distanceNm = 1.17 * (Math.sqrt(heightM) + Math.sqrt(lightHeightM));
+        // Geographic range for observer + light (nm), h in meters
+        distanceNm = 2.08 * (Math.sqrt(heightM) + Math.sqrt(lightHeightM));
       }
       break;
   }
@@ -505,7 +510,11 @@ export function calculateTurning(input: TurningCalculationInput): TurningCalcula
   const advanceM = radiusM * Math.sin(courseChangeRad / 2);
   const transferM = radiusM * (1 - Math.cos(courseChangeRad / 2));
   
-  const rotDegPerMin = 3438 * (speedKn * 0.514444) / radiusM; // V in m/s, formula gives deg/min
+  // ROT (deg/min) from speed and turning radius:
+  // v(m/min) = V(kn) * 1852 / 60
+  // ω(rad/min) = v / R, ROT(deg/min) = ω * 180/π
+  const vMPerMin = (speedKn * 1852) / 60;
+  const rotDegPerMin = (vMPerMin / radiusM) * (180 / Math.PI);
   const wheelOverPointM = advanceM / Math.sin(courseChangeRad / 2);
   
   return { tacticalDiameterM, advanceM, transferM, rotDegPerMin, wheelOverPointM };

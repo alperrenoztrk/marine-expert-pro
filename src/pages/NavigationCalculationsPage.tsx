@@ -588,8 +588,8 @@ Sabit Kerteriz: ${rhumbResults.course.toFixed(1)}°`}</pre>
             {planeResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-dLat: ${planeResults.dLatNm.toFixed(2)} nm
-Departure: ${planeResults.departureNm.toFixed(2)} nm
+dLat: ${planeResults.dLatMin.toFixed(2)}'
+Departure: ${planeResults.depMin.toFixed(2)}'
 Kerteriz: ${planeResults.courseDeg.toFixed(1)}°
 Mesafe: ${planeResults.distanceNm.toFixed(2)} nm`}</pre>
               </div>
@@ -691,7 +691,11 @@ Saat: ${etaResults.hours.toFixed(2)} saat`}</pre>
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
 CTS (Course to Steer): ${currentResults.courseToSteerDeg.toFixed(1)}°
-SOG (Speed over Ground): ${currentResults.speedOverGroundKn.toFixed(2)} kn`}</pre>
+SOG (Speed over Ground): ${currentResults.groundSpeedKn.toFixed(2)} kn
+CMG (Course Made Good): ${currentResults.madeGoodCourseDeg.toFixed(1)}°
+Drift Angle: ${currentResults.driftAngleDeg.toFixed(1)}°
+Uygunluk: ${currentResults.feasible ? "✅ Attainable" : "⚠️ Not attainable (akıntı sürati yüksek)"}`
+                }</pre>
               </div>
             )}
           </CardContent>
@@ -823,8 +827,10 @@ Toplam Hata: ${compassResults.totalError.toFixed(1)}°`}</pre>
             {cpaResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-CPA Mesafesi: ${cpaResults.cpaDistanceNm.toFixed(2)} nm
-TCPA: ${cpaResults.tcpaHours.toFixed(2)} saat (${(cpaResults.tcpaHours * 60).toFixed(0)} dk)`}</pre>
+CPA Mesafesi: ${cpaResults.cpaNm.toFixed(2)} nm
+TCPA: ${cpaResults.tcpaMin.toFixed(1)} dk
+Relative Speed: ${cpaResults.relativeSpeedKn.toFixed(2)} kn
+Relative Bearing: ${cpaResults.relativeBearingDeg.toFixed(1)}°`}</pre>
               </div>
             )}
           </CardContent>
@@ -873,7 +879,7 @@ TCPA: ${cpaResults.tcpaHours.toFixed(2)} saat (${(cpaResults.tcpaHours * 60).toF
             {sightResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-Hesaplanan Yükseklik: ${sightResults.calculatedAltitudeDeg.toFixed(2)}°
+Hesaplanan Yükseklik (Hc): ${sightResults.hcDeg.toFixed(2)}°
 Azimut: ${sightResults.azimuthDeg.toFixed(1)}°`}</pre>
               </div>
             )}
@@ -1037,9 +1043,8 @@ Mesafe: ${distanceResults.distanceNm.toFixed(2)} nm`}</pre>
             {tideResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç (Rule of Twelfths):
-${tideResults.hour}. Saatte Değişim: ${tideResults.changeM.toFixed(2)} m
-Toplam Değişim: ${tideResults.totalChangeM.toFixed(2)} m
-Yüzde: ${tideResults.percentageComplete.toFixed(1)}%`}</pre>
+Sınırdan itibaren yükseklik değişimi: ${tideResults.heightM.toFixed(2)} m
+Tamamlanma: ${(tideResults.fractionOfRange * 100).toFixed(1)}%`}</pre>
               </div>
             )}
 
@@ -1249,7 +1254,7 @@ ROT: ${turningResults.rotDegPerMin.toFixed(1)} °/min`}</pre>
             {weatherResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-${weatherResults.beaufortWindSpeedKn ? `Beaufort Rüzgar Hızı: ${weatherResults.beaufortWindSpeedKn.toFixed(1)} knot\n` : ''}${weatherResults.waveHeightM ? `Dalga Yüksekliği: ${weatherResults.waveHeightM.toFixed(1)} m\n` : ''}${weatherResults.leewayAngleDeg ? `Leeway Açısı: ${weatherResults.leewayAngleDeg.toFixed(1)}°\n` : ''}${weatherResults.windForceN ? `Rüzgar Kuvveti: ${weatherResults.windForceN.toFixed(0)} N` : ''}`}</pre>
+${weatherResults.windSpeedKn !== undefined ? `Rüzgar Hızı: ${weatherResults.windSpeedKn.toFixed(1)} kn\n` : ''}${weatherResults.waveHeightM !== undefined ? `Dalga Yüksekliği: ${weatherResults.waveHeightM.toFixed(1)} m\n` : ''}${weatherResults.leewayAngleDeg !== undefined ? `Leeway Açısı: ${weatherResults.leewayAngleDeg.toFixed(1)}°\n` : ''}${weatherResults.windForceN !== undefined ? `Rüzgar Kuvveti: ${weatherResults.windForceN.toFixed(0)} N` : ''}`}</pre>
               </div>
             )}
           </CardContent>
@@ -1257,7 +1262,7 @@ ${weatherResults.beaufortWindSpeedKn ? `Beaufort Rüzgar Hızı: ${weatherResult
 
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="celestial" className="scroll-mt-24">Göksel Navigasyon</CardTitle>
+            <CardTitle id="celestial" className="scroll-mt-24">Göksel Seyir</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
@@ -1301,7 +1306,7 @@ ${weatherResults.beaufortWindSpeedKn ? `Beaufort Rüzgar Hızı: ${weatherResult
             {celestialResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.latitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'amplitude' ? `Amplitude: ${celestialResults.amplitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'sunrise' ? `Sunrise Bearing: ${celestialResults.sunriseBearingDeg?.toFixed(1)}°` : ''}`}</pre>
+${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.latitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'amplitude' ? `Amplitude: ${celestialResults.amplitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'sunrise' ? `Sunrise Bearing: ${celestialResults.bearingDeg?.toFixed(1)}°` : ''}`}</pre>
               </div>
             )}
           </CardContent>
@@ -1386,7 +1391,7 @@ ${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.l
             {emergencyResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-${emergencyResults.searchLegNm ? `Search Leg: ${emergencyResults.searchLegNm.toFixed(2)} nm\n` : ''}${emergencyResults.nextRadiusNm ? `Next Radius: ${emergencyResults.nextRadiusNm.toFixed(2)} nm\n` : ''}${emergencyResults.rescueTimeHours ? `Rescue Time: ${emergencyResults.rescueTimeHours.toFixed(2)} hours` : ''}`}</pre>
+${emergencyResults.legDistanceNm !== undefined ? `Leg Distance: ${emergencyResults.legDistanceNm.toFixed(2)} nm\n` : ''}${emergencyResults.newRadiusNm !== undefined ? `New Radius: ${emergencyResults.newRadiusNm.toFixed(2)} nm\n` : ''}${emergencyResults.timeToRescueHours !== undefined ? `Time to Rescue: ${emergencyResults.timeToRescueHours.toFixed(2)} h` : ''}`}</pre>
               </div>
             )}
           </CardContent>
