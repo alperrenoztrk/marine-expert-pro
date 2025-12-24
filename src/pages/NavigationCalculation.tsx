@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
 import { Calculator } from "lucide-react";
-import { TideManualGuideDialog } from "@/components/tides/TideManualGuideDialog";
 import { supabase } from "@/integrations/supabase/safeClient";
 import {
   calculateGreatCircle,
@@ -2858,7 +2857,6 @@ export default function NavigationCalculationPage() {
         <Card className="shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 gap-3">
             <CardTitle className="flex-1">{title}</CardTitle>
-            {id === "tides" && <TideManualGuideDialog />}
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             {id === "gc" ? (
