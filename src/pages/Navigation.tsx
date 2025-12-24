@@ -17,7 +17,7 @@ const navigationItems: CalculationGridItem[] = [
   { id: "sight", title: "Sight Reduction", icon: Globe2, to: "/navigation/calc/sight" },
   { id: "astro", title: "Astronomik Seyir (Almanac + LOP)", icon: Sun, to: "/navigation/calc/astro" },
   { id: "bearings", title: "Kerteriz Hesaplamaları", icon: NavigationIcon, to: "/navigation/calc/bearings" },
-  { id: "fix", title: "Fixing Position (2 Kerteriz / Running Fix)", icon: MapPinned, to: "/navigation/calc/fix" },
+  { id: "fix", title: "Fixing Position (2/3 Kerteriz, Running, Mesafe)", icon: MapPinned, to: "/navigation/calc/fix" },
   { id: "position", title: "DR / Enlem-Boylam", icon: MapPinned, to: "/navigation/calc/position" },
   { id: "midlat", title: "Middle Latitude Sailing", icon: Route, to: "/navigation/calc/midlat" },
   { id: "chart", title: "Chart Ölçeği (cm ↔ NM)", icon: Map, to: "/navigation/calc/chart" },

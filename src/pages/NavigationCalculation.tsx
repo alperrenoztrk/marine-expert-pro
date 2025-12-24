@@ -11,6 +11,7 @@ import { Calculator } from "lucide-react";
 import { TideManualGuideDialog } from "@/components/tides/TideManualGuideDialog";
 import {
   calculateGreatCircle,
+  generateGreatCircleWaypoints,
   calculateRhumbLine,
   calculatePlaneSailing,
   calculateEtaHours,
@@ -34,6 +35,9 @@ import {
   calculateDeadReckoning,
   calculateFixFromTwoBearings,
   calculateRunningFix,
+  calculateFixFromThreeBearings,
+  calculateFixFromBearingAndDistance,
+  calculateFixFromTwoDistances,
   computeTargetMotionFromTwoRadarPlots,
   assessColregSituation,
   calculateDoublingAngle,
@@ -42,6 +46,7 @@ import {
   calculateDistance,
   calculateTide,
   calculateHeightOfTideAtTime,
+  calculateTidalStream,
   estimateSquatBarrass,
   calculateUKC,
   calculateTurning,
@@ -53,6 +58,10 @@ import {
   computeSunInterceptSight,
   generateDailySunAlmanac,
   generateSightReductionTable,
+  longitudeDegToTimeMinutes,
+  utcToZoneTime,
+  zoneTimeToUtc,
+  utcToLocalMeanTime,
   calculateEmergency,
   type PlaneSailingInput,
   type CurrentTriangleInput,
@@ -134,7 +143,9 @@ export default function NavigationCalculationPage() {
     lat1: emptyDMS(true), 
     lon1: emptyDMS(false), 
     lat2: emptyDMS(true), 
-    lon2: emptyDMS(false) 
+    lon2: emptyDMS(false),
+    wpStepNm: "60",
+    wpSegments: ""
   });
   const [gcResults, setGcResults] = useState<any>(null);
 
@@ -169,6 +180,10 @@ export default function NavigationCalculationPage() {
     plannedTotalNm: "",
     dmgNm: "",
     sogKn: "",
+    // Time conversions (kitap: GMT/LMT/ZT ilişkileri)
+    timeUtc: "",
+    zoneOffsetHours: "0",
+    lonForLmt: "",
   });
   const [basicResults, setBasicResults] = useState<any>(null);
 
@@ -255,6 +270,19 @@ export default function NavigationCalculationPage() {
   });
   const [ukcResults, setUkcResults] = useState<any>(null);
 
+  const [tidalStreamInputs, setTidalStreamInputs] = useState({
+    stage: "flood" as "flood" | "ebb",
+    hourFromSlack: "3",
+    springMaxRateKn: "",
+    neapMaxRateKn: "",
+    springRangeM: "",
+    neapRangeM: "",
+    actualRangeM: "",
+    floodSetDeg: "",
+    ebbSetDeg: "",
+  });
+  const [tidalStreamResults, setTidalStreamResults] = useState<any>(null);
+
   const [safetyInputs, setSafetyInputs] = useState({
     chartedDepthM: "",
     tideM: "",
@@ -273,6 +301,26 @@ export default function NavigationCalculationPage() {
     obj2Lat: emptyDMS(true),
     obj2Lon: emptyDMS(false),
     brg2: "",
+    obj3Lat: emptyDMS(true),
+    obj3Lon: emptyDMS(false),
+    brg3: "",
+
+    // Bearing + distance (mevki dairesi + kerteriz)
+    bdObjLat: emptyDMS(true),
+    bdObjLon: emptyDMS(false),
+    bdBearingToObj: "",
+    bdDistanceNm: "",
+
+    // Two distances (two circles)
+    ddObj1Lat: emptyDMS(true),
+    ddObj1Lon: emptyDMS(false),
+    ddDist1Nm: "",
+    ddObj2Lat: emptyDMS(true),
+    ddObj2Lon: emptyDMS(false),
+    ddDist2Nm: "",
+    ddApproxLat: emptyDMS(true),
+    ddApproxLon: emptyDMS(false),
+
     runObjOldLat: emptyDMS(true),
     runObjOldLon: emptyDMS(false),
     runBrg1: "",
@@ -535,7 +583,7 @@ export default function NavigationCalculationPage() {
   }, [id, gcInputs, rhumbInputs, planeInputs, etaInputs, basicInputs, midlatInputs, chartInputs, positionInputs,
       currentInputs, compassInputs, cpaInputs, radarInputs2, colregInputs, sightInputs, astroInputs,
       bearingInputs, fixInputs, distanceInputs, tideInputs, tideTableInputs, tideHotInputs, ukcInputs,
-      safetyInputs, passageInputs, ecdisInputs,
+      tidalStreamInputs, safetyInputs, passageInputs, ecdisInputs,
       turningInputs, weatherInputs, celestialInputs, emergencyInputs]);
 
   const onCalculate = () => {
@@ -548,7 +596,15 @@ export default function NavigationCalculationPage() {
             dmsToDecimal(gcInputs.lat2),
             dmsToDecimal(gcInputs.lon2)
           );
-          setGcResults(result);
+          const stepNm = gcInputs.wpStepNm.trim() ? parseFloat(gcInputs.wpStepNm) : undefined;
+          const segments = gcInputs.wpSegments.trim() ? parseInt(gcInputs.wpSegments, 10) : undefined;
+          const waypoints = generateGreatCircleWaypoints({
+            start: { latDeg: dmsToDecimal(gcInputs.lat1), lonDeg: dmsToDecimal(gcInputs.lon1) },
+            end: { latDeg: dmsToDecimal(gcInputs.lat2), lonDeg: dmsToDecimal(gcInputs.lon2) },
+            stepNm: stepNm && isFinite(stepNm) && stepNm > 0 ? stepNm : undefined,
+            segments: segments && isFinite(segments) && segments > 0 ? segments : undefined,
+          });
+          setGcResults({ ...result, waypoints });
           break;
         }
         case "rhumb": {
@@ -653,12 +709,36 @@ export default function NavigationCalculationPage() {
             remaining = calculateRemaining({ plannedTotalDistanceNm: plannedTotal, distanceMadeGoodNm: dmg, currentSogKn: sog });
           }
 
+          // Time conversions (UTC -> Zone Time, UTC -> LMT, longitude <-> minutes)
+          let timeConv: any = null;
+          try {
+            if (basicInputs.timeUtc.trim() !== "") {
+              const tUtc = new Date(`${basicInputs.timeUtc}Z`);
+              const zoneH = basicInputs.zoneOffsetHours.trim() ? parseFloat(basicInputs.zoneOffsetHours) : 0;
+              const lon = basicInputs.lonForLmt.trim() ? parseFloat(basicInputs.lonForLmt) : 0;
+              const zone = utcToZoneTime(tUtc, zoneH);
+              const lmt = utcToLocalMeanTime(tUtc, lon);
+              const lonMin = longitudeDegToTimeMinutes(lon);
+              timeConv = {
+                utcIso: tUtc.toISOString(),
+                zoneOffsetHours: zoneH,
+                zoneIso: zone.toISOString(),
+                lonDeg: lon,
+                lonMinutes: lonMin,
+                lmtIso: lmt.toISOString(),
+              };
+            }
+          } catch (e) {
+            timeConv = null;
+          }
+
           setBasicResults({
             solved: sdt,
             timeHhMm: hhmm,
             converted,
             etaUtcIso,
             remaining,
+            timeConv,
           });
           setEtaResults({
             hours: sdt.timeHours,
@@ -810,21 +890,69 @@ export default function NavigationCalculationPage() {
           break;
         }
         case "fix": {
-          const fix = calculateFixFromTwoBearings({
-            object1: { latDeg: dmsToDecimal(fixInputs.obj1Lat), lonDeg: dmsToDecimal(fixInputs.obj1Lon) },
-            bearingToObject1TrueDeg: parseFloat(fixInputs.brg1),
-            object2: { latDeg: dmsToDecimal(fixInputs.obj2Lat), lonDeg: dmsToDecimal(fixInputs.obj2Lon) },
-            bearingToObject2TrueDeg: parseFloat(fixInputs.brg2),
-          });
-          const running = calculateRunningFix({
-            objectOld: { latDeg: dmsToDecimal(fixInputs.runObjOldLat), lonDeg: dmsToDecimal(fixInputs.runObjOldLon) },
-            bearing1TrueDeg: parseFloat(fixInputs.runBrg1),
-            objectNew: { latDeg: dmsToDecimal(fixInputs.runObjNewLat), lonDeg: dmsToDecimal(fixInputs.runObjNewLon) },
-            bearing2TrueDeg: parseFloat(fixInputs.runBrg2),
-            runCourseTrueDeg: parseFloat(fixInputs.runCourse),
-            runDistanceNm: parseFloat(fixInputs.runDistance),
-          });
-          setFixResults({ fix, running });
+          const out: any = {};
+          const hasNonZero = (d: DMSCoordinate) => d.degrees !== 0 || d.minutes !== 0 || d.seconds !== 0;
+
+          try {
+            out.fix = calculateFixFromTwoBearings({
+              object1: { latDeg: dmsToDecimal(fixInputs.obj1Lat), lonDeg: dmsToDecimal(fixInputs.obj1Lon) },
+              bearingToObject1TrueDeg: parseFloat(fixInputs.brg1),
+              object2: { latDeg: dmsToDecimal(fixInputs.obj2Lat), lonDeg: dmsToDecimal(fixInputs.obj2Lon) },
+              bearingToObject2TrueDeg: parseFloat(fixInputs.brg2),
+            });
+          } catch (e) {
+            // ignore partial
+          }
+
+          try {
+            out.running = calculateRunningFix({
+              objectOld: { latDeg: dmsToDecimal(fixInputs.runObjOldLat), lonDeg: dmsToDecimal(fixInputs.runObjOldLon) },
+              bearing1TrueDeg: parseFloat(fixInputs.runBrg1),
+              objectNew: { latDeg: dmsToDecimal(fixInputs.runObjNewLat), lonDeg: dmsToDecimal(fixInputs.runObjNewLon) },
+              bearing2TrueDeg: parseFloat(fixInputs.runBrg2),
+              runCourseTrueDeg: parseFloat(fixInputs.runCourse),
+              runDistanceNm: parseFloat(fixInputs.runDistance),
+            });
+          } catch (e) {
+            // ignore partial
+          }
+
+          try {
+            out.three = calculateFixFromThreeBearings({
+              object1: { latDeg: dmsToDecimal(fixInputs.obj1Lat), lonDeg: dmsToDecimal(fixInputs.obj1Lon) },
+              bearingToObject1TrueDeg: parseFloat(fixInputs.brg1),
+              object2: { latDeg: dmsToDecimal(fixInputs.obj2Lat), lonDeg: dmsToDecimal(fixInputs.obj2Lon) },
+              bearingToObject2TrueDeg: parseFloat(fixInputs.brg2),
+              object3: { latDeg: dmsToDecimal(fixInputs.obj3Lat), lonDeg: dmsToDecimal(fixInputs.obj3Lon) },
+              bearingToObject3TrueDeg: parseFloat(fixInputs.brg3),
+            });
+          } catch (e) {
+            // ignore partial
+          }
+
+          try {
+            out.bearingDistance = calculateFixFromBearingAndDistance({
+              object: { latDeg: dmsToDecimal(fixInputs.bdObjLat), lonDeg: dmsToDecimal(fixInputs.bdObjLon) },
+              bearingToObjectTrueDeg: parseFloat(fixInputs.bdBearingToObj),
+              distanceToObjectNm: parseFloat(fixInputs.bdDistanceNm),
+            });
+          } catch (e) {
+            // ignore partial
+          }
+
+          try {
+            out.twoDistances = calculateFixFromTwoDistances({
+              object1: { latDeg: dmsToDecimal(fixInputs.ddObj1Lat), lonDeg: dmsToDecimal(fixInputs.ddObj1Lon) },
+              distanceToObject1Nm: parseFloat(fixInputs.ddDist1Nm),
+              object2: { latDeg: dmsToDecimal(fixInputs.ddObj2Lat), lonDeg: dmsToDecimal(fixInputs.ddObj2Lon) },
+              distanceToObject2Nm: parseFloat(fixInputs.ddDist2Nm),
+              approximate: hasNonZero(fixInputs.ddApproxLat) || hasNonZero(fixInputs.ddApproxLon) ? { latDeg: dmsToDecimal(fixInputs.ddApproxLat), lonDeg: dmsToDecimal(fixInputs.ddApproxLon) } : undefined,
+            });
+          } catch (e) {
+            // ignore partial
+          }
+
+          setFixResults(out);
           break;
         }
         case "distance": {
@@ -873,6 +1001,24 @@ export default function NavigationCalculationPage() {
             }
           } catch (e) {
             // ignore HOT/UKC errors
+          }
+
+          // Tidal stream (spring/neap scaled, simple curve)
+          try {
+            const ts = calculateTidalStream({
+              stage: tidalStreamInputs.stage,
+              hourFromSlack: parseFloat(tidalStreamInputs.hourFromSlack),
+              springMaxRateKn: parseFloat(tidalStreamInputs.springMaxRateKn),
+              neapMaxRateKn: parseFloat(tidalStreamInputs.neapMaxRateKn),
+              springRangeM: parseFloat(tidalStreamInputs.springRangeM),
+              neapRangeM: parseFloat(tidalStreamInputs.neapRangeM),
+              actualRangeM: parseFloat(tidalStreamInputs.actualRangeM),
+              floodSetDeg: tidalStreamInputs.floodSetDeg.trim() ? parseFloat(tidalStreamInputs.floodSetDeg) : undefined,
+              ebbSetDeg: tidalStreamInputs.ebbSetDeg.trim() ? parseFloat(tidalStreamInputs.ebbSetDeg) : undefined,
+            });
+            setTidalStreamResults(ts);
+          } catch (e) {
+            // ignore tidal stream errors
           }
           break;
         }
@@ -1048,6 +1194,20 @@ export default function NavigationCalculationPage() {
               onChange={(val) => setGcInputs({ ...gcInputs, lon2: val })}
               isLatitude={false}
             />
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Waypoint üretimi (opsiyonel)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="gc-wp-step">Step (NM) (örn. 60)</Label>
+                  <Input id="gc-wp-step" type="number" value={gcInputs.wpStepNm} onChange={(e) => setGcInputs({ ...gcInputs, wpStepNm: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="gc-wp-seg">Segments (alternatif)</Label>
+                  <Input id="gc-wp-seg" type="number" value={gcInputs.wpSegments} onChange={(e) => setGcInputs({ ...gcInputs, wpSegments: e.target.value })} />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Step girilirse mesafeye göre waypoint sayısı seçilir; segments girilirse sabit sayıda parçaya bölünür.</div>
+            </div>
           </div>
         );
       case "rhumb":
@@ -1303,6 +1463,25 @@ export default function NavigationCalculationPage() {
                   <Input id="b-sog" type="number" value={basicInputs.sogKn} onChange={(e) => setBasicInputs({ ...basicInputs, sogKn: e.target.value })} />
                 </div>
               </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Zaman Dönüşümleri (UTC ↔ ZT ↔ LMT)</div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2">
+                  <Label htmlFor="t-utc">UTC (datetime)</Label>
+                  <Input id="t-utc" type="datetime-local" value={basicInputs.timeUtc} onChange={(e) => setBasicInputs({ ...basicInputs, timeUtc: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="t-zone">Zone Offset (hours)</Label>
+                  <Input id="t-zone" type="number" value={basicInputs.zoneOffsetHours} onChange={(e) => setBasicInputs({ ...basicInputs, zoneOffsetHours: e.target.value })} />
+                </div>
+                <div className="col-span-3">
+                  <Label htmlFor="t-lon">Longitude for LMT (deg, East + / West -)</Label>
+                  <Input id="t-lon" type="number" value={basicInputs.lonForLmt} onChange={(e) => setBasicInputs({ ...basicInputs, lonForLmt: e.target.value })} />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">LMT ≈ UTC + (Boylam × 4 dakika). Eğitim amaçlıdır.</div>
             </div>
           </div>
         );
@@ -1584,6 +1763,72 @@ export default function NavigationCalculationPage() {
             </div>
 
             <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Üç Kerterizle Fix (Least Squares)</div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-3">
+                  <CoordinateInput id="fix-obj3-lat" label="Object 3 Lat" value={fixInputs.obj3Lat} onChange={(val) => setFixInputs({ ...fixInputs, obj3Lat: val })} isLatitude={true} />
+                  <CoordinateInput id="fix-obj3-lon" label="Object 3 Lon" value={fixInputs.obj3Lon} onChange={(val) => setFixInputs({ ...fixInputs, obj3Lon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="fix-brg3">Bearing to Object 3 (True, °)</Label>
+                    <Input id="fix-brg3" type="number" value={fixInputs.brg3} onChange={(e) => setFixInputs({ ...fixInputs, brg3: e.target.value })} />
+                  </div>
+                </div>
+                <div className="col-span-2 text-xs text-muted-foreground">
+                  Üç LOP aynı noktada kesişmeyebilir. Bu durumda en iyi uyumlu (least squares) fix ve residual (NM) üretilir.
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">1 Kerteriz + 1 Mesafe (Kerteriz + Mevki Dairesi)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <CoordinateInput id="bd-obj-lat" label="Object Lat" value={fixInputs.bdObjLat} onChange={(val) => setFixInputs({ ...fixInputs, bdObjLat: val })} isLatitude={true} />
+                  <CoordinateInput id="bd-obj-lon" label="Object Lon" value={fixInputs.bdObjLon} onChange={(val) => setFixInputs({ ...fixInputs, bdObjLon: val })} isLatitude={false} />
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="bd-brg">Bearing to Object (True, °)</Label>
+                    <Input id="bd-brg" type="number" value={fixInputs.bdBearingToObj} onChange={(e) => setFixInputs({ ...fixInputs, bdBearingToObj: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label htmlFor="bd-dist">Distance to Object (NM)</Label>
+                    <Input id="bd-dist" type="number" value={fixInputs.bdDistanceNm} onChange={(e) => setFixInputs({ ...fixInputs, bdDistanceNm: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">2 Mesafe ile Fix (İki Mevki Dairesi Kesişimi)</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <CoordinateInput id="dd-obj1-lat" label="Object 1 Lat" value={fixInputs.ddObj1Lat} onChange={(val) => setFixInputs({ ...fixInputs, ddObj1Lat: val })} isLatitude={true} />
+                  <CoordinateInput id="dd-obj1-lon" label="Object 1 Lon" value={fixInputs.ddObj1Lon} onChange={(val) => setFixInputs({ ...fixInputs, ddObj1Lon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="dd-d1">Distance to Object 1 (NM)</Label>
+                    <Input id="dd-d1" type="number" value={fixInputs.ddDist1Nm} onChange={(e) => setFixInputs({ ...fixInputs, ddDist1Nm: e.target.value })} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <CoordinateInput id="dd-obj2-lat" label="Object 2 Lat" value={fixInputs.ddObj2Lat} onChange={(val) => setFixInputs({ ...fixInputs, ddObj2Lat: val })} isLatitude={true} />
+                  <CoordinateInput id="dd-obj2-lon" label="Object 2 Lon" value={fixInputs.ddObj2Lon} onChange={(val) => setFixInputs({ ...fixInputs, ddObj2Lon: val })} isLatitude={false} />
+                  <div>
+                    <Label htmlFor="dd-d2">Distance to Object 2 (NM)</Label>
+                    <Input id="dd-d2" type="number" value={fixInputs.ddDist2Nm} onChange={(e) => setFixInputs({ ...fixInputs, ddDist2Nm: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="text-xs text-muted-foreground">Opsiyonel: Yaklaşık mevki girersen iki kesişimden uygun olan seçilir.</div>
+                  <CoordinateInput id="dd-apx-lat" label="Approx Lat (optional)" value={fixInputs.ddApproxLat} onChange={(val) => setFixInputs({ ...fixInputs, ddApproxLat: val })} isLatitude={true} />
+                  <CoordinateInput id="dd-apx-lon" label="Approx Lon (optional)" value={fixInputs.ddApproxLon} onChange={(val) => setFixInputs({ ...fixInputs, ddApproxLon: val })} isLatitude={false} />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
               <div className="text-sm font-semibold">Running Fix (Taşınmış Kerteriz)</div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-3">
@@ -1741,6 +1986,55 @@ export default function NavigationCalculationPage() {
                 </div>
               </div>
               <div className="text-xs text-muted-foreground">Height of Tide sonucu yukarıdaki HW/LW hesaplamasından alınır.</div>
+            </div>
+
+            <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <div className="text-sm font-semibold">Gelgit Akıntısı (Tidal Stream) – Pratik</div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="ts-stage">Stage</Label>
+                  <Select value={tidalStreamInputs.stage} onValueChange={(v) => setTidalStreamInputs({ ...tidalStreamInputs, stage: v as any })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="flood">Flood</SelectItem>
+                      <SelectItem value="ebb">Ebb</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="ts-hour">Hour from slack (0..6)</Label>
+                  <Input id="ts-hour" type="number" value={tidalStreamInputs.hourFromSlack} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, hourFromSlack: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ts-spring-rate">Spring max rate (kn)</Label>
+                  <Input id="ts-spring-rate" type="number" value={tidalStreamInputs.springMaxRateKn} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, springMaxRateKn: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ts-neap-rate">Neap max rate (kn)</Label>
+                  <Input id="ts-neap-rate" type="number" value={tidalStreamInputs.neapMaxRateKn} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, neapMaxRateKn: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ts-spring-range">Spring range (m)</Label>
+                  <Input id="ts-spring-range" type="number" value={tidalStreamInputs.springRangeM} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, springRangeM: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ts-neap-range">Neap range (m)</Label>
+                  <Input id="ts-neap-range" type="number" value={tidalStreamInputs.neapRangeM} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, neapRangeM: e.target.value })} />
+                </div>
+                <div className="col-span-2">
+                  <Label htmlFor="ts-actual-range">Actual range (m)</Label>
+                  <Input id="ts-actual-range" type="number" value={tidalStreamInputs.actualRangeM} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, actualRangeM: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ts-flood-set">Flood set (°T) (optional)</Label>
+                  <Input id="ts-flood-set" type="number" value={tidalStreamInputs.floodSetDeg} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, floodSetDeg: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="ts-ebb-set">Ebb set (°T) (optional)</Label>
+                  <Input id="ts-ebb-set" type="number" value={tidalStreamInputs.ebbSetDeg} onChange={(e) => setTidalStreamInputs({ ...tidalStreamInputs, ebbSetDeg: e.target.value })} />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">Basit model: spring/neap skalası + slack→max→slack sinüs eğrisi (eğitim amaçlı).</div>
             </div>
 
             {tideTable.length > 0 && (
@@ -2025,6 +2319,32 @@ export default function NavigationCalculationPage() {
                   </div>
                 )}
               </div>
+              {Array.isArray(gcResults.waypoints) && gcResults.waypoints.length > 0 && (
+                <div className="rounded border p-3 bg-muted/30 mt-3">
+                  <div className="text-sm font-semibold mb-2">Great Circle Waypoints</div>
+                  <div className="text-xs text-muted-foreground mb-2">Toplam: {gcResults.waypoints.length} nokta (ilk 12 gösterilir)</div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-xs">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">#</th>
+                          <th className="text-left p-2">Lat</th>
+                          <th className="text-left p-2">Lon</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {gcResults.waypoints.slice(0, 12).map((p: any, i: number) => (
+                          <tr key={i} className="border-b">
+                            <td className="p-2 font-mono">{i + 1}</td>
+                            <td className="p-2 font-mono">{formatDecimalAsDMS(p.latDeg, true, true)}</td>
+                            <td className="p-2 font-mono">{formatDecimalAsDMS(p.lonDeg, false, true)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           )
         );
@@ -2061,7 +2381,7 @@ export default function NavigationCalculationPage() {
       case "eta":
         return (
           basicResults && (
-            <pre className="font-mono text-sm leading-6">{`Sonuç:\nMesafe: ${basicResults.solved.distanceNm.toFixed(2)} NM\nHız: ${basicResults.solved.speedKn.toFixed(2)} kn\nZaman: ${basicResults.solved.timeHours.toFixed(3)} h (${basicResults.timeHhMm.hh}h ${basicResults.timeHhMm.mm}m)\n${basicResults.converted !== null ? `\nDönüşüm: ${basicResults.converted.toFixed(4)}` : ""}${basicResults.etaUtcIso ? `\nETA (UTC): ${basicResults.etaUtcIso}` : ""}${basicResults.remaining ? `\n\nKalan Mesafe: ${basicResults.remaining.remainingDistanceNm.toFixed(2)} NM\nKalan Süre: ${basicResults.remaining.remainingTimeHours.toFixed(2)} h` : ""}`}</pre>
+            <pre className="font-mono text-sm leading-6">{`Sonuç:\nMesafe: ${basicResults.solved.distanceNm.toFixed(2)} NM\nHız: ${basicResults.solved.speedKn.toFixed(2)} kn\nZaman: ${basicResults.solved.timeHours.toFixed(3)} h (${basicResults.timeHhMm.hh}h ${basicResults.timeHhMm.mm}m)\n${basicResults.converted !== null ? `\nDönüşüm: ${basicResults.converted.toFixed(4)}` : ""}${basicResults.etaUtcIso ? `\nETA (UTC): ${basicResults.etaUtcIso}` : ""}${basicResults.remaining ? `\n\nKalan Mesafe: ${basicResults.remaining.remainingDistanceNm.toFixed(2)} NM\nKalan Süre: ${basicResults.remaining.remainingTimeHours.toFixed(2)} h` : ""}${basicResults.timeConv ? `\n\nZaman Dönüşümü:\nUTC: ${basicResults.timeConv.utcIso}\nZT (UTC${basicResults.timeConv.zoneOffsetHours >= 0 ? "+" : ""}${basicResults.timeConv.zoneOffsetHours}): ${basicResults.timeConv.zoneIso}\nBoylam: ${basicResults.timeConv.lonDeg.toFixed(2)}° => ${basicResults.timeConv.lonMinutes.toFixed(1)} dakika\nLMT: ${basicResults.timeConv.lmtIso}` : ""}`}</pre>
           )
         );
       case "current":
@@ -2166,7 +2486,7 @@ export default function NavigationCalculationPage() {
       case "fix":
         return (
           fixResults && (
-            <pre className="font-mono text-sm leading-6">{`İki Kerteriz Fix:\nLat: ${formatDecimalAsDMS(fixResults.fix.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.fix.fix.lonDeg, false)}\nIntersection angle: ${fixResults.fix.intersectionAngleDeg.toFixed(1)}°\n\nRunning Fix:\nLat: ${formatDecimalAsDMS(fixResults.running.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.running.fix.lonDeg, false)}\nIntersection angle: ${fixResults.running.intersectionAngleDeg.toFixed(1)}°`}</pre>
+            <pre className="font-mono text-sm leading-6">{`${fixResults.fix ? `İki Kerteriz Fix:\nLat: ${formatDecimalAsDMS(fixResults.fix.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.fix.fix.lonDeg, false)}\nIntersection angle: ${fixResults.fix.intersectionAngleDeg.toFixed(1)}°\n\n` : ""}${fixResults.three ? `Üç Kerteriz Fix (LS):\nLat: ${formatDecimalAsDMS(fixResults.three.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.three.fix.lonDeg, false)}\nResidual: ${fixResults.three.residualNm.toFixed(2)} NM\nBest intersection angle: ${fixResults.three.bestIntersectionAngleDeg.toFixed(1)}°\n\n` : ""}${fixResults.bearingDistance ? `1 Kerteriz + 1 Mesafe:\nLat: ${formatDecimalAsDMS(fixResults.bearingDistance.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.bearingDistance.fix.lonDeg, false)}\n\n` : ""}${fixResults.twoDistances ? `2 Mesafe Fix:\nLat: ${formatDecimalAsDMS(fixResults.twoDistances.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.twoDistances.fix.lonDeg, false)}\nCandidates: ${fixResults.twoDistances.candidates.length}\n\n` : ""}${fixResults.running ? `Running Fix:\nLat: ${formatDecimalAsDMS(fixResults.running.fix.latDeg, true)}\nLon: ${formatDecimalAsDMS(fixResults.running.fix.lonDeg, false)}\nIntersection angle: ${fixResults.running.intersectionAngleDeg.toFixed(1)}°` : ""}`}</pre>
           )
         );
       case "distance":
@@ -2177,8 +2497,8 @@ export default function NavigationCalculationPage() {
         );
       case "tides":
         return (
-          (tideResults || tideHotResults || ukcResults) && (
-            <pre className="font-mono text-sm leading-6">{`Rule of Twelfths:\nYükseklik: ${tideResults?.heightM?.toFixed?.(2) ?? "—"} m\n\nHW/LW → Height of Tide:\n${tideHotResults ? `Height: ${tideHotResults.heightM.toFixed(2)} m\nStage: ${tideHotResults.stage}\n` : "—\n"}\nUKC:\n${ukcResults ? `Squat: ${ukcResults.squatM.toFixed(2)} m\nUKC: ${ukcResults.ukcM.toFixed(2)} m\nSafe: ${ukcResults.isSafe ? "Yes" : "No"}` : "—"}`}</pre>
+          (tideResults || tideHotResults || ukcResults || tidalStreamResults) && (
+            <pre className="font-mono text-sm leading-6">{`Rule of Twelfths:\nYükseklik: ${tideResults?.heightM?.toFixed?.(2) ?? "—"} m\n\nHW/LW → Height of Tide:\n${tideHotResults ? `Height: ${tideHotResults.heightM.toFixed(2)} m\nStage: ${tideHotResults.stage}\n` : "—\n"}\nUKC:\n${ukcResults ? `Squat: ${ukcResults.squatM.toFixed(2)} m\nUKC: ${ukcResults.ukcM.toFixed(2)} m\nSafe: ${ukcResults.isSafe ? "Yes" : "No"}` : "—"}\n\nTidal Stream:\n${tidalStreamResults ? `Set: ${tidalStreamResults.setDeg.toFixed(0)}°\nRate: ${tidalStreamResults.rateKn.toFixed(2)} kn\nMax: ${tidalStreamResults.maxRateKn.toFixed(2)} kn\nFactor: ${(tidalStreamResults.springNeapFactor * 100).toFixed(0)}%` : "—"}`}</pre>
           )
         );
       case "safety":
