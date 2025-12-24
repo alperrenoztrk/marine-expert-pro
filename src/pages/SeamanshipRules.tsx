@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Scale, Shield, FileText, Anchor } from "lucide-react";
+import { Scale, Shield, FileText, Anchor, BookOpen } from "lucide-react";
 
 const seamanshipRules = [
   {
@@ -45,6 +45,18 @@ const seamanshipRules = [
       "Terminal prosedürleri ve güvenlik kuralları takip edilmelidir.",
       "VTS raporlama gereklilikleri yerine getirilmelidir.",
       "Çevresel kısıtlamalar dikkate alınmalıdır."
+    ]
+  },
+  {
+    title: "Ders Materyali (MEB) — Seyir ve Elektronik Seyir Atölyesi 11",
+    icon: BookOpen,
+    rules: [
+      "Yayın: MEB — Meslekî ve Teknik Anadolu Lisesi Denizcilik Alanı",
+      "Materyal: “Seyir ve Elektronik Seyir Atölyesi 11” (MEB__212930)",
+      "ISBN: 978-975-11-6911-2",
+      "Yazarlar: Bayram ASLAN, Hakan YILDIRIM (Hazırlayanlar: Dr. Eda ÖZ ve ekip)",
+      "Kapsam (özet): Kıyı Seyri (kerteriz/mesafe, fix, running fix), Akıntı Seyri (akıntı üçgeni), Karasal Seyir (plane/great circle), Gelgit (tide tables), Olağan dışı şartlarda seyir (tropikal fırtına, kısıtlı görüş, SAR), Elektronik seyir (GNSS/AIS/NAVTEX, ECDIS, Radar/ARPA).",
+      "Erişim: EBA kitap altyapısı üzerinden (kitap.eba.gov.tr)."
     ]
   }
 ];
