@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Star, Globe, Search, Moon } from "lucide-react";
+import { Star, Globe, Search, Moon, Calendar } from "lucide-react";
 import { 
   navigationStars, 
   planets, 
@@ -17,6 +17,12 @@ import {
   type NavigationStar,
   type MoonPosition
 } from "@/data/navigationStars";
+import { 
+  getMoonPhase, 
+  getUpcomingMoonPhases, 
+  getMoonPhasesForMonth,
+  type MoonPhase 
+} from "@/utils/moonPhase";
 
 interface StarPlanetTableProps {
   selectedDate: Date;
@@ -50,6 +56,11 @@ export function StarPlanetTable({ selectedDate }: StarPlanetTableProps) {
 
   // Get Moon position for selected date
   const moonData = getMoonPosition(selectedDate);
+  
+  // Get Moon phase for selected date
+  const moonPhase = getMoonPhase(selectedDate);
+  const upcomingPhases = getUpcomingMoonPhases(selectedDate, 4);
+  const monthPhases = getMoonPhasesForMonth(selectedDate.getFullYear(), selectedDate.getMonth());
 
   const handleSort = (column: "name" | "sha" | "magnitude") => {
     if (sortBy === column) {
@@ -266,12 +277,104 @@ export function StarPlanetTable({ selectedDate }: StarPlanetTableProps) {
       </TabsContent>
 
       <TabsContent value="moon" className="mt-4 space-y-4">
+        {/* Moon Phase Card */}
+        <Card className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white border-indigo-700">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-lg text-white">
+              <Moon className="h-5 w-5" />
+              Ay Fazı - {selectedDate.toLocaleDateString('tr-TR')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-6">
+              {/* Current Phase Display */}
+              <div className="text-center">
+                <div className="text-6xl mb-2">{moonPhase.emoji}</div>
+                <div className="text-lg font-semibold">{moonPhase.nameTr}</div>
+                <div className="text-sm text-indigo-200">{moonPhase.name}</div>
+              </div>
+              
+              {/* Phase Details */}
+              <div className="flex-1 grid grid-cols-2 gap-3">
+                <div className="bg-white/10 rounded-lg p-3 text-center">
+                  <p className="text-xs text-indigo-200 mb-1">Aydınlanma</p>
+                  <p className="text-xl font-bold">{moonPhase.illumination}%</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-3 text-center">
+                  <p className="text-xs text-indigo-200 mb-1">Ay Yaşı</p>
+                  <p className="text-xl font-bold">{moonPhase.age} gün</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Illumination Progress Bar */}
+            <div className="mt-4">
+              <div className="flex justify-between text-xs text-indigo-200 mb-1">
+                <span>🌑 Yeni Ay</span>
+                <span>Dolunay 🌕</span>
+              </div>
+              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-indigo-400 to-yellow-300 transition-all duration-500"
+                  style={{ width: `${moonPhase.illumination}%` }}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Upcoming Phases */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Calendar className="h-5 w-5" />
+              Yaklaşan Ay Fazları
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {upcomingPhases.map((phase, idx) => (
+                <div 
+                  key={idx}
+                  className="flex flex-col items-center p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+                >
+                  <span className="text-3xl mb-1">{phase.emoji}</span>
+                  <span className="text-sm font-medium">{phase.nameTr}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {phase.date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {phase.date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} UTC
+                  </span>
+                </div>
+              ))}
+            </div>
+            
+            {/* This Month's Phases */}
+            {monthPhases.length > 0 && (
+              <div className="mt-4 pt-4 border-t">
+                <h4 className="font-semibold mb-2">
+                  {selectedDate.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })} Ay Fazları
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {monthPhases.map((phase, idx) => (
+                    <Badge key={idx} variant="outline" className="py-1.5 px-3">
+                      <span className="mr-1">{phase.emoji}</span>
+                      {phase.nameTr} - {phase.date.getDate()}.{phase.date.getMonth() + 1}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Current Moon Data */}
         <Card className="bg-gradient-to-br from-slate-50 to-indigo-50 border-indigo-200">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Moon className="h-5 w-5 text-indigo-600" />
-              Ay Verileri - {moonData?.date || selectedDate.toISOString().split('T')[0]}
+              Navigasyon Verileri - {moonData?.date || selectedDate.toISOString().split('T')[0]}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -320,7 +423,7 @@ export function StarPlanetTable({ selectedDate }: StarPlanetTableProps) {
                 {/* Hourly Moon Table */}
                 <div>
                   <h4 className="font-semibold mb-2">Saatlik Ay Tablosu</h4>
-                  <ScrollArea className="h-[250px]">
+                  <ScrollArea className="h-[200px]">
                     <table className="w-full text-sm">
                       <thead className="bg-indigo-100/50 sticky top-0">
                         <tr>
@@ -359,38 +462,35 @@ export function StarPlanetTable({ selectedDate }: StarPlanetTableProps) {
         {/* Moon Usage Guide */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Ay Tablosu Kullanım Kılavuzu</CardTitle>
+            <CardTitle className="text-lg">Ay Fazları Rehberi</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 text-sm">
-              <div className="p-3 rounded-lg bg-muted/50">
-                <h5 className="font-semibold mb-1">GHA (Greenwich Hour Angle)</h5>
-                <p className="text-muted-foreground">
-                  Ay'ın Greenwich meridyeninden batıya doğru ölçülen açısal uzaklığı. 
-                  Saatlik değişim oranı yaklaşık 14.5°/saat'tir (Güneş'ten farklı olarak).
-                </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <div className="text-center p-2 rounded-lg bg-muted/30">
+                <span className="text-2xl">🌑</span>
+                <p className="text-xs font-medium mt-1">Yeni Ay</p>
+                <p className="text-xs text-muted-foreground">0% aydınlık</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/50">
-                <h5 className="font-semibold mb-1">Dec (Declination)</h5>
-                <p className="text-muted-foreground">
-                  Ay'ın gök ekvatorundan kuzey (+) veya güney (-) yönünde olan açısal uzaklığı.
-                  Ay'ın deklinasyonu günde yaklaşık 5-10° değişebilir.
-                </p>
+              <div className="text-center p-2 rounded-lg bg-muted/30">
+                <span className="text-2xl">🌓</span>
+                <p className="text-xs font-medium mt-1">İlk Dördün</p>
+                <p className="text-xs text-muted-foreground">50% aydınlık</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/50">
-                <h5 className="font-semibold mb-1">HP (Horizontal Parallax)</h5>
-                <p className="text-muted-foreground">
-                  Ay'ın yatay paralaksı, Ay'ın Dünya'ya yakınlığının bir ölçüsüdür. 
-                  Değer 54' ile 61' arasında değişir. Sextant düzeltmelerinde kullanılır.
-                </p>
+              <div className="text-center p-2 rounded-lg bg-muted/30">
+                <span className="text-2xl">🌕</span>
+                <p className="text-xs font-medium mt-1">Dolunay</p>
+                <p className="text-xs text-muted-foreground">100% aydınlık</p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/50">
-                <h5 className="font-semibold mb-1">SD (Semi-Diameter)</h5>
-                <p className="text-muted-foreground">
-                  Ay'ın görünen yarı çapı. Alt veya üst limb ölçümlerinde düzeltme için kullanılır.
-                  Değer 14.7' ile 16.8' arasında değişir.
-                </p>
+              <div className="text-center p-2 rounded-lg bg-muted/30">
+                <span className="text-2xl">🌗</span>
+                <p className="text-xs font-medium mt-1">Son Dördün</p>
+                <p className="text-xs text-muted-foreground">50% aydınlık</p>
               </div>
+            </div>
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>• <strong>Sinodik Ay</strong>: Yeni ay'dan yeni ay'a ~29.5 gün</p>
+              <p>• <strong>Gelgit Etkisi</strong>: Dolunay ve yeni ay'da en güçlü gelgitler oluşur</p>
+              <p>• <strong>Navigasyon</strong>: Dolunay navigasyon için en iyi görünürlük sağlar</p>
             </div>
           </CardContent>
         </Card>
