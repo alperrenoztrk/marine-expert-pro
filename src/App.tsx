@@ -55,6 +55,7 @@ import NavigationFormulasPage from "./pages/NavigationFormulas";
 
 import DetailedMeteorology from "./pages/DetailedMeteorology";
 import COLREGPresentation from "./pages/COLREGPresentation";
+import NavigationRulesPage from "./pages/NavigationRules";
 import StabilityCalculationsPage from "./pages/StabilityCalculations";
 import StabilityQuizPage from "./pages/StabilityQuiz";
 import StabilityShearingBendingPage from "./pages/StabilityShearingBending";
@@ -264,6 +265,7 @@ const AnimatedRoutes = () => {
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
         <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
+        <Route path="/navigation/rules" element={<PageTransition><NavigationRulesPage /></PageTransition>} />
         
         <Route path="/navigation/meteorology" element={<PageTransition><DetailedMeteorology /></PageTransition>} />
         <Route path="/navigation/colreg-presentation" element={<PageTransition><COLREGPresentation /></PageTransition>} />
