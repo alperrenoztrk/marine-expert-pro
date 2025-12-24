@@ -11,7 +11,8 @@ import { CalculationGridScreen } from "@/components/ui/calculation-grid";
 import { 
   Calculator,
   Navigation,
-  Ruler
+  Ruler,
+  BookOpen
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -19,6 +20,7 @@ import {
   dmsToDecimal, 
   type DMSCoordinate 
 } from '@/utils/coordinateUtils';
+import { AlmanacViewer } from '@/components/AlmanacViewer';
 
 export default function CelestialCalculations() {
   const { toast } = useToast();
@@ -156,7 +158,7 @@ export default function CelestialCalculations() {
       >
         <div className="pb-20">
           <Tabs defaultValue="sextant" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white/80 border border-white/60">
+            <TabsList className="grid w-full grid-cols-3 bg-white/80 border border-white/60">
               <TabsTrigger value="sextant" className="flex items-center gap-2">
                 <Ruler className="h-4 w-4" />
                 Sextant
@@ -164,6 +166,10 @@ export default function CelestialCalculations() {
               <TabsTrigger value="navigation" className="flex items-center gap-2">
                 <Navigation className="h-4 w-4" />
                 Navigasyon
+              </TabsTrigger>
+              <TabsTrigger value="almanac" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                Almanac
               </TabsTrigger>
             </TabsList>
 
@@ -387,6 +393,10 @@ export default function CelestialCalculations() {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+
+            <TabsContent value="almanac" className="mt-4">
+              <AlmanacViewer />
             </TabsContent>
           </Tabs>
         </div>
