@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { parseSignedAngleEW } from "@/utils/angleParsing";
 
 interface DirectionInputProps {
   label: string;
@@ -33,9 +34,19 @@ export const DirectionInput = ({
     onChange(finalValue);
   };
 
-  const handleValueChange = (newValue: number) => {
-    setAbsoluteValue(newValue);
-    updateValue(newValue, direction);
+  const handleTextChange = (raw: string) => {
+    const parsed = parseSignedAngleEW(raw);
+    if (!Number.isFinite(parsed)) {
+      setAbsoluteValue(Number.NaN);
+      updateValue(Number.NaN, direction);
+      return;
+    }
+
+    const nextDirection = parsed < 0 ? "W" : parsed > 0 ? "E" : direction;
+    const nextAbs = Math.abs(parsed);
+    setDirection(nextDirection);
+    setAbsoluteValue(nextAbs);
+    updateValue(nextAbs, nextDirection);
   };
 
   const handleDirectionChange = (newDirection: string) => {
@@ -55,10 +66,10 @@ export const DirectionInput = ({
       <Label>{label}</Label>
       <div className="flex gap-2">
         <Input
-          type="number"
-          step="0.1"
-          value={absoluteValue}
-          onChange={(e) => handleValueChange(e.target.value === '' ? Number.NaN : parseFloat(e.target.value))}
+          type="text"
+          inputMode="decimal"
+          value={Number.isFinite(absoluteValue) ? absoluteValue : ""}
+          onChange={(e) => handleTextChange(e.target.value)}
           placeholder={placeholder}
           className="flex-1 text-right"
           min="0"

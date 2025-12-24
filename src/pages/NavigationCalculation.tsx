@@ -76,6 +76,7 @@ import {
   type EmergencyInput,
 } from "@/components/calculations/navigationMath";
 import { emptyDMS, dmsToDecimal, formatDecimalAsDMS, type DMSCoordinate } from "@/utils/coordinateUtils";
+import { parseSignedAngleEW } from "@/utils/angleParsing";
 
 type TideForecastSuggestion = { id: string; name: string; region: string };
 type TideForecastEvent = {
@@ -780,20 +781,19 @@ export default function NavigationCalculationPage() {
           break;
         }
         case "compass": {
-          const result = calculateCompassTotalError(
-            parseFloat(compassInputs.variation),
-            parseFloat(compassInputs.deviation)
-          );
+          const variation = parseSignedAngleEW(compassInputs.variation);
+          const deviation = parseSignedAngleEW(compassInputs.deviation);
+          const result = calculateCompassTotalError(variation, deviation);
           const compass = parseFloat(compassInputs.compass);
           const tvmdcFromCompass = convertTVMDCFromCompass({
             courseDeg: compass,
-            variationDeg: parseFloat(compassInputs.variation || "0"),
-            deviationDeg: parseFloat(compassInputs.deviation || "0"),
+            variationDeg: Number.isFinite(variation) ? variation : 0,
+            deviationDeg: Number.isFinite(deviation) ? deviation : 0,
           });
           const tvmdcFromTrue = convertTVMDCFromTrue({
             courseDeg: tvmdcFromCompass.trueDeg,
-            variationDeg: parseFloat(compassInputs.variation || "0"),
-            deviationDeg: parseFloat(compassInputs.deviation || "0"),
+            variationDeg: Number.isFinite(variation) ? variation : 0,
+            deviationDeg: Number.isFinite(deviation) ? deviation : 0,
           });
           setCompassResults({
             ...tvmdcFromCompass,
@@ -1622,12 +1622,26 @@ export default function NavigationCalculationPage() {
               <Input id="comp-compass" type="number" placeholder="" value={compassInputs.compass} onChange={(e) => setCompassInputs({ ...compassInputs, compass: e.target.value })} />
             </div>
             <div>
-              <Label htmlFor="comp-variation">Varyasyon (° E(+) W(-))</Label>
-              <Input id="comp-variation" type="number" placeholder="" value={compassInputs.variation} onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })} />
+              <Label htmlFor="comp-variation">Varyasyon (°) (örn: 2E / 2W)</Label>
+              <Input
+                id="comp-variation"
+                type="text"
+                inputMode="decimal"
+                placeholder="2W"
+                value={compassInputs.variation}
+                onChange={(e) => setCompassInputs({ ...compassInputs, variation: e.target.value })}
+              />
             </div>
             <div>
-              <Label htmlFor="comp-deviation">Deviasyon (° E(+) W(-))</Label>
-              <Input id="comp-deviation" type="number" placeholder="" value={compassInputs.deviation} onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })} />
+              <Label htmlFor="comp-deviation">Deviasyon (°) (örn: 1E / 1W)</Label>
+              <Input
+                id="comp-deviation"
+                type="text"
+                inputMode="decimal"
+                placeholder="1E"
+                value={compassInputs.deviation}
+                onChange={(e) => setCompassInputs({ ...compassInputs, deviation: e.target.value })}
+              />
             </div>
           </div>
         );
