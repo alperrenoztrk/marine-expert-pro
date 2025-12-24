@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="UKC stack diagram">
+  <defs>
+    <linearGradient id="bg3" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#07101f"/>
+      <stop offset="1" stop-color="#0b1a33"/>
+    </linearGradient>
+    <style>
+      .title{font: 800 34px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#e5e7eb}
+      .sub{font: 500 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#9ca3af}
+      .lbl{font: 700 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#0b1220}
+      .mono{font: 700 16px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; fill:#e5e7eb}
+      .note{font: 600 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#cbd5e1}
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="700" fill="url(#bg3)"/>
+
+  <g transform="translate(70,70)">
+    <text x="0" y="44" class="title">UKC (Under Keel Clearance) Mant11</text>
+    <text x="0" y="78" class="sub">Derinlik + gelgit ile mevcut su artar; draft + squat ile ihtiyaç artar. Aradaki fark UKCdir.</text>
+
+    <!-- Water column -->
+    <g transform="translate(40,130)">
+      <rect x="0" y="0" width="420" height="470" rx="26" fill="#0f172a" stroke="#334155"/>
+
+      <!-- Charted depth block -->
+      <rect x="40" y="270" width="340" height="280" rx="18" fill="#60a5fa"/>
+      <text x="70" y="305" class="lbl">Charted Depth</text>
+      <text x="70" y="332" class="lbl">(Kart Datumu)</text>
+
+      <!-- Tide height block -->
+      <rect x="40" y="160" width="340" height="96" rx="18" fill="#22c55e"/>
+      <text x="70" y="198" class="lbl">+ Height of Tide</text>
+      <text x="70" y="224" class="lbl">(Gelgit Yükseklii)</text>
+
+      <!-- Wave allowance (subtract) -->
+      <rect x="40" y="120" width="340" height="32" rx="16" fill="#f97316"/>
+      <text x="70" y="142" class="lbl"> Wave Allowance</text>
+    </g>
+
+    <!-- Ship block -->
+    <g transform="translate(560,170)">
+      <rect x="0" y="0" width="560" height="430" rx="26" fill="#0b1326" stroke="#273449"/>
+      <text x="26" y="46" class="note">Efektif Draft (ihtiyaç)</text>
+
+      <rect x="26" y="74" width="508" height="90" rx="18" fill="#a78bfa"/>
+      <text x="50" y="114" class="lbl">Draft</text>
+      <text x="50" y="140" class="lbl">(Su Çekimi)</text>
+
+      <rect x="26" y="176" width="508" height="70" rx="18" fill="#f59e0b"/>
+      <text x="50" y="218" class="lbl">+ Squat</text>
+
+      <rect x="26" y="258" width="508" height="60" rx="18" fill="#fb7185"/>
+      <text x="50" y="295" class="lbl">+ Safety Margin</text>
+
+      <rect x="26" y="332" width="508" height="72" rx="18" fill="#22c55e"/>
+      <text x="50" y="374" class="lbl">= Required Depth</text>
+    </g>
+
+    <!-- UKC formula -->
+    <g transform="translate(40,620)">
+      <text x="0" y="0" class="mono">UKC H (Charted Depth + Height of Tide  Wave Allowance)  (Draft + Squat)  Safety Margin</text>
+    </g>
+  </g>
+</svg>

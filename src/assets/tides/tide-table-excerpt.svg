@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="Tide table excerpt illustration">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#111b2e"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#1e2a44"/>
+      <stop offset="1" stop-color="#151f33"/>
+    </linearGradient>
+    <style>
+      .title{font: 700 30px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#e5e7eb}
+      .muted{font: 500 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#9ca3af}
+      .head{font: 700 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#e5e7eb}
+      .cell{font: 600 18px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; fill:#e5e7eb}
+      .chip{font: 700 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; fill:#0b1220}
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="700" fill="url(#bg)"/>
+
+  <g transform="translate(70,70)">
+    <rect x="0" y="0" width="1060" height="560" rx="22" fill="url(#panel)" stroke="#334155" stroke-width="2"/>
+    <text x="34" y="60" class="title">Örnek Tide Table (HW/LW)</text>
+    <text x="34" y="94" class="muted">Bir liman/istasyon için günlük yüksek su (HW) ve alçak su (LW) saatleri ve yükseklikleri</text>
+
+    <g transform="translate(34,140)">
+      <rect x="0" y="0" width="992" height="64" rx="14" fill="#0f172a" stroke="#334155"/>
+      <text x="18" y="40" class="head">Event</text>
+      <text x="240" y="40" class="head">Time (UTC)</text>
+      <text x="540" y="40" class="head">Height (m)</text>
+      <text x="740" y="40" class="head">Notes</text>
+    </g>
+
+    <g transform="translate(34,220)">
+      <rect x="0" y="0" width="992" height="64" rx="14" fill="#0b1326" stroke="#273449"/>
+      <text x="18" y="41" class="cell">LW</text>
+      <text x="240" y="41" class="cell">06:00</text>
+      <text x="540" y="41" class="cell">1.2</text>
+      <text x="740" y="41" class="muted">Günün en dü_ük seviyesi</text>
+    </g>
+
+    <g transform="translate(34,300)">
+      <rect x="0" y="0" width="992" height="64" rx="14" fill="#0b1326" stroke="#273449"/>
+      <text x="18" y="41" class="cell">HW</text>
+      <text x="240" y="41" class="cell">12:10</text>
+      <text x="540" y="41" class="cell">4.8</text>
+      <text x="740" y="41" class="muted">Günün en yüksek seviyesi</text>
+    </g>
+
+    <g transform="translate(34,380)">
+      <rect x="0" y="0" width="992" height="64" rx="14" fill="#0b1326" stroke="#273449"/>
+      <text x="18" y="41" class="cell">LW</text>
+      <text x="240" y="41" class="cell">18:25</text>
+      <text x="540" y="41" class="cell">1.0</text>
+      <text x="740" y="41" class="muted">Bir sonraki alçak su</text>
+    </g>
+
+    <g transform="translate(34,460)">
+      <rect x="0" y="0" width="992" height="64" rx="14" fill="#0b1326" stroke="#273449"/>
+      <text x="18" y="41" class="cell">HW</text>
+      <text x="240" y="41" class="cell">00:35</text>
+      <text x="540" y="41" class="cell">4.6</text>
+      <text x="740" y="41" class="muted">Ertesi günün ilk yüksek suyu</text>
+    </g>
+
+    <g transform="translate(34,542)">
+      <rect x="0" y="0" width="992" height="0" stroke="#334155"/>
+      <g transform="translate(0,18)">
+        <rect x="0" y="0" width="392" height="44" rx="22" fill="#f59e0b"/>
+        <text x="18" y="30" class="chip">Manuel hesap için: LW/HW saat + yükseklik al</text>
+      </g>
+      <g transform="translate(410,18)">
+        <rect x="0" y="0" width="582" height="44" rx="22" fill="#22c55e"/>
+        <text x="18" y="30" class="chip">Sonra: Range = HW  LW ve aradaki süreyi bul</text>
+      </g>
+    </g>
+  </g>
+</svg>
