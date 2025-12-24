@@ -66,53 +66,210 @@ export function TideManualGuideDialog() {
   const steps = useMemo(
     () => [
       {
-        title: "1) Tide table’dan HW/LW değerlerini al",
+        title: "1) Gelgitin temeli: HW, LW ve Range",
         body: (
           <div className="space-y-3">
             <p>
-              Hesap yapacağın <strong>liman/istasyon</strong> ve <strong>tarih</strong> için tide table’dan iki bilgi al:{" "}
-              <strong>LW (alçak su)</strong> ve <strong>HW (yüksek su)</strong> saatleri + yükseklikleri.
+              <strong>Gelgit (tide)</strong>, özellikle <strong>Ay</strong> ve <strong>Güneş</strong> çekim etkisiyle deniz seviyesinin periyodik
+              yükselip alçalmasıdır. Hesap yaparken şu terimler net olmalı:
             </p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Hedef zamanın <strong>hangi iki event’in arasında</strong> kaldığını belirle (LW→HW veya HW→LW).</li>
-              <li>Tablodaki saatler <strong>UTC</strong> ise, sen de hesabı UTC yap (gerekirse yerel saat dönüşümü).</li>
+              <li>
+                <strong>Yüksek su (High Water – HW)</strong>: suların en yüksek olduğu seviye/zaman
+              </li>
+              <li>
+                <strong>Alçak su (Low Water – LW)</strong>: suların en alçak olduğu seviye/zaman
+              </li>
+              <li>
+                <strong>Gelgit genliği / Range</strong>: <strong>HW − LW</strong> (seviye farkı)
+              </li>
             </ul>
-            <div className="rounded-lg border bg-muted/30 p-3">
-              <img
-                src={tideTableExcerpt}
-                alt="Tide table excerpt"
-                className="w-full h-auto rounded-md"
-                loading="lazy"
-              />
+            <div className="rounded border bg-muted/30 p-3 text-sm">
+              Hedef zamanın <strong>hangi iki olayın arasında</strong> kaldığını belirle (LW→HW veya HW→LW). Bu, hesabın “yükselme”
+              mi “alçalma” mı olduğuna karar verir.
             </div>
           </div>
         ),
       },
       {
-        title: "2) Range’i ve geçen süreyi bul",
+        title: "2) Ay evreleri: kuvvetli/zayıf gelgit + gelgit türleri",
+        body: (
+          <div className="space-y-3">
+            <p>Gelgit şiddeti, Ay’ın evrelerine göre değişir:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                <strong>Kuvvetli gelgit (Spring / Sizigi)</strong>: yeni ay ve dolunay dönemleri → <strong>range artar</strong>
+              </li>
+              <li>
+                <strong>Zayıf gelgit (Neap / Kuadratur)</strong>: ilk dördün ve son dördün → <strong>range azalır</strong>
+              </li>
+            </ul>
+            <div className="rounded border bg-muted/30 p-3 text-sm space-y-2">
+              <div className="font-semibold">Gelgit tipleri</div>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>
+                  <strong>Günlük (Diurnal)</strong>: bir Ay gününde 1 HW + 1 LW (Ay günü ≈ 24s 50d)
+                </li>
+                <li>
+                  <strong>Yarı günlük (Semi-diurnal)</strong>: bir Ay gününde 2 HW + 2 LW
+                </li>
+                <li>
+                  <strong>Karışık (Mixed)</strong>: zaman aralıkları/tepe-dipler değişken olabilir
+                </li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "3) Tide Tables: Standart/Ana liman, İkincil/Tali liman, saat dilimi",
+        body: (
+          <div className="space-y-3">
+            <p>
+              Gelgit cetvellerinde (ör. <strong>Admiralty Tide Tables</strong>) iki referans tipi vardır:
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                <strong>Ana/Standart liman (Standard Port)</strong>: her gün için HW/LW <strong>zaman</strong> ve <strong>yükseklik</strong> verilir.
+              </li>
+              <li>
+                <strong>Tali/İkincil liman (Secondary Port)</strong>: standart limana göre <strong>time differences</strong> ve{" "}
+                <strong>height differences</strong> verilir; hesapta bunlar uygulanır.
+              </li>
+            </ul>
+            <div className="rounded border bg-muted/30 p-3 text-sm space-y-2">
+              <div className="font-semibold">Kontrol et</div>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>
+                  <strong>Saat dilimi</strong>: tabloda yazan UTC/Zone neyse hesabı o zamanla yap.
+                </li>
+                <li>
+                  <strong>Harita derinliği (chart datum)</strong>: derinliklerin LAT/MLWS/MLW vb. hangi seviyeye göre verildiğini chart notundan doğrula.
+                </li>
+              </ul>
+            </div>
+            <div className="rounded border p-3 text-sm">
+              MEB kitabı (Ünite 4 – Gelgit):{" "}
+              <a className="underline" href="/navigation/pdfs/DN2025SES1112.pdf#page=59" target="_blank" rel="noreferrer">
+                PDF’yi aç
+              </a>
+            </div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <img src={tideTableExcerpt} alt="Tide table excerpt" className="w-full h-auto rounded-md" loading="lazy" />
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "4) Standart liman: istenen saat için gelgit yüksekliği (grafik mantığı)",
         body: (
           <div className="space-y-3">
             <div className="rounded border bg-muted/30 p-3 space-y-2">
-              <div className="font-semibold">Temel tanımlar</div>
-              <div>
-                <strong>Range (R)</strong> = HW yüksekliği − LW yüksekliği
-              </div>
-              <div>
-                <strong>Geçen süre (t)</strong> = (Sorgu zamanı − başlangıç event’i) saat cinsinden (0–6 aralığına getir)
-              </div>
+              <div className="font-semibold">Kitaptaki (ATT) özet işlem basamakları</div>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>İstenen tarih ve hedef saat için en yakın <strong>HW</strong> ve <strong>LW</strong> zaman/yüksekliklerini oku.</li>
+                <li>
+                  Grafikte LW ve HW yüksekliğini işaretleyip birleştirerek <strong>gelgit yükseklik doğrusu</strong>nu oluştur.
+                </li>
+                <li>Alt ölçekten hedef saatten yukarı dik çık; eğriyi kesince yatay gidip gelgit doğrusunu kes.</li>
+                <li>Kesişimden yukarı çıkarak ölçekten <strong>gelgit yüksekliğini</strong> oku.</li>
+              </ol>
             </div>
-            <p>
-              Ardından 12’de 1 kuralını kullan: 6 saatlik LW↔HW değişimi yaklaşık olarak <strong>1-2-3-3-2-1 / 12</strong>{" "}
-              şeklinde dağılır.
-            </p>
-            <div className="rounded-lg border bg-muted/30 p-3">
-              <img src={ruleOfTwelfths} alt="Rule of twelfths" className="w-full h-auto rounded-md" loading="lazy" />
+            <div className="rounded border p-3 text-sm">
+              Bu ekranda pratikte:
+              <ul className="list-disc pl-5 space-y-1 mt-2">
+                <li>
+                  “<strong>HW / LW → Height of Tide (UTC)</strong>” bölümüne HW/LW zaman-yüksekliklerini gir.
+                </li>
+                <li>Çıkan <strong>Height of Tide</strong>, harita derinliğine eklenecek gelgit katkısıdır.</li>
+              </ul>
             </div>
           </div>
         ),
       },
       {
-        title: "3) Height of Tide (HoT) hesabını yap (manuel)",
+        title: "5) Standart liman: istenen gelgit yüksekliği için zamanı bulma",
+        body: (
+          <div className="space-y-3">
+            <div className="rounded border bg-muted/30 p-3 space-y-2">
+              <div className="font-semibold">Kitaptaki (ATT) özet işlem basamakları</div>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>İstenen tarih ve döneme en yakın <strong>HW</strong> ve <strong>LW</strong> zaman/yüksekliklerini oku.</li>
+                <li>HW–LW ile <strong>gelgit yükseklik doğrusu</strong>nu oluştur.</li>
+                <li>İstenen gelgit yüksekliğinden aşağı dik inip gelgit doğrusuyla kesiştir.</li>
+                <li>Kesişimden eğriye yatay git; eğriden aşağı dik inerek alt ölçekten <strong>saati</strong> oku.</li>
+              </ol>
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "6) İkincil (tali) liman: time/height differences ile düzeltme",
+        body: (
+          <div className="space-y-3">
+            <p>
+              İkincil limanda hesap, standart liman değerlerine <strong>zaman</strong> ve <strong>yükseklik</strong> farklarının uygulanmasıyla
+              başlar (gerekiyorsa enterpolasyon).
+            </p>
+            <div className="rounded border bg-muted/30 p-3 space-y-2">
+              <div className="font-semibold">Özet işlem basamakları</div>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>İkincil limanı indeksten bul; bağlı olduğu <strong>standart limanı</strong> tespit et.</li>
+                <li>Standart limanın ilgili tarihteki HW/LW zaman-yüksekliklerini al.</li>
+                <li>İkincil limanın <strong>time/height differences</strong> değerlerini (gerekirse aralık içinde) hesapla.</li>
+                <li>Farkları uygula → ikincil limanın HW/LW zaman-yükseklikleri.</li>
+                <li>Sonrası standart liman hesabı gibi devam eder (istenen saat / istenen yükseklik).</li>
+              </ol>
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "7) Geçiş/UKC: harita derinliği + gelgit → toplam derinlik",
+        body: (
+          <div className="space-y-3">
+            <p>
+              Kitaptaki temel yaklaşım: bulunan gelgit yüksekliği, harita derinliğinin üzerine eklenerek toplam su derinliği bulunur.
+            </p>
+            <div className="rounded border bg-muted/30 p-3 space-y-2">
+              <div className="font-semibold">Formül mantığı</div>
+              <div className="font-mono text-sm">Toplam derinlik ≈ Harita derinliği + Gelgit yüksekliği</div>
+              <div className="font-mono text-sm">Emniyet ≈ (Harita derinliği + Gelgit) − Draft − Omurga altı emniyet payı</div>
+            </div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <img src={ukcStack} alt="UKC stack diagram" className="w-full h-auto rounded-md" loading="lazy" />
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "8) Gelgit akıntısı (Tidal Stream): ebb/flood/slack ve atlas",
+        body: (
+          <div className="space-y-3">
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                <strong>Sahile akıntı (Flood Tide)</strong>: sular yükselirken açık denizden sahile/su yoluna
+              </li>
+              <li>
+                <strong>Denize akıntı (Ebb Tide)</strong>: sular alçalırken sahilden/ağızdan açık denize
+              </li>
+              <li>
+                <strong>Durgun su (Slack Water)</strong>: yön değişimine yakın, akıntının çok zayıf/0 olduğu an
+              </li>
+            </ul>
+            <div className="rounded border bg-muted/30 p-3">
+              <div className="font-semibold mb-2">Atlas ile pratik yöntem</div>
+              <ol className="list-decimal pl-5 space-y-1 text-sm">
+                <li>İlgili bölge için referans <strong>HW zamanı</strong>nı belirle (standart liman).</li>
+                <li>İstediğin saat için <strong>HW’den kaç saat önce/sonra</strong> olduğunu bul (−6 … +6).</li>
+                <li>Haritadaki kutu/harfe göre tabloda o saate ait <strong>yön</strong> ve <strong>hız</strong>ı oku.</li>
+              </ol>
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "9) Hızlı yaklaşım: 12’de 1 kuralı ile HoT (öğretici demo)",
         body: (
           <div className="space-y-3">
             <div className="rounded border bg-muted/30 p-3 space-y-2">
@@ -123,6 +280,12 @@ export function TideManualGuideDialog() {
               <div>
                 <strong>Alçalıyorsa (HW→LW)</strong>: HoT ≈ HW − R × (kümülatif pay)
               </div>
+              <div className="text-sm text-muted-foreground">
+                6 saatlik değişim yaklaşık olarak <strong>1-2-3-3-2-1 / 12</strong> paylarına dağılır.
+              </div>
+            </div>
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <img src={ruleOfTwelfths} alt="Rule of twelfths" className="w-full h-auto rounded-md" loading="lazy" />
             </div>
 
             <div className="rounded border p-3 space-y-3">
@@ -181,46 +344,7 @@ export function TideManualGuideDialog() {
             </div>
 
             <div className="text-sm text-muted-foreground">
-              Not: 12’de 1 kuralı <strong>yaklaşık</strong> bir yöntemdir. Gerçek dünyada harmonik bileşenler/port düzeltmeleri
-              fark yaratabilir.
-            </div>
-          </div>
-        ),
-      },
-      {
-        title: "4) UKC’ye bağla (Charted Depth + HoT → Available Depth)",
-        body: (
-          <div className="space-y-3">
-            <p>
-              Artık HoT’yi buldun. Bunu charted depth ile birleştirip UKC kontrolü yaparsın:
-            </p>
-            <div className="rounded border bg-muted/30 p-3 space-y-2">
-              <div className="font-semibold">Özet akış</div>
-              <ul className="list-disc pl-5 space-y-1">
-                <li>
-                  <strong>Available Depth</strong> ≈ Charted Depth + HoT − (dalga/allowance)
-                </li>
-                <li>
-                  <strong>Effective Draft</strong> ≈ Draft + Squat (+ trim düzeltmesi)
-                </li>
-                <li>
-                  <strong>UKC</strong> ≈ Available Depth − Effective Draft − Safety Margin
-                </li>
-              </ul>
-            </div>
-            <div className="rounded-lg border bg-muted/30 p-3">
-              <img src={ukcStack} alt="UKC stack diagram" className="w-full h-auto rounded-md" loading="lazy" />
-            </div>
-            <div className="rounded border p-3 text-sm">
-              Bu ekranda:
-              <ul className="list-disc pl-5 space-y-1 mt-2">
-                <li>
-                  “<strong>HW / LW → Height of Tide (UTC)</strong>” bölümüne tide table’dan aldığın değerleri gir.
-                </li>
-                <li>
-                  Çıkan <strong>Height of Tide</strong> sonucunu “<strong>UKC</strong>” bölümündeki gelgit/HoT olarak kullan.
-                </li>
-              </ul>
+              Not: Bu yöntem <strong>yaklaşık</strong>tır. Standart/ikincil liman düzeltmeleri ve grafik/tablolar daha doğru sonuç verir.
             </div>
           </div>
         ),
@@ -240,7 +364,7 @@ export function TideManualGuideDialog() {
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Gelgit hesabı (tide table’dan manuel) – Adım Adım</DialogTitle>
+          <DialogTitle>Gelgit hesabı (MEB Ünite 4 yaklaşımı) – Adım Adım</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
