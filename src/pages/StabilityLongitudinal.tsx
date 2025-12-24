@@ -631,7 +631,7 @@ export default function StabilityLongitudinal() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <div className="flex items-center gap-2 p-1 bg-muted/40 rounded-lg">
               <button
                 onClick={() => {
                   setBasicMode(true);
@@ -640,8 +640,8 @@ export default function StabilityLongitudinal() {
                 }}
                 className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                   basicMode 
-                    ? "bg-blue-500 text-white shadow-sm" 
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                    ? "bg-primary text-primary-foreground shadow-sm" 
+                    : "text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200"
                 }`}
               >
                 📚 Temel
@@ -655,7 +655,7 @@ export default function StabilityLongitudinal() {
                 className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                   advancedMode 
                     ? "bg-orange-500 text-white shadow-sm" 
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                    : "text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200"
                 }`}
               >
                 🎯 İleri
@@ -777,15 +777,15 @@ export default function StabilityLongitudinal() {
               Trim ve list kontrolü için kritik önem taşır.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Trim Kontrolü</h4>
-                <p className="text-sm text-blue-800 dark:text-blue-200">
+              <div className="p-4 bg-muted/40 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">Trim Kontrolü</h4>
+                <p className="text-sm text-foreground/90">
                   Baş-kıç dengesi. Trim = (T kıç - T baş) / LBP
                 </p>
               </div>
-              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-                <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">List Kontrolü</h4>
-                <p className="text-sm text-green-800 dark:text-green-200">
+              <div className="p-4 bg-muted/40 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">List Kontrolü</h4>
+                <p className="text-sm text-foreground/90">
                   Sancak-iskele dengesi. Yük dağılımı ile kontrol edilir.
                 </p>
               </div>
@@ -799,7 +799,7 @@ export default function StabilityLongitudinal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+              <div className="flex items-center gap-3 p-3 bg-muted/40 border border-border rounded-lg">
                 <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <div>
                   <h4 className="font-medium">1. Adım: Trim Kavramını Anlayın</h4>
@@ -807,15 +807,15 @@ export default function StabilityLongitudinal() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <div className="h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">2</div>
+              <div className="flex items-center gap-3 p-3 bg-muted/40 border border-border rounded-lg">
+                <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs">2</div>
                 <div>
                   <h4 className="font-medium">2. Adım: LCG ve LCF İlişkisini Öğrenin</h4>
                   <p className="text-sm text-muted-foreground">Ağırlık merkezi ile flotasyon merkezi arasındaki mesafe</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+              <div className="flex items-center gap-3 p-3 bg-muted/30 border border-border rounded-lg">
                 <div className="h-5 w-5 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs">3</div>
                 <div>
                   <h4 className="font-medium">3. Adım: MCT Hesaplayın</h4>
@@ -844,7 +844,7 @@ export default function StabilityLongitudinal() {
     return (
       <div className="space-y-6">
         {showStepByStep && (
-          <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+          <Card className="border-blue-200 bg-muted/40 border border-border">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Calculator className="h-5 w-5" />
@@ -952,7 +952,7 @@ export default function StabilityLongitudinal() {
           </Card>
         </div>
 
-        <div className="flex flex-wrap gap-3 p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+        <div className="flex flex-wrap gap-3 p-4 bg-muted/30 border border-border rounded-lg">
           <Button 
             onClick={() => {
               handleCalculate();
@@ -1052,7 +1052,7 @@ export default function StabilityLongitudinal() {
 
             {longitudinalResult && (
               <div className="space-y-4">
-                <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+                <Alert className="border-green-200 bg-muted/40 border border-border">
                   <CheckCircle className="h-4 w-4" />
                   <AlertTitle>Boyuna Hesaplama Sonuçları</AlertTitle>
                   <AlertDescription>
@@ -1107,7 +1107,7 @@ export default function StabilityLongitudinal() {
 
         {result && (
           <div className="space-y-6">
-            <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
+            <Alert className="border-green-200 bg-muted/40 border border-border">
               <CheckCircle className="h-4 w-4" />
               <AlertTitle>✅ Hesaplama Tamamlandı!</AlertTitle>
               <AlertDescription>
@@ -1258,15 +1258,15 @@ export default function StabilityLongitudinal() {
                 <strong>Trim</strong>, geminin baş ve kıç draft farkıdır. Pozitif trim kıçtan bastık demektir.
               </p>
               <div className="space-y-3">
-                <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                  <h4 className="font-semibold text-green-800 dark:text-green-200">Pozitif Trim</h4>
-                  <p className="text-sm text-green-700 dark:text-green-300">Kıç drafı &gt; Baş drafı - Kıçtan bastık</p>
+                <div className="p-3 bg-muted/40 border border-border rounded-lg">
+                  <h4 className="font-semibold text-foreground/90">Pozitif Trim</h4>
+                  <p className="text-sm text-foreground/90">Kıç drafı &gt; Baş drafı - Kıçtan bastık</p>
                 </div>
-                <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 dark:text-blue-200">Negatif Trim</h4>
-                  <p className="text-sm text-blue-700 dark:text-blue-300">Baş drafı &gt; Kıç drafı - Baştan bastık</p>
+                <div className="p-3 bg-muted/40 border border-border rounded-lg">
+                  <h4 className="font-semibold text-foreground/90">Negatif Trim</h4>
+                  <p className="text-sm text-foreground/90">Baş drafı &gt; Kıç drafı - Baştan bastık</p>
                 </div>
-                <div className="p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                <div className="p-3 bg-muted/30 border border-border rounded-lg">
                   <h4 className="font-semibold text-gray-800 dark:text-gray-200">Even Keel</h4>
                   <p className="text-sm text-gray-700 dark:text-gray-300">Baş = Kıç draft - Düz trim</p>
                 </div>
@@ -1286,15 +1286,15 @@ export default function StabilityLongitudinal() {
                 <strong>MCT</strong>, 1 cm trim değişimi için gereken momenttir.
               </p>
               <div className="space-y-3">
-                <div className="p-3 bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-500">
+                <div className="p-3 bg-muted/40 border border-border border-l-4 border-blue-500">
                   <h4 className="font-semibold">MCT Formülü</h4>
                   <p className="text-sm font-mono">MCT = (Δ × GML × B²) / (12 × L)</p>
                 </div>
-                <div className="p-3 bg-green-50 dark:bg-green-950 border-l-4 border-green-500">
+                <div className="p-3 bg-muted/40 border border-border border-l-4 border-green-500">
                   <h4 className="font-semibold">Trim Değişimi</h4>
                   <p className="text-sm font-mono">ΔTrim = (W × d) / MCT</p>
                 </div>
-                <div className="p-3 bg-orange-50 dark:bg-orange-950 border-l-4 border-orange-500">
+                <div className="p-3 bg-muted/40 border border-border border-l-4 border-orange-500">
                   <h4 className="font-semibold">Trim Tanımı</h4>
                   <p className="text-sm font-mono">Trim = (T kıç - T baş) / LBP</p>
                 </div>
@@ -1369,7 +1369,7 @@ export default function StabilityLongitudinal() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg border-l-4 border-red-500">
+              <div className="p-4 bg-destructive/10 border border-destructive/25 rounded-lg border-l-4 border-red-500">
                 <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">📋 Trim Analizi</h4>
                 <p className="text-sm text-red-700 dark:text-red-300 mb-3">
                   <strong>Durum:</strong> {currentScenarioData.situation}
@@ -1379,8 +1379,8 @@ export default function StabilityLongitudinal() {
                 </p>
               </div>
               
-              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-300">
+              <div className="p-3 bg-muted/40 border border-border rounded-lg">
+                <p className="text-sm text-foreground/90">
                   <strong>💡 İpucu:</strong> {currentScenarioData.hint}
                 </p>
               </div>
@@ -1405,9 +1405,9 @@ export default function StabilityLongitudinal() {
               </div>
 
               {scenario2Answer && (
-                <div className="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border-l-4 border-green-500">
-                  <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Uzman Çözümü:</h4>
-                  <p className="text-sm text-green-700 dark:text-green-300">
+                <div className="mt-4 p-4 bg-muted/40 border border-border rounded-lg border-l-4 border-green-500">
+                  <h4 className="font-semibold text-foreground/90 mb-2">✅ Uzman Çözümü:</h4>
+                  <p className="text-sm text-foreground/90">
                     {currentScenarioData.answer}
                   </p>
                 </div>
@@ -1433,7 +1433,7 @@ export default function StabilityLongitudinal() {
           <CardContent>
             <div className="space-y-4">
               {currentQuizData.questions.map((question, idx) => (
-                <div key={question.id} className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950">
+                <div key={question.id} className="p-4 border-l-4 border-blue-500 bg-muted/40 border border-border">
                   <h4 className="font-semibold mb-3">Soru {idx + 1}: {question.question}</h4>
                   <div className="space-y-2">
                     {question.options.map((option, optionIdx) => (
@@ -1496,7 +1496,7 @@ export default function StabilityLongitudinal() {
               </div>
               
               {/* Quiz Progress Indicator */}
-              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-950 rounded-lg">
+              <div className="mt-4 p-3 bg-muted/30 border border-border rounded-lg">
                 <div className="flex items-center justify-between text-sm mb-2">
                   <span className="text-muted-foreground">Quiz İlerlemesi</span>
                   <span className="font-medium">{currentQuizSet + 1} / {longitudinalQuizBank.length}</span>
@@ -1518,7 +1518,7 @@ export default function StabilityLongitudinal() {
               
               {showQuizResults && (
                 <div className="mt-4 space-y-4">
-                  <div className="p-4 bg-gray-50 dark:bg-gray-950 rounded-lg">
+                  <div className="p-4 bg-muted/30 border border-border rounded-lg">
                     <h4 className="font-semibold mb-2">🎯 Quiz Sonuçları:</h4>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center">
@@ -1617,7 +1617,7 @@ export default function StabilityLongitudinal() {
                         setQuizAnswers({});
                         setShowQuizResults(false);
                       }}
-                      className="flex-1 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+                      className="flex-1 bg-blue-50 hover:bg-blue-100 border-blue-200 text-primary"
                     >
                       ← Önceki Set
                     </Button>
@@ -1630,7 +1630,7 @@ export default function StabilityLongitudinal() {
                         setQuizAnswers({});
                         setShowQuizResults(false);
                       }}
-                      className="flex-1 bg-green-50 hover:bg-green-100 border-green-200 text-green-700"
+                      className="flex-1 bg-green-50 hover:bg-green-100 border-green-200 text-primary"
                     >
                       Sonraki Set →
                     </Button>
@@ -1787,9 +1787,9 @@ export default function StabilityLongitudinal() {
           <div className="space-y-4">
             {/* Critical Status */}
             <Alert className={`${
-              Math.abs(trimCondition) > 2.0 ? "border-red-500 bg-red-50 dark:bg-red-950" :
+              Math.abs(trimCondition) > 2.0 ? "border-red-500 bg-destructive/10 border border-destructive/25" :
               Math.abs(trimCondition) > 1.0 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950" :
-              "border-green-500 bg-green-50 dark:bg-green-950"
+              "border-green-500 bg-muted/40 border border-border"
             }`}>
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle className="text-lg">
@@ -1855,8 +1855,8 @@ export default function StabilityLongitudinal() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg text-center">
-                    <h4 className="font-semibold text-green-800 dark:text-green-200">Optimal Aralık</h4>
+                  <div className="p-3 bg-muted/40 border border-border rounded-lg text-center">
+                    <h4 className="font-semibold text-foreground/90">Optimal Aralık</h4>
                     <p className="text-lg font-bold">{limits.optimalTrimRange[0]}m ~ {limits.optimalTrimRange[1]}m</p>
                     <p className="text-xs text-muted-foreground">En verimli seyir</p>
                   </div>
@@ -1865,7 +1865,7 @@ export default function StabilityLongitudinal() {
                     <p className="text-lg font-bold">{limits.maxTrimByStern}m</p>
                     <p className="text-xs text-muted-foreground">Güvenli limit</p>
                   </div>
-                  <div className="p-3 bg-red-50 dark:bg-red-950 rounded-lg text-center">
+                  <div className="p-3 bg-destructive/10 border border-destructive/25 rounded-lg text-center">
                     <h4 className="font-semibold text-red-800 dark:text-red-200">Maks Baş Trim</h4>
                     <p className="text-lg font-bold">{limits.maxTrimByHead}m</p>
                     <p className="text-xs text-muted-foreground">Tehlikeli limit</p>
@@ -2061,7 +2061,7 @@ export default function StabilityLongitudinal() {
         {/* Emergency Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="border-red-200">
-            <CardHeader className="bg-red-50 dark:bg-red-950">
+            <CardHeader className="bg-destructive/10 border border-destructive/25">
               <CardTitle className="text-red-800 dark:text-red-200">
                 🚨 AŞIRI BAŞ TRİMİ (&lt; -2.0m)
               </CardTitle>
@@ -2101,7 +2101,7 @@ export default function StabilityLongitudinal() {
           </Card>
 
           <Card className="border-orange-200">
-            <CardHeader className="bg-orange-50 dark:bg-orange-950">
+            <CardHeader className="bg-muted/40 border border-border">
               <CardTitle className="text-orange-800 dark:text-orange-200">
                 ⚠️ AŞIRI KIÇ TRİMİ (&gt; 3.0m)
               </CardTitle>
@@ -2206,7 +2206,7 @@ export default function StabilityLongitudinal() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-red-50 dark:bg-red-950 rounded-lg text-center">
+              <div className="p-4 bg-destructive/10 border border-destructive/25 rounded-lg text-center">
                 <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">VTS Center</h4>
                 <p className="text-sm">VHF Channel 16</p>
                 <p className="text-sm">Traffic Control</p>
@@ -2214,16 +2214,16 @@ export default function StabilityLongitudinal() {
                   Hemen Ara
                 </Button>
               </div>
-              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg text-center">
-                <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Port Control</h4>
+              <div className="p-4 bg-muted/40 border border-border rounded-lg text-center">
+                <h4 className="font-semibold text-foreground/90 mb-2">Port Control</h4>
                 <p className="text-sm">VHF Channel 12</p>
                 <p className="text-sm">Harbor Master</p>
                 <Button size="sm" className="mt-2 bg-blue-600 hover:bg-blue-700">
                   İletişim Kur
                 </Button>
               </div>
-              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg text-center">
-                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Company DPA</h4>
+              <div className="p-4 bg-muted/40 border border-border rounded-lg text-center">
+                <h4 className="font-semibold text-foreground/90 mb-2">Company DPA</h4>
                 <p className="text-sm">24/7 Hotline</p>
                 <p className="text-sm">Technical Support</p>
                 <Button size="sm" className="mt-2 bg-green-600 hover:bg-green-700">
@@ -2237,9 +2237,9 @@ export default function StabilityLongitudinal() {
         {/* Current Status Summary */}
         {result && (
           <Alert className={`${
-            Math.abs(trimCondition) > 2.0 ? "border-red-500 bg-red-50 dark:bg-red-950" :
+            Math.abs(trimCondition) > 2.0 ? "border-red-500 bg-destructive/10 border border-destructive/25" :
             Math.abs(trimCondition) > 1.0 ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950" :
-            "border-green-500 bg-green-50 dark:bg-green-950"
+            "border-green-500 bg-muted/40 border border-border"
           }`}>
             <CheckCircle className="h-4 w-4" />
             <AlertTitle>Mevcut Trim Durumu</AlertTitle>

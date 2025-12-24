@@ -906,13 +906,13 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
         <TabsContent value="hogging" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+              <CardTitle className="flex items-center gap-2 text-primary">
                 <Ship className="h-5 w-5" />
                 1. Hogging ve Sagging Tespiti
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Hogging/Sagging = (dF + dA)/2 ile dM karşılaştırılır</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin vasat draftının baş/kıç draft ortalamasından büyük (Hogging) veya küçük (Sagging) olup olmadığını belirler.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -949,16 +949,16 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {hoggingSaggingResult && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">{hoggingSaggingResult.type}: {hoggingSaggingResult.difference.toFixed(3)} m</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       {hoggingSaggingResult.type === "Hogging" ? "Geminin ortası yukarı eğilimli" : "Geminin ortası aşağı eğilimli"}
                     </p>
                   </div>
                 )}
               </div>
 
-              <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Ortalama Draft (dM) = (dF + dA) / 2</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
@@ -975,7 +975,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {meanDraftResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">dM = {meanDraftResult.toFixed(3)} m</p>
                   </div>
                 )}
@@ -988,7 +988,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
         <TabsContent value="transverse" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-300">
+              <CardTitle className="flex items-center gap-2 text-primary">
                 <Shield className="h-5 w-5" />
                 2. Enine Denge Hesapları
               </CardTitle>
@@ -996,7 +996,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
             <CardContent className="space-y-6">
               
               {/* Yeni KG Hesaplama */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Yeni KG = Toplam Moment / Toplam Ağırlık</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Yükleme/tahliye sonrası ağırlık merkezinin yeni konumunu hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -1024,14 +1024,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {newKGResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Yeni KG = {newKGResult.toFixed(3)} m</p>
                   </div>
                 )}
               </div>
 
               {/* Meyil Açısı Hesaplama */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Meyil Açısı (θ) = tan⁻¹(GZ/GM) veya tan⁻¹(Yatırıcı Moment / Δ×GM)</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Geminin yatma açısını derece cinsinden bulur.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -1077,14 +1077,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {heelAngleResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Meyil Açısı = {heelAngleResult.toFixed(2)}°</p>
                   </div>
                 )}
               </div>
 
               {/* GG₁ (Yük Hareketi / Yükleme-Tahliye) */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">GG₁ = w × d / Δ</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Ağırlık hareketi veya yükleme/tahliye sonrası G kaymasını hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -1106,14 +1106,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {gg1Result !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">GG₁ = {gg1Result.toFixed(4)} m</p>
                   </div>
                 )}
               </div>
 
               {/* Sarkaç ile Meyil Açısı */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">tan φ ≈ sin φ = Sapma / Sarkaç Boyu</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Sarkaç sapmasından meyil açısını tahmin eder.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -1131,14 +1131,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {pendulumResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">φ ≈ {pendulumResult.toFixed(2)}°</p>
                   </div>
                 )}
               </div>
 
               {/* Bumba ile Kaldırma Sonrası GM Değişimi */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Bumba GM Değişimi = w × Yük Kolu / Δ</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Vinç/bumba operasyonları sonrası GM'deki değişimi hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -1175,14 +1175,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {craneGMResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">GM Değişimi = {craneGMResult.toFixed(3)} m</p>
                   </div>
                 )}
               </div>
 
               {/* Dikey Kaldırmada ΔKG (Vinç/Bumba) */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">ΔKG = w × (h_cunda − h_yük) / Δ</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Yükün dikey kaldırılması sırasında KG artışını hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -1208,14 +1208,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {craneVerticalResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">ΔKG = {craneVerticalResult.toFixed(4)} m</p>
                   </div>
                 )}
               </div>
 
               {/* Dikdörtgen Tank FSM ve ΔKG */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">FSM = (L × B³ / 12) × ρ; ΔKG = FSM / Δ</h4>
                 <p className="text-sm text-muted-foreground mb-3">Amaç: Serbest yüzey etkisinden kaynaklı GM küçülmesini hesaplar.</p>
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
@@ -1241,14 +1241,14 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {fsmRectResult && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">FSM = {fsmRectResult.fsm.toFixed(2)} t·m{fsmRectResult.deltaKG != null ? `; ΔKG = ${fsmRectResult.deltaKG.toFixed(4)} m` : ''}</p>
                   </div>
                 )}
               </div>
 
               {/* Temel Bağıntılar ve Ek Formüller */}
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Temel Bağıntılar</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
@@ -1296,7 +1296,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                 {gmFromKmKgResult !== null && (<div className="mt-2 text-sm">GM = <span className="font-mono">{gmFromKmKgResult.toFixed(3)} m</span></div>)}
               </div>
 
-              <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-muted/40 border border-border p-4 rounded-lg">
                 <h4 className="font-semibold mb-3">Moment ve ΔGM</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                   <div>
@@ -1397,7 +1397,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {trimChangeResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-purple-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Trim Değişimi = {trimChangeResult.toFixed(2)} cm</p>
                   </div>
                 )}
@@ -1432,7 +1432,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {parallelSinkageResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-purple-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Paralel Batma = {parallelSinkageResult.toFixed(2)} cm</p>
                   </div>
                 )}
@@ -1476,7 +1476,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {draftCorrectionResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-purple-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Draft Düzeltmesi = {draftCorrectionResult.toFixed(3)} m</p>
                   </div>
                 )}
@@ -1561,7 +1561,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {blockCoefficientResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Cb = {blockCoefficientResult.toFixed(3)}</p>
                   </div>
                 )}
@@ -1596,7 +1596,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {fwaResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">FWA = {fwaResult.toFixed(1)} mm</p>
                   </div>
                 )}
@@ -1640,7 +1640,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {densityChangeResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Yeni Deplasman = {densityChangeResult.toFixed(2)} ton</p>
                   </div>
                 )}
@@ -1677,7 +1677,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {pontoonResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-teal-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
                     <p className="font-mono text-lg">Δd = {pontoonResult.toFixed(3)} m</p>
                   </div>
                 )}
@@ -1735,7 +1735,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {grainHeelResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-red-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-destructive">
                     <p className="font-mono text-lg">Kümelenme Açısı = {grainHeelResult.toFixed(1)}°</p>
                     <p className="text-sm mt-1">
                       {grainHeelResult <= 12 ? "✅ SOLAS Uygun" : "❌ SOLAS Uygun Değil - 12°'yi Aşıyor"}
@@ -1782,7 +1782,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {gzLeverResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-red-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-destructive">
                     <p className="font-mono text-lg">GZ = {gzLeverResult.toFixed(4)} m</p>
                   </div>
                 )}
@@ -1826,7 +1826,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {freeSurfaceResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-red-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-destructive">
                     <p className="font-mono text-lg">FSM = {freeSurfaceResult.toFixed(4)} m</p>
                   </div>
                 )}
@@ -1870,7 +1870,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                   </Button>
                 </div>
                 {rollPeriodResult !== null && (
-                  <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-red-500">
+                  <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-destructive">
                     <p className="font-mono text-lg">Yalpa Periyodu = {rollPeriodResult.toFixed(2)} saniye</p>
                   </div>
                 )}
