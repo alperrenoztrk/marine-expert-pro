@@ -197,8 +197,8 @@ export function solveCurrentTriangle(input: CurrentTriangleInput): CurrentTriang
 
   const feasible = Math.abs(rhs) <= 1;
   const clamped = Math.max(-1, Math.min(1, rhs));
-  let headingRad = desiredRad + Math.asin(clamped);
-  let headingDeg = normalizeAngle(toDegrees(headingRad) + leewayDeg);
+  const headingRad = desiredRad + Math.asin(clamped);
+  const headingDeg = normalizeAngle(toDegrees(headingRad) + leewayDeg);
 
   // Ground speed along desired track
   const dirX = Math.sin(desiredRad);
@@ -524,7 +524,7 @@ export function calculateTurning(input: TurningCalculationInput): TurningCalcula
 export function calculateWeather(input: WeatherCalculationInput): WeatherCalculationResult {
   const { beaufortNumber, windSpeedKn, windAreaM2, shipSpeedKn } = input;
   
-  let result: WeatherCalculationResult = {};
+  const result: WeatherCalculationResult = {};
   
   if (beaufortNumber !== undefined) {
     result.windSpeedKn = 2 * Math.sqrt(Math.pow(beaufortNumber, 3));
@@ -547,7 +547,7 @@ export function calculateWeather(input: WeatherCalculationInput): WeatherCalcula
 export function calculateCelestial(input: CelestialInput): CelestialResult {
   const { latDeg, decDeg, type } = input;
   
-  let result: CelestialResult = {};
+  const result: CelestialResult = {};
   
   switch (type) {
     case 'meridian':
@@ -555,16 +555,20 @@ export function calculateCelestial(input: CelestialInput): CelestialResult {
       result.latitudeDeg = 90 - Math.abs(latDeg - decDeg);
       break;
     case 'amplitude':
-      // A = arcsin(sin δ / cos φ)
-      const latRad = toRadians(latDeg);
-      const decRad = toRadians(decDeg);
-      result.amplitudeDeg = toDegrees(Math.asin(Math.sin(decRad) / Math.cos(latRad)));
+      {
+        // A = arcsin(sin δ / cos φ)
+        const latRad = toRadians(latDeg);
+        const decRad = toRadians(decDeg);
+        result.amplitudeDeg = toDegrees(Math.asin(Math.sin(decRad) / Math.cos(latRad)));
+      }
       break;
     case 'sunrise':
-      // Bearing at sunrise/sunset
-      const latRad2 = toRadians(latDeg);
-      const decRad2 = toRadians(decDeg);
-      result.bearingDeg = normalizeAngle(toDegrees(Math.acos(-Math.tan(latRad2) * Math.tan(decRad2))));
+      {
+        // Bearing at sunrise/sunset
+        const latRad2 = toRadians(latDeg);
+        const decRad2 = toRadians(decDeg);
+        result.bearingDeg = normalizeAngle(toDegrees(Math.acos(-Math.tan(latRad2) * Math.tan(decRad2))));
+      }
       break;
   }
   
@@ -575,7 +579,7 @@ export function calculateCelestial(input: CelestialInput): CelestialResult {
 export function calculateEmergency(input: EmergencyInput): EmergencyResult {
   const { searchType, trackSpacingNm, initialRadiusNm, driftSpeedKn, rescueSpeedKn, distanceNm } = input;
   
-  let result: EmergencyResult = {};
+  const result: EmergencyResult = {};
   
   switch (searchType) {
     case 'square':

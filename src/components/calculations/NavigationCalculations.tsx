@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, Compass, MapPin, Clock, Wind, Waves, Sun, Moon, Navigation, Target, Radar, CheckCircle, Sunrise, Sunset, Star, Globe, Ship, Anchor, Eye, Camera, Plus, Trash2, Brain, BookOpen } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import SextantCamera from "@/components/SextantCamera";
 import { useCurrentWeather } from "@/hooks/useCurrentWeather";
 import { toast } from "sonner";
@@ -1405,7 +1406,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
   };
 
   // Card-style menu items for calculations (matches NavigationMenu look)
-  const calculationMenuItems = [
+  const calculationMenuItems: Array<{ value: string; label: string; icon: LucideIcon }> = [
     { value: "great-circle", label: "Great Circle Seyri", icon: Globe },
     { value: "mercator-sailing", label: "Mercator/Rhumb Seyri", icon: Navigation },
     { value: "plane-sailing", label: "Plane Sailing", icon: MapPin },
@@ -1450,7 +1451,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
             {/* Kart stilinde menü (ikinci görseldeki gibi) */}
             <div className="w-full space-y-4 mb-6">
               {calculationMenuItems.map((item) => {
-                const Icon = item.icon as any;
+                const Icon = item.icon;
                 const isActive = activeCalculation === item.value;
                 return (
                   <button
