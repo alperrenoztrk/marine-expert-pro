@@ -14,9 +14,12 @@ import {
   FileText,
   Calendar,
   Clock,
-  Sun
+  Sun,
+  Star,
+  Globe
 } from 'lucide-react';
 import { getSunAriesAlmanac2025Utc, getDailySunAriesAlmanac2025Utc, type DailySunAriesAlmanacRow } from '@/utils/nauticalAlmanac2025';
+import { StarPlanetTable } from '@/components/celestial/StarPlanetTable';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -115,14 +118,18 @@ export function AlmanacViewer() {
   return (
     <div className="space-y-4">
       <Tabs defaultValue="pdf" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-white/80 border border-white/60">
+        <TabsList className="grid w-full grid-cols-3 bg-white/80 border border-white/60">
           <TabsTrigger value="pdf" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            PDF Almanac
+            PDF
           </TabsTrigger>
           <TabsTrigger value="data" className="flex items-center gap-2">
             <Sun className="h-4 w-4" />
-            Canlı Veri
+            Güneş/Aries
+          </TabsTrigger>
+          <TabsTrigger value="stars" className="flex items-center gap-2">
+            <Star className="h-4 w-4" />
+            Yıldız & Gezegen
           </TabsTrigger>
         </TabsList>
 
@@ -333,6 +340,10 @@ export function AlmanacViewer() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="stars" className="mt-4">
+          <StarPlanetTable selectedDate={new Date(selectedDate)} />
         </TabsContent>
       </Tabs>
     </div>
