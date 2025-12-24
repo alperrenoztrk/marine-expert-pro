@@ -16,10 +16,12 @@ import {
   Clock,
   Sun,
   Star,
-  Globe
+  Globe,
+  Waves
 } from 'lucide-react';
 import { getSunAriesAlmanac2025Utc, getDailySunAriesAlmanac2025Utc, type DailySunAriesAlmanacRow } from '@/utils/nauticalAlmanac2025';
 import { StarPlanetTable } from '@/components/celestial/StarPlanetTable';
+import { TidePrediction } from '@/components/celestial/TidePrediction';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -118,18 +120,22 @@ export function AlmanacViewer() {
   return (
     <div className="space-y-4">
       <Tabs defaultValue="pdf" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-white/80 border border-white/60">
-          <TabsTrigger value="pdf" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-4 bg-white/80 border border-white/60">
+          <TabsTrigger value="pdf" className="flex items-center gap-1 text-xs">
             <FileText className="h-4 w-4" />
             PDF
           </TabsTrigger>
-          <TabsTrigger value="data" className="flex items-center gap-2">
+          <TabsTrigger value="data" className="flex items-center gap-1 text-xs">
             <Sun className="h-4 w-4" />
-            Güneş/Aries
+            Güneş
           </TabsTrigger>
-          <TabsTrigger value="stars" className="flex items-center gap-2">
+          <TabsTrigger value="stars" className="flex items-center gap-1 text-xs">
             <Star className="h-4 w-4" />
-            Yıldız & Gezegen
+            Yıldız
+          </TabsTrigger>
+          <TabsTrigger value="tides" className="flex items-center gap-1 text-xs">
+            <Waves className="h-4 w-4" />
+            Gelgit
           </TabsTrigger>
         </TabsList>
 
@@ -344,6 +350,10 @@ export function AlmanacViewer() {
 
         <TabsContent value="stars" className="mt-4">
           <StarPlanetTable selectedDate={new Date(selectedDate)} />
+        </TabsContent>
+
+        <TabsContent value="tides" className="mt-4">
+          <TidePrediction selectedDate={new Date(selectedDate)} />
         </TabsContent>
       </Tabs>
     </div>
