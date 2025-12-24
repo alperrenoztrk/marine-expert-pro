@@ -47,23 +47,21 @@ serve(async (req) => {
     console.log('Question received:', question);
     console.log('Values received:', values);
 
-    // API anahtarlarını al - environment variables öncelikli, fallback olarak hardcoded
-    let geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    let wolframApiKey = Deno.env.get('WOLFRAM_API_KEY');
+    // API anahtarlarını al - ONLY from environment variables (secure)
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    const wolframApiKey = Deno.env.get('WOLFRAM_API_KEY');
     
-    // Fallback API keys - Updated with new keys
+    // Log missing keys for debugging (without exposing values)
     if (!geminiApiKey) {
-      geminiApiKey = 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
-      console.log('Using fallback Gemini API key');
+      console.log('GEMINI_API_KEY is not configured');
     }
     
     if (!wolframApiKey) {
-      wolframApiKey = 'G3KTLV-GL5URGJ7YG';
-      console.log('Using fallback Wolfram API key');
+      console.log('WOLFRAM_API_KEY is not configured');
     }
     
-    if (!geminiApiKey || !wolframApiKey) {
-      console.log('API keys missing:', { gemini: !!geminiApiKey, wolfram: !!wolframApiKey });
+    if (!geminiApiKey) {
+      console.log('API keys missing - returning local answer');
       return new Response(
         JSON.stringify({ 
           answer: getLocalAnswer(question, conversationHistory),
@@ -79,9 +77,9 @@ serve(async (req) => {
     // 1. Önce AI açıklama al
     const aiExplanation = await getGeminiExplanation(question, values, geminiApiKey, conversationHistory);
     
-    // 2. Wolfram hesaplama yap (eğer değerler varsa)
+    // 2. Wolfram hesaplama yap (eğer değerler ve API key varsa)
     let wolframResult = null;
-    if (values && Object.keys(values).length > 0) {
+    if (values && Object.keys(values).length > 0 && wolframApiKey) {
       console.log('Performing Wolfram calculation with values:', values);
       wolframResult = await performWolframCalculation(question, values, wolframApiKey);
     }
