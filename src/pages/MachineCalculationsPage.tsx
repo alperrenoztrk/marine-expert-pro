@@ -128,10 +128,10 @@ export default function MachineCalculationsPage() {
         title="Makine Hesaplamaları"
         subtitle="Motor gücü, yakıt tüketimi ve performans hesaplamalarınızı yapın"
       >
-        <Card className="border-blue-100/70 bg-gradient-to-br from-blue-50 via-white to-slate-50 shadow-sm">
+        <Card className="border-border bg-gradient-to-br from-card via-background to-muted/30 shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <CardTitle className="flex items-center gap-2 text-lg text-[#2F5BFF]">
+              <CardTitle className="flex items-center gap-2 text-lg text-primary">
                 <Wrench className="h-5 w-5" />
                 Gemideki Makineler
               </CardTitle>
@@ -146,21 +146,21 @@ export default function MachineCalculationsPage() {
                 {onboardMachines.map((machine) => (
                   <div
                     key={machine.name}
-                    className="rounded-xl border border-blue-100 bg-white/80 px-4 py-3 shadow-[0_8px_24px_rgba(47,91,255,0.08)] space-y-3"
+                    className="rounded-xl border border-border bg-card/70 px-4 py-3 shadow-sm space-y-3"
                   >
                     <div className="space-y-1">
-                      <p className="text-sm font-semibold text-slate-900">{machine.name}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">{machine.detail}</p>
-                      <p className="text-sm text-slate-700 leading-relaxed dark:text-slate-200">{machine.description}</p>
+                      <p className="text-sm font-semibold text-foreground">{machine.name}</p>
+                      <p className="text-xs text-muted-foreground">{machine.detail}</p>
+                      <p className="text-sm text-foreground/90 leading-relaxed">{machine.description}</p>
                     </div>
-                    <div className="rounded-lg bg-slate-50 px-3 py-2 text-slate-700 dark:bg-slate-900/40">
-                      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#2F5BFF]">
+                    <div className="rounded-lg bg-muted/40 border border-border px-3 py-2">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
                         Kullanım kılavuzu
                       </p>
-                      <ul className="mt-2 space-y-1 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                      <ul className="mt-2 space-y-1 text-xs leading-relaxed text-foreground/90">
                         {machine.manual.map((step) => (
                           <li key={step} className="flex gap-2">
-                            <span className="mt-0.5 text-[#2F5BFF]">•</span>
+                            <span className="mt-0.5 text-primary">•</span>
                             <span>{step}</span>
                           </li>
                         ))}
@@ -173,9 +173,9 @@ export default function MachineCalculationsPage() {
           )}
         </Card>
 
-        <Card className="bg-white/90 border-white/60 shadow-lg">
+        <Card className="shadow-lg">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl text-[#2F5BFF]">
+            <CardTitle className="flex items-center gap-2 text-xl text-primary">
               <Wrench className="h-6 w-6" />
               Makine Hesaplama Modülü
             </CardTitle>
