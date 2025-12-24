@@ -338,7 +338,7 @@ export const NavigationCalculationsCard = () => {
           <div className="flex flex-wrap gap-2">
             {sections.map((s) => (
               s.id === "gc" ? (
-                <Link key={s.id} to="/navigation/calc/gc">
+                <Link key={s.id} to="/navigation/great-circle">
                   <Button variant="outline" size="sm" className="whitespace-nowrap">
                     {s.title}
                   </Button>

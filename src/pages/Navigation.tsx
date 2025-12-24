@@ -5,7 +5,7 @@ import { Compass, Globe2, Map, Navigation as NavigationIcon, Radar, Route, Sigma
 import { Link } from "react-router-dom";
 
 const navigationItems: CalculationGridItem[] = [
-  { id: "gc", title: "Büyük Daire (Great Circle)", icon: Globe2, to: "/navigation/calc/gc" },
+  { id: "gc", title: "Büyük Daire (Great Circle)", icon: Globe2, to: "/navigation/great-circle" },
   { id: "rhumb", title: "Rhumb Line (Mercator)", icon: Map, to: "/navigation/calc/rhumb" },
   { id: "plane", title: "Plane Sailing", icon: Route, to: "/navigation/calc/plane" },
   { id: "eta", title: "Temel Seyir (Zaman–Mesafe–Hız)", icon: Compass, to: "/navigation/calc/eta" },

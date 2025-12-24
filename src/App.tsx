@@ -263,6 +263,7 @@ const AnimatedRoutes = () => {
         <Route path="/tank-menu" element={<PageTransition><TankMenu /></PageTransition>} />
         <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
+        <Route path="/navigation/great-circle" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
         <Route path="/navigation/rules" element={<PageTransition><NavigationRulesPage /></PageTransition>} />
