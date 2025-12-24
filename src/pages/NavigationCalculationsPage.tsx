@@ -29,6 +29,17 @@ import {
   calculateWeather,
   calculateCelestial,
   calculateEmergency,
+  type PlaneSailingResult,
+  type CurrentTriangleResult,
+  type ARPAResult,
+  type SightReductionResult,
+  type BearingCalculationResult,
+  type DistanceCalculationResult,
+  type TideResult,
+  type TurningCalculationResult,
+  type WeatherCalculationResult,
+  type CelestialResult,
+  type EmergencyResult,
   type PlaneSailingInput,
   type CurrentTriangleInput,
   type ARPAInput,
@@ -42,6 +53,13 @@ import {
 } from "@/components/calculations/navigationMath";
 
 export default function NavigationCalculationsPage() {
+  type TideTableEntry = {
+    time: string;
+    height: number;
+    change: number;
+    status: string;
+  };
+
   // State for all calculations
   const [gcInputs, setGcInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
   const [rhumbInputs, setRhumbInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
@@ -55,28 +73,28 @@ export default function NavigationCalculationsPage() {
   const [distanceInputs, setDistanceInputs] = useState({ height: "", type: "dip", lightHeight: "" });
   const [tideInputs, setTideInputs] = useState({ hour: "", range: "" });
   const [tideTableInputs, setTideTableInputs] = useState({ lowTide: "", highTide: "", lowTideTime: "06:00" });
-  const [tideTable, setTideTable] = useState<any[]>([]);
+  const [tideTable, setTideTable] = useState<TideTableEntry[]>([]);
   const [turningInputs, setTurningInputs] = useState({ length: "", courseChange: "", speed: "" });
   const [weatherInputs, setWeatherInputs] = useState({ beaufort: "", windSpeed: "", windArea: "", shipSpeed: "" });
   const [celestialInputs, setCelestialInputs] = useState({ lat: "", dec: "", type: "meridian" });
   const [emergencyInputs, setEmergencyInputs] = useState({ type: "square", trackSpacing: "", radius: "", distance: "", rescueSpeed: "", driftSpeed: "" });
 
   // Results state
-  const [gcResults, setGcResults] = useState<any>(null);
-  const [rhumbResults, setRhumbResults] = useState<any>(null);
-  const [planeResults, setPlaneResults] = useState<any>(null);
-  const [etaResults, setEtaResults] = useState<any>(null);
-  const [currentResults, setCurrentResults] = useState<any>(null);
-  const [compassResults, setCompassResults] = useState<any>(null);
-  const [cpaResults, setCpaResults] = useState<any>(null);
-  const [sightResults, setSightResults] = useState<any>(null);
-  const [bearingResults, setBearingResults] = useState<any>(null);
-  const [distanceResults, setDistanceResults] = useState<any>(null);
-  const [tideResults, setTideResults] = useState<any>(null);
-  const [turningResults, setTurningResults] = useState<any>(null);
-  const [weatherResults, setWeatherResults] = useState<any>(null);
-  const [celestialResults, setCelestialResults] = useState<any>(null);
-  const [emergencyResults, setEmergencyResults] = useState<any>(null);
+  const [gcResults, setGcResults] = useState<ReturnType<typeof calculateGreatCircle> | null>(null);
+  const [rhumbResults, setRhumbResults] = useState<ReturnType<typeof calculateRhumbLine> | null>(null);
+  const [planeResults, setPlaneResults] = useState<PlaneSailingResult | null>(null);
+  const [etaResults, setEtaResults] = useState<{ hours: number; hoursMinutes: string } | null>(null);
+  const [currentResults, setCurrentResults] = useState<CurrentTriangleResult | null>(null);
+  const [compassResults, setCompassResults] = useState<{ magnetic: number; true: number; totalError: number } | null>(null);
+  const [cpaResults, setCpaResults] = useState<ARPAResult | null>(null);
+  const [sightResults, setSightResults] = useState<SightReductionResult | null>(null);
+  const [bearingResults, setBearingResults] = useState<BearingCalculationResult | null>(null);
+  const [distanceResults, setDistanceResults] = useState<DistanceCalculationResult | null>(null);
+  const [tideResults, setTideResults] = useState<TideResult | null>(null);
+  const [turningResults, setTurningResults] = useState<TurningCalculationResult | null>(null);
+  const [weatherResults, setWeatherResults] = useState<WeatherCalculationResult | null>(null);
+  const [celestialResults, setCelestialResults] = useState<CelestialResult | null>(null);
+  const [emergencyResults, setEmergencyResults] = useState<EmergencyResult | null>(null);
 
   const sections = [
     { id: "gc", title: "Büyük Daire (Great Circle)" },
@@ -95,7 +113,7 @@ export default function NavigationCalculationsPage() {
     { id: "pilotage", title: "Kıyı Seyri" },
     { id: "turning", title: "Dönüş Hesaplamaları" },
     { id: "weather", title: "Hava Durumu" },
-    { id: "celestial", title: "Göksel Navigasyon" },
+    { id: "celestial", title: "Göksel Seyir" },
     { id: "emergency", title: "Acil Durum" }
   ];
 
@@ -272,7 +290,7 @@ export default function NavigationCalculationsPage() {
       const tidalRange = highTide - lowTide;
       const [hours, minutes] = tideTableInputs.lowTideTime.split(':').map(Number);
       
-      const table: any[] = [];
+      const table: TideTableEntry[] = [];
       const ruleOfTwelfths = [0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12];
       
       // Generate 12 hours of tide data
