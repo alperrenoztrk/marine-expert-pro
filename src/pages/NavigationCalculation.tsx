@@ -2014,6 +2014,18 @@ export default function NavigationCalculationPage() {
       case "tides":
         return (
           <div className="space-y-4">
+            <div className="rounded border p-3 bg-muted/30">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-sm font-semibold">Gelgit Hesabı Eğitimi (Trainer)</div>
+                <Button asChild variant="secondary" size="sm">
+                  <Link to="/navigation/tide-trainer">Eğitim ekranını aç</Link>
+                </Button>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                Bu ekran, gelgit (HOT) hesabını adım adım öğretir; canlı veri içermez.
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="tide-hour">Saat (1-6)</Label>
