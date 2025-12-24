@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { Calculator, BookOpen } from "lucide-react";
 import { useState } from "react";
+import { parseSignedAngleEW } from "@/utils/angleParsing";
 import { 
   calculateGreatCircle, 
   calculateRhumbLine, 
@@ -164,14 +165,16 @@ export default function NavigationCalculationsPage() {
 
   const handleCompass = () => {
     try {
+      const variation = parseSignedAngleEW(compassInputs.variation);
+      const deviation = parseSignedAngleEW(compassInputs.deviation);
       const result = calculateCompassTotalError(
-        parseFloat(compassInputs.variation),
-        parseFloat(compassInputs.deviation)
+        variation,
+        deviation
       );
       const compass = parseFloat(compassInputs.compass);
       setCompassResults({
-        magnetic: compass + parseFloat(compassInputs.deviation || "0"),
-        true: compass + parseFloat(compassInputs.variation || "0") + parseFloat(compassInputs.deviation || "0"),
+        magnetic: compass + (Number.isFinite(deviation) ? deviation : 0),
+        true: compass + (Number.isFinite(variation) ? variation : 0) + (Number.isFinite(deviation) ? deviation : 0),
         totalError: result.totalErrorDeg
       });
     } catch (error) {
@@ -707,7 +710,8 @@ SOG (Speed over Ground): ${currentResults.speedOverGroundKn.toFixed(2)} kn`}</pr
                   <Label htmlFor="comp-variation">Varyasyon (° E(+) W(-))</Label>
                   <Input
                     id="comp-variation"
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     placeholder="2.5"
                     value={compassInputs.variation}
                     onChange={(e) => setCompassInputs({...compassInputs, variation: e.target.value})}
@@ -717,7 +721,8 @@ SOG (Speed over Ground): ${currentResults.speedOverGroundKn.toFixed(2)} kn`}</pr
                   <Label htmlFor="comp-deviation">Deviasyon (° E(+) W(-))</Label>
                   <Input
                     id="comp-deviation"
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     placeholder="-1.5"
                     value={compassInputs.deviation}
                     onChange={(e) => setCompassInputs({...compassInputs, deviation: e.target.value})}
