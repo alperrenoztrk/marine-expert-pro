@@ -95,6 +95,7 @@ import SunsetTimes from "./pages/SunsetTimes";
 import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
 import TideCalculationTrainer from "./pages/TideCalculationTrainer";
+import TideCalculationTutorial from "./pages/TideCalculationTutorial";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
 import DraftSurveyPreloading from "./pages/DraftSurveyPreloading";
@@ -287,6 +288,7 @@ const AnimatedRoutes = () => {
         <Route path="/sunrise-times" element={<PageTransition><SunriseTimes /></PageTransition>} />
         <Route path="/location-selector" element={<PageTransition><LocationSelector /></PageTransition>} />
         <Route path="/navigation/tide-trainer" element={<PageTransition><TideCalculationTrainer /></PageTransition>} />
+        <Route path="/navigation/tide-tutorial" element={<PageTransition><TideCalculationTutorial /></PageTransition>} />
         <Route path="*" element={<PageTransition><Index /></PageTransition>} />
       </Routes>
     </AnimatePresence>

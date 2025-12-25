@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
-import { Calculator } from "lucide-react";
+import { Calculator, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/safeClient";
 import {
   calculateGreatCircle,
@@ -2014,6 +2014,16 @@ export default function NavigationCalculationPage() {
       case "tides":
         return (
           <div className="space-y-4">
+            {/* Tutorial Button - Top Right */}
+            <div className="flex justify-end">
+              <Button asChild variant="outline" size="sm" className="gap-2">
+                <Link to="/navigation/tide-tutorial">
+                  <BookOpen className="h-4 w-4" />
+                  Hesabın Yapılışı
+                </Link>
+              </Button>
+            </div>
+            
             <div className="rounded border p-3 bg-muted/30">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-sm font-semibold">Gelgit Hesabı Eğitimi (Trainer)</div>
