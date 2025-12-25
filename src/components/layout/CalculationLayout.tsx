@@ -40,9 +40,8 @@ export function CalculationLayout({
     <div
       className={cn(
         "min-h-screen p-4 relative overflow-hidden",
-        // Unified “marine” background, but keeps existing cyberpunk/neon variants.
+        // Unified “marine” background (light/dark only).
         "bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800",
-        "cyberpunk:from-black cyberpunk:via-slate-950 cyberpunk:to-gray-900 neon:from-slate-950 neon:via-slate-900 neon:to-slate-800",
         // subtle “wave lights”
         "bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.18),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.14),transparent_45%),radial-gradient(circle_at_40%_80%,rgba(20,184,166,0.12),transparent_50%)]",
         className

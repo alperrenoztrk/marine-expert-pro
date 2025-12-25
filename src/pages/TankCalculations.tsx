@@ -60,7 +60,7 @@ const TankCalculationsPage = ({ initialTab }: { initialTab?: string } = {}) => {
         title="Tank Hesaplamaları"
         subtitle="Sounding Table hesaplamaları"
       >
-        <Card className="bg-white/90 border-white/60 shadow-lg">
+        <Card className="shadow-lg">
           <CardContent className="pt-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="flex flex-wrap gap-1 p-2 bg-muted/50 rounded-lg">
@@ -71,9 +71,9 @@ const TankCalculationsPage = ({ initialTab }: { initialTab?: string } = {}) => {
 
               <TabsContent value="sounding" className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-[#2F5BFF]">🌊 Su Altı Hacim Hesaplama</h3>
-                  <p className="text-sm text-slate-600">V = A × h</p>
-                  <p className="text-xs text-slate-500 bg-blue-50 p-2 rounded">
+                  <h3 className="text-lg font-semibold text-primary">🌊 Su Altı Hacim Hesaplama</h3>
+                  <p className="text-sm text-muted-foreground">V = A × h</p>
+                  <p className="text-xs text-muted-foreground bg-muted/40 border border-border p-2 rounded">
                     <strong>📋 Amaç:</strong> Tank hacmi için basit dikdörtgen formülü kullanılır. 
                     Bu formül pratik tank hesaplamaları için uygundur.
                   </p>
@@ -106,8 +106,8 @@ const TankCalculationsPage = ({ initialTab }: { initialTab?: string } = {}) => {
                 <Separator />
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-[#2F5BFF]">⚖️ Ağırlık Hesaplama</h3>
-                  <p className="text-sm text-slate-600">W = V × ρ</p>
+                  <h3 className="text-lg font-semibold text-primary">⚖️ Ağırlık Hesaplama</h3>
+                  <p className="text-sm text-muted-foreground">W = V × ρ</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="volume_weight">Hacim V [m³]</Label>
@@ -154,8 +154,8 @@ const TankCalculationsPage = ({ initialTab }: { initialTab?: string } = {}) => {
                 <Separator />
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-[#2F5BFF]">📊 Moment Hesaplama</h3>
-                  <p className="text-sm text-slate-600">M = V × h/2</p>
+                  <h3 className="text-lg font-semibold text-primary">📊 Moment Hesaplama</h3>
+                  <p className="text-sm text-muted-foreground">M = V × h/2</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="volume_moment">Hacim V [m³]</Label>
@@ -185,31 +185,31 @@ const TankCalculationsPage = ({ initialTab }: { initialTab?: string } = {}) => {
                 <div className="flex justify-center pt-4">
                   <Button 
                     onClick={calculateSoundingTable} 
-                    className="px-8 py-2 bg-[#2F5BFF] hover:bg-[#2F5BFF]/90 text-white"
+                    className="px-8 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     Hesapla
                   </Button>
                 </div>
 
                 {soundingResults && (
-                  <div className="space-y-4 p-4 bg-blue-50 rounded-lg">
-                    <h3 className="text-lg font-semibold text-[#1d3e8a]">📊 Sounding Table Sonuçları</h3>
+                  <div className="space-y-4 p-4 bg-muted/40 border border-border rounded-lg">
+                    <h3 className="text-lg font-semibold text-foreground">📊 Sounding Table Sonuçları</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">Su Altı Hacim (V)</Label>
-                        <div className="text-lg font-bold text-[#2F5BFF]">
+                        <div className="text-lg font-bold text-primary">
                           {soundingResults.volume.toFixed(1)} m³
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">Ağırlık (W)</Label>
-                        <div className="text-lg font-bold text-[#2F5BFF]">
+                        <div className="text-lg font-bold text-primary">
                           {soundingResults.weight.toFixed(1)} ton
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">Moment (M)</Label>
-                        <div className="text-lg font-bold text-[#2F5BFF]">
+                        <div className="text-lg font-bold text-primary">
                           {soundingResults.moment.toFixed(1)} ton.m
                         </div>
                       </div>

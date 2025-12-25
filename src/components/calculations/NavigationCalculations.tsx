@@ -1463,9 +1463,9 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                     }
                   >
                     <div className="flex items-center gap-5">
-                      <Icon className="w-10 h-10 text-blue-700 dark:text-blue-400 drop-shadow-lg" />
+                      <Icon className="w-10 h-10 text-primary drop-shadow-lg" />
                       <div className="flex-1">
-                        <div className="text-xl font-bold text-blue-700 dark:text-blue-400">{item.label}</div>
+                        <div className="text-xl font-bold text-foreground">{item.label}</div>
                       </div>
                     </div>
                   </button>
@@ -1478,7 +1478,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Globe className="h-5 w-5 text-blue-500" />
+                    <Globe className="h-5 w-5 text-primary" />
                     Great Circle Sailing (Büyük Daire Seyri)
                   </CardTitle>
                   <CardDescription>
@@ -1488,7 +1488,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                 <CardContent>
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-4">
-                      <h4 className="font-semibold text-green-700">Başlangıç Konumu</h4>
+                      <h4 className="font-semibold text-foreground">Başlangıç Konumu</h4>
                       <div className="space-y-3">
                         <div className="space-y-2">
                           <Label htmlFor="gcLat1">Enlem (°)</Label>
@@ -1515,7 +1515,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <h4 className="font-semibold text-red-700">Varış Konumu</h4>
+                      <h4 className="font-semibold text-foreground">Varış Konumu</h4>
                       <div className="space-y-3">
                         <div className="space-y-2">
                           <Label htmlFor="gcLat2">Enlem (°)</Label>
@@ -1549,13 +1549,13 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   </div>
                   {result && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                      <div className="p-3 bg-muted/40 rounded border border-border">
                         <div className="text-sm text-muted-foreground">Great Circle Mesafe</div>
-                        <div className="font-mono text-xl text-blue-600">{result.gcDistance?.toFixed(2)} nm</div>
+                        <div className="font-mono text-xl text-primary">{result.gcDistance?.toFixed(2)} nm</div>
                       </div>
-                      <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
+                      <div className="p-3 bg-muted/40 rounded border border-border">
                         <div className="text-sm text-muted-foreground">İlk Pusula</div>
-                        <div className="font-mono text-xl text-green-600">{result.gcInitialBearing?.toFixed(1)}°</div>
+                        <div className="font-mono text-xl text-primary">{result.gcInitialBearing?.toFixed(1)}°</div>
                       </div>
                     </div>
                   )}
@@ -1848,19 +1848,19 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         </div>
                         {result?.averageSpeed !== undefined && (
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-                            <div className="p-3 rounded border bg-emerald-50 dark:bg-emerald-900/20">
+                            <div className="p-3 rounded border border-border bg-muted/40">
                               <div className="text-muted-foreground">Ortalama Hız (SMG)</div>
                               <div className="font-mono text-lg">{result.averageSpeed?.toFixed(2)} kn</div>
                             </div>
-                            <div className="p-3 rounded border bg-blue-50 dark:bg-blue-900/20">
+                            <div className="p-3 rounded border border-border bg-muted/40">
                               <div className="text-muted-foreground">DMG</div>
                               <div className="font-mono text-lg">{result.dmg?.toFixed(1)} nm</div>
                             </div>
-                            <div className="p-3 rounded border bg-amber-50 dark:bg-amber-900/20">
+                            <div className="p-3 rounded border border-border bg-muted/40">
                               <div className="text-muted-foreground">Kalan Mesafe</div>
                               <div className="font-mono text-lg">{Number.isFinite(progressCalc.remainingDistanceNm) ? progressCalc.remainingDistanceNm.toFixed(1) : "-"} nm</div>
                             </div>
-                            <div className="p-3 rounded border bg-rose-50 dark:bg-rose-900/20">
+                            <div className="p-3 rounded border border-border bg-muted/40">
                               <div className="text-muted-foreground">Kalan Süre</div>
                               <div className="font-mono text-lg">{formatHours(result.remainingTimeHours ?? Number.NaN)}</div>
                             </div>
@@ -1877,13 +1877,13 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   </div>
                   {result?.eta && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded border">
+                      <div className="p-3 bg-muted/40 rounded border border-border">
                         <div className="text-sm text-muted-foreground">Tahmini Varış Zamanı (ETA)</div>
-                        <div className="font-mono text-xl text-orange-600">{result.eta}</div>
+                        <div className="font-mono text-xl text-primary">{result.eta}</div>
                       </div>
-                      <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded border">
+                      <div className="p-3 bg-muted/40 rounded border border-border">
                         <div className="text-sm text-muted-foreground">Seyir Süresi</div>
-                        <div className="font-mono text-xl text-yellow-600">{result.timeToGo?.toFixed(1)} saat</div>
+                        <div className="font-mono text-xl text-primary">{result.timeToGo?.toFixed(1)} saat</div>
                       </div>
                     </div>
                   )}
@@ -2932,13 +2932,13 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               </div>
               {result?.cpa !== undefined && (
                 <div className="mt-4 grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                  <div className="p-3 bg-muted/40 rounded border border-border">
                     <div className="text-sm text-muted-foreground">CPA</div>
-                    <div className="font-mono text-xl text-blue-600">{result.cpa.toFixed(2)} nm</div>
+                    <div className="font-mono text-xl text-primary">{result.cpa.toFixed(2)} nm</div>
                   </div>
-                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
+                  <div className="p-3 bg-muted/40 rounded border border-border">
                     <div className="text-sm text-muted-foreground">TCPA</div>
-                    <div className="font-mono text-xl text-green-600">{result.tcpa.toFixed(1)} dk</div>
+                    <div className="font-mono text-xl text-primary">{result.tcpa.toFixed(1)} dk</div>
                   </div>
                 </div>
               )}
@@ -3266,13 +3266,13 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   </div>
                   {result && (
                     <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded border">
+                      <div className="p-3 bg-muted/40 rounded border border-border">
                         <div className="text-sm text-muted-foreground">Toplam Derinlik</div>
-                        <div className="font-mono text-xl text-blue-600">{result.minimumDepth.toFixed(1)} m</div>
+                        <div className="font-mono text-xl text-primary">{result.minimumDepth.toFixed(1)} m</div>
                       </div>
-                      <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded border">
+                      <div className="p-3 bg-muted/40 rounded border border-border">
                         <div className="text-sm text-muted-foreground">Tavsiye Zincir Boyu</div>
-                        <div className="font-mono text-xl text-green-600">{result.safeDraft.toFixed(1)} m</div>
+                        <div className="font-mono text-xl text-primary">{result.safeDraft.toFixed(1)} m</div>
                       </div>
                     </div>
                   )}
@@ -3285,7 +3285,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Ship className="h-5 w-5 text-blue-600" />
+                    <Ship className="h-5 w-5 text-primary" />
                     UKC (Under Keel Clearance) Hesabı
                   </CardTitle>
                   <CardDescription>
@@ -3296,7 +3296,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                   <div className="space-y-6">
                     {/* Ship Parameters */}
                     <div>
-                      <h4 className="font-semibold text-blue-700 mb-3 flex items-center gap-2">
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                         <Ship className="h-4 w-4" />
                         Gemi Parametreleri
                       </h4>
@@ -3337,7 +3337,7 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
 
                     {/* Tidal Information */}
                     <div>
-                      <h4 className="font-semibold text-green-700 mb-3 flex items-center gap-2">
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                         <Waves className="h-4 w-4" />
                         Gelgit Bilgileri
                       </h4>
@@ -3514,47 +3514,71 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                       <div className="space-y-4">
                         {/* Main Results */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                          <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+                          <div
+                            className={`p-3 rounded border ${
+                              result.collisionRisk === 'none'
+                                ? 'bg-muted/40 border-border'
+                                : 'bg-destructive/10 border-destructive/30'
+                            }`}
+                          >
                             <div className="text-sm text-muted-foreground">Efektif Draft</div>
-                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-blue-600' : 'text-red-600'}`}>
+                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-foreground' : 'text-destructive'}`}>
                               {result.safeDraft.toFixed(2)} m
                             </div>
                           </div>
-                          <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-orange-50 dark:bg-orange-900/20'}`}>
+                          <div
+                            className={`p-3 rounded border ${
+                              result.collisionRisk === 'none'
+                                ? 'bg-success/10 border-success/30'
+                                : 'bg-warning/10 border-warning/30'
+                            }`}
+                          >
                             <div className="text-sm text-muted-foreground">Mevcut UKC</div>
-                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-green-600' : 'text-orange-600'}`}>
+                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-success' : 'text-warning-foreground'}`}>
                               {result.currentTideHeight.toFixed(2)} m
                             </div>
                           </div>
-                          <div className={`p-3 rounded border ${result.tidalStream >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+                          <div
+                            className={`p-3 rounded border ${
+                              result.tidalStream >= 0 ? 'bg-success/10 border-success/30' : 'bg-destructive/10 border-destructive/30'
+                            }`}
+                          >
                             <div className="text-sm text-muted-foreground">Güvenlik Marjı</div>
-                            <div className={`font-mono text-lg ${result.tidalStream >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                            <div className={`font-mono text-lg ${result.tidalStream >= 0 ? 'text-success' : 'text-destructive'}`}>
                               {result.tidalStream.toFixed(2)} m
                             </div>
                           </div>
-                          <div className={`p-3 rounded border ${result.collisionRisk === 'none' ? 'bg-cyan-50 dark:bg-cyan-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20'}`}>
+                          <div
+                            className={`p-3 rounded border ${
+                              result.collisionRisk === 'none' ? 'bg-muted/40 border-border' : 'bg-warning/10 border-warning/30'
+                            }`}
+                          >
                             <div className="text-sm text-muted-foreground">Min. Gerekli Derinlik</div>
-                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-cyan-600' : 'text-yellow-600'}`}>
+                            <div className={`font-mono text-lg ${result.collisionRisk === 'none' ? 'text-foreground' : 'text-warning-foreground'}`}>
                               {result.minimumDepth.toFixed(2)} m
                             </div>
                           </div>
                         </div>
 
                         {/* Status and Recommendations */}
-                        <div className={`p-4 rounded-lg border-2 ${result.collisionRisk === 'none' ? 'bg-green-50 dark:bg-green-900/20 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-red-500'}`}>
+                        <div
+                          className={`p-4 rounded-lg border-2 ${
+                            result.collisionRisk === 'none' ? 'bg-success/10 border-success/40' : 'bg-destructive/10 border-destructive/40'
+                          }`}
+                        >
                           <div className="flex items-start gap-3">
                             {result.collisionRisk === 'none' ? (
-                              <CheckCircle className="h-6 w-6 text-green-600 mt-0.5" />
+                              <CheckCircle className="h-6 w-6 text-success mt-0.5" />
                             ) : (
-                              <Target className="h-6 w-6 text-red-600 mt-0.5" />
+                              <Target className="h-6 w-6 text-destructive mt-0.5" />
                             )}
                             <div className="flex-1 space-y-2">
-                              <div className={`font-semibold text-lg ${result.collisionRisk === 'none' ? 'text-green-700' : 'text-red-700'}`}>
+                              <div className={`font-semibold text-lg ${result.collisionRisk === 'none' ? 'text-success' : 'text-destructive'}`}>
                                 {result.recommendations[0]}
                               </div>
                               <div className="text-sm space-y-1">
                                 {result.recommendations.slice(1).map((rec, idx) => (
-                                  <div key={idx} className="text-gray-700 dark:text-gray-300">• {rec}</div>
+                                  <div key={idx} className="text-foreground/90">• {rec}</div>
                                 ))}
                               </div>
                             </div>
@@ -3562,9 +3586,9 @@ export const NavigationCalculations = ({ initialTab }: { initialTab?: string } =
                         </div>
 
                         {/* Additional Information */}
-                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded border">
-                          <h5 className="font-semibold text-blue-700 mb-2">UKC Hesaplama Formülü:</h5>
-                          <div className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                        <div className="p-4 bg-muted/40 rounded border border-border">
+                          <h5 className="font-semibold text-primary mb-2">UKC Hesaplama Formülü:</h5>
+                          <div className="text-sm space-y-1 text-foreground/90">
                             <div>• <strong>Efektif Draft</strong> = Draft + Squat + |Trim|</div>
                             <div>• <strong>Mevcut Su Derinliği</strong> = Kart Datumu + Gelgit Yüksekliği - Dalga İlavesi</div>
                             <div>• <strong>Mevcut UKC</strong> = Mevcut Su Derinliği - Efektif Draft</div>

@@ -174,13 +174,21 @@ import { useToast } from "@/hooks/use-toast";
                  </div>
 
                  {/* Chat window */}
-                 <div className="border rounded p-2 h-[50vh] bg-muted">
+                 <div className="border border-border rounded p-2 h-[50vh] bg-muted/30">
                    <ScrollArea className="h-full pr-2">
                      <div className="space-y-2">
                        {messages.map((m, i)=> (
                          <div key={i} className={`text-sm ${m.role==='user'?'text-right':''}`}>
                            <div className={`inline-flex items-center gap-2`}>
-                             <div className={`inline-block px-2 py-1 rounded ${m.role==='user'?'bg-blue-600 text-white':'bg-white'}`}>{m.content}</div>
+                             <div
+                               className={`inline-block px-2 py-1 rounded border ${
+                                 m.role==='user'
+                                   ? 'bg-primary text-primary-foreground border-primary/30'
+                                   : 'bg-card text-card-foreground border-border'
+                               }`}
+                             >
+                               {m.content}
+                             </div>
                              <button aria-label="Kopyala" onClick={()=> copyText(m.content)} className="text-xs text-muted-foreground hover:text-foreground">
                                <Copy className="h-3 w-3" />
                              </button>

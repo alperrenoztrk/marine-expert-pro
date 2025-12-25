@@ -21,7 +21,7 @@ export default function COLREGPresentation() {
     <div className="min-h-screen bg-gradient-to-b from-primary-dark via-primary to-primary-light">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-400 mb-4 text-center">
+        <h1 className="text-3xl font-bold text-white mb-4 text-center">
           COLREG Ders Sunumu
         </h1>
 
@@ -69,18 +69,21 @@ export default function COLREGPresentation() {
         </div>
 
         {/* PDF Viewer */}
-        <div className="bg-white rounded-lg shadow-xl overflow-auto p-4 flex justify-center" style={{ maxHeight: 'calc(100vh - 250px)' }}>
+        <div
+          className="bg-card text-card-foreground rounded-lg shadow-xl overflow-auto p-4 flex justify-center border border-border/60"
+          style={{ maxHeight: 'calc(100vh - 250px)' }}
+        >
           <Document
             file="/COLREG-Ders-Sunumu.pdf"
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <div className="text-center py-8">
-                <p className="text-gray-600">PDF yükleniyor...</p>
+                <p className="text-muted-foreground">PDF yükleniyor...</p>
               </div>
             }
             error={
               <div className="text-center py-8">
-                <p className="text-red-600">PDF yüklenirken hata oluştu</p>
+                <p className="text-destructive">PDF yüklenirken hata oluştu</p>
               </div>
             }
           >
