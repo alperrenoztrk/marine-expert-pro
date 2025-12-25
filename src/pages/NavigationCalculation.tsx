@@ -2857,7 +2857,14 @@ export default function NavigationCalculationPage() {
         <Card className="shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 gap-3">
             <CardTitle className="flex-1">{title}</CardTitle>
-            {id === "tides" && <TideManualGuideDialog />}
+            {id === "tides" && (
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => navigate("/navigation/tide-tutorial")}>
+                  Hesabın Yapılışı
+                </Button>
+                <TideManualGuideDialog />
+              </div>
+            )}
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3 space-y-4">

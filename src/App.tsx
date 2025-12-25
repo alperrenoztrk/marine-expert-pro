@@ -28,6 +28,7 @@ import TankMenu from "./pages/TankMenu";
 import SOLASMenu from "./pages/SOLASMenu";
 import Navigation from "./pages/Navigation";
 import NavigationCalculationPage from "./pages/NavigationCalculation";
+import TideCalculationTutorial from "./pages/TideCalculationTutorial";
 // import NavigationCalculationsPage from "./pages/NavigationCalculationsPage";
 import Economics from "./pages/Economics";
 import StabilityAssistantPage from "./pages/StabilityAssistant";
@@ -264,6 +265,7 @@ const AnimatedRoutes = () => {
         <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
         <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
+        <Route path="/navigation/tide-tutorial" element={<PageTransition><TideCalculationTutorial /></PageTransition>} />
         <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
         <Route path="/navigation/rules" element={<PageTransition><NavigationRulesPage /></PageTransition>} />
         
