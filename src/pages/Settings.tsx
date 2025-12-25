@@ -15,6 +15,19 @@ import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { SupabaseStatusIndicator } from "@/components/SupabaseStatusIndicator";
 import { APIStatusIndicator } from "@/components/APIStatusIndicator";
 
+type StripeCheckoutResponse = {
+  url?: string;
+};
+
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
+  if (err && typeof err === "object" && "message" in err && typeof (err as { message?: unknown }).message === "string") {
+    return (err as { message: string }).message;
+  }
+  return "Bilinmeyen hata";
+}
+
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, changeLanguage, supportedLanguages, getLanguageName } = useLanguage();
@@ -52,13 +65,13 @@ const Settings = () => {
         },
       });
       if (error) throw error;
-      const url = (data as any)?.url;
+      const url = (data as StripeCheckoutResponse | null)?.url;
       if (!url) {
         toast.error('Stripe checkout URL oluşturulamadı');
         return;
       }
-      window.location.href = url as string;
-    } catch (e: any) {
+      window.location.href = url;
+    } catch (e: unknown) {
       console.error(e);
       toast.error('Ödeme başlatılamadı');
     } finally {

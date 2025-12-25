@@ -106,7 +106,7 @@ export const calculateDeepSkyObjectPositions = (observer: ObserverPosition): Enh
     
     return {
       name: dso.name,
-      type: dso.type as any, // Extended types
+      type: dso.type as unknown as EnhancedCelestialBody["type"], // Extended types
       altitude: altDeg,
       azimuth: normalizeAngle(toDegrees(azimuth)),
       magnitude: dso.magnitude,
