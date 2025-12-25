@@ -650,32 +650,32 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
             <TabsContent value="clouds" className="space-y-6">
 
               {/* Uydu Kanalları Bilgilendirme */}
-              <Alert className="border-2 border-purple-300 dark:border-purple-600 bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 dark:from-purple-900/20 dark:via-indigo-900/20 dark:to-blue-900/20 from-cyan-900/30 via-purple-900/30 to-blue-900/30">
+              <Alert className="border-2 border-purple-300 dark:border-purple-600 bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 dark:from-purple-900/20 dark:via-indigo-900/20 dark:to-blue-900/20 neon:from-cyan-900/30 neon:via-purple-900/30 neon:to-blue-900/30">
                 <div className="flex items-start gap-3">
-                  <div className="bg-purple-600 dark:bg-purple-500 bg-cyan-500 rounded-full p-2 mt-1">
+                  <div className="bg-purple-600 dark:bg-purple-500 neon:bg-cyan-500 rounded-full p-2 mt-1">
                     <Info className="h-5 w-5 text-white" />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <div className="font-bold text-purple-900 dark:text-purple-100 text-cyan-300 flex items-center gap-2">
+                    <div className="font-bold text-purple-900 dark:text-purple-100 neon:text-cyan-300 flex items-center gap-2">
                       🛰️ Meteorolojik Uydu Kanalları (CH Kodları)
                     </div>
-                    <p className="text-sm text-purple-800 dark:text-purple-200 text-cyan-400">
+                    <p className="text-sm text-purple-800 dark:text-purple-200 neon:text-cyan-400">
                       Her bulut kartında gösterilen <span className="font-semibold">CH kodları</span>, EUMETSAT MSG uydu sisteminin 
                       spektral bantlarıdır. Bu kanallar farklı dalga boylarında atmosferi gözlemleyerek bulut tiplerinin 
                       tespitini sağlar.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs mt-2">
-                      <div className="bg-white/50 dark:bg-gray-800/50 bg-slate-800/50 rounded p-2">
-                        <span className="font-semibold text-purple-700 dark:text-purple-300 text-cyan-400">📡 VIS (Görünür):</span> Ch1, Ch2, Ch12 - Gündüz görüntüleme
+                      <div className="bg-white/50 dark:bg-gray-800/50 neon:bg-slate-800/50 rounded p-2">
+                        <span className="font-semibold text-purple-700 dark:text-purple-300 neon:text-cyan-400">📡 VIS (Görünür):</span> Ch1, Ch2, Ch12 - Gündüz görüntüleme
                       </div>
-                      <div className="bg-white/50 dark:bg-gray-800/50 bg-slate-800/50 rounded p-2">
-                        <span className="font-semibold text-purple-700 dark:text-purple-300 text-cyan-400">🌡️ IR (Kızılötesi):</span> Ch4, Ch7, Ch9, Ch10, Ch11 - Gece/gündüz
+                      <div className="bg-white/50 dark:bg-gray-800/50 neon:bg-slate-800/50 rounded p-2">
+                        <span className="font-semibold text-purple-700 dark:text-purple-300 neon:text-cyan-400">🌡️ IR (Kızılötesi):</span> Ch4, Ch7, Ch9, Ch10, Ch11 - Gece/gündüz
                       </div>
-                      <div className="bg-white/50 dark:bg-gray-800/50 bg-slate-800/50 rounded p-2">
-                        <span className="font-semibold text-purple-700 dark:text-purple-300 text-cyan-400">💧 WV (Su Buharı):</span> Ch5, Ch6 - Atmosferik nem
+                      <div className="bg-white/50 dark:bg-gray-800/50 neon:bg-slate-800/50 rounded p-2">
+                        <span className="font-semibold text-purple-700 dark:text-purple-300 neon:text-cyan-400">💧 WV (Su Buharı):</span> Ch5, Ch6 - Atmosferik nem
                       </div>
-                      <div className="bg-white/50 dark:bg-gray-800/50 bg-slate-800/50 rounded p-2">
-                        <span className="font-semibold text-purple-700 dark:text-purple-300 text-cyan-400">🎯 MGM Kodları:</span> CL (Alçak), CM (Orta), CH (Yüksek)
+                      <div className="bg-white/50 dark:bg-gray-800/50 neon:bg-slate-800/50 rounded p-2">
+                        <span className="font-semibold text-purple-700 dark:text-purple-300 neon:text-cyan-400">🎯 MGM Kodları:</span> CL (Alçak), CM (Orta), CH (Yüksek)
                       </div>
                     </div>
                   </div>
@@ -686,7 +686,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Tehlikeli Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-red-700 flex items-center gap-2 text-cyan-400">
+                <h4 className="text-lg font-semibold text-red-700 flex items-center gap-2 neon:text-cyan-400">
                   <AlertTriangle className="h-5 w-5" />
                   Yüksek Riskli Bulutlar
                 </h4>
@@ -701,7 +701,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Alçak Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-blue-700 flex items-center gap-2 text-cyan-400">
+                <h4 className="text-lg font-semibold text-blue-700 flex items-center gap-2 neon:text-cyan-400">
                   <Cloud className="h-5 w-5" />
                   Alçak Bulutlar (0-2 km)
                 </h4>
@@ -716,7 +716,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Orta Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2 text-cyan-400">
+                <h4 className="text-lg font-semibold text-green-700 flex items-center gap-2 neon:text-cyan-400">
                   <Cloud className="h-5 w-5" />
                   Orta Bulutlar (2-7 km)
                 </h4>
@@ -731,7 +731,7 @@ export const WeatherCalculations = ({ initialTab }: { initialTab?: string } = {}
 
               {/* Yüksek Bulutlar */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-purple-700 flex items-center gap-2 text-cyan-400">
+                <h4 className="text-lg font-semibold text-purple-700 flex items-center gap-2 neon:text-cyan-400">
                   <Cloud className="h-5 w-5" />
                   Yüksek Bulutlar (5-13 km)
                 </h4>

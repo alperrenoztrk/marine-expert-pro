@@ -29,17 +29,6 @@ import {
   calculateWeather,
   calculateCelestial,
   calculateEmergency,
-  type PlaneSailingResult,
-  type CurrentTriangleResult,
-  type ARPAResult,
-  type SightReductionResult,
-  type BearingCalculationResult,
-  type DistanceCalculationResult,
-  type TideResult,
-  type TurningCalculationResult,
-  type WeatherCalculationResult,
-  type CelestialResult,
-  type EmergencyResult,
   type PlaneSailingInput,
   type CurrentTriangleInput,
   type ARPAInput,
@@ -53,13 +42,6 @@ import {
 } from "@/components/calculations/navigationMath";
 
 export default function NavigationCalculationsPage() {
-  type TideTableEntry = {
-    time: string;
-    height: number;
-    change: number;
-    status: string;
-  };
-
   // State for all calculations
   const [gcInputs, setGcInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
   const [rhumbInputs, setRhumbInputs] = useState({ lat1: "", lon1: "", lat2: "", lon2: "" });
@@ -73,28 +55,28 @@ export default function NavigationCalculationsPage() {
   const [distanceInputs, setDistanceInputs] = useState({ height: "", type: "dip", lightHeight: "" });
   const [tideInputs, setTideInputs] = useState({ hour: "", range: "" });
   const [tideTableInputs, setTideTableInputs] = useState({ lowTide: "", highTide: "", lowTideTime: "06:00" });
-  const [tideTable, setTideTable] = useState<TideTableEntry[]>([]);
+  const [tideTable, setTideTable] = useState<any[]>([]);
   const [turningInputs, setTurningInputs] = useState({ length: "", courseChange: "", speed: "" });
   const [weatherInputs, setWeatherInputs] = useState({ beaufort: "", windSpeed: "", windArea: "", shipSpeed: "" });
   const [celestialInputs, setCelestialInputs] = useState({ lat: "", dec: "", type: "meridian" });
   const [emergencyInputs, setEmergencyInputs] = useState({ type: "square", trackSpacing: "", radius: "", distance: "", rescueSpeed: "", driftSpeed: "" });
 
   // Results state
-  const [gcResults, setGcResults] = useState<ReturnType<typeof calculateGreatCircle> | null>(null);
-  const [rhumbResults, setRhumbResults] = useState<ReturnType<typeof calculateRhumbLine> | null>(null);
-  const [planeResults, setPlaneResults] = useState<PlaneSailingResult | null>(null);
-  const [etaResults, setEtaResults] = useState<{ hours: number; hoursMinutes: string } | null>(null);
-  const [currentResults, setCurrentResults] = useState<CurrentTriangleResult | null>(null);
-  const [compassResults, setCompassResults] = useState<{ magnetic: number; true: number; totalError: number } | null>(null);
-  const [cpaResults, setCpaResults] = useState<ARPAResult | null>(null);
-  const [sightResults, setSightResults] = useState<SightReductionResult | null>(null);
-  const [bearingResults, setBearingResults] = useState<BearingCalculationResult | null>(null);
-  const [distanceResults, setDistanceResults] = useState<DistanceCalculationResult | null>(null);
-  const [tideResults, setTideResults] = useState<TideResult | null>(null);
-  const [turningResults, setTurningResults] = useState<TurningCalculationResult | null>(null);
-  const [weatherResults, setWeatherResults] = useState<WeatherCalculationResult | null>(null);
-  const [celestialResults, setCelestialResults] = useState<CelestialResult | null>(null);
-  const [emergencyResults, setEmergencyResults] = useState<EmergencyResult | null>(null);
+  const [gcResults, setGcResults] = useState<any>(null);
+  const [rhumbResults, setRhumbResults] = useState<any>(null);
+  const [planeResults, setPlaneResults] = useState<any>(null);
+  const [etaResults, setEtaResults] = useState<any>(null);
+  const [currentResults, setCurrentResults] = useState<any>(null);
+  const [compassResults, setCompassResults] = useState<any>(null);
+  const [cpaResults, setCpaResults] = useState<any>(null);
+  const [sightResults, setSightResults] = useState<any>(null);
+  const [bearingResults, setBearingResults] = useState<any>(null);
+  const [distanceResults, setDistanceResults] = useState<any>(null);
+  const [tideResults, setTideResults] = useState<any>(null);
+  const [turningResults, setTurningResults] = useState<any>(null);
+  const [weatherResults, setWeatherResults] = useState<any>(null);
+  const [celestialResults, setCelestialResults] = useState<any>(null);
+  const [emergencyResults, setEmergencyResults] = useState<any>(null);
 
   const sections = [
     { id: "gc", title: "Büyük Daire (Great Circle)" },
@@ -113,7 +95,7 @@ export default function NavigationCalculationsPage() {
     { id: "pilotage", title: "Kıyı Seyri" },
     { id: "turning", title: "Dönüş Hesaplamaları" },
     { id: "weather", title: "Hava Durumu" },
-    { id: "celestial", title: "Göksel Seyir" },
+    { id: "celestial", title: "Göksel Navigasyon" },
     { id: "emergency", title: "Acil Durum" }
   ];
 
@@ -290,7 +272,7 @@ export default function NavigationCalculationsPage() {
       const tidalRange = highTide - lowTide;
       const [hours, minutes] = tideTableInputs.lowTideTime.split(':').map(Number);
       
-      const table: TideTableEntry[] = [];
+      const table: any[] = [];
       const ruleOfTwelfths = [0, 1/12, 3/12, 6/12, 9/12, 11/12, 12/12];
       
       // Generate 12 hours of tide data
@@ -415,19 +397,11 @@ export default function NavigationCalculationsPage() {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {sections.map((s) => (
-                s.id === "gc" ? (
-                  <Link key={s.id} to="/navigation/great-circle">
-                    <Button variant="outline" size="sm" className="whitespace-nowrap">
-                      {s.title}
-                    </Button>
-                  </Link>
-                ) : (
-                  <a key={s.id} href={`#${s.id}`}>
-                    <Button variant="outline" size="sm" className="whitespace-nowrap">
-                      {s.title}
-                    </Button>
-                  </a>
-                )
+                <a key={s.id} href={`#${s.id}`}>
+                  <Button variant="outline" size="sm" className="whitespace-nowrap">
+                    {s.title}
+                  </Button>
+                </a>
               ))}
             </div>
           </CardContent>
@@ -606,8 +580,8 @@ Sabit Kerteriz: ${rhumbResults.course.toFixed(1)}°`}</pre>
             {planeResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-dLat: ${planeResults.dLatMin.toFixed(2)}'
-Departure: ${planeResults.depMin.toFixed(2)}'
+dLat: ${planeResults.dLatNm.toFixed(2)} nm
+Departure: ${planeResults.departureNm.toFixed(2)} nm
 Kerteriz: ${planeResults.courseDeg.toFixed(1)}°
 Mesafe: ${planeResults.distanceNm.toFixed(2)} nm`}</pre>
               </div>
@@ -709,11 +683,7 @@ Saat: ${etaResults.hours.toFixed(2)} saat`}</pre>
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
 CTS (Course to Steer): ${currentResults.courseToSteerDeg.toFixed(1)}°
-SOG (Speed over Ground): ${currentResults.groundSpeedKn.toFixed(2)} kn
-CMG (Course Made Good): ${currentResults.madeGoodCourseDeg.toFixed(1)}°
-Drift Angle: ${currentResults.driftAngleDeg.toFixed(1)}°
-Uygunluk: ${currentResults.feasible ? "✅ Attainable" : "⚠️ Not attainable (akıntı sürati yüksek)"}`
-                }</pre>
+SOG (Speed over Ground): ${currentResults.speedOverGroundKn.toFixed(2)} kn`}</pre>
               </div>
             )}
           </CardContent>
@@ -845,10 +815,8 @@ Toplam Hata: ${compassResults.totalError.toFixed(1)}°`}</pre>
             {cpaResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-CPA Mesafesi: ${cpaResults.cpaNm.toFixed(2)} nm
-TCPA: ${cpaResults.tcpaMin.toFixed(1)} dk
-Relative Speed: ${cpaResults.relativeSpeedKn.toFixed(2)} kn
-Relative Bearing: ${cpaResults.relativeBearingDeg.toFixed(1)}°`}</pre>
+CPA Mesafesi: ${cpaResults.cpaDistanceNm.toFixed(2)} nm
+TCPA: ${cpaResults.tcpaHours.toFixed(2)} saat (${(cpaResults.tcpaHours * 60).toFixed(0)} dk)`}</pre>
               </div>
             )}
           </CardContent>
@@ -897,7 +865,7 @@ Relative Bearing: ${cpaResults.relativeBearingDeg.toFixed(1)}°`}</pre>
             {sightResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-Hesaplanan Yükseklik (Hc): ${sightResults.hcDeg.toFixed(2)}°
+Hesaplanan Yükseklik: ${sightResults.calculatedAltitudeDeg.toFixed(2)}°
 Azimut: ${sightResults.azimuthDeg.toFixed(1)}°`}</pre>
               </div>
             )}
@@ -1061,8 +1029,9 @@ Mesafe: ${distanceResults.distanceNm.toFixed(2)} nm`}</pre>
             {tideResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç (Rule of Twelfths):
-Sınırdan itibaren yükseklik değişimi: ${tideResults.heightM.toFixed(2)} m
-Tamamlanma: ${(tideResults.fractionOfRange * 100).toFixed(1)}%`}</pre>
+${tideResults.hour}. Saatte Değişim: ${tideResults.changeM.toFixed(2)} m
+Toplam Değişim: ${tideResults.totalChangeM.toFixed(2)} m
+Yüzde: ${tideResults.percentageComplete.toFixed(1)}%`}</pre>
               </div>
             )}
 
@@ -1272,7 +1241,7 @@ ROT: ${turningResults.rotDegPerMin.toFixed(1)} °/min`}</pre>
             {weatherResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-${weatherResults.windSpeedKn !== undefined ? `Rüzgar Hızı: ${weatherResults.windSpeedKn.toFixed(1)} kn\n` : ''}${weatherResults.waveHeightM !== undefined ? `Dalga Yüksekliği: ${weatherResults.waveHeightM.toFixed(1)} m\n` : ''}${weatherResults.leewayAngleDeg !== undefined ? `Leeway Açısı: ${weatherResults.leewayAngleDeg.toFixed(1)}°\n` : ''}${weatherResults.windForceN !== undefined ? `Rüzgar Kuvveti: ${weatherResults.windForceN.toFixed(0)} N` : ''}`}</pre>
+${weatherResults.beaufortWindSpeedKn ? `Beaufort Rüzgar Hızı: ${weatherResults.beaufortWindSpeedKn.toFixed(1)} knot\n` : ''}${weatherResults.waveHeightM ? `Dalga Yüksekliği: ${weatherResults.waveHeightM.toFixed(1)} m\n` : ''}${weatherResults.leewayAngleDeg ? `Leeway Açısı: ${weatherResults.leewayAngleDeg.toFixed(1)}°\n` : ''}${weatherResults.windForceN ? `Rüzgar Kuvveti: ${weatherResults.windForceN.toFixed(0)} N` : ''}`}</pre>
               </div>
             )}
           </CardContent>
@@ -1280,7 +1249,7 @@ ${weatherResults.windSpeedKn !== undefined ? `Rüzgar Hızı: ${weatherResults.w
 
         <Card className="shadow">
           <CardHeader>
-            <CardTitle id="celestial" className="scroll-mt-24">Göksel Seyir</CardTitle>
+            <CardTitle id="celestial" className="scroll-mt-24">Göksel Navigasyon</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="bg-muted/30 rounded p-3">
@@ -1324,7 +1293,7 @@ ${weatherResults.windSpeedKn !== undefined ? `Rüzgar Hızı: ${weatherResults.w
             {celestialResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.latitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'amplitude' ? `Amplitude: ${celestialResults.amplitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'sunrise' ? `Sunrise Bearing: ${celestialResults.bearingDeg?.toFixed(1)}°` : ''}`}</pre>
+${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.latitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'amplitude' ? `Amplitude: ${celestialResults.amplitudeDeg?.toFixed(2)}°` : ''}${celestialInputs.type === 'sunrise' ? `Sunrise Bearing: ${celestialResults.sunriseBearingDeg?.toFixed(1)}°` : ''}`}</pre>
               </div>
             )}
           </CardContent>
@@ -1409,7 +1378,7 @@ ${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.l
             {emergencyResults && (
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
-${emergencyResults.legDistanceNm !== undefined ? `Leg Distance: ${emergencyResults.legDistanceNm.toFixed(2)} nm\n` : ''}${emergencyResults.newRadiusNm !== undefined ? `New Radius: ${emergencyResults.newRadiusNm.toFixed(2)} nm\n` : ''}${emergencyResults.timeToRescueHours !== undefined ? `Time to Rescue: ${emergencyResults.timeToRescueHours.toFixed(2)} h` : ''}`}</pre>
+${emergencyResults.searchLegNm ? `Search Leg: ${emergencyResults.searchLegNm.toFixed(2)} nm\n` : ''}${emergencyResults.nextRadiusNm ? `Next Radius: ${emergencyResults.nextRadiusNm.toFixed(2)} nm\n` : ''}${emergencyResults.rescueTimeHours ? `Rescue Time: ${emergencyResults.rescueTimeHours.toFixed(2)} hours` : ''}`}</pre>
               </div>
             )}
           </CardContent>

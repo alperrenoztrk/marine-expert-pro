@@ -5,7 +5,7 @@ import { Compass, Globe2, Map, Navigation as NavigationIcon, Radar, Route, Sigma
 import { Link } from "react-router-dom";
 
 const navigationItems: CalculationGridItem[] = [
-  { id: "gc", title: "Büyük Daire (Great Circle)", icon: Globe2, to: "/navigation/great-circle" },
+  { id: "gc", title: "Büyük Daire (Great Circle)", icon: Globe2, to: "/navigation/calc/gc" },
   { id: "rhumb", title: "Rhumb Line (Mercator)", icon: Map, to: "/navigation/calc/rhumb" },
   { id: "plane", title: "Plane Sailing", icon: Route, to: "/navigation/calc/plane" },
   { id: "eta", title: "Temel Seyir (Zaman–Mesafe–Hız)", icon: Compass, to: "/navigation/calc/eta" },
@@ -23,7 +23,6 @@ const navigationItems: CalculationGridItem[] = [
   { id: "chart", title: "Chart Ölçeği (cm ↔ NM)", icon: Map, to: "/navigation/calc/chart" },
   { id: "distance", title: "Mesafe Hesaplamaları", icon: Route, to: "/navigation/calc/distance" },
   { id: "tides", title: "Gelgit + UKC", icon: Waves, to: "/navigation/calc/tides" },
-  { id: "tide-trainer", title: "Gelgit Hesabı Eğitimi (Trainer)", icon: Waves, to: "/navigation/tide-trainer" },
   { id: "safety", title: "Seyir Emniyeti (Squat/UKC)", icon: Shield, to: "/navigation/calc/safety" },
   { id: "passage", title: "Passage Plan (Leg ETA)", icon: Route, to: "/navigation/calc/passage" },
   { id: "ecdis", title: "ECDIS (XTD / Look-ahead)", icon: Monitor, to: "/navigation/calc/ecdis" },

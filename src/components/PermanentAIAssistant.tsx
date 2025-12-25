@@ -341,7 +341,7 @@ Detaylı bir soru sorun, size özel hesaplama ve açıklamalar sunayım!
 
         {/* AI Response */}
         {aiResponse && (
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400 bg-gradient-to-r from-gray-800 to-gray-900 border-l-yellow-400">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-l-blue-400 cyberpunk:bg-gradient-to-r cyberpunk:from-gray-800 cyberpunk:to-gray-900 cyberpunk:border-l-yellow-400">
             <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <Brain className="w-5 h-5" />
               Uzman Yanıtı:

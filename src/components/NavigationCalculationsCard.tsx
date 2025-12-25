@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Calculator, BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { parseSignedAngleEW } from "@/utils/angleParsing";
 import { 
@@ -26,17 +25,6 @@ import {
   calculateWeather,
   calculateCelestial,
   calculateEmergency,
-  type PlaneSailingResult,
-  type CurrentTriangleResult,
-  type ARPAResult,
-  type SightReductionResult,
-  type BearingCalculationResult,
-  type DistanceCalculationResult,
-  type TideResult,
-  type TurningCalculationResult,
-  type WeatherCalculationResult,
-  type CelestialResult,
-  type EmergencyResult,
   type PlaneSailingInput,
   type CurrentTriangleInput,
   type ARPAInput,
@@ -68,21 +56,21 @@ export const NavigationCalculationsCard = () => {
   const [emergencyInputs, setEmergencyInputs] = useState({ type: "square", trackSpacing: "", radius: "", distance: "", rescueSpeed: "", driftSpeed: "" });
 
   // Results state
-  const [gcResults, setGcResults] = useState<ReturnType<typeof calculateGreatCircle> | null>(null);
-  const [rhumbResults, setRhumbResults] = useState<ReturnType<typeof calculateRhumbLine> | null>(null);
-  const [planeResults, setPlaneResults] = useState<PlaneSailingResult | null>(null);
-  const [etaResults, setEtaResults] = useState<{ hours: number; hoursMinutes: string } | null>(null);
-  const [currentResults, setCurrentResults] = useState<CurrentTriangleResult | null>(null);
-  const [compassResults, setCompassResults] = useState<{ magnetic: number; true: number; totalError: number } | null>(null);
-  const [cpaResults, setCpaResults] = useState<ARPAResult | null>(null);
-  const [sightResults, setSightResults] = useState<SightReductionResult | null>(null);
-  const [bearingResults, setBearingResults] = useState<BearingCalculationResult | null>(null);
-  const [distanceResults, setDistanceResults] = useState<DistanceCalculationResult | null>(null);
-  const [tideResults, setTideResults] = useState<TideResult | null>(null);
-  const [turningResults, setTurningResults] = useState<TurningCalculationResult | null>(null);
-  const [weatherResults, setWeatherResults] = useState<WeatherCalculationResult | null>(null);
-  const [celestialResults, setCelestialResults] = useState<CelestialResult | null>(null);
-  const [emergencyResults, setEmergencyResults] = useState<EmergencyResult | null>(null);
+  const [gcResults, setGcResults] = useState<any>(null);
+  const [rhumbResults, setRhumbResults] = useState<any>(null);
+  const [planeResults, setPlaneResults] = useState<any>(null);
+  const [etaResults, setEtaResults] = useState<any>(null);
+  const [currentResults, setCurrentResults] = useState<any>(null);
+  const [compassResults, setCompassResults] = useState<any>(null);
+  const [cpaResults, setCpaResults] = useState<any>(null);
+  const [sightResults, setSightResults] = useState<any>(null);
+  const [bearingResults, setBearingResults] = useState<any>(null);
+  const [distanceResults, setDistanceResults] = useState<any>(null);
+  const [tideResults, setTideResults] = useState<any>(null);
+  const [turningResults, setTurningResults] = useState<any>(null);
+  const [weatherResults, setWeatherResults] = useState<any>(null);
+  const [celestialResults, setCelestialResults] = useState<any>(null);
+  const [emergencyResults, setEmergencyResults] = useState<any>(null);
 
   // Define sections matching the formulas page
   const sections = [
@@ -102,7 +90,7 @@ export const NavigationCalculationsCard = () => {
     { id: "pilotage", title: "Kıyı Seyri" },
     { id: "turning", title: "Dönüş Hesaplamaları" },
     { id: "weather", title: "Hava Durumu" },
-    { id: "celestial", title: "Göksel Seyir" },
+    { id: "celestial", title: "Göksel Navigasyon" },
     { id: "emergency", title: "Acil Durum" }
   ];
 
@@ -348,19 +336,11 @@ export const NavigationCalculationsCard = () => {
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {sections.map((s) => (
-              s.id === "gc" ? (
-                <Link key={s.id} to="/navigation/great-circle">
-                  <Button variant="outline" size="sm" className="whitespace-nowrap">
-                    {s.title}
-                  </Button>
-                </Link>
-              ) : (
-                <a key={s.id} href={`#${s.id}`}>
-                  <Button variant="outline" size="sm" className="whitespace-nowrap">
-                    {s.title}
-                  </Button>
-                </a>
-              )
+              <a key={s.id} href={`#${s.id}`}>
+                <Button variant="outline" size="sm" className="whitespace-nowrap">
+                  {s.title}
+                </Button>
+              </a>
             ))}
           </div>
         </CardContent>

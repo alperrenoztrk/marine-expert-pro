@@ -110,9 +110,9 @@ export const HydrostaticsCalculations = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Droplets className="h-8 w-8 text-primary " />
+          <Droplets className="h-8 w-8 text-primary nature-icon" />
           <div>
-            <h1 className="text-3xl font-bold ">Hidrostatik Hesaplamaları</h1>
+            <h1 className="text-3xl font-bold nature-title">Hidrostatik Hesaplamaları</h1>
             <p className="text-muted-foreground">Draft Survey ve Bonjean Curves hesaplamaları</p>
           </div>
         </div>

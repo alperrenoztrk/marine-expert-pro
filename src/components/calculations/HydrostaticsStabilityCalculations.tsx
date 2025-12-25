@@ -1098,10 +1098,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       <ComprehensiveMaritimeCalculations showLongitudinal={section !== 'stability' && section !== 'trimlist'} showDraftSurvey={section !== 'stability' && section !== 'trimlist'} />
       
       {/* Stabilite Asistanı */}
-      <Card className="shadow border border-border">
+      <Card className="shadow border border-blue-200/50">
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-primary">
-            <Brain className="h-5 w-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Brain className="h-5 w-5" />
             Stabilite Asistanı
           </CardTitle>
         </CardHeader>
@@ -1114,8 +1114,8 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       {(!singleMode || section === 'hydrostatic') && (
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-primary">
-            <Waves className="h-5 w-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Waves className="h-5 w-5" />
             Hidrostatik Hesaplamalar
           </CardTitle>
         </CardHeader>
@@ -1123,7 +1123,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           
           {/* Deplasman Hesaplama */}
           {(!singleMode || !calc || calc==='displacement') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Deplasman Hesaplama (Δ = V × ρsw)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
@@ -1152,7 +1152,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {displacementResult !== null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
                 <p className="font-mono text-lg">Deplasman = {displacementResult.toFixed(2)} ton</p>
               </div>
             )}
@@ -1161,7 +1161,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
           {/* Draft Hesaplama */}
           {(!singleMode || !calc || calc==='draft') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Draft Hesaplama (T = V / Awp)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
@@ -1190,7 +1190,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {draftResult !== null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
                 <p className="font-mono text-lg">Draft = {draftResult.toFixed(3)} m</p>
               </div>
             )}
@@ -1199,7 +1199,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
           {/* TPC Hesaplama */}
           {(!singleMode || !calc || calc==='tpc') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">TPC Hesaplama (TPC = Awp × ρsw / 100)</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
@@ -1228,7 +1228,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {tpcResult !== null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-blue-500">
                 <p className="font-mono text-lg">TPC = {tpcResult.toFixed(2)} ton/cm</p>
               </div>
             )}
@@ -1245,8 +1245,8 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       {/* Stabilite Hesaplamalar */}
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-primary">
-            <Shield className="h-5 w-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-300">
+            <Shield className="h-5 w-5" />
             Stabilite Hesaplamalar
           </CardTitle>
         </CardHeader>
@@ -1254,7 +1254,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           
           {/* GM Hesaplama */}
           {(!singleMode || !calc || calc==='gm') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">GM Hesaplama (GM = KB + BM - KG)</h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div>
@@ -1293,12 +1293,12 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {gmResult !== null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
                 <p className="font-mono text-lg">GM = {gmResult.toFixed(3)} m</p>
                 <p className="text-sm mt-1">
                   {gmResult > 0 ? 
-                    <span className="text-success">✓ Pozitif stabilite</span> : 
-                    <span className="text-destructive">⚠ Negatif stabilite</span>
+                    <span className="text-green-600 dark:text-green-400">✓ Pozitif stabilite</span> : 
+                    <span className="text-red-600 dark:text-red-400">⚠ Negatif stabilite</span>
                   }
                 </p>
               </div>
@@ -1308,7 +1308,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
           {/* GZ Hesaplama */}
           {(!singleMode || !calc || calc==='gz') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">GZ Hesaplama (GZ = GM × sin(φ))</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
@@ -1337,7 +1337,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {gzResult !== null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
                 <p className="font-mono text-lg">GZ = {gzResult.toFixed(4)} m</p>
               </div>
             )}
@@ -1345,7 +1345,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           )}
 
           {/* ΔGM (w*d/Δ) */}
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Şift ile ΔGM (ΔGM = w × d / Δ)</h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
               <div>
@@ -1365,14 +1365,14 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {gmShiftResult!==null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm">
                 ΔGM = <span className="font-mono">{gmShiftResult.toFixed(4)} m</span>
               </div>
             )}
           </div>
 
           {/* Heeling angle from w,y */}
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Meyil Açısı (GZ = w·y/Δ, tanθ = GZ/GM)</h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
               <div>
@@ -1396,7 +1396,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {heelAngle2Result && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm grid grid-cols-2 gap-3">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm grid grid-cols-2 gap-3">
                 <div>GZ: <span className="font-mono">{heelAngle2Result.gz.toFixed(4)} m</span></div>
                 <div>θ: <span className="font-mono">{heelAngle2Result.angleDeg.toFixed(3)}°</span></div>
               </div>
@@ -1404,7 +1404,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           </div>
 
           {/* Crane (Bumba) GG1 */}
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Bumba ile GG₁ (GG₁ = w·(h_kanca − h_yük)/Δ)</h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
               <div>
@@ -1428,14 +1428,14 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {craneGG1Result!==null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm">
                 GG₁ = <span className="font-mono">{craneGG1Result.toFixed(4)} m</span>
               </div>
             )}
           </div>
 
           {/* Drydock critical GM */}
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
+          <div className="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
             <h4 className="font-semibold mb-3">Havuzlamada Kritik GM</h4>
             <p className="text-xs opacity-70 mb-2">P = MCT(1cm) × Trim(cm) / LBP; ΔGM = (P × KM)/Δ</p>
             <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
@@ -1464,7 +1464,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {dockGMResult && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm grid grid-cols-2 gap-3">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500 text-sm grid grid-cols-2 gap-3">
                 <div>P: <span className="font-mono">{dockGMResult.P.toFixed(2)} t</span></div>
                 <div>ΔGM: <span className="font-mono">{dockGMResult.dGM.toFixed(4)} m</span></div>
               </div>
@@ -1481,16 +1481,16 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       <Separator />
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-primary">
-            <Wrench className="h-5 w-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Wrench className="h-5 w-5" />
             Pratik Hesaplar
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {(!singleMode || !practicalCalc || practicalCalc === 'tank') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
-            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-primary drop-shadow-sm">
-              <Anchor className="h-6 w-6 text-primary" />
+          <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
+              <Anchor className="h-6 w-6 text-blue-700" />
               Duba/Tank Hacmi ve Kütle
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
@@ -1515,7 +1515,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {tankResults && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm grid grid-cols-2 gap-3">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm grid grid-cols-2 gap-3">
                 <div>V = <span className="font-mono">{tankResults.V.toFixed(2)} m³</span></div>
                 <div>m = <span className="font-mono">{tankResults.m.toFixed(2)} t</span></div>
               </div>
@@ -1524,9 +1524,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           )}
 
           {(!singleMode || !practicalCalc || practicalCalc === 'fwa') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
-            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-primary drop-shadow-sm">
-              <Waves className="h-6 w-6 text-primary" />
+          <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
+              <Waves className="h-6 w-6 text-blue-700" />
               FWA ve Yoğunluk
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
@@ -1543,7 +1543,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {fwaCalcResult!==null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm">
                 FWA = <span className="font-mono">{fwaCalcResult.toFixed(2)} cm</span>
               </div>
             )}
@@ -1569,7 +1569,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {tempDensityResult!==null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm">
                 ρ₂ = <span className="font-mono">{tempDensityResult.toFixed(4)} t/m³</span>
               </div>
             )}
@@ -1577,9 +1577,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
           )}
 
           {(!singleMode || !practicalCalc || practicalCalc === 'ghm') && (
-          <div className="bg-muted/40 border border-border p-4 rounded-lg">
-            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-primary drop-shadow-sm">
-              <BarChart3 className="h-6 w-6 text-primary" />
+          <div className="bg-emerald-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h4 className="mb-3 flex items-center gap-2 text-2xl font-bold text-blue-700 drop-shadow-sm">
+              <BarChart3 className="h-6 w-6 text-blue-700" />
               GHM Hesaplama (VHM / SF)
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
@@ -1596,7 +1596,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
               </Button>
             </div>
             {ghmResult2!==null && (
-              <div className="mt-3 p-3 bg-card rounded border border-border border-l-4 border-l-primary text-sm">
+              <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-emerald-500 text-sm">
                 GHM = <span className="font-mono">{ghmResult2.toFixed(3)}</span>
               </div>
             )}

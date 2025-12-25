@@ -158,7 +158,7 @@ export const OpenLibraryBrowser = ({ className = "" }: OpenLibraryBrowserProps) 
               </Badge>
             )}
             {doc.public_scan_b && (
-              <Badge variant="default" className="text-xs bg-blue-100 text-blue-700 dark:text-blue-300 bg-gray-800 text-yellow-400">
+              <Badge variant="default" className="text-xs bg-blue-100 text-blue-700 dark:text-blue-300 cyberpunk:bg-gray-800 cyberpunk:text-yellow-400">
                 Ücretsiz
               </Badge>
             )}

@@ -94,8 +94,6 @@ import WeatherForecast from "./pages/WeatherForecast";
 import SunsetTimes from "./pages/SunsetTimes";
 import SunriseTimes from "./pages/SunriseTimes";
 import LocationSelector from "./pages/LocationSelector";
-import TideCalculationTrainer from "./pages/TideCalculationTrainer";
-import TideCalculationTutorial from "./pages/TideCalculationTutorial";
 import DraftSurveyCalculator from "./pages/DraftSurveyCalculator";
 import DraftSurveyStandard from "./pages/DraftSurveyStandard";
 import DraftSurveyPreloading from "./pages/DraftSurveyPreloading";
@@ -265,7 +263,6 @@ const AnimatedRoutes = () => {
         <Route path="/tank-menu" element={<PageTransition><TankMenu /></PageTransition>} />
         <Route path="/solas" element={<PageTransition><SOLASMenu /></PageTransition>} />
         <Route path="/navigation" element={<PageTransition><Navigation /></PageTransition>} />
-        <Route path="/navigation/great-circle" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/calc/:id" element={<PageTransition><NavigationCalculationPage /></PageTransition>} />
         <Route path="/navigation/formulas" element={<PageTransition><NavigationFormulasPage /></PageTransition>} />
         <Route path="/navigation/rules" element={<PageTransition><NavigationRulesPage /></PageTransition>} />
@@ -287,8 +284,6 @@ const AnimatedRoutes = () => {
         <Route path="/sunset-times" element={<PageTransition><SunsetTimes /></PageTransition>} />
         <Route path="/sunrise-times" element={<PageTransition><SunriseTimes /></PageTransition>} />
         <Route path="/location-selector" element={<PageTransition><LocationSelector /></PageTransition>} />
-        <Route path="/navigation/tide-trainer" element={<PageTransition><TideCalculationTrainer /></PageTransition>} />
-        <Route path="/navigation/tide-tutorial" element={<PageTransition><TideCalculationTutorial /></PageTransition>} />
         <Route path="*" element={<PageTransition><Index /></PageTransition>} />
       </Routes>
     </AnimatePresence>

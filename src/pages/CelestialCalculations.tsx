@@ -82,28 +82,24 @@ export default function CelestialCalculations() {
   }, [navInputs]);
 
   const calculateTrueAltitude = () => {
-    const hsDeg = parseFloat(sextantReadings.observedAltitude);
-    // All corrections below are entered in minutes of arc (')
-    const icMin = parseFloat(sextantReadings.indexError) || 0;
-    const dipMin = parseFloat(sextantReadings.dip) || 0;
-    const refractionMin = parseFloat(sextantReadings.refraction) || 0;
-    const sdMin = parseFloat(sextantReadings.semiDiameter) || 0;
-    const parallaxMin = parseFloat(sextantReadings.parallax) || 0;
+    const ho = parseFloat(sextantReadings.observedAltitude);
+    const ie = parseFloat(sextantReadings.indexError) || 0;
+    const dip = parseFloat(sextantReadings.dip) || 0;
+    const refraction = parseFloat(sextantReadings.refraction) || 0;
+    const sd = parseFloat(sextantReadings.semiDiameter) || 0;
+    const parallax = parseFloat(sextantReadings.parallax) || 0;
 
-    if (isNaN(hsDeg)) {
+    if (isNaN(ho)) {
       toast({ title: "Hata", description: "Lütfen geçerli yükseklik değeri girin", variant: "destructive" });
       return;
     }
 
-    // Ho (true/observed altitude) in degrees:
-    // Ho = Hs + IC - Dip - Refraction + SD + Parallax
-    // (signs for SD/Parallax can vary by body and limb; here we keep it explicit for training)
-    const hoDeg = hsDeg + icMin / 60 - dipMin / 60 - refractionMin / 60 + sdMin / 60 + parallaxMin / 60;
-    setTrueAltitude(hoDeg);
+    const trueAlt = ho + ie - dip - refraction + sd + parallax;
+    setTrueAltitude(trueAlt);
     
     toast({ 
       title: "Gerçek Yükseklik Hesaplandı", 
-      description: `${hoDeg.toFixed(4)}°` 
+      description: `${trueAlt.toFixed(4)}°` 
     });
   };
 
@@ -130,15 +126,15 @@ export default function CelestialCalculations() {
                   Math.cos(latRad) * Math.cos(decRad) * Math.cos(lhaRad);
     const calculatedAlt = Math.asin(sinAlt) * (180 / Math.PI);
 
-    // Quadrant-safe azimuth (0..360, from true north)
-    const azimuthRad = Math.atan2(
-      -Math.sin(lhaRad),
-      Math.tan(decRad) * Math.cos(latRad) - Math.sin(latRad) * Math.cos(lhaRad)
-    );
-    const azimuth = ((azimuthRad * 180) / Math.PI + 360) % 360;
+    const cosAz = (Math.sin(decRad) - Math.sin(latRad) * sinAlt) / 
+                  (Math.cos(latRad) * Math.cos(Math.asin(sinAlt)));
+    let azimuth = Math.acos(Math.abs(cosAz)) * (180 / Math.PI);
+    
+    if (lhaNormalized > 180) {
+      azimuth = 360 - azimuth;
+    }
 
-    // Intercept (nm): a = (Ho - Hc) * 60. Sign indicates toward/away.
-    const intercept = trueAltitude !== null ? (trueAltitude - calculatedAlt) * 60 : 0;
+    const intercept = trueAltitude ? (trueAltitude - calculatedAlt) * 60 : 0;
 
     setNavResults({
       lha: lhaNormalized,
@@ -148,7 +144,7 @@ export default function CelestialCalculations() {
     });
 
     toast({ 
-      title: "Göksel Seyir Hesaplandı", 
+      title: "Göksel Navigasyon Hesaplandı", 
       description: `Intercept: ${intercept.toFixed(1)} mil` 
     });
   };
@@ -192,7 +188,7 @@ export default function CelestialCalculations() {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="observed-altitude">Sextant Yüksekliği (Hs)</Label>
+                        <Label htmlFor="observed-altitude">Gözlenen Yükseklik (Ho)</Label>
                         <Input
                           id="observed-altitude"
                           type="number"
@@ -301,7 +297,7 @@ export default function CelestialCalculations() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-[#2F5BFF]">
                       <Navigation className="h-5 w-5" />
-                      Göksel Seyir Hesaplamaları
+                      Göksel Navigasyon Hesaplamaları
                     </CardTitle>
                     <CardDescription>
                       LHA, hesaplanan yükseklik ve azimut hesaplamaları
@@ -368,7 +364,7 @@ export default function CelestialCalculations() {
 
                     <Button onClick={calculateCelestialNavigation} className="w-full bg-[#2F5BFF] hover:bg-[#2F5BFF]/90">
                       <Calculator className="h-4 w-4 mr-2" />
-                      Göksel Seyir Hesapla
+                      Göksel Navigasyon Hesapla
                     </Button>
 
                     {navResults && (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/safeClient';
 import { CheckCircle2, XCircle, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,33 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-type SupabaseLikeError = {
-  message?: string;
-  code?: string;
-};
-
-function getErrorMessage(err: unknown): string | null {
-  if (!err) return null;
-  if (err instanceof Error) return err.message;
-  if (typeof err === 'string') return err;
-  if (typeof err === 'object' && 'message' in err && typeof (err as SupabaseLikeError).message === 'string') {
-    return (err as SupabaseLikeError).message ?? null;
-  }
-  return null;
-}
-
-function getErrorCode(err: unknown): string | null {
-  if (!err || typeof err !== 'object' || !('code' in err)) return null;
-  const code = (err as SupabaseLikeError).code;
-  return typeof code === 'string' ? code : null;
-}
-
 export function SupabaseStatusIndicator() {
   const [status, setStatus] = useState<'checking' | 'healthy' | 'unhealthy'>('checking');
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
-  const checkConnection = useCallback(async () => {
+  const checkConnection = async () => {
     setStatus('checking');
     setErrorDetails(null);
     
@@ -52,9 +31,7 @@ export function SupabaseStatusIndicator() {
         // If ping function doesn't exist, that's okay - it means we can reach the API
         (err) => {
           // Check if it's a "function not found" error, which is acceptable
-          const code = getErrorCode(err);
-          const msg = getErrorMessage(err) ?? '';
-          if (code === '42883' || msg.includes('function')) {
+          if (err?.code === '42883' || err?.message?.includes('function')) {
             return { error: null };
           }
           return { error: err };
@@ -62,37 +39,35 @@ export function SupabaseStatusIndicator() {
       );
 
       if (pingError) {
-        const msg = getErrorMessage(pingError) ?? 'Sunucuya ulaşılamıyor';
-        setErrorDetails(`Bağlantı hatası: ${msg}`);
+        setErrorDetails(`Bağlantı hatası: ${pingError.message || 'Sunucuya ulaşılamıyor'}`);
         throw pingError;
       }
 
       setStatus('healthy');
       setLastChecked(new Date());
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Supabase connection check failed:', error);
       
       // Provide more helpful error messages
       if (!errorDetails) {
-        const msg = getErrorMessage(error) ?? '';
-        if (msg.includes('Failed to fetch')) {
+        if (error?.message?.includes('Failed to fetch')) {
           setErrorDetails('Sunucuya bağlanılamıyor. Backend yapılandırmasını kontrol edin.');
         } else {
-          setErrorDetails(msg || 'Bilinmeyen hata');
+          setErrorDetails(error?.message || 'Bilinmeyen hata');
         }
       }
       
       setStatus('unhealthy');
       setLastChecked(new Date());
     }
-  }, [errorDetails]);
+  };
 
   useEffect(() => {
     checkConnection();
     // Check every 60 seconds instead of 30 to reduce load
     const interval = setInterval(checkConnection, 60000);
     return () => clearInterval(interval);
-  }, [checkConnection]);
+  }, []);
 
   return (
     <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700">

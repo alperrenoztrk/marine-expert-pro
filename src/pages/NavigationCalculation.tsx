@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MobileLayout } from "@/components/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
-import { Calculator, BookOpen } from "lucide-react";
+import { Calculator } from "lucide-react";
+import { TideManualGuideDialog } from "@/components/tides/TideManualGuideDialog";
 import { supabase } from "@/integrations/supabase/safeClient";
 import {
   calculateGreatCircle,
@@ -149,7 +150,6 @@ export default function NavigationCalculationPage() {
   const title = useMemo(() => CALC_TITLES[id] ?? "Hesaplama", [id]);
 
   // Shared state buckets (each section maintains its own minimal state)
-  const [gcView, setGcView] = useState<"topic" | "formulas" | "calc">("calc");
   const [gcInputs, setGcInputs] = useState({ 
     lat1: emptyDMS(true), 
     lon1: emptyDMS(false), 
@@ -2014,28 +2014,6 @@ export default function NavigationCalculationPage() {
       case "tides":
         return (
           <div className="space-y-4">
-            {/* Tutorial Button - Top Right */}
-            <div className="flex justify-end">
-              <Button asChild variant="outline" size="sm" className="gap-2">
-                <Link to="/navigation/tide-tutorial">
-                  <BookOpen className="h-4 w-4" />
-                  Hesabın Yapılışı
-                </Link>
-              </Button>
-            </div>
-            
-            <div className="rounded border p-3 bg-muted/30">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-semibold">Gelgit Hesabı Eğitimi (Trainer)</div>
-                <Button asChild variant="secondary" size="sm">
-                  <Link to="/navigation/tide-trainer">Eğitim ekranını aç</Link>
-                </Button>
-              </div>
-              <div className="text-xs text-muted-foreground mt-2">
-                Bu ekran, gelgit (HOT) hesabını adım adım öğretir; canlı veri içermez.
-              </div>
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="tide-hour">Saat (1-6)</Label>
@@ -2879,110 +2857,14 @@ export default function NavigationCalculationPage() {
         <Card className="shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 gap-3">
             <CardTitle className="flex-1">{title}</CardTitle>
+            {id === "tides" && <TideManualGuideDialog />}
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
-            {id === "gc" ? (
-              <div className="space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant={gcView === "topic" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setGcView("topic")}
-                    className="whitespace-nowrap"
-                  >
-                    Konu Anlatımı
-                  </Button>
-                  <Button
-                    variant={gcView === "formulas" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setGcView("formulas")}
-                    className="whitespace-nowrap"
-                  >
-                    Formüller
-                  </Button>
-                  <Button
-                    variant={gcView === "calc" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setGcView("calc")}
-                    className="whitespace-nowrap"
-                  >
-                    Hesaplamalar
-                  </Button>
-                </div>
-
-                {gcView === "topic" && (
-                  <div className="rounded border p-3 bg-muted/30 space-y-3">
-                    <div className="font-semibold">Büyük Daire (Great Circle) Seyri</div>
-                    <div className="space-y-2 text-sm leading-6 text-muted-foreground">
-                      <p>
-                        Küre üzerinde iki nokta arasındaki <strong>en kısa rota</strong> büyük dairedir (meridyenler ve ekvator birer büyük dairedir).
-                        Uzun mesafeli seyirlerde yakıt/zaman optimizasyonu için tercih edilir.
-                      </p>
-                      <p>
-                        Mercator haritasında büyük daire genelde <strong>eğri</strong> görünür; gnomonik projeksiyonda ise büyük daireler <strong>düz çizgi</strong> olarak çıkar.
-                        Pratikte rota; büyük daire/kompozit büyük daire + “uygulanabilir legs” şeklinde planlanır.
-                      </p>
-                      <p>
-                        Büyük dairede rota boyunca kerteriz değişir. Önemli kavramlar: <strong>initial course</strong> (başlangıç kerterizi),
-                        <strong>final course</strong> (varış kerterizi) ve <strong>vertex</strong> (rota üzerindeki en yüksek enlem noktası).
-                      </p>
-                      <p className="text-xs">
-                        Not: Gerçek seyirde ECDIS/route check, trafik ayırma şemaları (TSS), meteo ve emniyet kısıtları her zaman önceliklidir.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {gcView === "formulas" && (
-                  <div className="rounded border p-3 bg-muted/30 space-y-3">
-                    <div className="font-semibold">Temel Formüller (Küre Yaklaşımı)</div>
-                    <div className="text-sm leading-6 text-muted-foreground space-y-2">
-                      <div>
-                        <div className="font-medium text-foreground">1) Merkez açı (Δσ)</div>
-                        <div className="font-mono text-xs whitespace-pre-wrap">{`cos(Δσ) = sinφ₁ sinφ₂ + cosφ₁ cosφ₂ cos(Δλ)
-Δλ = λ₂ − λ₁`}</div>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">2) Mesafe</div>
-                        <div className="font-mono text-xs whitespace-pre-wrap">{`d (NM) = Δσ(rad) × 3437.74677
-d (deg) = Δσ(rad) × 180/π`}</div>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">3) Başlangıç kerterizi (initial course)</div>
-                        <div className="font-mono text-xs whitespace-pre-wrap">{`θ₁ = atan2( sinΔλ · cosφ₂,
-           cosφ₁·sinφ₂ − sinφ₁·cosφ₂·cosΔλ )`}</div>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">4) Varış kerterizi (final course)</div>
-                        <div className="font-mono text-xs whitespace-pre-wrap">{`θ₂ = atan2( sinΔλ · cosφ₁,
-           −sinφ₁·cosφ₂ + cosφ₁·sinφ₂·cosΔλ )`}</div>
-                      </div>
-                      <p className="text-xs">
-                        Not: Uygulamada açıların birim dönüşümleri (deg↔rad) ve atan2 sonucunun 0–360° normalize edilmesi gerekir.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {gcView === "calc" && (
-                  <>
-                    <div className="bg-muted/30 rounded p-3 space-y-4">
-                      {renderInputs()}
-                      <Button onClick={onCalculate} className="w-full">Hesapla</Button>
-                    </div>
-                    {renderResults()}
-                  </>
-                )}
-              </div>
-            ) : (
-              <>
-                <div className="bg-muted/30 rounded p-3 space-y-4">
-                  {renderInputs()}
-                  <Button onClick={onCalculate} className="w-full">Hesapla</Button>
-                </div>
-                {renderResults()}
-              </>
-            )}
+            <div className="bg-muted/30 rounded p-3 space-y-4">
+              {renderInputs()}
+              <Button onClick={onCalculate} className="w-full">Hesapla</Button>
+            </div>
+            {renderResults()}
           </CardContent>
         </Card>
 

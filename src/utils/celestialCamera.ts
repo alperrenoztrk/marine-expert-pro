@@ -45,10 +45,9 @@ export const stopCameraStream = (session: CameraSession | null, videoElement?: H
 
 export const requestDeviceOrientationPermission = async (): Promise<boolean> => {
   try {
-    // iOS (Safari) uses a non-standard permission request on the constructor.
-    const doe = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> };
-    if (typeof doe.requestPermission === 'function') {
-      const res = await doe.requestPermission();
+    const w = window as any;
+    if (typeof w.DeviceOrientationEvent !== 'undefined' && typeof w.DeviceOrientationEvent.requestPermission === 'function') {
+      const res = await w.DeviceOrientationEvent.requestPermission();
       return res === 'granted';
     }
     // Non-iOS: treat as granted if the API exists

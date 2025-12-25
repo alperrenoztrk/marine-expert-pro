@@ -15,19 +15,6 @@ import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { SupabaseStatusIndicator } from "@/components/SupabaseStatusIndicator";
 import { APIStatusIndicator } from "@/components/APIStatusIndicator";
 
-type StripeCheckoutResponse = {
-  url?: string;
-};
-
-function getErrorMessage(err: unknown): string {
-  if (err instanceof Error) return err.message;
-  if (typeof err === "string") return err;
-  if (err && typeof err === "object" && "message" in err && typeof (err as { message?: unknown }).message === "string") {
-    return (err as { message: string }).message;
-  }
-  return "Bilinmeyen hata";
-}
-
 const Settings = () => {
   const { theme, setTheme } = useTheme();
   const { currentLanguage, changeLanguage, supportedLanguages, getLanguageName } = useLanguage();
@@ -65,13 +52,13 @@ const Settings = () => {
         },
       });
       if (error) throw error;
-      const url = (data as StripeCheckoutResponse | null)?.url;
+      const url = (data as any)?.url;
       if (!url) {
         toast.error('Stripe checkout URL oluşturulamadı');
         return;
       }
-      window.location.href = url;
-    } catch (e: unknown) {
+      window.location.href = url as string;
+    } catch (e: any) {
       console.error(e);
       toast.error('Ödeme başlatılamadı');
     } finally {
@@ -87,8 +74,8 @@ const Settings = () => {
           {/* Header */}
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-3">
-              <SettingsIcon className="h-12 w-12 text-blue-600 dark:text-blue-400 " />
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent ">
+              <SettingsIcon className="h-12 w-12 text-blue-600 dark:text-blue-400 nature-icon" />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent nature-title">
                 <span data-translatable>Ayarlar</span>
               </h1>
             </div>
@@ -109,7 +96,7 @@ const Settings = () => {
             <GoogleAuth />
             
             {/* Theme Settings */}
-            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 bg-green-50 border-green-200">
+            <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 nature:bg-green-50 nature:border-green-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />

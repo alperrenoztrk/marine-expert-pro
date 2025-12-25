@@ -149,7 +149,7 @@ const NavigationWidgets: React.FC = () => {
 
               {/* Heading Display */}
               <div className="text-center space-y-2 min-w-0">
-                <div className="font-mono text-5xl font-bold text-foreground animate-glow tabular-nums leading-none">
+                <div className="font-mono text-5xl font-bold text-foreground animate-neon-glow tabular-nums leading-none">
                   {heading !== null ? `${heading}°` : '--°'}
                 </div>
                 {heading !== null && (
