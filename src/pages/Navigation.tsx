@@ -23,6 +23,7 @@ const navigationItems: CalculationGridItem[] = [
   { id: "chart", title: "Chart Ölçeği (cm ↔ NM)", icon: Map, to: "/navigation/calc/chart" },
   { id: "distance", title: "Mesafe Hesaplamaları", icon: Route, to: "/navigation/calc/distance" },
   { id: "tides", title: "Gelgit + UKC", icon: Waves, to: "/navigation/calc/tides" },
+  { id: "tide-trainer", title: "Gelgit Hesabı Eğitimi (Trainer)", icon: Waves, to: "/navigation/tide-trainer" },
   { id: "safety", title: "Seyir Emniyeti (Squat/UKC)", icon: Shield, to: "/navigation/calc/safety" },
   { id: "passage", title: "Passage Plan (Leg ETA)", icon: Route, to: "/navigation/calc/passage" },
   { id: "ecdis", title: "ECDIS (XTD / Look-ahead)", icon: Monitor, to: "/navigation/calc/ecdis" },
