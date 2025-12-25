@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
 import { Calculator } from "lucide-react";
-import { TideManualGuideDialog } from "@/components/tides/TideManualGuideDialog";
 import { supabase } from "@/integrations/supabase/safeClient";
 import {
   calculateGreatCircle,
@@ -2862,7 +2861,6 @@ export default function NavigationCalculationPage() {
                 <Button variant="outline" size="sm" onClick={() => navigate("/navigation/tide-tutorial")}>
                   Hesabın Yapılışı
                 </Button>
-                <TideManualGuideDialog />
               </div>
             )}
           </CardHeader>
