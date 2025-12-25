@@ -104,6 +104,7 @@ import DraftSurveyBallast from "./pages/DraftSurveyBallast";
 import DraftSurveyDensity from "./pages/DraftSurveyDensity";
 import DraftSurveyBunker from "./pages/DraftSurveyBunker";
 import CargoCalculationsPage from "./pages/CargoCalculations";
+import TideCalculationTrainer from "./pages/TideCalculationTrainer";
 
 import CargoRulesPage from "./pages/CargoRules";
 import CargoAssistantPage from "./pages/CargoAssistant";
@@ -285,6 +286,7 @@ const AnimatedRoutes = () => {
         <Route path="/sunset-times" element={<PageTransition><SunsetTimes /></PageTransition>} />
         <Route path="/sunrise-times" element={<PageTransition><SunriseTimes /></PageTransition>} />
         <Route path="/location-selector" element={<PageTransition><LocationSelector /></PageTransition>} />
+        <Route path="/tide-trainer" element={<PageTransition><TideCalculationTrainer /></PageTransition>} />
         <Route path="*" element={<PageTransition><Index /></PageTransition>} />
       </Routes>
     </AnimatePresence>
