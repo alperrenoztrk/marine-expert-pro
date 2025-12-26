@@ -60,13 +60,15 @@ export default function LessonsPage() {
                   {/* Konu Anlatımı Butonu */}
                   <Link
                     to={`/lessons/${category.id}/topics`}
-                    className="group flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 p-3 backdrop-blur transition-all hover:border-primary hover:bg-primary/10 hover:shadow-md"
+                    className="group flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-card/80 p-3 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground transition-transform group-hover:scale-110">
+                    <div
+                      className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white transition-transform group-hover:scale-110`}
+                    >
                       <GraduationCap className="h-4 w-4" />
                     </div>
-                    <span className="text-center text-xs font-semibold text-primary">Konu Anlatımı</span>
-                    <ChevronRight className="h-3 w-3 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
+                    <span className="text-center text-xs font-medium text-foreground">Konu Anlatımı</span>
+                    <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                   </Link>
 
                   {category.sections.map((section) => {
