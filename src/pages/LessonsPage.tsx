@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
-import { BookOpen, ChevronRight, ArrowLeft } from "lucide-react";
+import { BookOpen, ChevronRight, ArrowLeft, GraduationCap } from "lucide-react";
 
 export default function LessonsPage() {
   const highRefreshRateStyles: CSSProperties = {
@@ -57,6 +57,18 @@ export default function LessonsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+                  {/* Konu Anlatımı Butonu */}
+                  <Link
+                    to={`/lessons/${category.id}/topics`}
+                    className="group flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 p-3 backdrop-blur transition-all hover:border-primary hover:bg-primary/10 hover:shadow-md"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground transition-transform group-hover:scale-110">
+                      <GraduationCap className="h-4 w-4" />
+                    </div>
+                    <span className="text-center text-xs font-semibold text-primary">Konu Anlatımı</span>
+                    <ChevronRight className="h-3 w-3 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
+                  </Link>
+
                   {category.sections.map((section) => {
                     const SectionIcon = sectionIconMap[section.id];
                     return (
