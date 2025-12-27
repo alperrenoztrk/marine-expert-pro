@@ -17,6 +17,7 @@ import {
   Lightbulb
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { InteractiveStabilityTools } from "@/components/stability/InteractiveStabilityTools";
 
 interface TopicSection {
   id: string;
