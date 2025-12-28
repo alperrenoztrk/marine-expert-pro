@@ -34,41 +34,51 @@ const topicSections: TopicSection[] = [
     content: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Stabilite, bir geminin dış etkilere karşı dengesini koruma yeteneğidir. Aşağıdaki kavramlar stabiliteyi anlamak için temel oluşturur.
+          Stabilite, bir geminin dış etkilere (rüzgâr, dalga, yük kayması, dönüş manevraları) karşı dengesini koruma ve denge bozulduğunda yeniden
+          dik konuma dönme yeteneğidir. Aşağıdaki kavramlar stabiliteyi anlamak için temel oluşturur. Burada amaç, hem teorik temeli hem de pratik
+          operasyondaki kritik noktaları netleştirmektir.
         </p>
         
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">1.1 Denge Türleri</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Denge türleri, geminin küçük bir yatma açısı sonrası nasıl davrandığını gösterir. Denge davranışını anlamak; yükleme, balast
+            ve operasyon kararlarının güvenliğini belirler.
+          </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-green-500" />
-              <span><strong className="text-foreground">Kararlı (stabil) denge:</strong> Gemi, dış etkiyle yan yatıp kuvvet ortadan kalktığında tekrar dik konumuna döner. Stabil durumda pozitif GZ kolu ve pozitif metasantrik yükseklik vardır.</span>
+              <span><strong className="text-foreground">Kararlı (stabil) denge:</strong> Gemi, dış etkiyle yan yatıp kuvvet ortadan kalktığında tekrar dik konumuna döner. Stabil durumda pozitif GZ kolu ve pozitif metasantrik yükseklik vardır. Genellikle güvenli yükleme durumunu temsil eder.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
-              <span><strong className="text-foreground">Nötr denge:</strong> Gemi, dış etkiyle bir açıda yeni denge konumunda kalır; doğrultucu kol sıfıra yaklaşır.</span>
+              <span><strong className="text-foreground">Nötr denge:</strong> Gemi, dış etkiyle bir açıda yeni denge konumunda kalır; doğrultucu kol sıfıra yaklaşır. Bu durumda küçük bir ilave etkiyle gemi kalıcı olarak başka bir açıda dengede kalabilir.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-red-500" />
-              <span><strong className="text-foreground">Kararsız (unstable) denge:</strong> Gemi dik konumda iken negatif metasantrik yükseklik nedeniyle en ufak bir eğilmeyle devrilmeye meyillidir.</span>
+              <span><strong className="text-foreground">Kararsız (unstable) denge:</strong> Gemi dik konumda iken negatif metasantrik yükseklik nedeniyle en ufak bir eğilmeyle devrilmeye meyillidir. Bu durumda yükleme ve balast operasyonları acil düzeltme gerektirir.</span>
             </li>
           </ul>
         </div>
 
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">1.2 Deplasman, Kaldırma ve Ağırlık Merkezi</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Geminin ağırlığı ile yer değiştirdiği suyun kaldırma kuvveti, stabiliteyi belirleyen temel dengedir. Bu denge, ağırlık merkezi (G)
+            ve kaldırma merkezi (B) arasındaki ilişkiyle modellenir.
+          </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-              <span><strong className="text-foreground">Deplasman (Δ):</strong> Geminin yer değiştirdiği suyun ağırlığıdır.</span>
+              <span><strong className="text-foreground">Deplasman (Δ):</strong> Geminin yer değiştirdiği suyun ağırlığıdır. Geminin toplam ağırlığına eşittir ve ton cinsinden ifade edilir.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-              <span><strong className="text-foreground">Ağırlık merkezi (G):</strong> Gemideki tüm yüklerin ağırlıklarının birleşik uygulama noktasıdır. Yüklerin taşınması veya tankların doluluklarının değişmesi KG'yi değiştirir.</span>
+              <span><strong className="text-foreground">Ağırlık merkezi (G):</strong> Gemideki tüm yüklerin ağırlıklarının birleşik uygulama noktasıdır. Yüklerin taşınması veya tankların doluluklarının değişmesi KG'yi değiştirir. KG yükselirse stabilite azalır.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-              <span><strong className="text-foreground">Kaldırma kuvveti merkezi (B):</strong> Su altında kalan hacmin ağırlık merkezi olup, geminin yüzdüğü konuma göre yer değiştirir.</span>
+              <span><strong className="text-foreground">Kaldırma kuvveti merkezi (B):</strong> Su altında kalan hacmin ağırlık merkezi olup, geminin yüzdüğü konuma göre yer değiştirir. Yatma açısı değiştikçe B noktası yana kayar ve doğrultucu kol oluşur.</span>
             </li>
           </ul>
         </div>
@@ -77,6 +87,10 @@ const topicSections: TopicSection[] = [
           <h4 className="font-semibold text-foreground">1.3 Metasantrik Yükseklik ve Sert/Yumuşak Gemi</h4>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Metasantrik yükseklik (GM), geminin küçük açılardaki ilk stabilitesinin göstergesidir. <strong className="text-foreground">GM = KM − KG</strong> formülüyle hesaplanır; burada KM kökle metasentre arasındaki mesafe, KG kökle ağırlık merkezi arasındaki mesafedir.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            GM değeri arttıkça gemi hızlı ve sert bir yalpa davranışı gösterir; GM azaldıkça daha yavaş ve geniş salınımlar görülür. Bu nedenle GM,
+            hem emniyet hem de konfor açısından dengelenmelidir.
           </p>
           <div className="grid gap-2 sm:grid-cols-2">
             <div className="rounded-lg border border-green-500/30 bg-green-500/5 p-3">
@@ -99,11 +113,15 @@ const topicSections: TopicSection[] = [
     content: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Statik stabilite, geminin belirli bir yatma açısında dış kuvvetler olmadan dengeye gelmesiyle ilgilidir. Bunun analizinde GZ (doğrultucu kol) eğrisi kullanılır.
+          Statik stabilite, geminin belirli bir yatma açısında dış kuvvetler olmadan dengeye gelmesiyle ilgilidir. Bunun analizinde GZ (doğrultucu kol)
+          eğrisi kullanılır. GZ eğrisi, geminin farklı açılardaki doğrultucu moment kapasitesini görsel ve sayısal olarak ortaya koyar.
         </p>
 
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">2.1 Doğrultucu Kol ve Doğrultucu Moment</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            GZ kolu geminin dengeye dönme kabiliyetini temsil eder. GZ büyüdükçe gemi daha büyük doğrultucu moment üretir ve dış kuvvetlere daha iyi karşı koyar.
+          </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
@@ -157,6 +175,10 @@ const topicSections: TopicSection[] = [
           <p className="text-sm text-muted-foreground leading-relaxed">
             Statik stabilite eğrisinin altında kalan alan, geminin heeling sırasında absorbe edebileceği enerji miktarını (dinamik stabilite) gösterir. Yüksek maksimum GZ değeri tek başına yeterli değildir; alanın geniş olması, geminin devrilmeden önce daha fazla enerji absorbe edebileceği anlamına gelir.
           </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Dinamik stabilite değerlendirmeleri, rüzgâr ve dalga koşullarında geminin güvenliğini ölçmek için kullanılır. IMO kriterleri, özellikle belirli açı aralıklarında
+            GZ alanlarını asgari seviyede şart koşar.
+          </p>
         </div>
 
         <div className="space-y-3">
@@ -178,7 +200,9 @@ const topicSections: TopicSection[] = [
     content: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Kısmen dolu tanklardaki sıvı, gemi yatınca serbest yüzeyinde yatay kalmaya çalışarak bir kama şeklinde transfer oluşturur. Bu durum ağırlık merkezini yana kaydırarak geminin metasantrik yüksekliğini düşürür; buna <strong className="text-foreground">serbest yüzey etkisi (free surface effect)</strong> denir.
+          Kısmen dolu tanklardaki sıvı, gemi yatınca serbest yüzeyinde yatay kalmaya çalışarak bir kama şeklinde transfer oluşturur. Bu durum ağırlık merkezini
+          yana kaydırarak geminin metasantrik yüksekliğini düşürür; buna <strong className="text-foreground">serbest yüzey etkisi (free surface effect)</strong> denir.
+          Serbest yüzey etkisi, büyük tanklarda ve geniş güverteli gemilerde çok daha kritiktir.
         </p>
 
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
@@ -216,10 +240,11 @@ const topicSections: TopicSection[] = [
     title: "4. İç Yükler ve Diğer İç Etkiler",
     icon: Ship,
     content: (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Geminin içindeki ağırlıkların konumu stabiliteyi doğrudan etkiler.
-        </p>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+          Geminin içindeki ağırlıkların konumu stabiliteyi doğrudan etkiler. Yüklerin merkezden uzaklaşması, ağırlık merkezinin yana kayması ve GM değerinin
+          düşmesi gibi etkiler devrilme riskini artırabilir. Bu nedenle yükleme emniyeti ile stabilite emniyeti birlikte düşünülmelidir.
+          </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-border/40 bg-card/50 p-3">
@@ -249,7 +274,8 @@ const topicSections: TopicSection[] = [
     content: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Gemi dışındaki çevresel kuvvetler ve manevra hareketleri de stabiliteyi değiştirir.
+          Gemi dışındaki çevresel kuvvetler ve manevra hareketleri de stabiliteyi değiştirir. Deniz durumu, rüzgâr kuvveti, akıntı ve manevra ivmeleri
+          heeling momentleri oluşturur ve GZ eğrisinin kullanılabilirliğini belirler.
         </p>
 
         <div className="space-y-3">
@@ -343,7 +369,8 @@ const topicSections: TopicSection[] = [
     content: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Hasar stabilitesi, geminin bir veya daha fazla bölmesi su aldığında kalan kaldırma kuvveti ve stabilitenin değerlendirilmesidir.
+          Hasar stabilitesi, geminin bir veya daha fazla bölmesi su aldığında kalan kaldırma kuvveti ve stabilitenin değerlendirilmesidir. Bu analiz,
+          geminin hasar sonrası hayatta kalabilirliğini gösterir ve SOLAS kurallarına göre asgari kriterleri sağlamalıdır.
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -368,13 +395,16 @@ const topicSections: TopicSection[] = [
     title: "8. Testler ve Ölçümler",
     icon: Calculator,
     content: (
-      <div className="space-y-4">
-        <div className="space-y-3">
-          <h4 className="font-semibold text-foreground">8.1 İnklinasyon Deneyi</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Gemi inşa edildikten sonra gerçek KG ve GM değerlerini belirlemek için yapılan deneydir. Bilinen ağırlıklar gemi içinde yatay olarak yer değiştirir ve sonuçta meydana gelen yatma açılarından GM hesaplanır.
-          </p>
-        </div>
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground">8.1 İnklinasyon Deneyi</h4>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Gemi inşa edildikten sonra gerçek KG ve GM değerlerini belirlemek için yapılan deneydir. Bilinen ağırlıklar gemi içinde yatay olarak yer değiştirir ve sonuçta meydana gelen yatma açılarından GM hesaplanır.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              İnklinasyon sonuçları, stabilite kitapçığının temelini oluşturur. Ölçümde yakıt, tatlı su ve ekipman konfigürasyonlarının doğru kaydedilmesi kritik önemdedir.
+            </p>
+          </div>
 
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">8.2 Yuvarlanma (Rolling) Testi</h4>
@@ -405,7 +435,8 @@ const topicSections: TopicSection[] = [
     content: (
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Geminin baş ve kıç draftlarının farklı olması trim olarak adlandırılır. Geminin boyuna dengesini anlamak için hogging (ortadan yukarı bükülme) ve sagging (ortadan aşağı sarkma) kavramları kullanılır.
+          Geminin baş ve kıç draftlarının farklı olması trim olarak adlandırılır. Geminin boyuna dengesini anlamak için hogging (ortadan yukarı bükülme)
+          ve sagging (ortadan aşağı sarkma) kavramları kullanılır. Trim hesapları; yükleme planı, yakıt tüketimi ve balast yönetimi için temel girdidir.
         </p>
 
         <div className="space-y-3">
