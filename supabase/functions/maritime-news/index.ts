@@ -105,7 +105,7 @@ function normalizeLink(link: unknown): string {
   return String(link);
 }
 
-function normalizeImageUrl(value: unknown): string | undefined {
+function normalizeImageUrl(value: unknown, baseUrl?: string): string | undefined {
   if (!value) return undefined;
 
   if (typeof value === "string") {
@@ -115,12 +115,20 @@ function normalizeImageUrl(value: unknown): string | undefined {
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
     // Some feeds (e.g. gCaptain, Splash247) use protocol-relative URLs. Normalize them to https to keep images visible.
     if (/^\/\//.test(trimmed)) return `https:${trimmed}`;
+    if (baseUrl) {
+      try {
+        const resolved = new URL(trimmed, baseUrl).toString();
+        if (/^https?:\/\//i.test(resolved)) return resolved;
+      } catch {
+        return undefined;
+      }
+    }
     return undefined;
   }
 
   if (Array.isArray(value)) {
     for (const v of value) {
-      const candidate = normalizeImageUrl(v);
+      const candidate = normalizeImageUrl(v, baseUrl);
       if (candidate) return candidate;
     }
     return undefined;
@@ -130,7 +138,7 @@ function normalizeImageUrl(value: unknown): string | undefined {
     const obj = value as Record<string, unknown>;
     const keys = ["@_url", "@_href", "url", "href", "#text", "__text", "_text"];
     for (const key of keys) {
-      const candidate = normalizeImageUrl(obj[key]);
+      const candidate = normalizeImageUrl(obj[key], baseUrl);
       if (candidate) return candidate;
     }
   }
@@ -138,14 +146,34 @@ function normalizeImageUrl(value: unknown): string | undefined {
   return undefined;
 }
 
-function extractImageFromHtml(html: string | undefined): string | undefined {
+function extractImageFromHtml(html: string | undefined, baseUrl?: string): string | undefined {
   if (!html) return undefined;
-  const match = html.match(/<img[^>]+src=["']([^"'>]+)["']/i);
-  if (!match) return undefined;
-  return normalizeImageUrl(match[1]);
+  const attributes = ["data-lazy-src", "data-src", "data-original", "data-srcset", "srcset", "src"];
+  for (const attr of attributes) {
+    const regex = new RegExp(`<img[^>]+${attr}=["']([^"'>]+)["']`, "i");
+    const match = html.match(regex);
+    if (!match) continue;
+    let candidate = match[1];
+    if (attr.includes("srcset")) {
+      const first = candidate.split(",")[0]?.trim();
+      if (first) {
+        candidate = first.split(" ")[0] || first;
+      }
+    }
+    const normalized = normalizeImageUrl(candidate, baseUrl);
+    if (normalized) return normalized;
+  }
+  return undefined;
 }
 
 function findImageUrl(entry: Record<string, unknown>): string | undefined {
+  let baseUrl: string | undefined;
+  try {
+    const link = normalizeLink(entry["link"]);
+    if (link) baseUrl = link;
+  } catch {
+    baseUrl = undefined;
+  }
   // Common RSS/Atom fields
   const fields = [
     "media:content",
@@ -153,10 +181,12 @@ function findImageUrl(entry: Record<string, unknown>): string | undefined {
     "media:group",
     "enclosure",
     "image",
+    "content",
+    "thumbnail",
   ];
 
   for (const field of fields) {
-    const candidate = normalizeImageUrl(entry[field]);
+    const candidate = normalizeImageUrl(entry[field], baseUrl);
     if (candidate) return candidate;
   }
 
@@ -165,7 +195,7 @@ function findImageUrl(entry: Record<string, unknown>): string | undefined {
   if (Array.isArray(link)) {
     for (const l of link) {
       if (typeof l === "object" && l && (l as Record<string, unknown>)["@_rel"] === "enclosure") {
-        const candidate = normalizeImageUrl((l as Record<string, unknown>)["@_href"]);
+        const candidate = normalizeImageUrl((l as Record<string, unknown>)["@_href"], baseUrl);
         if (candidate) return candidate;
       }
     }
@@ -174,7 +204,10 @@ function findImageUrl(entry: Record<string, unknown>): string | undefined {
   // Try to find the first image in HTML content
   const htmlFields = ["content:encoded", "description", "summary", "content"];
   for (const field of htmlFields) {
-    const candidate = extractImageFromHtml(typeof entry[field] === "string" ? (entry[field] as string) : undefined);
+    const candidate = extractImageFromHtml(
+      typeof entry[field] === "string" ? (entry[field] as string) : undefined,
+      baseUrl
+    );
     if (candidate) return candidate;
   }
 
