@@ -15,7 +15,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   RotateCcw,
-  Move3d
+  Move3d,
+  Wheat
 } from "lucide-react";
 import { Ship3DVisualization } from "./Ship3DVisualization";
 
@@ -446,6 +447,113 @@ export const IMOCriteriaChecker = () => {
   );
 };
 
+// Grain Stability Calculator
+export const GrainStabilityCalculator = () => {
+  const [shiftVolume, setShiftVolume] = useState<number>(120);
+  const [deltaKG, setDeltaKG] = useState<number>(0.4);
+  const [grainDensity, setGrainDensity] = useState<number>(0.8);
+  const [displacement, setDisplacement] = useState<number>(15000);
+  const [gm, setGm] = useState<number>(0.7);
+
+  const ghm = shiftVolume * deltaKG * grainDensity;
+  const tanTheta = displacement && gm ? ghm / (displacement * gm) : 0;
+  const heelingAngle = Math.atan(tanTheta) * (180 / Math.PI);
+  const passesIMO = heelingAngle <= 12;
+
+  return (
+    <Card className="border-primary/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Wheat className="h-5 w-5 text-primary" />
+          Tahıl Hesabı
+        </CardTitle>
+        <CardDescription className="text-xs">
+          Tahıl yükü için GHM ve yatma açısını hesaplayın
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label className="text-xs">Kayma Hacmi (V) - m³</Label>
+            <Input
+              type="number"
+              value={shiftVolume}
+              onChange={(e) => setShiftVolume(parseFloat(e.target.value) || 0)}
+              className="h-8 text-sm"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs">ΔKG - m</Label>
+            <Input
+              type="number"
+              step="0.01"
+              value={deltaKG}
+              onChange={(e) => setDeltaKG(parseFloat(e.target.value) || 0)}
+              className="h-8 text-sm"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs">Tahıl Yoğunluğu (ρ) - t/m³</Label>
+            <Input
+              type="number"
+              step="0.01"
+              value={grainDensity}
+              onChange={(e) => setGrainDensity(parseFloat(e.target.value) || 0)}
+              className="h-8 text-sm"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs">Deplasman (Δ) - ton</Label>
+            <Input
+              type="number"
+              value={displacement}
+              onChange={(e) => setDisplacement(parseFloat(e.target.value) || 0)}
+              className="h-8 text-sm"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs">GM - m</Label>
+            <Input
+              type="number"
+              step="0.01"
+              value={gm}
+              onChange={(e) => setGm(parseFloat(e.target.value) || 0)}
+              className="h-8 text-sm"
+            />
+          </div>
+        </div>
+
+        <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-muted-foreground">GHM (V × ΔKG × ρ):</span>
+            <span className="font-mono font-bold text-primary">{ghm.toFixed(2)} t·m</span>
+          </div>
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-muted-foreground">Yatma Açısı (θ):</span>
+            <span className="font-mono font-bold text-primary">{heelingAngle.toFixed(2)}°</span>
+          </div>
+          <div className={`mt-2 rounded p-2 ${passesIMO ? 'bg-green-500/10 border border-green-500/30' : 'bg-red-500/10 border border-red-500/30'}`}>
+            <div className="flex items-center gap-2">
+              {passesIMO ? (
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+              ) : (
+                <AlertTriangle className="h-4 w-4 text-red-500" />
+              )}
+              <span className={`text-xs ${passesIMO ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                {passesIMO ? 'IMO limiti içinde (≤ 12°)' : 'IMO limiti aşıldı (> 12°)'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 // Interactive Ship Visualization
 export const ShipVisualization = () => {
   const [heelAngle, setHeelAngle] = useState<number>(0);
@@ -545,7 +653,7 @@ export const ShipVisualization = () => {
 export const InteractiveStabilityTools = () => {
   return (
     <Tabs defaultValue="simulation" className="w-full">
-      <TabsList className="grid w-full grid-cols-5 h-auto">
+      <TabsList className="grid w-full grid-cols-6 h-auto">
         <TabsTrigger value="simulation" className="text-xs py-1.5 px-1">
           <Ship className="h-3 w-3 mr-1 hidden sm:inline" />
           Simülasyon
@@ -565,6 +673,10 @@ export const InteractiveStabilityTools = () => {
         <TabsTrigger value="imo" className="text-xs py-1.5 px-1">
           <Target className="h-3 w-3 mr-1 hidden sm:inline" />
           IMO
+        </TabsTrigger>
+        <TabsTrigger value="grain" className="text-xs py-1.5 px-1">
+          <Wheat className="h-3 w-3 mr-1 hidden sm:inline" />
+          Tahıl
         </TabsTrigger>
       </TabsList>
       
@@ -586,6 +698,10 @@ export const InteractiveStabilityTools = () => {
       
       <TabsContent value="imo" className="mt-3">
         <IMOCriteriaChecker />
+      </TabsContent>
+
+      <TabsContent value="grain" className="mt-3">
+        <GrainStabilityCalculator />
       </TabsContent>
     </Tabs>
   );
