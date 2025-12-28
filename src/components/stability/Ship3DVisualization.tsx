@@ -19,7 +19,7 @@ const ShipModel = ({ heelAngle, trimAngle }: ShipModelProps) => {
   useFrame(() => {
     if (groupRef.current) {
       // Smooth interpolation to target angles
-      const targetRotationX = THREE.MathUtils.degToRad(-heelAngle);
+      const targetRotationX = THREE.MathUtils.degToRad(heelAngle);
       const targetRotationZ = THREE.MathUtils.degToRad(trimAngle);
       
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
