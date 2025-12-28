@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Environment, PerspectiveCamera, RoundedBox } from "@react-three/drei";
+import { OrbitControls, Environment, PerspectiveCamera, RoundedBox, ContactShadows } from "@react-three/drei";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -277,10 +277,13 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
   const hullColor = shipConfig.hullColor;
   const hullMaterialProps = {
     color: hullColor,
-    metalness: 0.35,
-    roughness: 0.65,
+    metalness: 0.25,
+    roughness: showTanks ? 0.45 : 0.35,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.15,
+    envMapIntensity: 1.1,
     transparent: showTanks,
-    opacity: showTanks ? 0.35 : 1,
+    opacity: showTanks ? 0.7 : 1,
   };
 
   const portholePositions = Array.from({ length: 10 }, (_, index) => ({
@@ -303,65 +306,65 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
     <group ref={groupRef}>
       {/* Hull - Main body (transparent to show tanks) */}
       <RoundedBox position={[0, 0, 0]} args={[6.2, 0.85, 1.35]} radius={0.08} smoothness={4}>
-        <meshStandardMaterial {...hullMaterialProps} />
+        <meshPhysicalMaterial {...hullMaterialProps} />
       </RoundedBox>
 
       {/* Upper hull taper */}
       <RoundedBox position={[0, 0.35, 0]} args={[5.9, 0.35, 1.15]} radius={0.06} smoothness={4}>
-        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.25 : 0.95} />
+        <meshPhysicalMaterial {...hullMaterialProps} opacity={showTanks ? 0.55 : 0.95} />
       </RoundedBox>
       
       {/* Hull bottom (curved) */}
       <mesh position={[0, -0.55, 0]}>
         <boxGeometry args={[5.8, 0.45, 1.05]} />
-        <meshStandardMaterial color="#b03a2e" metalness={0.2} roughness={0.85} />
+        <meshPhysicalMaterial color="#b03a2e" metalness={0.25} roughness={0.8} clearcoat={0.3} clearcoatRoughness={0.35} />
       </mesh>
 
       {/* Keel line */}
       <mesh position={[0, -0.8, 0]}>
         <boxGeometry args={[5.5, 0.05, 0.2]} />
-        <meshStandardMaterial color="#8e2f25" metalness={0.2} roughness={0.8} />
+        <meshPhysicalMaterial color="#8e2f25" metalness={0.2} roughness={0.75} clearcoat={0.25} clearcoatRoughness={0.4} />
       </mesh>
 
       {/* Waterline stripe */}
       <mesh position={[0, -0.1, 0]}>
         <boxGeometry args={[6.15, 0.05, 1.36]} />
-        <meshStandardMaterial color="#f1c40f" metalness={0.1} roughness={0.6} />
+        <meshPhysicalMaterial color="#f1c40f" metalness={0.1} roughness={0.4} clearcoat={0.5} clearcoatRoughness={0.2} />
       </mesh>
       
       {/* Bow (tapered) */}
       <mesh position={[3.3, -0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.05, 0.7, 1.3, 10]} />
-        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.45 : 1} />
+        <meshPhysicalMaterial {...hullMaterialProps} opacity={showTanks ? 0.7 : 1} />
       </mesh>
 
       {/* Bulbous bow */}
       <mesh position={[3.45, -0.55, 0]}>
         <sphereGeometry args={[0.28, 16, 16]} />
-        <meshStandardMaterial color="#b03a2e" metalness={0.3} roughness={0.8} />
+        <meshPhysicalMaterial color="#b03a2e" metalness={0.3} roughness={0.7} clearcoat={0.3} clearcoatRoughness={0.3} />
       </mesh>
 
       {/* Forecastle deck */}
       <mesh position={[2.7, 0.45, 0]}>
         <boxGeometry args={[0.9, 0.25, 1.2]} />
-        <meshStandardMaterial color="#2c3e50" metalness={0.2} roughness={0.7} />
+        <meshPhysicalMaterial color="#2c3e50" metalness={0.2} roughness={0.65} clearcoat={0.25} clearcoatRoughness={0.4} />
       </mesh>
       
       {/* Stern (blocky) */}
       <mesh position={[-3.0, 0.2, 0]}>
         <boxGeometry args={[0.6, 1.1, 1.1]} />
-        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.45 : 1} />
+        <meshPhysicalMaterial {...hullMaterialProps} opacity={showTanks ? 0.7 : 1} />
       </mesh>
 
       {/* Stern rounded cap */}
       <mesh position={[-3.4, -0.1, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.5, 0.55, 0.4, 14]} />
-        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.45 : 1} />
+        <meshPhysicalMaterial {...hullMaterialProps} opacity={showTanks ? 0.7 : 1} />
       </mesh>
 
       {/* Deck */}
       <RoundedBox position={[0, 0.45, 0]} args={[6.0, 0.1, 1.25]} radius={0.04} smoothness={4}>
-        <meshStandardMaterial color={shipConfig.deckColor} metalness={0.15} roughness={0.8} />
+        <meshPhysicalMaterial color={shipConfig.deckColor} metalness={0.15} roughness={0.85} clearcoat={0.2} clearcoatRoughness={0.5} />
       </RoundedBox>
 
       {/* Hatch covers (bulk carriers) */}
@@ -467,12 +470,12 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
       
       {/* Superstructure */}
       <RoundedBox position={shipConfig.superstructurePos} args={shipConfig.superstructureSize} radius={0.06} smoothness={4}>
-        <meshStandardMaterial color={shipConfig.superstructureColor} metalness={0.1} roughness={0.6} />
+        <meshPhysicalMaterial color={shipConfig.superstructureColor} metalness={0.15} roughness={0.4} clearcoat={0.3} clearcoatRoughness={0.25} />
       </RoundedBox>
       
       {/* Bridge */}
       <RoundedBox position={shipConfig.bridgePos} args={[0.9, 0.45, 0.8]} radius={0.05} smoothness={4}>
-        <meshStandardMaterial color="#60a5fa" metalness={0.4} roughness={0.4} />
+        <meshPhysicalMaterial color="#60a5fa" metalness={0.3} roughness={0.25} clearcoat={0.4} clearcoatRoughness={0.2} />
       </RoundedBox>
 
       {/* Bridge windows */}
@@ -482,7 +485,14 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
           position={[shipConfig.bridgePos[0] + xPos, shipConfig.bridgePos[1], shipConfig.bridgePos[2] + 0.42]}
         >
           <boxGeometry args={[0.18, 0.15, 0.04]} />
-          <meshStandardMaterial color="#1f2937" metalness={0.2} roughness={0.4} />
+          <meshPhysicalMaterial
+            color="#1f2937"
+            metalness={0.1}
+            roughness={0.15}
+            transparent
+            opacity={0.55}
+            transmission={0.3}
+          />
         </mesh>
       ))}
       
@@ -752,12 +762,15 @@ const WaterSurface = () => {
   return (
     <mesh ref={waterRef} position={[0, -0.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
       <planeGeometry ref={geometryRef} args={[22, 22, 72, 72]} />
-      <meshStandardMaterial 
+      <meshPhysicalMaterial 
         color="#0077be"
         transparent 
         opacity={0.9}
-        metalness={0.6}
-        roughness={0.2}
+        metalness={0.7}
+        roughness={0.15}
+        clearcoat={0.85}
+        clearcoatRoughness={0.08}
+        envMapIntensity={1.1}
         normalMap={waterNormalMap}
         normalScale={new THREE.Vector2(0.6, 0.6)}
         side={THREE.DoubleSide}
@@ -834,18 +847,17 @@ const Scene = ({ heelAngle, trimAngle, shipType, showTanks, tankLevels }: SceneP
         autoRotate={false}
       />
       
-      <ambientLight intensity={0.35} />
-      <hemisphereLight args={["#c7d2fe", "#0f172a", 0.45]} />
-      <directionalLight position={[6, 10, 6]} intensity={1.1} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
-      <directionalLight position={[-6, 5, -5]} intensity={0.4} />
+      <ambientLight intensity={0.25} />
+      <hemisphereLight args={["#c7d2fe", "#0b1220", 0.5]} />
+      <directionalLight position={[6, 10, 6]} intensity={1.3} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
+      <directionalLight position={[-6, 5, -5]} intensity={0.55} />
       
       <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />
       <WaterSurface />
       <WaterFoam />
-      
-      {/* Grid helper for reference */}
-      <gridHelper args={[14, 14, "#444", "#222"]} position={[0, -1, 0]} />
-      
+
+      <ContactShadows position={[0, -0.85, 0]} opacity={0.35} scale={12} blur={2.5} far={4} />
+
       <Environment preset="sunset" />
     </>
   );
@@ -916,6 +928,10 @@ export const Ship3DVisualization = () => {
               gl={{ antialias: true }}
               onCreated={({ gl }) => {
                 gl.shadowMap.type = THREE.PCFSoftShadowMap;
+                gl.toneMapping = THREE.ACESFilmicToneMapping;
+                gl.toneMappingExposure = 1.1;
+                gl.outputColorSpace = THREE.SRGBColorSpace;
+                gl.physicallyCorrectLights = true;
               }}
             >
               <Scene heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />
