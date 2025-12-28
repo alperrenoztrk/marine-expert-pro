@@ -1,16 +1,18 @@
 import { ComprehensiveMaritimeCalculations } from "./ComprehensiveMaritimeCalculations";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor, Brain, Wrench } from "lucide-react";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ReferenceLine, ReferenceDot } from "recharts";
 import { Separator } from "@/components/ui/separator";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import { useToast } from "@/hooks/use-toast";
 import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
 import DraftSurveyMenu from "./DraftSurveyMenu";
+import { stabilityInputConstraints } from "@/utils/validation/inputConstraints";
+import { validateNumberInput } from "@/utils/validation/validateInput";
 import {
   ShipGeometry,
   WeightDistribution,
@@ -269,6 +271,44 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   // Missing state variables
   const [gzInputs, setGzInputs] = useState({ gm: "", angle: "" });
   const [gzResult, setGzResult] = useState<number | null>(null);
+
+  const gmValidation = useMemo(() => ({
+    kb: validateNumberInput(gmInputs.kb, stabilityInputConstraints.gmCalculation.kb),
+    bm: validateNumberInput(gmInputs.bm, stabilityInputConstraints.gmCalculation.bm),
+    kg: validateNumberInput(gmInputs.kg, stabilityInputConstraints.gmCalculation.kg)
+  }), [gmInputs]);
+
+  const gzValidation = useMemo(() => ({
+    gm: validateNumberInput(gzInputs.gm, stabilityInputConstraints.gzCalculation.gm),
+    angle: validateNumberInput(gzInputs.angle, stabilityInputConstraints.gzCalculation.angle)
+  }), [gzInputs]);
+
+  useEffect(() => {
+    if (gmValidation.kb.error || gmValidation.bm.error || gmValidation.kg.error) {
+      setGmResult(null);
+      return;
+    }
+    if (gmValidation.kb.value === null || gmValidation.bm.value === null || gmValidation.kg.value === null) {
+      setGmResult(null);
+      return;
+    }
+    const gm = gmValidation.kb.value + gmValidation.bm.value - gmValidation.kg.value;
+    setGmResult(gm);
+  }, [gmValidation]);
+
+  useEffect(() => {
+    if (gzValidation.gm.error || gzValidation.angle.error) {
+      setGzResult(null);
+      return;
+    }
+    if (gzValidation.gm.value === null || gzValidation.angle.value === null) {
+      setGzResult(null);
+      return;
+    }
+    const angleRad = (gzValidation.angle.value * Math.PI) / 180;
+    const gz = gzValidation.gm.value * Math.sin(angleRad);
+    setGzResult(gz);
+  }, [gzValidation]);
   
   const [trimInputs, setTrimInputs] = useState({ ta: "", tf: "", length: "" });
   const [trimResult, setTrimResult] = useState<number | null>(null);
@@ -1266,6 +1306,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gmInputs.kb}
                   onChange={(e) => setGmInputs(prev => ({ ...prev, kb: e.target.value }))}
                 />
+                {gmValidation.kb.error && (
+                  <p className="mt-1 text-xs text-red-600">{gmValidation.kb.error}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="bm">BM (m)</Label>
@@ -1276,6 +1319,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gmInputs.bm}
                   onChange={(e) => setGmInputs(prev => ({ ...prev, bm: e.target.value }))}
                 />
+                {gmValidation.bm.error && (
+                  <p className="mt-1 text-xs text-red-600">{gmValidation.bm.error}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="kg">KG (m)</Label>
@@ -1286,6 +1332,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gmInputs.kg}
                   onChange={(e) => setGmInputs(prev => ({ ...prev, kg: e.target.value }))}
                 />
+                {gmValidation.kg.error && (
+                  <p className="mt-1 text-xs text-red-600">{gmValidation.kg.error}</p>
+                )}
               </div>
               <Button onClick={calculateGM} className="w-full">
                 <Calculator className="w-4 h-4 mr-2" />
@@ -1320,6 +1369,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gzInputs.gm}
                   onChange={(e) => setGzInputs(prev => ({ ...prev, gm: e.target.value }))}
                 />
+                {gzValidation.gm.error && (
+                  <p className="mt-1 text-xs text-red-600">{gzValidation.gm.error}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="gz-angle">Açı (°)</Label>
@@ -1330,6 +1382,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gzInputs.angle}
                   onChange={(e) => setGzInputs(prev => ({ ...prev, angle: e.target.value }))}
                 />
+                {gzValidation.angle.error && (
+                  <p className="mt-1 text-xs text-red-600">{gzValidation.angle.error}</p>
+                )}
               </div>
               <Button onClick={calculateGZ} className="w-full">
                 <Calculator className="w-4 h-4 mr-2" />
@@ -2551,6 +2606,12 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                       <Legend />
                       <Line yAxisId="left" type="monotone" dataKey="gz" name="GZ (m)" stroke="#10b981" dot={false} />
                       <Line yAxisId="right" type="monotone" dataKey="rightingMoment" name="Sağlama Momenti (kN·m)" stroke="#6366f1" dot={false} />
+                      <ReferenceLine x={analysis.stability.maxGzAngle} stroke="#10b981" strokeDasharray="3 3" label={{ value: "Max GZ", position: "top" }} />
+                      <ReferenceLine x={analysis.stability.vanishingAngle} stroke="#ef4444" strokeDasharray="3 3" label={{ value: "Vanishing", position: "top" }} />
+                      <ReferenceLine x={analysis.stability.deckEdgeAngle} stroke="#64748b" strokeDasharray="2 2" label={{ value: "Deck Edge", position: "top" }} />
+                      <ReferenceLine x={analysis.stability.downfloodingAngle} stroke="#f97316" strokeDasharray="2 2" label={{ value: "Downflooding", position: "top" }} />
+                      <ReferenceDot x={analysis.stability.maxGzAngle} y={analysis.stability.maxGz} r={5} fill="#10b981" stroke="#0f172a" />
+                      <ReferenceDot x={analysis.stability.vanishingAngle} y={0} r={4} fill="#ef4444" stroke="#0f172a" />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -2559,6 +2620,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   <div className="flex justify-between"><span>Max GZ Açısı</span><span className="font-mono">{analysis.stability.maxGzAngle.toFixed(1)}°</span></div>
                   <div className="flex justify-between"><span>Area 0-30°</span><span className="font-mono">{HydrostaticCalculations.calculateAreaUnderGZCurveAdaptive(analysis.stability.gz, analysis.stability.angles, 0, 30).toFixed(3)} mrad</span></div>
                   <div className="flex justify-between"><span>Area 0-40°</span><span className="font-mono">{HydrostaticCalculations.calculateAreaUnderGZCurveAdaptive(analysis.stability.gz, analysis.stability.angles, 0, 40).toFixed(3)} mrad</span></div>
+                </div>
+                <div className="mt-4 rounded-lg border border-emerald-200/60 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100">
+                  Yorum: GZ eğrisi vanishing açısına kadar pozitif kaldığı sürece gemi toparlanma kabiliyetini korur. Max GZ noktası ve downflooding açısı,
+                  operasyonda güvenli yatma limitlerinin belirlenmesinde referans alınmalıdır.
                 </div>
               </div>
 

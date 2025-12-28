@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Area, AreaChart } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceDot, Area, AreaChart } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Anchor, Waves } from "lucide-react";
@@ -158,6 +158,14 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
                     strokeDasharray="2 2"
                     label={{ value: "Deck Edge", position: "right" }}
                   />
+                  <ReferenceLine
+                    x={criticalPoints.downfloodingAngle}
+                    stroke="#f97316"
+                    strokeDasharray="2 2"
+                    label={{ value: "Downflooding", position: "right" }}
+                  />
+                  <ReferenceDot x={criticalPoints.maxGZ.angle} y={criticalPoints.maxGZ.value} r={5} fill="hsl(var(--primary))" stroke="hsl(var(--background))" />
+                  <ReferenceDot x={criticalPoints.vanishingAngle} y={0} r={4} fill="hsl(var(--destructive))" stroke="hsl(var(--background))" />
                 </>
               )}
             </LineChart>
@@ -261,6 +269,10 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
                 </div>
                 <div className="text-sm text-muted-foreground">Downflooding</div>
               </div>
+            </div>
+            <div className="mt-4 rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-sm text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+              Yorum: Maksimum GZ ve vanishing açısı, stabilite aralığını belirler. Deck edge ve downflooding çizgileri,
+              günlük operasyonlarda güvenli yatma limitleri için referans noktalarıdır.
             </div>
           </CardContent>
         </Card>

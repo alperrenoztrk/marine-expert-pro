@@ -7,7 +7,7 @@ import { useMemo, useRef, useState } from "react";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, ReferenceLine, ReferenceDot } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
@@ -228,8 +228,16 @@ export default function StabilityGZIMO() {
                     <YAxis tickFormatter={(v) => `${v} m`} />
                     <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
                     <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={2} dot={false} />
+                    <ReferenceLine x={data.maxGzAngle} stroke="#10b981" strokeDasharray="3 3" label={{ value: "Max GZ", position: "top" }} />
+                    <ReferenceLine x={data.vanishingAngle} stroke="#ef4444" strokeDasharray="3 3" label={{ value: "Vanishing", position: "top" }} />
+                    <ReferenceDot x={data.maxGzAngle} y={data.maxGz} r={5} fill="#10b981" stroke="#0f172a" />
+                    <ReferenceDot x={data.vanishingAngle} y={0} r={4} fill="#ef4444" stroke="#0f172a" />
                   </LineChart>
                 </ChartContainer>
+              </div>
+              <div className="rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-sm text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+                Yorum: Maksimum GZ noktası, geminin en yüksek doğrultucu moment kapasitesini gösterir. Vanishing angle sonrası GZ sıfıra yaklaşır ve
+                stabilite hızla azalır. IMO alan kriterleri bu eğrinin enerji kapasitesini doğrulamak için kullanılır.
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
