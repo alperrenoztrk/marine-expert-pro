@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { InteractiveStabilityTools } from "@/components/stability/InteractiveStabilityTools";
+import { StabilityHeelTrainer } from "@/components/stability/StabilityHeelTrainer";
 
 interface TopicSection {
   id: string;
@@ -188,6 +189,15 @@ const topicSections: TopicSection[] = [
           <div className="rounded-lg bg-primary/10 p-3 text-center font-mono text-sm font-semibold text-primary">
             GZ(θ) = KN(θ) − KG · sin θ
           </div>
+        </div>
+
+        <div className="space-y-3">
+          <h4 className="font-semibold text-foreground">2.5 3B Eğitsel Stabilite Görselleştirme</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            GM ve KG değerlerini değiştirerek geminin eğim davranışını gözlemleyin. Bu görselleştirme, stabilite kavramını sezgisel olarak
+            anlamaya yardımcı olmak için hazırlanmış eğitim amaçlı bir modeldir.
+          </p>
+          <StabilityHeelTrainer />
         </div>
       </div>
     )

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { calculationFormulas } from "@/data/formulas/calculationFormulas";
 
 export type CalculationGridItem = {
   id?: string;
@@ -32,15 +33,34 @@ export function CalculationGrid({ items, className }: CalculationGridProps) {
 
 export interface CalculationMenuCardProps extends CalculationGridItem {}
 
-export function CalculationMenuCard({ title, icon: Icon, to, href, disabled }: CalculationMenuCardProps) {
+export function CalculationMenuCard({ id, title, icon: Icon, to, href, disabled }: CalculationMenuCardProps) {
+  const formulaMeta = id ? calculationFormulas[id] : undefined;
   const content = (
-    <div className="flex items-center gap-4">
-      <div className={iconContainerStyle}>
-        <Icon className="h-7 w-7" strokeWidth={2} />
+    <div className="space-y-3">
+      <div className="flex items-center gap-4">
+        <div className={iconContainerStyle}>
+          <Icon className="h-7 w-7" strokeWidth={2} />
+        </div>
+        <div className="flex-1">
+          <p className="text-[17px] font-semibold leading-snug text-slate-100">{title}</p>
+        </div>
       </div>
-      <div className="flex-1">
-        <p className="text-[17px] font-semibold leading-snug text-slate-100">{title}</p>
-      </div>
+      {formulaMeta && (
+        <div className="rounded-lg border border-slate-800/60 bg-slate-950/60 p-3 text-xs text-slate-200">
+          <div className="font-medium text-slate-100">Formül</div>
+          <div className="mt-1 leading-relaxed text-slate-300">{formulaMeta.formula}</div>
+          <div className="mt-2">
+            <a
+              href={formulaMeta.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sky-400 underline-offset-2 transition hover:text-sky-300 hover:underline"
+            >
+              Kaynak: {formulaMeta.sourceLabel}
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -105,4 +125,3 @@ export function CalculationGridScreen({ title, subtitle, eyebrow, items, childre
     </div>
   );
 }
-

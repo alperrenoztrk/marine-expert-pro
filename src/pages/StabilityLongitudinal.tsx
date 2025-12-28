@@ -29,7 +29,7 @@ import { HydrostaticUtils } from "@/utils/hydrostaticUtils";
 import { ShipGeometry } from "@/types/hydrostatic";
 import { HydrostaticCalculations } from "@/services/hydrostaticCalculations";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, ReferenceLine, ReferenceDot } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { exportNodeToPng, exportToCsv } from "@/utils/exportUtils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -1148,10 +1148,16 @@ export default function StabilityLongitudinal() {
                       <YAxis tickFormatter={(v) => `${v} m`} />
                       <ChartTooltip content={<ChartTooltipContent labelKey="angle" nameKey="gz" />} />
                       <Line type="monotone" dataKey="gz" stroke="var(--color-gz)" strokeWidth={3} dot={false} />
+                      <ReferenceLine x={angle} stroke="#0ea5e9" strokeDasharray="3 3" label={{ value: "Seçili Açı", position: "top" }} />
+                      <ReferenceDot x={angle} y={result.gz} r={5} fill="#0ea5e9" stroke="#0f172a" />
                     </LineChart>
                   </ChartContainer>
                 </CardContent>
               </Card>
+            </div>
+            <div className="rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-sm text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+              Yorum: Seçilen açıda GZ değerinin artması, boyuna doğrultucu momentin güçlendiğini gösterir. Trim ayarları ve
+              yük dağılımı, bu eğrinin genel şeklini doğrudan etkiler.
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
