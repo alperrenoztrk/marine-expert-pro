@@ -141,6 +141,11 @@ function normalizeImageUrl(value: unknown, baseUrl?: string): string | undefined
       const candidate = normalizeImageUrl(obj[key], baseUrl);
       if (candidate) return candidate;
     }
+
+    for (const child of Object.values(obj)) {
+      const candidate = normalizeImageUrl(child, baseUrl);
+      if (candidate) return candidate;
+    }
   }
 
   return undefined;
@@ -148,9 +153,9 @@ function normalizeImageUrl(value: unknown, baseUrl?: string): string | undefined
 
 function extractImageFromHtml(html: string | undefined, baseUrl?: string): string | undefined {
   if (!html) return undefined;
-  const attributes = ["data-lazy-src", "data-src", "data-original", "data-srcset", "srcset", "src"];
+  const attributes = ["data-lazy-srcset", "data-lazy-src", "data-src", "data-original", "data-srcset", "srcset", "src"];
   for (const attr of attributes) {
-    const regex = new RegExp(`<img[^>]+${attr}=["']([^"'>]+)["']`, "i");
+    const regex = new RegExp(`<(?:img|source)[^>]+${attr}=["']([^"'>]+)["']`, "i");
     const match = html.match(regex);
     if (!match) continue;
     let candidate = match[1];
