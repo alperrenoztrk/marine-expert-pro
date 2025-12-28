@@ -1,11 +1,10 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { 
-  GraduationCap, 
-  BookOpen, 
-  Target, 
-  Anchor, 
-  ChevronRight, 
+import {
+  GraduationCap,
+  BookOpen,
+  Anchor,
+  ChevronRight,
   FileText,
   AlertTriangle,
   Waves,
@@ -14,7 +13,7 @@ import {
   Calculator,
   Gauge,
   Shield,
-  Lightbulb
+  Lightbulb,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { InteractiveStabilityTools } from "@/components/stability/InteractiveStabilityTools";
@@ -658,35 +657,7 @@ export default function StabilityTopicsPage() {
             <h1 className="text-2xl font-bold text-foreground">Gemi Stabilitesi Konu Anlatımı</h1>
           </div>
           
-          <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
-            Bu kitapçık, denizcilik eğitiminde stabilite konusunu geniş kapsamlı ve etkileşimli bir şekilde öğrenmenize yardımcı olacak biçimde tasarlanmıştır. Her bölümde kavramlar anlatılır, grafikler ve tablolar üzerinden formüller ve kritik değerler gösterilir.
-          </p>
         </header>
-
-        {/* Learning Objectives */}
-        <section className="rounded-2xl border border-border/40 bg-card/80 p-6 backdrop-blur">
-          <div className="mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Öğrenme Hedefleri</h2>
-          </div>
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {[
-              "Stabilite kavramlarını ve denge türlerini anlamak",
-              "GZ eğrisini okumak ve yorumlamak",
-              "Serbest yüzey etkisini hesaplamak",
-              "IMO stabilite kriterlerini uygulamak",
-              "Trim ve boyuna denge hesapları yapmak",
-              "Havuzlama stabilitesini değerlendirmek"
-            ].map((objective, index) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                  {index + 1}
-                </span>
-                {objective}
-              </li>
-            ))}
-          </ul>
-        </section>
 
         {/* Topics Accordion */}
         <section className="space-y-4">
