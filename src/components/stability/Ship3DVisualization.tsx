@@ -114,26 +114,97 @@ const ShipModel = ({ heelAngle, trimAngle }: ShipModelProps) => {
 
 const WaterSurface = () => {
   const waterRef = useRef<THREE.Mesh>(null);
+  const geometryRef = useRef<THREE.PlaneGeometry>(null);
   
   useFrame(({ clock }) => {
+    if (geometryRef.current) {
+      const time = clock.getElapsedTime();
+      const positions = geometryRef.current.attributes.position;
+      
+      for (let i = 0; i < positions.count; i++) {
+        const x = positions.getX(i);
+        const y = positions.getY(i);
+        
+        // Create wave pattern using multiple sine waves
+        const wave1 = Math.sin(x * 0.5 + time * 1.5) * 0.15;
+        const wave2 = Math.sin(y * 0.3 + time * 1.2) * 0.1;
+        const wave3 = Math.sin((x + y) * 0.4 + time * 0.8) * 0.08;
+        const wave4 = Math.cos(x * 0.8 - time * 1.0) * 0.05;
+        
+        positions.setZ(i, wave1 + wave2 + wave3 + wave4);
+      }
+      
+      positions.needsUpdate = true;
+      geometryRef.current.computeVertexNormals();
+    }
+    
     if (waterRef.current) {
-      waterRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.5) * 0.05 - 0.3;
+      // Gentle overall bobbing
+      waterRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.02 - 0.3;
     }
   });
 
   return (
-    <Float speed={1} rotationIntensity={0} floatIntensity={0.2}>
-      <mesh ref={waterRef} position={[0, -0.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[12, 12, 32, 32]} />
-        <meshStandardMaterial 
-          color="#1a5276" 
-          transparent 
-          opacity={0.7}
-          metalness={0.8}
-          roughness={0.2}
+    <mesh ref={waterRef} position={[0, -0.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry ref={geometryRef} args={[16, 16, 64, 64]} />
+      <meshStandardMaterial 
+        color="#0077be"
+        transparent 
+        opacity={0.85}
+        metalness={0.9}
+        roughness={0.1}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+};
+
+// Foam/spray particles around the ship
+const WaterFoam = () => {
+  const foamRef = useRef<THREE.Points>(null);
+  const particleCount = 100;
+  
+  const positions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 6;
+    positions[i * 3 + 1] = -0.2 + Math.random() * 0.3;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 3;
+  }
+  
+  useFrame(({ clock }) => {
+    if (foamRef.current) {
+      const positions = foamRef.current.geometry.attributes.position as THREE.BufferAttribute;
+      const time = clock.getElapsedTime();
+      
+      for (let i = 0; i < particleCount; i++) {
+        const idx = i * 3;
+        // Gentle floating motion
+        positions.array[idx + 1] = -0.15 + Math.sin(time * 2 + i) * 0.1;
+        // Drift slowly
+        positions.array[idx] += Math.sin(time * 0.5 + i * 0.1) * 0.002;
+      }
+      positions.needsUpdate = true;
+    }
+  });
+
+  return (
+    <points ref={foamRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={positions}
+          itemSize={3}
         />
-      </mesh>
-    </Float>
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.08}
+        color="#ffffff"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+      />
+    </points>
   );
 };
 
@@ -156,6 +227,7 @@ const Scene = ({ heelAngle, trimAngle }: ShipModelProps) => {
       
       <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} />
       <WaterSurface />
+      <WaterFoam />
       
       {/* Grid helper for reference */}
       <gridHelper args={[10, 10, "#444", "#222"]} position={[0, -1, 0]} />
