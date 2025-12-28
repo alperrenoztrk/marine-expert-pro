@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, PerspectiveCamera, RoundedBox } from "@react-three/drei";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Ship, RotateCcw, Move3d } from "lucide-react";
@@ -11,6 +12,7 @@ import * as THREE from "three";
 interface ShipModelProps {
   heelAngle: number;
   trimAngle: number;
+  shipType: ShipType;
   showTanks?: boolean;
   tankLevels?: number[];
 }
@@ -90,8 +92,168 @@ const Flag = ({ position }: { position: [number, number, number] }) => {
   );
 };
 
-const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 50, 85, 60, 40, 90] }: ShipModelProps) => {
+type ShipType = "container" | "tanker" | "bulk" | "roro" | "passenger";
+
+const shipTypeOptions: { value: ShipType; label: string; description: string }[] = [
+  { value: "container", label: "Konteyner", description: "Yüksek konteyner istifli, kıç üstü güverteli." },
+  { value: "tanker", label: "Tanker", description: "Alçak güverte, boru hatları ve manifoldlar." },
+  { value: "bulk", label: "Dökme", description: "Geniş ambar açıklıkları ve iri hatch cover'lar." },
+  { value: "roro", label: "Ro-Ro", description: "Araç güvertesi ve kıç rampa düzeni." },
+  { value: "passenger", label: "Yolcu", description: "Çok katlı üst yapı ve yaşam alanları." },
+];
+
+const shipConfigs: Record<
+  ShipType,
+  {
+    hullColor: string;
+    deckColor: string;
+    superstructureColor: string;
+    superstructurePos: [number, number, number];
+    superstructureSize: [number, number, number];
+    bridgePos: [number, number, number];
+    showCranes: boolean;
+    showContainers: boolean;
+    showHatches: boolean;
+    showTankerPiping: boolean;
+    showRoRoRamp: boolean;
+    showPassengerDecks: boolean;
+    extraLifeboats: number;
+    funnelPos: [number, number, number];
+  }
+> = {
+  container: {
+    hullColor: "#1f2a36",
+    deckColor: "#2b3a4a",
+    superstructureColor: "#e5e7eb",
+    superstructurePos: [-2.2, 0.85, 0],
+    superstructureSize: [1.6, 0.9, 1.0],
+    bridgePos: [-2.25, 1.45, 0],
+    showCranes: true,
+    showContainers: true,
+    showHatches: false,
+    showTankerPiping: false,
+    showRoRoRamp: false,
+    showPassengerDecks: false,
+    extraLifeboats: 1,
+    funnelPos: [-2.8, 1.25, 0],
+  },
+  tanker: {
+    hullColor: "#2c3e50",
+    deckColor: "#334155",
+    superstructureColor: "#f1f5f9",
+    superstructurePos: [-2.6, 0.9, 0],
+    superstructureSize: [1.3, 0.95, 1.0],
+    bridgePos: [-2.6, 1.55, 0],
+    showCranes: false,
+    showContainers: false,
+    showHatches: false,
+    showTankerPiping: true,
+    showRoRoRamp: false,
+    showPassengerDecks: false,
+    extraLifeboats: 2,
+    funnelPos: [-2.95, 1.4, 0],
+  },
+  bulk: {
+    hullColor: "#243647",
+    deckColor: "#374151",
+    superstructureColor: "#e2e8f0",
+    superstructurePos: [-2.0, 0.85, 0],
+    superstructureSize: [1.5, 0.9, 1.0],
+    bridgePos: [-2.05, 1.45, 0],
+    showCranes: true,
+    showContainers: false,
+    showHatches: true,
+    showTankerPiping: false,
+    showRoRoRamp: false,
+    showPassengerDecks: false,
+    extraLifeboats: 1,
+    funnelPos: [-2.6, 1.25, 0],
+  },
+  roro: {
+    hullColor: "#1f2937",
+    deckColor: "#1f2937",
+    superstructureColor: "#f8fafc",
+    superstructurePos: [-1.0, 0.95, 0],
+    superstructureSize: [2.2, 1.1, 1.1],
+    bridgePos: [-0.9, 1.65, 0],
+    showCranes: false,
+    showContainers: false,
+    showHatches: false,
+    showTankerPiping: false,
+    showRoRoRamp: true,
+    showPassengerDecks: false,
+    extraLifeboats: 2,
+    funnelPos: [-1.1, 1.5, 0],
+  },
+  passenger: {
+    hullColor: "#2f3f52",
+    deckColor: "#1f2937",
+    superstructureColor: "#f8fafc",
+    superstructurePos: [-0.4, 1.0, 0],
+    superstructureSize: [3.2, 1.3, 1.2],
+    bridgePos: [0.4, 2.0, 0],
+    showCranes: false,
+    showContainers: false,
+    showHatches: false,
+    showTankerPiping: false,
+    showRoRoRamp: false,
+    showPassengerDecks: true,
+    extraLifeboats: 4,
+    funnelPos: [0.2, 2.1, 0],
+  },
+};
+
+const getTankLayout = (shipType: ShipType) => {
+  if (shipType === "tanker") {
+    return [
+      { position: [2.2, -0.1, 0.35] as [number, number, number], size: [0.7, 0.5, 0.35] as [number, number, number], label: "Cargo 1P", color: "#f97316" },
+      { position: [2.2, -0.1, -0.35] as [number, number, number], size: [0.7, 0.5, 0.35] as [number, number, number], label: "Cargo 1S", color: "#f97316" },
+      { position: [1.2, -0.1, 0.35] as [number, number, number], size: [0.8, 0.5, 0.35] as [number, number, number], label: "Cargo 2P", color: "#fb923c" },
+      { position: [1.2, -0.1, -0.35] as [number, number, number], size: [0.8, 0.5, 0.35] as [number, number, number], label: "Cargo 2S", color: "#fb923c" },
+      { position: [0.1, -0.1, 0.35] as [number, number, number], size: [0.9, 0.5, 0.35] as [number, number, number], label: "Cargo 3P", color: "#fdba74" },
+      { position: [0.1, -0.1, -0.35] as [number, number, number], size: [0.9, 0.5, 0.35] as [number, number, number], label: "Cargo 3S", color: "#fdba74" },
+      { position: [-1.1, -0.1, 0.35] as [number, number, number], size: [0.8, 0.5, 0.35] as [number, number, number], label: "Slop P", color: "#f59e0b" },
+      { position: [-1.1, -0.1, -0.35] as [number, number, number], size: [0.8, 0.5, 0.35] as [number, number, number], label: "Slop S", color: "#f59e0b" },
+    ];
+  }
+
+  if (shipType === "roro") {
+    return [
+      { position: [1.8, -0.1, 0], size: [1.3, 0.5, 0.9], label: "Vehicle Deck", color: "#60a5fa" },
+      { position: [-0.2, -0.1, 0], size: [1.5, 0.5, 0.9], label: "Vehicle Deck", color: "#93c5fd" },
+      { position: [-2.0, -0.1, 0], size: [0.9, 0.5, 0.9], label: "Machinery", color: "#f59e0b" },
+    ];
+  }
+
+  if (shipType === "passenger") {
+    return [
+      { position: [1.5, -0.1, 0], size: [1.3, 0.45, 0.8], label: "Service Deck", color: "#38bdf8" },
+      { position: [-0.4, -0.1, 0], size: [1.4, 0.45, 0.8], label: "Service Deck", color: "#7dd3fc" },
+      { position: [-2.2, -0.1, 0], size: [0.9, 0.45, 0.8], label: "Machinery", color: "#f59e0b" },
+    ];
+  }
+
+  if (shipType === "bulk") {
+    return [
+      { position: [1.9, -0.1, 0], size: [1.2, 0.6, 0.8], label: "Hold 1", color: "#22c55e" },
+      { position: [0.4, -0.1, 0], size: [1.4, 0.6, 0.8], label: "Hold 2", color: "#4ade80" },
+      { position: [-1.2, -0.1, 0], size: [1.3, 0.6, 0.8], label: "Hold 3", color: "#16a34a" },
+    ];
+  }
+
+  return [
+    { position: [2.1, -0.1, 0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
+    { position: [2.1, -0.1, -0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
+    { position: [0.9, -0.1, 0.38] as [number, number, number], size: [1.2, 0.55, 0.45] as [number, number, number], label: "Cargo 1P", color: "#2ecc71" },
+    { position: [0.9, -0.1, -0.38] as [number, number, number], size: [1.2, 0.55, 0.45] as [number, number, number], label: "Cargo 1S", color: "#2ecc71" },
+    { position: [-2.2, -0.1, 0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "Fuel P", color: "#e67e22" },
+    { position: [-2.2, -0.1, -0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "Fuel S", color: "#e67e22" },
+  ];
+};
+
+const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevels = [75, 50, 85, 60, 40, 90] }: ShipModelProps) => {
   const groupRef = useRef<THREE.Group>(null);
+  const shipConfig = shipConfigs[shipType];
   
   useFrame(() => {
     if (groupRef.current) {
@@ -112,7 +274,7 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
     }
   });
 
-  const hullColor = "#1f2a36";
+  const hullColor = shipConfig.hullColor;
   const hullMaterialProps = {
     color: hullColor,
     metalness: 0.35,
@@ -135,17 +297,7 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
   ];
 
   // Tank definitions
-  const tanks = [
-    // Forward ballast
-    { position: [2.1, -0.1, 0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
-    { position: [2.1, -0.1, -0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
-    // Cargo holds
-    { position: [0.9, -0.1, 0.38] as [number, number, number], size: [1.2, 0.55, 0.45] as [number, number, number], label: "Cargo 1P", color: "#2ecc71" },
-    { position: [0.9, -0.1, -0.38] as [number, number, number], size: [1.2, 0.55, 0.45] as [number, number, number], label: "Cargo 1S", color: "#2ecc71" },
-    // Aft tanks (fuel)
-    { position: [-2.2, -0.1, 0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "Fuel P", color: "#e67e22" },
-    { position: [-2.2, -0.1, -0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "Fuel S", color: "#e67e22" },
-  ];
+  const tanks = getTankLayout(shipType);
 
   return (
     <group ref={groupRef}>
@@ -209,36 +361,34 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
 
       {/* Deck */}
       <RoundedBox position={[0, 0.45, 0]} args={[6.0, 0.1, 1.25]} radius={0.04} smoothness={4}>
-        <meshStandardMaterial color="#2b3a4a" metalness={0.15} roughness={0.8} />
+        <meshStandardMaterial color={shipConfig.deckColor} metalness={0.15} roughness={0.8} />
       </RoundedBox>
 
-      {/* Hatch covers */}
-      {[
-        { x: 1.9, size: 1.0 },
-        { x: 0.9, size: 1.1 },
-        { x: -0.1, size: 1.1 },
-        { x: -1.1, size: 1.1 },
-        { x: -2.1, size: 1.0 },
-      ].map((hatch, index) => (
-        <mesh key={`hatch-${index}`} position={[hatch.x, 0.58, 0]}>
-          <boxGeometry args={[hatch.size, 0.1, 1.05]} />
-          <meshStandardMaterial color="#4b5563" metalness={0.2} roughness={0.65} />
-        </mesh>
-      ))}
+      {/* Hatch covers (bulk carriers) */}
+      {shipConfig.showHatches &&
+        [
+          { x: 1.9, size: 1.1 },
+          { x: 0.4, size: 1.35 },
+          { x: -1.2, size: 1.2 },
+        ].map((hatch, index) => (
+          <mesh key={`hatch-${index}`} position={[hatch.x, 0.58, 0]}>
+            <boxGeometry args={[hatch.size, 0.12, 1.08]} />
+            <meshStandardMaterial color="#4b5563" metalness={0.2} roughness={0.65} />
+          </mesh>
+        ))}
 
       {/* Coamings */}
-      {[
-        { x: 1.9, size: 1.0 },
-        { x: 0.9, size: 1.1 },
-        { x: -0.1, size: 1.1 },
-        { x: -1.1, size: 1.1 },
-        { x: -2.1, size: 1.0 },
-      ].map((hatch, index) => (
-        <mesh key={`coaming-${index}`} position={[hatch.x, 0.52, 0]}>
-          <boxGeometry args={[hatch.size + 0.08, 0.08, 1.12]} />
-          <meshStandardMaterial color="#374151" metalness={0.2} roughness={0.7} />
-        </mesh>
-      ))}
+      {shipConfig.showHatches &&
+        [
+          { x: 1.9, size: 1.1 },
+          { x: 0.4, size: 1.35 },
+          { x: -1.2, size: 1.2 },
+        ].map((hatch, index) => (
+          <mesh key={`coaming-${index}`} position={[hatch.x, 0.52, 0]}>
+            <boxGeometry args={[hatch.size + 0.1, 0.08, 1.15]} />
+            <meshStandardMaterial color="#374151" metalness={0.2} roughness={0.7} />
+          </mesh>
+        ))}
 
       {/* Guard rails */}
       <mesh position={[0, 0.75, 0.62]}>
@@ -315,62 +465,122 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
         </>
       )}
       
-      {/* Superstructure (aft) */}
-      <RoundedBox position={[-2.2, 0.85, 0]} args={[1.6, 0.9, 1.0]} radius={0.06} smoothness={4}>
-        <meshStandardMaterial color="#e5e7eb" metalness={0.1} roughness={0.6} />
+      {/* Superstructure */}
+      <RoundedBox position={shipConfig.superstructurePos} args={shipConfig.superstructureSize} radius={0.06} smoothness={4}>
+        <meshStandardMaterial color={shipConfig.superstructureColor} metalness={0.1} roughness={0.6} />
       </RoundedBox>
       
       {/* Bridge */}
-      <RoundedBox position={[-2.25, 1.45, 0]} args={[0.9, 0.45, 0.8]} radius={0.05} smoothness={4}>
+      <RoundedBox position={shipConfig.bridgePos} args={[0.9, 0.45, 0.8]} radius={0.05} smoothness={4}>
         <meshStandardMaterial color="#60a5fa" metalness={0.4} roughness={0.4} />
       </RoundedBox>
 
       {/* Bridge windows */}
-      {[-2.55, -2.3, -2.05].map((xPos, index) => (
-        <mesh key={`window-${index}`} position={[xPos, 1.45, 0.42]}>
+      {[-0.25, 0, 0.25].map((xPos, index) => (
+        <mesh
+          key={`window-${index}`}
+          position={[shipConfig.bridgePos[0] + xPos, shipConfig.bridgePos[1], shipConfig.bridgePos[2] + 0.42]}
+        >
           <boxGeometry args={[0.18, 0.15, 0.04]} />
           <meshStandardMaterial color="#1f2937" metalness={0.2} roughness={0.4} />
         </mesh>
       ))}
       
       {/* Funnel */}
-      <mesh position={[-2.8, 1.25, 0]}>
+      <mesh position={shipConfig.funnelPos}>
         <cylinderGeometry args={[0.16, 0.22, 0.6, 8]} />
         <meshStandardMaterial color="#6b7280" metalness={0.5} roughness={0.5} />
       </mesh>
 
       {/* Funnel cap */}
-      <mesh position={[-2.8, 1.56, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <mesh position={[shipConfig.funnelPos[0], shipConfig.funnelPos[1] + 0.31, shipConfig.funnelPos[2]]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.12, 0.18, 0.18, 10]} />
         <meshStandardMaterial color="#4b5563" metalness={0.4} roughness={0.6} />
       </mesh>
 
       {/* Aft mast */}
-      <mesh position={[-1.6, 1.25, 0]}>
+      <mesh position={[shipConfig.bridgePos[0] + 0.6, shipConfig.bridgePos[1] - 0.2, 0]}>
         <cylinderGeometry args={[0.05, 0.05, 1.2, 8]} />
         <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
       </mesh>
 
       {/* Flag pole */}
-      <mesh position={[-1.6, 1.9, 0]}>
+      <mesh position={[shipConfig.bridgePos[0] + 0.6, shipConfig.bridgePos[1] + 0.45, 0]}>
         <cylinderGeometry args={[0.02, 0.02, 0.7, 8]} />
         <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
       </mesh>
-      <Flag position={[-1.6, 2.15, 0.25]} />
+      <Flag position={[shipConfig.bridgePos[0] + 0.6, shipConfig.bridgePos[1] + 0.7, 0.25]} />
 
       {/* Cargo cranes */}
-      {[1.4, 0.1, -1.2].map((xPos, index) => (
-        <group key={`crane-${index}`} position={[xPos, 0.7, 0.55]}>
-          <mesh rotation={[0, 0, Math.PI / 6]}>
-            <cylinderGeometry args={[0.03, 0.03, 1.4, 8]} />
-            <meshStandardMaterial color="#f59e0b" metalness={0.3} roughness={0.6} />
+      {shipConfig.showCranes &&
+        [1.4, 0.1, -1.2].map((xPos, index) => (
+          <group key={`crane-${index}`} position={[xPos, 0.7, 0.55]}>
+            <mesh rotation={[0, 0, Math.PI / 6]}>
+              <cylinderGeometry args={[0.03, 0.03, 1.4, 8]} />
+              <meshStandardMaterial color="#f59e0b" metalness={0.3} roughness={0.6} />
+            </mesh>
+            <mesh position={[0.25, 0.3, -0.4]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.9, 8]} />
+              <meshStandardMaterial color="#fbbf24" metalness={0.3} roughness={0.6} />
+            </mesh>
+          </group>
+        ))}
+
+      {/* Container stacks */}
+      {shipConfig.showContainers &&
+        [1.8, 0.8, -0.2].map((xPos) => (
+          <group key={`container-stack-${xPos}`} position={[xPos, 0.7, 0]}>
+            {[0, 0.18, 0.36].map((yPos, idx) => (
+              <mesh key={`container-${idx}`} position={[0, yPos, 0]}>
+                <boxGeometry args={[0.9, 0.16, 0.9]} />
+                <meshStandardMaterial color={idx % 2 === 0 ? "#ef4444" : "#38bdf8"} metalness={0.2} roughness={0.6} />
+              </mesh>
+            ))}
+          </group>
+        ))}
+
+      {/* Tanker piping */}
+      {shipConfig.showTankerPiping && (
+        <>
+          {[1.9, 0.7, -0.6].map((xPos) => (
+            <mesh key={`pipe-${xPos}`} position={[xPos, 0.65, 0]}>
+              <cylinderGeometry args={[0.05, 0.05, 1.1, 12]} />
+              <meshStandardMaterial color="#f97316" metalness={0.5} roughness={0.4} />
+            </mesh>
+          ))}
+          <mesh position={[0.6, 0.62, 0.35]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.04, 0.04, 3.2, 12]} />
+            <meshStandardMaterial color="#fb923c" metalness={0.5} roughness={0.4} />
           </mesh>
-          <mesh position={[0.25, 0.3, -0.4]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.02, 0.02, 0.9, 8]} />
-            <meshStandardMaterial color="#fbbf24" metalness={0.3} roughness={0.6} />
+          <mesh position={[0.6, 0.62, -0.35]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.04, 0.04, 3.2, 12]} />
+            <meshStandardMaterial color="#fb923c" metalness={0.5} roughness={0.4} />
+          </mesh>
+        </>
+      )}
+
+      {/* Ro-Ro ramp */}
+      {shipConfig.showRoRoRamp && (
+        <group position={[-3.2, 0.2, 0]}>
+          <mesh rotation={[0, 0, Math.PI / 10]}>
+            <boxGeometry args={[0.8, 0.05, 0.9]} />
+            <meshStandardMaterial color="#94a3b8" metalness={0.2} roughness={0.6} />
+          </mesh>
+          <mesh position={[0.2, -0.12, 0]}>
+            <boxGeometry args={[0.4, 0.04, 0.9]} />
+            <meshStandardMaterial color="#cbd5f5" metalness={0.2} roughness={0.6} />
           </mesh>
         </group>
-      ))}
+      )}
+
+      {/* Passenger decks */}
+      {shipConfig.showPassengerDecks &&
+        [0, 0.45, 0.9].map((yOffset, index) => (
+          <mesh key={`passenger-deck-${index}`} position={[0.2, 1.2 + yOffset, 0]}>
+            <boxGeometry args={[3.4, 0.35, 1.15]} />
+            <meshStandardMaterial color="#e2e8f0" metalness={0.1} roughness={0.5} />
+          </mesh>
+        ))}
 
       {/* Propeller */}
       <group position={[-3.45, -0.35, 0]} rotation={[0, 0, Math.PI / 2]}>
@@ -392,11 +602,21 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
         <meshStandardMaterial color="#6b7280" metalness={0.4} roughness={0.6} />
       </mesh>
 
-      {/* Lifeboat */}
-      <mesh position={[-2.6, 0.95, -0.65]} rotation={[0, Math.PI / 2, 0]}>
-        <capsuleGeometry args={[0.12, 0.5, 6, 12]} />
-        <meshStandardMaterial color="#f97316" metalness={0.2} roughness={0.5} />
-      </mesh>
+      {/* Lifeboats */}
+      {Array.from({ length: shipConfig.extraLifeboats }).map((_, index) => (
+        <mesh
+          key={`lifeboat-${index}`}
+          position={[
+            shipConfig.superstructurePos[0] - 0.4 + index * 0.35,
+            shipConfig.superstructurePos[1] + 0.1,
+            -0.65,
+          ]}
+          rotation={[0, Math.PI / 2, 0]}
+        >
+          <capsuleGeometry args={[0.12, 0.5, 6, 12]} />
+          <meshStandardMaterial color="#f97316" metalness={0.2} roughness={0.5} />
+        </mesh>
+      ))}
 
       {/* Winches */}
       {[1.9, 0.7, -0.5].map((xPos, index) => (
@@ -600,7 +820,7 @@ interface SceneProps extends ShipModelProps {
   tankLevels: number[];
 }
 
-const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
+const Scene = ({ heelAngle, trimAngle, shipType, showTanks, tankLevels }: SceneProps) => {
   return (
     <>
       <fog attach="fog" args={["#0b1f3a", 7, 22]} />
@@ -619,7 +839,7 @@ const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
       <directionalLight position={[6, 10, 6]} intensity={1.1} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
       <directionalLight position={[-6, 5, -5]} intensity={0.4} />
       
-      <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} showTanks={showTanks} tankLevels={tankLevels} />
+      <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />
       <WaterSurface />
       <WaterFoam />
       
@@ -643,8 +863,16 @@ const LoadingFallback = () => (
 export const Ship3DVisualization = () => {
   const [heelAngle, setHeelAngle] = useState<number>(0);
   const [trimAngle, setTrimAngle] = useState<number>(0);
+  const [shipType, setShipType] = useState<ShipType>("container");
   const showTanks = true;
-  const tankLevels = [75, 50, 85, 60, 40, 90];
+  const tankLevels = useMemo(() => {
+    if (shipType === "tanker") return [90, 85, 80, 75, 60, 55, 40, 35];
+    if (shipType === "bulk") return [65, 75, 55];
+    if (shipType === "roro") return [45, 50, 35];
+    if (shipType === "passenger") return [40, 35, 30];
+    return [75, 50, 85, 60, 40, 90];
+  }, [shipType]);
+  const activeShipType = shipTypeOptions.find((option) => option.value === shipType);
 
   const handleReset = () => {
     setHeelAngle(0);
@@ -658,9 +886,29 @@ export const Ship3DVisualization = () => {
           <Move3d className="h-5 w-5 text-primary" />
           3D Gemi Simülasyonu
         </CardTitle>
-        <CardDescription className="text-xs">Mouse ile döndür, kaydır ve yakınlaştır.</CardDescription>
+        <CardDescription className="text-xs">
+          Mouse ile döndür, kaydır ve yakınlaştır. Geminin tipini seçerek farklı üst yapı ve güverte düzenlerini inceleyin.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="flex flex-col gap-2 rounded-lg border border-border/40 bg-muted/40 p-3 text-xs">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <Label className="text-xs font-semibold">Gemi Tipi</Label>
+            <Select value={shipType} onValueChange={(value) => setShipType(value as ShipType)}>
+              <SelectTrigger className="h-8 w-full sm:w-48 text-xs">
+                <SelectValue placeholder="Gemi tipi seç" />
+              </SelectTrigger>
+              <SelectContent>
+                {shipTypeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <p className="text-muted-foreground">{activeShipType?.description}</p>
+        </div>
         <div className="relative w-full h-[300px] bg-gradient-to-b from-sky-900/50 to-blue-950/50 rounded-lg overflow-hidden border border-border/40">
           <Suspense fallback={<LoadingFallback />}>
             <Canvas
@@ -670,7 +918,7 @@ export const Ship3DVisualization = () => {
                 gl.shadowMap.type = THREE.PCFSoftShadowMap;
               }}
             >
-              <Scene heelAngle={heelAngle} trimAngle={trimAngle} showTanks={showTanks} tankLevels={tankLevels} />
+              <Scene heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />
             </Canvas>
           </Suspense>
           
