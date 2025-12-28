@@ -14,8 +14,10 @@ import {
   Target, 
   AlertTriangle,
   CheckCircle2,
-  RotateCcw
+  RotateCcw,
+  Move3d
 } from "lucide-react";
+import { Ship3DVisualization } from "./Ship3DVisualization";
 
 // GM Calculator Component
 export const GMCalculator = () => {
@@ -567,7 +569,7 @@ export const InteractiveStabilityTools = () => {
       </TabsList>
       
       <TabsContent value="simulation" className="mt-3">
-        <ShipVisualization />
+        <Ship3DVisualization />
       </TabsContent>
       
       <TabsContent value="gm" className="mt-3">
