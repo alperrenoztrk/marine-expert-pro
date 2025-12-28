@@ -1,12 +1,11 @@
 import type { CSSProperties } from "react";
 import { useParams, Link } from "react-router-dom";
 import { calculationCategories } from "@/data/calculationCenterConfig";
-import { GraduationCap, BookOpen, FileText, Target, Lightbulb, ChevronRight } from "lucide-react";
+import { GraduationCap, BookOpen, FileText, Lightbulb, ChevronRight } from "lucide-react";
 
 interface TopicContent {
   title: string;
   description: string;
-  objectives: string[];
   keyTopics: { title: string; description: string }[];
   resources: { title: string; href: string }[];
 }
@@ -15,12 +14,6 @@ const topicsData: Record<string, TopicContent> = {
   stability: {
     title: "Stabilite Konu Anlatımı",
     description: "Gemi stabilitesinin temel prensipleri, hesaplama yöntemleri ve IMO kriterleri hakkında kapsamlı bilgi.",
-    objectives: [
-      "Gemi stabilitesinin temel kavramlarını anlamak",
-      "GM, GZ ve meyil hesaplamalarını yapabilmek",
-      "IMO stabilite kriterlerini uygulamak",
-      "Yük operasyonlarının stabiliteye etkisini değerlendirmek"
-    ],
     keyTopics: [
       { title: "Metacentric Height (GM)", description: "Başlangıç stabilitesinin temel ölçüsü ve hesaplama yöntemleri" },
       { title: "GZ Eğrisi", description: "Dinamik stabilite analizi ve kritik açılar" },
@@ -38,12 +31,6 @@ const topicsData: Record<string, TopicContent> = {
   navigation: {
     title: "Seyir Konu Anlatımı",
     description: "Deniz seyir teknikleri, astronomik navigasyon ve modern navigasyon sistemleri hakkında detaylı eğitim.",
-    objectives: [
-      "Temel seyir hesaplamalarını yapabilmek",
-      "Astronomik navigasyon yöntemlerini uygulamak",
-      "Elektronik navigasyon cihazlarını etkin kullanmak",
-      "Rota planlama ve optimizasyon tekniklerini öğrenmek"
-    ],
     keyTopics: [
       { title: "Rota Hesaplamaları", description: "Great circle ve rhumb line rota hesapları" },
       { title: "Astronomik Navigasyon", description: "Güneş, yıldız ve ay mevkileri" },
@@ -61,12 +48,6 @@ const topicsData: Record<string, TopicContent> = {
   cargo: {
     title: "Yük Elleçleme Konu Anlatımı",
     description: "Yük operasyonları, draft survey hesapları ve güvenli istifleme teknikleri.",
-    objectives: [
-      "Draft survey hesaplamalarını doğru yapabilmek",
-      "Yük planlama ve istifleme tekniklerini uygulamak",
-      "Tehlikeli yük taşıma kurallarını bilmek",
-      "Yük hasarlarını önleme stratejilerini geliştirmek"
-    ],
     keyTopics: [
       { title: "Draft Survey", description: "Yük miktarı hesaplama yöntemleri" },
       { title: "Trim ve List", description: "Gemi durumunun yük dağılımına etkisi" },
@@ -84,12 +65,6 @@ const topicsData: Record<string, TopicContent> = {
   meteorology: {
     title: "Meteoroloji Konu Anlatımı",
     description: "Deniz meteorolojisi, hava tahminleri ve fırtına kaçınma stratejileri.",
-    objectives: [
-      "Hava haritalarını okuyup yorumlayabilmek",
-      "Deniz hava tahminlerini anlayabilmek",
-      "Fırtına sistemlerini tanıyabilmek",
-      "Güvenli rota planlaması için hava verilerini kullanmak"
-    ],
     keyTopics: [
       { title: "Atmosfer Sistemleri", description: "Basınç sistemleri ve hava kütleleri" },
       { title: "Rüzgar ve Dalga", description: "Beaufort skalası ve dalga tahminleri" },
@@ -107,12 +82,6 @@ const topicsData: Record<string, TopicContent> = {
   seamanship: {
     title: "Gemicilik Konu Anlatımı",
     description: "Temel gemicilik becerileri, manevra teknikleri ve güverte operasyonları.",
-    objectives: [
-      "Gemicilik düğümlerini ustalıkla bağlayabilmek",
-      "Demirleme ve bağlama operasyonlarını yönetmek",
-      "Manevra hesaplarını yapabilmek",
-      "Acil durum prosedürlerini uygulamak"
-    ],
     keyTopics: [
       { title: "Düğümler ve Bağlar", description: "Temel denizci düğümleri ve kullanım alanları" },
       { title: "Demirleme", description: "Demir atma ve alma prosedürleri" },
@@ -130,12 +99,6 @@ const topicsData: Record<string, TopicContent> = {
   safety: {
     title: "Denizde Güvenlik Konu Anlatımı",
     description: "Denizde can ve mal güvenliği, acil durum prosedürleri ve emniyet ekipmanları.",
-    objectives: [
-      "SOLAS gerekliliklerini anlamak ve uygulamak",
-      "Acil durum prosedürlerini yönetebilmek",
-      "Yangın önleme ve söndürme tekniklerini bilmek",
-      "Arama kurtarma operasyonlarına katılabilmek"
-    ],
     keyTopics: [
       { title: "SOLAS Gereklilikleri", description: "Denizde can güvenliği sözleşmesi" },
       { title: "Yangın Güvenliği", description: "Yangın önleme, tespit ve söndürme" },
@@ -153,12 +116,6 @@ const topicsData: Record<string, TopicContent> = {
   machine: {
     title: "Gemi Makineleri Konu Anlatımı",
     description: "Gemi makine sistemleri, bakım prosedürleri ve performans optimizasyonu.",
-    objectives: [
-      "Ana makine sistemlerini anlamak",
-      "Yakıt tüketimi hesaplarını yapabilmek",
-      "Bakım planlaması yapabilmek",
-      "Arıza teşhis ve giderme tekniklerini uygulamak"
-    ],
     keyTopics: [
       { title: "Ana Makine", description: "Dizel motorlar ve çalışma prensipleri" },
       { title: "Yardımcı Makineler", description: "Jeneratörler, pompalar ve kompresörler" },
@@ -176,12 +133,6 @@ const topicsData: Record<string, TopicContent> = {
   environment: {
     title: "Çevre Koruma Konu Anlatımı",
     description: "Deniz çevresi koruma, emisyon kontrolü ve sürdürülebilir denizcilik.",
-    objectives: [
-      "MARPOL gerekliliklerini anlamak",
-      "Emisyon hesaplamalarını yapabilmek",
-      "Atık yönetimi prosedürlerini uygulamak",
-      "Enerji verimliliği ölçümlerini değerlendirmek"
-    ],
     keyTopics: [
       { title: "MARPOL Ekleri", description: "Uluslararası deniz kirliliği önleme" },
       { title: "Emisyon Kontrolü", description: "SOx, NOx ve CO2 düzenlemeleri" },
@@ -199,12 +150,6 @@ const topicsData: Record<string, TopicContent> = {
   economics: {
     title: "Deniz İşletmeciliği Konu Anlatımı",
     description: "Deniz ticareti, charter operasyonları ve ticari hesaplamalar.",
-    objectives: [
-      "Charter party türlerini anlamak",
-      "TCE ve navlun hesaplarını yapabilmek",
-      "Demurrage ve despatch hesaplamak",
-      "Ticari operasyonları optimize etmek"
-    ],
     keyTopics: [
       { title: "Charter Parties", description: "Voyage, time ve bareboat charter" },
       { title: "Navlun Hesapları", description: "Freight rate ve TCE hesaplamaları" },
@@ -274,24 +219,6 @@ export default function LessonTopicsPage() {
             {topicContent.description}
           </p>
         </header>
-
-        {/* Learning Objectives */}
-        <section className="rounded-2xl border border-border/40 bg-card/80 p-6 backdrop-blur">
-          <div className="mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Öğrenme Hedefleri</h2>
-          </div>
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {topicContent.objectives.map((objective, index) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                  {index + 1}
-                </span>
-                {objective}
-              </li>
-            ))}
-          </ul>
-        </section>
 
         {/* Key Topics */}
         <section className="space-y-4">
