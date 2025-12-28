@@ -87,60 +87,106 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
 
   // Tank definitions
   const tanks = [
-    // Forward tanks
-    { position: [1.4, -0.1, 0.35] as [number, number, number], size: [0.6, 0.5, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
-    { position: [1.4, -0.1, -0.35] as [number, number, number], size: [0.6, 0.5, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
-    // Center tanks (cargo)
-    { position: [0.5, -0.1, 0.35] as [number, number, number], size: [0.7, 0.5, 0.4] as [number, number, number], label: "Cargo 1P", color: "#2ecc71" },
-    { position: [0.5, -0.1, -0.35] as [number, number, number], size: [0.7, 0.5, 0.4] as [number, number, number], label: "Cargo 1S", color: "#2ecc71" },
+    // Forward ballast
+    { position: [2.1, -0.1, 0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
+    { position: [2.1, -0.1, -0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
+    // Cargo holds
+    { position: [0.9, -0.1, 0.38] as [number, number, number], size: [1.2, 0.55, 0.45] as [number, number, number], label: "Cargo 1P", color: "#2ecc71" },
+    { position: [0.9, -0.1, -0.38] as [number, number, number], size: [1.2, 0.55, 0.45] as [number, number, number], label: "Cargo 1S", color: "#2ecc71" },
     // Aft tanks (fuel)
-    { position: [-1.5, -0.1, 0.35] as [number, number, number], size: [0.5, 0.5, 0.4] as [number, number, number], label: "Fuel P", color: "#e67e22" },
-    { position: [-1.5, -0.1, -0.35] as [number, number, number], size: [0.5, 0.5, 0.4] as [number, number, number], label: "Fuel S", color: "#e67e22" },
+    { position: [-2.2, -0.1, 0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "Fuel P", color: "#e67e22" },
+    { position: [-2.2, -0.1, -0.38] as [number, number, number], size: [0.8, 0.45, 0.4] as [number, number, number], label: "Fuel S", color: "#e67e22" },
   ];
 
   return (
     <group ref={groupRef}>
       {/* Hull - Main body (transparent to show tanks) */}
       <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[4, 0.8, 1.2]} />
+        <boxGeometry args={[6.2, 0.85, 1.35]} />
         <meshStandardMaterial 
-          color="#2c3e50" 
+          color="#1f2a36" 
           metalness={0.3} 
           roughness={0.7} 
           transparent={showTanks}
-          opacity={showTanks ? 0.4 : 1}
+          opacity={showTanks ? 0.35 : 1}
         />
       </mesh>
       
       {/* Hull bottom (curved) */}
-      <mesh position={[0, -0.5, 0]}>
-        <boxGeometry args={[3.6, 0.4, 1]} />
-        <meshStandardMaterial color="#c0392b" metalness={0.2} roughness={0.8} />
+      <mesh position={[0, -0.55, 0]}>
+        <boxGeometry args={[5.8, 0.45, 1.05]} />
+        <meshStandardMaterial color="#b03a2e" metalness={0.2} roughness={0.85} />
+      </mesh>
+
+      {/* Waterline stripe */}
+      <mesh position={[0, -0.1, 0]}>
+        <boxGeometry args={[6.15, 0.05, 1.36]} />
+        <meshStandardMaterial color="#f1c40f" metalness={0.1} roughness={0.6} />
       </mesh>
       
-      {/* Bow (front) */}
-      <mesh position={[2.2, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
-        <boxGeometry args={[0.6, 0.6, 1]} />
+      {/* Bow (tapered) */}
+      <mesh position={[3.3, -0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.05, 0.7, 1.3, 10]} />
         <meshStandardMaterial 
-          color="#2c3e50" 
+          color="#1f2a36" 
           metalness={0.3} 
           roughness={0.7}
           transparent={showTanks}
-          opacity={showTanks ? 0.5 : 1}
+          opacity={showTanks ? 0.45 : 1}
         />
       </mesh>
+
+      {/* Forecastle deck */}
+      <mesh position={[2.7, 0.45, 0]}>
+        <boxGeometry args={[0.9, 0.25, 1.2]} />
+        <meshStandardMaterial color="#2c3e50" metalness={0.2} roughness={0.7} />
+      </mesh>
       
-      {/* Stern (back) */}
-      <mesh position={[-2, 0.2, 0]}>
-        <boxGeometry args={[0.4, 1, 1]} />
+      {/* Stern (blocky) */}
+      <mesh position={[-3.0, 0.2, 0]}>
+        <boxGeometry args={[0.6, 1.1, 1.1]} />
         <meshStandardMaterial 
-          color="#2c3e50" 
+          color="#1f2a36" 
           metalness={0.3} 
           roughness={0.7}
           transparent={showTanks}
-          opacity={showTanks ? 0.5 : 1}
+          opacity={showTanks ? 0.45 : 1}
         />
       </mesh>
+
+      {/* Deck */}
+      <mesh position={[0, 0.45, 0]}>
+        <boxGeometry args={[6.0, 0.1, 1.25]} />
+        <meshStandardMaterial color="#2b3a4a" metalness={0.15} roughness={0.8} />
+      </mesh>
+
+      {/* Hatch covers */}
+      {[
+        { x: 1.9, size: 1.0 },
+        { x: 0.9, size: 1.1 },
+        { x: -0.1, size: 1.1 },
+        { x: -1.1, size: 1.1 },
+        { x: -2.1, size: 1.0 },
+      ].map((hatch, index) => (
+        <mesh key={`hatch-${index}`} position={[hatch.x, 0.58, 0]}>
+          <boxGeometry args={[hatch.size, 0.1, 1.05]} />
+          <meshStandardMaterial color="#4b5563" metalness={0.2} roughness={0.65} />
+        </mesh>
+      ))}
+
+      {/* Coamings */}
+      {[
+        { x: 1.9, size: 1.0 },
+        { x: 0.9, size: 1.1 },
+        { x: -0.1, size: 1.1 },
+        { x: -1.1, size: 1.1 },
+        { x: -2.1, size: 1.0 },
+      ].map((hatch, index) => (
+        <mesh key={`coaming-${index}`} position={[hatch.x, 0.52, 0]}>
+          <boxGeometry args={[hatch.size + 0.08, 0.08, 1.12]} />
+          <meshStandardMaterial color="#374151" metalness={0.2} roughness={0.7} />
+        </mesh>
+      ))}
 
       {/* Cargo Tanks */}
       {showTanks && tanks.map((tank, index) => (
@@ -158,56 +204,70 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       {showTanks && (
         <>
           {/* Forward bulkhead */}
-          <mesh position={[1.8, 0, 0]}>
-            <boxGeometry args={[0.05, 0.7, 1.1]} />
+          <mesh position={[2.6, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.2]} />
             <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
           </mesh>
           {/* Mid-forward bulkhead */}
-          <mesh position={[1.0, 0, 0]}>
-            <boxGeometry args={[0.05, 0.7, 1.1]} />
+          <mesh position={[1.4, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.2]} />
             <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
           </mesh>
           {/* Center bulkhead */}
-          <mesh position={[0.1, 0, 0]}>
-            <boxGeometry args={[0.05, 0.7, 1.1]} />
+          <mesh position={[0.2, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.2]} />
             <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
           </mesh>
           {/* Engine room bulkhead */}
-          <mesh position={[-1.2, 0, 0]}>
-            <boxGeometry args={[0.05, 0.7, 1.1]} />
+          <mesh position={[-1.8, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.2]} />
             <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
           </mesh>
           {/* Centerline division */}
           <mesh position={[0.2, -0.1, 0]}>
-            <boxGeometry args={[2.8, 0.5, 0.03]} />
+            <boxGeometry args={[4.4, 0.5, 0.03]} />
             <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
           </mesh>
         </>
       )}
       
-      {/* Superstructure */}
-      <mesh position={[-0.5, 0.8, 0]}>
-        <boxGeometry args={[1.5, 0.8, 0.9]} />
-        <meshStandardMaterial color="#ecf0f1" metalness={0.1} roughness={0.6} />
+      {/* Superstructure (aft) */}
+      <mesh position={[-2.2, 0.85, 0]}>
+        <boxGeometry args={[1.6, 0.9, 1.0]} />
+        <meshStandardMaterial color="#e5e7eb" metalness={0.1} roughness={0.6} />
       </mesh>
       
       {/* Bridge */}
-      <mesh position={[-0.5, 1.4, 0]}>
-        <boxGeometry args={[0.8, 0.4, 0.7]} />
-        <meshStandardMaterial color="#3498db" metalness={0.4} roughness={0.4} />
+      <mesh position={[-2.25, 1.45, 0]}>
+        <boxGeometry args={[0.9, 0.45, 0.8]} />
+        <meshStandardMaterial color="#60a5fa" metalness={0.4} roughness={0.4} />
       </mesh>
       
       {/* Funnel */}
-      <mesh position={[-1, 1.2, 0]}>
-        <cylinderGeometry args={[0.15, 0.2, 0.6, 8]} />
-        <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
+      <mesh position={[-2.8, 1.25, 0]}>
+        <cylinderGeometry args={[0.16, 0.22, 0.6, 8]} />
+        <meshStandardMaterial color="#6b7280" metalness={0.5} roughness={0.5} />
       </mesh>
-      
-      {/* Mast */}
-      <mesh position={[0.5, 1.2, 0]}>
+
+      {/* Aft mast */}
+      <mesh position={[-1.6, 1.25, 0]}>
         <cylinderGeometry args={[0.05, 0.05, 1.2, 8]} />
-        <meshStandardMaterial color="#34495e" metalness={0.6} roughness={0.4} />
+        <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
       </mesh>
+
+      {/* Cargo cranes */}
+      {[1.4, 0.1, -1.2].map((xPos, index) => (
+        <group key={`crane-${index}`} position={[xPos, 0.7, 0.55]}>
+          <mesh rotation={[0, 0, Math.PI / 6]}>
+            <cylinderGeometry args={[0.03, 0.03, 1.4, 8]} />
+            <meshStandardMaterial color="#f59e0b" metalness={0.3} roughness={0.6} />
+          </mesh>
+          <mesh position={[0.25, 0.3, -0.4]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.02, 0.02, 0.9, 8]} />
+            <meshStandardMaterial color="#fbbf24" metalness={0.3} roughness={0.6} />
+          </mesh>
+        </group>
+      ))}
       
       {/* G Point (Gravity Center) */}
       <mesh position={[0, 0.3, 0]}>
@@ -216,13 +276,13 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       </mesh>
       
       {/* B Point (Buoyancy Center) */}
-      <mesh position={[0, -0.3, 0]}>
+      <mesh position={[0, -0.35, 0]}>
         <sphereGeometry args={[0.12, 16, 16]} />
         <meshStandardMaterial color="#3498db" emissive="#3498db" emissiveIntensity={0.3} />
       </mesh>
       
       {/* M Point (Metacenter) */}
-      <mesh position={[0, 1.5, 0]}>
+      <mesh position={[0, 1.55, 0]}>
         <sphereGeometry args={[0.1, 16, 16]} />
         <meshStandardMaterial color="#2ecc71" emissive="#2ecc71" emissiveIntensity={0.3} />
       </mesh>
@@ -270,7 +330,7 @@ const WaterSurface = () => {
 
   return (
     <mesh ref={waterRef} position={[0, -0.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry ref={geometryRef} args={[16, 16, 64, 64]} />
+      <planeGeometry ref={geometryRef} args={[22, 22, 72, 72]} />
       <meshStandardMaterial 
         color="#0077be"
         transparent 
@@ -340,13 +400,13 @@ interface SceneProps extends ShipModelProps {
 const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[5, 3, 5]} fov={45} />
+      <PerspectiveCamera makeDefault position={[7, 3.5, 6]} fov={42} />
       <OrbitControls 
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={3}
-        maxDistance={15}
+        minDistance={4}
+        maxDistance={18}
         autoRotate={false}
       />
       
@@ -359,7 +419,7 @@ const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
       <WaterFoam />
       
       {/* Grid helper for reference */}
-      <gridHelper args={[10, 10, "#444", "#222"]} position={[0, -1, 0]} />
+      <gridHelper args={[14, 14, "#444", "#222"]} position={[0, -1, 0]} />
       
       <Environment preset="sunset" />
     </>
