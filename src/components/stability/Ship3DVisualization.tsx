@@ -11,9 +11,59 @@ import * as THREE from "three";
 interface ShipModelProps {
   heelAngle: number;
   trimAngle: number;
+  showTanks?: boolean;
+  tankLevels?: number[];
 }
 
-const ShipModel = ({ heelAngle, trimAngle }: ShipModelProps) => {
+interface TankProps {
+  position: [number, number, number];
+  size: [number, number, number];
+  fillLevel: number;
+  color: string;
+  label: string;
+}
+
+const CargoTank = ({ position, size, fillLevel, color, label }: TankProps) => {
+  const fillHeight = size[1] * (fillLevel / 100);
+  const fillY = position[1] - size[1] / 2 + fillHeight / 2;
+  
+  return (
+    <group>
+      {/* Tank walls (wireframe) */}
+      <mesh position={position}>
+        <boxGeometry args={size} />
+        <meshStandardMaterial 
+          color="#95a5a6" 
+          transparent 
+          opacity={0.3}
+          wireframe
+        />
+      </mesh>
+      
+      {/* Tank frame edges */}
+      <lineSegments position={position}>
+        <edgesGeometry args={[new THREE.BoxGeometry(...size)]} />
+        <lineBasicMaterial color="#7f8c8d" />
+      </lineSegments>
+      
+      {/* Liquid fill */}
+      {fillLevel > 0 && (
+        <mesh position={[position[0], fillY, position[2]]}>
+          <boxGeometry args={[size[0] * 0.95, fillHeight, size[2] * 0.95]} />
+          <meshStandardMaterial 
+            color={color} 
+            transparent 
+            opacity={0.7}
+            metalness={0.3}
+            roughness={0.4}
+          />
+        </mesh>
+      )}
+    </group>
+  );
+};
+
+const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 50, 85, 60, 40, 90] }: ShipModelProps) => {
   const groupRef = useRef<THREE.Group>(null);
   
   useFrame(() => {
@@ -35,12 +85,31 @@ const ShipModel = ({ heelAngle, trimAngle }: ShipModelProps) => {
     }
   });
 
+  // Tank definitions
+  const tanks = [
+    // Forward tanks
+    { position: [1.4, -0.1, 0.35] as [number, number, number], size: [0.6, 0.5, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
+    { position: [1.4, -0.1, -0.35] as [number, number, number], size: [0.6, 0.5, 0.4] as [number, number, number], label: "FP Tank", color: "#3498db" },
+    // Center tanks (cargo)
+    { position: [0.5, -0.1, 0.35] as [number, number, number], size: [0.7, 0.5, 0.4] as [number, number, number], label: "Cargo 1P", color: "#2ecc71" },
+    { position: [0.5, -0.1, -0.35] as [number, number, number], size: [0.7, 0.5, 0.4] as [number, number, number], label: "Cargo 1S", color: "#2ecc71" },
+    // Aft tanks (fuel)
+    { position: [-1.5, -0.1, 0.35] as [number, number, number], size: [0.5, 0.5, 0.4] as [number, number, number], label: "Fuel P", color: "#e67e22" },
+    { position: [-1.5, -0.1, -0.35] as [number, number, number], size: [0.5, 0.5, 0.4] as [number, number, number], label: "Fuel S", color: "#e67e22" },
+  ];
+
   return (
     <group ref={groupRef}>
-      {/* Hull - Main body */}
+      {/* Hull - Main body (transparent to show tanks) */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[4, 0.8, 1.2]} />
-        <meshStandardMaterial color="#2c3e50" metalness={0.3} roughness={0.7} />
+        <meshStandardMaterial 
+          color="#2c3e50" 
+          metalness={0.3} 
+          roughness={0.7} 
+          transparent={showTanks}
+          opacity={showTanks ? 0.4 : 1}
+        />
       </mesh>
       
       {/* Hull bottom (curved) */}
@@ -52,14 +121,69 @@ const ShipModel = ({ heelAngle, trimAngle }: ShipModelProps) => {
       {/* Bow (front) */}
       <mesh position={[2.2, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
         <boxGeometry args={[0.6, 0.6, 1]} />
-        <meshStandardMaterial color="#2c3e50" metalness={0.3} roughness={0.7} />
+        <meshStandardMaterial 
+          color="#2c3e50" 
+          metalness={0.3} 
+          roughness={0.7}
+          transparent={showTanks}
+          opacity={showTanks ? 0.5 : 1}
+        />
       </mesh>
       
       {/* Stern (back) */}
       <mesh position={[-2, 0.2, 0]}>
         <boxGeometry args={[0.4, 1, 1]} />
-        <meshStandardMaterial color="#2c3e50" metalness={0.3} roughness={0.7} />
+        <meshStandardMaterial 
+          color="#2c3e50" 
+          metalness={0.3} 
+          roughness={0.7}
+          transparent={showTanks}
+          opacity={showTanks ? 0.5 : 1}
+        />
       </mesh>
+
+      {/* Cargo Tanks */}
+      {showTanks && tanks.map((tank, index) => (
+        <CargoTank
+          key={index}
+          position={tank.position}
+          size={tank.size}
+          fillLevel={tankLevels[index] || 50}
+          color={tank.color}
+          label={tank.label}
+        />
+      ))}
+
+      {/* Bulkheads (watertight compartment dividers) */}
+      {showTanks && (
+        <>
+          {/* Forward bulkhead */}
+          <mesh position={[1.8, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.1]} />
+            <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
+          </mesh>
+          {/* Mid-forward bulkhead */}
+          <mesh position={[1.0, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.1]} />
+            <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
+          </mesh>
+          {/* Center bulkhead */}
+          <mesh position={[0.1, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.1]} />
+            <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
+          </mesh>
+          {/* Engine room bulkhead */}
+          <mesh position={[-1.2, 0, 0]}>
+            <boxGeometry args={[0.05, 0.7, 1.1]} />
+            <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
+          </mesh>
+          {/* Centerline division */}
+          <mesh position={[0.2, -0.1, 0]}>
+            <boxGeometry args={[2.8, 0.5, 0.03]} />
+            <meshStandardMaterial color="#7f8c8d" metalness={0.5} roughness={0.5} />
+          </mesh>
+        </>
+      )}
       
       {/* Superstructure */}
       <mesh position={[-0.5, 0.8, 0]}>
@@ -208,7 +332,12 @@ const WaterFoam = () => {
   );
 };
 
-const Scene = ({ heelAngle, trimAngle }: ShipModelProps) => {
+interface SceneProps extends ShipModelProps {
+  showTanks: boolean;
+  tankLevels: number[];
+}
+
+const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
   return (
     <>
       <PerspectiveCamera makeDefault position={[5, 3, 5]} fov={45} />
@@ -225,7 +354,7 @@ const Scene = ({ heelAngle, trimAngle }: ShipModelProps) => {
       <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
       <directionalLight position={[-5, 5, -5]} intensity={0.3} />
       
-      <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} />
+      <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} showTanks={showTanks} tankLevels={tankLevels} />
       <WaterSurface />
       <WaterFoam />
       
@@ -249,10 +378,25 @@ const LoadingFallback = () => (
 export const Ship3DVisualization = () => {
   const [heelAngle, setHeelAngle] = useState<number>(0);
   const [trimAngle, setTrimAngle] = useState<number>(0);
+  const [showTanks, setShowTanks] = useState<boolean>(true);
+  const [tankLevels, setTankLevels] = useState<number[]>([75, 50, 85, 60, 40, 90]);
+
+  const tankNames = ["FP İskele", "FP Sancak", "Kargo 1P", "Kargo 1S", "Yakıt P", "Yakıt S"];
+  const tankColors = ["#3498db", "#3498db", "#2ecc71", "#2ecc71", "#e67e22", "#e67e22"];
 
   const handleReset = () => {
     setHeelAngle(0);
     setTrimAngle(0);
+  };
+
+  const handleResetTanks = () => {
+    setTankLevels([75, 50, 85, 60, 40, 90]);
+  };
+
+  const updateTankLevel = (index: number, value: number) => {
+    const newLevels = [...tankLevels];
+    newLevels[index] = value;
+    setTankLevels(newLevels);
   };
 
   return (
@@ -263,14 +407,14 @@ export const Ship3DVisualization = () => {
           3D Gemi Simülasyonu
         </CardTitle>
         <CardDescription className="text-xs">
-          Mouse ile döndür, kaydır ve yakınlaştır. Slider ile meyil ve trim ayarla.
+          Mouse ile döndür, kaydır ve yakınlaştır. Tank seviyelerini ayarla.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="relative w-full h-[300px] bg-gradient-to-b from-sky-900/50 to-blue-950/50 rounded-lg overflow-hidden border border-border/40">
           <Suspense fallback={<LoadingFallback />}>
             <Canvas shadows>
-              <Scene heelAngle={heelAngle} trimAngle={trimAngle} />
+              <Scene heelAngle={heelAngle} trimAngle={trimAngle} showTanks={showTanks} tankLevels={tankLevels} />
             </Canvas>
           </Suspense>
           
@@ -289,6 +433,24 @@ export const Ship3DVisualization = () => {
               <span>M - Metasantr</span>
             </div>
           </div>
+
+          {/* Tank legend */}
+          {showTanks && (
+            <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] space-y-0.5">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded" style={{ backgroundColor: "#3498db" }} />
+                <span>Balast Tankı</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded" style={{ backgroundColor: "#2ecc71" }} />
+                <span>Kargo Tankı</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded" style={{ backgroundColor: "#e67e22" }} />
+                <span>Yakıt Tankı</span>
+              </div>
+            </div>
+          )}
           
           {/* Angle display */}
           <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] font-mono">
@@ -297,6 +459,7 @@ export const Ship3DVisualization = () => {
           </div>
         </div>
         
+        {/* Controls */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label className="text-xs flex justify-between">
@@ -334,6 +497,45 @@ export const Ship3DVisualization = () => {
             </div>
           </div>
         </div>
+
+        {/* Tank Controls */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-semibold">Tank Seviyeleri</Label>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowTanks(!showTanks)}
+              className="h-6 text-[10px] px-2"
+            >
+              {showTanks ? "Tankları Gizle" : "Tankları Göster"}
+            </Button>
+          </div>
+          
+          {showTanks && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {tankNames.map((name, index) => (
+                <div key={index} className="space-y-1 p-2 rounded bg-muted/30 border border-border/30">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded" style={{ backgroundColor: tankColors[index] }} />
+                      <span className="text-[10px] font-medium">{name}</span>
+                    </div>
+                    <span className="text-[10px] font-mono">{tankLevels[index]}%</span>
+                  </div>
+                  <Slider
+                    value={[tankLevels[index]]}
+                    onValueChange={(v) => updateTankLevel(index, v[0])}
+                    min={0}
+                    max={100}
+                    step={5}
+                    className="h-1"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         
         <div className="flex gap-2">
           <Button 
@@ -343,8 +545,19 @@ export const Ship3DVisualization = () => {
             className="flex-1 h-8 text-xs"
           >
             <RotateCcw className="h-3 w-3 mr-1" />
-            Sıfırla
+            Açıları Sıfırla
           </Button>
+          {showTanks && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleResetTanks}
+              className="flex-1 h-8 text-xs"
+            >
+              <RotateCcw className="h-3 w-3 mr-1" />
+              Tankları Sıfırla
+            </Button>
+          )}
         </div>
         
         <div className="grid grid-cols-2 gap-2 text-xs">
