@@ -85,6 +85,21 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
     }
   });
 
+  const hullColor = "#1f2a36";
+  const hullMaterialProps = {
+    color: hullColor,
+    metalness: 0.35,
+    roughness: 0.65,
+    transparent: showTanks,
+    opacity: showTanks ? 0.35 : 1,
+  };
+
+  const portholePositions = Array.from({ length: 10 }, (_, index) => ({
+    x: 2.55 - index * 0.55,
+    y: 0.05 + (index % 2 === 0 ? 0.05 : -0.02),
+    z: 0.7,
+  }));
+
   // Tank definitions
   const tanks = [
     // Forward ballast
@@ -103,19 +118,25 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       {/* Hull - Main body (transparent to show tanks) */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[6.2, 0.85, 1.35]} />
-        <meshStandardMaterial 
-          color="#1f2a36" 
-          metalness={0.3} 
-          roughness={0.7} 
-          transparent={showTanks}
-          opacity={showTanks ? 0.35 : 1}
-        />
+        <meshStandardMaterial {...hullMaterialProps} />
+      </mesh>
+
+      {/* Upper hull taper */}
+      <mesh position={[0, 0.35, 0]}>
+        <boxGeometry args={[5.9, 0.35, 1.15]} />
+        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.25 : 0.95} />
       </mesh>
       
       {/* Hull bottom (curved) */}
       <mesh position={[0, -0.55, 0]}>
         <boxGeometry args={[5.8, 0.45, 1.05]} />
         <meshStandardMaterial color="#b03a2e" metalness={0.2} roughness={0.85} />
+      </mesh>
+
+      {/* Keel line */}
+      <mesh position={[0, -0.8, 0]}>
+        <boxGeometry args={[5.5, 0.05, 0.2]} />
+        <meshStandardMaterial color="#8e2f25" metalness={0.2} roughness={0.8} />
       </mesh>
 
       {/* Waterline stripe */}
@@ -127,13 +148,13 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       {/* Bow (tapered) */}
       <mesh position={[3.3, -0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.05, 0.7, 1.3, 10]} />
-        <meshStandardMaterial 
-          color="#1f2a36" 
-          metalness={0.3} 
-          roughness={0.7}
-          transparent={showTanks}
-          opacity={showTanks ? 0.45 : 1}
-        />
+        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.45 : 1} />
+      </mesh>
+
+      {/* Bulbous bow */}
+      <mesh position={[3.45, -0.55, 0]}>
+        <sphereGeometry args={[0.28, 16, 16]} />
+        <meshStandardMaterial color="#b03a2e" metalness={0.3} roughness={0.8} />
       </mesh>
 
       {/* Forecastle deck */}
@@ -145,13 +166,13 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       {/* Stern (blocky) */}
       <mesh position={[-3.0, 0.2, 0]}>
         <boxGeometry args={[0.6, 1.1, 1.1]} />
-        <meshStandardMaterial 
-          color="#1f2a36" 
-          metalness={0.3} 
-          roughness={0.7}
-          transparent={showTanks}
-          opacity={showTanks ? 0.45 : 1}
-        />
+        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.45 : 1} />
+      </mesh>
+
+      {/* Stern rounded cap */}
+      <mesh position={[-3.4, -0.1, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.5, 0.55, 0.4, 14]} />
+        <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.45 : 1} />
       </mesh>
 
       {/* Deck */}
@@ -185,6 +206,38 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
         <mesh key={`coaming-${index}`} position={[hatch.x, 0.52, 0]}>
           <boxGeometry args={[hatch.size + 0.08, 0.08, 1.12]} />
           <meshStandardMaterial color="#374151" metalness={0.2} roughness={0.7} />
+        </mesh>
+      ))}
+
+      {/* Guard rails */}
+      <mesh position={[0, 0.75, 0.62]}>
+        <boxGeometry args={[5.6, 0.04, 0.04]} />
+        <meshStandardMaterial color="#9ca3af" metalness={0.3} roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.75, -0.62]}>
+        <boxGeometry args={[5.6, 0.04, 0.04]} />
+        <meshStandardMaterial color="#9ca3af" metalness={0.3} roughness={0.5} />
+      </mesh>
+
+      {/* Anchor pockets */}
+      {[0.45, -0.45].map((zPos) => (
+        <mesh key={`anchor-${zPos}`} position={[2.95, 0.1, zPos]}>
+          <boxGeometry args={[0.18, 0.18, 0.08]} />
+          <meshStandardMaterial color="#111827" metalness={0.4} roughness={0.6} />
+        </mesh>
+      ))}
+
+      {/* Portholes */}
+      {portholePositions.map((hole, index) => (
+        <mesh key={`porthole-${index}`} position={[hole.x, hole.y, hole.z]}>
+          <circleGeometry args={[0.05, 18]} />
+          <meshStandardMaterial color="#dbeafe" emissive="#2563eb" emissiveIntensity={0.15} />
+        </mesh>
+      ))}
+      {portholePositions.map((hole, index) => (
+        <mesh key={`porthole-port-${index}`} position={[hole.x, hole.y, -hole.z]} rotation={[0, Math.PI, 0]}>
+          <circleGeometry args={[0.05, 18]} />
+          <meshStandardMaterial color="#dbeafe" emissive="#2563eb" emissiveIntensity={0.15} />
         </mesh>
       ))}
 
@@ -242,11 +295,25 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
         <boxGeometry args={[0.9, 0.45, 0.8]} />
         <meshStandardMaterial color="#60a5fa" metalness={0.4} roughness={0.4} />
       </mesh>
+
+      {/* Bridge windows */}
+      {[-2.55, -2.3, -2.05].map((xPos, index) => (
+        <mesh key={`window-${index}`} position={[xPos, 1.45, 0.42]}>
+          <boxGeometry args={[0.18, 0.15, 0.04]} />
+          <meshStandardMaterial color="#1f2937" metalness={0.2} roughness={0.4} />
+        </mesh>
+      ))}
       
       {/* Funnel */}
       <mesh position={[-2.8, 1.25, 0]}>
         <cylinderGeometry args={[0.16, 0.22, 0.6, 8]} />
         <meshStandardMaterial color="#6b7280" metalness={0.5} roughness={0.5} />
+      </mesh>
+
+      {/* Funnel cap */}
+      <mesh position={[-2.8, 1.56, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.12, 0.18, 0.18, 10]} />
+        <meshStandardMaterial color="#4b5563" metalness={0.4} roughness={0.6} />
       </mesh>
 
       {/* Aft mast */}
@@ -268,6 +335,26 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
           </mesh>
         </group>
       ))}
+
+      {/* Propeller */}
+      <group position={[-3.45, -0.35, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <mesh>
+          <torusGeometry args={[0.12, 0.02, 8, 16]} />
+          <meshStandardMaterial color="#fbbf24" metalness={0.7} roughness={0.3} />
+        </mesh>
+        {[0, Math.PI / 2, Math.PI].map((rotation, index) => (
+          <mesh key={`prop-blade-${index}`} rotation={[0, rotation, 0]}>
+            <boxGeometry args={[0.04, 0.22, 0.08]} />
+            <meshStandardMaterial color="#f59e0b" metalness={0.7} roughness={0.3} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Rudder */}
+      <mesh position={[-3.25, -0.55, 0]}>
+        <boxGeometry args={[0.08, 0.35, 0.28]} />
+        <meshStandardMaterial color="#6b7280" metalness={0.4} roughness={0.6} />
+      </mesh>
       
       {/* G Point (Gravity Center) */}
       <mesh position={[0, 0.3, 0]}>
