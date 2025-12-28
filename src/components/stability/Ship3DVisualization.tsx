@@ -1,12 +1,13 @@
-import { useRef, useState, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Environment, Float, PerspectiveCamera } from "@react-three/drei";
+import { useMemo, useRef, useState, Suspense } from "react";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { OrbitControls, Environment, PerspectiveCamera, RoundedBox } from "@react-three/drei";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Ship, RotateCcw, Move3d } from "lucide-react";
 import * as THREE from "three";
+import shipPhoto from "@/assets/maritime/cargo-ship-ocean.jpg";
 
 interface ShipModelProps {
   heelAngle: number;
@@ -63,6 +64,33 @@ const CargoTank = ({ position, size, fillLevel, color, label }: TankProps) => {
   );
 };
 
+const Flag = ({ position }: { position: [number, number, number] }) => {
+  const flagRef = useRef<THREE.Mesh>(null);
+  const geometry = useMemo(() => new THREE.PlaneGeometry(0.7, 0.4, 16, 8), []);
+
+  useFrame(({ clock }) => {
+    if (!flagRef.current) return;
+    const time = clock.getElapsedTime();
+    const positions = geometry.attributes.position as THREE.BufferAttribute;
+
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i);
+      const y = positions.getY(i);
+      const wave = Math.sin(time * 3 + x * 6) * 0.05 + Math.cos(time * 2 + y * 4) * 0.03;
+      positions.setZ(i, wave + x * 0.02);
+    }
+
+    positions.needsUpdate = true;
+    geometry.computeVertexNormals();
+  });
+
+  return (
+    <mesh ref={flagRef} geometry={geometry} position={position} rotation={[0, Math.PI / 2, 0]}>
+      <meshStandardMaterial color="#e63946" roughness={0.6} metalness={0.1} side={THREE.DoubleSide} />
+    </mesh>
+  );
+};
+
 const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 50, 85, 60, 40, 90] }: ShipModelProps) => {
   const groupRef = useRef<THREE.Group>(null);
   
@@ -100,6 +128,13 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
     z: 0.7,
   }));
 
+  const navigationLights = [
+    { position: [2.6, 0.5, 0.72], color: "#00ff3b" }, // starboard
+    { position: [2.6, 0.5, -0.72], color: "#ff3030" }, // port
+    { position: [-3.35, 0.55, 0], color: "#f8fafc" }, // stern
+    { position: [-2.0, 1.8, 0], color: "#f8fafc" }, // masthead
+  ];
+
   // Tank definitions
   const tanks = [
     // Forward ballast
@@ -116,16 +151,14 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
   return (
     <group ref={groupRef}>
       {/* Hull - Main body (transparent to show tanks) */}
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[6.2, 0.85, 1.35]} />
+      <RoundedBox position={[0, 0, 0]} args={[6.2, 0.85, 1.35]} radius={0.08} smoothness={4}>
         <meshStandardMaterial {...hullMaterialProps} />
-      </mesh>
+      </RoundedBox>
 
       {/* Upper hull taper */}
-      <mesh position={[0, 0.35, 0]}>
-        <boxGeometry args={[5.9, 0.35, 1.15]} />
+      <RoundedBox position={[0, 0.35, 0]} args={[5.9, 0.35, 1.15]} radius={0.06} smoothness={4}>
         <meshStandardMaterial {...hullMaterialProps} opacity={showTanks ? 0.25 : 0.95} />
-      </mesh>
+      </RoundedBox>
       
       {/* Hull bottom (curved) */}
       <mesh position={[0, -0.55, 0]}>
@@ -176,10 +209,9 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       </mesh>
 
       {/* Deck */}
-      <mesh position={[0, 0.45, 0]}>
-        <boxGeometry args={[6.0, 0.1, 1.25]} />
+      <RoundedBox position={[0, 0.45, 0]} args={[6.0, 0.1, 1.25]} radius={0.04} smoothness={4}>
         <meshStandardMaterial color="#2b3a4a" metalness={0.15} roughness={0.8} />
-      </mesh>
+      </RoundedBox>
 
       {/* Hatch covers */}
       {[
@@ -285,16 +317,14 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
       )}
       
       {/* Superstructure (aft) */}
-      <mesh position={[-2.2, 0.85, 0]}>
-        <boxGeometry args={[1.6, 0.9, 1.0]} />
+      <RoundedBox position={[-2.2, 0.85, 0]} args={[1.6, 0.9, 1.0]} radius={0.06} smoothness={4}>
         <meshStandardMaterial color="#e5e7eb" metalness={0.1} roughness={0.6} />
-      </mesh>
+      </RoundedBox>
       
       {/* Bridge */}
-      <mesh position={[-2.25, 1.45, 0]}>
-        <boxGeometry args={[0.9, 0.45, 0.8]} />
+      <RoundedBox position={[-2.25, 1.45, 0]} args={[0.9, 0.45, 0.8]} radius={0.05} smoothness={4}>
         <meshStandardMaterial color="#60a5fa" metalness={0.4} roughness={0.4} />
-      </mesh>
+      </RoundedBox>
 
       {/* Bridge windows */}
       {[-2.55, -2.3, -2.05].map((xPos, index) => (
@@ -321,6 +351,13 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
         <cylinderGeometry args={[0.05, 0.05, 1.2, 8]} />
         <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
       </mesh>
+
+      {/* Flag pole */}
+      <mesh position={[-1.6, 1.9, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, 0.7, 8]} />
+        <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
+      </mesh>
+      <Flag position={[-1.6, 2.15, 0.25]} />
 
       {/* Cargo cranes */}
       {[1.4, 0.1, -1.2].map((xPos, index) => (
@@ -355,6 +392,69 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
         <boxGeometry args={[0.08, 0.35, 0.28]} />
         <meshStandardMaterial color="#6b7280" metalness={0.4} roughness={0.6} />
       </mesh>
+
+      {/* Lifeboat */}
+      <mesh position={[-2.6, 0.95, -0.65]} rotation={[0, Math.PI / 2, 0]}>
+        <capsuleGeometry args={[0.12, 0.5, 6, 12]} />
+        <meshStandardMaterial color="#f97316" metalness={0.2} roughness={0.5} />
+      </mesh>
+
+      {/* Winches */}
+      {[1.9, 0.7, -0.5].map((xPos, index) => (
+        <group key={`winch-${index}`} position={[xPos, 0.62, -0.55]}>
+          <mesh>
+            <cylinderGeometry args={[0.09, 0.09, 0.18, 12]} />
+            <meshStandardMaterial color="#9ca3af" metalness={0.4} roughness={0.5} />
+          </mesh>
+          <mesh position={[0, 0.1, 0]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.16, 12]} />
+            <meshStandardMaterial color="#6b7280" metalness={0.5} roughness={0.4} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Radar array */}
+      <group position={[-2.0, 1.8, 0.2]}>
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
+          <meshStandardMaterial color="#e2e8f0" metalness={0.6} roughness={0.3} />
+        </mesh>
+        <mesh position={[0.25, 0, 0]}>
+          <boxGeometry args={[0.5, 0.08, 0.08]} />
+          <meshStandardMaterial color="#f8fafc" metalness={0.6} roughness={0.3} />
+        </mesh>
+      </group>
+
+      {/* Navigation lights */}
+      {navigationLights.map((light, index) => (
+        <group key={`nav-light-${index}`}>
+          <mesh position={light.position as [number, number, number]}>
+            <sphereGeometry args={[0.05, 12, 12]} />
+            <meshStandardMaterial color={light.color} emissive={light.color} emissiveIntensity={1.8} />
+          </mesh>
+          <pointLight position={light.position as [number, number, number]} intensity={1} distance={2} color={light.color} />
+        </group>
+      ))}
+
+      {/* Mooring ropes */}
+      {[
+        { start: [2.7, 0.5, 0.65], end: [3.5, -0.2, 1.2] },
+        { start: [2.7, 0.5, -0.65], end: [3.5, -0.2, -1.2] },
+      ].map((rope, index) => {
+        const start = new THREE.Vector3(...rope.start);
+        const end = new THREE.Vector3(...rope.end);
+        const mid = start.clone().add(end).multiplyScalar(0.5);
+        const direction = end.clone().sub(start).normalize();
+        const length = start.distanceTo(end);
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+
+        return (
+          <mesh key={`rope-${index}`} position={[mid.x, mid.y, mid.z]} quaternion={quaternion}>
+            <cylinderGeometry args={[0.01, 0.01, length, 8]} />
+            <meshStandardMaterial color="#6b4f2a" roughness={0.9} metalness={0.1} />
+          </mesh>
+        );
+      })}
       
       {/* G Point (Gravity Center) */}
       <mesh position={[0, 0.3, 0]}>
@@ -386,6 +486,21 @@ const ShipModel = ({ heelAngle, trimAngle, showTanks = true, tankLevels = [75, 5
 const WaterSurface = () => {
   const waterRef = useRef<THREE.Mesh>(null);
   const geometryRef = useRef<THREE.PlaneGeometry>(null);
+  const waterNormalMap = useMemo(() => {
+    const size = 64;
+    const data = new Uint8Array(size * size * 3);
+    for (let i = 0; i < size * size; i++) {
+      data[i * 3] = 128 + Math.random() * 40;
+      data[i * 3 + 1] = 128 + Math.random() * 40;
+      data[i * 3 + 2] = 255;
+    }
+    const texture = new THREE.DataTexture(data, size, size, THREE.RGBFormat);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(4, 4);
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
   
   useFrame(({ clock }) => {
     if (geometryRef.current) {
@@ -421,9 +536,11 @@ const WaterSurface = () => {
       <meshStandardMaterial 
         color="#0077be"
         transparent 
-        opacity={0.85}
-        metalness={0.9}
-        roughness={0.1}
+        opacity={0.9}
+        metalness={0.6}
+        roughness={0.2}
+        normalMap={waterNormalMap}
+        normalScale={new THREE.Vector2(0.6, 0.6)}
         side={THREE.DoubleSide}
       />
     </mesh>
@@ -479,6 +596,19 @@ const WaterFoam = () => {
   );
 };
 
+const BackgroundPhoto = () => {
+  const texture = useLoader(THREE.TextureLoader, shipPhoto);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+
+  return (
+    <mesh position={[0, 2.2, -9.5]} rotation={[0, 0, 0]}>
+      <planeGeometry args={[18, 8]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
+    </mesh>
+  );
+};
+
 interface SceneProps extends ShipModelProps {
   showTanks: boolean;
   tankLevels: number[];
@@ -487,6 +617,7 @@ interface SceneProps extends ShipModelProps {
 const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
   return (
     <>
+      <fog attach="fog" args={["#0b1f3a", 7, 22]} />
       <PerspectiveCamera makeDefault position={[7, 3.5, 6]} fov={42} />
       <OrbitControls 
         enablePan={true}
@@ -497,13 +628,15 @@ const Scene = ({ heelAngle, trimAngle, showTanks, tankLevels }: SceneProps) => {
         autoRotate={false}
       />
       
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
-      <directionalLight position={[-5, 5, -5]} intensity={0.3} />
+      <ambientLight intensity={0.35} />
+      <hemisphereLight args={["#c7d2fe", "#0f172a", 0.45]} />
+      <directionalLight position={[6, 10, 6]} intensity={1.1} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
+      <directionalLight position={[-6, 5, -5]} intensity={0.4} />
       
       <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} showTanks={showTanks} tankLevels={tankLevels} />
       <WaterSurface />
       <WaterFoam />
+      <BackgroundPhoto />
       
       {/* Grid helper for reference */}
       <gridHelper args={[14, 14, "#444", "#222"]} position={[0, -1, 0]} />
@@ -545,7 +678,13 @@ export const Ship3DVisualization = () => {
       <CardContent className="space-y-4">
         <div className="relative w-full h-[300px] bg-gradient-to-b from-sky-900/50 to-blue-950/50 rounded-lg overflow-hidden border border-border/40">
           <Suspense fallback={<LoadingFallback />}>
-            <Canvas shadows>
+            <Canvas
+              shadows
+              gl={{ antialias: true }}
+              onCreated={({ gl }) => {
+                gl.shadowMap.type = THREE.PCFSoftShadowMap;
+              }}
+            >
               <Scene heelAngle={heelAngle} trimAngle={trimAngle} showTanks={showTanks} tankLevels={tankLevels} />
             </Canvas>
           </Suspense>
