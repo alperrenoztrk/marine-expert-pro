@@ -438,25 +438,12 @@ const LoadingFallback = () => (
 export const Ship3DVisualization = () => {
   const [heelAngle, setHeelAngle] = useState<number>(0);
   const [trimAngle, setTrimAngle] = useState<number>(0);
-  const [showTanks, setShowTanks] = useState<boolean>(true);
-  const [tankLevels, setTankLevels] = useState<number[]>([75, 50, 85, 60, 40, 90]);
-
-  const tankNames = ["FP İskele", "FP Sancak", "Kargo 1P", "Kargo 1S", "Yakıt P", "Yakıt S"];
-  const tankColors = ["#3498db", "#3498db", "#2ecc71", "#2ecc71", "#e67e22", "#e67e22"];
+  const showTanks = true;
+  const tankLevels = [75, 50, 85, 60, 40, 90];
 
   const handleReset = () => {
     setHeelAngle(0);
     setTrimAngle(0);
-  };
-
-  const handleResetTanks = () => {
-    setTankLevels([75, 50, 85, 60, 40, 90]);
-  };
-
-  const updateTankLevel = (index: number, value: number) => {
-    const newLevels = [...tankLevels];
-    newLevels[index] = value;
-    setTankLevels(newLevels);
   };
 
   return (
@@ -466,9 +453,7 @@ export const Ship3DVisualization = () => {
           <Move3d className="h-5 w-5 text-primary" />
           3D Gemi Simülasyonu
         </CardTitle>
-        <CardDescription className="text-xs">
-          Mouse ile döndür, kaydır ve yakınlaştır. Tank seviyelerini ayarla.
-        </CardDescription>
+        <CardDescription className="text-xs">Mouse ile döndür, kaydır ve yakınlaştır.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="relative w-full h-[300px] bg-gradient-to-b from-sky-900/50 to-blue-950/50 rounded-lg overflow-hidden border border-border/40">
@@ -494,24 +479,6 @@ export const Ship3DVisualization = () => {
             </div>
           </div>
 
-          {/* Tank legend */}
-          {showTanks && (
-            <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] space-y-0.5">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded" style={{ backgroundColor: "#3498db" }} />
-                <span>Balast Tankı</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded" style={{ backgroundColor: "#2ecc71" }} />
-                <span>Kargo Tankı</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded" style={{ backgroundColor: "#e67e22" }} />
-                <span>Yakıt Tankı</span>
-              </div>
-            </div>
-          )}
-          
           {/* Angle display */}
           <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] font-mono">
             <div>Meyil: {heelAngle}°</div>
@@ -558,45 +525,6 @@ export const Ship3DVisualization = () => {
           </div>
         </div>
 
-        {/* Tank Controls */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label className="text-xs font-semibold">Tank Seviyeleri</Label>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowTanks(!showTanks)}
-              className="h-6 text-[10px] px-2"
-            >
-              {showTanks ? "Tankları Gizle" : "Tankları Göster"}
-            </Button>
-          </div>
-          
-          {showTanks && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {tankNames.map((name, index) => (
-                <div key={index} className="space-y-1 p-2 rounded bg-muted/30 border border-border/30">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 rounded" style={{ backgroundColor: tankColors[index] }} />
-                      <span className="text-[10px] font-medium">{name}</span>
-                    </div>
-                    <span className="text-[10px] font-mono">{tankLevels[index]}%</span>
-                  </div>
-                  <Slider
-                    value={[tankLevels[index]]}
-                    onValueChange={(v) => updateTankLevel(index, v[0])}
-                    min={0}
-                    max={100}
-                    step={5}
-                    className="h-1"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        
         <div className="flex gap-2">
           <Button 
             variant="outline" 
@@ -607,17 +535,6 @@ export const Ship3DVisualization = () => {
             <RotateCcw className="h-3 w-3 mr-1" />
             Açıları Sıfırla
           </Button>
-          {showTanks && (
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={handleResetTanks}
-              className="flex-1 h-8 text-xs"
-            >
-              <RotateCcw className="h-3 w-3 mr-1" />
-              Tankları Sıfırla
-            </Button>
-          )}
         </div>
         
         <div className="grid grid-cols-2 gap-2 text-xs">
