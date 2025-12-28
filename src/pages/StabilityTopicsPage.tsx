@@ -717,6 +717,15 @@ export default function StabilityTopicsPage() {
           </div>
         </section>
 
+        {/* Interactive Tools Section */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Calculator className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">İnteraktif Hesaplama Araçları</h2>
+          </div>
+          <InteractiveStabilityTools />
+        </section>
+
         {/* Back to Lessons */}
         <div className="flex justify-center pt-2">
           <Link
