@@ -83,6 +83,25 @@ export default function NavigationTopicsPage() {
                             </li>
                           ))}
                         </ul>
+                        {page.detailBlocks && page.detailBlocks.length > 0 && (
+                          <div className="grid gap-2 text-[11px] text-muted-foreground">
+                            {page.detailBlocks.map((block) => (
+                              <div key={`${page.title}-${block.title}`} className="rounded-lg border border-border/40 bg-background/70 px-3 py-2">
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                                  {block.title}
+                                </p>
+                                <ul className="mt-2 space-y-1">
+                                  {block.items.map((item) => (
+                                    <li key={`${page.title}-${block.title}-${item}`} className="flex items-start gap-2">
+                                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary/70" />
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                         <div className="mt-auto rounded-lg border border-dashed border-border/70 bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
                           JPG Görsel: <span className="font-medium text-foreground">{page.imageSrc}</span>
                           <span className="block text-[10px] text-muted-foreground/80">{page.imageAlt}</span>
