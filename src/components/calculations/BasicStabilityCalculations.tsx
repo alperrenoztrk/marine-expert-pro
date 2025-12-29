@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Calculator } from "lucide-react";
+import { InputError } from "@/components/ui/input-error";
+import { validateRange, validateUnit } from "@/utils/validation/validationHelpers";
 
 export const BasicStabilityCalculations = () => {
   const [kmInputs, setKmInputs] = useState({ kb: "", bm: "" });
@@ -24,35 +26,72 @@ export const BasicStabilityCalculations = () => {
   ]);
   const [lcgResult, setLcgResult] = useState<number | null>(null);
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const setError = (key: string, message: string | null) => {
+    setErrors((prev) => {
+      if (!message && !prev[key]) return prev;
+      if (!message) {
+        const { [key]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [key]: message };
+    });
+  };
+
+  const validateField = (
+    key: string,
+    rawValue: string,
+    label: string,
+    unit: string,
+    min: number,
+    max: number,
+    example: string
+  ) => {
+    const unitError = validateUnit(rawValue, { label, unit, example });
+    if (unitError) {
+      setError(key, unitError);
+      return null;
+    }
+    const numeric = Number(rawValue);
+    if (Number.isNaN(numeric)) {
+      setError(key, `${label} sayısal olmalıdır. Doğru kullanım: ${example} ${unit}.`);
+      return null;
+    }
+    const rangeError = validateRange(numeric, { label, unit, min, max, example });
+    setError(key, rangeError);
+    return rangeError ? null : numeric;
+  };
+
   const calcKM = () => {
-    const kb = parseFloat(kmInputs.kb);
-    const bm = parseFloat(kmInputs.bm);
-    if ([kb, bm].some(Number.isNaN)) return;
+    const kb = validateField("km-kb", kmInputs.kb, "KB", "m", 0, 20, "2.4");
+    const bm = validateField("km-bm", kmInputs.bm, "BM", "m", 0, 30, "3.1");
+    if (kb === null || bm === null) return;
     setKm(kb + bm);
   };
 
   const calcBM = () => {
-    const L = parseFloat(bmInputs.length);
-    const B = parseFloat(bmInputs.breadth);
-    const T = parseFloat(bmInputs.draft);
-    const Cb = parseFloat(bmInputs.cb || "0.7");
-    if ([L, B, T, Cb].some(Number.isNaN) || L <= 0 || B <= 0 || T <= 0) return;
+    const L = validateField("bm-l", bmInputs.length, "Boy (L)", "m", 10, 450, "120");
+    const B = validateField("bm-b", bmInputs.breadth, "En (B)", "m", 2, 80, "20");
+    const T = validateField("bm-t", bmInputs.draft, "Su Çekimi", "m", 0.5, 35, "6.5");
+    const Cb = validateField("bm-cb", bmInputs.cb || "0.7", "Blok Katsayısı (Cb)", "-", 0.45, 0.95, "0.72");
+    if ([L, B, T, Cb].some((val) => val === null)) return;
     const Ixx = (L * Math.pow(B, 3)) / 12;
     const volumeDisplacement = L * B * T * Cb;
     setBm(Ixx / volumeDisplacement);
   };
 
   const calcTPC = () => {
-    const awp = parseFloat(tpcInputs.awp);
-    const rho = parseFloat(tpcInputs.rho);
-    if ([awp, rho].some(Number.isNaN)) return;
+    const awp = validateField("tpc-awp", tpcInputs.awp, "Su Hattı Alanı (Awp)", "m²", 10, 50000, "820");
+    const rho = validateField("tpc-rho", tpcInputs.rho, "Su Yoğunluğu", "t/m³", 0.98, 1.03, "1.025");
+    if (awp === null || rho === null) return;
     setTpc((awp * rho) / 100);
   };
 
   const calcDraftChange = () => {
-    const V = parseFloat(draftInputs.volume);
-    const awp = parseFloat(draftInputs.awp);
-    if ([V, awp].some(Number.isNaN) || awp === 0) return;
+    const V = validateField("draft-v", draftInputs.volume, "Hacim (V)", "m³", 1, 200000, "3200");
+    const awp = validateField("draft-awp", draftInputs.awp, "Su Hattı Alanı (Awp)", "m²", 10, 50000, "850");
+    if (V === null || awp === null || awp === 0) return;
     setDraftChange(V / awp);
   };
 
@@ -60,8 +99,8 @@ export const BasicStabilityCalculations = () => {
     let sumW = 0;
     let sumWx = 0;
     for (const it of lcgItems) {
-      const w = parseFloat(it.weight);
-      const x = parseFloat(it.lcg);
+      const w = Number(it.weight);
+      const x = Number(it.lcg);
       if (!Number.isNaN(w) && !Number.isNaN(x)) {
         sumW += w; sumWx += w * x;
       }
@@ -84,10 +123,12 @@ export const BasicStabilityCalculations = () => {
                 <div>
                   <Label>KB (m)</Label>
                   <Input value={kmInputs.kb} onChange={(e)=>setKmInputs(p=>({...p, kb:e.target.value}))} />
+                  <InputError message={errors["km-kb"]} />
                 </div>
                 <div>
                   <Label>BM (m)</Label>
                   <Input value={kmInputs.bm} onChange={(e)=>setKmInputs(p=>({...p, bm:e.target.value}))} />
+                  <InputError message={errors["km-bm"]} />
                 </div>
                 <div className="flex items-end"/>
                 <Button className="col-span-3" onClick={calcKM}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
@@ -103,18 +144,22 @@ export const BasicStabilityCalculations = () => {
                 <div>
                   <Label>L (m)</Label>
                   <Input value={bmInputs.length} onChange={(e)=>setBmInputs(p=>({...p, length:e.target.value}))} />
+                  <InputError message={errors["bm-l"]} />
                 </div>
                 <div>
                   <Label>B (m)</Label>
                   <Input value={bmInputs.breadth} onChange={(e)=>setBmInputs(p=>({...p, breadth:e.target.value}))} />
+                  <InputError message={errors["bm-b"]} />
                 </div>
                 <div>
                   <Label>Su Çekimi (m)</Label>
                   <Input value={bmInputs.draft} onChange={(e)=>setBmInputs(p=>({...p, draft:e.target.value}))} />
+                  <InputError message={errors["bm-t"]} />
                 </div>
                 <div>
                   <Label>Cb</Label>
                   <Input value={bmInputs.cb} onChange={(e)=>setBmInputs(p=>({...p, cb:e.target.value}))} />
+                  <InputError message={errors["bm-cb"]} />
                 </div>
                 <Button className="col-span-2" onClick={calcBM}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
               </div>
@@ -127,10 +172,12 @@ export const BasicStabilityCalculations = () => {
                 <div>
                   <Label>Awp (m²)</Label>
                   <Input value={tpcInputs.awp} onChange={(e)=>setTpcInputs(p=>({...p, awp:e.target.value}))} />
+                  <InputError message={errors["tpc-awp"]} />
                 </div>
                 <div>
                   <Label>ρ (t/m³)</Label>
                   <Input value={tpcInputs.rho} onChange={(e)=>setTpcInputs(p=>({...p, rho:e.target.value}))} />
+                  <InputError message={errors["tpc-rho"]} />
                 </div>
                 <Button className="col-span-2" onClick={calcTPC}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
               </div>
@@ -145,10 +192,12 @@ export const BasicStabilityCalculations = () => {
                 <div>
                   <Label>Hacim V (m³)</Label>
                   <Input value={draftInputs.volume} onChange={(e)=>setDraftInputs(p=>({...p, volume:e.target.value}))} />
+                  <InputError message={errors["draft-v"]} />
                 </div>
                 <div>
                   <Label>Awp (m²)</Label>
                   <Input value={draftInputs.awp} onChange={(e)=>setDraftInputs(p=>({...p, awp:e.target.value}))} />
+                  <InputError message={errors["draft-awp"]} />
                 </div>
                 <Button className="col-span-2" onClick={calcDraftChange}><Calculator className="h-4 w-4 mr-1"/>Hesapla</Button>
               </div>
@@ -187,4 +236,3 @@ export const BasicStabilityCalculations = () => {
     </div>
   );
 };
-

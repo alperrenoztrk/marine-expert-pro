@@ -1,4 +1,5 @@
 import type { InputConstraint } from "./inputConstraints";
+import { validateRange, validateUnit } from "./validationHelpers";
 
 export type ValidationResult = {
   value: number | null;
@@ -11,15 +12,27 @@ export function validateNumberInput(rawValue: string, constraint: InputConstrain
       ? { value: null, error: `${constraint.label} (${constraint.unit}) zorunludur.` }
       : { value: null };
   }
+  const unitError = validateUnit(rawValue, {
+    label: constraint.label,
+    unit: constraint.unit,
+    example: `${constraint.min}`
+  });
+  if (unitError) {
+    return { value: null, error: unitError };
+  }
   const numeric = Number(rawValue);
   if (Number.isNaN(numeric)) {
     return { value: null, error: `${constraint.label} sayısal olmalıdır.` };
   }
-  if (numeric < constraint.min || numeric > constraint.max) {
-    return {
-      value: numeric,
-      error: `${constraint.label} ${constraint.min}–${constraint.max} ${constraint.unit} aralığında olmalıdır.`
-    };
+  const rangeError = validateRange(numeric, {
+    label: constraint.label,
+    unit: constraint.unit,
+    min: constraint.min,
+    max: constraint.max,
+    example: `${constraint.min}`
+  });
+  if (rangeError) {
+    return { value: numeric, error: rangeError };
   }
   return { value: numeric };
 }
