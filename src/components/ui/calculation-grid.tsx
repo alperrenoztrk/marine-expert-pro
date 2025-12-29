@@ -49,16 +49,22 @@ export function CalculationMenuCard({ id, title, icon: Icon, to, href, disabled 
         <div className="rounded-lg border border-slate-800/60 bg-slate-950/60 p-3 text-xs text-slate-200">
           <div className="font-medium text-slate-100">Formül</div>
           <div className="mt-1 leading-relaxed text-slate-300">{formulaMeta.formula}</div>
-          <div className="mt-2">
+          <div className="mt-3 font-medium text-slate-100">Kaynak</div>
+          {formulaMeta.sourceUrl ? (
             <a
               href={formulaMeta.sourceUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sky-400 underline-offset-2 transition hover:text-sky-300 hover:underline"
+              className="mt-1 inline-flex text-sky-400 underline-offset-2 transition hover:text-sky-300 hover:underline"
             >
-              Kaynak: {formulaMeta.sourceLabel}
+              {formulaMeta.source} — {formulaMeta.edition}
             </a>
-          </div>
+          ) : (
+            <div className="mt-1 text-slate-300">
+              {formulaMeta.source} — {formulaMeta.edition}
+            </div>
+          )}
+          <div className="mt-2 text-[11px] text-slate-400">Son güncelleme: {formulaMeta.lastUpdated}</div>
         </div>
       )}
     </div>

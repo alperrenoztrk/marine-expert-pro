@@ -11,6 +11,7 @@ import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import { useToast } from "@/hooks/use-toast";
 import { HydrostaticCalculations } from "../../services/hydrostaticCalculations";
 import DraftSurveyMenu from "./DraftSurveyMenu";
+import { FormulaReference } from "@/components/ui/formula-reference";
 import { stabilityInputConstraints } from "@/utils/validation/inputConstraints";
 import { validateNumberInput } from "@/utils/validation/validateInput";
 import { validateStabilityLogic } from "@/utils/validation/validationHelpers";
@@ -1577,6 +1578,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                 </p>
               </div>
             )}
+            <FormulaReference metaId="gm" />
           </div>
           )}
 
@@ -1635,6 +1637,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                 </div>
               </div>
             )}
+            <FormulaReference metaId="gz" />
           </div>
           )}
 
@@ -2315,6 +2318,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                 </div>
               </div>
             )}
+            <FormulaReference metaId="fsm" />
           </div>
 
           {/* 5. GZ ve Dinamik Stabilite */}
