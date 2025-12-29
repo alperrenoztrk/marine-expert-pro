@@ -551,9 +551,9 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
 
   return (
     <div className="rounded-xl border bg-white/5 p-4 shadow" aria-label={title}>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col gap-3 mb-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="font-semibold text-lg">{title} — 3D (Beta)</h3>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
           <button
             className="px-3 py-1 rounded border hover:bg-white/10"
             onClick={() => setIsPlaying((p) => !p)}
@@ -568,28 +568,28 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
           >
             Baştan
           </button>
-          <label className="ml-2 text-sm">Gerçekçilik</label>
+          <label>Gerçekçilik</label>
           <input
             type="checkbox"
             checked={realistic}
             onChange={(e) => setRealistic(e.target.checked)}
             aria-label="Gerçekçi fizik"
           />
-          <label className="ml-2 text-sm">Kılavuz</label>
+          <label>Kılavuz</label>
           <input
             type="checkbox"
             checked={showGuide}
             onChange={(e) => setShowGuide(e.target.checked)}
             aria-label="Kılavuz çizgisi"
           />
-          <label className="ml-2 text-sm">Bloom</label>
+          <label>Bloom</label>
           <input
             type="checkbox"
             checked={bloomEnabled}
             onChange={(e) => setBloomEnabled(e.target.checked)}
             aria-label="Bloom efekti"
           />
-          <label className="ml-2 text-sm">Hız</label>
+          <label>Hız</label>
           <input
             type="range"
             min={0.25}
@@ -597,15 +597,15 @@ export default function Knot3DViewer({ title, knot, defaultSpeed = 1 }: Knot3DVi
             step={0.25}
             value={speed}
             onChange={(e) => setSpeed(parseFloat(e.target.value))}
-            className="w-32"
+            className="w-24 sm:w-32"
             aria-label="Hız"
           />
           <span className="w-10 text-right text-sm">{speed.toFixed(2)}x</span>
-          <label className="ml-2 text-sm">Kalite</label>
+          <label>Kalite</label>
           <select
             value={quality}
             onChange={(e) => setQuality(e.target.value as any)}
-            className="px-2 py-1 rounded border bg-black/20 text-sm"
+            className="px-2 py-1 rounded border bg-black/20 text-xs sm:text-sm max-w-full"
             aria-label="Görüntü kalitesi"
           >
             <option value="auto">Otomatik</option>
