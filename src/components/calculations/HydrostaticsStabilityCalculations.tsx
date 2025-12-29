@@ -13,6 +13,8 @@ import { HydrostaticCalculations } from "../../services/hydrostaticCalculations"
 import DraftSurveyMenu from "./DraftSurveyMenu";
 import { stabilityInputConstraints } from "@/utils/validation/inputConstraints";
 import { validateNumberInput } from "@/utils/validation/validateInput";
+import { validateConsistency } from "@/utils/validation/validationHelpers";
+import { InputError } from "@/components/ui/input-error";
 import {
   ShipGeometry,
   WeightDistribution,
@@ -109,6 +111,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
     kb: "", bm: "", kg: ""
   });
   const [gmResult, setGmResult] = useState<number | null>(null);
+  const [gmConsistencyErrors, setGmConsistencyErrors] = useState<string[]>([]);
 
   const [newKGInputs, setNewKGInputs] = useState({
     totalMoment: "", totalWeight: ""
@@ -271,6 +274,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   // Missing state variables
   const [gzInputs, setGzInputs] = useState({ gm: "", angle: "" });
   const [gzResult, setGzResult] = useState<number | null>(null);
+  const [gzWarning, setGzWarning] = useState<string | null>(null);
 
   const gmValidation = useMemo(() => ({
     kb: validateNumberInput(gmInputs.kb, stabilityInputConstraints.gmCalculation.kb),
@@ -286,28 +290,55 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   useEffect(() => {
     if (gmValidation.kb.error || gmValidation.bm.error || gmValidation.kg.error) {
       setGmResult(null);
+      setGmConsistencyErrors([]);
       return;
     }
     if (gmValidation.kb.value === null || gmValidation.bm.value === null || gmValidation.kg.value === null) {
       setGmResult(null);
+      setGmConsistencyErrors([]);
       return;
     }
     const gm = gmValidation.kb.value + gmValidation.bm.value - gmValidation.kg.value;
     setGmResult(gm);
+    const km = gmValidation.kb.value + gmValidation.bm.value;
+    setGmConsistencyErrors(
+      validateConsistency([
+        {
+          ok: km > gmValidation.kg.value,
+          message: "Fiziksel tutarsızlık: KM > KG olmalıdır.",
+          example: "KM=8.2 m, KG=6.5 m"
+        },
+        {
+          ok: gm >= 0,
+          message: "Uyarı: GM < 0 (negatif stabilite) oluştu.",
+          example: "KB=3.1 m, BM=2.5 m, KG=6.5 m"
+        }
+      ])
+    );
   }, [gmValidation]);
 
   useEffect(() => {
     if (gzValidation.gm.error || gzValidation.angle.error) {
       setGzResult(null);
+      setGzWarning(null);
       return;
     }
     if (gzValidation.gm.value === null || gzValidation.angle.value === null) {
       setGzResult(null);
+      setGzWarning(null);
       return;
     }
     const angleRad = (gzValidation.angle.value * Math.PI) / 180;
     const gz = gzValidation.gm.value * Math.sin(angleRad);
     setGzResult(gz);
+    const warnings = validateConsistency([
+      {
+        ok: gz >= 0,
+        message: "Uyarı: GZ negatif çıktı (negatif stabilite bölgesi).",
+        example: "GM=0.3 m, φ=5°"
+      }
+    ]);
+    setGzWarning(warnings[0] ?? null);
   }, [gzValidation]);
   
   const [trimInputs, setTrimInputs] = useState({ ta: "", tf: "", length: "" });
@@ -1306,9 +1337,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gmInputs.kb}
                   onChange={(e) => setGmInputs(prev => ({ ...prev, kb: e.target.value }))}
                 />
-                {gmValidation.kb.error && (
-                  <p className="mt-1 text-xs text-red-600">{gmValidation.kb.error}</p>
-                )}
+                <InputError message={gmValidation.kb.error} />
               </div>
               <div>
                 <Label htmlFor="bm">BM (m)</Label>
@@ -1319,9 +1348,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gmInputs.bm}
                   onChange={(e) => setGmInputs(prev => ({ ...prev, bm: e.target.value }))}
                 />
-                {gmValidation.bm.error && (
-                  <p className="mt-1 text-xs text-red-600">{gmValidation.bm.error}</p>
-                )}
+                <InputError message={gmValidation.bm.error} />
               </div>
               <div>
                 <Label htmlFor="kg">KG (m)</Label>
@@ -1332,15 +1359,20 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gmInputs.kg}
                   onChange={(e) => setGmInputs(prev => ({ ...prev, kg: e.target.value }))}
                 />
-                {gmValidation.kg.error && (
-                  <p className="mt-1 text-xs text-red-600">{gmValidation.kg.error}</p>
-                )}
+                <InputError message={gmValidation.kg.error} />
               </div>
               <Button onClick={calculateGM} className="w-full">
                 <Calculator className="w-4 h-4 mr-2" />
                 Hesapla
               </Button>
             </div>
+            {gmConsistencyErrors.length > 0 && (
+              <div className="mt-2 space-y-1">
+                {gmConsistencyErrors.map((message, index) => (
+                  <InputError key={index} message={message} />
+                ))}
+              </div>
+            )}
             {gmResult !== null && (
               <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
                 <p className="font-mono text-lg">GM = {gmResult.toFixed(3)} m</p>
@@ -1369,9 +1401,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gzInputs.gm}
                   onChange={(e) => setGzInputs(prev => ({ ...prev, gm: e.target.value }))}
                 />
-                {gzValidation.gm.error && (
-                  <p className="mt-1 text-xs text-red-600">{gzValidation.gm.error}</p>
-                )}
+                <InputError message={gzValidation.gm.error} />
               </div>
               <div>
                 <Label htmlFor="gz-angle">Açı (°)</Label>
@@ -1382,15 +1412,14 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   value={gzInputs.angle}
                   onChange={(e) => setGzInputs(prev => ({ ...prev, angle: e.target.value }))}
                 />
-                {gzValidation.angle.error && (
-                  <p className="mt-1 text-xs text-red-600">{gzValidation.angle.error}</p>
-                )}
+                <InputError message={gzValidation.angle.error} />
               </div>
               <Button onClick={calculateGZ} className="w-full">
                 <Calculator className="w-4 h-4 mr-2" />
                 Hesapla
               </Button>
             </div>
+            <InputError message={gzWarning} />
             {gzResult !== null && (
               <div className="mt-3 p-3 bg-white dark:bg-gray-600 rounded border-l-4 border-green-500">
                 <p className="font-mono text-lg">GZ = {gzResult.toFixed(4)} m</p>
