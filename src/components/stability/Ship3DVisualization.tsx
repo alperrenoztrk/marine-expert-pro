@@ -25,39 +25,59 @@ interface TankProps {
   label: string;
 }
 
-const CargoTank = ({ position, size, fillLevel, color, label }: TankProps) => {
+const CargoTank = ({ position, size, fillLevel, color }: TankProps) => {
   const fillHeight = size[1] * (fillLevel / 100);
   const fillY = position[1] - size[1] / 2 + fillHeight / 2;
   
   return (
     <group>
-      {/* Tank walls (wireframe) */}
+      {/* Tank walls with glass-like appearance */}
       <mesh position={position}>
         <boxGeometry args={size} />
-        <meshStandardMaterial 
-          color="#95a5a6" 
+        <meshPhysicalMaterial 
+          color="#64748b" 
           transparent 
-          opacity={0.3}
-          wireframe
+          opacity={0.15}
+          metalness={0.8}
+          roughness={0.2}
+          transmission={0.6}
+          thickness={0.1}
         />
       </mesh>
       
-      {/* Tank frame edges */}
+      {/* Tank frame edges - more visible */}
       <lineSegments position={position}>
         <edgesGeometry args={[new THREE.BoxGeometry(...size)]} />
-        <lineBasicMaterial color="#7f8c8d" />
+        <lineBasicMaterial color="#94a3b8" linewidth={2} />
       </lineSegments>
       
-      {/* Liquid fill */}
+      {/* Liquid fill with better appearance */}
       {fillLevel > 0 && (
         <mesh position={[position[0], fillY, position[2]]}>
-          <boxGeometry args={[size[0] * 0.95, fillHeight, size[2] * 0.95]} />
-          <meshStandardMaterial 
+          <boxGeometry args={[size[0] * 0.92, fillHeight, size[2] * 0.92]} />
+          <meshPhysicalMaterial 
             color={color} 
             transparent 
-            opacity={0.7}
-            metalness={0.3}
-            roughness={0.4}
+            opacity={0.85}
+            metalness={0.2}
+            roughness={0.3}
+            clearcoat={0.4}
+            clearcoatRoughness={0.2}
+          />
+        </mesh>
+      )}
+      
+      {/* Liquid surface shimmer */}
+      {fillLevel > 0 && fillLevel < 100 && (
+        <mesh position={[position[0], position[1] - size[1] / 2 + fillHeight, position[2]]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[size[0] * 0.9, size[2] * 0.9]} />
+          <meshPhysicalMaterial 
+            color={color}
+            transparent
+            opacity={0.5}
+            metalness={0.8}
+            roughness={0.1}
+            envMapIntensity={2}
           />
         </mesh>
       )}
@@ -67,7 +87,7 @@ const CargoTank = ({ position, size, fillLevel, color, label }: TankProps) => {
 
 const Flag = ({ position }: { position: [number, number, number] }) => {
   const flagRef = useRef<THREE.Mesh>(null);
-  const geometry = useMemo(() => new THREE.PlaneGeometry(0.7, 0.4, 16, 8), []);
+  const geometry = useMemo(() => new THREE.PlaneGeometry(0.7, 0.4, 20, 12), []);
 
   useFrame(({ clock }) => {
     if (!flagRef.current) return;
@@ -77,8 +97,12 @@ const Flag = ({ position }: { position: [number, number, number] }) => {
     for (let i = 0; i < positions.count; i++) {
       const x = positions.getX(i);
       const y = positions.getY(i);
-      const wave = Math.sin(time * 3 + x * 6) * 0.05 + Math.cos(time * 2 + y * 4) * 0.03;
-      positions.setZ(i, wave + x * 0.02);
+      // More natural flag wave animation
+      const distFromPole = (x + 0.35) / 0.7; // 0 at pole, 1 at end
+      const wave1 = Math.sin(time * 4 + x * 8) * 0.04 * distFromPole;
+      const wave2 = Math.cos(time * 3 + y * 5) * 0.025 * distFromPole;
+      const wave3 = Math.sin(time * 5.5 + x * 4 + y * 3) * 0.015 * distFromPole;
+      positions.setZ(i, wave1 + wave2 + wave3 + x * 0.03 * distFromPole);
     }
 
     positions.needsUpdate = true;
@@ -87,7 +111,14 @@ const Flag = ({ position }: { position: [number, number, number] }) => {
 
   return (
     <mesh ref={flagRef} geometry={geometry} position={position} rotation={[0, Math.PI / 2, 0]}>
-      <meshStandardMaterial color="#e63946" roughness={0.6} metalness={0.1} side={THREE.DoubleSide} />
+      <meshStandardMaterial 
+        color="#dc2626" 
+        roughness={0.7} 
+        metalness={0.05} 
+        side={THREE.DoubleSide}
+        emissive="#7f1d1d"
+        emissiveIntensity={0.1}
+      />
     </mesh>
   );
 };
@@ -219,25 +250,25 @@ const getTankLayout = (shipType: ShipType) => {
 
   if (shipType === "roro") {
     return [
-      { position: [1.8, -0.1, 0], size: [1.3, 0.5, 0.9], label: "Vehicle Deck", color: "#60a5fa" },
-      { position: [-0.2, -0.1, 0], size: [1.5, 0.5, 0.9], label: "Vehicle Deck", color: "#93c5fd" },
-      { position: [-2.0, -0.1, 0], size: [0.9, 0.5, 0.9], label: "Machinery", color: "#f59e0b" },
+      { position: [1.8, -0.1, 0] as [number, number, number], size: [1.3, 0.5, 0.9] as [number, number, number], label: "Vehicle Deck", color: "#60a5fa" },
+      { position: [-0.2, -0.1, 0] as [number, number, number], size: [1.5, 0.5, 0.9] as [number, number, number], label: "Vehicle Deck", color: "#93c5fd" },
+      { position: [-2.0, -0.1, 0] as [number, number, number], size: [0.9, 0.5, 0.9] as [number, number, number], label: "Machinery", color: "#f59e0b" },
     ];
   }
 
   if (shipType === "passenger") {
     return [
-      { position: [1.5, -0.1, 0], size: [1.3, 0.45, 0.8], label: "Service Deck", color: "#38bdf8" },
-      { position: [-0.4, -0.1, 0], size: [1.4, 0.45, 0.8], label: "Service Deck", color: "#7dd3fc" },
-      { position: [-2.2, -0.1, 0], size: [0.9, 0.45, 0.8], label: "Machinery", color: "#f59e0b" },
+      { position: [1.5, -0.1, 0] as [number, number, number], size: [1.3, 0.45, 0.8] as [number, number, number], label: "Service Deck", color: "#38bdf8" },
+      { position: [-0.4, -0.1, 0] as [number, number, number], size: [1.4, 0.45, 0.8] as [number, number, number], label: "Service Deck", color: "#7dd3fc" },
+      { position: [-2.2, -0.1, 0] as [number, number, number], size: [0.9, 0.45, 0.8] as [number, number, number], label: "Machinery", color: "#f59e0b" },
     ];
   }
 
   if (shipType === "bulk") {
     return [
-      { position: [1.9, -0.1, 0], size: [1.2, 0.6, 0.8], label: "Hold 1", color: "#22c55e" },
-      { position: [0.4, -0.1, 0], size: [1.4, 0.6, 0.8], label: "Hold 2", color: "#4ade80" },
-      { position: [-1.2, -0.1, 0], size: [1.3, 0.6, 0.8], label: "Hold 3", color: "#16a34a" },
+      { position: [1.9, -0.1, 0] as [number, number, number], size: [1.2, 0.6, 0.8] as [number, number, number], label: "Hold 1", color: "#22c55e" },
+      { position: [0.4, -0.1, 0] as [number, number, number], size: [1.4, 0.6, 0.8] as [number, number, number], label: "Hold 2", color: "#4ade80" },
+      { position: [-1.2, -0.1, 0] as [number, number, number], size: [1.3, 0.6, 0.8] as [number, number, number], label: "Hold 3", color: "#16a34a" },
     ];
   }
 
@@ -277,13 +308,14 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
   const hullColor = shipConfig.hullColor;
   const hullMaterialProps = {
     color: hullColor,
-    metalness: 0.25,
-    roughness: showTanks ? 0.45 : 0.35,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.15,
-    envMapIntensity: 1.1,
+    metalness: 0.35,
+    roughness: showTanks ? 0.35 : 0.25,
+    clearcoat: 0.8,
+    clearcoatRoughness: 0.1,
+    envMapIntensity: 1.4,
     transparent: showTanks,
-    opacity: showTanks ? 0.7 : 1,
+    opacity: showTanks ? 0.75 : 1,
+    reflectivity: 0.5,
   };
 
   const portholePositions = Array.from({ length: 10 }, (_, index) => ({
@@ -314,22 +346,42 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
         <meshPhysicalMaterial {...hullMaterialProps} opacity={showTanks ? 0.55 : 0.95} />
       </RoundedBox>
       
-      {/* Hull bottom (curved) */}
+      {/* Hull bottom (curved) - anti-fouling paint */}
       <mesh position={[0, -0.55, 0]}>
         <boxGeometry args={[5.8, 0.45, 1.05]} />
-        <meshPhysicalMaterial color="#b03a2e" metalness={0.25} roughness={0.8} clearcoat={0.3} clearcoatRoughness={0.35} />
+        <meshPhysicalMaterial 
+          color="#8b1a1a" 
+          metalness={0.15} 
+          roughness={0.7} 
+          clearcoat={0.4} 
+          clearcoatRoughness={0.3}
+        />
       </mesh>
 
-      {/* Keel line */}
+      {/* Keel line - darker accent */}
       <mesh position={[0, -0.8, 0]}>
-        <boxGeometry args={[5.5, 0.05, 0.2]} />
-        <meshPhysicalMaterial color="#8e2f25" metalness={0.2} roughness={0.75} clearcoat={0.25} clearcoatRoughness={0.4} />
+        <boxGeometry args={[5.5, 0.06, 0.22]} />
+        <meshPhysicalMaterial 
+          color="#5c1515" 
+          metalness={0.3} 
+          roughness={0.6} 
+          clearcoat={0.3} 
+          clearcoatRoughness={0.35}
+        />
       </mesh>
 
-      {/* Waterline stripe */}
-      <mesh position={[0, -0.1, 0]}>
-        <boxGeometry args={[6.15, 0.05, 1.36]} />
-        <meshPhysicalMaterial color="#f1c40f" metalness={0.1} roughness={0.4} clearcoat={0.5} clearcoatRoughness={0.2} />
+      {/* Waterline stripe - polished brass look */}
+      <mesh position={[0, -0.08, 0]}>
+        <boxGeometry args={[6.15, 0.06, 1.37]} />
+        <meshPhysicalMaterial 
+          color="#f59e0b" 
+          metalness={0.7} 
+          roughness={0.2} 
+          clearcoat={0.8} 
+          clearcoatRoughness={0.1}
+          emissive="#78350f"
+          emissiveIntensity={0.1}
+        />
       </mesh>
       
       {/* Bow (tapered) */}
@@ -654,14 +706,31 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
         </mesh>
       </group>
 
-      {/* Navigation lights */}
+      {/* Navigation lights with enhanced glow */}
       {navigationLights.map((light, index) => (
         <group key={`nav-light-${index}`}>
+          {/* Outer glow sphere */}
           <mesh position={light.position as [number, number, number]}>
-            <sphereGeometry args={[0.05, 12, 12]} />
-            <meshStandardMaterial color={light.color} emissive={light.color} emissiveIntensity={1.8} />
+            <sphereGeometry args={[0.08, 16, 16]} />
+            <meshBasicMaterial color={light.color} transparent opacity={0.3} />
           </mesh>
-          <pointLight position={light.position as [number, number, number]} intensity={1} distance={2} color={light.color} />
+          {/* Inner bright core */}
+          <mesh position={light.position as [number, number, number]}>
+            <sphereGeometry args={[0.04, 12, 12]} />
+            <meshStandardMaterial 
+              color={light.color} 
+              emissive={light.color} 
+              emissiveIntensity={3} 
+              toneMapped={false}
+            />
+          </mesh>
+          <pointLight 
+            position={light.position as [number, number, number]} 
+            intensity={1.5} 
+            distance={3} 
+            color={light.color}
+            decay={2}
+          />
         </group>
       ))}
 
@@ -715,18 +784,25 @@ const ShipModel = ({ heelAngle, trimAngle, shipType, showTanks = true, tankLevel
 const WaterSurface = () => {
   const waterRef = useRef<THREE.Mesh>(null);
   const geometryRef = useRef<THREE.PlaneGeometry>(null);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  
   const waterNormalMap = useMemo(() => {
-    const size = 64;
+    const size = 128;
     const data = new Uint8Array(size * size * 3);
     for (let i = 0; i < size * size; i++) {
-      data[i * 3] = 128 + Math.random() * 40;
-      data[i * 3 + 1] = 128 + Math.random() * 40;
+      const x = (i % size) / size;
+      const y = Math.floor(i / size) / size;
+      // Create more natural wave-like normal pattern
+      const noise1 = Math.sin(x * 20) * Math.cos(y * 15) * 20;
+      const noise2 = Math.sin(x * 8 + y * 12) * 15;
+      data[i * 3] = 128 + noise1 + Math.random() * 25;
+      data[i * 3 + 1] = 128 + noise2 + Math.random() * 25;
       data[i * 3 + 2] = 255;
     }
     const texture = new THREE.DataTexture(data, size, size, THREE.RGBFormat);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(4, 4);
+    texture.repeat.set(6, 6);
     texture.needsUpdate = true;
     return texture;
   }, []);
@@ -740,13 +816,14 @@ const WaterSurface = () => {
         const x = positions.getX(i);
         const y = positions.getY(i);
         
-        // Create wave pattern using multiple sine waves
-        const wave1 = Math.sin(x * 0.5 + time * 1.5) * 0.15;
-        const wave2 = Math.sin(y * 0.3 + time * 1.2) * 0.1;
-        const wave3 = Math.sin((x + y) * 0.4 + time * 0.8) * 0.08;
-        const wave4 = Math.cos(x * 0.8 - time * 1.0) * 0.05;
+        // Smoother, more realistic wave pattern
+        const wave1 = Math.sin(x * 0.3 + time * 0.8) * 0.12;
+        const wave2 = Math.sin(y * 0.25 + time * 0.6) * 0.08;
+        const wave3 = Math.sin((x + y) * 0.2 + time * 0.5) * 0.06;
+        const wave4 = Math.cos(x * 0.4 - time * 0.4) * 0.04;
+        const wave5 = Math.sin(x * 0.6 + y * 0.4 + time * 0.7) * 0.03;
         
-        positions.setZ(i, wave1 + wave2 + wave3 + wave4);
+        positions.setZ(i, wave1 + wave2 + wave3 + wave4 + wave5);
       }
       
       positions.needsUpdate = true;
@@ -754,26 +831,37 @@ const WaterSurface = () => {
     }
     
     if (waterRef.current) {
-      // Gentle overall bobbing
-      waterRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.02 - 0.3;
+      waterRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.25) * 0.015 - 0.3;
+    }
+    
+    // Animate normal map offset for surface detail movement
+    if (materialRef.current && materialRef.current.normalMap) {
+      const time = clock.getElapsedTime();
+      materialRef.current.normalMap.offset.set(time * 0.02, time * 0.015);
     }
   });
 
   return (
     <mesh ref={waterRef} position={[0, -0.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry ref={geometryRef} args={[22, 22, 72, 72]} />
+      <planeGeometry ref={geometryRef} args={[26, 26, 96, 96]} />
       <meshPhysicalMaterial 
-        color="#0077be"
+        ref={materialRef}
+        color="#0369a1"
         transparent 
-        opacity={0.9}
-        metalness={0.7}
-        roughness={0.15}
-        clearcoat={0.85}
-        clearcoatRoughness={0.08}
-        envMapIntensity={1.1}
+        opacity={0.92}
+        metalness={0.6}
+        roughness={0.08}
+        clearcoat={1}
+        clearcoatRoughness={0.05}
+        envMapIntensity={1.5}
         normalMap={waterNormalMap}
-        normalScale={new THREE.Vector2(0.6, 0.6)}
+        normalScale={new THREE.Vector2(0.4, 0.4)}
         side={THREE.DoubleSide}
+        ior={1.33}
+        thickness={0.5}
+        transmission={0.1}
+        sheen={0.3}
+        sheenColor={new THREE.Color("#38bdf8")}
       />
     </mesh>
   );
@@ -782,14 +870,31 @@ const WaterSurface = () => {
 // Foam/spray particles around the ship
 const WaterFoam = () => {
   const foamRef = useRef<THREE.Points>(null);
-  const particleCount = 100;
+  const particleCount = 200;
   
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 6;
-    positions[i * 3 + 1] = -0.2 + Math.random() * 0.3;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 3;
-  }
+  const { positions: initialPositions, sizes } = useMemo(() => {
+    const positions = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+    
+    for (let i = 0; i < particleCount; i++) {
+      // Concentrate foam around ship hull and wake area
+      const isWake = i < particleCount * 0.4;
+      if (isWake) {
+        // Wake foam behind ship
+        positions[i * 3] = -3 - Math.random() * 4;
+        positions[i * 3 + 1] = -0.25 + Math.random() * 0.15;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 1.5;
+      } else {
+        // Bow and side foam
+        const side = Math.random() > 0.5 ? 1 : -1;
+        positions[i * 3] = 2.5 + Math.random() * 1.5;
+        positions[i * 3 + 1] = -0.2 + Math.random() * 0.2;
+        positions[i * 3 + 2] = side * (0.7 + Math.random() * 0.5);
+      }
+      sizes[i] = 0.03 + Math.random() * 0.08;
+    }
+    return { positions, sizes };
+  }, []);
   
   useFrame(({ clock }) => {
     if (foamRef.current) {
@@ -798,10 +903,22 @@ const WaterFoam = () => {
       
       for (let i = 0; i < particleCount; i++) {
         const idx = i * 3;
-        // Gentle floating motion
-        positions.array[idx + 1] = -0.15 + Math.sin(time * 2 + i) * 0.1;
-        // Drift slowly
-        positions.array[idx] += Math.sin(time * 0.5 + i * 0.1) * 0.002;
+        const isWake = i < particleCount * 0.4;
+        
+        // Smooth bobbing motion
+        positions.array[idx + 1] = -0.2 + Math.sin(time * 1.5 + i * 0.3) * 0.08;
+        
+        if (isWake) {
+          // Wake particles drift backward slowly
+          positions.array[idx] -= 0.003;
+          if (positions.array[idx] < -8) {
+            positions.array[idx] = -3;
+            positions.array[idx + 2] = (Math.random() - 0.5) * 1.5;
+          }
+        } else {
+          // Side foam gentle drift
+          positions.array[idx] += Math.sin(time * 0.3 + i) * 0.001;
+        }
       }
       positions.needsUpdate = true;
     }
@@ -813,16 +930,23 @@ const WaterFoam = () => {
         <bufferAttribute
           attach="attributes-position"
           count={particleCount}
-          array={positions}
+          array={initialPositions}
           itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          count={particleCount}
+          array={sizes}
+          itemSize={1}
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.08}
-        color="#ffffff"
+        size={0.06}
+        color="#e0f2fe"
         transparent
-        opacity={0.6}
+        opacity={0.7}
         sizeAttenuation
+        depthWrite={false}
       />
     </points>
   );
@@ -836,7 +960,7 @@ interface SceneProps extends ShipModelProps {
 const Scene = ({ heelAngle, trimAngle, shipType, showTanks, tankLevels }: SceneProps) => {
   return (
     <>
-      <fog attach="fog" args={["#0b1f3a", 7, 22]} />
+      <fog attach="fog" args={["#0a1628", 8, 25]} />
       <PerspectiveCamera makeDefault position={[7, 3.5, 6]} fov={42} />
       <OrbitControls 
         enablePan={true}
@@ -847,18 +971,45 @@ const Scene = ({ heelAngle, trimAngle, shipType, showTanks, tankLevels }: SceneP
         autoRotate={false}
       />
       
-      <ambientLight intensity={0.25} />
-      <hemisphereLight args={["#c7d2fe", "#0b1220", 0.5]} />
-      <directionalLight position={[6, 10, 6]} intensity={1.3} castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
-      <directionalLight position={[-6, 5, -5]} intensity={0.55} />
+      {/* Improved lighting setup */}
+      <ambientLight intensity={0.35} />
+      <hemisphereLight args={["#87ceeb", "#1e3a5f", 0.6]} />
+      
+      {/* Main sun light with better shadows */}
+      <directionalLight 
+        position={[8, 12, 6]} 
+        intensity={1.5} 
+        castShadow 
+        shadow-mapSize-width={2048} 
+        shadow-mapSize-height={2048}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+      
+      {/* Fill light */}
+      <directionalLight position={[-5, 6, -4]} intensity={0.4} color="#b4d7ff" />
+      
+      {/* Rim light for ship contours */}
+      <directionalLight position={[-3, 2, -8]} intensity={0.6} color="#ff9f43" />
+      <directionalLight position={[3, 1, 8]} intensity={0.3} color="#74b9ff" />
       
       <ShipModel heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />
       <WaterSurface />
       <WaterFoam />
 
-      <ContactShadows position={[0, -0.85, 0]} opacity={0.35} scale={12} blur={2.5} far={4} />
+      <ContactShadows 
+        position={[0, -0.85, 0]} 
+        opacity={0.5} 
+        scale={14} 
+        blur={2} 
+        far={6}
+        resolution={512}
+      />
 
-      <Environment preset="sunset" />
+      <Environment preset="city" />
     </>
   );
 };
@@ -929,9 +1080,8 @@ export const Ship3DVisualization = () => {
               onCreated={({ gl }) => {
                 gl.shadowMap.type = THREE.PCFSoftShadowMap;
                 gl.toneMapping = THREE.ACESFilmicToneMapping;
-                gl.toneMappingExposure = 1.1;
+                gl.toneMappingExposure = 1.2;
                 gl.outputColorSpace = THREE.SRGBColorSpace;
-                gl.physicallyCorrectLights = true;
               }}
             >
               <Scene heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />
