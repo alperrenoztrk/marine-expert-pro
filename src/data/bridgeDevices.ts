@@ -15,10 +15,17 @@ const bridgeDeviceImages = {
   lighthouse: new URL("../assets/maritime/lighthouse.jpg", import.meta.url).href,
   oceanWaves: new URL("../assets/maritime/ocean-waves.jpg", import.meta.url).href,
   navigationCompassPhoto: new URL("../assets/maritime/navigation-compass.jpg", import.meta.url).href,
-  cargoShipOcean: new URL("../assets/maritime/cargo-ship-ocean.jpg", import.meta.url).href,
-  containerShipAerial: new URL("../assets/maritime/container-ship-aerial.jpg", import.meta.url).href,
-  sailingShipSunset: new URL("../assets/maritime/sailing-ship-sunset.jpg", import.meta.url).href,
-  yachtClearWater: new URL("../assets/maritime/yacht-clear-water.jpg", import.meta.url).href
+
+  radarDisplay: new URL("../assets/navigation/radar-display.svg", import.meta.url).href,
+  ecdisDisplay: new URL("../assets/navigation/ecdis-display.svg", import.meta.url).href,
+  gpsSatellites: new URL("../assets/navigation/gps-satellites.svg", import.meta.url).href,
+  compassDiagram: new URL("../assets/navigation/compass.svg", import.meta.url).href,
+
+  vhfRadio: new URL("../assets/navigation/vhf-radio.svg", import.meta.url).href,
+  dscDistress: new URL("../assets/navigation/dsc-distress.svg", import.meta.url).href,
+  navtexReceiver: new URL("../assets/navigation/navtex-receiver.svg", import.meta.url).href,
+  aisTargets: new URL("../assets/navigation/ais-targets.svg", import.meta.url).href,
+  autopilotControl: new URL("../assets/navigation/autopilot-control.svg", import.meta.url).href
 } as const;
 
 export type BridgeDeviceId =
@@ -59,8 +66,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Radio,
     accent: "from-sky-500 via-blue-500 to-indigo-500",
     images: [
-      bridgeDeviceImages.shipBridge,
-      bridgeDeviceImages.cargoShipOcean
+      bridgeDeviceImages.vhfRadio,
+      bridgeDeviceImages.shipBridge
     ],
     duties: [
       "Görüş hattı mesafelerde emniyet, operasyonel ve liman kılavuz çağrıları",
@@ -95,8 +102,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Waves,
     accent: "from-cyan-500 via-sky-500 to-blue-600",
     images: [
-      bridgeDeviceImages.shipBridge,
-      bridgeDeviceImages.containerShipAerial
+      bridgeDeviceImages.dscDistress,
+      bridgeDeviceImages.shipBridge
     ],
     duties: [
       "Tek tuşla MMSI ve GNSS konum bilgisi içeren distress alarmı gönderir",
@@ -131,8 +138,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Navigation,
     accent: "from-emerald-500 via-teal-500 to-cyan-500",
     images: [
-      bridgeDeviceImages.shipBridge,
-      bridgeDeviceImages.yachtClearWater
+      bridgeDeviceImages.ecdisDisplay,
+      bridgeDeviceImages.gpsSatellites
     ],
     duties: [
       "Passage plan üretimi: appraisal–planning–execution–monitoring aşamalarının dijital yönetimi",
@@ -167,8 +174,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: RadarIcon,
     accent: "from-indigo-500 via-blue-600 to-slate-700",
     images: [
-      bridgeDeviceImages.shipBridge,
-      bridgeDeviceImages.oceanWaves
+      bridgeDeviceImages.radarDisplay,
+      bridgeDeviceImages.shipBridge
     ],
     duties: [
       "Hedef tespiti ve ARPA takibiyle CPA/TCPA hesaplama",
@@ -203,8 +210,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: SatelliteDish,
     accent: "from-amber-500 via-orange-500 to-rose-500",
     images: [
-      bridgeDeviceImages.lighthouse,
-      bridgeDeviceImages.containerShipAerial
+      bridgeDeviceImages.navtexReceiver,
+      bridgeDeviceImages.lighthouse
     ],
     duties: [
       "NAVAREA/METAREA yayınlarının otomatik alımı ve kategorilere göre filtrelenmesi",
@@ -239,8 +246,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Radio,
     accent: "from-violet-500 via-indigo-500 to-blue-500",
     images: [
-      bridgeDeviceImages.cargoShipOcean,
-      bridgeDeviceImages.containerShipAerial
+      bridgeDeviceImages.aisTargets,
+      bridgeDeviceImages.gpsSatellites
     ],
     duties: [
       "Statik (IMO, MMSI, çağrı adı) ve dinamik (SOG, COG, ROT) bilgileri periyodik yayınlama",
@@ -275,8 +282,8 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Compass,
     accent: "from-slate-600 via-gray-700 to-stone-800",
     images: [
-      bridgeDeviceImages.navigationCompassPhoto,
-      bridgeDeviceImages.shipBridge
+      bridgeDeviceImages.compassDiagram,
+      bridgeDeviceImages.navigationCompassPhoto
     ],
     duties: [
       "COG/heading referansı sağlayarak radar, ECDIS, autopilot ve conning sistemlerini besler",
@@ -311,7 +318,7 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
     icon: Navigation2,
     accent: "from-teal-500 via-cyan-500 to-blue-500",
     images: [
-      bridgeDeviceImages.shipBridge,
+      bridgeDeviceImages.autopilotControl,
       bridgeDeviceImages.oceanWaves
     ],
     duties: [
@@ -347,7 +354,7 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Inmarsat-C (EGC) ve modern uydu terminalleri; NAVAREA/METAREA SafetyNET mesajları, distress/urgency haberleşmesi ve veri servisleri için kullanılır. NAVTEX kapsaması dışına çıkıldığında kritik yedek MSI kaynağıdır.",
     icon: SatelliteDish,
     accent: "from-fuchsia-500 via-violet-500 to-indigo-600",
-    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.sailingShipSunset],
+    images: [bridgeDeviceImages.gpsSatellites, bridgeDeviceImages.shipBridge],
     duties: [
       "SafetyNET MSI mesajlarının alınması ve ilgili tehlikelerin rota planına işlenmesi",
       "GMDSS prosedürlerine uygun distress/urgency trafiğinin yürütülmesi",
@@ -379,7 +386,7 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "Echo sounder, özellikle coastal/confined waters’da en kritik doğrulama sensörüdür. Draft ofseti, tide ofseti ve alarm eşikleri doğru ayarlanmadığında yanlış güven hissi yaratabilir.",
     icon: Waves,
     accent: "from-cyan-600 via-sky-600 to-blue-700",
-    images: [bridgeDeviceImages.oceanWaves, bridgeDeviceImages.cargoShipOcean],
+    images: [bridgeDeviceImages.oceanWaves, bridgeDeviceImages.shipBridge],
     duties: [
       "Derinlik trendini izleyerek sığ su riskini erken tespit",
       "Shallow/deep alarm limitlerini passage plan’a uygun yönetmek",
@@ -408,7 +415,7 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "VDR; radar/ECDIS görüntüleri, bridge audio, VHF, GNSS, gyro, log, echo sounder gibi girdileri kayıt altına alır. Kaza sonrası incelemenin temel kaynağıdır.",
     icon: HardDrive,
     accent: "from-slate-500 via-gray-600 to-zinc-700",
-    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.containerShipAerial],
+    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.radarDisplay],
     duties: [
       "VDR durum ışığı ve self-test’lerin vardiya öncesi kontrolü",
       "Girdi kaynaklarının (GPS/gyro/log/echo sounder/radar video) aktif olduğunun doğrulanması",
@@ -436,7 +443,7 @@ export const bridgeDevices: BridgeDeviceInfo[] = [
       "BNWAS, köprüüstü vardiya zabitinin uyanıklığını kontrol eder; süre sonunda onay gelmezse aşamalı alarm üretir. Tek personel vardiyada risk azaltır ve PSC denetimlerinde kritik kontrol maddesidir.",
     icon: Bell,
     accent: "from-amber-500 via-orange-500 to-rose-600",
-    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.sailingShipSunset],
+    images: [bridgeDeviceImages.shipBridge, bridgeDeviceImages.autopilotControl],
     duties: [
       "Zamanlayıcı (3–12 dk gibi) ve alarm kademelerinin gemi prosedürüne uygun ayarı",
       "Reset butonları/hareket sensörleri işlev testi ve alarm zincirinin doğrulanması",
