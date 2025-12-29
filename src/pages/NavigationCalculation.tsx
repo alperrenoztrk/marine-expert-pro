@@ -11,6 +11,7 @@ import { Calculator } from "lucide-react";
 import { OfflineLimitedNotice } from "@/components/OfflineLimitedNotice";
 import { supabase } from "@/integrations/supabase/safeClient";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { tidePorts } from "@/data/tidePorts";
 import {
   calculateGreatCircle,
   generateGreatCircleWaypoints,
@@ -284,6 +285,22 @@ export default function NavigationCalculationPage() {
   });
   const [tideHotResults, setTideHotResults] = useState<any>(null);
   const isOnline = useOnlineStatus();
+  const localPortMatches = useMemo(() => {
+    const q = tideForecastQuery.trim().toLowerCase();
+    const list = q
+      ? tidePorts.filter((port) =>
+          `${port.name} ${port.region ?? ""} ${port.country ?? ""}`.toLowerCase().includes(q)
+        )
+      : tidePorts;
+    return list.slice(0, 8);
+  }, [tideForecastQuery]);
+
+  const handleLocalPortSelect = (portName: string) => {
+    setTideForecastQuery(portName);
+    if (isOnline) {
+      void searchTideForecast(portName);
+    }
+  };
 
   const [ukcInputs, setUkcInputs] = useState({
     chartedDepthM: "",
@@ -1185,8 +1202,8 @@ export default function NavigationCalculationPage() {
     }
   };
 
-  const searchTideForecast = async () => {
-    const q = tideForecastQuery.trim();
+  const searchTideForecast = async (queryOverride?: string) => {
+    const q = (queryOverride ?? tideForecastQuery).trim();
     if (!q) return;
     if (!isOnline) {
       setTideForecastError("Offline modda gelgit tahmin servisi kullanılamaz.");
@@ -2038,13 +2055,11 @@ export default function NavigationCalculationPage() {
             <div className="rounded border p-3 bg-muted/30 space-y-3">
               <OfflineLimitedNotice
                 title="Offline modda sınırlı içerik"
-                description="Gelgit tahmin araması ve otomatik doldurma için internet gerekir. Offline modda manuel gelgit tablosu ile devam edebilirsiniz."
+                description="Liman listesi yerel paketlidir. Gelgit tahmin verisi ve otomatik doldurma için internet gerekir."
               />
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-semibold">Liman ara (Tide-Forecast)</div>
-                <Button asChild variant="outline" size="sm">
-                  <a href="https://www.tide-forecast.com" target="_blank" rel="noreferrer">Siteyi aç</a>
-                </Button>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm font-semibold">Liman ara (Yerel veri)</div>
+                <div className="text-xs text-muted-foreground">Offline uyumlu • Paketli liman listesi</div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div className="sm:col-span-3">
@@ -2068,6 +2083,25 @@ export default function NavigationCalculationPage() {
                   </Button>
                 </div>
               </div>
+              {localPortMatches.length > 0 && (
+                <div className="space-y-2">
+                  <div className="text-xs text-muted-foreground">Yerel liman önerileri:</div>
+                  <div className="flex flex-wrap gap-2">
+                    {localPortMatches.map((port) => (
+                      <Button
+                        key={port.id}
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleLocalPortSelect(port.name)}
+                      >
+                        {port.name}
+                        {port.region ? ` • ${port.region}` : ""}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {tideForecastError && (
                 <div className="text-sm text-red-600">{tideForecastError}</div>
               )}
