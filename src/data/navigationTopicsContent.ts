@@ -5,6 +5,7 @@ export interface NavigationTopicPage {
   imageSrc: string;
   imageAlt: string;
   motionCue?: string;
+  detailBlocks?: Array<{ title: string; items: string[] }>;
   references?: string[];
   updatedAt?: string;
 }
@@ -18,7 +19,7 @@ export interface NavigationTopicSection {
 
 const buildPages = (
   baseSlug: string,
-  entries: Array<{ title: string; summary: string; bullets: string[]; imageAlt: string }>
+  entries: Array<Omit<NavigationTopicPage, "imageSrc" | "references" | "updatedAt">>
 ): NavigationTopicPage[] =>
   entries.map((entry, index) => ({
     ...entry,
@@ -130,6 +131,49 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         imageAlt: "Emniyetli seyir ilkeleri özeti",
         motionCue: "Özet kartlarını dikey slide-in animasyonuyla sırala.",
       },
+      {
+        title: "5. Temel Mevki Takibi",
+        summary: "Mevki takibi, seyrin her aşamasında doğrulama ve raporlama disiplinidir.",
+        bullets: [
+          "Tanım: Mevki takibi, planlanan rota ile gerçek konumun sürekli karşılaştırılmasıdır.",
+          "Kullanım senaryosu: Kıyı yaklaşmalarında veya trafik yoğunluğunda kısa aralıklarla yapılır.",
+          "Prosedür: Görsel, radar ve ECDIS verisini tek sayfa kontrol listesiyle doğrula.",
+          "Tipik hata: Tek sensöre güvenip LOP/kerteriz doğrulamasını atlamak.",
+          "Örnek uygulama: Saat başı mevkiyi işleyip sapma limitini aştığında rota düzeltmesi yapmak.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Kıyı seyrinde 1,5 NM sapma tespit edildi, radar sabit kerteriz ile doğrulandı.",
+              "Köprüüstü ekip, bir sonraki WP’ye yaklaşmadan önce düzeltme rotası verdi.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "Gerçek rota - planlanan rota = sapma açısı.",
+              "Sapma açısı × kalan mesafe = beklenen enine sapma.",
+            ],
+          },
+          {
+            title: "Uygulama Notları",
+            items: [
+              "LOP çizimleri için zaman damgasını UTC olarak kaydet.",
+              "Kısıtlı sularda mevki aralığını 15–30 dk’ya düşür.",
+            ],
+          },
+          {
+            title: "Kritik Uyarılar",
+            items: [
+              "GNSS verisi tek başına yeterli değildir; radar/görsel teyit şarttır.",
+              "Sapma limitini aşan durumlarda köprüüstü alarmı aktif edilmeli.",
+            ],
+          },
+        ],
+        imageAlt: "Mevki takibi kontrol ve doğrulama akışı",
+        motionCue: "Mevki noktalarını kısa aralıklarla parlatan nabız animasyonu kullan.",
+      },
     ]),
     calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
   },
@@ -181,6 +225,49 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         imageAlt: "Mercator-ECIDS karşılaştırma kontrolü",
         motionCue: "Karşılaştırma kartlarını çapraz fade ile göster.",
       },
+      {
+        title: "5. Loxodromik Seyir Uygulaması",
+        summary: "Sabit kerterizli rotanın hazırlanması, harita ve pusula uyumuna dayanır.",
+        bullets: [
+          "Tanım: Loxodromik rota, meridyenleri sabit açıyla kesen sabit kerterizli seyirdir.",
+          "Kullanım senaryosu: Orta mesafeli kıyı geçişlerinde sabit pusula seyri gerektiğinde.",
+          "Prosedür: Ortalama enlemden meridyen aralığını bul, mesafe ve kerterizi Mercator’dan ölç.",
+          "Tipik hata: Ortalama enlemi yanlış seçip mesafeyi eksik/yanlış hesaplamak.",
+          "Örnek uygulama: 35°N-38°N arası rotada ortalama enlem kullanarak mesafeyi hesaplamak.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Kıyıdan 12 NM açıklıkta sabit 095° rota planlandı.",
+              "Rota sapması 1° olduğunda leeway düzeltmesi uygulandı.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "ΔBoylam (dk) = Boylam1 - Boylam2.",
+              "Mesafe (NM) = ΔBoylam × cos(ortalama enlem).",
+            ],
+          },
+          {
+            title: "Uygulama Notları",
+            items: [
+              "Gyro-magnetic düzeltmelerini rota hesabına ekle.",
+              "Harita ölçeğine göre çizim hassasiyetini artır.",
+            ],
+          },
+          {
+            title: "Kritik Uyarılar",
+            items: [
+              "Yüksek enlemde Mercator distorsiyonu rotayı yanıltabilir.",
+              "Sabit kerteriz, akıntı etkisini göz ardı etmemelidir.",
+            ],
+          },
+        ],
+        imageAlt: "Loxodromik rota hesap ve çizim adımları",
+        motionCue: "Rota çizgisini sabit kerteriz etiketiyle birlikte akıcı şekilde çiz.",
+      },
     ]),
     calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
   },
@@ -231,6 +318,49 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         ],
         imageAlt: "Büyük daire risk bölgeleri",
         motionCue: "Risk bölgelerini kırmızı dalga animasyonuyla vurgula.",
+      },
+      {
+        title: "5. Büyük Daire Uygulama Paketi",
+        summary: "Büyük daire planı, güvenli enlem ve WP setiyle işletilebilir hale gelir.",
+        bullets: [
+          "Tanım: Büyük daire, küre üzerinde en kısa mesafeyi veren rotadır.",
+          "Kullanım senaryosu: Okyanus geçişlerinde yakıt/ETA optimizasyonu hedeflenirken.",
+          "Prosedür: Başlangıç-bitiş noktalarını seç, en yüksek enlem limitini belirle, WP’leri dağıt.",
+          "Tipik hata: Kısıtlı enlem limitini dikkate almadan buz/tehlike bölgelerine yaklaşmak.",
+          "Örnek uygulama: 6 WP ile 1.200 NM rota, her 200 NM’de kerteriz değişimi kaydı.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Kuzey Atlantik geçişinde buz hattı nedeniyle 55°N limit konuldu.",
+              "WP’ler ECDIS’e girildi, rota uyumu saatlik kontrol edildi.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "GC mesafesi için küresel trigonometrik formül kullan.",
+              "WP arası kerteriz = önceki WP’den sonraki WP’ye büyük daire doğrultusu.",
+            ],
+          },
+          {
+            title: "Uygulama Notları",
+            items: [
+              "Her WP’de kerteriz değişimini seyir defterine kaydet.",
+              "Hava raporlarını GC rotasıyla örtüştür.",
+            ],
+          },
+          {
+            title: "Kritik Uyarılar",
+            items: [
+              "Büyük daire rotası, pilotaj ve kısıtlı sulara yaklaşırken kırılmalıdır.",
+              "Enlem kısıtını aşan WP, rota planını geçersiz kılar.",
+            ],
+          },
+        ],
+        imageAlt: "Büyük daire WP dağılımı ve güvenli enlem sınırı",
+        motionCue: "WP noktalarını sıralı ping animasyonuyla ve enlem limitini çizgiyle vurgula.",
       },
     ]),
     calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
@@ -741,6 +871,49 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         ],
         imageAlt: "Kısıtlı sularda emniyet kontrolü",
         motionCue: "Kontrol listesi öğelerini sırayla onay animasyonuyla göster.",
+      },
+      {
+        title: "5. Kısıtlı Suda Geçiş Planı",
+        summary: "Geçiş planı, kısıtlı sularda hız, rota ve trafik kontrolünü birleştirir.",
+        bullets: [
+          "Tanım: Kısıtlı su geçiş planı, manevra ve trafik risklerini yönetmek için hazırlanır.",
+          "Kullanım senaryosu: Dar boğaz geçişi veya liman yaklaşmasında.",
+          "Prosedür: VTS talimatlarını al, pilot brifing yap, hız limitlerini belirle.",
+          "Tipik hata: Bank effect etkisini hesaba katmadan aşırı hızla yaklaşmak.",
+          "Örnek uygulama: 8 kn hız limitinde geçiş, 0.5 NM CPA hedefiyle takip.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Dar kanal geçişinde CPA 0,4 NM’ye düştü, hız 1 kn azaltıldı.",
+              "Pilot önerisiyle rota 2° iskele düzeltildi.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "Güvenli hız = kanal genişliği × 0,1 + akıntı etkisi düzeltmesi.",
+              "CPA = hedef mesafe - rota sapma payı.",
+            ],
+          },
+          {
+            title: "Uygulama Notları",
+            items: [
+              "Echo sounder alarmını UKC limitine göre ayarla.",
+              "Vardiya devrinde VTS kanalını teyit et.",
+            ],
+          },
+          {
+            title: "Kritik Uyarılar",
+            items: [
+              "Bank effect ve squat birlikte etkiler; hızla çarpan gibi artar.",
+              "Kısıtlı görüşte hız limitini tekrar değerlendir.",
+            ],
+          },
+        ],
+        imageAlt: "Kısıtlı sularda geçiş planı ve hız kontrol şeması",
+        motionCue: "Geçiş koridorunu çizgiyle belirginleştirip hız limitini nabızla vurgula.",
       },
     ]),
     calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
