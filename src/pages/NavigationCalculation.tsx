@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
 import { Calculator } from "lucide-react";
+import { OfflineLimitedNotice } from "@/components/OfflineLimitedNotice";
 import { supabase } from "@/integrations/supabase/safeClient";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import {
   calculateGreatCircle,
   generateGreatCircleWaypoints,
@@ -281,6 +283,7 @@ export default function NavigationCalculationPage() {
     queryTimeUtc: "",
   });
   const [tideHotResults, setTideHotResults] = useState<any>(null);
+  const isOnline = useOnlineStatus();
 
   const [ukcInputs, setUkcInputs] = useState({
     chartedDepthM: "",
@@ -1185,6 +1188,10 @@ export default function NavigationCalculationPage() {
   const searchTideForecast = async () => {
     const q = tideForecastQuery.trim();
     if (!q) return;
+    if (!isOnline) {
+      setTideForecastError("Offline modda gelgit tahmin servisi kullanılamaz.");
+      return;
+    }
     setTideForecastLoading(true);
     setTideForecastError(null);
     setTideForecastSuggestions([]);
@@ -1213,6 +1220,10 @@ export default function NavigationCalculationPage() {
   }
 
   const selectTideForecastSuggestion = async (s: TideForecastSuggestion) => {
+    if (!isOnline) {
+      setTideForecastError("Offline modda gelgit tahmin servisi kullanılamaz.");
+      return;
+    }
     setTideForecastLoading(true);
     setTideForecastError(null);
     setTideForecastData(null);
@@ -2025,6 +2036,10 @@ export default function NavigationCalculationPage() {
             </div>
 
             <div className="rounded border p-3 bg-muted/30 space-y-3">
+              <OfflineLimitedNotice
+                title="Offline modda sınırlı içerik"
+                description="Gelgit tahmin araması ve otomatik doldurma için internet gerekir. Offline modda manuel gelgit tablosu ile devam edebilirsiniz."
+              />
               <div className="flex items-center justify-between gap-3">
                 <div className="text-sm font-semibold">Liman ara (Tide-Forecast)</div>
                 <Button asChild variant="outline" size="sm">
@@ -2048,8 +2063,8 @@ export default function NavigationCalculationPage() {
                   />
                 </div>
                 <div className="flex items-end">
-                  <Button type="button" className="w-full" onClick={searchTideForecast} disabled={tideForecastLoading || !tideForecastQuery.trim()}>
-                    {tideForecastLoading ? "Aranıyor..." : "Ara"}
+                  <Button type="button" className="w-full" onClick={searchTideForecast} disabled={tideForecastLoading || !tideForecastQuery.trim() || !isOnline}>
+                    {tideForecastLoading ? "Aranıyor..." : isOnline ? "Ara" : "Offline"}
                   </Button>
                 </div>
               </div>
@@ -2068,7 +2083,7 @@ export default function NavigationCalculationPage() {
                         size="sm"
                         variant="secondary"
                         onClick={() => selectTideForecastSuggestion(s)}
-                        disabled={tideForecastLoading}
+                        disabled={tideForecastLoading || !isOnline}
                       >
                         {s.name}{s.region ? ` — ${s.region}` : ""}
                       </Button>
