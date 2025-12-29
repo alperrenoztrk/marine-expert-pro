@@ -78,8 +78,9 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
       },
     ]),
     calculationLinks: [
-      { title: "Seyir Hesaplamaları", href: "/navigation" },
-      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+      { title: "Büyük Daire Hesabı", href: "/navigation/calc/gc" },
+      { title: "Loxodromik Rota", href: "/navigation/calc/rhumb" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
     ],
   },
   {
@@ -131,7 +132,11 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Özet kartlarını dikey slide-in animasyonuyla sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Zaman–Mesafe–Hız", href: "/navigation/calc/eta" },
+      { title: "DR / Enlem–Boylam", href: "/navigation/calc/position" },
+      { title: "Mesafe Hesaplama", href: "/navigation/calc/distance" },
+    ],
   },
   {
     id: "mercator-loxodromik-seyir",
@@ -182,7 +187,11 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Karşılaştırma kartlarını çapraz fade ile göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    calculationLinks: [
+      { title: "Rhumb Line (Mercator)", href: "/navigation/calc/rhumb" },
+      { title: "Middle Latitude Sailing", href: "/navigation/calc/midlat" },
+      { title: "Chart Ölçeği", href: "/navigation/calc/chart" },
+    ],
   },
   {
     id: "buyuk-daire-seyri",
@@ -233,7 +242,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Risk bölgelerini kırmızı dalga animasyonuyla vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    calculationLinks: [
+      { title: "Büyük Daire Hesabı", href: "/navigation/calc/gc" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "astronomik-navigasyon",
@@ -284,7 +296,11 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Yedek yöntem akışını sağdan sola geçişle vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    calculationLinks: [
+      { title: "Astronomik Seyir (Almanac + LOP)", href: "/navigation/calc/astro" },
+      { title: "Sight Reduction", href: "/navigation/calc/sight" },
+      { title: "Göksel Navigasyon", href: "/navigation/calc/celestial" },
+    ],
   },
   {
     id: "gelgit-hesaplari",
@@ -335,7 +351,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Operasyon simgelerini dalga hareketiyle hafifçe titreştir.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Gelgit + UKC", href: "/navigation/calc/tides" },
+      { title: "Gelgit İnterpolasyon Rehberi", href: "/navigation/tide-tutorial" },
+    ],
   },
   {
     id: "akinti-ruzgar-duzeltmeleri",
@@ -386,7 +405,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol maddelerini sırayla onay animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Akıntı Üçgeni (CTS)", href: "/navigation/calc/current" },
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+    ],
   },
   {
     id: "gelgit-derinlik-emniyeti",
@@ -437,7 +459,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol kutularını sırayla highlight et.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Gelgit + UKC", href: "/navigation/calc/tides" },
+    ],
   },
   {
     id: "radar-navigasyonu",
@@ -488,7 +513,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol listesi başlıklarını kısa fade ile sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Radar Plot (Hedef Rota/Hız)", href: "/navigation/calc/radar" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+    ],
   },
   {
     id: "ecdis",
@@ -539,7 +567,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını yatay kaydırma animasyonuyla sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "ECDIS (XTD / Look-ahead)", href: "/navigation/calc/ecdis" },
+      { title: "Chart Ölçeği", href: "/navigation/calc/chart" },
+    ],
   },
   {
     id: "gps-gnss",
@@ -590,7 +621,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Yedek sistem kartını sağdan içeri kaydır.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "DR / Enlem–Boylam", href: "/navigation/calc/position" },
+      { title: "Fixing Position", href: "/navigation/calc/fix" },
+    ],
   },
   {
     id: "seyir-emniyeti",
@@ -641,7 +675,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Acil durum kartlarını kısa titreşim animasyonuyla vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    calculationLinks: [
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+    ],
   },
   {
     id: "insan-faktoru",
@@ -692,7 +729,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol maddelerini sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    calculationLinks: [
+      { title: "Acil Durum", href: "/navigation/calc/emergency" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+    ],
   },
   {
     id: "kisitli-sularda-seyir",
@@ -743,7 +783,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol listesi öğelerini sırayla onay animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
+    ],
   },
   {
     id: "kiyi-seyri",
@@ -794,7 +837,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını yumuşak shake animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
+      { title: "Fixing Position", href: "/navigation/calc/fix" },
+    ],
   },
   {
     id: "harita-isaretleri",
@@ -845,7 +891,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Not kartlarını yukarıdan aşağıya akışla sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    calculationLinks: [
+      { title: "Chart Ölçeği", href: "/navigation/calc/chart" },
+      { title: "Mesafe Hesaplamaları", href: "/navigation/calc/distance" },
+    ],
   },
   {
     id: "pilotaj",
@@ -896,7 +945,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "İletişim bağlantılarını parıltı animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "seyir-plani-denetimi",
@@ -947,7 +999,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata önleme ikonlarını pulse animasyonla vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+      { title: "Zaman–Mesafe–Hız", href: "/navigation/calc/eta" },
+    ],
   },
   {
     id: "agir-hava-seyri",
@@ -998,7 +1053,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Vardiya bloklarını yukarıdan aşağıya kaydır.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+      { title: "Akıntı Üçgeni (CTS)", href: "/navigation/calc/current" },
+    ],
   },
   {
     id: "buzlu-sularda-seyir",
@@ -1049,7 +1107,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Emniyet ikonlarını sıralı parıltı ile vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+    ],
   },
   {
     id: "manevra-karakteristikleri",
@@ -1100,7 +1161,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Eğitim adımlarını sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+    ],
   },
   {
     id: "ekonomik-seyir",
@@ -1151,7 +1215,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "KPI kartlarını yumuşak pulse animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Zaman–Mesafe–Hız", href: "/navigation/calc/eta" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "ais-kullanimi",
@@ -1202,7 +1269,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Log kayıt kartlarını sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+    ],
   },
   {
     id: "colreg-pratikleri",
@@ -1253,7 +1323,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını kısa shake animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    calculationLinks: [
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+    ],
   },
   {
     id: "kaza-ornekleri",
@@ -1304,7 +1377,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Döngü ikonlarını yumuşak dönüş animasyonuyla canlandır.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    calculationLinks: [
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+    ],
   },
   {
     id: "simulator-modulleri",
@@ -1355,7 +1431,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Değerlendirme kartını aşağıdan yukarıya kaydır.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Radar Plot (Hedef Rota/Hız)", href: "/navigation/calc/radar" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+    ],
   },
   {
     id: "seyir-belgeleri",
@@ -1406,7 +1485,10 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol maddelerini sırayla onay animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+      { title: "Zaman–Mesafe–Hız", href: "/navigation/calc/eta" },
+    ],
   },
   {
     id: "vardiya-yonetimi",
@@ -1457,6 +1539,9 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Performans kartlarını sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    calculationLinks: [
+      { title: "Acil Durum", href: "/navigation/calc/emergency" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+    ],
   },
 ];
