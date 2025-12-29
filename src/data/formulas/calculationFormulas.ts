@@ -1,16 +1,16 @@
-import stabilityFormulas from "@/data/formulas/stability.json";
-import hydrostaticsFormulas from "@/data/formulas/hydrostatics.json";
+import { moduleFormulaSources } from "@/data/formulas/moduleFormulaSources";
 
 export type CalculationFormulaMeta = {
   title: string;
   formula: string;
   source: string;
   edition: string;
+  referenceYear: string;
   lastUpdated: string;
   sourceUrl?: string;
 };
 
 export const calculationFormulas: Record<string, CalculationFormulaMeta> = {
-  ...stabilityFormulas,
-  ...hydrostaticsFormulas,
+  ...moduleFormulaSources.stability,
+  ...moduleFormulaSources.hydrostatics,
 };

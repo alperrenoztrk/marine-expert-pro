@@ -57,14 +57,17 @@ export function CalculationMenuCard({ id, title, icon: Icon, to, href, disabled 
               rel="noreferrer"
               className="mt-1 inline-flex text-sky-400 underline-offset-2 transition hover:text-sky-300 hover:underline"
             >
-              {formulaMeta.source} — {formulaMeta.edition}
+              {formulaMeta.source}
             </a>
           ) : (
             <div className="mt-1 text-slate-300">
-              {formulaMeta.source} — {formulaMeta.edition}
+              {formulaMeta.source}
             </div>
           )}
-          <div className="mt-2 text-[11px] text-slate-400">Son güncelleme: {formulaMeta.lastUpdated}</div>
+          <div className="mt-2 text-[11px] text-slate-400">
+            Sürüm / referans yılı: {formulaMeta.edition} / {formulaMeta.referenceYear}
+          </div>
+          <div className="mt-1 text-[11px] text-slate-500">Son güncelleme: {formulaMeta.lastUpdated}</div>
         </div>
       )}
     </div>

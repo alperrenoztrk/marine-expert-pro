@@ -4,6 +4,7 @@
     "formula": "GM = KB + BM − KG",
     "source": "SNAME - Principles of Naval Architecture",
     "edition": "1988",
+    "referenceYear": "1988",
     "lastUpdated": "2024-09-15"
   },
   "gz": {
@@ -11,6 +12,7 @@
     "formula": "GZ = GM · sin(φ)",
     "source": "IMO Intact Stability Code",
     "edition": "MSC.267(85)",
+    "referenceYear": "2008",
     "lastUpdated": "2024-09-15"
   },
   "fsm": {
@@ -18,6 +20,7 @@
     "formula": "FSM = ρ · L · B³ / 12; ΔKG = FSM / Δ",
     "source": "IMO Intact Stability Code, Free Surface Appendix",
     "edition": "MSC.267(85)",
+    "referenceYear": "2008",
     "lastUpdated": "2024-09-15"
   },
   "solas-criteria": {
@@ -25,6 +28,7 @@
     "formula": "θ = 57.3 × GHM / (Δ × GM); limit 12°",
     "source": "SOLAS 1974, Bölüm VI; International Grain Code",
     "edition": "2016 Consolidated Edition",
+    "referenceYear": "2016",
     "lastUpdated": "2024-09-15"
   }
 }
