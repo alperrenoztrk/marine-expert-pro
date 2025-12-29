@@ -1,4 +1,4 @@
 export const offlineDataMeta = {
-  lastUpdated: "2025-02-01",
-  notes: "Yerel paketli formül, tablo ve eğitim içerikleri"
+  lastUpdated: "2025-03-10",
+  notes: "Yerel paketli formül, tablo, gelgit istasyonları ve eğitim içerikleri"
 };
