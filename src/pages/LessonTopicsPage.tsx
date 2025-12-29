@@ -9,6 +9,10 @@ interface TopicContent {
   description: string;
   keyTopics: { title: string; description: string }[];
   resources: { title: string; href: string }[];
+  contentStandards?: {
+    minPagesPerTopic: number;
+    imageFormat: string;
+  };
 }
 
 const topicsData: Record<string, TopicContent> = {
@@ -32,13 +36,39 @@ const topicsData: Record<string, TopicContent> = {
   navigation: {
     title: "Seyir Konu Anlatımı",
     description: "Deniz seyir teknikleri, astronomik navigasyon ve modern navigasyon sistemleri hakkında detaylı eğitim.",
+    contentStandards: {
+      minPagesPerTopic: 4,
+      imageFormat: "JPG",
+    },
     keyTopics: [
       { title: "Rota Hesaplamaları", description: "Great circle ve rhumb line rota hesapları" },
+      { title: "Seyir Temelleri", description: "Seyre hazırlık, planlama-icra-izleme döngüsü" },
+      { title: "Mercator & Loxodromik Seyir", description: "Mercator harita mantığı ve sabit rota hesapları" },
+      { title: "Büyük Daire Seyri", description: "Great circle avantajları ve dönüş noktaları" },
       { title: "Astronomik Navigasyon", description: "Güneş, yıldız ve ay mevkileri" },
       { title: "Gelgit Hesapları", description: "Tide tabloları ve hesaplama yöntemleri" },
+      { title: "Akıntı & Rüzgâr Düzeltmeleri", description: "Set/drift, leeway ve rota düzeltmeleri" },
+      { title: "Gelgit & Derinlik Emniyeti", description: "UKC, squat ve derinlik marjı planlama" },
       { title: "Radar Navigasyonu", description: "ARPA ve radar görüntü yorumlama" },
       { title: "ECDIS", description: "Elektronik harita ve bilgi sistemi kullanımı" },
-      { title: "GPS ve GNSS", description: "Uydu navigasyon sistemleri ve doğruluk" }
+      { title: "GPS ve GNSS", description: "Uydu navigasyon sistemleri ve doğruluk" },
+      { title: "Seyir Emniyeti", description: "Risk değerlendirmesi ve emniyetli hız ilkeleri" },
+      { title: "İnsan Faktörü", description: "BRM, yorgunluk ve navigasyon hataları" },
+      { title: "Kısıtlı Sularda Seyir", description: "Dar kanal, bank effect ve sığ su etkileri" },
+      { title: "Kıyı Seyri", description: "Transitte seyir, paralel indeks ve kıyı işaretleri" },
+      { title: "Harita İşaretleri", description: "IALA şamandıraları ve ENC sembolleri" },
+      { title: "Pilotaj", description: "Pilot alma, liman giriş-çıkış prosedürleri" },
+      { title: "Seyir Planı Denetimi", description: "Passage plan kontrol kriterleri ve checklist" },
+      { title: "Ağır Hava Seyri", description: "Fırtınada rota ve hız ayarları" },
+      { title: "Buzlu Sularda Seyir", description: "Ice class, buz gözlemi ve güvenli rota" },
+      { title: "Manevra Karakteristikleri", description: "Turning circle, stop mesafesi ve tepki" },
+      { title: "Ekonomik Seyir", description: "Yakıt optimizasyonu ve TCE yaklaşımı" },
+      { title: "AIS Kullanımı", description: "AIS sınırlamaları ve radar çapraz kontrol" },
+      { title: "COLREG Pratikleri", description: "Karşılaşma manevraları ve ışık karakterleri" },
+      { title: "Kaza Örnekleri", description: "COLREG ihlali ve near-miss dersleri" },
+      { title: "Simülatör Modülleri", description: "Radar/ARPA ve gözetim senaryoları" },
+      { title: "Seyir Belgeleri", description: "Köprüüstü kayıtları ve logbook düzeni" },
+      { title: "Vardiya Yönetimi", description: "Vardiya devri ve lookout sorumlulukları" }
     ],
     resources: [
       { title: "Seyir Hesaplamaları", href: "/navigation" },
@@ -266,6 +296,19 @@ export default function LessonTopicsPage() {
               </Link>
             ))}
           </div>
+          {topicContent.contentStandards && (
+            <div className="mt-5 rounded-xl border border-border/40 bg-background/60 px-4 py-3 text-xs text-muted-foreground">
+              Her başlık en az{" "}
+              <span className="font-semibold text-foreground">
+                {topicContent.contentStandards.minPagesPerTopic}
+              </span>{" "}
+              sayfa olarak planlanır. Görseller{" "}
+              <span className="font-semibold text-foreground">
+                {topicContent.contentStandards.imageFormat}
+              </span>{" "}
+              formatında hazırlanır.
+            </div>
+          )}
         </section>
 
         {categoryId === "stability" && (
