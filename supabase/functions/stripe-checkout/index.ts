@@ -106,7 +106,17 @@ serve(async (req: Request) => {
       );
     }
 
-    const body = (await req.json().catch(() => ({}))) as CreateCheckoutBody;
+    const body = (await req.json().catch(() => ({}))) as CreateCheckoutBody & { test?: boolean };
+    
+    // Health check request
+    if (body.test === true) {
+      const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+      return new Response(
+        JSON.stringify({ status: stripeKey ? "configured" : "missing_key" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
     return await createStripeCheckoutSession(body);
   } catch (e) {
     console.error("Function error:", e);

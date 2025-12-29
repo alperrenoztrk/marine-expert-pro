@@ -60,12 +60,13 @@ export function APIStatusIndicator() {
 
     // Check Stripe (try to invoke function to see if configured)
     try {
-      const { error } = await supabase.functions.invoke('stripe-checkout', {
+      const { data, error } = await supabase.functions.invoke('stripe-checkout', {
         body: { test: true }
       });
+      const isConfigured = data?.status === 'configured';
       updatedApis.push({
         name: 'Stripe',
-        status: error?.message?.includes('Missing') ? 'inactive' : 'active',
+        status: isConfigured ? 'active' : 'inactive',
         description: 'Ödeme sistemi'
       });
     } catch {
@@ -76,14 +77,15 @@ export function APIStatusIndicator() {
       });
     }
 
-    // Check Lovable AI (check if edge function exists)
+    // Check Lovable AI (check if edge function exists and is configured)
     try {
-      const { error } = await supabase.functions.invoke('gemini-chat', {
+      const { data, error } = await supabase.functions.invoke('gemini-chat', {
         body: { test: true }
       });
+      const isConfigured = data?.status === 'configured';
       updatedApis.push({
         name: 'Lovable AI',
-        status: error?.message?.includes('not found') ? 'inactive' : 'active',
+        status: isConfigured ? 'active' : 'inactive',
         description: 'AI özellikleri'
       });
     } catch {
