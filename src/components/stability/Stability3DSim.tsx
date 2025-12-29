@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, PerspectiveCamera, RoundedBox } from "@react-three/drei";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,36 @@ import { Label } from "@/components/ui/label";
 import * as THREE from "three";
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const useSmoothedValue = (target: number, smoothing = 5.5) => {
+  const targetRef = useRef(target);
+  const valueRef = useRef(target);
+  const [value, setValue] = useState(target);
+
+  useEffect(() => {
+    targetRef.current = target;
+  }, [target]);
+
+  useEffect(() => {
+    let frameId = 0;
+    let lastTime = performance.now();
+
+    const tick = (time: number) => {
+      const delta = Math.min((time - lastTime) / 1000, 0.05);
+      lastTime = time;
+
+      const next = THREE.MathUtils.damp(valueRef.current, targetRef.current, smoothing, delta);
+      valueRef.current = next;
+      setValue(next);
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [smoothing]);
+
+  return value;
+};
 
 const WaterSurface = ({ color = "#4f8cc9" }: { color?: string }) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -103,10 +133,14 @@ const StabilityScene = ({
 };
 
 export const Stability3DSim = () => {
-  const [gm, setGm] = useState(0.9);
-  const [kg, setKg] = useState(6.2);
-  const [draft, setDraft] = useState(6.5);
+  const [gmInput, setGmInput] = useState(0.9);
+  const [kgInput, setKgInput] = useState(6.2);
+  const [draftInput, setDraftInput] = useState(6.5);
   const [heelAngle, setHeelAngle] = useState(0);
+
+  const gm = useSmoothedValue(gmInput, 6.2);
+  const kg = useSmoothedValue(kgInput, 6.2);
+  const draft = useSmoothedValue(draftInput, 5.2);
 
   const km = useMemo(() => gm + kg, [gm, kg]);
   const displacement = useMemo(() => 14000 * (draft / 6.5), [draft]);
@@ -167,7 +201,7 @@ export const Stability3DSim = () => {
               <span>GM (m)</span>
               <span className="font-mono">{gm.toFixed(2)}</span>
             </Label>
-            <Slider value={[gm]} min={0.2} max={2.5} step={0.05} onValueChange={(v) => setGm(v[0])} />
+            <Slider value={[gmInput]} min={0.2} max={2.5} step={0.05} onValueChange={(v) => setGmInput(v[0])} />
             <p className="text-[11px] text-muted-foreground">Düşük GM → daha yumuşak, yüksek GM → daha sert yalpa.</p>
           </div>
           <div className="space-y-2">
@@ -175,7 +209,7 @@ export const Stability3DSim = () => {
               <span>KG (m)</span>
               <span className="font-mono">{kg.toFixed(2)}</span>
             </Label>
-            <Slider value={[kg]} min={4.5} max={8.5} step={0.05} onValueChange={(v) => setKg(v[0])} />
+            <Slider value={[kgInput]} min={4.5} max={8.5} step={0.05} onValueChange={(v) => setKgInput(v[0])} />
             <p className="text-[11px] text-muted-foreground">KG yükseldikçe GM düşer ve meyil artışı hızlanır.</p>
           </div>
           <div className="space-y-2">
@@ -183,7 +217,7 @@ export const Stability3DSim = () => {
               <span>Draft (m)</span>
               <span className="font-mono">{draft.toFixed(2)}</span>
             </Label>
-            <Slider value={[draft]} min={4.5} max={8.5} step={0.05} onValueChange={(v) => setDraft(v[0])} />
+            <Slider value={[draftInput]} min={4.5} max={8.5} step={0.05} onValueChange={(v) => setDraftInput(v[0])} />
             <p className="text-[11px] text-muted-foreground">Draft arttıkça deplasman yükselir, yatma tepkisi değişir.</p>
           </div>
         </div>

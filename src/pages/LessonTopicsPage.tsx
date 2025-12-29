@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { useParams, Link } from "react-router-dom";
 import { calculationCategories } from "@/data/calculationCenterConfig";
 import { GraduationCap, BookOpen, FileText, Lightbulb, ChevronRight } from "lucide-react";
+import { Stability3DSim } from "@/components/stability/Stability3DSim";
 
 interface TopicContent {
   title: string;
@@ -266,6 +267,22 @@ export default function LessonTopicsPage() {
             ))}
           </div>
         </section>
+
+        {categoryId === "stability" && (
+          <section className="rounded-2xl border border-primary/20 bg-primary/5 p-6 backdrop-blur">
+            <div className="mb-4 flex items-center gap-2">
+              <GraduationCap className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold text-foreground">Etkileşimli Stabilite Simülasyonu</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              GM ve KG değerlerini değiştirerek geminin meyil davranışını anında gözlemleyin. Eğitim amaçlı bu simülasyon, teorik anlatımı görsel olarak
+              destekler.
+            </p>
+            <div className="mt-4">
+              <Stability3DSim />
+            </div>
+          </section>
+        )}
 
         {/* Back to Lessons */}
         <div className="flex justify-center pt-2">
