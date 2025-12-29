@@ -15,6 +15,14 @@ export type ConsistencyCheck = {
   example: string;
 };
 
+export type StabilityLogicInput = {
+  km?: number | null;
+  kg?: number | null;
+  gm?: number | null;
+  gz?: number | null;
+  displacement?: number | null;
+};
+
 const NON_NUMERIC_PATTERN = /[^0-9,\.\-+]/;
 
 export const validateUnit = (rawValue: string, options: UnitValidationOptions): string | null => {
@@ -36,3 +44,25 @@ export const validateRange = (value: number, options: RangeValidationOptions): s
 
 export const validateConsistency = (checks: ConsistencyCheck[]): string[] =>
   checks.filter((check) => !check.ok).map((check) => `${check.message} Örnek: ${check.example}.`);
+
+export const validateStabilityLogic = (input: StabilityLogicInput): string[] => {
+  const errors: string[] = [];
+
+  if (typeof input.km === "number" && typeof input.kg === "number" && input.km <= input.kg) {
+    errors.push("KM > KG olmalıdır (fiziksel stabilite şartı).");
+  }
+
+  if (typeof input.displacement === "number" && input.displacement <= 0) {
+    errors.push("Δ (deplasman) > 0 olmalıdır.");
+  }
+
+  if (typeof input.gm === "number" && input.gm < 0) {
+    errors.push("GM ≥ 0 olmalıdır.");
+  }
+
+  if (typeof input.gz === "number" && input.gz < 0) {
+    errors.push("GZ ≥ 0 olmalıdır.");
+  }
+
+  return errors;
+};
