@@ -12,7 +12,18 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const body = await req.json();
+    
+    // Health check request
+    if (body.test === true) {
+      const apiKey = Deno.env.get("LOVABLE_API_KEY");
+      return new Response(
+        JSON.stringify({ status: apiKey ? "configured" : "missing_key" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    const { messages } = body;
     if (!Array.isArray(messages)) {
       return new Response(
         JSON.stringify({ error: "messages array is required" }),
