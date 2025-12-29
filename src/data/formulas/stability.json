@@ -4,6 +4,7 @@
     "formula": "GHM = Δ · GM · tanφ; θ = 57.3 × GHM / (Δ × GM)",
     "source": "SOLAS 1974, Bölüm VI; International Grain Code",
     "edition": "2016 Consolidated Edition",
+    "referenceYear": "2016",
     "lastUpdated": "2024-09-15",
     "sourceUrl": "https://www.imo.org/en/OurWork/Safety/Pages/GrainSafety.aspx"
   },
@@ -12,6 +13,7 @@
     "formula": "GZ(φ) = KN(φ) − KG · sinφ; küçük açılar için GZ ≈ GM · sinφ",
     "source": "IMO Intact Stability Code",
     "edition": "MSC.267(85)",
+    "referenceYear": "2008",
     "lastUpdated": "2024-09-15",
     "sourceUrl": "https://www.imo.org/en/OurWork/Safety/Pages/IntactStabilityCode.aspx"
   },
@@ -20,6 +22,7 @@
     "formula": "FSM = ρ · L · B³ / 12; ΔKG = FSM / Δ",
     "source": "IMO Intact Stability Code, Free Surface Appendix",
     "edition": "MSC.267(85)",
+    "referenceYear": "2008",
     "lastUpdated": "2024-09-15",
     "sourceUrl": "https://www.imo.org/en/OurWork/Safety/Pages/IntactStabilityCode.aspx"
   },
@@ -28,6 +31,7 @@
     "formula": "M_wind = 0.5 · ρ_air · v² · A · h; tanφ = M_wind / (Δ · g · GM)",
     "source": "IMO Weather Criterion",
     "edition": "MSC.267(85)",
+    "referenceYear": "2008",
     "lastUpdated": "2024-09-15",
     "sourceUrl": "https://www.imo.org/en/OurWork/Safety/Pages/IntactStabilityCode.aspx"
   },
@@ -36,6 +40,7 @@
     "formula": "Alan(0–30°) ≥ 0.055 m·rad; Alan(0–40°) ≥ 0.090 m·rad; Max GZ ≥ 0.20 m",
     "source": "IMO Intact Stability Code",
     "edition": "MSC.267(85)",
+    "referenceYear": "2008",
     "lastUpdated": "2024-09-15",
     "sourceUrl": "https://www.imo.org/en/OurWork/Safety/Pages/IntactStabilityCode.aspx"
   },
@@ -44,6 +49,7 @@
     "formula": "ΣW = 0, ΣM = 0 ve kesit boyunca kümülatif yük yaklaşımı",
     "source": "Gemi Yapı Mukavemeti Klasik Kaynaklar",
     "edition": "Genel referans",
+    "referenceYear": "Genel referans",
     "lastUpdated": "2024-09-15",
     "sourceUrl": "https://www.imo.org/en/OurWork/Safety/Pages/ShipDesignConstruction.aspx"
   }
