@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Calculator, Ship, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceDot, ReferenceArea } from "recharts";
 import { StableTalesEngine } from "./StableTalesCalculationEngine";
 import { StableTalesInput, YukBilgisi, TankBilgisi } from "./StableTalesTypes";
 
@@ -19,7 +19,7 @@ export const StableTalesCalculator = () => {
   });
 
   const [results, setResults] = useState<any>(null);
-  const [gzCurve, setGzCurve] = useState<Array<{ aci: number; gz: number; kn: number }>>([]);
+  const [gzCurve, setGzCurve] = useState<Array<{ aci: number; gz: number; kn: number; rightingMoment: number }>>([]);
   const [yukler, setYukler] = useState<YukBilgisi[]>([]);
   const [tanklar, setTanklar] = useState<TankBilgisi[]>([]);
 
@@ -69,7 +69,8 @@ export const StableTalesCalculator = () => {
         curveData.push({
           aci,
           gz: Math.max(0, gz),
-          kn: kn
+          kn: kn,
+          rightingMoment: vesselData.deplasman * Math.max(0, gz)
         });
       }
       
@@ -356,13 +357,20 @@ export const StableTalesCalculator = () => {
                       <YAxis 
                         label={{ value: 'GZ (m)', angle: -90, position: 'insideLeft' }}
                       />
-                      <Tooltip 
-                        formatter={(value: number, name: string) => [
-                          `${value.toFixed(3)} ${name === 'gz' ? 'm' : ''}`, 
-                          name === 'gz' ? 'GZ' : 'KN'
-                        ]}
-                        labelFormatter={(value) => `Açı: ${value}°`}
+                      <Tooltip
+                        content={({ active, payload, label }) => {
+                          if (!active || !payload?.length) return null;
+                          const payloadData = payload[0]?.payload ?? {};
+                          return (
+                            <div className="rounded-lg border border-border bg-background p-3 shadow-lg">
+                              <div className="font-medium">Açı: {label}°</div>
+                              <div className="text-sm text-emerald-600">GZ: {payloadData.gz?.toFixed(3)} m</div>
+                              <div className="text-sm text-sky-600">Moment: {payloadData.rightingMoment?.toFixed(0)} t·m</div>
+                            </div>
+                          );
+                        }}
                       />
+                      <ReferenceArea x1={0} x2={90} fill="#22c55e" fillOpacity={0.08} />
                       <Line 
                         type="monotone" 
                         dataKey="gz" 
@@ -379,8 +387,26 @@ export const StableTalesCalculator = () => {
                         name="KN"
                       />
                       <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" />
+                      <ReferenceLine x={30} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: "30°", position: "top" }} />
+                      <ReferenceLine x={40} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: "40°", position: "top" }} />
+                      <ReferenceLine y={0.2} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "Min GZ 0.20 m", position: "insideTopRight" }} />
+                      {(() => {
+                        const maxPoint = gzCurve.reduce((max, point) => point.gz > max.gz ? point : max, gzCurve[0]);
+                        return (
+                          <>
+                            <ReferenceArea x1={maxPoint.aci - 2} x2={maxPoint.aci + 2} fill="#f59e0b" fillOpacity={0.12} />
+                            <ReferenceDot x={maxPoint.aci} y={maxPoint.gz} r={5} fill="hsl(var(--primary))" stroke="hsl(var(--background))" />
+                          </>
+                        );
+                      })()}
                     </LineChart>
                   </ResponsiveContainer>
+                </div>
+                <div className="mt-3 rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+                  <div className="font-semibold">Formül</div>
+                  <div>GZ(φ) = GM · sinφ; RM = Δ · GZ</div>
+                  <div className="mt-1 font-semibold">Anlam</div>
+                  <div>GZ doğrultucu kolu, RM doğrultucu momenttir.</div>
                 </div>
               </CardContent>
             </Card>
