@@ -29,7 +29,7 @@ serve(async (req) => {
       );
     }
 
-    console.log("Calling Lovable AI with", messages.length, "messages");
+    console.log("Calling Lovable AI (streaming) with", messages.length, "messages");
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -40,7 +40,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages,
-        max_tokens: 1500,
+        stream: true,
       }),
     });
 
@@ -68,13 +68,9 @@ serve(async (req) => {
       );
     }
 
-    const data = await resp.json();
-    const text = data?.choices?.[0]?.message?.content || "";
-
-    console.log("Lovable AI response received, length:", text.length);
-
-    return new Response(JSON.stringify({ text }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Stream the response back to the client
+    return new Response(resp.body, {
+      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (e) {
     console.error("Function error:", e);

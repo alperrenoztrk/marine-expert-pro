@@ -44,18 +44,67 @@ export function AssistantInterface({
     setResponse("");
 
     try {
-      const { data, error } = await supabase.functions.invoke("gemini-chat", {
-        body: {
+      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-chat`;
+      
+      const resp = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: q }
           ]
-        }
+        }),
       });
 
-      if (error) throw error;
+      if (!resp.ok) {
+        const errorData = await resp.json().catch(() => ({}));
+        throw new Error(errorData.error || "Request failed");
+      }
 
-      setResponse(data?.text || "Yanıt alınamadı");
+      if (!resp.body) throw new Error("No response body");
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+      let fullResponse = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            if (content) {
+              fullResponse += content;
+              setResponse(fullResponse);
+            }
+          } catch {
+            // Incomplete JSON, put it back
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+
       setQuestion("");
     } catch (err) {
       console.error("Assistant error:", err);
