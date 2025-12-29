@@ -3005,24 +3005,24 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   Free Surface Correction (FSC)
                 </h4>
                 <div className="overflow-x-auto text-sm">
-                  <table className="w-full">
+                  <table className="w-full table-fixed text-left">
                     <thead>
                       <tr className="text-left opacity-70">
-                        <th className="py-1 pr-4">Tank</th>
-                        <th className="py-1 pr-4">FSM (proxy)</th>
-                        <th className="py-1 pr-4">Düzeltme (m)</th>
-                        <th className="py-1 pr-4">Hesaplama Adımları</th>
-                        <th className="py-1 pr-4">Kaynak</th>
+                        <th className="py-1 pr-4 align-top break-words">Tank</th>
+                        <th className="py-1 pr-4 align-top break-words">FSM (proxy)</th>
+                        <th className="py-1 pr-4 align-top break-words">Düzeltme (m)</th>
+                        <th className="py-1 pr-4 align-top break-words max-w-[8rem]">Hesaplama Adımları</th>
+                        <th className="py-1 pr-4 align-top break-words max-w-[8rem]">Kaynak</th>
                       </tr>
                     </thead>
                     <tbody>
                       {analysis.freeSurfaceCorrections.map((f,i)=> (
                         <tr key={i} className="border-t border-amber-200/40">
-                          <td className="py-1 pr-4">{f.tankName}</td>
-                          <td className="py-1 pr-4">{(f.freeSurfaceMoment ?? 0).toFixed(4)}</td>
-                          <td className="py-1 pr-4">{(f.correction ?? 0).toFixed(4)}</td>
-                          <td className="py-1 pr-4">ΔKG = FSM / Δ</td>
-                          <td className="py-1 pr-4">IMO IS Code (MSC.267(85))</td>
+                          <td className="py-1 pr-4 align-top break-words">{f.tankName}</td>
+                          <td className="py-1 pr-4 align-top break-words">{(f.freeSurfaceMoment ?? 0).toFixed(4)}</td>
+                          <td className="py-1 pr-4 align-top break-words">{(f.correction ?? 0).toFixed(4)}</td>
+                          <td className="py-1 pr-4 align-top break-words max-w-[8rem]">ΔKG = FSM / Δ</td>
+                          <td className="py-1 pr-4 align-top break-words max-w-[8rem]">IMO IS Code (MSC.267(85))</td>
                         </tr>
                       ))}
                     </tbody>

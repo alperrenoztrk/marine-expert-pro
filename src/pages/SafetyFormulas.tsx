@@ -105,7 +105,9 @@ export default function SafetyFormulasPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-muted/30 rounded-lg p-4">
-                  <pre className="font-mono text-lg text-center">{formula.formula}</pre>
+                  <pre className="font-mono text-sm sm:text-lg text-left whitespace-pre-wrap break-words leading-relaxed">
+                    {formula.formula}
+                  </pre>
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Değişkenler:</p>

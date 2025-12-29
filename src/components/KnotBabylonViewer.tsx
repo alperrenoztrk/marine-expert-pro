@@ -335,9 +335,9 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
 
   return (
     <div className="rounded-xl border bg-white/5 p-4 shadow" aria-label={title}>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col gap-3 mb-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="font-semibold text-lg">{title} — Babylon 3D (Beta)</h3>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
           <button
             className="px-3 py-1 rounded border hover:bg-white/10"
             onClick={() => setIsPlaying((p) => !p)}
@@ -346,16 +346,16 @@ export default function KnotBabylonViewer({ title, knot, defaultSpeed = 1 }: Kno
             {isPlaying ? 'Durdur' : 'Oynat'}
           </button>
           <button className="px-3 py-1 rounded border hover:bg-white/10" onClick={handleRestart} aria-label="Baştan oynat">Baştan</button>
-          <label className="ml-2 text-sm">Hız</label>
-          <input type="range" min={0.25} max={2} step={0.25} value={speed} onChange={(e) => setSpeed(parseFloat(e.target.value))} className="w-32" aria-label="Hız" />
+          <label>Hız</label>
+          <input type="range" min={0.25} max={2} step={0.25} value={speed} onChange={(e) => setSpeed(parseFloat(e.target.value))} className="w-24 sm:w-32" aria-label="Hız" />
           <span className="w-10 text-right text-sm">{speed.toFixed(2)}x</span>
-          <label className="ml-2 text-sm">Bloom</label>
+          <label>Bloom</label>
           <input type="checkbox" checked={bloom} onChange={(e) => {
             setBloom(e.target.checked);
             if (glowRef.current) glowRef.current.isEnabled = e.target.checked;
           }} aria-label="Bloom/glow" />
-          <label className="ml-2 text-sm">Kalite</label>
-          <select value={quality} onChange={(e) => setQuality(e.target.value as any)} className="px-2 py-1 rounded border bg-black/20 text-sm" aria-label="Görüntü kalitesi">
+          <label>Kalite</label>
+          <select value={quality} onChange={(e) => setQuality(e.target.value as any)} className="px-2 py-1 rounded border bg-black/20 text-xs sm:text-sm max-w-full" aria-label="Görüntü kalitesi">
             <option value="auto">Otomatik</option>
             <option value="low">Düşük</option>
             <option value="high">Yüksek</option>
