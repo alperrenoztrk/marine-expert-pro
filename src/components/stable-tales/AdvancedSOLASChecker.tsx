@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Calculator, Shield, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart, ReferenceDot, ReferenceArea } from "recharts";
 import { StableTalesEngine } from "./StableTalesCalculationEngine";
 
 export const AdvancedSOLASChecker = () => {
@@ -20,7 +20,7 @@ export const AdvancedSOLASChecker = () => {
   });
 
   const [criteriaResults, setCriteriaResults] = useState<any>(null);
-  const [gzCurve, setGzCurve] = useState<Array<{ aci: number; gz: number; area: number }>>([]);
+  const [gzCurve, setGzCurve] = useState<Array<{ aci: number; gz: number; area: number; rightingMoment: number }>>([]);
   
   const checkSOLASCriteria = () => {
     try {
@@ -45,7 +45,8 @@ export const AdvancedSOLASChecker = () => {
         curveData.push({
           aci,
           gz: Math.max(0, gz),
-          area: cumulativeArea
+          area: cumulativeArea,
+          rightingMoment: vesselData.deplasman * Math.max(0, gz)
         });
       }
       
@@ -369,16 +370,44 @@ export const AdvancedSOLASChecker = () => {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="aci" label={{ value: 'Açı (°)', position: 'insideBottom', offset: -10 }} />
                           <YAxis label={{ value: 'GZ (m)', angle: -90, position: 'insideLeft' }} />
-                          <Tooltip 
-                            formatter={(value: number) => [`${value.toFixed(3)} m`, 'GZ']}
-                            labelFormatter={(value) => `Açı: ${value}°`}
+                          <Tooltip
+                            content={({ active, payload, label }) => {
+                              if (!active || !payload?.length) return null;
+                              const payloadData = payload[0]?.payload ?? {};
+                              return (
+                                <div className="rounded-lg border border-border bg-background p-3 shadow-lg">
+                                  <div className="font-medium">Açı: {label}°</div>
+                                  <div className="text-sm text-emerald-600">GZ: {payloadData.gz?.toFixed(3)} m</div>
+                                  <div className="text-sm text-sky-600">Moment: {payloadData.rightingMoment?.toFixed(0)} t·m</div>
+                                </div>
+                              );
+                            }}
                           />
+                          <ReferenceArea x1={0} x2={60} fill="#22c55e" fillOpacity={0.08} />
                           <Line type="monotone" dataKey="gz" stroke="hsl(var(--primary))" strokeWidth={2} />
                           <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" />
-                          <ReferenceLine x={30} stroke="hsl(var(--destructive))" strokeDasharray="5 5" />
-                          <ReferenceLine x={40} stroke="hsl(var(--destructive))" strokeDasharray="5 5" />
+                          <ReferenceLine x={30} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: "30°", position: "top" }} />
+                          <ReferenceLine x={40} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: "40°", position: "top" }} />
+                          <ReferenceLine y={criteriaResults.max_gz.required} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "Min GZ 0.20 m", position: "insideTopRight" }} />
+                          {(() => {
+                            const maxPoint = gzCurve.reduce((max, point) => point.gz > max.gz ? point : max, gzCurve[0]);
+                            return (
+                              <>
+                                <ReferenceArea x1={maxPoint.aci - 2} x2={maxPoint.aci + 2} fill="#f59e0b" fillOpacity={0.12} />
+                                <ReferenceDot x={maxPoint.aci} y={maxPoint.gz} r={5} fill="hsl(var(--primary))" stroke="hsl(var(--background))" />
+                                <ReferenceDot x={30} y={gzCurve.find(p => p.aci === 30)?.gz ?? 0} r={4} fill="#0ea5e9" stroke="hsl(var(--background))" />
+                                <ReferenceDot x={40} y={gzCurve.find(p => p.aci === 40)?.gz ?? 0} r={4} fill="#0ea5e9" stroke="hsl(var(--background))" />
+                              </>
+                            );
+                          })()}
                         </LineChart>
                       </ResponsiveContainer>
+                    </div>
+                    <div className="mt-3 rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+                      <div className="font-semibold">Formül</div>
+                      <div>GZ(φ) = GM · sinφ; RM = Δ · GZ</div>
+                      <div className="mt-1 font-semibold">Anlam</div>
+                      <div>GZ doğrultucu kolu, RM doğrultucu momenttir.</div>
                     </div>
                   </div>
 
@@ -391,15 +420,36 @@ export const AdvancedSOLASChecker = () => {
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="aci" label={{ value: 'Açı (°)', position: 'insideBottom', offset: -10 }} />
                           <YAxis label={{ value: 'Alan (m.rad)', angle: -90, position: 'insideLeft' }} />
-                          <Tooltip 
-                            formatter={(value: number) => [`${value.toFixed(4)} m.rad`, 'Kümülatif Alan']}
-                            labelFormatter={(value) => `Açı: ${value}°`}
+                          <Tooltip
+                            content={({ active, payload, label }) => {
+                              if (!active || !payload?.length) return null;
+                              const payloadData = payload[0]?.payload ?? {};
+                              return (
+                                <div className="rounded-lg border border-border bg-background p-3 shadow-lg">
+                                  <div className="font-medium">Açı: {label}°</div>
+                                  <div className="text-sm text-amber-600">Alan: {payloadData.area?.toFixed(4)} m·rad</div>
+                                  <div className="text-sm text-emerald-600">GZ: {payloadData.gz?.toFixed(3)} m</div>
+                                  <div className="text-sm text-sky-600">Moment: {payloadData.rightingMoment?.toFixed(0)} t·m</div>
+                                </div>
+                              );
+                            }}
                           />
+                          <ReferenceArea x1={30} x2={40} fill="#f97316" fillOpacity={0.12} />
                           <Area type="monotone" dataKey="area" stroke="hsl(var(--secondary))" fill="hsl(var(--secondary))" fillOpacity={0.3} />
-                          <ReferenceLine x={30} stroke="hsl(var(--destructive))" strokeDasharray="5 5" />
-                          <ReferenceLine x={40} stroke="hsl(var(--destructive))" strokeDasharray="5 5" />
+                          <ReferenceLine x={30} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: "30°", position: "top" }} />
+                          <ReferenceLine x={40} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: "40°", position: "top" }} />
+                          <ReferenceLine y={criteriaResults.area_0_30.required} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "Min A(0-30)", position: "insideTopRight" }} />
+                          <ReferenceLine y={criteriaResults.area_0_40.required} stroke="#0ea5e9" strokeDasharray="4 4" label={{ value: "Min A(0-40)", position: "insideTopRight" }} />
+                          <ReferenceDot x={30} y={gzCurve.find(p => p.aci === 30)?.area ?? 0} r={4} fill="#f97316" stroke="hsl(var(--background))" />
+                          <ReferenceDot x={40} y={gzCurve.find(p => p.aci === 40)?.area ?? 0} r={4} fill="#f97316" stroke="hsl(var(--background))" />
                         </AreaChart>
                       </ResponsiveContainer>
+                    </div>
+                    <div className="mt-3 rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+                      <div className="font-semibold">Formül</div>
+                      <div>Alan(0–30°) ≥ 0.055 m·rad; Alan(0–40°) ≥ 0.090 m·rad; Max GZ ≥ 0.20 m</div>
+                      <div className="mt-1 font-semibold">Anlam</div>
+                      <div>IS Code alan ve GZ sınırları için görsel kontrol.</div>
                     </div>
                   </div>
                 </div>

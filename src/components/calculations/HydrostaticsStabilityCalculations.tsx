@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3, Target, Zap, Anchor, Brain, Wrench } from "lucide-react";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ReferenceLine, ReferenceDot } from "recharts";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ReferenceLine, ReferenceDot, ReferenceArea, BarChart, Bar } from "recharts";
 import { Separator } from "@/components/ui/separator";
 import StabilityAssistantPopup from "@/components/StabilityAssistantPopup";
 import { useToast } from "@/hooks/use-toast";
@@ -134,6 +134,30 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   });
   const [drydockGMResult, setDrydockGMResult] = useState<number | null>(null);
 
+  const getGZPointAtAngle = (targetAngle: number) => {
+    if (!analysis) return null;
+    const { angles, gz } = analysis.stability;
+    if (!angles.length) return null;
+    let closestIndex = 0;
+    let minDiff = Infinity;
+    angles.forEach((angle, index) => {
+      const diff = Math.abs(angle - targetAngle);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = index;
+      }
+    });
+    return { angle: angles[closestIndex], gz: gz[closestIndex] };
+  };
+
+  const gzPoint30 = getGZPointAtAngle(30);
+  const gzPoint40 = getGZPointAtAngle(40);
+  const totalFSC = analysis ? HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections) : 0;
+  const correctedGM = analysis ? HydrostaticCalculations.calculateCorrectedGM(analysis.stability.gm, totalFSC) : 0;
+  const gmChangeData = analysis ? [
+    { label: "Başlangıç GM", value: analysis.stability.gm },
+    { label: "Düzeltilmiş GM", value: correctedGM }
+  ] : [];
 
   // 4. Draft Survey
   const [mmmDraftInputs, setMmmDraftInputs] = useState({
@@ -2883,6 +2907,8 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                         <th className="py-1 pr-4">Tank</th>
                         <th className="py-1 pr-4">FSM (proxy)</th>
                         <th className="py-1 pr-4">Düzeltme (m)</th>
+                        <th className="py-1 pr-4">Hesaplama Adımları</th>
+                        <th className="py-1 pr-4">Kaynak</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -2891,15 +2917,40 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                           <td className="py-1 pr-4">{f.tankName}</td>
                           <td className="py-1 pr-4">{(f.freeSurfaceMoment ?? 0).toFixed(4)}</td>
                           <td className="py-1 pr-4">{(f.correction ?? 0).toFixed(4)}</td>
+                          <td className="py-1 pr-4">ΔKG = FSM / Δ</td>
+                          <td className="py-1 pr-4">IMO IS Code (MSC.267(85))</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
-                  <div className="flex justify-between"><span>Toplam FSC</span><span className="font-mono">{HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections).toFixed(4)} m</span></div>
+                  <div className="flex justify-between"><span>Toplam FSC</span><span className="font-mono">{totalFSC.toFixed(4)} m</span></div>
                   <div className="flex justify-between"><span>Başlangıç GM</span><span className="font-mono">{analysis.stability.gm.toFixed(3)} m</span></div>
-                  <div className="flex justify-between"><span>Düzeltilmiş GM</span><span className="font-mono">{HydrostaticCalculations.calculateCorrectedGM(analysis.stability.gm, HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections)).toFixed(3)} m</span></div>
+                  <div className="flex justify-between"><span>Düzeltilmiş GM</span><span className="font-mono">{correctedGM.toFixed(3)} m</span></div>
+                </div>
+                <div className="mt-4 rounded-lg border border-amber-200/60 bg-amber-50 p-3 dark:border-amber-500/30 dark:bg-amber-500/10">
+                  <div className="mb-2 text-sm font-semibold text-amber-900 dark:text-amber-100">GM Değişimi</div>
+                  <div className="h-40">
+                    <ResponsiveContainer>
+                      <BarChart data={gmChangeData} margin={{ left: 8, right: 8 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+                        <YAxis label={{ value: 'GM (m)', angle: -90, position: 'insideLeft' }} />
+                        <Tooltip
+                          formatter={(value: number) => [`${value.toFixed(3)} m`, 'GM']}
+                        />
+                        <ReferenceLine y={0.15} stroke="#ef4444" strokeDasharray="4 4" label={{ value: "GM min 0.15 m", position: "insideTopRight" }} />
+                        <Bar dataKey="value" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="mt-2 text-xs text-amber-900/90 dark:text-amber-100/90">
+                    <div className="font-semibold">Formül</div>
+                    <div>GM_corr = GM − ΣFSC; ΔKG = FSM / Δ</div>
+                    <div className="mt-1 font-semibold">Anlam</div>
+                    <div>Serbest yüzey düzeltmesi GM'yi azaltır.</div>
+                  </div>
                 </div>
               </div>
 
@@ -2932,16 +2983,37 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                       <XAxis dataKey="angle" label={{ value: '°', position: 'insideBottomRight', offset: -4 }} />
                       <YAxis yAxisId="left" label={{ value: 'GZ (m)', angle: -90, position: 'insideLeft' }} />
                       <YAxis yAxisId="right" orientation="right" label={{ value: 'RM (kN·m)', angle: -90, position: 'insideRight' }} />
-                      <Tooltip />
+                      <Tooltip
+                        content={({ active, payload, label }) => {
+                          if (!active || !payload?.length) return null;
+                          const payloadData = payload[0]?.payload ?? {};
+                          return (
+                            <div className="rounded-lg border border-border bg-background p-3 shadow-lg">
+                              <div className="font-medium">Açı: {label}°</div>
+                              <div className="text-sm text-emerald-600">GZ: {payloadData.gz?.toFixed(3)} m</div>
+                              <div className="text-sm text-sky-600">Moment: {payloadData.rightingMoment?.toFixed(0)} kN·m</div>
+                            </div>
+                          );
+                        }}
+                      />
                       <Legend />
+                      {analysis.stability.vanishingAngle > 0 && (
+                        <ReferenceArea x1={0} x2={analysis.stability.vanishingAngle} fill="#22c55e" fillOpacity={0.08} />
+                      )}
+                      <ReferenceArea x1={analysis.stability.maxGzAngle - 1.5} x2={analysis.stability.maxGzAngle + 1.5} fill="#f59e0b" fillOpacity={0.12} />
                       <Line yAxisId="left" type="monotone" dataKey="gz" name="GZ (m)" stroke="#10b981" dot={false} />
                       <Line yAxisId="right" type="monotone" dataKey="rightingMoment" name="Sağlama Momenti (kN·m)" stroke="#6366f1" dot={false} />
                       <ReferenceLine x={analysis.stability.maxGzAngle} stroke="#10b981" strokeDasharray="3 3" label={{ value: "Max GZ", position: "top" }} />
+                      <ReferenceLine x={30} stroke="#94a3b8" strokeDasharray="2 2" label={{ value: "30°", position: "top" }} />
+                      <ReferenceLine x={40} stroke="#94a3b8" strokeDasharray="2 2" label={{ value: "40°", position: "top" }} />
+                      <ReferenceLine yAxisId="left" y={0.2} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "Min GZ 0.20 m", position: "insideTopRight" }} />
                       <ReferenceLine x={analysis.stability.vanishingAngle} stroke="#ef4444" strokeDasharray="3 3" label={{ value: "Vanishing", position: "top" }} />
                       <ReferenceLine x={analysis.stability.deckEdgeAngle} stroke="#64748b" strokeDasharray="2 2" label={{ value: "Deck Edge", position: "top" }} />
                       <ReferenceLine x={analysis.stability.downfloodingAngle} stroke="#f97316" strokeDasharray="2 2" label={{ value: "Downflooding", position: "top" }} />
                       <ReferenceDot x={analysis.stability.maxGzAngle} y={analysis.stability.maxGz} r={5} fill="#10b981" stroke="#0f172a" />
                       <ReferenceDot x={analysis.stability.vanishingAngle} y={0} r={4} fill="#ef4444" stroke="#0f172a" />
+                      {gzPoint30 && <ReferenceDot x={gzPoint30.angle} y={gzPoint30.gz} r={4} fill="#0ea5e9" stroke="#0f172a" />}
+                      {gzPoint40 && <ReferenceDot x={gzPoint40.angle} y={gzPoint40.gz} r={4} fill="#0ea5e9" stroke="#0f172a" />}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -2951,9 +3023,11 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                   <div className="flex justify-between"><span>Area 0-30°</span><span className="font-mono">{HydrostaticCalculations.calculateAreaUnderGZCurveAdaptive(analysis.stability.gz, analysis.stability.angles, 0, 30).toFixed(3)} mrad</span></div>
                   <div className="flex justify-between"><span>Area 0-40°</span><span className="font-mono">{HydrostaticCalculations.calculateAreaUnderGZCurveAdaptive(analysis.stability.gz, analysis.stability.angles, 0, 40).toFixed(3)} mrad</span></div>
                 </div>
-                <div className="mt-4 rounded-lg border border-emerald-200/60 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100">
-                  Yorum: GZ eğrisi vanishing açısına kadar pozitif kaldığı sürece gemi toparlanma kabiliyetini korur. Max GZ noktası ve downflooding açısı,
-                  operasyonda güvenli yatma limitlerinin belirlenmesinde referans alınmalıdır.
+                <div className="mt-4 rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+                  <div className="font-semibold">Formül</div>
+                  <div>GZ(φ) = KN(φ) − KG · sinφ; RM = Δ · GZ</div>
+                  <div className="mt-1 font-semibold">Anlam</div>
+                  <div>GZ doğrultucu kolu, RM doğrultucu momenttir.</div>
                 </div>
               </div>
 

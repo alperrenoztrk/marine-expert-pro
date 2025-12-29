@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceDot, Area, AreaChart } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceDot, ReferenceArea } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Anchor, Waves } from "lucide-react";
@@ -42,16 +42,32 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
   title = "GZ Stability Curve",
   interactive = true
 }) => {
+  const findClosestPoint = (targetAngle: number) => {
+    if (!data.length) return null;
+    return data.reduce((closest, point) => {
+      return Math.abs(point.angle - targetAngle) < Math.abs(closest.angle - targetAngle) ? point : closest;
+    }, data[0]);
+  };
+
+  const angle30Point = findClosestPoint(30);
+  const angle40Point = findClosestPoint(40);
+  const maxGZAngle = criticalPoints?.maxGZ.angle;
+  const positiveRangeEnd = criticalPoints?.vanishingAngle ?? data[data.length - 1]?.angle ?? 0;
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const payloadData = payload[0]?.payload ?? {};
+      const gzValue = typeof payloadData.gz === 'number' ? payloadData.gz : null;
+      const momentValue = typeof payloadData.rightingMoment === 'number' ? payloadData.rightingMoment : null;
       return (
         <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-medium">{`Angle: ${label}°`}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm">
-              {`${entry.dataKey}: ${entry.value.toFixed(3)} ${entry.dataKey === 'rightingMoment' ? 'kN·m' : 'm'}`}
-            </p>
-          ))}
+          <p className="font-medium">{`Açı: ${label}°`}</p>
+          {gzValue !== null && (
+            <p className="text-sm text-emerald-600">GZ: {gzValue.toFixed(3)} m</p>
+          )}
+          {momentValue !== null && (
+            <p className="text-sm text-sky-600">Moment: {momentValue.toFixed(0)} kN·m</p>
+          )}
           {criticalPoints && label === criticalPoints.maxGZ.angle && (
             <Badge variant="secondary" className="mt-1">Max GZ</Badge>
           )}
@@ -90,6 +106,13 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
+
+              {positiveRangeEnd > 0 && (
+                <ReferenceArea x1={0} x2={positiveRangeEnd} fill="#22c55e" fillOpacity={0.08} />
+              )}
+              {typeof maxGZAngle === 'number' && (
+                <ReferenceArea x1={maxGZAngle - 1.5} x2={maxGZAngle + 1.5} fill="#f59e0b" fillOpacity={0.12} />
+              )}
               
               {/* Main GZ curve */}
               <Line
@@ -147,6 +170,18 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
                     label={{ value: "Max GZ", position: "right" }}
                   />
                   <ReferenceLine
+                    x={30}
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeDasharray="2 2"
+                    label={{ value: "30°", position: "top" }}
+                  />
+                  <ReferenceLine
+                    x={40}
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeDasharray="2 2"
+                    label={{ value: "40°", position: "top" }}
+                  />
+                  <ReferenceLine
                     x={criticalPoints.vanishingAngle}
                     stroke="hsl(var(--destructive))"
                     strokeDasharray="3 3"
@@ -166,10 +201,25 @@ export const EnhancedStabilityChart: React.FC<StabilityChartProps> = ({
                   />
                   <ReferenceDot x={criticalPoints.maxGZ.angle} y={criticalPoints.maxGZ.value} r={5} fill="hsl(var(--primary))" stroke="hsl(var(--background))" />
                   <ReferenceDot x={criticalPoints.vanishingAngle} y={0} r={4} fill="hsl(var(--destructive))" stroke="hsl(var(--background))" />
+                  {angle30Point && (
+                    <ReferenceDot x={angle30Point.angle} y={angle30Point.gz} r={4} fill="#0ea5e9" stroke="hsl(var(--background))" />
+                  )}
+                  {angle40Point && (
+                    <ReferenceDot x={angle40Point.angle} y={angle40Point.gz} r={4} fill="#0ea5e9" stroke="hsl(var(--background))" />
+                  )}
+                  {imoCriteria && (
+                    <ReferenceLine y={0.2} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "Min GZ 0.20 m", position: "insideTopRight" }} />
+                  )}
                 </>
               )}
             </LineChart>
           </ResponsiveContainer>
+          <div className="mt-3 rounded-lg border border-slate-200/60 bg-slate-50 p-3 text-xs text-slate-700 dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+            <div className="font-semibold">Formül</div>
+            <div>GZ(φ) = KN(φ) − KG · sinφ; RM = Δ · GZ</div>
+            <div className="mt-1 font-semibold">Anlam</div>
+            <div>GZ doğrultucu kolu, RM doğrultucu momenttir.</div>
+          </div>
         </CardContent>
       </Card>
 
