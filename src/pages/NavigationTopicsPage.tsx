@@ -199,9 +199,19 @@ export default function NavigationTopicsPage() {
                   )}
                   {topic.calculationLinks && topic.calculationLinks.length > 0 && (
                     <div className="mt-4 rounded-xl border border-border/40 bg-background/60 p-4">
-                      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                        <Calculator className="h-4 w-4 text-primary" />
-                        Hesaplama Bağlantıları
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                          <Calculator className="h-4 w-4 text-primary" />
+                          Hesaplama Bağlantıları
+                        </div>
+                        {topic.calculationLinks[0] && (
+                          <Link
+                            to={topic.calculationLinks[0].href}
+                            className="text-[11px] font-semibold text-primary transition hover:text-primary/80"
+                          >
+                            Bu konuyla ilgili hesaplama
+                          </Link>
+                        )}
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {topic.calculationLinks.map((link) => (
