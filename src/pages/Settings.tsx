@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/safeClient";
 import { GoogleAuth } from "@/components/auth/GoogleAuth";
 import { SupabaseStatusIndicator } from "@/components/SupabaseStatusIndicator";
 import { APIStatusIndicator } from "@/components/APIStatusIndicator";
+import { ContentAuditController } from "@/components/ContentAuditController";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
@@ -94,6 +95,9 @@ const Settings = () => {
             
             {/* Account / Authentication */}
             <GoogleAuth />
+
+            {/* Content Audit Controller */}
+            <ContentAuditController />
             
             {/* Theme Settings */}
             <Card className="shadow-lg dark:bg-gray-800 dark:border-gray-700 nature:bg-green-50 nature:border-green-200">
