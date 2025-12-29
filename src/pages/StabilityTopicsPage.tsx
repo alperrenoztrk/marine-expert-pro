@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { InteractiveStabilityTools } from "@/components/stability/InteractiveStabilityTools";
-import { StabilityHeelTrainer } from "@/components/stability/StabilityHeelTrainer";
+import { Stability3DSim } from "@/components/stability/Stability3DSim";
 
 interface TopicSection {
   id: string;
@@ -197,7 +197,11 @@ const topicSections: TopicSection[] = [
             GM ve KG değerlerini değiştirerek geminin eğim davranışını gözlemleyin. Bu görselleştirme, stabilite kavramını sezgisel olarak
             anlamaya yardımcı olmak için hazırlanmış eğitim amaçlı bir modeldir.
           </p>
-          <StabilityHeelTrainer />
+          <Stability3DSim />
+          <p className="text-xs text-muted-foreground">
+            Not: Küçük açılar için <strong className="text-foreground">GZ ≈ GM · sinφ</strong> yaklaşımı geçerlidir; GM yükseldikçe gemi daha hızlı doğrulur,
+            KG yükseldikçe meyil artar.
+          </p>
         </div>
       </div>
     )
