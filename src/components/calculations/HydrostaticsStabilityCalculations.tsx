@@ -152,6 +152,12 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
   const gzPoint30 = getGZPointAtAngle(30);
   const gzPoint40 = getGZPointAtAngle(40);
+  const deckEdgePoint = analysis && analysis.stability.deckEdgeAngle > 0
+    ? getGZPointAtAngle(analysis.stability.deckEdgeAngle)
+    : null;
+  const downfloodingPoint = analysis && analysis.stability.downfloodingAngle > 0
+    ? getGZPointAtAngle(analysis.stability.downfloodingAngle)
+    : null;
   const totalFSC = analysis ? HydrostaticCalculations.calculateTotalFSC(analysis.freeSurfaceCorrections) : 0;
   const correctedGM = analysis ? HydrostaticCalculations.calculateCorrectedGM(analysis.stability.gm, totalFSC) : 0;
   const gmChangeData = analysis ? [
@@ -2938,9 +2944,30 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                         <XAxis dataKey="label" tick={{ fontSize: 11 }} />
                         <YAxis label={{ value: 'GM (m)', angle: -90, position: 'insideLeft' }} />
                         <Tooltip
-                          formatter={(value: number) => [`${value.toFixed(3)} m`, 'GM']}
+                          content={({ active, payload }) => {
+                            if (!active || !payload?.length) return null;
+                            const point = payload[0]?.payload as { label?: string; value?: number };
+                            if (!point) return null;
+                            return (
+                              <div className="rounded-lg border border-amber-200/60 bg-amber-50 p-2 text-xs text-amber-900 shadow-sm dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+                                <div className="font-semibold">{point.label}</div>
+                                <div>GM: {point.value?.toFixed(3)} m</div>
+                                <div className="mt-1 text-[11px] opacity-80">SOLAS GM min: 0.15 m</div>
+                              </div>
+                            );
+                          }}
                         />
-                        <ReferenceLine y={0.15} stroke="#ef4444" strokeDasharray="4 4" label={{ value: "GM min 0.15 m", position: "insideTopRight" }} />
+                        <ReferenceLine y={0.15} stroke="#ef4444" strokeDasharray="4 4" label={{ value: "SOLAS GM min 0.15 m", position: "insideTopRight" }} />
+                        {gmChangeData.map((point) => (
+                          <ReferenceDot
+                            key={point.label}
+                            x={point.label}
+                            y={point.value}
+                            r={4}
+                            fill={point.value >= 0.15 ? "#16a34a" : "#ef4444"}
+                            stroke="#0f172a"
+                          />
+                        ))}
                         <Bar dataKey="value" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
@@ -3004,9 +3031,9 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                       <Line yAxisId="left" type="monotone" dataKey="gz" name="GZ (m)" stroke="#10b981" dot={false} />
                       <Line yAxisId="right" type="monotone" dataKey="rightingMoment" name="Sağlama Momenti (kN·m)" stroke="#6366f1" dot={false} />
                       <ReferenceLine x={analysis.stability.maxGzAngle} stroke="#10b981" strokeDasharray="3 3" label={{ value: "Max GZ", position: "top" }} />
-                      <ReferenceLine x={30} stroke="#94a3b8" strokeDasharray="2 2" label={{ value: "30°", position: "top" }} />
-                      <ReferenceLine x={40} stroke="#94a3b8" strokeDasharray="2 2" label={{ value: "40°", position: "top" }} />
-                      <ReferenceLine yAxisId="left" y={0.2} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "Min GZ 0.20 m", position: "insideTopRight" }} />
+                      <ReferenceLine x={30} stroke="#94a3b8" strokeDasharray="2 2" label={{ value: "SOLAS 30°", position: "top" }} />
+                      <ReferenceLine x={40} stroke="#94a3b8" strokeDasharray="2 2" label={{ value: "SOLAS 40°", position: "top" }} />
+                      <ReferenceLine yAxisId="left" y={0.2} stroke="#14b8a6" strokeDasharray="4 4" label={{ value: "SOLAS Min GZ 0.20 m", position: "insideTopRight" }} />
                       <ReferenceLine x={analysis.stability.vanishingAngle} stroke="#ef4444" strokeDasharray="3 3" label={{ value: "Vanishing", position: "top" }} />
                       <ReferenceLine x={analysis.stability.deckEdgeAngle} stroke="#64748b" strokeDasharray="2 2" label={{ value: "Deck Edge", position: "top" }} />
                       <ReferenceLine x={analysis.stability.downfloodingAngle} stroke="#f97316" strokeDasharray="2 2" label={{ value: "Downflooding", position: "top" }} />
@@ -3014,6 +3041,8 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                       <ReferenceDot x={analysis.stability.vanishingAngle} y={0} r={4} fill="#ef4444" stroke="#0f172a" />
                       {gzPoint30 && <ReferenceDot x={gzPoint30.angle} y={gzPoint30.gz} r={4} fill="#0ea5e9" stroke="#0f172a" />}
                       {gzPoint40 && <ReferenceDot x={gzPoint40.angle} y={gzPoint40.gz} r={4} fill="#0ea5e9" stroke="#0f172a" />}
+                      {deckEdgePoint && <ReferenceDot x={deckEdgePoint.angle} y={deckEdgePoint.gz} r={4} fill="#64748b" stroke="#0f172a" />}
+                      {downfloodingPoint && <ReferenceDot x={downfloodingPoint.angle} y={downfloodingPoint.gz} r={4} fill="#f97316" stroke="#0f172a" />}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
