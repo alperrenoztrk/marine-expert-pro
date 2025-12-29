@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CoordinateInput } from "@/components/ui/coordinate-input";
 import { Calculator } from "lucide-react";
-import { supabase } from "@/integrations/supabase/safeClient";
 import {
   calculateGreatCircle,
   generateGreatCircleWaypoints,
@@ -76,6 +75,8 @@ import {
 } from "@/components/calculations/navigationMath";
 import { emptyDMS, dmsToDecimal, formatDecimalAsDMS, type DMSCoordinate } from "@/utils/coordinateUtils";
 import { parseSignedAngleEW } from "@/utils/angleParsing";
+import { tideStations } from "@/data/tideStations";
+import { calculateDailyTides } from "@/utils/tideCalculator";
 
 type TideForecastSuggestion = { id: string; name: string; region: string };
 type TideForecastEvent = {
@@ -266,7 +267,7 @@ export default function NavigationCalculationPage() {
   const [tideForecastLoading, setTideForecastLoading] = useState(false);
   const [tideForecastError, setTideForecastError] = useState<string | null>(null);
   const [tideForecastData, setTideForecastData] = useState<{
-    locationUrl: string;
+    locationUrl?: string;
     timezoneLabel: string;
     rangeM: number | null;
     events: TideForecastEvent[];
@@ -1182,27 +1183,36 @@ export default function NavigationCalculationPage() {
     }
   };
 
-  const searchTideForecast = async () => {
+  const normalizeTideQuery = (value: string) =>
+    value
+      .toLocaleLowerCase("tr-TR")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[’'`]/g, "");
+
+  const searchTideForecast = () => {
     const q = tideForecastQuery.trim();
     if (!q) return;
     setTideForecastLoading(true);
     setTideForecastError(null);
     setTideForecastSuggestions([]);
     setTideForecastData(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("tide-forecast", {
-        body: { query: q },
-      });
-      if (error) throw error;
-      const suggestions = (data?.suggestions || []) as TideForecastSuggestion[];
-      setTideForecastSuggestions(suggestions);
-      if (!suggestions.length) setTideForecastError("Eşleşme bulunamadı.");
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
-      setTideForecastError(msg);
-    } finally {
-      setTideForecastLoading(false);
+    const normalizedQuery = normalizeTideQuery(q);
+    const matches = tideStations.filter((station) => {
+      const haystack = normalizeTideQuery(`${station.name} ${station.region}`);
+      return haystack.includes(normalizedQuery);
+    });
+    const suggestions = matches.slice(0, 12).map((station) => ({
+      id: station.id,
+      name: station.name,
+      region: station.region ?? "",
+    }));
+
+    setTideForecastSuggestions(suggestions);
+    if (!suggestions.length) {
+      setTideForecastError("Eşleşme bulunamadı. Yerel liman listesiyle sınırlıdır.");
     }
+    setTideForecastLoading(false);
   };
 
   function isoToDatetimeLocalValue(iso: string): string {
@@ -1212,60 +1222,68 @@ export default function NavigationCalculationPage() {
     return d.toISOString().slice(0, 16);
   }
 
-  const selectTideForecastSuggestion = async (s: TideForecastSuggestion) => {
+  const selectTideForecastSuggestion = (s: TideForecastSuggestion) => {
     setTideForecastLoading(true);
     setTideForecastError(null);
     setTideForecastData(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("tide-forecast", {
-        body: { query: s.name, loc_id: s.id },
-      });
-      if (error) throw error;
-      const payload = data as {
-        locationUrl: string;
-        timezoneLabel: string;
-        rangeM: number | null;
-        events: TideForecastEvent[];
-      };
-
-      setTideForecastData({ ...payload, selected: s });
-
-      // Auto-fill the simple range input if available
-      if (typeof payload.rangeM === "number" && Number.isFinite(payload.rangeM)) {
-        setTideInputs((prev) => ({ ...prev, range: payload.rangeM.toFixed(2) }));
-      }
-
-      // If we have both a low and a high tide, prefill the tide table inputs
-      const lows = payload.events.filter((e) => e.type === "low");
-      const highs = payload.events.filter((e) => e.type === "high");
-      const low = lows[0];
-      const high = highs[0];
-      if (low && high) {
-        setTideTableInputs((prev) => ({
-          ...prev,
-          lowTide: String(low.heightM),
-          highTide: String(high.heightM),
-          lowTideTime: prev.lowTideTime, // keep user preference (timezone differences)
-        }));
-
-        // If timezone is GMT/UTC (timeUtcIso present), also prefill HOT inputs
-        if (low.timeUtcIso && high.timeUtcIso) {
-          setTideHotInputs((prev) => ({
-            ...prev,
-            lwTimeUtc: isoToDatetimeLocalValue(low.timeUtcIso!),
-            lwHeightM: String(low.heightM),
-            hwTimeUtc: isoToDatetimeLocalValue(high.timeUtcIso!),
-            hwHeightM: String(high.heightM),
-            queryTimeUtc: isoToDatetimeLocalValue(new Date().toISOString()),
-          }));
-        }
-      }
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
-      setTideForecastError(msg);
-    } finally {
+    const station = tideStations.find((item) => item.id === s.id);
+    if (!station) {
+      setTideForecastError("Liman bulunamadı. Lütfen tekrar deneyin.");
       setTideForecastLoading(false);
+      return;
     }
+
+    const today = new Date();
+    const daily = calculateDailyTides(today, station.highTideOffset, station.factor);
+    const rangeM = station.rangeM ?? null;
+    const events: TideForecastEvent[] = daily.events.map((event) => {
+      const heightM = rangeM ? (rangeM * event.height) / 100 : event.height / 100;
+      return {
+        type: event.type,
+        timeLabel: event.time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }),
+        dateLabel: event.time.toLocaleDateString("tr-TR"),
+        heightM,
+        timeUtcIso: event.time.toISOString(),
+      };
+    });
+
+    setTideForecastData({
+      locationUrl: station.locationUrl,
+      timezoneLabel: station.timezoneLabel,
+      rangeM,
+      events,
+      selected: s,
+    });
+
+    if (typeof rangeM === "number" && Number.isFinite(rangeM)) {
+      setTideInputs((prev) => ({ ...prev, range: rangeM.toFixed(2) }));
+    }
+
+    const lows = events.filter((e) => e.type === "low");
+    const highs = events.filter((e) => e.type === "high");
+    const low = lows[0];
+    const high = highs[0];
+    if (low && high) {
+      setTideTableInputs((prev) => ({
+        ...prev,
+        lowTide: String(low.heightM),
+        highTide: String(high.heightM),
+        lowTideTime: prev.lowTideTime,
+      }));
+
+      if (low.timeUtcIso && high.timeUtcIso) {
+        setTideHotInputs((prev) => ({
+          ...prev,
+          lwTimeUtc: isoToDatetimeLocalValue(low.timeUtcIso),
+          lwHeightM: String(low.heightM),
+          hwTimeUtc: isoToDatetimeLocalValue(high.timeUtcIso),
+          hwHeightM: String(high.heightM),
+          queryTimeUtc: isoToDatetimeLocalValue(new Date().toISOString()),
+        }));
+      }
+    }
+
+    setTideForecastLoading(false);
   };
 
   const renderInputs = () => {
@@ -2025,18 +2043,16 @@ export default function NavigationCalculationPage() {
             </div>
 
             <div className="rounded border p-3 bg-muted/30 space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-semibold">Liman ara (Tide-Forecast)</div>
-                <Button asChild variant="outline" size="sm">
-                  <a href="https://www.tide-forecast.com" target="_blank" rel="noreferrer">Siteyi aç</a>
-                </Button>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm font-semibold">Liman ara (Yerel veri)</div>
+                <div className="text-xs text-muted-foreground">Offline uyumlu • Paketli liman listesi</div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div className="sm:col-span-3">
                   <Label htmlFor="tide-forecast-query">Liman / şehir</Label>
                   <Input
                     id="tide-forecast-query"
-                    placeholder="Örn: London, Rotterdam, İzmir..."
+                    placeholder="Örn: İzmir, Antalya, Manş Denizi..."
                     value={tideForecastQuery}
                     onChange={(e) => setTideForecastQuery(e.target.value)}
                     onKeyDown={(e) => {
@@ -2085,9 +2101,11 @@ export default function NavigationCalculationPage() {
                     <span className="text-muted-foreground"> ({tideForecastData.timezoneLabel})</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Button asChild size="sm" variant="outline">
-                      <a href={tideForecastData.locationUrl} target="_blank" rel="noreferrer">Sayfayı aç</a>
-                    </Button>
+                    {tideForecastData.locationUrl && (
+                      <Button asChild size="sm" variant="outline">
+                        <a href={tideForecastData.locationUrl} target="_blank" rel="noreferrer">Sayfayı aç</a>
+                      </Button>
+                    )}
                     {typeof tideForecastData.rangeM === "number" && Number.isFinite(tideForecastData.rangeM) && (
                       <div className="text-xs text-muted-foreground flex items-center">
                         Range ≈ <span className="font-mono ml-1">{tideForecastData.rangeM.toFixed(2)} m</span>

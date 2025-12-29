@@ -2,6 +2,8 @@
 // Uses simplified luni-solar tidal model
 
 import { getMoonPhase } from './moonPhase';
+import type { PortInfo } from '@/data/tideStations';
+import { turkishPorts } from '@/data/tideStations';
 
 export interface TideEvent {
   time: Date;
@@ -216,25 +218,8 @@ export function calculateWeeklyTides(
 }
 
 // Common Turkish ports with their tidal characteristics
-export interface PortInfo {
-  name: string;
-  highTideOffset: number; // Hours after moon transit
-  tidalRange: string;     // Description
-  factor: number;         // Amplitude factor
-}
-
-export const turkishPorts: PortInfo[] = [
-  { name: "İstanbul Boğazı", highTideOffset: 2.5, tidalRange: "20-40 cm", factor: 0.4 },
-  { name: "İzmir Körfezi", highTideOffset: 3.0, tidalRange: "15-30 cm", factor: 0.3 },
-  { name: "Antalya", highTideOffset: 2.8, tidalRange: "20-35 cm", factor: 0.35 },
-  { name: "Mersin", highTideOffset: 3.2, tidalRange: "15-25 cm", factor: 0.25 },
-  { name: "Trabzon", highTideOffset: 2.0, tidalRange: "10-20 cm", factor: 0.2 },
-  { name: "Çanakkale Boğazı", highTideOffset: 2.3, tidalRange: "25-45 cm", factor: 0.45 },
-  { name: "Akdeniz (Genel)", highTideOffset: 3.0, tidalRange: "20-40 cm", factor: 0.4 },
-  { name: "Karadeniz (Genel)", highTideOffset: 2.5, tidalRange: "10-25 cm", factor: 0.25 },
-  { name: "Atlantik Kıyıları", highTideOffset: 1.5, tidalRange: "2-6 m", factor: 1.5 },
-  { name: "Manş Denizi", highTideOffset: 1.0, tidalRange: "4-12 m", factor: 2.5 },
-];
+export type { PortInfo };
+export { turkishPorts };
 
 // Get next significant tide event
 export function getNextTideEvent(fromDate: Date = new Date()): TideEvent | null {
