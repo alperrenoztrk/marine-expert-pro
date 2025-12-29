@@ -6,34 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface AIMessage {
-  role: "system" | "user" | "assistant";
-  content: string;
-  images?: string[];
-}
-
-function toGeminiContents(messages: AIMessage[]) {
-  const contents: any[] = [];
-  const sys = messages.find((m) => m.role === "system")?.content;
-  if (sys) contents.push({ role: "user", parts: [{ text: sys }] });
-
-  for (const m of messages) {
-    if (m.role === "system") continue;
-    const parts: any[] = [{ text: m.content }];
-    if (m.images && m.images.length > 0) {
-      for (const img of m.images) {
-        const [prefix, base64] = img.split(",");
-        const mime = prefix?.match(/data:(.*?);base64/)
-          ? prefix.match(/data:(.*?);base64/)![1]
-          : "image/jpeg";
-        parts.push({ inline_data: { mime_type: mime, data: base64 || img } });
-      }
-    }
-    contents.push({ role: m.role === "assistant" ? "model" : "user", parts });
-  }
-  return contents;
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -48,37 +20,33 @@ serve(async (req) => {
       );
     }
 
-    const apiKey = Deno.env.get("GEMINI_API_KEY");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
-      console.error("GEMINI_API_KEY is not configured");
+      console.error("LOVABLE_API_KEY is not configured");
       return new Response(
-        JSON.stringify({ error: "Gemini API key not configured" }),
+        JSON.stringify({ error: "Lovable API key not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const contents = toGeminiContents(messages);
+    console.log("Calling Lovable AI with", messages.length, "messages");
 
-    console.log("Calling Gemini API with", contents.length, "messages");
-
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          contents, 
-          generationConfig: { 
-            temperature: 0.2, 
-            maxOutputTokens: 1500 
-          } 
-        }),
-      }
-    );
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages,
+        max_tokens: 1500,
+      }),
+    });
 
     if (!resp.ok) {
       const err = await resp.text();
-      console.error("Gemini API error:", resp.status, err);
+      console.error("Lovable AI error:", resp.status, err);
       
       if (resp.status === 429) {
         return new Response(
@@ -87,20 +55,23 @@ serve(async (req) => {
         );
       }
       
+      if (resp.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "Payment required, please add credits to your workspace." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
       return new Response(
-        JSON.stringify({ error: "Gemini request failed", details: err }),
+        JSON.stringify({ error: "AI request failed", details: err }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const data = await resp.json();
-    const text =
-      data?.candidates?.[0]?.content?.parts
-        ?.map((p: any) => p.text)
-        .filter(Boolean)
-        .join("\n") || "";
+    const text = data?.choices?.[0]?.message?.content || "";
 
-    console.log("Gemini response received, length:", text.length);
+    console.log("Lovable AI response received, length:", text.length);
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
