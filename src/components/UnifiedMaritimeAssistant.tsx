@@ -70,23 +70,12 @@ Türkçe, düzenli ve kısa yanıtla.`
 
   const performWolframCalculation = async (query: string): Promise<string | null> => {
     try {
-      const WOLFRAM_API_KEY = 'G3KTLV-GL5URGJ7YG';
-      const response = await fetch(`https://api.wolframalpha.com/v2/query?appid=${WOLFRAM_API_KEY}&input=${encodeURIComponent(query)}&format=plaintext&output=json`);
+      const { data, error } = await supabase.functions.invoke("wolfram-calc", {
+        body: { query }
+      });
       
-      if (!response.ok) return null;
-
-      const data = await response.json();
-      
-      if (data.queryresult && data.queryresult.pods) {
-        const resultPod = data.queryresult.pods.find((pod: any) => 
-          pod.id === 'Result' || pod.title === 'Result' || pod.primary
-        );
-        
-        if (resultPod && resultPod.subpods && resultPod.subpods[0]) {
-          return resultPod.subpods[0].plaintext;
-        }
-      }
-      return null;
+      if (error) return null;
+      return data?.result || null;
     } catch (error) {
       console.error('Wolfram calculation failed:', error);
       return null;

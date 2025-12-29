@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/safeClient";
+
 interface DiagramRequest {
   description: string;
   diagramType?: 'flowchart' | 'sequence' | 'gantt' | 'pie' | 'mindmap';
@@ -13,56 +15,41 @@ interface DiagramResponse {
 }
 
 class DiagramAPIService {
-  private readonly API_KEY = 'c42914d723msh5407abeae149ee7p1bfa4fjsn0649a2daef19';
-  private readonly BASE_URL = 'https://ai-flowchart-diagram-generator.p.rapidapi.com';
-
   async generateDiagram(request: DiagramRequest): Promise<DiagramResponse> {
     try {
-      // Try different possible endpoints
-      const endpoints = [
-        '/generate',
-        '/create-diagram',
-        '/diagram',
-        '/flowchart',
-        '/generate-flowchart'
-      ];
-      
-      let lastError = '';
-      
-      for (const endpoint of endpoints) {
-        try {
-          const response = await fetch(`${this.BASE_URL}${endpoint}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-rapidapi-key': this.API_KEY,
-              'x-rapidapi-host': 'ai-flowchart-diagram-generator.p.rapidapi.com'
-            },
-            body: JSON.stringify({
-              description: request.description,
-              type: request.diagramType || 'flowchart',
-              style: request.style || 'modern',
-              format: request.format || 'svg'
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            return {
-              success: true,
-              diagram: data.diagram || data.svg || data.result || data.flowchart,
-              format: data.format || request.format || 'svg'
-            };
-          } else {
-            lastError = `${endpoint}: ${response.status} ${response.statusText}`;
-          }
-        } catch (endpointError) {
-          lastError = `${endpoint}: ${endpointError}`;
-          continue;
+      // Try to use edge function for diagram generation
+      const { data, error } = await supabase.functions.invoke("diagram-gen", {
+        body: {
+          description: request.description,
+          type: request.diagramType || 'flowchart',
+          style: request.style || 'modern',
+          format: request.format || 'svg'
         }
-             }
+      });
 
-      throw new Error(`All endpoints failed. Last error: ${lastError}`);
+      if (error) {
+        console.warn('Diagram API edge function failed, using fallback:', error);
+        // Fallback to Mermaid diagram generation
+        const mermaidDiagram = this.generateMermaidFallback(request.description);
+        if (mermaidDiagram) {
+          return {
+            success: true,
+            diagram: mermaidDiagram,
+            format: 'mermaid'
+          };
+        }
+        throw error;
+      }
+
+      if (data?.diagram) {
+        return {
+          success: true,
+          diagram: data.diagram,
+          format: data.format || request.format || 'svg'
+        };
+      }
+
+      throw new Error('No diagram returned from API');
 
     } catch (error) {
       console.error('Diagram API Error:', error);

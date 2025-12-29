@@ -1,1 +1,7 @@
 project_id = "vrpbhguztsqakvjcezeb"
+
+[functions.gemini-chat]
+verify_jwt = false
+
+[functions.wolfram-calc]
+verify_jwt = false

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Brain, Loader2, MessageCircle, CheckCircle, AlertTriangle, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/safeClient";
 
 export const PermanentAIAssistant = () => {
   const [question, setQuestion] = useState("");
@@ -12,34 +13,22 @@ export const PermanentAIAssistant = () => {
   const [conversationHistory, setConversationHistory] = useState<Array<{question: string, answer: string, timestamp: number}>>([]);
   const [apiStatus, setApiStatus] = useState<'testing' | 'active' | 'error'>('testing');
 
-  // Gerçek Gemini API Key
-  const GEMINI_API_KEY = 'AIzaSyDZ81CyuQyQ-FPRgiIx5nULrP-pS8ioZfc';
-
   useEffect(() => {
     testGeminiConnection();
   }, []);
 
   const testGeminiConnection = async () => {
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: "Test maritime connection"
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 50,
-          }
-        })
+      const { data, error } = await supabase.functions.invoke("gemini-chat", {
+        body: {
+          messages: [
+            { role: "user", content: "Test maritime connection" }
+          ]
+        }
       });
 
-      if (response.ok) {
+      if (error) throw error;
+      if (data?.text) {
         setApiStatus('active');
       } else {
         throw new Error('Connection failed');
@@ -67,34 +56,20 @@ Yanıtını şu kategoriler altında organize et:
 Türkçe olarak, teknik ama anlaşılır şekilde yanıtla.`;
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: maritimeContext
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
-          }
-        })
+      const { data, error } = await supabase.functions.invoke("gemini-chat", {
+        body: {
+          messages: [
+            { role: "user", content: maritimeContext }
+          ]
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+      if (error) {
+        throw new Error(`API Error: ${error.message}`);
       }
 
-      const data = await response.json();
-      
-      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-        return data.candidates[0].content.parts[0].text;
+      if (data?.text) {
+        return data.text;
       } else {
         throw new Error('Invalid API response format');
       }

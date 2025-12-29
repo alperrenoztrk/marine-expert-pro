@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calculator, Loader2, CheckCircle, AlertTriangle, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/safeClient";
 
 export const WolframIntegration = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,21 +20,17 @@ export const WolframIntegration = () => {
     gm: ""
   });
 
-  // Wolfram API Key
-  const WOLFRAM_API_KEY = 'G3KTLV-GL5URGJ7YG';
-
   const testWolframConnection = async () => {
     setIsLoading(true);
     try {
-      const testQuery = "2+2";
-      const response = await fetch(`https://api.wolframalpha.com/v2/query?appid=${WOLFRAM_API_KEY}&input=${encodeURIComponent(testQuery)}&format=plaintext&output=json`);
+      const { data, error } = await supabase.functions.invoke("wolfram-calc", {
+        body: { query: "2+2" }
+      });
       
-      if (response.ok) {
-        const data = await response.json();
-        if (data.queryresult && data.queryresult.success) {
-          toast.success("🧮 Wolfram Alpha bağlantısı başarılı!");
-          return true;
-        }
+      if (error) throw error;
+      if (data?.result) {
+        toast.success("🧮 Wolfram Alpha bağlantısı başarılı!");
+        return true;
       }
       throw new Error('API test failed');
     } catch (error) {
@@ -54,22 +51,17 @@ export const WolframIntegration = () => {
     setIsLoading(true);
     try {
       const query = `${values.length} * ${values.beam} * ${values.draft} * 0.7 * 1.025`;
-      const response = await fetch(`https://api.wolframalpha.com/v2/query?appid=${WOLFRAM_API_KEY}&input=${encodeURIComponent(query)}&format=plaintext&output=json`);
+      const { data, error } = await supabase.functions.invoke("wolfram-calc", {
+        body: { query }
+      });
       
-      if (!response.ok) {
-        throw new Error(`Wolfram API Error: ${response.status}`);
+      if (error) {
+        throw new Error(`Wolfram API Error: ${error.message}`);
       }
 
-      const data = await response.json();
-      
-      if (data.queryresult && data.queryresult.pods) {
-        const resultPod = data.queryresult.pods.find(pod => 
-          pod.id === 'Result' || pod.title === 'Result' || pod.primary
-        );
-        
-        if (resultPod && resultPod.subpods && resultPod.subpods[0]) {
-          const calculation = resultPod.subpods[0].plaintext;
-          setResult(`**Deplasman Hesabı:**
+      if (data?.result) {
+        const calculation = data.result;
+        setResult(`**Deplasman Hesabı:**
 
 **Formül:** Δ = L × B × T × Cb × ρ
 - **L**: ${values.length}m (gemi boyu)
@@ -81,14 +73,11 @@ export const WolframIntegration = () => {
 **Wolfram Sonucu:** ${calculation}
 
 *🧮 Wolfram Alpha ile hesaplandı*`);
-          toast.success("✅ Deplasman hesabı tamamlandı!");
-        } else {
-          throw new Error('No calculation result found');
-        }
+        toast.success("✅ Deplasman hesabı tamamlandı!");
       } else {
-        throw new Error('Invalid Wolfram response');
+        throw new Error('No calculation result found');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Wolfram calculation error:', error);
       toast.error("Hesaplama hatası: " + error.message);
     } finally {
@@ -105,33 +94,28 @@ export const WolframIntegration = () => {
     setIsLoading(true);
     try {
       const query = `${values.km} - ${values.kg}`;
-      const response = await fetch(`https://api.wolframalpha.com/v2/query?appid=${WOLFRAM_API_KEY}&input=${encodeURIComponent(query)}&format=plaintext&output=json`);
+      const { data, error } = await supabase.functions.invoke("wolfram-calc", {
+        body: { query }
+      });
       
-      if (!response.ok) {
-        throw new Error(`Wolfram API Error: ${response.status}`);
+      if (error) {
+        throw new Error(`Wolfram API Error: ${error.message}`);
       }
 
-      const data = await response.json();
-      
-      if (data.queryresult && data.queryresult.pods) {
-        const resultPod = data.queryresult.pods.find(pod => 
-          pod.id === 'Result' || pod.title === 'Result' || pod.primary
-        );
+      if (data?.result) {
+        const calculation = data.result;
+        const gmValue = parseFloat(calculation);
         
-        if (resultPod && resultPod.subpods && resultPod.subpods[0]) {
-          const calculation = resultPod.subpods[0].plaintext;
-          const gmValue = parseFloat(calculation);
-          
-          let stability = "";
-          if (gmValue < 0.15) {
-            stability = "⚠️ **TEHLİKELİ** - Stabilite yetersiz";
-          } else if (gmValue <= 0.35) {
-            stability = "✅ **İDEAL** - Güvenli stabilite";
-          } else {
-            stability = "⚡ **AŞIRI SERT** - Konfor problemi";
-          }
-          
-          setResult(`**GM (Metasantrik Yükseklik) Hesabı:**
+        let stability = "";
+        if (gmValue < 0.15) {
+          stability = "⚠️ **TEHLİKELİ** - Stabilite yetersiz";
+        } else if (gmValue <= 0.35) {
+          stability = "✅ **İDEAL** - Güvenli stabilite";
+        } else {
+          stability = "⚡ **AŞIRI SERT** - Konfor problemi";
+        }
+        
+        setResult(`**GM (Metasantrik Yükseklik) Hesabı:**
 
 **Formül:** GM = KM - KG
 - **KM**: ${values.km}m (metasantır mesafesi)
@@ -147,14 +131,11 @@ export const WolframIntegration = () => {
 - Aşırı sert: GM > 0.35m
 
 *🧮 Wolfram Alpha ile hesaplandı*`);
-          toast.success("✅ GM hesabı tamamlandı!");
-        } else {
-          throw new Error('No calculation result found');
-        }
+        toast.success("✅ GM hesabı tamamlandı!");
       } else {
-        throw new Error('Invalid Wolfram response');
+        throw new Error('No calculation result found');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Wolfram calculation error:', error);
       toast.error("Hesaplama hatası: " + error.message);
     } finally {
@@ -343,8 +324,7 @@ export const WolframIntegration = () => {
         )}
 
         <div className="text-xs text-muted-foreground bg-orange-50 p-3 rounded">
-          <strong>📊 Wolfram Alpha API:</strong> G3KTLV-GL5URGJ7YG<br />
-          <strong>🔗 Endpoint:</strong> https://api.wolframalpha.com/v2/query<br />
+          <strong>📊 Wolfram Alpha API:</strong> Güvenli Edge Function üzerinden<br />
           <strong>✨ Özellikler:</strong> Gelişmiş matematik, sembolik hesaplama, doğrulama
         </div>
       </CardContent>
