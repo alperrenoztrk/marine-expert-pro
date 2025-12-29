@@ -7,6 +7,7 @@ import { Calculator, Ship, Shield, AlertTriangle, Waves, CheckCircle, BarChart3,
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FormulaReference } from "@/components/ui/formula-reference";
 
 export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, showDraftSurvey = true }: { showLongitudinal?: boolean; showDraftSurvey?: boolean }) => {
   const { toast } = useToast();
@@ -1742,6 +1743,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                     </p>
                   </div>
                 )}
+                <FormulaReference metaId="solas-criteria" />
               </div>
 
               {/* GZ Kolu */}
@@ -1786,6 +1788,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                     <p className="font-mono text-lg">GZ = {gzLeverResult.toFixed(4)} m</p>
                   </div>
                 )}
+                <FormulaReference metaId="gz" />
               </div>
 
               {/* Serbest Yüzey Etkisi */}
@@ -1830,6 +1833,7 @@ export const ComprehensiveMaritimeCalculations = ({ showLongitudinal = true, sho
                     <p className="font-mono text-lg">FSM = {freeSurfaceResult.toFixed(4)} m</p>
                   </div>
                 )}
+                <FormulaReference metaId="fsm" />
               </div>
 
               {/* Yalpa Periyodu */}
