@@ -182,6 +182,21 @@ export default function NavigationTopicsPage() {
                       </ul>
                     </div>
                   </div>
+                  {topic.accuracyChecklist && topic.accuracyChecklist.length > 0 && (
+                    <div className="mt-4 rounded-xl border border-border/40 bg-background/60 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                        Doğruluk Kontrol Listesi
+                      </p>
+                      <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+                        {topic.accuracyChecklist.map((item) => (
+                          <li key={`${topic.id}-${item}`} className="flex items-start gap-2">
+                            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   {topic.calculationLinks && topic.calculationLinks.length > 0 && (
                     <div className="mt-4 rounded-xl border border-border/40 bg-background/60 p-4">
                       <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">

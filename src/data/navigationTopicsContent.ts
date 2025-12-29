@@ -15,7 +15,390 @@ export interface NavigationTopicSection {
   title: string;
   pages: NavigationTopicPage[];
   calculationLinks?: Array<{ title: string; href: string }>;
+  accuracyChecklist?: string[];
 }
+
+const defaultReferences = [
+  "IMO Model Course 7.03 — Bridge watchkeeping temelleri",
+  "Admiralty NP 136 (The Mariner’s Handbook) — operasyonel rehber",
+  "Admiralty Sailing Directions (NP serisi) — yerel seyir bilgileri",
+  "IHO S-4 — Chart Specifications",
+];
+
+const referenceSets: Record<string, string[]> = {
+  routePlanning: [
+    "IMO Model Course 7.03 — Passage Planning esasları",
+    "Admiralty NP 5011 — Chart Symbols & Abbreviations",
+    "Admiralty Sailing Directions (NP serisi) — rota kısıtları",
+    "IHO S-4 — Chart Specifications",
+  ],
+  navigationFundamentals: [
+    "IMO STCW Code A-VIII/2 — Watchkeeping prensipleri",
+    "IMO Model Course 7.03 — Bridge Procedures",
+    "Admiralty NP 136 (The Mariner’s Handbook) — temel seyir ilkeleri",
+    "Admiralty Sailing Directions (NP serisi) — operasyonel notlar",
+  ],
+  mercatorRhumb: [
+    "Admiralty Manual of Navigation Vol. 1 — Mercator/loxodrome",
+    "Admiralty NP 5011 — Chart Symbols & Abbreviations",
+    "IMO Model Course 7.03 — Chartwork uygulamaları",
+    "IHO S-4 — Chart Specifications",
+  ],
+  greatCircle: [
+    "Admiralty Manual of Navigation Vol. 1 — Great circle rotaları",
+    "IMO Model Course 7.03 — Rota planlama",
+    "Admiralty Sailing Directions (NP serisi) — kıyı kısıtları",
+    "IHO S-4 — Chart Specifications",
+  ],
+  celestial: [
+    "Admiralty Nautical Almanac — göksel veriler",
+    "Admiralty NP 401 — Sight Reduction Tables",
+    "Admiralty NP 404 — Star Finder & Identifier",
+    "IMO Model Course 7.03 — Celestial navigation",
+  ],
+  tides: [
+    "Admiralty Tide Tables (ATT) — HW/LW verileri",
+    "Admiralty Tidal Stream Atlases (NP serisi) — akıntı bilgileri",
+    "Admiralty NP 136 (The Mariner’s Handbook) — gelgit notları",
+    "IHO S-4 — Charted tides & heights",
+  ],
+  currentWind: [
+    "Admiralty Tidal Stream Atlases (NP serisi) — set/drift bilgileri",
+    "Admiralty NP 136 (The Mariner’s Handbook) — akıntı etkileri",
+    "IMO Model Course 7.03 — set/drift uygulamaları",
+    "Admiralty Sailing Directions (NP serisi) — yerel akıntılar",
+  ],
+  ukc: [
+    "IMO Resolution A.893(21) — Passage Planning",
+    "Admiralty NP 136 (The Mariner’s Handbook) — UKC & squat",
+    "Admiralty Sailing Directions (NP serisi) — sığ su notları",
+    "IHO S-4 — charted depths",
+  ],
+  radar: [
+    "IMO Model Course 1.08 — Radar Navigation",
+    "IMO Model Course 1.07 — ARPA",
+    "Admiralty Manual of Navigation Vol. 1 — radar watchkeeping",
+    "COLREG 1972 — radar kullanımı kuralları",
+  ],
+  ecdis: [
+    "IMO Model Course 1.27 — ECDIS",
+    "IHO S-52 — ECDIS Presentation Library",
+    "IHO S-57/S-101 — ENC veri standartları",
+    "Admiralty NP 5011 — ENC sembol referansı",
+  ],
+  gnss: [
+    "IMO MSC.112(73) — GNSS Performance Standards",
+    "IMO Resolution A.915(22) — GNSS performance",
+    "Admiralty List of Radio Signals (NP serisi) — GNSS servisleri",
+    "IMO Model Course 7.03 — position fixing",
+  ],
+  safety: [
+    "COLREG 1972 — emniyetli hız ve gözcülük",
+    "IMO STCW Code A-VIII/2 — watchkeeping",
+    "Admiralty NP 136 (The Mariner’s Handbook) — güvenli seyir",
+    "IMO Resolution A.893(21) — Passage Planning",
+  ],
+  humanFactors: [
+    "IMO Model Course 1.22 — Bridge Teamwork",
+    "IMO STCW Code A-VIII/2 — watchkeeping",
+    "Admiralty NP 136 (The Mariner’s Handbook) — insan faktörü notları",
+    "IMO Model Course 7.03 — bridge procedures",
+  ],
+  restrictedWaters: [
+    "IMO Resolution A.893(21) — Passage Planning",
+    "Admiralty Sailing Directions (NP serisi) — kısıtlı su notları",
+    "Admiralty NP 136 (The Mariner’s Handbook) — restricted waters",
+    "IALA Maritime Buoyage System — kanal işaretleri",
+  ],
+  coastal: [
+    "Admiralty NP 5011 — Chart Symbols & Abbreviations",
+    "Admiralty List of Lights & Fog Signals (NP serisi)",
+    "Admiralty Sailing Directions (NP serisi) — kıyı referansları",
+    "IMO Model Course 7.03 — coastal navigation",
+  ],
+  chartMarks: [
+    "IALA Maritime Buoyage System — Region A/B",
+    "IHO S-52 — ECDIS Presentation Library",
+    "IHO S-57/S-101 — ENC sembol tanımları",
+    "Admiralty NP 5011 — Chart Symbols & Abbreviations",
+  ],
+  pilotage: [
+    "IMO Resolution A.960 — Pilot transfer arrangements",
+    "Admiralty Sailing Directions (NP serisi) — pilotaj notları",
+    "IMO Model Course 7.03 — pilotage procedures",
+    "Admiralty NP 136 (The Mariner’s Handbook) — pilotaj rehberi",
+  ],
+  passageAudit: [
+    "IMO Resolution A.893(21) — Passage Planning",
+    "IMO STCW Code A-VIII/2 — watchkeeping records",
+    "Admiralty NP 136 (The Mariner’s Handbook) — plan kontrolü",
+    "IMO Model Course 7.03 — plan denetimi",
+  ],
+  heavyWeather: [
+    "IMO Resolution A.893(21) — Passage Planning",
+    "Admiralty NP 136 (The Mariner’s Handbook) — heavy weather",
+    "Admiralty Sailing Directions (NP serisi) — meteoroloji notları",
+    "IMO Model Course 7.03 — heavy weather seamanship",
+  ],
+  iceNavigation: [
+    "IMO Polar Code — operasyonel kısıtlar",
+    "Admiralty Sailing Directions (NP serisi) — ice notes",
+    "Admiralty NP 136 (The Mariner’s Handbook) — ice navigation",
+    "IMO Model Course 7.03 — ice navigation",
+  ],
+  maneuvering: [
+    "IMO Resolution A.751(18) — ship manoeuvrability",
+    "Admiralty NP 136 (The Mariner’s Handbook) — manevra limitleri",
+    "IMO Model Course 7.03 — ship handling",
+    "Admiralty Sailing Directions (NP serisi) — liman manevrası notları",
+  ],
+  economic: [
+    "IMO SEEMP Guidelines — enerji verimliliği",
+    "Admiralty NP 136 (The Mariner’s Handbook) — ekonomik seyir",
+    "Admiralty Sailing Directions (NP serisi) — rota optimizasyonu",
+    "IMO Model Course 7.03 — voyage planning",
+  ],
+  ais: [
+    "IMO Resolution A.917(22) — AIS",
+    "IALA Guidelines on AIS — operasyonel kullanım",
+    "Admiralty List of Radio Signals (NP serisi) — AIS/VTS",
+    "COLREG 1972 — AIS destekli gözcülük",
+  ],
+  colreg: [
+    "COLREG 1972 — kural uygulamaları",
+    "Admiralty NP 136 (The Mariner’s Handbook) — COLREG yorumları",
+    "IMO Model Course 7.03 — collision avoidance",
+    "IMO STCW Code A-VIII/2 — watchkeeping",
+  ],
+  incidents: [
+    "IMO Casualty Investigation Code (MSC.255(84))",
+    "COLREG 1972 — olay değerlendirme",
+    "IMO Model Course 7.03 — incident review",
+    "Admiralty NP 136 (The Mariner’s Handbook) — safety notes",
+  ],
+  simulator: [
+    "IMO Model Course 1.22 — Bridge Teamwork",
+    "IMO Model Course 1.08 — Radar Navigation",
+    "IMO Model Course 1.07 — ARPA",
+    "IMO STCW Code Section A-I/12 — simulator training",
+  ],
+  documents: [
+    "IMO STCW Code A-VIII/2 — logbook kayıtları",
+    "Admiralty NP 136 (The Mariner’s Handbook) — kayıt düzeni",
+    "IMO Model Course 7.03 — bridge records",
+    "Admiralty List of Radio Signals (NP serisi) — GMDSS kayıtları",
+  ],
+  watchkeeping: [
+    "IMO STCW Code A-VIII/2 — watchkeeping",
+    "COLREG 1972 Rule 5 — lookout",
+    "IMO Model Course 7.03 — bridge watchkeeping",
+    "Admiralty NP 136 (The Mariner’s Handbook) — watch routines",
+  ],
+};
+
+const sectionReferences: Record<string, string[]> = {
+  "rota-hesaplamalari": referenceSets.routePlanning,
+  "seyir-temelleri": referenceSets.navigationFundamentals,
+  "mercator-loxodromik-seyir": referenceSets.mercatorRhumb,
+  "buyuk-daire-seyri": referenceSets.greatCircle,
+  "astronomik-navigasyon": referenceSets.celestial,
+  "gelgit-hesaplari": referenceSets.tides,
+  "akinti-ruzgar-duzeltmeleri": referenceSets.currentWind,
+  "gelgit-derinlik-emniyeti": referenceSets.ukc,
+  "radar-navigasyonu": referenceSets.radar,
+  ecdis: referenceSets.ecdis,
+  "gps-gnss": referenceSets.gnss,
+  "seyir-emniyeti": referenceSets.safety,
+  "insan-faktoru": referenceSets.humanFactors,
+  "kisitli-sularda-seyir": referenceSets.restrictedWaters,
+  "kiyi-seyri": referenceSets.coastal,
+  "harita-isaretleri": referenceSets.chartMarks,
+  pilotaj: referenceSets.pilotage,
+  "seyir-plani-denetimi": referenceSets.passageAudit,
+  "agir-hava-seyri": referenceSets.heavyWeather,
+  "buzlu-sularda-seyir": referenceSets.iceNavigation,
+  "manevra-karakteristikleri": referenceSets.maneuvering,
+  "ekonomik-seyir": referenceSets.economic,
+  "ais-kullanimi": referenceSets.ais,
+  "colreg-pratikleri": referenceSets.colreg,
+  "kaza-ornekleri": referenceSets.incidents,
+  "simulator-modulleri": referenceSets.simulator,
+  "seyir-belgeleri": referenceSets.documents,
+  "vardiya-yonetimi": referenceSets.watchkeeping,
+};
+
+const accuracyChecklistMap: Record<string, string[]> = {
+  "rota-hesaplamalari": [
+    "Harita ve yayın güncelliği teyit edildi.",
+    "Başlangıç/bitiş koordinatları çift kontrol edildi.",
+    "Rota tipi seçimi (büyük daire/loxodrom) gerekçelendirildi.",
+    "WP listesi, XTD/UKC limitleri doğrulandı.",
+    "ETA ve hız varsayımları güncellendi.",
+  ],
+  "seyir-temelleri": [
+    "Köprüüstü cihaz testleri tamamlandı.",
+    "Seyir planı ekip ile paylaşıldı.",
+    "Vardiya ve gözcülük düzeni doğrulandı.",
+    "Riskler ve yedek prosedürler gözden geçirildi.",
+  ],
+  "mercator-loxodromik-seyir": [
+    "Mercator ölçeği ve enlem farkı doğrulandı.",
+    "Rhumb line kerteriz hesapları kontrol edildi.",
+    "Mesafe ölçümleri chart ölçeğiyle tutarlı.",
+    "Gyro/compass düzeltmeleri işlendi.",
+  ],
+  "buyuk-daire-seyri": [
+    "GC hesaplarında enlem/boylam doğrulandı.",
+    "WP’ler harita üzerinde güvenlik payıyla işaretlendi.",
+    "Yüksek enlem kısıtları kontrol edildi.",
+    "Alternatif rota senaryosu hazırlandı.",
+  ],
+  "astronomik-navigasyon": [
+    "Sextant index ve dip düzeltmeleri uygulandı.",
+    "Kronometre/zaman doğruluğu teyit edildi.",
+    "Nautical Almanac verileri güncel.",
+    "En az iki LOP kesişimiyle mevki doğrulandı.",
+    "GNSS/ECDIS ile çapraz kontrol yapıldı.",
+  ],
+  "gelgit-hesaplari": [
+    "Referans liman ve zaman dilimi doğrulandı.",
+    "HW/LW saatleri ATT ile kontrol edildi.",
+    "Ara yükseklik yöntemi doğrulandı.",
+    "Gelgit akıntısı ve UKC etkisi değerlendirildi.",
+  ],
+  "akinti-ruzgar-duzeltmeleri": [
+    "Set/drift verisi güncel kaynakla teyit edildi.",
+    "Leeway düzeltmesi rüzgâr şiddetine göre hesaplandı.",
+    "Yeni kerteriz ve hız değerleri tekrar ölçüldü.",
+    "Radar/GNSS ile çapraz doğrulama yapıldı.",
+  ],
+  "gelgit-derinlik-emniyeti": [
+    "UKC limitleri şirket prosedürüyle uyumlu.",
+    "Draft ve squat etkisi güncel verilerle kontrol edildi.",
+    "Gelgit yüksekliği/ara yükseklik hesapları doğrulandı.",
+    "Echo sounder ve charted depth kıyası yapıldı.",
+  ],
+  "radar-navigasyonu": [
+    "Radar ayarları (gain/sea/rain) optimize edildi.",
+    "CPA/TCPA değerleri görsel gözlemle doğrulandı.",
+    "Plotting aralıkları sabit tutuldu.",
+    "Radar-AIS/ECDIS verileri çapraz kontrol edildi.",
+  ],
+  ecdis: [
+    "ENC güncellemesi ve lisans durumu doğrulandı.",
+    "Safety contour/alarmlar doğru ayarlandı.",
+    "Rota WP ve XTD limitleri kontrol edildi.",
+    "Bağımsız kaynakla çapraz kontrol yapıldı.",
+  ],
+  "gps-gnss": [
+    "DOP değerleri ve uydu geometrisi kontrol edildi.",
+    "Anten konumu ve giriş parametreleri doğrulandı.",
+    "GNSS mevki diğer sensörlerle çapraz doğrulandı.",
+    "Alarm limitleri ve yedek prosedürler test edildi.",
+  ],
+  "seyir-emniyeti": [
+    "Emniyetli hız kararı kayıt altına alındı.",
+    "CPA limitleri trafik yoğunluğuna göre ayarlandı.",
+    "Gözcülük ve vardiya düzeni doğrulandı.",
+    "COLREG uygulaması için senaryo teyidi yapıldı.",
+  ],
+  "insan-faktoru": [
+    "Görev ve sorumluluklar netleştirildi.",
+    "Vardiya yorgunluk durumu değerlendirildi.",
+    "Kritik kararlar çift kontrolle onaylandı.",
+    "Near-miss kayıtları gözden geçirildi.",
+  ],
+  "kisitli-sularda-seyir": [
+    "Sığ su/UKC limitleri teyit edildi.",
+    "Hız limitleri ve manevra planı onaylandı.",
+    "VTS/pilot talimatları kayıt altına alındı.",
+    "Ek gözcülük ve kontrol sıklığı artırıldı.",
+  ],
+  "kiyi-seyri": [
+    "Landmark ve fener kimlikleri doğrulandı.",
+    "Paralel indeks hatları kontrol edildi.",
+    "Radar/ECDIS ile görsel mevki çaprazlandı.",
+    "Kıyı mesafe limitleri ve güvenli geçişler teyit edildi.",
+  ],
+  "harita-isaretleri": [
+    "IALA bölgesi (A/B) doğrulandı.",
+    "ENC/harita sembolleri NP 5011 ile kontrol edildi.",
+    "Gece/gündüz işaret farkları teyit edildi.",
+    "Şamandıra sürüklenme olasılığı değerlendirildi.",
+  ],
+  pilotaj: [
+    "Pilot brifingi tamamlandı ve kayıt altına alındı.",
+    "Manevra planı ve tug gereklilikleri teyit edildi.",
+    "Hız limitleri ve kısıtlı alanlar doğrulandı.",
+    "Pilot-köprüüstü iletişim kanalı test edildi.",
+  ],
+  "seyir-plani-denetimi": [
+    "Passage plan dokümanları güncel ve imzalı.",
+    "WP koordinatları ve XTD limitleri doğrulandı.",
+    "Risk değerlendirmesi ve kontrol listeleri tamamlandı.",
+    "Plan güncellemeleri kayıt altına alındı.",
+  ],
+  "agir-hava-seyri": [
+    "Meteoroloji raporları ve uyarılar güncel.",
+    "Rota/hız değişiklikleri güvenlik sınırına uygun.",
+    "Yük ve güverte ekipmanı emniyete alındı.",
+    "Vardiya/gözcülük yoğunluğu artırıldı.",
+  ],
+  "buzlu-sularda-seyir": [
+    "Polar Code ve ice class kısıtları doğrulandı.",
+    "Ice chart ve uydu görüntüleri güncel.",
+    "Hız ve makine limitleri kontrol edildi.",
+    "Acil durum ve kurtarma planı güncellendi.",
+  ],
+  "manevra-karakteristikleri": [
+    "Turning circle verileri güncel test kayıtlarıyla doğrulandı.",
+    "Stopping distance yük durumuna göre güncellendi.",
+    "Rüzgâr/akıntı düzeltmeleri işlendi.",
+    "Manevra limitleri ekiple paylaşıldı.",
+  ],
+  "ekonomik-seyir": [
+    "Tüketim eğrileri ve hedef hız doğrulandı.",
+    "Weather routing verileri güncel.",
+    "ETA ve yakıt planı tutarlı.",
+    "Sapma raporları ve KPI takibi başlatıldı.",
+  ],
+  "ais-kullanimi": [
+    "AIS statik/dinamik verileri güncel.",
+    "AIS hedefleri radar ile çaprazlandı.",
+    "CPA/TCPA alarmları kontrol edildi.",
+    "AIS hatalı veri riskleri not edildi.",
+  ],
+  "colreg-pratikleri": [
+    "Karşılaşma tipi doğru sınıflandırıldı.",
+    "Give-way/stand-on rolleri teyit edildi.",
+    "Manevra zamanı ve hız değişimi kayıtlandı.",
+    "VHF iletişimi ve görsel teyit sağlandı.",
+  ],
+  "kaza-ornekleri": [
+    "Vaka kronolojisi ve kararlar doğrulandı.",
+    "COLREG/prosedür ihlalleri işaretlendi.",
+    "Kök neden analizi tamamlandı.",
+    "Düzeltici aksiyonlar belirlendi.",
+  ],
+  "simulator-modulleri": [
+    "Senaryo hedefleri ve değerlendirme kriterleri net.",
+    "Radar/ARPA ayarları doğrulandı.",
+    "BRM iletişim adımları izlendi.",
+    "Değerlendirme kayıtları arşivlendi.",
+  ],
+  "seyir-belgeleri": [
+    "Logbook ve kayıtlar eksiksiz.",
+    "Elektronik yedekleme kontrol edildi.",
+    "GMDSS/NAVTEX kayıtları güncel.",
+    "Denetim öncesi hızlı kontrol listesi tamamlandı.",
+  ],
+  "vardiya-yonetimi": [
+    "Vardiya devri bilgileri tam aktarıldı.",
+    "Gözcülük düzeni ve alarm limitleri kontrol edildi.",
+    "Kritik riskler ve öncelikler teyit edildi.",
+    "Vardiya sonrası kısa değerlendirme yapıldı.",
+  ],
+};
 
 const buildPages = (
   baseSlug: string,
@@ -24,8 +407,8 @@ const buildPages = (
   entries.map((entry, index) => ({
     ...entry,
     imageSrc: `/images/lessons/navigation/${baseSlug}-${index + 1}.jpg`,
-    references: ["IMO Model Course 7.03", "Admiralty Nautical Publications", "IALA Maritime Buoyage System"],
-    updatedAt: "2025-01-15",
+    references: sectionReferences[baseSlug] ?? defaultReferences,
+    updatedAt: "2025-02-05",
   }));
 
 export const navigationTopicsContent: NavigationTopicSection[] = [
@@ -78,8 +461,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını hafif salınım animasyonuyla sırayla göster.",
       },
     ]),
+    accuracyChecklist: accuracyChecklistMap["rota-hesaplamalari"],
     calculationLinks: [
-      { title: "Seyir Hesaplamaları", href: "/navigation" },
+      { title: "Büyük Daire (Great Circle)", href: "/navigation/calc/gc" },
+      { title: "Rhumb Line (Mercator)", href: "/navigation/calc/rhumb" },
+      { title: "Plane Sailing", href: "/navigation/calc/plane" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
     ],
   },
@@ -175,7 +562,13 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Mevki noktalarını kısa aralıklarla parlatan nabız animasyonu kullan.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["seyir-temelleri"],
+    calculationLinks: [
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+      { title: "Mesafe Hesaplamaları", href: "/navigation/calc/distance" },
+      { title: "DR / Enlem-Boylam", href: "/navigation/calc/position" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "mercator-loxodromik-seyir",
@@ -269,7 +662,13 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Rota çizgisini sabit kerteriz etiketiyle birlikte akıcı şekilde çiz.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    accuracyChecklist: accuracyChecklistMap["mercator-loxodromik-seyir"],
+    calculationLinks: [
+      { title: "Rhumb Line (Mercator)", href: "/navigation/calc/rhumb" },
+      { title: "Middle Latitude Sailing", href: "/navigation/calc/midlat" },
+      { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "buyuk-daire-seyri",
@@ -363,7 +762,13 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "WP noktalarını sıralı ping animasyonuyla ve enlem limitini çizgiyle vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    accuracyChecklist: accuracyChecklistMap["buyuk-daire-seyri"],
+    calculationLinks: [
+      { title: "Büyük Daire (Great Circle)", href: "/navigation/calc/gc" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+      { title: "Mesafe Hesaplamaları", href: "/navigation/calc/distance" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "astronomik-navigasyon",
@@ -414,7 +819,13 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Yedek yöntem akışını sağdan sola geçişle vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    accuracyChecklist: accuracyChecklistMap["astronomik-navigasyon"],
+    calculationLinks: [
+      { title: "Astronomik Seyir (Almanac + LOP)", href: "/navigation/calc/astro" },
+      { title: "Sight Reduction", href: "/navigation/calc/sight" },
+      { title: "Göksel Navigasyon", href: "/navigation/calc/celestial" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "gelgit-hesaplari",
@@ -465,7 +876,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Operasyon simgelerini dalga hareketiyle hafifçe titreştir.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["gelgit-hesaplari"],
+    calculationLinks: [
+      { title: "Gelgit + UKC", href: "/navigation/calc/tides" },
+      { title: "Gelgit Eğitim Notu", href: "/navigation/tide-tutorial" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+    ],
   },
   {
     id: "akinti-ruzgar-duzeltmeleri",
@@ -516,7 +932,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol maddelerini sırayla onay animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["akinti-ruzgar-duzeltmeleri"],
+    calculationLinks: [
+      { title: "Akıntı Üçgeni (CTS)", href: "/navigation/calc/current" },
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+    ],
   },
   {
     id: "gelgit-derinlik-emniyeti",
@@ -567,7 +988,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol kutularını sırayla highlight et.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["gelgit-derinlik-emniyeti"],
+    calculationLinks: [
+      { title: "Gelgit + UKC", href: "/navigation/calc/tides" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "radar-navigasyonu",
@@ -618,7 +1044,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol listesi başlıklarını kısa fade ile sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["radar-navigasyonu"],
+    calculationLinks: [
+      { title: "Radar Plot (Hedef Rota/Hız)", href: "/navigation/calc/radar" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+    ],
   },
   {
     id: "ecdis",
@@ -669,7 +1100,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını yatay kaydırma animasyonuyla sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap.ecdis,
+    calculationLinks: [
+      { title: "ECDIS (XTD / Look-ahead)", href: "/navigation/calc/ecdis" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+      { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
+    ],
   },
   {
     id: "gps-gnss",
@@ -720,7 +1156,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Yedek sistem kartını sağdan içeri kaydır.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["gps-gnss"],
+    calculationLinks: [
+      { title: "DR / Enlem-Boylam", href: "/navigation/calc/position" },
+      { title: "Fixing Position", href: "/navigation/calc/fix" },
+      { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
+    ],
   },
   {
     id: "seyir-emniyeti",
@@ -771,7 +1212,13 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Acil durum kartlarını kısa titreşim animasyonuyla vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    accuracyChecklist: accuracyChecklistMap["seyir-emniyeti"],
+    calculationLinks: [
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "COLREG Kuralları", href: "/navigation/rules" },
+    ],
   },
   {
     id: "insan-faktoru",
@@ -822,7 +1269,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol maddelerini sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    accuracyChecklist: accuracyChecklistMap["insan-faktoru"],
+    calculationLinks: [
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "Acil Durum", href: "/navigation/calc/emergency" },
+      { title: "COLREG Kuralları", href: "/navigation/rules" },
+    ],
   },
   {
     id: "kisitli-sularda-seyir",
@@ -916,7 +1368,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Geçiş koridorunu çizgiyle belirginleştirip hız limitini nabızla vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["kisitli-sularda-seyir"],
+    calculationLinks: [
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
+      { title: "Akıntı Üçgeni (CTS)", href: "/navigation/calc/current" },
+    ],
   },
   {
     id: "kiyi-seyri",
@@ -967,7 +1424,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını yumuşak shake animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["kiyi-seyri"],
+    calculationLinks: [
+      { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
+      { title: "Fixing Position", href: "/navigation/calc/fix" },
+      { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
+    ],
   },
   {
     id: "harita-isaretleri",
@@ -1018,7 +1480,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Not kartlarını yukarıdan aşağıya akışla sırala.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Formülleri", href: "/navigation/formulas" }],
+    accuracyChecklist: accuracyChecklistMap["harita-isaretleri"],
+    calculationLinks: [
+      { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
+      { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "pilotaj",
@@ -1069,7 +1536,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "İletişim bağlantılarını parıltı animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap.pilotaj,
+    calculationLinks: [
+      { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "seyir-plani-denetimi",
@@ -1120,7 +1592,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata önleme ikonlarını pulse animasyonla vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["seyir-plani-denetimi"],
+    calculationLinks: [
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+      { title: "ECDIS (XTD / Look-ahead)", href: "/navigation/calc/ecdis" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "agir-hava-seyri",
@@ -1171,7 +1648,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Vardiya bloklarını yukarıdan aşağıya kaydır.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["agir-hava-seyri"],
+    calculationLinks: [
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "buzlu-sularda-seyir",
@@ -1222,7 +1704,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Emniyet ikonlarını sıralı parıltı ile vurgula.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["buzlu-sularda-seyir"],
+    calculationLinks: [
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "manevra-karakteristikleri",
@@ -1273,7 +1760,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Eğitim adımlarını sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["manevra-karakteristikleri"],
+    calculationLinks: [
+      { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+    ],
   },
   {
     id: "ekonomik-seyir",
@@ -1324,7 +1816,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "KPI kartlarını yumuşak pulse animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["ekonomik-seyir"],
+    calculationLinks: [
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+      { title: "Hava Durumu", href: "/navigation/calc/weather" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+    ],
   },
   {
     id: "ais-kullanimi",
@@ -1375,7 +1872,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Log kayıt kartlarını sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["ais-kullanimi"],
+    calculationLinks: [
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "Radar Plot (Hedef Rota/Hız)", href: "/navigation/calc/radar" },
+    ],
   },
   {
     id: "colreg-pratikleri",
@@ -1426,7 +1928,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Hata kartlarını kısa shake animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    accuracyChecklist: accuracyChecklistMap["colreg-pratikleri"],
+    calculationLinks: [
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+      { title: "COLREG Kuralları", href: "/navigation/rules" },
+    ],
   },
   {
     id: "kaza-ornekleri",
@@ -1477,7 +1984,13 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Döngü ikonlarını yumuşak dönüş animasyonuyla canlandır.",
       },
     ]),
-    calculationLinks: [{ title: "COLREG Kuralları", href: "/navigation/rules" }],
+    accuracyChecklist: accuracyChecklistMap["kaza-ornekleri"],
+    calculationLinks: [
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "Acil Durum", href: "/navigation/calc/emergency" },
+      { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "COLREG Kuralları", href: "/navigation/rules" },
+    ],
   },
   {
     id: "simulator-modulleri",
@@ -1528,7 +2041,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Değerlendirme kartını aşağıdan yukarıya kaydır.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["simulator-modulleri"],
+    calculationLinks: [
+      { title: "Radar Plot (Hedef Rota/Hız)", href: "/navigation/calc/radar" },
+      { title: "COLREG Durum & Manevra", href: "/navigation/calc/colreg" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+    ],
   },
   {
     id: "seyir-belgeleri",
@@ -1579,7 +2097,12 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Kontrol maddelerini sırayla onay animasyonuyla göster.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["seyir-belgeleri"],
+    calculationLinks: [
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+    ],
   },
   {
     id: "vardiya-yonetimi",
@@ -1630,6 +2153,11 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         motionCue: "Performans kartlarını sırayla parlat.",
       },
     ]),
-    calculationLinks: [{ title: "Seyir Hesaplamaları", href: "/navigation" }],
+    accuracyChecklist: accuracyChecklistMap["vardiya-yonetimi"],
+    calculationLinks: [
+      { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
+      { title: "CPA / TCPA", href: "/navigation/calc/cpa" },
+      { title: "Acil Durum", href: "/navigation/calc/emergency" },
+    ],
   },
 ];
