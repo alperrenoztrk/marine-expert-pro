@@ -22,6 +22,15 @@ import {
   BonjeanSet
 } from '../types/hydrostatic';
 
+export type SimplifiedCalculationRisk = {
+  id: string;
+  title: string;
+  summary: string;
+  impact: string;
+  nextStep: string;
+  relatedFunctions: string[];
+};
+
 export class HydrostaticCalculations {
   private static readonly GRAVITY = 9.81; // m/s²
   private static readonly WATER_DENSITY = 1.025; // t/m³ (seawater)
@@ -29,6 +38,52 @@ export class HydrostaticCalculations {
 
   /** Additional constants for environmental calculations */
   private static readonly AIR_DENSITY = 1.225; // kg/m³ (sea level) – informational
+  private static readonly SIMPLIFIED_CALCULATION_RISKS: SimplifiedCalculationRisk[] = [
+    {
+      id: "bonjean_station_sine",
+      title: "Bonjean eğrileri (sinüs istasyon yaklaşımı)",
+      summary: "Kesit alanları sinusoidal dağılımla tahmin ediliyor.",
+      impact: "Gerçek omurga formu ve gövde hatları için hacim/moment sapması oluşabilir.",
+      nextStep: "Gövde formu girdileriyle istasyon bazlı gerçek kesit alanları hesapla.",
+      relatedFunctions: ["generateBonjeanCurves", "calculateSectionalArea"]
+    },
+    {
+      id: "centerpoints_fixed",
+      title: "LCB/VCB/LCF sabit oranlar",
+      summary: "Merkezler yarım boy ve yarım draft ile temsil ediliyor.",
+      impact: "Trim/list ve GM hesaplarında konum hatası büyüyebilir.",
+      nextStep: "Bonjean ve trim integrasyonundan gerçek merkezler çıkar.",
+      relatedFunctions: ["calculateCenterPoints", "calculateHydrostaticCoefficients"]
+    },
+    {
+      id: "gz_wall_sided",
+      title: "GZ (wall-sided) yaklaşımı",
+      summary: "GZ, basit sinüs terimi ve genişlik düzeltmesi ile hesaplanıyor.",
+      impact: "Büyük açılarda KN eğrisi etkileri eksik kalır.",
+      nextStep: "KN tablosu/çapraz eğriler ile GZ entegrasyonunu uygula.",
+      relatedFunctions: ["calculateGZ", "generateGZCurve"]
+    },
+    {
+      id: "downflooding_fixed",
+      title: "Downflooding/equalized sabit açılar",
+      summary: "Downflooding ve equalized açıları sabit değerlerle veriliyor.",
+      impact: "Gerçek açıklıklar ve açıklık konumlarına bağlı riskler gözden kaçabilir.",
+      nextStep: "Yapısal açıklık verilerine göre hesaplama ekle.",
+      relatedFunctions: ["calculateDownfloodingAngle", "calculateEqualizedAngle"]
+    },
+    {
+      id: "weather_criterion_scalar",
+      title: "Weather criterion basit katsayı",
+      summary: "Max GZ üzerinden tek katsayı ile basitleştirme yapılıyor.",
+      impact: "SOLAS/IMO rüzgar kriteri enerji dengesi doğru temsil edilmez.",
+      nextStep: "Heeling work ve downflooding sınırı ile enerji denklemi uygula.",
+      relatedFunctions: ["calculateWeatherCriterion", "checkWeatherCriterion"]
+    }
+  ];
+
+  static getSimplifiedCalculationRisks(): SimplifiedCalculationRisk[] {
+    return [...this.SIMPLIFIED_CALCULATION_RISKS];
+  }
 
   /**
    * Calculate displacement and volume displacement
@@ -65,7 +120,7 @@ export class HydrostaticCalculations {
       const station = i;
       const draft = geometry.draft;
       const area = this.calculateSectionalArea(geometry, station, draft);
-      const moment = area * draft / 2; // Simplified moment calculation
+      const moment = area * draft / 2; // Simplified moment calculation (uniform distribution)
       
       curves.push({ station, draft, area, moment });
     }
@@ -77,7 +132,7 @@ export class HydrostaticCalculations {
    * Calculate sectional area at given station and draft
    */
   private static calculateSectionalArea(geometry: ShipGeometry, station: number, draft: number): number {
-    // Simplified sectional area calculation
+    // Simplified sectional area calculation (sinusoidal breadth distribution)
     const stationPosition = station / 20; // Normalized position (0-1)
     const maxBreadth = geometry.breadth;
     const currentBreadth = maxBreadth * Math.sin(Math.PI * stationPosition);
@@ -90,11 +145,11 @@ export class HydrostaticCalculations {
    * Calculate center points (LCB, VCB, LCF, VCF, KB, KM, BM, KG, GM)
    */
   static calculateCenterPoints(geometry: ShipGeometry, kg: number): CenterPoints {
-    const lcb = geometry.length * 0.5; // Simplified LCB calculation
-    const vcb = geometry.draft * 0.5; // Simplified VCB calculation
-    const lcf = geometry.length * 0.5; // Simplified LCF calculation
+    const lcb = geometry.length * 0.5; // Simplified LCB calculation (mid-length)
+    const vcb = geometry.draft * 0.5; // Simplified VCB calculation (mid-draft)
+    const lcf = geometry.length * 0.5; // Simplified LCF calculation (mid-length)
     const vcf = 0; // VCF is at waterline
-    const kb = geometry.draft * 0.5; // Simplified KB calculation
+    const kb = geometry.draft * 0.5; // Simplified KB calculation (mid-draft)
     const bmt = this.calculateBMT(geometry);
     const bml = this.calculateBML(geometry);
     const kmt = kb + bmt;

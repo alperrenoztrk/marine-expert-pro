@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "title": "Stability Golden Quick Check",
+    "version": "2025-02-01",
+    "notes": "Planned small golden dataset for fast sanity checks of core stability calculations."
+  },
+  "scenarios": [
+    {
+      "id": "quick_gm_gz_baseline",
+      "kind": "gm_gz",
+      "description": "Baseline GM and GZ at 10°",
+      "inputs": {
+        "geometry": {
+          "length": 100,
+          "breadth": 20,
+          "depth": 10,
+          "draft": 6,
+          "blockCoefficient": 0.7,
+          "waterplaneCoefficient": 0.8,
+          "midshipCoefficient": 0.9,
+          "prismaticCoefficient": 0.65,
+          "verticalPrismaticCoefficient": 0.75
+        },
+        "kg": 5,
+        "angleDeg": 10
+      },
+      "expected": {
+        "gm": 4.3492063492,
+        "gz": 0.4536948608,
+        "maxGz": 0.4723287853,
+        "maxGzAngle": 13,
+        "vanishingAngle": 26
+      },
+      "tolerance": {
+        "gm": 1e-6,
+        "gz": 1e-6,
+        "maxGz": 1e-6,
+        "maxGzAngle": 0.1,
+        "vanishingAngle": 0.1
+      }
+    },
+    {
+      "id": "quick_imo_baseline",
+      "kind": "imo",
+      "description": "Baseline IMO area criteria",
+      "inputs": {
+        "geometry": {
+          "length": 100,
+          "breadth": 20,
+          "depth": 10,
+          "draft": 6,
+          "blockCoefficient": 0.7,
+          "waterplaneCoefficient": 0.8,
+          "midshipCoefficient": 0.9,
+          "prismaticCoefficient": 0.65,
+          "verticalPrismaticCoefficient": 0.75
+        },
+        "kg": 5
+      },
+      "expected": {
+        "area0to30": 0.1411852200,
+        "area0to40": 0.1411852200,
+        "area30to40": 0,
+        "maxGz": 0.4723287853,
+        "initialGM": 4.3492063492,
+        "weatherCriterion": 0.2833972712,
+        "compliance": false
+      },
+      "tolerance": {
+        "area0to30": 1e-6,
+        "area0to40": 1e-6,
+        "area30to40": 1e-6,
+        "maxGz": 1e-6,
+        "initialGM": 1e-6,
+        "weatherCriterion": 1e-6
+      }
+    }
+  ]
+}

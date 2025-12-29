@@ -1,5 +1,5 @@
 import { ComprehensiveMaritimeCalculations } from "./ComprehensiveMaritimeCalculations";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,8 +48,20 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
     prismaticCoefficient: 0.65,
     verticalPrismaticCoefficient: 0.75
   });
+  const [geometryInputs, setGeometryInputs] = useState<Record<keyof ShipGeometry, string>>({
+    length: "100",
+    breadth: "20",
+    depth: "10",
+    draft: "6",
+    blockCoefficient: "0.7",
+    waterplaneCoefficient: "0.8",
+    midshipCoefficient: "0.9",
+    prismaticCoefficient: "0.65",
+    verticalPrismaticCoefficient: "0.75"
+  });
 
   const [kg, setKg] = useState<number>(5);
+  const [kgInput, setKgInput] = useState<string>("5");
   const [weightDistribution, setWeightDistribution] = useState<WeightDistribution[]>([
     { item: 'Hull', weight: 1000, lcg: 50, vcg: 5, tcg: 0, moment: 50000 },
     { item: 'Machinery', weight: 500, lcg: 30, vcg: 3, tcg: 0, moment: 15000 },
@@ -188,8 +200,26 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
       const savedHeelInputs = localStorage.getItem('stability-heel-inputs');
       const savedTrimInputs = localStorage.getItem('stability-trim-inputs');
       
-      if (savedGeometry) setGeometry(JSON.parse(savedGeometry));
-      if (savedKg) setKg(JSON.parse(savedKg));
+      if (savedGeometry) {
+        const parsedGeometry = JSON.parse(savedGeometry);
+        setGeometry(parsedGeometry);
+        setGeometryInputs({
+          length: String(parsedGeometry.length ?? ""),
+          breadth: String(parsedGeometry.breadth ?? ""),
+          depth: String(parsedGeometry.depth ?? ""),
+          draft: String(parsedGeometry.draft ?? ""),
+          blockCoefficient: String(parsedGeometry.blockCoefficient ?? ""),
+          waterplaneCoefficient: String(parsedGeometry.waterplaneCoefficient ?? ""),
+          midshipCoefficient: String(parsedGeometry.midshipCoefficient ?? ""),
+          prismaticCoefficient: String(parsedGeometry.prismaticCoefficient ?? ""),
+          verticalPrismaticCoefficient: String(parsedGeometry.verticalPrismaticCoefficient ?? "")
+        });
+      }
+      if (savedKg) {
+        const parsedKg = JSON.parse(savedKg);
+        setKg(parsedKg);
+        setKgInput(String(parsedKg ?? ""));
+      }
       if (savedGMInputs) setGmInputs(JSON.parse(savedGMInputs));
       if (savedHeelInputs) setHeelAngleInputs(JSON.parse(savedHeelInputs));
       if (savedTrimInputs) setTrimCorrection1Inputs(JSON.parse(savedTrimInputs));
@@ -301,6 +331,32 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   const [gzResult, setGzResult] = useState<number | null>(null);
   const [gzWarning, setGzWarning] = useState<string | null>(null);
 
+  const geometryValidation = useMemo(() => {
+    const constraints = stabilityInputConstraints.geometry;
+    return {
+      length: validateNumberInput(geometryInputs.length, constraints.length),
+      breadth: validateNumberInput(geometryInputs.breadth, constraints.breadth),
+      depth: validateNumberInput(geometryInputs.depth, constraints.depth),
+      draft: validateNumberInput(geometryInputs.draft, constraints.draft),
+      blockCoefficient: validateNumberInput(geometryInputs.blockCoefficient, constraints.blockCoefficient),
+      waterplaneCoefficient: validateNumberInput(geometryInputs.waterplaneCoefficient, constraints.waterplaneCoefficient),
+      midshipCoefficient: validateNumberInput(geometryInputs.midshipCoefficient, constraints.midshipCoefficient),
+      prismaticCoefficient: validateNumberInput(geometryInputs.prismaticCoefficient, constraints.prismaticCoefficient),
+      verticalPrismaticCoefficient: validateNumberInput(geometryInputs.verticalPrismaticCoefficient, constraints.verticalPrismaticCoefficient)
+    };
+  }, [geometryInputs]);
+
+  const kgValidation = useMemo(
+    () => validateNumberInput(kgInput, stabilityInputConstraints.kgInput.value),
+    [kgInput]
+  );
+
+  const stabilityInputsValid = useMemo(() => {
+    const geometryOk = Object.values(geometryValidation).every((validation) => validation.value !== null && !validation.error);
+    const kgOk = kgValidation.value !== null && !kgValidation.error;
+    return geometryOk && kgOk;
+  }, [geometryValidation, kgValidation]);
+
   const gmValidation = useMemo(() => ({
     kb: validateNumberInput(gmInputs.kb, stabilityInputConstraints.gmCalculation.kb),
     bm: validateNumberInput(gmInputs.bm, stabilityInputConstraints.gmCalculation.bm),
@@ -353,6 +409,24 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
     const errors = validateStabilityLogic(input);
     setLogicErrors((prev) => ({ ...prev, [key]: errors }));
     return errors.length === 0;
+  };
+
+  const handleGeometryInputChange = (field: keyof ShipGeometry) => (event: ChangeEvent<HTMLInputElement>) => {
+    const rawValue = event.target.value;
+    setGeometryInputs((prev) => ({ ...prev, [field]: rawValue }));
+    const validation = validateNumberInput(rawValue, stabilityInputConstraints.geometry[field]);
+    if (!validation.error && validation.value !== null) {
+      setGeometry((prev) => ({ ...prev, [field]: validation.value as ShipGeometry[typeof field] }));
+    }
+  };
+
+  const handleKgInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const rawValue = event.target.value;
+    setKgInput(rawValue);
+    const validation = validateNumberInput(rawValue, stabilityInputConstraints.kgInput.value);
+    if (!validation.error && validation.value !== null) {
+      setKg(validation.value);
+    }
   };
   
   const [trimInputs, setTrimInputs] = useState({ ta: "", tf: "", length: "" });
@@ -457,6 +531,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
 
   // Perform comprehensive analysis when inputs change
   useEffect(() => {
+    if (!stabilityInputsValid) {
+      setAnalysis(null);
+      return;
+    }
     if (geometry && kg && weightDistribution && tanks) {
       try {
         const options: { crossCurves?: CrossCurves; bonjean?: BonjeanSet } = {};
@@ -477,7 +555,7 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
         console.error('Analysis error:', error);
       }
     }
-  }, [geometry, kg, weightDistribution, tanks, floodedCompartments, grainShiftMoment, grainHeelAngle, crossCurvesSet, bonjeanSet]);
+  }, [geometry, kg, weightDistribution, tanks, floodedCompartments, grainShiftMoment, grainHeelAngle, crossCurvesSet, bonjeanSet, stabilityInputsValid]);
 
   // Calculation functions
   
@@ -1213,33 +1291,29 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
   const solasCriteriaStatus = useMemo(() => {
     if (!analysis) return null;
     const criteria = analysis.imoCriteria;
+    const weatherCriterionOk = criteria.weatherCriterion >= criteria.areaRequirement;
     const ok =
-      criteria.area0to30 >= 0.055 &&
-      criteria.area0to40 >= 0.09 &&
-      criteria.maxGz >= 0.2 &&
-      criteria.initialGM >= 0.15 &&
-      criteria.weatherCriterion;
-    return { ok, criteria };
+      criteria.compliance &&
+      criteria.area30to40 >= 0.03 &&
+      weatherCriterionOk;
+    return { ok, criteria, weatherCriterionOk };
   }, [analysis]);
 
-  const simplifiedPriorityItems = [
-    {
-      title: "Weather Criterion (Basitleştirilmiş)",
-      detail: "Gerçek rüzgar basıncı/alan dağılımı ve downflooding etkileri için ayrıntılı modelleme."
-    },
-    {
-      title: "GZ ≈ GM·sin(φ) (Küçük açı yaklaşımı)",
-      detail: "Büyük açılar için KN eğrisi ve tam eğri entegrasyonu ile doğruluk artırımı."
-    },
-    {
-      title: "KB/BM_T yaklaşık formülleri (Hidrostatik temeller)",
-      detail: "Gerçek hidrostatik tablolar/Bonjean entegrasyonu ile doğrulama."
-    },
-    {
-      title: "Angle of Loll yaklaşık formülü",
-      detail: "Tam GZ eğrisi ve ZTM/KN üzerinden iteratif çözüm."
-    }
-  ];
+  const solasWarnings = useMemo(() => {
+    if (!analysis) return [];
+    const criteria = analysis.imoCriteria;
+    const weatherCriterionOk = criteria.weatherCriterion >= criteria.areaRequirement;
+    const warnings: string[] = [];
+    if (criteria.area0to30 < 0.055) warnings.push("0–30° alanı 0.055 mrad sınırının altında.");
+    if (criteria.area0to40 < 0.09) warnings.push("0–40° alanı 0.090 mrad sınırının altında.");
+    if (criteria.area30to40 < 0.03) warnings.push("30–40° alanı 0.030 mrad sınırının altında.");
+    if (criteria.maxGz < 0.2) warnings.push("Maksimum GZ 0.20 m değerinin altında.");
+    if (criteria.initialGM < 0.15) warnings.push("Başlangıç GM 0.15 m değerinin altında.");
+    if (!weatherCriterionOk) warnings.push("Weather criterion alan gereksinimini karşılamıyor.");
+    return warnings;
+  }, [analysis]);
+
+  const simplifiedPriorityItems = HydrostaticCalculations.getSimplifiedCalculationRisks();
 
   const inputFieldCatalog = [
     {
@@ -1381,14 +1455,20 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {simplifiedPriorityItems.map((item, index) => (
-            <div key={item.title} className="rounded-md bg-white/70 p-3 text-amber-900 shadow-sm dark:bg-gray-700/60 dark:text-amber-100">
+            <div key={item.id} className="rounded-md bg-white/70 p-3 text-amber-900 shadow-sm dark:bg-gray-700/60 dark:text-amber-100">
               <div className="flex items-center justify-between gap-2 font-semibold">
                 <span>{index + 1}. {item.title}</span>
                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-500/20 dark:text-amber-100">
                   Öncelik
                 </span>
               </div>
-              <p className="mt-1 text-xs opacity-80">{item.detail}</p>
+              <p className="mt-1 text-xs opacity-80">{item.summary}</p>
+              <p className="mt-1 text-xs text-amber-800/90 dark:text-amber-100/90">
+                Risk: {item.impact}
+              </p>
+              <p className="mt-1 text-xs">
+                Önerilen adım: {item.nextStep}
+              </p>
             </div>
           ))}
         </CardContent>
@@ -2733,36 +2813,40 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     <Input
                       id="length"
                       type="number"
-                      value={geometry.length}
-                      onChange={(e) => setGeometry({ ...geometry, length: parseFloat(e.target.value) })}
+                      value={geometryInputs.length}
+                      onChange={handleGeometryInputChange("length")}
                     />
+                    <InputError message={geometryValidation.length.error} />
                   </div>
                   <div>
                     <Label htmlFor="breadth">Genişlik (m)</Label>
                     <Input
                       id="breadth"
                       type="number"
-                      value={geometry.breadth}
-                      onChange={(e) => setGeometry({ ...geometry, breadth: parseFloat(e.target.value) })}
+                      value={geometryInputs.breadth}
+                      onChange={handleGeometryInputChange("breadth")}
                     />
+                    <InputError message={geometryValidation.breadth.error} />
                   </div>
                   <div>
                     <Label htmlFor="depth">Derinlik (m)</Label>
                     <Input
                       id="depth"
                       type="number"
-                      value={geometry.depth}
-                      onChange={(e) => setGeometry({ ...geometry, depth: parseFloat(e.target.value) })}
+                      value={geometryInputs.depth}
+                      onChange={handleGeometryInputChange("depth")}
                     />
+                    <InputError message={geometryValidation.depth.error} />
                   </div>
                   <div>
                     <Label htmlFor="draft">Su Çekimi (m)</Label>
                     <Input
                       id="draft"
                       type="number"
-                      value={geometry.draft}
-                      onChange={(e) => setGeometry({ ...geometry, draft: parseFloat(e.target.value) })}
+                      value={geometryInputs.draft}
+                      onChange={handleGeometryInputChange("draft")}
                     />
+                    <InputError message={geometryValidation.draft.error} />
                   </div>
                 </div>
               </div>
@@ -2779,9 +2863,10 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     <Input
                       id="kg"
                       type="number"
-                      value={kg}
-                      onChange={(e) => setKg(parseFloat(e.target.value))}
+                      value={kgInput}
+                      onChange={handleKgInputChange}
                     />
+                    <InputError message={kgValidation.error} />
                   </div>
                 </div>
               </div>
@@ -2834,6 +2919,19 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                       </span>
                     </div>
                   )}
+                  {solasWarnings.length > 0 && (
+                    <div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
+                      <div className="mb-1 flex items-center gap-2 font-semibold">
+                        <AlertTriangle className="h-4 w-4" />
+                        SOLAS/IMO Uyarıları
+                      </div>
+                      <ul className="list-disc space-y-1 pl-4">
+                        {solasWarnings.map((warning) => (
+                          <li key={warning}>{warning}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Alan (0-30°):</span>
@@ -2882,11 +2980,11 @@ export const HydrostaticsStabilityCalculations = ({ singleMode = false, section,
                     <div className="flex justify-between">
                       <span>Weather Criterion:</span>
                       <span className="flex items-center gap-2 font-medium">
-                        <span className={`${analysis.imoCriteria.weatherCriterion ? 'text-green-700' : 'text-red-700'}`}>
-                          {analysis.imoCriteria.weatherCriterion ? 'Sağlandı' : 'Sağlanmadı'}
+                        <span className={`${solasCriteriaStatus?.weatherCriterionOk ? 'text-green-700' : 'text-red-700'}`}>
+                          {solasCriteriaStatus?.weatherCriterionOk ? 'Sağlandı' : 'Sağlanmadı'}
                         </span>
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${analysis.imoCriteria.weatherCriterion ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-                          {analysis.imoCriteria.weatherCriterion ? 'Uygun' : 'Uygunsuz'}
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${solasCriteriaStatus?.weatherCriterionOk ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                          {solasCriteriaStatus?.weatherCriterionOk ? 'Uygun' : 'Uygunsuz'}
                         </span>
                       </span>
                     </div>

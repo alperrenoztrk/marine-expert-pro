@@ -26,6 +26,9 @@ export const stabilityInputConstraints: Record<string, ConstraintGroup> = {
     bm: { label: "BM", unit: "m", min: 0, max: 30, required: true },
     kg: { label: "KG", unit: "m", min: 0, max: 30, required: true }
   },
+  kgInput: {
+    value: { label: "KG", unit: "m", min: 0, max: 30, required: true }
+  },
   gzCalculation: {
     gm: { label: "GM", unit: "m", min: 0, max: 15, required: true },
     angle: { label: "Yatma Açısı", unit: "°", min: 0, max: 90, required: true }
