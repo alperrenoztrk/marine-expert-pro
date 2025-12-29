@@ -37,7 +37,6 @@ interface OpenLibraryBook {
 }
 
 class OpenLibraryAPIService {
-  private readonly API_KEY = 'c42914d723msh5407abeae149ee7p1bfa4fjsn0649a2daef19';
   private readonly BASE_URL = 'https://openlibrary.org';
 
   async searchBooks(query: string, limit: number = 10): Promise<OpenLibrarySearchResponse> {

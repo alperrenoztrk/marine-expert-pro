@@ -219,25 +219,25 @@ const getTankLayout = (shipType: ShipType) => {
 
   if (shipType === "roro") {
     return [
-      { position: [1.8, -0.1, 0], size: [1.3, 0.5, 0.9], label: "Vehicle Deck", color: "#60a5fa" },
-      { position: [-0.2, -0.1, 0], size: [1.5, 0.5, 0.9], label: "Vehicle Deck", color: "#93c5fd" },
-      { position: [-2.0, -0.1, 0], size: [0.9, 0.5, 0.9], label: "Machinery", color: "#f59e0b" },
+      { position: [1.8, -0.1, 0] as [number, number, number], size: [1.3, 0.5, 0.9] as [number, number, number], label: "Vehicle Deck", color: "#60a5fa" },
+      { position: [-0.2, -0.1, 0] as [number, number, number], size: [1.5, 0.5, 0.9] as [number, number, number], label: "Vehicle Deck", color: "#93c5fd" },
+      { position: [-2.0, -0.1, 0] as [number, number, number], size: [0.9, 0.5, 0.9] as [number, number, number], label: "Machinery", color: "#f59e0b" },
     ];
   }
 
   if (shipType === "passenger") {
     return [
-      { position: [1.5, -0.1, 0], size: [1.3, 0.45, 0.8], label: "Service Deck", color: "#38bdf8" },
-      { position: [-0.4, -0.1, 0], size: [1.4, 0.45, 0.8], label: "Service Deck", color: "#7dd3fc" },
-      { position: [-2.2, -0.1, 0], size: [0.9, 0.45, 0.8], label: "Machinery", color: "#f59e0b" },
+      { position: [1.5, -0.1, 0] as [number, number, number], size: [1.3, 0.45, 0.8] as [number, number, number], label: "Service Deck", color: "#38bdf8" },
+      { position: [-0.4, -0.1, 0] as [number, number, number], size: [1.4, 0.45, 0.8] as [number, number, number], label: "Service Deck", color: "#7dd3fc" },
+      { position: [-2.2, -0.1, 0] as [number, number, number], size: [0.9, 0.45, 0.8] as [number, number, number], label: "Machinery", color: "#f59e0b" },
     ];
   }
 
   if (shipType === "bulk") {
     return [
-      { position: [1.9, -0.1, 0], size: [1.2, 0.6, 0.8], label: "Hold 1", color: "#22c55e" },
-      { position: [0.4, -0.1, 0], size: [1.4, 0.6, 0.8], label: "Hold 2", color: "#4ade80" },
-      { position: [-1.2, -0.1, 0], size: [1.3, 0.6, 0.8], label: "Hold 3", color: "#16a34a" },
+      { position: [1.9, -0.1, 0] as [number, number, number], size: [1.2, 0.6, 0.8] as [number, number, number], label: "Hold 1", color: "#22c55e" },
+      { position: [0.4, -0.1, 0] as [number, number, number], size: [1.4, 0.6, 0.8] as [number, number, number], label: "Hold 2", color: "#4ade80" },
+      { position: [-1.2, -0.1, 0] as [number, number, number], size: [1.3, 0.6, 0.8] as [number, number, number], label: "Hold 3", color: "#16a34a" },
     ];
   }
 
@@ -931,7 +931,6 @@ export const Ship3DVisualization = () => {
                 gl.toneMapping = THREE.ACESFilmicToneMapping;
                 gl.toneMappingExposure = 1.1;
                 gl.outputColorSpace = THREE.SRGBColorSpace;
-                gl.physicallyCorrectLights = true;
               }}
             >
               <Scene heelAngle={heelAngle} trimAngle={trimAngle} shipType={shipType} showTanks={showTanks} tankLevels={tankLevels} />

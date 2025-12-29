@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Download, Maximize2, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { diagramAPI } from "@/services/diagramAPI";
+import DOMPurify from "dompurify";
 
 interface DiagramViewerProps {
   title: string;
@@ -194,7 +195,13 @@ export const DiagramViewer = ({
                   className="w-full overflow-auto"
                   style={{ maxHeight: isFullscreen ? 'calc(100vh - 200px)' : '500px' }}
                 >
-                  <div dangerouslySetInnerHTML={{ __html: diagram }} />
+                  <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(diagram, {
+                    USE_PROFILES: { svg: true, svgFilters: true },
+                    ADD_TAGS: ['use'],
+                    ADD_ATTR: ['target', 'xlink:href'],
+                    FORBID_TAGS: ['script', 'iframe', 'object', 'embed'],
+                    FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover']
+                  }) }} />
                 </div>
               </div>
               
