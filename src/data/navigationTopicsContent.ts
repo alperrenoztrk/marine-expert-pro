@@ -466,6 +466,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
       { title: "Büyük Daire (Great Circle)", href: "/navigation/calc/gc" },
       { title: "Rhumb Line (Mercator)", href: "/navigation/calc/rhumb" },
       { title: "Plane Sailing", href: "/navigation/calc/plane" },
+      { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
       { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
     ],
@@ -567,6 +568,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
       { title: "Temel Seyir (Zaman–Mesafe–Hız)", href: "/navigation/calc/eta" },
       { title: "Mesafe Hesaplamaları", href: "/navigation/calc/distance" },
       { title: "DR / Enlem-Boylam", href: "/navigation/calc/position" },
+      { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
     ],
   },
@@ -879,6 +881,8 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
     accuracyChecklist: accuracyChecklistMap["gelgit-hesaplari"],
     calculationLinks: [
       { title: "Gelgit + UKC", href: "/navigation/calc/tides" },
+      { title: "Gelgit İnterpolasyonu (Ara Yükseklik)", href: "/navigation/calc/tides" },
+      { title: "Gelgit Akıntısı", href: "/navigation/calc/tides" },
       { title: "Gelgit Eğitim Notu", href: "/navigation/tide-tutorial" },
       { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
     ],
@@ -991,6 +995,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
     accuracyChecklist: accuracyChecklistMap["gelgit-derinlik-emniyeti"],
     calculationLinks: [
       { title: "Gelgit + UKC", href: "/navigation/calc/tides" },
+      { title: "Gelgit İnterpolasyonu (Ara Yükseklik)", href: "/navigation/calc/tides" },
       { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
       { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
     ],
@@ -1428,6 +1433,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
     calculationLinks: [
       { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
       { title: "Fixing Position", href: "/navigation/calc/fix" },
+      { title: "Mesafe Hesaplamaları", href: "/navigation/calc/distance" },
       { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
     ],
   },
@@ -1484,6 +1490,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
     calculationLinks: [
       { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
       { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
+      { title: "ECDIS (XTD / Look-ahead)", href: "/navigation/calc/ecdis" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
     ],
   },
@@ -1540,6 +1547,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
     calculationLinks: [
       { title: "Dönüş Hesaplamaları", href: "/navigation/calc/turning" },
       { title: "Seyir Emniyeti (Squat/UKC)", href: "/navigation/calc/safety" },
+      { title: "Akıntı Üçgeni (CTS)", href: "/navigation/calc/current" },
       { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
     ],
   },
