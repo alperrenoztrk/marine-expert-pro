@@ -250,17 +250,6 @@ export default function NavigationTopicsPage() {
           <p className="mx-auto max-w-3xl text-sm text-muted-foreground">
             Her başlık en az 4 sayfa olacak şekilde yapılandırıldı. Her sayfada JPG formatında görsel kullanımı planlandı.
           </p>
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 rounded-xl border border-border/40 bg-background/70 px-4 py-3 text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">Önerilen kaynak</span>
-            <a
-              className="text-primary underline-offset-4 transition hover:underline"
-              href="https://msi.nga.mil/api/publications/download?key=16693975/SFH00000/Bowditch_Vol_1.pdf&type=view"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Bowditch Vol 1 (PDF) bağlantısını aç
-            </a>
-          </div>
         </header>
 
         <section className="rounded-2xl border border-border/40 bg-card/80 p-6">
