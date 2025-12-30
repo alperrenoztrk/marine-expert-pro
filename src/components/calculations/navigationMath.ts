@@ -1688,3 +1688,429 @@ export function generateDailySunAlmanac(dateUtc: Date): DailySunAlmanacRow[] {
   return rows;
 }
 
+// ========================================
+// NEW CALCULATIONS FROM NGA/BOWDITCH TOOLS
+// ========================================
+
+// --- Air Temperature Refraction Correction ---
+export type AirTempCorrectionInput = {
+  apparentAltDeg: number;
+  apparentAltMin: number;
+  temperatureF: number;
+};
+
+export type AirTempCorrectionResult = {
+  correctionMin: number;
+  meanRefractionMin: number;
+  tempFactorF: number;
+};
+
+export function calculateAirTempCorrection(input: AirTempCorrectionInput): AirTempCorrectionResult {
+  const { apparentAltDeg, apparentAltMin, temperatureF } = input;
+  
+  // Altitude lookup table (in arc-minutes)
+  const alt = [-10,0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,205,210,215,220,225,230,235,240,245,250,255,260,265,270,275,280,285,290,295,300,305,310,315,320,325,330,335,340,345,350,355,360,370,380,390,400,410,420,430,440,450,460,470,480,490,500,510,520,530,540,550,560,570,580,590,600,614,626,639,653,667,681,697,712,729,746,764,783,803,823,845,863,892,917,943,971,1001,1032,1065,1100,1138,1177,1220,1265,1313,1366,1422,1482,1548,1619,1696,1780,1872,1972,2082,2204,2338,2486,2650,2831,3032,3254,3499,3768,4059,4372,4703,5048,5311,5400,5500];
+  
+  // Mean refraction table (in arc-minutes)
+  const mref = [-37.0,-34.5,-33.8,-33.2,-32.6,-32.0,-31.4,-30.8,-30.3,-29.8,-29.2,-28.7,-28.2,-27.8,-27.3,-26.8,-26.4,-25.9,-25.5,-25.1,-24.7,-24.3,-24.0,-23.6,-23.2,-22.9,-22.5,-22.2,-21.9,-21.6,-21.2,-20.9,-20.5,-20.0,-19.5,-19.1,-18.7,-18.3,-17.9,-17.5,-17.2,-16.8,-16.5,-16.1,-15.8,-15.5,-15.2,-14.9,-14.7,-14.4,-14.1,-13.9,-13.7,-13.4,-13.2,-13.0,-12.7,-12.5,-12.3,-12.1,-11.9,-11.8,-11.6,-11.4,-11.2,-11.1,-10.9,-10.7,-10.6,-10.4,-10.3,-10.1,-10.0,-9.9,-9.7,-9.6,-9.5,-9.4,-9.2,-9.1,-9.0,-8.9,-8.8,-8.7,-8.6,-8.5,-8.3,-8.1,-7.9,-7.7,-7.6,-7.4,-7.2,-7.1,-7.0,-6.8,-6.7,-6.6,-6.4,-6.3,-6.2,-6.1,-6.0,-5.9,-5.8,-5.7,-5.6,-5.5,-5.4,-5.3,-5.2,-5.1,-5.0,-4.9,-4.8,-4.7,-4.6,-4.5,-4.4,-4.3,-4.2,-4.1,-4.0,-3.9,-3.8,-3.7,-3.6,-3.5,-3.4,-3.3,-3.2,-3.1,-3.0,-2.9,-2.8,-2.7,-2.6,-2.5,-2.4,-2.3,-2.2,-2.1,-2.0,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.1,-1.0,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0.0,0.0,0.0];
+  
+  let deg = apparentAltDeg;
+  let min = apparentAltMin;
+  if (deg < 0) min *= -1;
+  
+  const angle = (deg + min/60) * 60; // Convert to arc-minutes
+  
+  if (angle < -10 || angle > 5400) {
+    throw new Error("Apparent Altitude must be between -10 minutes and 90 degrees");
+  }
+  
+  // Find interpolation indices
+  let i = 0;
+  let alt_low = alt[0], alt_hi = alt[1];
+  let mref_low = mref[0], mref_hi = mref[1];
+  
+  while (i < alt.length - 1 && angle >= alt[i]) {
+    alt_low = alt[i];
+    alt_hi = alt[i + 1];
+    mref_low = mref[i];
+    mref_hi = mref[i + 1];
+    i++;
+  }
+  
+  // Linear interpolation for mean refraction
+  const meanRefractionMin = mref_low + ((angle - alt_low) / (alt_hi - alt_low)) * (mref_hi - mref_low);
+  
+  // Temperature factor: (T - 50) / 430 where T is in Fahrenheit
+  const tempFactorF = (temperatureF - 50) / 430;
+  
+  // Correction = mean refraction * temperature factor
+  const correctionMin = meanRefractionMin * tempFactorF;
+  
+  return { correctionMin, meanRefractionMin, tempFactorF };
+}
+
+// --- Amplitude Calculation ---
+export type AmplitudeInput = {
+  latDeg: number;
+  latSign: 'North' | 'South';
+  decDeg: number;
+  decSign: 'North' | 'South';
+  riseOrSet: 'Rising' | 'Setting';
+  compassBearing?: number;
+};
+
+export type AmplitudeResult = {
+  amplitudeDeg: number;
+  amplitudeSign: 'North' | 'South';
+  amplitudeDir: 'East' | 'West';
+  azimuthDeg: number;
+  compassError?: number;
+  errorSign?: 'East' | 'West';
+};
+
+export function calculateAmplitude(input: AmplitudeInput): AmplitudeResult {
+  let lat = toRadians(input.latDeg);
+  if (input.latSign === 'South') lat = -lat;
+  
+  let dec = toRadians(input.decDeg);
+  if (input.decSign === 'South') dec = -dec;
+  
+  // Amplitude = arcsin(sin(dec) / cos(lat))
+  const sinAmp = Math.sin(dec) / Math.cos(lat);
+  let amplitudeDeg = toDegrees(Math.asin(Math.max(-1, Math.min(1, sinAmp))));
+  
+  let amplitudeSign: 'North' | 'South' = 'North';
+  if (amplitudeDeg < 0) {
+    amplitudeDeg = Math.abs(amplitudeDeg);
+    amplitudeSign = 'South';
+  }
+  
+  const amplitudeDir = input.riseOrSet === 'Rising' ? 'East' : 'West';
+  
+  // Calculate azimuth
+  let azimuthDeg: number;
+  if (amplitudeDir === 'East') {
+    azimuthDeg = 90 - amplitudeDeg;
+  } else {
+    azimuthDeg = 270 + amplitudeDeg;
+  }
+  
+  let result: AmplitudeResult = {
+    amplitudeDeg: Math.round(amplitudeDeg * 100) / 100,
+    amplitudeSign,
+    amplitudeDir,
+    azimuthDeg: Math.round(azimuthDeg * 100) / 100
+  };
+  
+  if (input.compassBearing !== undefined) {
+    let compassError = input.compassBearing - azimuthDeg;
+    let errorSign: 'East' | 'West' = compassError > 0 ? 'West' : 'East';
+    result.compassError = Math.abs(Math.round(compassError * 10) / 10);
+    result.errorSign = errorSign;
+  }
+  
+  return result;
+}
+
+// --- Corrected Amplitude (with -42' altitude) ---
+export function calculateCorrectedAmplitude(input: AmplitudeInput): AmplitudeResult {
+  const altitude = toRadians(-42/60); // -42 arc-minutes
+  
+  let lat = toRadians(input.latDeg);
+  if (input.latSign === 'South') lat = -lat;
+  
+  let dec = toRadians(input.decDeg);
+  if (input.decSign === 'South') dec = -dec;
+  
+  // cos(Az) = (sin(dec) - sin(alt)*sin(lat)) / (cos(alt)*cos(lat))
+  const cosAz = (Math.sin(dec) - Math.sin(altitude) * Math.sin(lat)) / 
+                (Math.cos(altitude) * Math.cos(lat));
+  let azimuthDeg = toDegrees(Math.acos(Math.max(-1, Math.min(1, cosAz))));
+  
+  if (input.riseOrSet === 'Setting') {
+    azimuthDeg = 360 - azimuthDeg;
+  }
+  
+  // Amplitude from corrected azimuth
+  const sinAmp = (Math.sin(dec) - Math.sin(altitude) * Math.sin(lat)) / 
+                 (Math.cos(altitude) * Math.cos(lat));
+  let amplitudeDeg = toDegrees(Math.asin(Math.max(-1, Math.min(1, sinAmp))));
+  
+  let amplitudeSign: 'North' | 'South' = 'North';
+  if (amplitudeDeg < 0) {
+    amplitudeDeg = Math.abs(amplitudeDeg);
+    amplitudeSign = 'South';
+  }
+  
+  const amplitudeDir = input.riseOrSet === 'Rising' ? 'East' : 'West';
+  
+  let result: AmplitudeResult = {
+    amplitudeDeg: Math.round(amplitudeDeg * 100) / 100,
+    amplitudeSign,
+    amplitudeDir,
+    azimuthDeg: Math.round(azimuthDeg * 100) / 100
+  };
+  
+  if (input.compassBearing !== undefined) {
+    let compassError = input.compassBearing - azimuthDeg;
+    let errorSign: 'East' | 'West' = compassError > 0 ? 'West' : 'East';
+    result.compassError = Math.abs(Math.round(compassError * 10) / 10);
+    result.errorSign = errorSign;
+  }
+  
+  return result;
+}
+
+// --- Barometer Gravity Correction ---
+export type BaroGravityInput = {
+  observedReading: number; // inches of mercury
+  latDeg: number;
+};
+
+export type BaroGravityResult = {
+  correctionInHg: number;
+  correctedReading: number;
+};
+
+export function calculateBaroGravityCorrection(input: BaroGravityInput): BaroGravityResult {
+  const { observedReading, latDeg } = input;
+  const lat = toRadians(latDeg);
+  
+  // Correction = obs * (-0.002637 * cos(2*lat) + 0.000006 * cos²(2*lat) - 0.000050)
+  const correctionInHg = observedReading * (
+    -0.002637 * Math.cos(2 * lat) +
+    0.000006 * Math.pow(Math.cos(2 * lat), 2) - 
+    0.000050
+  );
+  
+  return {
+    correctionInHg,
+    correctedReading: observedReading + correctionInHg
+  };
+}
+
+// --- Barometer Height Correction ---
+export type BaroHeightInput = {
+  heightFt: number;
+  temperatureF: number;
+};
+
+export type BaroHeightResult = {
+  correctionInHg: number;
+};
+
+export function calculateBaroHeightCorrection(input: BaroHeightInput): BaroHeightResult {
+  const { heightFt, temperatureF } = input;
+  
+  // Correction = height * (1 / (15748.31 * (1 + (temp - 32) / 900)))
+  const correctionInHg = heightFt * (1 / (15748.31 * (1 + (temperatureF - 32) / 900)));
+  
+  return { correctionInHg };
+}
+
+// --- Barometer Temperature Correction ---
+export type BaroTempInput = {
+  observedReading: number; // inches of mercury
+  temperatureF: number;
+};
+
+export type BaroTempResult = {
+  correctionInHg: number;
+  correctedReading: number;
+};
+
+export function calculateBaroTempCorrection(input: BaroTempInput): BaroTempResult {
+  const { observedReading, temperatureF } = input;
+  
+  // Correction = -obs * ((temp - 28.630) / (1.1123 * temp + 10978))
+  const correctionInHg = -observedReading * ((temperatureF - 28.630) / (1.1123 * temperatureF + 10978));
+  
+  return {
+    correctionInHg,
+    correctedReading: observedReading + correctionInHg
+  };
+}
+
+// --- Two Bearings Distance Calculation ---
+export type TwoBearingsInput = {
+  bearing1Deg: number;
+  bearing1Min: number;
+  bearing2Deg: number;
+  bearing2Min: number;
+  distanceBetweenBearingsNm: number;
+};
+
+export type TwoBearingsResult = {
+  distanceAtBearing2Nm: number;
+  distanceAbeamNm: number;
+};
+
+export function calculateTwoBearingsDistance(input: TwoBearingsInput): TwoBearingsResult {
+  const { bearing1Deg, bearing1Min, bearing2Deg, bearing2Min, distanceBetweenBearingsNm } = input;
+  
+  let theta1 = toRadians(bearing1Deg + bearing1Min/60);
+  let theta2 = toRadians(bearing2Deg + bearing2Min/60);
+  
+  const deg_90 = Math.PI/2;
+  const deg_180 = Math.PI;
+  
+  // Triangle calculations
+  const T1A1 = deg_90 - theta1;
+  const T3A1 = deg_90 - theta2;
+  const T2A3 = deg_180 - T3A1;
+  const T1A3 = T2A3 - T1A1;
+  
+  // Law of sines: D/sin(T1A3) = dist_b2/sin(T1A1)
+  const distanceAtBearing2Nm = distanceBetweenBearingsNm * Math.sin(T1A1) / Math.sin(T1A3);
+  
+  // Distance abeam = dist_b2 * sin(theta2)
+  const distanceAbeamNm = distanceAtBearing2Nm * Math.sin(theta2);
+  
+  return {
+    distanceAtBearing2Nm: Math.abs(distanceAtBearing2Nm),
+    distanceAbeamNm: Math.abs(distanceAbeamNm)
+  };
+}
+
+// --- Length of Degree of Latitude/Longitude ---
+export type DegreeLengthInput = {
+  latDeg: number;
+};
+
+export type DegreeLengthResult = {
+  latLengthM: number;
+  latLengthFt: number;
+  latLengthNm: number;
+  latLengthSm: number;
+  lonLengthM: number;
+  lonLengthFt: number;
+  lonLengthNm: number;
+  lonLengthSm: number;
+};
+
+export function calculateDegreeLength(input: DegreeLengthInput): DegreeLengthResult {
+  const lat = toRadians(input.latDeg);
+  
+  // Constants for latitude calculation
+  const m1 = 111132.92;
+  const m2 = -559.82;
+  const m3 = 1.175;
+  const m4 = -0.0023;
+  
+  // Constants for longitude calculation
+  const p1 = 111412.84;
+  const p2 = -93.5;
+  const p3 = 0.118;
+  
+  // Length of 1° latitude in meters
+  const latLengthM = m1 + (m2 * Math.cos(2 * lat)) + (m3 * Math.cos(4 * lat)) + (m4 * Math.cos(6 * lat));
+  
+  // Length of 1° longitude in meters
+  const lonLengthM = (p1 * Math.cos(lat)) + (p2 * Math.cos(3 * lat)) + (p3 * Math.cos(5 * lat));
+  
+  const latLengthFt = latLengthM / 12 * 39.370079;
+  const latLengthSm = latLengthFt / 5280;
+  const latLengthNm = latLengthSm / 1.15077945;
+  
+  const lonLengthFt = lonLengthM / 12 * 39.370079;
+  const lonLengthSm = lonLengthFt / 5280;
+  const lonLengthNm = lonLengthSm / 1.15077945;
+  
+  return {
+    latLengthM: Math.round(latLengthM),
+    latLengthFt: Math.round(latLengthFt),
+    latLengthNm,
+    latLengthSm,
+    lonLengthM: Math.round(lonLengthM),
+    lonLengthFt: Math.round(lonLengthFt),
+    lonLengthNm,
+    lonLengthSm
+  };
+}
+
+// --- Dip of Sea Short of Horizon ---
+export type DipShortInput = {
+  eyeHeightFt: number;
+  distanceToObstructionNm: number;
+  unitFeet: boolean;
+};
+
+export type DipShortResult = {
+  dipMin: number;
+};
+
+export function calculateDipShort(input: DipShortInput): DipShortResult {
+  let eyeHeight = input.eyeHeightFt;
+  if (!input.unitFeet) {
+    eyeHeight = eyeHeight * 3.2808399; // Convert meters to feet
+  }
+  
+  let obstruct = input.distanceToObstructionNm;
+  
+  // Account for normal dip limits based on eye height
+  if (eyeHeight <= 5) obstruct = Math.min(2.6, obstruct);
+  else if (eyeHeight <= 10) obstruct = Math.min(3.6, obstruct);
+  else if (eyeHeight <= 15) obstruct = Math.min(4.4, obstruct);
+  else if (eyeHeight <= 20) obstruct = Math.min(5.0, obstruct);
+  else if (eyeHeight <= 25) obstruct = Math.min(5.5, obstruct);
+  else if (eyeHeight <= 30) obstruct = Math.min(6.0, obstruct);
+  else if (eyeHeight <= 35) obstruct = Math.min(6.5, obstruct);
+  else if (eyeHeight <= 40) obstruct = Math.min(7.0, obstruct);
+  else if (eyeHeight <= 45) obstruct = Math.min(7.5, obstruct);
+  else if (eyeHeight <= 50) obstruct = Math.min(8.0, obstruct);
+  else if (eyeHeight <= 60) obstruct = Math.min(8.5, obstruct);
+  else if (eyeHeight <= 65) obstruct = Math.min(9.0, obstruct);
+  else if (eyeHeight <= 75) obstruct = Math.min(9.5, obstruct);
+  
+  // Dip formula in arc-minutes
+  const dipMin = 60 * Math.atan(
+    (eyeHeight / (6076.1 * obstruct)) + (0.8321 * obstruct) / (2 * 3440.1)
+  ) * (360 / (2 * Math.PI));
+  
+  return { dipMin };
+}
+
+// --- Altitude Factor and Meridian Transit Change ---
+export type AltitudeFactorInput = {
+  latDeg: number;
+  latSign: 'North' | 'South';
+  decDeg: number;
+  decSign: 'North' | 'South';
+  lowerTransit: boolean;
+};
+
+export type AltitudeFactorResult = {
+  factor: number; // seconds of arc per minute of time
+};
+
+export function calculateAltitudeFactor(input: AltitudeFactorInput): AltitudeFactorResult {
+  const secConst = 1.9635; // seconds of arc constant
+  
+  let lat = toRadians(input.latDeg);
+  if (input.latSign === 'South') lat = -lat;
+  
+  let dec = toRadians(input.decDeg);
+  if (input.decSign === 'South') dec = -dec;
+  if (input.lowerTransit) dec = -dec;
+  
+  // Factor = 1.9635 * |cos(lat) * cos(dec) / sin(lat - dec)|
+  const factor = Math.abs(secConst * Math.cos(lat) * Math.cos(dec) * (1 / Math.sin(lat - dec)));
+  
+  return { factor };
+}
+
+export type MeridianTransitChangeInput = {
+  factor: number;
+  minutesFromMeridian: number;
+};
+
+export type MeridianTransitChangeResult = {
+  altitudeChangeSec: number;
+};
+
+export function calculateMeridianTransitChange(input: MeridianTransitChangeInput): MeridianTransitChangeResult {
+  // Change in altitude = factor * (minutes from meridian)² / 60
+  const altitudeChangeSec = input.factor * Math.pow(input.minutesFromMeridian, 2) / 60;
+  return { altitudeChangeSec };
+}
+
