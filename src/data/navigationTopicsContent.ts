@@ -37,6 +37,7 @@ const referenceSets: Record<string, string[]> = {
     "IMO Model Course 7.03 — Bridge Procedures",
     "Admiralty NP 136 (The Mariner’s Handbook) — temel seyir ilkeleri",
     "Admiralty Sailing Directions (NP serisi) — operasyonel notlar",
+    "Bowditch Vol. 1 (NGA) — https://msi.nga.mil/api/publications/download?key=16693975/SFH00000/Bowditch_Vol_1.pdf&type=view",
   ],
   mercatorRhumb: [
     "Admiralty Manual of Navigation Vol. 1 — Mercator/loxodrome",
