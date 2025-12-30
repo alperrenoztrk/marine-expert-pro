@@ -582,6 +582,7 @@ export default function NavigationCalculationsPage() {
     }
   };
 
+  return (
     <MobileLayout>
       <CalculationGridScreen
         eyebrow="Seyir"
