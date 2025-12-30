@@ -29,6 +29,17 @@ import {
   calculateWeather,
   calculateCelestial,
   calculateEmergency,
+  calculateAirTempCorrection,
+  calculateAmplitude,
+  calculateCorrectedAmplitude,
+  calculateBaroGravityCorrection,
+  calculateBaroHeightCorrection,
+  calculateBaroTempCorrection,
+  calculateTwoBearingsDistance,
+  calculateDegreeLength,
+  calculateDipShort,
+  calculateAltitudeFactor,
+  calculateMeridianTransitChange,
   type PlaneSailingInput,
   type CurrentTriangleInput,
   type ARPAInput,
@@ -38,7 +49,16 @@ import {
   type TurningCalculationInput,
   type WeatherCalculationInput,
   type CelestialInput,
-  type EmergencyInput
+  type EmergencyInput,
+  type AirTempCorrectionInput,
+  type AmplitudeInput,
+  type BaroGravityInput,
+  type BaroHeightInput,
+  type BaroTempInput,
+  type TwoBearingsInput,
+  type DegreeLengthInput,
+  type DipShortInput,
+  type AltitudeFactorInput
 } from "@/components/calculations/navigationMath";
 
 export default function NavigationCalculationsPage() {
@@ -61,6 +81,17 @@ export default function NavigationCalculationsPage() {
   const [celestialInputs, setCelestialInputs] = useState({ lat: "", dec: "", type: "meridian" });
   const [emergencyInputs, setEmergencyInputs] = useState({ type: "square", trackSpacing: "", radius: "", distance: "", rescueSpeed: "", driftSpeed: "" });
 
+  // New calculation states
+  const [airTempInputs, setAirTempInputs] = useState({ altDeg: "", altMin: "", temperature: "" });
+  const [amplitudeInputs, setAmplitudeInputs] = useState({ lat: "", latSign: "North" as const, dec: "", decSign: "North" as const, riseOrSet: "Rising" as const, bearing: "" });
+  const [baroGravityInputs, setBaroGravityInputs] = useState({ observed: "", lat: "" });
+  const [baroHeightInputs, setBaroHeightInputs] = useState({ height: "", temperature: "" });
+  const [baroTempInputs, setBaroTempInputs] = useState({ observed: "", temperature: "" });
+  const [twoBearingsInputs, setTwoBearingsInputs] = useState({ bearing1Deg: "", bearing1Min: "", bearing2Deg: "", bearing2Min: "", distance: "" });
+  const [degreeLengthInputs, setDegreeLengthInputs] = useState({ lat: "" });
+  const [dipShortInputs, setDipShortInputs] = useState({ eyeHeight: "", obstruction: "", unitFeet: true });
+  const [altitudeFactorInputs, setAltitudeFactorInputs] = useState({ lat: "", latSign: "North" as const, dec: "", decSign: "North" as const, lowerTransit: false, minutesFromMeridian: "" });
+
   // Results state
   const [gcResults, setGcResults] = useState<any>(null);
   const [rhumbResults, setRhumbResults] = useState<any>(null);
@@ -77,6 +108,17 @@ export default function NavigationCalculationsPage() {
   const [weatherResults, setWeatherResults] = useState<any>(null);
   const [celestialResults, setCelestialResults] = useState<any>(null);
   const [emergencyResults, setEmergencyResults] = useState<any>(null);
+
+  // New calculation results
+  const [airTempResults, setAirTempResults] = useState<any>(null);
+  const [amplitudeResults, setAmplitudeResults] = useState<any>(null);
+  const [baroGravityResults, setBaroGravityResults] = useState<any>(null);
+  const [baroHeightResults, setBaroHeightResults] = useState<any>(null);
+  const [baroTempResults, setBaroTempResults] = useState<any>(null);
+  const [twoBearingsResults, setTwoBearingsResults] = useState<any>(null);
+  const [degreeLengthResults, setDegreeLengthResults] = useState<any>(null);
+  const [dipShortResults, setDipShortResults] = useState<any>(null);
+  const [altitudeFactorResults, setAltitudeFactorResults] = useState<any>(null);
 
   const sections = [
     { id: "gc", title: "Büyük Daire (Great Circle)" },
@@ -96,7 +138,15 @@ export default function NavigationCalculationsPage() {
     { id: "turning", title: "Dönüş Hesaplamaları" },
     { id: "weather", title: "Hava Durumu" },
     { id: "celestial", title: "Göksel Navigasyon" },
-    { id: "emergency", title: "Acil Durum" }
+    { id: "emergency", title: "Acil Durum" },
+    // New sections
+    { id: "airtemp", title: "Sıcaklık Düzeltmesi" },
+    { id: "amplitude", title: "Amplitüd Hesabı" },
+    { id: "barometer", title: "Barometre Düzeltmeleri" },
+    { id: "two-bearings", title: "İki Kerteriz Mesafesi" },
+    { id: "degree-length", title: "Derece Uzunluğu" },
+    { id: "dip-short", title: "Kısa Ufuk Dip" },
+    { id: "altitude-factor", title: "Yükseklik Faktörü" }
   ];
 
   // Calculation handlers
@@ -375,7 +425,163 @@ export default function NavigationCalculationsPage() {
     }
   };
 
-  return (
+  // New calculation handlers
+  const handleAirTemp = () => {
+    try {
+      const input: AirTempCorrectionInput = {
+        apparentAltDeg: parseFloat(airTempInputs.altDeg) || 0,
+        apparentAltMin: parseFloat(airTempInputs.altMin) || 0,
+        temperatureF: parseFloat(airTempInputs.temperature)
+      };
+      const result = calculateAirTempCorrection(input);
+      setAirTempResults(result);
+    } catch (error) {
+      console.error("Air temp calculation error:", error);
+    }
+  };
+
+  const handleAmplitude = () => {
+    try {
+      const input: AmplitudeInput = {
+        latDeg: parseFloat(amplitudeInputs.lat),
+        latSign: amplitudeInputs.latSign,
+        decDeg: parseFloat(amplitudeInputs.dec),
+        decSign: amplitudeInputs.decSign,
+        riseOrSet: amplitudeInputs.riseOrSet,
+        compassBearing: amplitudeInputs.bearing ? parseFloat(amplitudeInputs.bearing) : undefined
+      };
+      const result = calculateAmplitude(input);
+      setAmplitudeResults(result);
+    } catch (error) {
+      console.error("Amplitude calculation error:", error);
+    }
+  };
+
+  const handleCorrectedAmplitude = () => {
+    try {
+      const input: AmplitudeInput = {
+        latDeg: parseFloat(amplitudeInputs.lat),
+        latSign: amplitudeInputs.latSign,
+        decDeg: parseFloat(amplitudeInputs.dec),
+        decSign: amplitudeInputs.decSign,
+        riseOrSet: amplitudeInputs.riseOrSet,
+        compassBearing: amplitudeInputs.bearing ? parseFloat(amplitudeInputs.bearing) : undefined
+      };
+      const result = calculateCorrectedAmplitude(input);
+      setAmplitudeResults(result);
+    } catch (error) {
+      console.error("Corrected amplitude calculation error:", error);
+    }
+  };
+
+  const handleBaroGravity = () => {
+    try {
+      const input: BaroGravityInput = {
+        observedReading: parseFloat(baroGravityInputs.observed),
+        latDeg: parseFloat(baroGravityInputs.lat)
+      };
+      const result = calculateBaroGravityCorrection(input);
+      setBaroGravityResults(result);
+    } catch (error) {
+      console.error("Baro gravity calculation error:", error);
+    }
+  };
+
+  const handleBaroHeight = () => {
+    try {
+      const input: BaroHeightInput = {
+        heightFt: parseFloat(baroHeightInputs.height),
+        temperatureF: parseFloat(baroHeightInputs.temperature)
+      };
+      const result = calculateBaroHeightCorrection(input);
+      setBaroHeightResults(result);
+    } catch (error) {
+      console.error("Baro height calculation error:", error);
+    }
+  };
+
+  const handleBaroTemp = () => {
+    try {
+      const input: BaroTempInput = {
+        observedReading: parseFloat(baroTempInputs.observed),
+        temperatureF: parseFloat(baroTempInputs.temperature)
+      };
+      const result = calculateBaroTempCorrection(input);
+      setBaroTempResults(result);
+    } catch (error) {
+      console.error("Baro temp calculation error:", error);
+    }
+  };
+
+  const handleTwoBearings = () => {
+    try {
+      const input: TwoBearingsInput = {
+        bearing1Deg: parseFloat(twoBearingsInputs.bearing1Deg) || 0,
+        bearing1Min: parseFloat(twoBearingsInputs.bearing1Min) || 0,
+        bearing2Deg: parseFloat(twoBearingsInputs.bearing2Deg) || 0,
+        bearing2Min: parseFloat(twoBearingsInputs.bearing2Min) || 0,
+        distanceBetweenBearingsNm: parseFloat(twoBearingsInputs.distance)
+      };
+      const result = calculateTwoBearingsDistance(input);
+      setTwoBearingsResults(result);
+    } catch (error) {
+      console.error("Two bearings calculation error:", error);
+    }
+  };
+
+  const handleDegreeLength = () => {
+    try {
+      const input: DegreeLengthInput = {
+        latDeg: parseFloat(degreeLengthInputs.lat)
+      };
+      const result = calculateDegreeLength(input);
+      setDegreeLengthResults(result);
+    } catch (error) {
+      console.error("Degree length calculation error:", error);
+    }
+  };
+
+  const handleDipShort = () => {
+    try {
+      const input: DipShortInput = {
+        eyeHeightFt: parseFloat(dipShortInputs.eyeHeight),
+        distanceToObstructionNm: parseFloat(dipShortInputs.obstruction),
+        unitFeet: dipShortInputs.unitFeet
+      };
+      const result = calculateDipShort(input);
+      setDipShortResults(result);
+    } catch (error) {
+      console.error("Dip short calculation error:", error);
+    }
+  };
+
+  const handleAltitudeFactor = () => {
+    try {
+      const input: AltitudeFactorInput = {
+        latDeg: parseFloat(altitudeFactorInputs.lat),
+        latSign: altitudeFactorInputs.latSign,
+        decDeg: parseFloat(altitudeFactorInputs.dec),
+        decSign: altitudeFactorInputs.decSign,
+        lowerTransit: altitudeFactorInputs.lowerTransit
+      };
+      const factorResult = calculateAltitudeFactor(input);
+      
+      let result: any = { factor: factorResult.factor };
+      
+      if (altitudeFactorInputs.minutesFromMeridian) {
+        const changeResult = calculateMeridianTransitChange({
+          factor: factorResult.factor,
+          minutesFromMeridian: parseFloat(altitudeFactorInputs.minutesFromMeridian)
+        });
+        result.altitudeChangeSec = changeResult.altitudeChangeSec;
+      }
+      
+      setAltitudeFactorResults(result);
+    } catch (error) {
+      console.error("Altitude factor calculation error:", error);
+    }
+  };
+
     <MobileLayout>
       <CalculationGridScreen
         eyebrow="Seyir"
@@ -1379,6 +1585,208 @@ ${celestialInputs.type === 'meridian' ? `Meridian Latitude: ${celestialResults.l
               <div className="bg-muted/30 rounded p-3">
                 <pre className="font-mono text-sm leading-6">{`Sonuç:
 ${emergencyResults.searchLegNm ? `Search Leg: ${emergencyResults.searchLegNm.toFixed(2)} nm\n` : ''}${emergencyResults.nextRadiusNm ? `Next Radius: ${emergencyResults.nextRadiusNm.toFixed(2)} nm\n` : ''}${emergencyResults.rescueTimeHours ? `Rescue Time: ${emergencyResults.rescueTimeHours.toFixed(2)} hours` : ''}`}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* New Calculations Section */}
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="airtemp" className="scroll-mt-24">Sıcaklık Düzeltmesi (Refraction)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label>Görünür Yükseklik (°)</Label>
+                  <Input type="number" placeholder="30" value={airTempInputs.altDeg} onChange={(e) => setAirTempInputs({...airTempInputs, altDeg: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Dakika (')</Label>
+                  <Input type="number" placeholder="0" value={airTempInputs.altMin} onChange={(e) => setAirTempInputs({...airTempInputs, altMin: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Sıcaklık (°F)</Label>
+                  <Input type="number" placeholder="50" value={airTempInputs.temperature} onChange={(e) => setAirTempInputs({...airTempInputs, temperature: e.target.value})} />
+                </div>
+              </div>
+              <Button onClick={handleAirTemp} className="w-full mt-4">Hesapla</Button>
+            </div>
+            {airTempResults && (
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm">{`Düzeltme: ${airTempResults.correctionMin?.toFixed(2)}'\nOrtalama Refraksiyon: ${airTempResults.meanRefractionMin?.toFixed(2)}'`}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="amplitude" className="scroll-mt-24">Amplitüd Hesabı</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Enlem (°)</Label>
+                  <Input type="number" placeholder="41" value={amplitudeInputs.lat} onChange={(e) => setAmplitudeInputs({...amplitudeInputs, lat: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Deklinasyon (°)</Label>
+                  <Input type="number" placeholder="23" value={amplitudeInputs.dec} onChange={(e) => setAmplitudeInputs({...amplitudeInputs, dec: e.target.value})} />
+                </div>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <Button onClick={handleAmplitude} className="flex-1">Amplitüd</Button>
+                <Button onClick={handleCorrectedAmplitude} variant="outline" className="flex-1">Düzeltilmiş</Button>
+              </div>
+            </div>
+            {amplitudeResults && (
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm">{`Amplitüd: ${amplitudeResults.amplitudeDeg}° ${amplitudeResults.amplitudeSign} ${amplitudeResults.amplitudeDir}\nAzimut: ${amplitudeResults.azimuthDeg}°`}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="barometer" className="scroll-mt-24">Barometre Düzeltmeleri</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <h4 className="font-semibold mb-2">Yerçekimi Düzeltmesi</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Okuma (inHg)</Label>
+                  <Input type="number" placeholder="29.92" value={baroGravityInputs.observed} onChange={(e) => setBaroGravityInputs({...baroGravityInputs, observed: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Enlem (°)</Label>
+                  <Input type="number" placeholder="45" value={baroGravityInputs.lat} onChange={(e) => setBaroGravityInputs({...baroGravityInputs, lat: e.target.value})} />
+                </div>
+              </div>
+              <Button onClick={handleBaroGravity} className="w-full mt-2">Hesapla</Button>
+              {baroGravityResults && <p className="mt-2 font-mono text-xs">Düzeltme: {baroGravityResults.correctionInHg?.toFixed(4)} inHg</p>}
+            </div>
+            <div className="bg-muted/30 rounded p-3">
+              <h4 className="font-semibold mb-2">Sıcaklık Düzeltmesi</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Okuma (inHg)</Label>
+                  <Input type="number" placeholder="29.92" value={baroTempInputs.observed} onChange={(e) => setBaroTempInputs({...baroTempInputs, observed: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Sıcaklık (°F)</Label>
+                  <Input type="number" placeholder="70" value={baroTempInputs.temperature} onChange={(e) => setBaroTempInputs({...baroTempInputs, temperature: e.target.value})} />
+                </div>
+              </div>
+              <Button onClick={handleBaroTemp} className="w-full mt-2">Hesapla</Button>
+              {baroTempResults && <p className="mt-2 font-mono text-xs">Düzeltme: {baroTempResults.correctionInHg?.toFixed(4)} inHg</p>}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="two-bearings" className="scroll-mt-24">İki Kerteriz ile Mesafe</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>1. Kerteriz (°)</Label>
+                  <Input type="number" placeholder="30" value={twoBearingsInputs.bearing1Deg} onChange={(e) => setTwoBearingsInputs({...twoBearingsInputs, bearing1Deg: e.target.value})} />
+                </div>
+                <div>
+                  <Label>2. Kerteriz (°)</Label>
+                  <Input type="number" placeholder="60" value={twoBearingsInputs.bearing2Deg} onChange={(e) => setTwoBearingsInputs({...twoBearingsInputs, bearing2Deg: e.target.value})} />
+                </div>
+                <div className="col-span-2">
+                  <Label>Kerterizler Arası Mesafe (nm)</Label>
+                  <Input type="number" placeholder="5" value={twoBearingsInputs.distance} onChange={(e) => setTwoBearingsInputs({...twoBearingsInputs, distance: e.target.value})} />
+                </div>
+              </div>
+              <Button onClick={handleTwoBearings} className="w-full mt-4">Hesapla</Button>
+            </div>
+            {twoBearingsResults && (
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm">{`2. Kerterizde Mesafe: ${twoBearingsResults.distanceAtBearing2Nm?.toFixed(2)} nm\nAbeam Mesafe: ${twoBearingsResults.distanceAbeamNm?.toFixed(2)} nm`}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="degree-length" className="scroll-mt-24">Derece Uzunluğu</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <Label>Enlem (°)</Label>
+              <Input type="number" placeholder="45" value={degreeLengthInputs.lat} onChange={(e) => setDegreeLengthInputs({...degreeLengthInputs, lat: e.target.value})} />
+              <Button onClick={handleDegreeLength} className="w-full mt-4">Hesapla</Button>
+            </div>
+            {degreeLengthResults && (
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm">{`1° Enlem: ${degreeLengthResults.latLengthNm?.toFixed(2)} nm (${degreeLengthResults.latLengthM} m)\n1° Boylam: ${degreeLengthResults.lonLengthNm?.toFixed(2)} nm (${degreeLengthResults.lonLengthM} m)`}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="dip-short" className="scroll-mt-24">Kısa Ufuk Dip Hesabı</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Göz Yüksekliği (ft)</Label>
+                  <Input type="number" placeholder="30" value={dipShortInputs.eyeHeight} onChange={(e) => setDipShortInputs({...dipShortInputs, eyeHeight: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Engel Mesafesi (nm)</Label>
+                  <Input type="number" placeholder="3" value={dipShortInputs.obstruction} onChange={(e) => setDipShortInputs({...dipShortInputs, obstruction: e.target.value})} />
+                </div>
+              </div>
+              <Button onClick={handleDipShort} className="w-full mt-4">Hesapla</Button>
+            </div>
+            {dipShortResults && (
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm">{`Dip: ${dipShortResults.dipMin?.toFixed(2)}'`}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow">
+          <CardHeader>
+            <CardTitle id="altitude-factor" className="scroll-mt-24">Yükseklik Faktörü</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="bg-muted/30 rounded p-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Enlem (°)</Label>
+                  <Input type="number" placeholder="41" value={altitudeFactorInputs.lat} onChange={(e) => setAltitudeFactorInputs({...altitudeFactorInputs, lat: e.target.value})} />
+                </div>
+                <div>
+                  <Label>Deklinasyon (°)</Label>
+                  <Input type="number" placeholder="23" value={altitudeFactorInputs.dec} onChange={(e) => setAltitudeFactorInputs({...altitudeFactorInputs, dec: e.target.value})} />
+                </div>
+                <div className="col-span-2">
+                  <Label>Meridyenden Dakika</Label>
+                  <Input type="number" placeholder="5" value={altitudeFactorInputs.minutesFromMeridian} onChange={(e) => setAltitudeFactorInputs({...altitudeFactorInputs, minutesFromMeridian: e.target.value})} />
+                </div>
+              </div>
+              <Button onClick={handleAltitudeFactor} className="w-full mt-4">Hesapla</Button>
+            </div>
+            {altitudeFactorResults && (
+              <div className="bg-muted/30 rounded p-3">
+                <pre className="font-mono text-sm">{`Faktör: ${altitudeFactorResults.factor?.toFixed(4)}${altitudeFactorResults.altitudeChangeSec ? `\nYükseklik Değişimi: ${altitudeFactorResults.altitudeChangeSec?.toFixed(2)}"` : ''}`}</pre>
               </div>
             )}
           </CardContent>
