@@ -441,6 +441,13 @@ const topicSections: TopicSection[] = [
             Tasarım aşamasında belirli KG ve trim değerlerine göre cross-curves of stability (KN eğrileri) oluşturulur. Simpson'un 1/3 ve 3/8 kuralları, düzensiz alanların hesaplanmasında kullanılır.
           </p>
         </div>
+
+        <div className="space-y-3">
+          <h4 className="font-semibold text-foreground">8.4 Dokümantasyon ve Doğrulama Zinciri</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            İnklinasyon deneyinden gelen veriler stabilite kitapçığına aktarılır ve bu kitapçık yükleme el kitabındaki operasyon limitlerinin temelini oluşturur. Yükleme bilgisayarı doğrulaması ise aynı limitlerin dijital hesaplamalarda doğru uygulandığını gösterir; üçü birlikte tutarlı olduğunda gemi yükleme kararları güvenle teyit edilir.
+          </p>
+        </div>
       </div>
     )
   },
