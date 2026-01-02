@@ -164,6 +164,14 @@ const topicSections: TopicSection[] = [
                   <td className="py-2 font-medium text-foreground">Vanishing stability açısı</td>
                   <td className="py-2">Eğri x-ekseni ile kesiştiğinde (GZ=0) gemi doğrultucu kol üretmez ve devrilme riski vardır</td>
                 </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-2 font-medium text-foreground">Downflooding açısı</td>
+                  <td className="py-2">Su giriş açıklıklarının suya temas ettiği kritik yatış açısıdır; emniyet limitleri için referans alınır</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-2 font-medium text-foreground">Reserve buoyancy</td>
+                  <td className="py-2">Su hattı üzerinde kalan kapalı hacimlerin sağladığı ilave yüzebilirlik ve stabilite rezervidir</td>
+                </tr>
                 <tr>
                   <td className="py-2 font-medium text-foreground">Dinamik stabilite alanı</td>
                   <td className="py-2">Eğri altında kalan alan geminin dış kuvvetlere karşı depolayabildiği enerjiyi gösterir</td>
@@ -171,6 +179,7 @@ const topicSections: TopicSection[] = [
               </tbody>
             </table>
           </div>
+          <p className="text-xs text-muted-foreground">Alan birimi: m·rad.</p>
         </div>
 
         <div className="space-y-3">
