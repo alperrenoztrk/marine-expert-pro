@@ -195,6 +195,7 @@ const referenceSets: Record<string, string[]> = {
     "IMO STCW Code Section A-I/12 — simulator training",
   ],
   documents: [
+    "Bowditch — The American Practical Navigator",
     "IMO STCW Code A-VIII/2 — logbook kayıtları",
     "Admiralty NP 136 (The Mariner’s Handbook) — kayıt düzeni",
     "IMO Model Course 7.03 — bridge records",
@@ -2115,6 +2116,17 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         ],
         imageAlt: "Denetim hazırlık kontrol listesi",
         motionCue: "Kontrol maddelerini sırayla onay animasyonuyla göster.",
+      },
+      {
+        title: "5. Bowditch Kullanımı",
+        summary: "Bowditch, seyir planlama ve chartwork için temel başvuru kaynağıdır.",
+        bullets: [
+          "Tablolar ve formüllerle rota ve zaman hesaplarını doğrula.",
+          "Seyir yayınları arasında Bowditch’i güncel baskı/versiyonla takip et.",
+          "Köprüüstü prosedürlerinde ilgili bölüm numaralarını hızlı erişim için işaretle.",
+        ],
+        imageAlt: "Bowditch referans kitabı kullanım akışı",
+        motionCue: "Kitap ikonunu açılıp kapanan sayfa animasyonuyla vurgula.",
       },
     ]),
     accuracyChecklist: accuracyChecklistMap["seyir-belgeleri"],

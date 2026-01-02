@@ -68,7 +68,8 @@ const topicsData: Record<string, TopicContent> = {
       { title: "Kaza Örnekleri", description: "COLREG ihlali ve near-miss dersleri" },
       { title: "Simülatör Modülleri", description: "Radar/ARPA ve gözetim senaryoları" },
       { title: "Seyir Belgeleri", description: "Köprüüstü kayıtları ve logbook düzeni" },
-      { title: "Vardiya Yönetimi", description: "Vardiya devri ve lookout sorumlulukları" }
+      { title: "Vardiya Yönetimi", description: "Vardiya devri ve lookout sorumlulukları" },
+      { title: "Bowditch", description: "The American Practical Navigator kaynağının seyirde kullanımı" }
     ],
     resources: [
       { title: "Seyir Hesaplamaları", href: "/navigation" },
