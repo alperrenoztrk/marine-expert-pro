@@ -89,6 +89,9 @@ const topicSections: TopicSection[] = [
             Metasantrik yükseklik (GM), geminin küçük açılardaki ilk stabilitesinin göstergesidir. <strong className="text-foreground">GM = KM − KG</strong> formülüyle hesaplanır; burada KM kökle metasentre arasındaki mesafe, KG kökle ağırlık merkezi arasındaki mesafedir.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
+            KM, kaldırma merkezinin kökten yüksekliği ile metasantrik yarıçapın toplamıdır: <strong className="text-foreground">KM = KB + BM</strong>. Metasantrik yarıçap ise su hattı alan atalet momentinin deplasman hacmine oranıdır: <strong className="text-foreground">BM = I/∇</strong>. Bu ilişkiler, stabilite hesabının temel geometrik bileşenlerini açıklar.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
             GM değeri arttıkça gemi hızlı ve sert bir yalpa davranışı gösterir; GM azaldıkça daha yavaş ve geniş salınımlar görülür. Bu nedenle GM,
             hem emniyet hem de konfor açısından dengelenmelidir.
           </p>
@@ -603,6 +606,10 @@ const topicSections: TopicSection[] = [
               <tr className="border-b border-border/50">
                 <td className="py-2 font-medium text-foreground">Metasantrik Yarıçap (BM)</td>
                 <td className="py-2 font-mono">BM = I/∇</td>
+              </tr>
+              <tr className="border-b border-border/50">
+                <td className="py-2 font-medium text-foreground">Metasantrik Yükseklik (KM)</td>
+                <td className="py-2 font-mono">KM = KB + BM</td>
               </tr>
               <tr className="border-b border-border/50">
                 <td className="py-2 font-medium text-foreground">KG Hesabı</td>
