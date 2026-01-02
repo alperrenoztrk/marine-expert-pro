@@ -594,6 +594,79 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         imageAlt: "Mevki takibi kontrol ve doğrulama akışı",
         motionCue: "Mevki noktalarını kısa aralıklarla parlatan nabız animasyonu kullan.",
       },
+      {
+        title: "6. Mevki Bulma (Fixing) Yöntemleri",
+        summary: "Mevki bulma, birden çok bağımsız ölçümle gerçek konumu doğrular.",
+        bullets: [
+          "Kesişen kerteriz: En az iki görsel/radar kerteriziyle LOP oluştur, kesişim noktası mevkiyi verir.",
+          "Running fix: Aynı hedefe iki farklı zamanda kerteriz al, hedefi önceki kerteriz boyunca ileri taşı.",
+          "Transit/leading line fix: İki sabit işaret hizasıyla kesin hat oluştur, hat üzerinde mevki belirle.",
+          "Radar mesafe/kerteriz: Bir hedefe mesafe + kerteriz alıp LOP üret, ikinci LOP ile kesiştir.",
+          "Sextant horizontal/vertical angle: İki hedef arasındaki açıyla LOP üret, haritada çözümle.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Fener A kerterizi 045°, fener B kerterizi 120° alındı, kesişim mevkii işaretlendi.",
+              "Running fix: 10 dk arayla aynı hedefe kerteriz alındı, 6 kn hızla 1 NM ileri taşındı.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "LOP = kerteriz doğrultusunda çizilen hat.",
+              "Running fix: İkinci kerteriz zamanı - ilk kerteriz zamanı = geçen mesafe (kn × saat).",
+              "Radar mesafe/kerteriz: Mesafe yayı + kerteriz hattı kesişimi mevkiyi verir.",
+            ],
+          },
+          {
+            title: "Uygulama Notları",
+            items: [
+              "Kerterizler aynı zaman damgasıyla kaydedilmeli.",
+              "En az iki bağımsız kaynakla (görsel + radar) doğrulama yapılmalı.",
+            ],
+          },
+          {
+            title: "Kritik Uyarılar",
+            items: [
+              "Hareketli hedeflerden kerteriz alınmaz.",
+              "Running fix’te zaman hatası mevkii büyütür.",
+            ],
+          },
+        ],
+        imageAlt: "Mevki bulma yöntemleri ve LOP kesişimi şeması",
+        motionCue: "Farklı LOP çizgilerini sırayla parlatıp kesişimi vurgula.",
+      },
+      {
+        title: "7. Passage Planning Appraisal",
+        summary: "Appraisal, rota planlamasının başlangıcında veri toplama ve kısıtları netleştirmedir.",
+        bullets: [
+          "Güncel harita/ENC ve yayın listesini çıkar, kapsama boşluklarını belirle.",
+          "Meteoroloji, akıntı ve gelgit kaynaklarını topla; raporların geçerlilik süresini not et.",
+          "Operasyonel kısıtları (draft limitleri, yüksek enlem/buz riskleri, pilotaj gereksinimi) yazılı hale getir.",
+          "Port state/VTS gereklilikleri ve yerel kuralları rota paketiyle eşleştir.",
+        ],
+        detailBlocks: [
+          {
+            title: "Appraisal Kontrol Çıktısı",
+            items: [
+              "ENC hücre listesi + düzeltme durumu",
+              "Meteoroloji kaynakları ve güncelleme saatleri",
+              "Kritik limitler (UKC, XTD, hız, pilot)",
+            ],
+          },
+          {
+            title: "Tipik Hata",
+            items: [
+              "Yayın/harita kapsamasını teyit etmeden rota çizmek.",
+              "Yerel kuralları (raporlama, hız, VTS) belgelememek.",
+            ],
+          },
+        ],
+        imageAlt: "Passage planning appraisal veri toplama akışı",
+        motionCue: "Kaynak kartlarını soldan sağa sıralı şekilde göster.",
+      },
     ]),
     accuracyChecklist: accuracyChecklistMap["seyir-temelleri"],
     calculationLinks: [
@@ -626,6 +699,24 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Büyük ölçek kıyı/pilotaj, küçük ölçek okyanus geçişleri için tercih edilir.",
           "Notice to Mariners ve ENC güncellemeleri tarih/numara ile haritaya işlenir.",
           "Semboller, derinlikler ve tehlike notları güvenli kontur ve UKC ile eşleştirilir.",
+          "ENC update log, düzeltme numarası ve tarih ile düzenli tutulur.",
+        ],
+        detailBlocks: [
+          {
+            title: "Güncelleme Akışı",
+            items: [
+              "ENC/NtM listesini indir → düzeltme numarasını kontrol et.",
+              "Harita/ENC üzerinde düzeltmeyi işaretle → update log’a tarih ve numara yaz.",
+              "Eksik kapsama varsa alternatif harita/yayın belirle.",
+            ],
+          },
+          {
+            title: "Tipik Hata",
+            items: [
+              "Düzeltme numarasını harita kenarına işlememek.",
+              "ENC güncelleme raporunu saklamamak.",
+            ],
+          },
         ],
         imageAlt: "Harita seçimi, güncelleme ve sembol kontrol şeması",
         motionCue: "Harita katmanlarını üst üste bindirip güncelleme etiketi ekle.",
@@ -968,6 +1059,22 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Akıntı etkisini ayrıca değerlendir.",
           "Seyir planına geçiş saatlerini işle.",
         ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "HW 12:00, LW 18:00 arası 6 saat; 15:00’te yükseklik 6/12 oranıyla hesaplandı.",
+              "Gelgit yüksekliği UKC planına eklendi, geçiş saati 30 dk öne alındı.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "Toplam yükseklik farkını 12 parçaya böl.",
+              "Geçen süreye göre 1-2-3-3-2-1 oranlarını uygula.",
+            ],
+          },
+        ],
         imageAlt: "Ara yükseklik hesap şeması",
         motionCue: "Ara noktaları ölçen çizgi animasyonu kullan.",
       },
@@ -981,6 +1088,34 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         ],
         imageAlt: "Gelgitin operasyonlara etkisi",
         motionCue: "Operasyon simgelerini dalga hareketiyle hafifçe titreştir.",
+      },
+      {
+        title: "5. Secondary Port ve Akıntı Atlası",
+        summary: "İkincil liman düzeltmeleri ve akıntı atlası okuması, gerçek zamanlı planlamayı iyileştirir.",
+        bullets: [
+          "Secondary port için HW/LW zaman farkını uygula ve yükseklik düzeltmesini ekle.",
+          "Akıntı atlasında saatlik set/drift değerlerini oku ve rota planına işler.",
+          "Yerel anomali ve lag etkilerini yayın notlarından kontrol et.",
+        ],
+        detailBlocks: [
+          {
+            title: "Hesap Adımı",
+            items: [
+              "HW/LW zamanı = referans liman zamanı +/− düzeltme.",
+              "Yükseklik = referans yükseklik +/− düzeltme.",
+              "Akıntı: Set (°T) + Drift (kn) olarak rota vektörüne ekle.",
+            ],
+          },
+          {
+            title: "Tipik Hata",
+            items: [
+              "Secondary port düzeltmelerini saat dilimiyle karıştırmak.",
+              "Akıntı atlasını yanlış saat/Aralık dilimiyle okumak.",
+            ],
+          },
+        ],
+        imageAlt: "Secondary port düzeltmesi ve akıntı atlası okuma şeması",
+        motionCue: "Saat çarkı ve akıntı oklarını eş zamanlı animasyonla göster.",
       },
     ]),
     accuracyChecklist: accuracyChecklistMap["gelgit-hesaplari"],
@@ -1138,6 +1273,30 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Plotting kâğıdında hedef hareketini izle.",
           "Relatif ve gerçek hareketi ayırt et.",
           "Plotting hatalarını azaltmak için sabit aralık kullan.",
+          "Relative motion ve true motion plotting farklarını bil.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "3 dakikalık aralıklarla üç plot alındı, CPA 0,6 NM hesaplandı.",
+              "True motion plot ile hedefin gerçek rotası 220°T, 12 kn bulundu.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "Plot aralığı: 3–6 dk seç, hedef izlerini aynı ölçekle işaretle.",
+              "CPA/TCPA: Plot çizgisinden yakın geçiş noktasını ölç.",
+            ],
+          },
+          {
+            title: "Tipik Hata",
+            items: [
+              "Farklı menzil ölçeklerinde plot yapmak.",
+              "Plot zaman damgasını kaydetmemek.",
+            ],
+          },
         ],
         imageAlt: "Radar plotting şeması",
         motionCue: "Plotting noktalarını adım adım birleştir.",
@@ -1172,6 +1331,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "ENC veri kalitesini ve güncelliğini kontrol et.",
           "Görsel katmanları amaçla uyumlu aç/kapat.",
           "Alarmların doğruluğunu test et.",
+          "S-57/S-101 veri sınıfları ve kalite kodlarını (CATZOC) gözden geçir.",
         ],
         imageAlt: "ECDIS katman yönetimi",
         motionCue: "Katmanları sırayla aç/kapat animasyonu ile göster.",
@@ -1183,6 +1343,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Rota planını WP doğrulamasıyla kaydet.",
           "Cross track limitlerini belirle.",
           "Güvenli derinlik ve safety contour ayarlarını yap.",
+          "Safety depth ile safety contour farkını ekip brifinginde netleştir.",
         ],
         imageAlt: "ECDIS rota planı",
         motionCue: "Rota çizgisini çizim animasyonuyla sun.",
@@ -1194,6 +1355,23 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Alarmları operasyonel gereksinime göre yapılandır.",
           "Alarmları göz ardı etme; sebebini doğrula.",
           "Alarm testlerini sefer öncesi yap.",
+          "CATZOC kalite seviyelerini ve güvenilirlik farklarını kontrol et.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Safety contour 30 m seçildi, safety depth 14 m olarak belirlendi.",
+              "CATZOC B bölgesinde daha büyük UKC payı uygulandı.",
+            ],
+          },
+          {
+            title: "Kritik Uyarılar",
+            items: [
+              "SCAMIN/SCAMAX nedeniyle sembol filtrasyonu risk yaratabilir.",
+              "ENC kalitesi düşük bölgelerde görsel/radar teyidi artır.",
+            ],
+          },
         ],
         imageAlt: "ECDIS alarm örnekleri",
         motionCue: "Alarm ikonlarını yumuşak pulse animasyonuyla vurgula.",
@@ -1205,6 +1383,7 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Güvenli derinlik ayarını yanlış girmeden kaçın.",
           "ENC güncellemesini düzenli uygula.",
           "Harita ölçek değişimlerini dikkatle yönet.",
+          "SCAMIN/SCAMAX ayarlarının sembol görünürlüğünü etkilediğini unutma.",
         ],
         imageAlt: "ECDIS hata önleme kontrol listesi",
         motionCue: "Hata kartlarını yatay kaydırma animasyonuyla sırala.",
@@ -1239,6 +1418,25 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Multipath etkisini azaltacak anten konumu seç.",
           "Uydu görünürlüğünü düzenli takip et.",
           "Farklı sensörlerle çapraz kontrol yap.",
+          "Datum uyumsuzluğunu (WGS-84 vs local datum) kontrol et.",
+          "RAIM/Integrity uyarılarını izle ve rapora işle.",
+          "Jamming/spoofing şüphesinde hız/rota sapmalarını alarm kabul et.",
+        ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "WGS-84 ile yerel datum arasında 0,2 NM ofset tespit edildi, ECDIS datum eşleştirildi.",
+              "RAIM uyarısı sonrası GNSS mevki radar fix ile doğrulandı.",
+            ],
+          },
+          {
+            title: "Uygulama Notları",
+            items: [
+              "Datum ayarı değiştiğinde günlük kayda not düş.",
+              "GNSS sapması tespit edilirse hız/rota kararını doğrulama ile ver.",
+            ],
+          },
         ],
         imageAlt: "GNSS hata kaynakları",
         motionCue: "Hata kaynaklarını sırayla kırmızı vurguyla göster.",
@@ -1925,6 +2123,22 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
           "Sapmaları raporla ve düzeltme uygula.",
           "Enerji verimliliği raporlarını güncelle.",
         ],
+        detailBlocks: [
+          {
+            title: "Mini Örnek Vaka",
+            items: [
+              "Hedef hız 12 kn, fiili hız 11.2 kn; ETA 2 saat sarktı, rota revize edildi.",
+              "Tüketim 26 t/gün hedefi aşıldı, hız 0.5 kn düşürüldü.",
+            ],
+          },
+          {
+            title: "Hesap Adımı",
+            items: [
+              "Sapma = Fiili tüketim - hedef tüketim.",
+              "ETA farkı = kalan mesafe / fiili hız - planlı süre.",
+            ],
+          },
+        ],
         imageAlt: "Performans izleme paneli",
         motionCue: "KPI kartlarını yumuşak pulse animasyonuyla göster.",
       },
@@ -2039,6 +2253,35 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
         ],
         imageAlt: "COLREG hata önleme",
         motionCue: "Hata kartlarını kısa shake animasyonuyla göster.",
+      },
+      {
+        title: "5. Ses Sinyalleri ve Hızlı Karar Tablosu",
+        summary: "Ses sinyalleri, kısıtlı görüş ve manevra niyetinin doğru anlaşılması için kritiktir.",
+        bullets: [
+          "Rule 34/35 kapsamındaki ses sinyallerini standart kalıplarla uygula.",
+          "Kısıtlı görüşte hız düşürme ve sinyal tekrarı prosedürünü uygula.",
+          "Karşılaşma tipine göre hızlı karar matrisi oluştur ve köprüüstünde görünür tut.",
+        ],
+        detailBlocks: [
+          {
+            title: "Hızlı Karar Tablosu (Özet)",
+            items: [
+              "Kafa kafaya: Her iki gemi iskeleye kırar.",
+              "Çapraz: Give-way erken ve net manevra yapar.",
+              "Yetişme: Yetişen gemi sorumludur, VHF teyidi yapar.",
+            ],
+          },
+          {
+            title: "Ses Sinyali Örnekleri",
+            items: [
+              "1 kısa: Sancak manevrası.",
+              "2 kısa: İskele manevrası.",
+              "3 kısa: Makine geri.",
+            ],
+          },
+        ],
+        imageAlt: "COLREG ses sinyalleri ve karar tablosu",
+        motionCue: "Sinyal ikonlarını ritmik şekilde parlat.",
       },
     ]),
     accuracyChecklist: accuracyChecklistMap["colreg-pratikleri"],
