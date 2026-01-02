@@ -16,6 +16,7 @@ export interface NavigationTopicSection {
   pages: NavigationTopicPage[];
   calculationLinks?: Array<{ title: string; href: string }>;
   accuracyChecklist?: string[];
+  pdfResource?: { title: string; href: string; description?: string };
 }
 
 const defaultReferences = [
@@ -39,6 +40,17 @@ const referenceSets: Record<string, string[]> = {
     "COLREG 1972 Rule 6–8 — emniyetli seyir ve çarpışmayı önleme",
     "Admiralty NP 136 (The Mariner’s Handbook) — temel seyir ilkeleri",
     "Admiralty Sailing Directions (NP serisi) — operasyonel notlar",
+  ],
+  bowditchSummary: [
+    "Bowditch — The American Practical Navigator (2014 PDF)",
+    "Bowditch Chapter 5 — Short Range Aids to Navigation",
+    "Bowditch Chapter 6 — Nautical Charts",
+    "Bowditch Chapter 8 — Piloting",
+    "Bowditch Chapter 11 — Satellite Navigation",
+    "Bowditch Chapter 13 — Radar Navigation",
+    "Bowditch Chapter 14 — Electronic Charts",
+    "Bowditch Chapter 15–20 — Celestial Navigation serisi",
+    "Bowditch Chapter 24 — The Sailings",
   ],
   mercatorRhumb: [
     "Bowditch Chapter 24 — The Sailings (Mercator Sailing)",
@@ -211,6 +223,7 @@ const referenceSets: Record<string, string[]> = {
 const sectionReferences: Record<string, string[]> = {
   "rota-hesaplamalari": referenceSets.routePlanning,
   "seyir-temelleri": referenceSets.navigationFundamentals,
+  "bowditch-seyir-ozeti": referenceSets.bowditchSummary,
   "mercator-loxodromik-seyir": referenceSets.mercatorRhumb,
   "buyuk-daire-seyri": referenceSets.greatCircle,
   "astronomik-navigasyon": referenceSets.celestial,
@@ -252,6 +265,12 @@ const accuracyChecklistMap: Record<string, string[]> = {
     "Seyir planı ekip ile paylaşıldı.",
     "Vardiya ve gözcülük düzeni doğrulandı.",
     "Riskler ve yedek prosedürler gözden geçirildi.",
+  ],
+  "bowditch-seyir-ozeti": [
+    "Bowditch bölüm eşleşmeleri (harita/piloting/sailings) doğrulandı.",
+    "Kullanılan terimler (COG/SOG, LOP, variation/deviation) standarda uygun.",
+    "Harita ve yayın güncelliği kontrolü açıkça belirtildi.",
+    "Elektronik ve göksel seyir prosedürleri çapraz doğrulama ile sunuldu.",
   ],
   "mercator-loxodromik-seyir": [
     "Mercator ölçeği ve enlem farkı doğrulandı.",
@@ -583,6 +602,79 @@ export const navigationTopicsContent: NavigationTopicSection[] = [
       { title: "Passage Plan (Leg ETA)", href: "/navigation/calc/passage" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
     ],
+  },
+  {
+    id: "bowditch-seyir-ozeti",
+    title: "Bowditch Seyir Özeti",
+    pages: buildPages("bowditch-seyir-ozeti", [
+      {
+        title: "1. Bowditch ile Seyir Çerçevesi",
+        summary: "Bowditch, seyri harita, rota ve mevki disiplinini tek bir çatı altında toplar.",
+        bullets: [
+          "Akış: Harita/yayın → seyir yardımcıları → rota/sailings → elektronik & göksel doğrulama.",
+          "Her başlıkta çapraz kontrol kültürü: görsel, radar ve elektronik kaynaklar birlikte kullanılır.",
+          "Seyir defteri, yayın düzeltmeleri ve ekipman testleri süreklilik esasına göre yürütülür.",
+        ],
+        imageAlt: "Bowditch seyir akışı ve disiplin haritası",
+        motionCue: "Akış oklarını sırasıyla parlatıp bir öğrenme yolu hissi ver.",
+      },
+      {
+        title: "2. Haritalar ve Yayınlar (Ch 6)",
+        summary: "Harita seçimi ve güncellik kontrolü, güvenli seyir için temel adımdır.",
+        bullets: [
+          "Büyük ölçek kıyı/pilotaj, küçük ölçek okyanus geçişleri için tercih edilir.",
+          "Notice to Mariners ve ENC güncellemeleri tarih/numara ile haritaya işlenir.",
+          "Semboller, derinlikler ve tehlike notları güvenli kontur ve UKC ile eşleştirilir.",
+        ],
+        imageAlt: "Harita seçimi, güncelleme ve sembol kontrol şeması",
+        motionCue: "Harita katmanlarını üst üste bindirip güncelleme etiketi ekle.",
+      },
+      {
+        title: "3. Seyir Yardımcıları & Piloting (Ch 5 & 8)",
+        summary: "Kıyı seyrinde işaretler ve görsel/radar kerterizleri mevki doğrular.",
+        bullets: [
+          "IALA şamandıra sistemi, ışık karakterleri ve racon işaretleri kimlikle eşleştirilir.",
+          "Görsel/radar kerterizleriyle LOP oluştur, transit/leading line kullan.",
+          "Paralel indeks, clearing bearing ve güvenli mesafe çizgileri kıyı seyri için kritik olur.",
+        ],
+        imageAlt: "Kıyı seyrinde şamandıra, kerteriz ve transit çizgileri",
+        motionCue: "Kerteriz çizgilerini kıyı hattına doğru uzatıp LOP kesişimini vurgula.",
+      },
+      {
+        title: "4. Sailings ve Rota Tipleri (Ch 24)",
+        summary: "Rota tipi, mesafe, enlem ve operasyonel kısıtlara göre seçilir.",
+        bullets: [
+          "Plane/Middle Latitude/Mercator ile Great Circle seçeneklerini göreve göre eşleştir.",
+          "Büyük daire rotasını WP’lere böl, yüksek enlem kısıtları ve alternatif rota belirle.",
+          "Rhumb line sabit kerteriz sağlar; akıntı ve rüzgâr düzeltmeleri mutlaka eklenir.",
+        ],
+        imageAlt: "Rota tipleri karşılaştırması ve WP yerleşimi",
+        motionCue: "Rota tiplerini farklı renklerle çizip mesafe etiketlerini ekle.",
+      },
+      {
+        title: "5. Elektronik ve Göksel Seyir Özeti (Ch 11–20, 13–14)",
+        summary: "Elektronik ve göksel yöntemler, birbirini doğrulayan iki ana sütundur.",
+        bullets: [
+          "GNSS için DOP/uydu geometrisi ve alarm limitlerini kontrol et; bağımsız sensörle doğrula.",
+          "Radar/ARPA CPA-TCPA takibi ve guard zone alarmları ECDIS ile çaprazlanır.",
+          "Göksel seyirde sextant düzeltmeleri, zaman/almanak ve sight reduction ile LOP kesişimi yapılır.",
+        ],
+        imageAlt: "Elektronik ve göksel seyir çapraz doğrulama şeması",
+        motionCue: "GNSS, radar ve sextant ikonlarını ortak bir doğrulama merkezine animasyonla taşı.",
+      },
+    ]),
+    accuracyChecklist: accuracyChecklistMap["bowditch-seyir-ozeti"],
+    calculationLinks: [
+      { title: "Chart Ölçeği (cm ↔ NM)", href: "/navigation/calc/chart" },
+      { title: "Kerteriz Hesaplamaları", href: "/navigation/calc/bearings" },
+      { title: "Büyük Daire (Great Circle)", href: "/navigation/calc/gc" },
+      { title: "Astronomik Seyir (Almanac + LOP)", href: "/navigation/calc/astro" },
+    ],
+    pdfResource: {
+      title: "Bowditch — The American Practical Navigator (PDF)",
+      href: "https://maritimesafetyinnovationlab.org/wp-content/uploads/2014/07/bowditch.pdf",
+      description: "Tam metin PDF, seyir konu anlatımında görüntülenir.",
+    },
   },
   {
     id: "mercator-loxodromik-seyir",
