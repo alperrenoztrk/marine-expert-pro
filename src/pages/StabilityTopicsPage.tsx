@@ -428,6 +428,10 @@ const topicSections: TopicSection[] = [
 
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">Temel IMO Kriterleri</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Bu kriterler gemi tipine göre farklılık gösterebilir; yolcu gemileri, yüksek hızlı araçlar (HSC) ve özel maksatlı gemiler için ek veya
+            daha sıkı stabilite şartları uygulanır.
+          </p>
           <div className="grid gap-2">
             <div className="flex items-center gap-3 rounded-lg bg-primary/5 p-3">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-sm font-bold text-primary">1</div>
