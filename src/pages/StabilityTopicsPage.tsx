@@ -106,6 +106,55 @@ const topicSections: TopicSection[] = [
             </div>
           </div>
         </div>
+
+        <div className="space-y-3">
+          <h4 className="font-semibold text-foreground">1.4 Referans Noktaları ve Eksenler</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Gemi stabilitesi anlatımında sabit referans noktaları kullanılır: <strong className="text-foreground">K</strong> kök (keel) üzerinde seçilen
+            başlangıç noktasıdır; tüm düşey ölçüler K&apos;dan başlatılır. <strong className="text-foreground">B</strong> su altı hacmin ağırlık merkezidir,
+            yatma ile konumu değişir; <strong className="text-foreground">G</strong> geminin toplam ağırlık merkezidir ve yükleme durumuna göre yer değiştirir.
+            <strong className="text-foreground">M</strong> ise küçük yatmalar için kaldırma kuvvetinin doğrultusunun kesiştiği teorik metasantr noktasıdır.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Eksenler gövdeye sabittir: <strong className="text-foreground">x ileri</strong>, <strong className="text-foreground">y iskele</strong>,
+            <strong className="text-foreground">z yukarı</strong>. Pozitif yatma işareti, geminin <strong className="text-foreground">iskeleye yatması</strong>
+            (y yönü) olarak kabul edilir.
+          </p>
+          <div className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
+              <h5 className="text-sm font-semibold text-foreground">Şema: K/B/G/M Referansları</h5>
+              <p className="text-xs text-muted-foreground mt-1">
+                Basitleştirilmiş silüet; noktalar yerleşimin kavramsal görünümünü gösterir.
+              </p>
+            </div>
+            <div className="rounded-lg border border-border/60 bg-background p-3">
+              <svg viewBox="0 0 220 140" role="img" aria-label="Gemi silüeti ve K B G M noktaları" className="h-32 w-full">
+                <rect x="0" y="0" width="220" height="140" fill="transparent" />
+                <path d="M20 95 L60 70 H160 L200 95 Z" fill="#1f2937" opacity="0.15" />
+                <path d="M20 95 L60 70 H160 L200 95 L180 110 H40 Z" fill="#0f172a" />
+                <path d="M40 70 L70 50 H150 L175 70 Z" fill="#0f172a" opacity="0.9" />
+                <line x1="110" y1="40" x2="110" y2="110" stroke="#94a3b8" strokeDasharray="4 3" />
+                <circle cx="110" cy="110" r="4" fill="#2563eb" />
+                <text x="118" y="113" fontSize="10" fill="#1f2937">K</text>
+                <circle cx="110" cy="92" r="4" fill="#16a34a" />
+                <text x="118" y="95" fontSize="10" fill="#1f2937">B</text>
+                <circle cx="110" cy="78" r="4" fill="#f59e0b" />
+                <text x="118" y="81" fontSize="10" fill="#1f2937">G</text>
+                <circle cx="110" cy="60" r="4" fill="#ef4444" />
+                <text x="118" y="63" fontSize="10" fill="#1f2937">M</text>
+                <line x1="110" y1="118" x2="150" y2="118" stroke="#334155" strokeWidth="1.5" />
+                <polygon points="150,118 144,114 144,122" fill="#334155" />
+                <text x="154" y="121" fontSize="9" fill="#334155">x ileri</text>
+                <line x1="110" y1="118" x2="110" y2="88" stroke="#334155" strokeWidth="1.5" />
+                <polygon points="110,88 106,94 114,94" fill="#334155" />
+                <text x="114" y="88" fontSize="9" fill="#334155">z yukarı</text>
+                <line x1="110" y1="118" x2="80" y2="118" stroke="#334155" strokeWidth="1.5" />
+                <polygon points="80,118 86,114 86,122" fill="#334155" />
+                <text x="60" y="121" fontSize="9" fill="#334155">y iskele</text>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     )
   },
