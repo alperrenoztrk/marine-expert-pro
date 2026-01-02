@@ -389,6 +389,21 @@ const topicSections: TopicSection[] = [
           geminin hasar sonrası hayatta kalabilirliğini gösterir ve SOLAS kurallarına göre asgari kriterleri sağlamalıdır.
         </p>
 
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li className="flex items-start gap-2">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+            <span>Permeability (μ)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+            <span>Margin line</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+            <span>Residual stability</span>
+          </li>
+        </ul>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4">
             <h5 className="text-sm font-medium text-red-600 dark:text-red-400 mb-2">Kayıp Kaldırma Yöntemi</h5>
@@ -402,6 +417,9 @@ const topicSections: TopicSection[] = [
 
         <p className="text-sm text-muted-foreground">
           Hasar stabilitesi değerlendirmeleri, SOLAS'ın probabilistik kriterleri ve ulusal yönetmelikler uyarınca yapılır. Tanklar arası watertight (su geçirmez) perdeler ve acil durum pompaları hasar stabilitesinin artırılmasına yardımcı olur.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Özetle, hasar stabilitesi değerlendirmesinde R ve A gibi hesaplanan indeksler ile Rreq gereklilik indeksi karşılaştırılır ve geminin kriteri sağladığı doğrulanır.
         </p>
       </div>
     )
