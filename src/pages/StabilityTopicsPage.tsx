@@ -220,6 +220,10 @@ const topicSections: TopicSection[] = [
           yana kaydırarak geminin metasantrik yüksekliğini düşürür; buna <strong className="text-foreground">serbest yüzey etkisi (free surface effect)</strong> denir.
           Serbest yüzey etkisi, büyük tanklarda ve geniş güverteli gemilerde çok daha kritiktir.
         </p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          <strong className="text-foreground">FSM (Free Surface Moment):</strong> Serbest yüzeyin yarattığı devrilme etkisinin moment karşılığıdır ve GM düzeltmesinde
+          kullanılır. FSM değeri büyüdükçe serbest yüzey etkisi artar.
+        </p>
 
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
           <h4 className="font-semibold text-amber-600 dark:text-amber-400 mb-2">Serbest Yüzey Düzeltmesi Formülü</h4>
@@ -228,6 +232,10 @@ const topicSections: TopicSection[] = [
           </div>
           <p className="text-xs text-muted-foreground mt-2">
             Burada I<sub>f</sub> her tankın serbest yüzey atalet momenti, ∇ deplasman hacmidir.
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Pratik not: Stabilite kitapçığındaki <strong className="text-foreground">FSM tablosundan düzeltme</strong> değerleri doğrudan GM düşüşüne eklenir; birden
+            fazla tank varsa FSM değerleri toplanır.
           </p>
         </div>
 
