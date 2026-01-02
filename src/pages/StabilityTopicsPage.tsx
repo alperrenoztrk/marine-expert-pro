@@ -296,6 +296,23 @@ const topicSections: TopicSection[] = [
           <p className="text-sm text-muted-foreground">
             Rüzgâr, üst yapı alanına etki ederek heeling momenti yaratır. IMO kodu bu heeling kolunu GZ eğrisi ile karşılaştırarak belirli açı aralıklarında alan kriterleri getirir.
           </p>
+          <p className="text-sm text-muted-foreground">
+            Bu heeling arm ifadesi, aşağıdaki girdiler üzerinden düşünülür:
+          </p>
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <span>Üst yapı alanı (A)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <span>Rüzgâr basıncı (Pw)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <span>Kol (Z)</span>
+            </li>
+          </ul>
         </div>
 
         <div className="space-y-3">
