@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, memo, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import { BookOpen, GraduationCap, Anchor, ChevronRight, Calculator } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { navigationTopicsContent, type NavigationTopicSection, type NavigationTopicPage } from "@/data/navigationTopicsContent";
@@ -239,6 +240,20 @@ export default function NavigationTopicsPage() {
   const handleToggle = useCallback((id: string) => {
     setOpenTopic(prev => prev === id ? "" : id);
   }, []);
+  const handleOpenReference = useCallback(async () => {
+    const url = "https://msi.nga.mil/api/publications/download?key=16693975/SFH00000/Bowditch_Vol_1.pdf&type=view";
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const { Browser } = await import("@capacitor/browser");
+        await Browser.open({ url });
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    } catch {
+      window.location.href = url;
+    }
+  }, []);
 
   // Only show first 10 topics initially for faster initial render
   const visibleTopics = useMemo(() => 
@@ -280,6 +295,16 @@ export default function NavigationTopicsPage() {
           <p className="mx-auto max-w-3xl text-sm text-muted-foreground">
             Her başlık en az 4 sayfa olacak şekilde yapılandırıldı. Her sayfada JPG formatında görsel kullanımı planlandı.
           </p>
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 rounded-xl border border-border/40 bg-background/70 px-4 py-3 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">Önerilen kaynak</span>
+            <button
+              type="button"
+              onClick={handleOpenReference}
+              className="text-primary underline-offset-4 transition hover:underline"
+            >
+              Bowditch Vol 1 (PDF) bağlantısını aç
+            </button>
+          </div>
         </header>
 
         <section className="rounded-2xl border border-border/40 bg-card/80 p-6">
