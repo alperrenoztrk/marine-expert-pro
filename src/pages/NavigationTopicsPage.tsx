@@ -142,6 +142,36 @@ const TopicContent = memo(({ topic }: { topic: NavigationTopicSection }) => (
         </ul>
       </div>
     )}
+    {topic.pdfResource && (
+      <div className="mt-4 rounded-xl border border-border/40 bg-background/60 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              PDF Kaynak
+            </p>
+            <p className="mt-2 text-sm font-semibold text-foreground">{topic.pdfResource.title}</p>
+            {topic.pdfResource.description && (
+              <p className="mt-1 text-xs text-muted-foreground">{topic.pdfResource.description}</p>
+            )}
+          </div>
+          <a
+            href={topic.pdfResource.href}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs font-semibold text-primary transition hover:text-primary/80"
+          >
+            PDF’yi yeni sekmede aç
+          </a>
+        </div>
+        <div className="mt-4 overflow-hidden rounded-lg border border-border/40 bg-background">
+          <iframe
+            title={topic.pdfResource.title}
+            src={topic.pdfResource.href}
+            className="h-[70vh] w-full"
+          />
+        </div>
+      </div>
+    )}
     {topic.calculationLinks && topic.calculationLinks.length > 0 && (
       <div className="mt-4 rounded-xl border border-border/40 bg-background/60 p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
