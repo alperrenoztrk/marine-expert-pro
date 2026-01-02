@@ -1,8 +1,7 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { calculationCategories, sectionIconMap } from "@/data/calculationCenterConfig";
-import { BookOpen, ChevronRight, ArrowLeft, GraduationCap } from "lucide-react";
-
+import { BookOpen, ChevronRight, ArrowLeft, GraduationCap, ExternalLink } from "lucide-react";
 export default function LessonsPage() {
   const highRefreshRateStyles: CSSProperties = {
     ["--frame-rate" as string]: "120",
@@ -70,6 +69,22 @@ export default function LessonsPage() {
                     <span className="text-center text-xs font-medium text-foreground">Konu Anlatımı</span>
                     <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                   </Link>
+
+                  {/* Bowditch PDF - Sadece Navigation kategorisi için */}
+                  {category.id === "navigation" && (
+                    <a
+                      href="https://maritimesafetyinnovationlab.org/wp-content/uploads/2014/07/bowditch.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex flex-col items-center gap-2 rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-50 to-orange-50 p-3 backdrop-blur transition-all hover:border-amber-500/60 hover:shadow-md dark:from-amber-950/30 dark:to-orange-950/30"
+                    >
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white transition-transform group-hover:scale-110">
+                        <BookOpen className="h-4 w-4" />
+                      </div>
+                      <span className="text-center text-xs font-medium text-foreground">Bowditch PDF</span>
+                      <ExternalLink className="h-3 w-3 text-amber-600 dark:text-amber-400" />
+                    </a>
+                  )}
 
                   {category.sections.map((section) => {
                     const SectionIcon = sectionIconMap[section.id];
