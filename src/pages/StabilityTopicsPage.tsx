@@ -341,6 +341,10 @@ const topicSections: TopicSection[] = [
         <p className="text-sm text-muted-foreground leading-relaxed">
           Uluslararası Denizcilik Örgütü (IMO) İntakt Stabilite Kodu, gemilerin sefer sırasında asgari stabilite şartlarını belirler.
         </p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Ancak bu kriterler geminin tipine göre farklılaşabilir; yolcu gemileri, HSC (yüksek hızlı) gemiler, balıkçı gemileri gibi özel sınıflar için ek
+          şartlar ve farklı eşik değerleri uygulanır.
+        </p>
 
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">Temel IMO Kriterleri</h4>
