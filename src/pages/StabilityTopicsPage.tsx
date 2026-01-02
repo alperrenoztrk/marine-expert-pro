@@ -400,6 +400,9 @@ const topicSections: TopicSection[] = [
         <p className="text-sm text-muted-foreground">
           Hasar stabilitesi değerlendirmeleri, SOLAS'ın probabilistik kriterleri ve ulusal yönetmelikler uyarınca yapılır. Tanklar arası watertight (su geçirmez) perdeler ve acil durum pompaları hasar stabilitesinin artırılmasına yardımcı olur.
         </p>
+        <p className="text-sm text-muted-foreground">
+          Hasar stabilitesinde R, gemi tipine göre yönetmelikle belirlenen gerekli bölme indeksini; A, geminin mevcut yükleme durumunda sağladığı bölme indeksini; Rreq ise ilgili sefer koşulu için karşılanması gereken minimum değeri ifade eder.
+        </p>
       </div>
     )
   },
