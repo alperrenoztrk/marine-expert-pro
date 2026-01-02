@@ -27,6 +27,7 @@ const defaultReferences = [
 
 const referenceSets: Record<string, string[]> = {
   routePlanning: [
+    "Bowditch Chapter 24 — The Sailings (Plane, Mercator, Great Circle)",
     "IMO Model Course 7.03 — Passage Planning esasları",
     "Admiralty NP 5011 — Chart Symbols & Abbreviations",
     "Admiralty Sailing Directions (NP serisi) — rota kısıtları",
@@ -40,22 +41,28 @@ const referenceSets: Record<string, string[]> = {
     "Admiralty Sailing Directions (NP serisi) — operasyonel notlar",
   ],
   mercatorRhumb: [
+    "Bowditch Chapter 24 — The Sailings (Mercator Sailing)",
+    "Bowditch Chapter 6 — Nautical Charts",
     "Admiralty Manual of Navigation Vol. 1 — Mercator/loxodrome",
     "Admiralty NP 5011 — Chart Symbols & Abbreviations",
     "IMO Model Course 7.03 — Chartwork uygulamaları",
-    "IHO S-4 — Chart Specifications",
   ],
   greatCircle: [
+    "Bowditch Chapter 24 — Great Circle Sailing",
+    "Bowditch Chapter 24 — Composite Sailing",
     "Admiralty Manual of Navigation Vol. 1 — Great circle rotaları",
     "IMO Model Course 7.03 — Rota planlama",
     "Admiralty Sailing Directions (NP serisi) — kıyı kısıtları",
-    "IHO S-4 — Chart Specifications",
   ],
   celestial: [
+    "Bowditch Chapter 15 — Navigational Astronomy",
+    "Bowditch Chapter 16 — Instruments for Celestial Navigation",
+    "Bowditch Chapter 17 — Azimuths and Amplitudes",
+    "Bowditch Chapter 18 — Time",
+    "Bowditch Chapter 19 — The Almanacs",
+    "Bowditch Chapter 20 — Sight Reduction",
     "Admiralty Nautical Almanac — göksel veriler",
     "Admiralty NP 401 — Sight Reduction Tables",
-    "Admiralty NP 404 — Star Finder & Identifier",
-    "IMO Model Course 7.03 — Celestial navigation",
   ],
   tides: [
     "Admiralty Tide Tables (ATT) — HW/LW verileri",
@@ -76,22 +83,24 @@ const referenceSets: Record<string, string[]> = {
     "IHO S-4 — charted depths",
   ],
   radar: [
+    "Bowditch Chapter 13 — Radar Navigation",
     "IMO Model Course 1.08 — Radar Navigation",
     "IMO Model Course 1.07 — ARPA",
     "Admiralty Manual of Navigation Vol. 1 — radar watchkeeping",
     "COLREG 1972 — radar kullanımı kuralları",
   ],
   ecdis: [
+    "Bowditch Chapter 14 — Electronic Charts",
     "IMO Model Course 1.27 — ECDIS",
     "IHO S-52 — ECDIS Presentation Library",
     "IHO S-57/S-101 — ENC veri standartları",
     "Admiralty NP 5011 — ENC sembol referansı",
   ],
   gnss: [
+    "Bowditch Chapter 11 — Satellite Navigation",
     "IMO MSC.112(73) — GNSS Performance Standards",
     "IMO Resolution A.915(22) — GNSS performance",
     "Admiralty List of Radio Signals (NP serisi) — GNSS servisleri",
-    "IMO Model Course 7.03 — position fixing",
   ],
   safety: [
     "COLREG 1972 — emniyetli hız ve gözcülük",
@@ -112,15 +121,17 @@ const referenceSets: Record<string, string[]> = {
     "IALA Maritime Buoyage System — kanal işaretleri",
   ],
   coastal: [
+    "Bowditch Chapter 8 — Piloting",
+    "Bowditch Chapter 5 — Short Range Aids to Navigation",
     "Admiralty NP 5011 — Chart Symbols & Abbreviations",
     "Admiralty List of Lights & Fog Signals (NP serisi)",
     "Admiralty Sailing Directions (NP serisi) — kıyı referansları",
-    "IMO Model Course 7.03 — coastal navigation",
   ],
   chartMarks: [
+    "Bowditch Chapter 5 — Short Range Aids to Navigation",
+    "Bowditch Chapter 6 — Nautical Charts",
     "IALA Maritime Buoyage System — Region A/B",
     "IHO S-52 — ECDIS Presentation Library",
-    "IHO S-57/S-101 — ENC sembol tanımları",
     "Admiralty NP 5011 — Chart Symbols & Abbreviations",
   ],
   pilotage: [
@@ -160,10 +171,10 @@ const referenceSets: Record<string, string[]> = {
     "IMO Model Course 7.03 — voyage planning",
   ],
   ais: [
+    "Bowditch Chapter 12 — Loran-C, AIS, and Other Systems",
     "IMO Resolution A.917(22) — AIS",
     "IALA Guidelines on AIS — operasyonel kullanım",
     "Admiralty List of Radio Signals (NP serisi) — AIS/VTS",
-    "COLREG 1972 — AIS destekli gözcülük",
   ],
   colreg: [
     "COLREG 1972 — kural uygulamaları",
@@ -178,9 +189,9 @@ const referenceSets: Record<string, string[]> = {
     "Admiralty NP 136 (The Mariner’s Handbook) — safety notes",
   ],
   simulator: [
+    "Bowditch Chapter 13 — Radar Navigation",
     "IMO Model Course 1.22 — Bridge Teamwork",
     "IMO Model Course 1.08 — Radar Navigation",
-    "IMO Model Course 1.07 — ARPA",
     "IMO STCW Code Section A-I/12 — simulator training",
   ],
   documents: [
