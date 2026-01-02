@@ -467,6 +467,14 @@ const topicSections: TopicSection[] = [
           Geminin baş ve kıç draftlarının farklı olması trim olarak adlandırılır. Geminin boyuna dengesini anlamak için hogging (ortadan yukarı bükülme)
           ve sagging (ortadan aşağı sarkma) kavramları kullanılır. Trim hesapları; yükleme planı, yakıt tüketimi ve balast yönetimi için temel girdidir.
         </p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Trim hesaplamalarında hedef, sefer boyunca sevk verimini korurken baş-kıç ağırlık dağılımını emniyet sınırlarında tutmaktır.
+        </p>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          LCF, trim momentlerinin uygulandığı referans noktasıdır; MCT1cm bu nokta etrafında geminin trimini 1 cm değiştirmek için gereken momenti
+          gösterirken, TPC aynı deplasman koşulunda gemiyi paralel batırmak için gereken ağırlığı ifade eder ve birlikte trim ile ortalama draft
+          değişimini eş zamanlı değerlendirmeyi sağlar.
+        </p>
 
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">Ortalama Draft Hesabı</h4>
