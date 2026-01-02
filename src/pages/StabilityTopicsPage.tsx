@@ -460,6 +460,11 @@ const topicSections: TopicSection[] = [
           <p className="text-xs text-muted-foreground text-center">
             d<sub>F</sub>: baş (forward) draftı, d<sub>A</sub>: kıç (aft) draftı
           </p>
+          <div className="rounded-lg border border-border/60 bg-muted/40 p-3">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Ortalama draft ve trim hesaplarında LCF (Longitudinal Center of Flotation) geminin boyuna eksende dönme merkezini ifade eder; MCT1cm, trimin 1 cm değişmesi için gereken momenti gösterir ve trim hesabında paydadaki hassasiyet katsayısıdır; TPC ise geminin 1 cm batması için gerekli ton miktarıdır ve paralel batma/çıkma hesabında ağırlığın drafta dönüşümünü sağlar.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-3">
