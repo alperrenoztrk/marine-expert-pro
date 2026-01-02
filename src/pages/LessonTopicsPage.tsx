@@ -73,7 +73,11 @@ const topicsData: Record<string, TopicContent> = {
     resources: [
       { title: "Seyir Hesaplamaları", href: "/navigation" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
-      { title: "COLREG Kuralları", href: "/navigation/rules" }
+      { title: "COLREG Kuralları", href: "/navigation/rules" },
+      {
+        title: "Bowditch — The American Practical Navigator (PDF)",
+        href: "https://maritimesafetyinnovationlab.org/wp-content/uploads/2014/07/bowditch.pdf?utm_source=chatgpt.com"
+      }
     ]
   },
   cargo: {
