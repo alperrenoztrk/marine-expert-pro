@@ -433,6 +433,12 @@ const topicSections: TopicSection[] = [
           <p className="text-xs text-muted-foreground text-center">
             C<sub>b</sub>: blok katsayısı, B: en geniş genişlik
           </p>
+          <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-200">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <p>
+              Bu bağıntı küçük açı varsayımıyla (yaklaşık 5–10°) kullanılır. C<sub>b</sub> tipik olarak 0,60–0,85 aralığındadır ve gemi tipine bağlı olarak değişir.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-3">
