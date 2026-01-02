@@ -427,8 +427,14 @@ const topicSections: TopicSection[] = [
           <div className="rounded-lg bg-primary/10 p-3 text-center font-mono text-sm font-semibold text-primary">
             T = C<sub>b</sub> × B / √GM
           </div>
+          <p className="text-xs text-amber-600 dark:text-amber-400 text-center">
+            Uyarı: Formül küçük açılar için geçerlidir; C<sub>b</sub> gibi deneysel katsayılar gemi tipine bağlıdır ve sınıf/tecrübe verileriyle doğrulanmalıdır.
+          </p>
           <p className="text-xs text-muted-foreground text-center">
             C<sub>b</sub>: blok katsayısı, B: en geniş genişlik
+          </p>
+          <p className="text-xs text-muted-foreground text-center">
+            C<sub>b</sub> için tipik değerler gemi tipine göre yaklaşık 0,6–0,85 aralığında değişir.
           </p>
         </div>
 
