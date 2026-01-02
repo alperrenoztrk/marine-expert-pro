@@ -257,18 +257,6 @@ export default function NavigationTopicsPage() {
             <BookOpen className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">Seyir Konu Başlıkları</h2>
           </div>
-          <div className="mb-4 rounded-xl border border-border/40 bg-background/60 p-4 text-xs text-muted-foreground">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-semibold text-foreground">Öğrenme İlerlemesi</span>
-              <span className="text-[11px]">0/4 sayfa</span>
-            </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full w-1/4 rounded-full bg-primary/80" />
-            </div>
-            <p className="mt-2 text-[11px] text-muted-foreground/80">
-              Her başlık 4 sayfadan oluşur. İlerleme takibi için sayfa geçişleri kaydedilebilir.
-            </p>
-          </div>
 
           <Accordion 
             type="single" 
