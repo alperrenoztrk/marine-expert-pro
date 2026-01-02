@@ -297,8 +297,22 @@ const topicSections: TopicSection[] = [
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">5.1 Rüzgâr Devrilme Momenti</h4>
           <p className="text-sm text-muted-foreground">
-            Rüzgâr, üst yapı alanına etki ederek heeling momenti yaratır. IMO kodu bu heeling kolunu GZ eğrisi ile karşılaştırarak belirli açı aralıklarında alan kriterleri getirir.
+            Rüzgâr, üst yapı alanına etki ederek heeling momenti yaratır. Bu etki, rüzgâr heeling arm (rüzgâr heeling kolu) üzerinden değerlendirilir ve IMO kodu bu heeling kolunu GZ eğrisi ile karşılaştırarak belirli açı aralıklarında alan kriterleri getirir.
           </p>
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <span><strong className="text-foreground">Üst yapı alanı (A):</strong> Rüzgârın uygulandığı etkin alan büyüdükçe heeling arm artar.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <span><strong className="text-foreground">Rüzgâr basıncı (Pw):</strong> Basınç yükseldikçe rüzgâr kaynaklı devrilme momenti büyür.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+              <span><strong className="text-foreground">Moment kolu (Z):</strong> Etki hattının ağırlık merkezine uzaklığı heeling arm değerini belirler.</span>
+            </li>
+          </ul>
         </div>
 
         <div className="space-y-3">
