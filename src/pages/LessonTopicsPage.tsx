@@ -37,11 +37,7 @@ const topicsData: Record<string, TopicContent> = {
     title: "Seyir Konu Anlatımı",
     description: "Deniz seyir teknikleri ve modern navigasyon sistemleri hakkında eğitim içeriği hazırlanıyor.",
     keyTopics: [],
-    resources: [
-      { title: "Seyir Hesaplamaları", href: "/navigation" },
-      { title: "Seyir Formülleri", href: "/navigation/formulas" },
-      { title: "COLREG Kuralları", href: "/navigation/rules" }
-    ]
+    resources: []
   },
   cargo: {
     title: "Yük Elleçleme Konu Anlatımı",
