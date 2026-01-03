@@ -1,13 +1,18 @@
 import type { CSSProperties } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { calculationCategories } from "@/data/calculationCenterConfig";
-import { GraduationCap, BookOpen, FileText, Lightbulb, ChevronRight } from "lucide-react";
+import { GraduationCap, BookOpen, FileText, Lightbulb, ChevronRight, ChevronDown } from "lucide-react";
 import { Stability3DSim } from "@/components/stability/Stability3DSim";
+
+interface SubTopic {
+  title: string;
+}
 
 interface TopicContent {
   title: string;
   description: string;
-  keyTopics: { title: string; description: string }[];
+  keyTopics: { title: string; description: string; subTopics?: SubTopic[] }[];
   resources: { title: string; href: string }[];
   contentStandards?: {
     minPagesPerTopic: number;
@@ -35,9 +40,208 @@ const topicsData: Record<string, TopicContent> = {
   },
   navigation: {
     title: "Seyir Konu Anlatımı",
-    description: "Deniz seyir teknikleri ve modern navigasyon sistemleri hakkında eğitim içeriği hazırlanıyor.",
-    keyTopics: [],
-    resources: []
+    description: "Deniz seyir teknikleri, klasik ve modern navigasyon sistemleri hakkında kapsamlı eğitim içeriği.",
+    keyTopics: [
+      {
+        title: "Seyrin Temelleri",
+        description: "Dünya geometrisi, koordinat sistemleri ve temel seyir kavramları",
+        subTopics: [
+          { title: "Dünya'nın şekli ve hareketleri" },
+          { title: "Coğrafi koordinat sistemi" },
+          { title: "Enlem" },
+          { title: "Boylam" },
+          { title: "Yön kavramları" },
+          { title: "Gerçek kuzey (True)" },
+          { title: "Manyetik kuzey" },
+          { title: "Pusula kuzeyi" },
+          { title: "Kurs, hız ve mesafe ilişkisi" },
+          { title: "Zaman – mesafe – hız bağıntısı" }
+        ]
+      },
+      {
+        title: "Harita Bilgisi ve Harita Kullanımı",
+        description: "Deniz haritalarının yapısı, projeksiyon sistemleri ve pratik kullanımı",
+        subTopics: [
+          { title: "Deniz haritasının yapısı" },
+          { title: "Harita ölçeği" },
+          { title: "Büyük ölçek" },
+          { title: "Küçük ölçek" },
+          { title: "Mercator projeksiyonu" },
+          { title: "Harita datum" },
+          { title: "Harita sembolleri ve kısaltmalar" },
+          { title: "Mesafe ölçümü" },
+          { title: "Kurs ölçümü" },
+          { title: "Mevki işaretleme" },
+          { title: "Harita düzeltmeleri (Notice to Mariners)" }
+        ]
+      },
+      {
+        title: "Düzlem Seyir (Plane Sailing)",
+        description: "Kısa mesafeler için düzlem geometri varsayımına dayalı seyir hesapları",
+        subTopics: [
+          { title: "Düzlem seyir varsayımı" },
+          { title: "DLat (Enlem değişimi)" },
+          { title: "Departure (Doğu–batı mesafesi)" },
+          { title: "Kurs – mesafe hesapları" },
+          { title: "Enlem ve boylam değişimi" },
+          { title: "Akıntısız seyir hesapları" },
+          { title: "Running fix (klasik)" }
+        ]
+      },
+      {
+        title: "Orta Enlem Seyri (Middle Latitude)",
+        description: "Orta mesafeler için enlem ortalamasına dayalı seyir hesapları",
+        subTopics: [
+          { title: "Düzlem seyirin sınırları" },
+          { title: "Ortalama enlem kavramı" },
+          { title: "Departure – boylam ilişkisi" },
+          { title: "Boylam değişimi hesapları" },
+          { title: "İşaret kuralları" },
+          { title: "Sayısal orta enlem seyri uygulamaları" }
+        ]
+      },
+      {
+        title: "Akıntı ve Rüzgâr Hesapları",
+        description: "Akıntı ve rüzgâr etkilerinin seyir üzerindeki hesaplamaları",
+        subTopics: [
+          { title: "Set ve drift" },
+          { title: "Akıntı vektörleri" },
+          { title: "Heading – COG ilişkisi" },
+          { title: "STW – SOG ilişkisi" },
+          { title: "Akıntılı seyir hesapları" },
+          { title: "Vektör üçgenleri" }
+        ]
+      },
+      {
+        title: "Klasik (Terrestrial) Seyir",
+        description: "Kerteriz, transit ve kıyı seyir teknikleri",
+        subTopics: [
+          { title: "Kerteriz türleri" },
+          { title: "Kerterizle mevki tayini" },
+          { title: "Mesafe + kerteriz fix" },
+          { title: "Running fix (klasik)" },
+          { title: "Transit (leading line)" },
+          { title: "Clearing line (emniyet hattı)" },
+          { title: "Paralel indeks" },
+          { title: "Kıyı seyri teknikleri" }
+        ]
+      },
+      {
+        title: "Büyük Daire ve Rhumb Line Seyri",
+        description: "Uzun mesafe okyanus seyri için büyük daire ve loxodrom rotaları",
+        subTopics: [
+          { title: "Büyük daire kavramı" },
+          { title: "Büyük daire geometrisi" },
+          { title: "Büyük daire mesafesi" },
+          { title: "Büyük daire başlangıç kursu" },
+          { title: "Rhumb line (loxodrom)" },
+          { title: "Mercator – rhumb line ilişkisi" },
+          { title: "Composite (bileşik) rota" },
+          { title: "Uzun okyanus seyri uygulamaları" }
+        ]
+      },
+      {
+        title: "Göksel Seyir (Celestial Navigation)",
+        description: "Güneş, yıldızlar ve gezegenler kullanılarak mevki tayini",
+        subTopics: [
+          { title: "Göksel küre" },
+          { title: "Zaman – açı ilişkisi" },
+          { title: "Sextant kullanımı" },
+          { title: "Yükseklik düzeltmeleri" },
+          { title: "Ho – Hc kavramı" },
+          { title: "Intercept yöntemi" },
+          { title: "Azimut hesapları" },
+          { title: "LOP çizimi" },
+          { title: "2 LOP ve 3 LOP fix" },
+          { title: "Öğle mevkii (enlem)" },
+          { title: "Zamanla boylam" },
+          { title: "Running fix (göksel)" },
+          { title: "Göksel seyir hata analizi" }
+        ]
+      },
+      {
+        title: "Elektronik Seyir",
+        description: "GPS, Radar ve ECDIS sistemleri ile modern navigasyon",
+        subTopics: [
+          { title: "GPS prensibi" },
+          { title: "Trilaterasyon" },
+          { title: "GPS doğruluğu" },
+          { title: "HDOP" },
+          { title: "PDOP" },
+          { title: "Radar prensibi" },
+          { title: "Radar ile mevki tayini" },
+          { title: "Paralel indeks (radar)" },
+          { title: "ECDIS" },
+          { title: "Rota planlama" },
+          { title: "XTE" },
+          { title: "ETA" },
+          { title: "Turn radius" },
+          { title: "Elektronik seyirde çapraz kontrol" }
+        ]
+      },
+      {
+        title: "Tides & Tidal Navigation",
+        description: "Gelgit hesapları ve gel-git akıntıları",
+        subTopics: [
+          { title: "Gelgitin fiziksel mantığı" },
+          { title: "Spring tide – Neap tide" },
+          { title: "Chart datum (LAT)" },
+          { title: "Tidal table okuma" },
+          { title: "Height of tide hesapları" },
+          { title: "12'ler kuralı" },
+          { title: "İnterpolasyon" },
+          { title: "Tidal stream" },
+          { title: "Set – drift" },
+          { title: "UKC + gelgit hesapları" },
+          { title: "Tidal window (liman giriş zamanı)" }
+        ]
+      },
+      {
+        title: "Meteoroloji Bağlantılı Seyir",
+        description: "Rüzgâr, dalga ve hava koşullarının seyire etkisi",
+        subTopics: [
+          { title: "Rüzgârın gemiye etkisi" },
+          { title: "Leeway kavramı" },
+          { title: "Leeway hesapları" },
+          { title: "Rüzgâr + akıntı + gemi hareketi" },
+          { title: "Dalga etkileri" },
+          { title: "Heavy weather navigation" },
+          { title: "Fırtınada rota ve hız kararı" }
+        ]
+      },
+      {
+        title: "Passage Planning & Seyir Emniyeti",
+        description: "IMO standartlarına uygun seyir planlaması ve köprüüstü yönetimi",
+        subTopics: [
+          { title: "IMO A.893(21)" },
+          { title: "Appraisal" },
+          { title: "Planning" },
+          { title: "Execution" },
+          { title: "Monitoring" },
+          { title: "UKC ve squat" },
+          { title: "Bridge Resource Management (BRM)" },
+          { title: "PSC bakış açısı" }
+        ]
+      },
+      {
+        title: "COLREG & Çatışma Analizleri",
+        description: "Denizde çatışmadan kaçınma kuralları ve kaza analizleri",
+        subTopics: [
+          { title: "COLREG temel prensipleri" },
+          { title: "Crossing" },
+          { title: "Head-on" },
+          { title: "Overtaking" },
+          { title: "Restricted visibility" },
+          { title: "Gerçek çatışma kazaları" },
+          { title: "Neden – sonuç – ihlal – önlem analizi" }
+        ]
+      }
+    ],
+    resources: [
+      { title: "Seyir Hesaplamaları", href: "/navigation" },
+      { title: "Seyir Formülleri", href: "/navigation/formulas" },
+      { title: "COLREG Kuralları", href: "/navigation/rules" }
+    ]
   },
   cargo: {
     title: "Yük Elleçleme Konu Anlatımı",
@@ -164,6 +368,15 @@ export default function LessonTopicsPage() {
   const { categoryId } = useParams<{ categoryId: string }>();
   const category = calculationCategories.find(c => c.id === categoryId);
   const topicContent = categoryId ? topicsData[categoryId] : null;
+  const [expandedTopics, setExpandedTopics] = useState<number[]>([]);
+
+  const toggleTopic = (index: number) => {
+    setExpandedTopics(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index) 
+        : [...prev, index]
+    );
+  };
 
   const highRefreshRateStyles: CSSProperties = {
     ["--frame-rate" as string]: "120",
@@ -219,23 +432,89 @@ export default function LessonTopicsPage() {
           <div className="flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold text-foreground">Ana Konular</h2>
+            {topicContent.keyTopics.some(t => t.subTopics && t.subTopics.length > 0) && (
+              <span className="ml-auto text-xs text-muted-foreground">
+                {topicContent.keyTopics.length} başlık
+              </span>
+            )}
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {topicContent.keyTopics.map((topic, index) => (
-              <div
-                key={index}
-                className="group rounded-xl border border-border/40 bg-card/80 p-4 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
-              >
-                <div className="mb-2 flex items-center gap-2">
-                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white text-xs font-bold`}>
-                    {index + 1}
+          
+          {/* Check if has subTopics - use different layout */}
+          {topicContent.keyTopics.some(t => t.subTopics && t.subTopics.length > 0) ? (
+            <div className="flex flex-col gap-3">
+              {topicContent.keyTopics.map((topic, index) => {
+                const isExpanded = expandedTopics.includes(index);
+                const hasSubTopics = topic.subTopics && topic.subTopics.length > 0;
+                
+                return (
+                  <div
+                    key={index}
+                    className="rounded-xl border border-border/40 bg-card/80 backdrop-blur transition-all overflow-hidden"
+                  >
+                    <button
+                      onClick={() => hasSubTopics && toggleTopic(index)}
+                      className={`w-full p-4 text-left transition-colors ${hasSubTopics ? 'cursor-pointer hover:bg-card' : 'cursor-default'}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white text-sm font-bold`}>
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-foreground">{topic.title}</h3>
+                            {hasSubTopics && (
+                              <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
+                                {topic.subTopics!.length} alt başlık
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">{topic.description}</p>
+                        </div>
+                        {hasSubTopics && (
+                          <ChevronDown 
+                            className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
+                          />
+                        )}
+                      </div>
+                    </button>
+                    
+                    {hasSubTopics && isExpanded && (
+                      <div className="border-t border-border/40 bg-background/50 p-4">
+                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                          {topic.subTopics!.map((sub, subIndex) => (
+                            <div
+                              key={subIndex}
+                              className="flex items-center gap-2 rounded-lg bg-card/60 px-3 py-2 text-sm"
+                            >
+                              <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
+                              <span className="text-foreground/90">{sub.title}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <h3 className="font-medium text-foreground">{topic.title}</h3>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {topicContent.keyTopics.map((topic, index) => (
+                <div
+                  key={index}
+                  className="group rounded-xl border border-border/40 bg-card/80 p-4 backdrop-blur transition-all hover:border-primary/30 hover:bg-card hover:shadow-md"
+                >
+                  <div className="mb-2 flex items-center gap-2">
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${category.accent} text-white text-xs font-bold`}>
+                      {index + 1}
+                    </div>
+                    <h3 className="font-medium text-foreground">{topic.title}</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{topic.description}</p>
                 </div>
-                <p className="text-xs text-muted-foreground">{topic.description}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Quick Links */}
