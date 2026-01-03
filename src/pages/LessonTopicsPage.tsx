@@ -35,50 +35,12 @@ const topicsData: Record<string, TopicContent> = {
   },
   navigation: {
     title: "Seyir Konu Anlatımı",
-    description: "Deniz seyir teknikleri, astronomik navigasyon ve modern navigasyon sistemleri hakkında detaylı eğitim.",
-    contentStandards: {
-      minPagesPerTopic: 4,
-      imageFormat: "JPG",
-    },
-    keyTopics: [
-      { title: "Rota Hesaplamaları", description: "Great circle ve rhumb line rota hesapları" },
-      { title: "Seyir Temelleri", description: "Seyre hazırlık, planlama-icra-izleme döngüsü" },
-      { title: "Mercator & Loxodromik Seyir", description: "Mercator harita mantığı ve sabit rota hesapları" },
-      { title: "Büyük Daire Seyri", description: "Great circle avantajları ve dönüş noktaları" },
-      { title: "Astronomik Navigasyon", description: "Güneş, yıldız ve ay mevkileri" },
-      { title: "Gelgit Hesapları", description: "Tide tabloları ve hesaplama yöntemleri" },
-      { title: "Akıntı & Rüzgâr Düzeltmeleri", description: "Set/drift, leeway ve rota düzeltmeleri" },
-      { title: "Gelgit & Derinlik Emniyeti", description: "UKC, squat ve derinlik marjı planlama" },
-      { title: "Radar Navigasyonu", description: "ARPA ve radar görüntü yorumlama" },
-      { title: "ECDIS", description: "Elektronik harita ve bilgi sistemi kullanımı" },
-      { title: "GPS ve GNSS", description: "Uydu navigasyon sistemleri ve doğruluk" },
-      { title: "Seyir Emniyeti", description: "Risk değerlendirmesi ve emniyetli hız ilkeleri" },
-      { title: "İnsan Faktörü", description: "BRM, yorgunluk ve navigasyon hataları" },
-      { title: "Kısıtlı Sularda Seyir", description: "Dar kanal, bank effect ve sığ su etkileri" },
-      { title: "Kıyı Seyri", description: "Transitte seyir, paralel indeks ve kıyı işaretleri" },
-      { title: "Harita İşaretleri", description: "IALA şamandıraları ve ENC sembolleri" },
-      { title: "Pilotaj", description: "Pilot alma, liman giriş-çıkış prosedürleri" },
-      { title: "Seyir Planı Denetimi", description: "Passage plan kontrol kriterleri ve checklist" },
-      { title: "Ağır Hava Seyri", description: "Fırtınada rota ve hız ayarları" },
-      { title: "Buzlu Sularda Seyir", description: "Ice class, buz gözlemi ve güvenli rota" },
-      { title: "Manevra Karakteristikleri", description: "Turning circle, stop mesafesi ve tepki" },
-      { title: "Ekonomik Seyir", description: "Yakıt optimizasyonu ve TCE yaklaşımı" },
-      { title: "AIS Kullanımı", description: "AIS sınırlamaları ve radar çapraz kontrol" },
-      { title: "COLREG Pratikleri", description: "Karşılaşma manevraları ve ışık karakterleri" },
-      { title: "Kaza Örnekleri", description: "COLREG ihlali ve near-miss dersleri" },
-      { title: "Simülatör Modülleri", description: "Radar/ARPA ve gözetim senaryoları" },
-      { title: "Seyir Belgeleri", description: "Köprüüstü kayıtları ve logbook düzeni" },
-      { title: "Vardiya Yönetimi", description: "Vardiya devri ve lookout sorumlulukları" },
-      { title: "Bowditch", description: "The American Practical Navigator kaynağının seyirde kullanımı" }
-    ],
+    description: "Deniz seyir teknikleri ve modern navigasyon sistemleri hakkında eğitim içeriği hazırlanıyor.",
+    keyTopics: [],
     resources: [
       { title: "Seyir Hesaplamaları", href: "/navigation" },
       { title: "Seyir Formülleri", href: "/navigation/formulas" },
-      { title: "COLREG Kuralları", href: "/navigation/rules" },
-      {
-        title: "Bowditch — The American Practical Navigator (PDF)",
-        href: "https://maritimesafetyinnovationlab.org/wp-content/uploads/2014/07/bowditch.pdf?utm_source=chatgpt.com"
-      }
+      { title: "COLREG Kuralları", href: "/navigation/rules" }
     ]
   },
   cargo: {
