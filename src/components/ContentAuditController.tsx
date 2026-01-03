@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ClipboardCopy, Bot, Loader2, RefreshCw, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/safeClient";
-import { navigationTopicsContent } from "@/data/navigationTopicsContent";
+
 import { stabilityTopicsData } from "@/data/stabilityTopicsContent";
 
 const SYSTEM_PROMPT = `Sen Marine Expert uygulamasının "Konu Anlatımı Denetleyicisi"sin.
@@ -46,21 +46,6 @@ export const ContentAuditController = () => {
   const [referenceNotes, setReferenceNotes] = useState("");
 
   const contentSnapshot = useMemo(() => {
-    const navigationTopics = navigationTopicsContent.map((topic) => ({
-      id: topic.id,
-      title: topic.title,
-      pages: topic.pages.map((page) => ({
-        title: page.title,
-        summary: page.summary,
-        bullets: page.bullets,
-        imageAlt: page.imageAlt,
-        motionCue: page.motionCue,
-        references: page.references,
-        updatedAt: page.updatedAt,
-      })),
-      calculationLinks: topic.calculationLinks,
-    }));
-
     const stabilityTopics = stabilityTopicsData.map((topic) => ({
       id: topic.id,
       title: topic.title,
@@ -79,11 +64,6 @@ export const ContentAuditController = () => {
 
     return {
       generatedAt: new Date().toISOString(),
-      navigation: {
-        topics: navigationTopics,
-        topicCount: navigationTopics.length,
-        pageCount: navigationTopics.reduce((sum, topic) => sum + topic.pages.length, 0),
-      },
       stability: {
         topics: stabilityTopics,
         topicCount: stabilityTopics.length,
@@ -159,12 +139,7 @@ export const ContentAuditController = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-lg border border-border/50 bg-muted/40 p-3">
-            <div className="text-xs text-muted-foreground">Seyir Konuları</div>
-            <div className="mt-1 text-lg font-semibold text-foreground">{contentSnapshot.navigation.topicCount} başlık</div>
-            <div className="text-xs text-muted-foreground">{contentSnapshot.navigation.pageCount} sayfa</div>
-          </div>
+        <div className="grid gap-3">
           <div className="rounded-lg border border-border/50 bg-muted/40 p-3">
             <div className="text-xs text-muted-foreground">Stabilite Konuları</div>
             <div className="mt-1 text-lg font-semibold text-foreground">{contentSnapshot.stability.topicCount} başlık</div>
